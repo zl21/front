@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'airbnb-base',
+  extends: ['airbnb-base', 'plugin:vue/recommended'],
   plugins: ['vue'],
   settings: {
     'import/resolver': {
@@ -24,11 +24,20 @@ module.exports = {
     'guard-for-in': 'off',
     'no-restricted-syntax': 'off',
     'no-param-reassign': 'off',
-    'import/no-dynamic-require': 'off'
+    'import/no-dynamic-require': 'off',
+    'vue/script-indent': ["error", 2, { "baseIndent": 1 }]
   },
-  parser: 'babel-eslint',
+  overrides: [
+    {
+      files: ["*.vue"],
+      rules: {
+        "indent": "off"
+      }
+    }
+  ],
   parserOptions: {
+    parser: 'babel-eslint',
     sourceType: 'module',
-    ecmaVersion: 8,
+    ecmaVersion: 2017,
   },
 };
