@@ -2,10 +2,11 @@ export default {
   direction: 'row',
   items: [
     {
-      width: 120,
+      width: 180,
       style: {
-        backgroundColor: 'black'
+        backgroundColor: 'white'
       },
+      component: () => import('../../__component__/EmptyPage')
     },
     {
       weight: 2,

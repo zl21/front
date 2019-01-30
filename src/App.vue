@@ -8,7 +8,7 @@
     }"
   >
     <div
-      v-for="(data, index) in layoutConfig"
+      v-for="(data, index) in layoutConfig.items"
       :key="`MainFlexItem-${index}`"
       :style="[data.style, Object.assign({}, data.width !== undefined ? {
         width: `${data.width}px`
@@ -18,6 +18,7 @@
         flexBasis: '1px',
       }, { overflow: 'hidden' })]"
     >
+      <component v-if="data.component" :is="data.component"></component>
       <div
         v-if="data.subLayout !== undefined"
         :style="{
@@ -50,7 +51,7 @@
     name: 'App',
     data() {
       return {
-        layoutConfig: appLayout.items
+        layoutConfig: appLayout
       };
     },
   };

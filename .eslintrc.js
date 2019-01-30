@@ -13,6 +13,7 @@ module.exports = {
     node: true
   },
   rules: {
+    'linebreak-style': 'off',
     'import/no-cycle': 'off',
     'max-len': 'off',
     'radix': 'off',
