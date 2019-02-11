@@ -1,68 +1,35 @@
-<template>
-  <div
-    :style="{
-      flexDirection: layoutConfig.direction,
-      display: 'flex',
-      height: '100%',
-      overflow: 'hidden'
-    }"
-  >
-    <div
-      v-for="(data, index) in layoutConfig.items"
-      :key="`MainFlexItem-${index}`"
-      :style="[data.style, Object.assign({}, data.width !== undefined ? {
-        width: `${data.width}px`
-      } : {
-        flexShrink: data.weight,
-        flexGrow: data.weight,
-        flexBasis: '1px',
-      }, { overflow: 'hidden' })]"
-    >
-      <component v-if="data.component" :is="data.component"></component>
-      <div
-        v-if="data.subLayout !== undefined"
-        :style="{
-          flexDirection: data.subLayout.direction,
-          display: 'flex',
-          height: '100%',
-          overflow: 'hidden'
-        }"
-      >
-        <div
-          v-for="(subData, subIndex) in data.subLayout.items"
-          :key="`SubFlexItem-${subIndex}`"
-          :style="[subData.style, Object.assign({}, subData.width !== undefined ? {
-            width: `${subData.width}px`
-          } : {
-            flexShrink: subData.weight,
-            flexGrow: subData.weight,
-            flexBasis: '1px',
-          }, { overflow: 'hidden' })]"
-        />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
   import appLayout from './__config__/layout/app.config';
 
+  const renderSubLayout = h => layout => (
+    <div
+      style={{
+        flexDirection: layout.direction,
+        display: 'flex',
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden'
+      }}>
+      {
+        layout.items.map(item => <div style={Object.assign(item.style, {
+          width: `${item.width}px`,
+          height: `${item.height}px`,
+          flexShrink: (item.width === undefined && item.height === undefined) ? item.weight : 'none',
+          flexGrow: (item.width === undefined && item.height === undefined) ? item.weight : 'none',
+          flexBasis: (item.width === undefined && item.height === undefined) ? '1px' : 'none',
+          overflow: 'hidden'
+        })}>
+          {item.component !== undefined ? h(item.component) : ''}
+          {item.layout ? renderSubLayout(h)(item.layout) : ''}
+        </div>)
+      }
+    </div>
+  );
+
   export default {
     name: 'App',
-    data() {
-      return {
-        layoutConfig: appLayout
-      };
-    },
+    render(h) {
+      return renderSubLayout(h)(appLayout);
+    }
   };
 </script>
-
-<style>
-  html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-  }
-</style>

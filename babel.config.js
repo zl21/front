@@ -9,6 +9,6 @@ const presets = [
   ]
 ];
 
-const plugins = ['@babel/plugin-syntax-dynamic-import'];
+const plugins = ['@babel/plugin-syntax-dynamic-import', 'transform-vue-jsx'];
 
 module.exports = { presets, plugins };

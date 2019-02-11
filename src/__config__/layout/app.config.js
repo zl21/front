@@ -13,7 +13,7 @@ export default {
       style: {
         backgroundColor: 'grey'
       },
-      subLayout: {
+      layout: {
         direction: 'column',
         items: [
           {
@@ -23,10 +23,12 @@ export default {
             },
           },
           {
-            weight: 1,
+            height: 300,
+            width: 200,
             style: {
               backgroundColor: 'green',
             },
+            component: () => import('../../__component__/EmptyPage')
           },
           {
             weight: 1,

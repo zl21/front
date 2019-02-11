@@ -1,6 +1,6 @@
 module.exports = {
   extends: ['airbnb-base', 'plugin:vue/recommended'],
-  plugins: ['vue'],
+  plugins: ['vue', 'jsx'],
   settings: {
     'import/resolver': {
       webpack: {
@@ -13,6 +13,7 @@ module.exports = {
     node: true
   },
   rules: {
+    'no-trailing-spaces': 'off',
     'linebreak-style': 'off',
     'import/no-cycle': 'off',
     'max-len': 'off',
@@ -25,7 +26,6 @@ module.exports = {
     'guard-for-in': 'off',
     'no-restricted-syntax': 'off',
     'no-param-reassign': 'off',
-    'import/no-dynamic-require': 'off',
     'vue/script-indent': ["error", 2, { "baseIndent": 1 }]
   },
   overrides: [
