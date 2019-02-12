@@ -1,11 +1,13 @@
+import Navigator from '../../__component__/Navigator';
+import ContentDisplayArea from '../../__component__/ContentDisplayArea';
+import HistoryAndFavorite from '../../__component__/HistoryAndFavorite';
+
 export default {
   direction: 'column',
   items: [
     {
       height: 50,
-      style: {
-        backgroundColor: 'black'
-      },
+      component: Navigator,
     },
     {
       weight: 1,
@@ -13,15 +15,16 @@ export default {
         direction: 'row',
         items: [
           {
-            width: 180,
+            component: HistoryAndFavorite,
             style: {
-              backgroundColor: 'darkred',
+              backgroundColor: 'lightgrey'
             },
           },
           {
             weight: 1,
+            component: ContentDisplayArea,
             style: {
-              backgroundColor: 'green',
+              backgroundColor: 'green'
             },
           }
         ]

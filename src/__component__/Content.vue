@@ -13,16 +13,14 @@
         display: 'flex',
         height: '100%',
         width: '100%',
-        overflow: 'hidden'
       }}>
       {
         layout.items.map(item => <div style={Object.assign(item.style || {}, {
           width: `${item.width}px`,
           height: `${item.height}px`,
-          flexShrink: (item.width === undefined && item.height === undefined) ? item.weight : 'none',
-          flexGrow: (item.width === undefined && item.height === undefined) ? item.weight : 'none',
-          flexBasis: (item.width === undefined && item.height === undefined) ? '1px' : 'none',
-          overflow: 'hidden'
+          flexShrink: (item.width === undefined && item.height === undefined) ? item.weight : undefined,
+          flexGrow: (item.width === undefined && item.height === undefined) ? item.weight : undefined,
+          flexBasis: (item.width === undefined && item.height === undefined) ? `${item.weight}px` : undefined,
         })}>
           {item.component !== undefined ? h(item.component) : ''}
           {item.layout ? renderSubLayout(h)(item.layout) : ''}

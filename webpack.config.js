@@ -14,7 +14,16 @@ module.exports = env => ({
     port: 8190,
     host: 'localhost',
     open: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      '/p/c': {
+        target: 'http://47.99.94.15:9090/mock/70/r3/1.4',
+        // target: 'http://47.99.229.124:1024',
+        pathRewrite: {
+          '^/p/c': '/p/c',
+        },
+      },
+    },
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
