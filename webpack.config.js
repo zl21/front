@@ -14,6 +14,7 @@ module.exports = env => ({
     port: 8190,
     host: 'localhost',
     open: true,
+    historyApiFallback: true
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',

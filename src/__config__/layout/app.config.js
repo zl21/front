@@ -1,55 +1,31 @@
 export default {
-  direction: 'row',
+  direction: 'column',
   items: [
     {
-      width: 180,
+      height: 50,
       style: {
-        backgroundColor: 'white'
+        backgroundColor: 'black'
       },
-      component: () => import('../../__component__/EmptyPage')
     },
     {
-      weight: 2,
-      style: {
-        backgroundColor: 'grey'
-      },
+      weight: 1,
       layout: {
-        direction: 'column',
+        direction: 'row',
         items: [
           {
-            weight: 1,
+            width: 180,
             style: {
               backgroundColor: 'darkred',
             },
           },
           {
-            height: 300,
-            width: 200,
-            style: {
-              backgroundColor: 'green',
-            },
-            component: () => import('../../__component__/EmptyPage')
-          },
-          {
             weight: 1,
             style: {
-              backgroundColor: 'lightgrey',
+              backgroundColor: 'green',
             },
           }
         ]
       }
-    },
-    {
-      weight: 1,
-      style: {
-        backgroundColor: 'blue'
-      },
-    },
-    {
-      weight: 1,
-      style: {
-        backgroundColor: 'red'
-      },
-    },
+    }
   ],
 };
