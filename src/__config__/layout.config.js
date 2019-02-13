@@ -19,6 +19,7 @@ export default {
           },
           {
             weight: 1,
+            style: { margin: '10px', backgroundColor: '#fff' },
             component: ContentDisplayArea,
           }
         ]
