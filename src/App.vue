@@ -5,7 +5,12 @@
 </template>
 
 <script>
+  import { hideMenu } from './__config__/event.config';
+  
   export default {
     name: 'App',
+    mounted() {
+      hideMenu();
+    }
   };
 </script>

@@ -1,6 +1,9 @@
+import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Login from '../../__component__/Login'
-import Content from '../../__component__/Content';
+import Login from '../__component__/Login'
+import Content from '../__component__/Content';
+
+Vue.use(VueRouter);
 
 const routes = [
   {

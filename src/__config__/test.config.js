@@ -6,7 +6,7 @@ export default {
       style: {
         backgroundColor: 'white'
       },
-      component: () => import('../../__component__/EmptyPage')
+      component: () => import('../__component__/EmptyPage')
     },
     {
       weight: 2,
@@ -28,7 +28,7 @@ export default {
             style: {
               backgroundColor: 'green',
             },
-            component: () => import('../../__component__/EmptyPage')
+            component: () => import('../__component__/EmptyPage')
           },
           {
             weight: 1,

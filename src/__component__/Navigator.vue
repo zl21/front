@@ -9,6 +9,7 @@
       <NavigatorPrimaryMenu
         v-for="(menu, index) in menuLists"
         :data="menu"
+        :index="index"
         :key="`primary-menu-${index}`"
       />
     </div>
@@ -59,6 +60,7 @@
       }
     }
     .middle {
+      position: relative;
       display: flex;
       flex: 1 1 1px;
     }

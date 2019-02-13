@@ -1,6 +1,6 @@
-import Navigator from '../../__component__/Navigator';
-import ContentDisplayArea from '../../__component__/ContentDisplayArea';
-import HistoryAndFavorite from '../../__component__/HistoryAndFavorite';
+import Navigator from '../__component__/Navigator';
+import ContentDisplayArea from '../__component__/ContentDisplayArea';
+import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
 
 export default {
   direction: 'column',

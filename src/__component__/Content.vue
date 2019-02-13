@@ -1,5 +1,5 @@
 <script>
-  import appLayout from '../__config__/layout/app.config';
+  import appLayout from '../__config__/layout.config';
 
   /**
    * 高级函数：用于采用JSX渲染Vue的Html Template
