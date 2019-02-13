@@ -32,6 +32,7 @@
 
 <style scoped lang="less">
   .navigator-sub-menu {
+    border-bottom: 1px solid #d1dbe5;
     width: 100%;
     max-height: calc(100vh - 50px);
     overflow-y: auto;
@@ -45,7 +46,7 @@
     left: 0;
     
     .menu-group {
-      width: 150px;
+      min-width: 150px;
       padding-right: 10px;
       margin: 0 30px 20px 0;
       li {
@@ -61,6 +62,7 @@
         margin-left: 10px;
       }
       li.item {
+        white-space: normal;
         cursor: pointer;
         height: 28px;
         line-height: 28px;

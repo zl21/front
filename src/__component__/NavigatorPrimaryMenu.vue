@@ -2,13 +2,15 @@
   <div
     class="navigator-primary-menu"
     :class="{ active: index === primaryMenuIndex }"
-    @click.stop="changeSelectedPrimaryMenu(index)"
+    @click.stop="togglePrimaryMenu"
   >
     {{ data.label }}
-    <NavigatorSubMenu
-      v-show="index === primaryMenuIndex"
-      :data="data.children || []"
-    />
+    <transition  name="fade">
+      <NavigatorSubMenu
+        v-show="index === primaryMenuIndex"
+        :data="data.children || []"
+      />
+    </transition>
   </div>
 </template>
 
@@ -27,7 +29,14 @@
       })
     },
     methods: {
-      ...mapMutations('global', ['changeSelectedPrimaryMenu'])
+      togglePrimaryMenu() {
+        if (this.index === this.primaryMenuIndex) {
+          this.hideMenu();
+        } else {
+          this.changeSelectedPrimaryMenu(this.index);
+        }
+      },
+      ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu'])
     },
     props: {
       data: {
@@ -45,6 +54,12 @@
 </script>
 
 <style scoped lang="less">
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .25s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
   .navigator-primary-menu.active {
     background-color: #fff;
     color: #575757;

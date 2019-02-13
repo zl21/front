@@ -1,5 +1,4 @@
 <template>
-  <h1>ContentDisplayArea</h1>
 </template>
 
 <script>

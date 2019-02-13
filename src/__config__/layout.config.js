@@ -23,9 +23,6 @@ export default {
           {
             weight: 1,
             component: ContentDisplayArea,
-            style: {
-              backgroundColor: 'green'
-            },
           }
         ]
       }
