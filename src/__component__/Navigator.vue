@@ -1,8 +1,8 @@
 <template>
   <div class="navigator">
     <div class="left">
-      <img class="trigger" alt="" src="../assets/image/closed@2x.png" />
-      <img class="trigger" alt="" src="../assets/image/open@2x.png" />
+      <img v-if="!collapseHistoryAndFavorite" class="trigger" alt="" src="../assets/image/closed@2x.png" />
+      <img v-if="collapseHistoryAndFavorite" class="trigger" alt="" src="../assets/image/open@2x.png" />
       <img class="logo" alt="" src="../assets/image/logo.png" />
     </div>
     <div class="middle">
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import network from '../__utils__/network';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   
@@ -24,6 +25,11 @@
     name: 'Navigator',
     components: {
       NavigatorPrimaryMenu
+    },
+    computed: {
+      ...mapState('global', {
+        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite
+      })
     },
     data() {
       return {
@@ -60,6 +66,7 @@
       }
     }
     .middle {
+      margin-left: 10px;
       position: relative;
       display: flex;
       flex: 1 1 1px;

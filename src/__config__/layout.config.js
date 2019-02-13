@@ -16,9 +16,6 @@ export default {
         items: [
           {
             component: HistoryAndFavorite,
-            style: {
-              backgroundColor: 'lightgrey'
-            },
           },
           {
             weight: 1,

@@ -1,7 +1,8 @@
 export default {
   namespaced: true,
   state: {
-    primaryMenuIndex: -1
+    primaryMenuIndex: -1,
+    collapseHistoryAndFavorite: false,
   },
   mutations: {
     changeSelectedPrimaryMenu(state, index) {

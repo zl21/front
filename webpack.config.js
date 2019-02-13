@@ -17,8 +17,8 @@ module.exports = env => ({
     historyApiFallback: true,
     proxy: {
       '/p/c': {
-        target: 'http://47.99.94.15:9090/mock/70/r3/1.4',
-        // target: 'http://47.99.229.124:1024',
+        // target: 'http://47.99.94.15:9090/mock/70/r3/1.4',
+        target: 'http://47.99.229.124:1024',
         pathRewrite: {
           '^/p/c': '/p/c',
         },
