@@ -10,6 +10,9 @@ export default {
     },
     hideMenu(state) {
       state.primaryMenuIndex = -1;
-    }
+    },
+    doCollapseHistoryAndFavorite(state) {
+      state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+    },
   }
 };

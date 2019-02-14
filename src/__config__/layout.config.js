@@ -11,6 +11,9 @@ export default {
     },
     {
       weight: 1,
+      style: {
+        backgroundColor: '#f1f1f1'
+      },
       layout: {
         direction: 'row',
         items: [

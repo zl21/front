@@ -1,9 +1,35 @@
 <template>
   <div class="navigator">
-    <div class="left">
-      <img v-if="!collapseHistoryAndFavorite" class="trigger" alt="" src="../assets/image/closed@2x.png" />
-      <img v-if="collapseHistoryAndFavorite" class="trigger" alt="" src="../assets/image/open@2x.png" />
-      <img class="logo" alt="" src="../assets/image/logo.png" />
+    <div
+      class="left"
+      :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
+    >
+      <img
+        v-if="!collapseHistoryAndFavorite"
+        class="trigger"
+        alt=""
+        src="../assets/image/closed@2x.png"
+        @click="doCollapseHistoryAndFavorite"
+      />
+      <img
+        v-if="collapseHistoryAndFavorite"
+        class="trigger"
+        alt=""
+        src="../assets/image/open@2x.png"
+        @click="doCollapseHistoryAndFavorite"
+      />
+      <img
+        v-if="!collapseHistoryAndFavorite"
+        class="logo"
+        alt=""
+        src="../assets/image/logo.png"
+      />
+      <img
+        v-if="collapseHistoryAndFavorite"
+        class="banner"
+        alt=""
+        src="../assets/image/banner.png"
+      />
     </div>
     <div class="middle">
       <NavigatorPrimaryMenu
@@ -17,7 +43,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import network from '../__utils__/network';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   
@@ -30,6 +56,9 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite
       })
+    },
+    methods: {
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite'])
     },
     data() {
       return {
@@ -50,9 +79,14 @@
     display: flex;
     background-color: #1f272c;
     .left {
-      width: 180px;
       img.trigger {
         height: 50px;
+      }
+      img.banner {
+        position: absolute;
+        width: 30px;
+        top: 10px;
+        left: 18px;
       }
       img.logo {
         width: 76px;
