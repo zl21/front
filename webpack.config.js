@@ -14,7 +14,12 @@ module.exports = env => ({
     port: 8190,
     host: 'localhost',
     open: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /.*/, to: path.posix.join('/', 'index.html') },
+      ],
+    },
+    publicPath: '/',
     proxy: {
       '/p/c': {
         // target: 'http://47.99.94.15:9090/mock/70/r3/1.4',
@@ -31,6 +36,7 @@ module.exports = env => ({
     filename: '[name].[hash].js',
     chunkFilename: '[name].[hash].js',
     path: path.join(__dirname, './dist'),
+    publicPath: '/',
   },
   module: {
     rules: [

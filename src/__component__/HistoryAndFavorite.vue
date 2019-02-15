@@ -88,7 +88,7 @@
       })
     },
     mounted() {
-      network.post('p/cs/getHistoryAndFavorite').then((res) => {
+      network.post('/p/cs/getHistoryAndFavorite').then((res) => {
         const { history, favorite } = res.data.data;
         this.history = history;
         this.favorite = favorite;

@@ -10,6 +10,7 @@
         class="item"
         v-for="(endMenu, endIndex) in subMenu.children"
         :key="`endMenu-${endIndex}`"
+        @click="routeTo(endMenu)"
       >
         {{ endMenu.label }}
       </li>
@@ -18,6 +19,8 @@
 </template>
 
 <script>
+  import { routeTo } from '../__config__/event.config';
+  
   export default {
     name: 'NavigatorSubMenu',
     props: {
@@ -26,7 +29,12 @@
         type: Array,
         default: () => []
       }
-    }
+    },
+    methods: {
+      routeTo(data) {
+        routeTo(data);
+      },
+    },
   };
 </script>
 
