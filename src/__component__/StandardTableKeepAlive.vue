@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <keep-alive>
-      <component :is="currentTable" :ref="currentTable"></component>
-    </keep-alive>
-  </div>
+  <keep-alive>
+    <component :is="currentTable" :ref="currentTable"></component>
+  </keep-alive>
 </template>
 
 <script>
   import Vue from 'vue';
-  import StandardTableList from './StandardTableList';
+  
+  const StandardTableList = () => import('./StandardTableList');
   
   export default {
+    name: 'StandardTableKeepAlive',
     data() {
       return {
-        currentTable: undefined
+        currentTable: null
       };
     },
     methods: {
@@ -30,9 +30,6 @@
     watch: {
       $route() {
         this.generateComponent();
-      },
-      currentTable(n, o) {
-        console.log({ n, o });
       },
     }
   };
