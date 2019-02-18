@@ -69,30 +69,28 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import network from '../__utils__/network';
+  import { mapState, mapActions } from 'vuex';
   
   export default {
     name: 'HistoryAndFavorite',
     data() {
       return {
-        favorite: [],
-        history: [],
         collapseHistory: false,
         collapseFavorite: false
       };
     },
     computed: {
       ...mapState('global', {
-        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite
+        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        history: ({ history }) => history,
+        favorite: ({ favorite }) => favorite
       })
     },
+    methods: {
+      ...mapActions('global', ['getHistoryAndFavorite'])
+    },
     mounted() {
-      network.post('/p/cs/getHistoryAndFavorite').then((res) => {
-        const { history, favorite } = res.data.data;
-        this.history = history;
-        this.favorite = favorite;
-      });
+      this.getHistoryAndFavorite();
     }
   };
 </script>

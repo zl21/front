@@ -43,8 +43,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
-  import network from '../__utils__/network';
+  import { mapState, mapMutations, mapActions } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   
   export default {
@@ -54,21 +53,16 @@
     },
     computed: {
       ...mapState('global', {
-        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite
+        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        menuLists: ({ menuLists }) => menuLists
       })
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite'])
-    },
-    data() {
-      return {
-        menuLists: []
-      };
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
+      ...mapActions('global', ['getMenuLists']),
     },
     mounted() {
-      network.post('/p/cs/getSubSystems').then((res) => {
-        this.menuLists = res.data.data;
-      });
+      this.getMenuLists();
     }
   };
 </script>
