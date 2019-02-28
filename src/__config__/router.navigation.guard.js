@@ -10,15 +10,18 @@ export default (router) => {
       const { keepAliveLists, openedMenuLists } = store.state.global;
 
       const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+
+      // 界面刷新时，处理 keepAliveModuleName
       if (!keepAliveLists.includes(keepAliveModuleName)) {
         commit('global/increaseKeepAliveLists', keepAliveModuleName);
       }
+
+      // 界面刷新时，处理 openedMenuLists
       if (openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
         let tempInterval = -1;
         tempInterval = setInterval(() => {
           const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
           if (ready) {
-            clearInterval(tempInterval);
             clearInterval(tempInterval);
             commit('global/increaseOpenedMenuLists', {
               label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
