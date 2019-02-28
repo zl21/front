@@ -1,4 +1,5 @@
 import network from '../../__utils__/network';
+import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
 
 export default {
   namespaced: true,
@@ -8,7 +9,9 @@ export default {
     history: [],
     favorite: [],
     menuLists: [],
-    keepAliveLists: []
+    openedMenuLists: [],
+    keepAliveLists: [],
+    keepAliveLabelMaps: {}
   },
   mutations: {
     changeSelectedPrimaryMenu(state, index) {
@@ -26,12 +29,28 @@ export default {
     },
     updateMenuLists(state, menuLists) {
       state.menuLists = menuLists;
+      state.keepAliveLabelMaps = JSON.parse(JSON.stringify(menuLists))
+        .map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .reduce((a, c) => {
+          if (c.type === 'table') {
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          }
+          return a;
+        }, {});
     },
     increaseKeepAliveLists(state, name) {
       if (!state.keepAliveLists.includes(name)) {
         state.keepAliveLists = state.keepAliveLists.concat([name]);
       }
     },
+    increaseOpenedMenuLists(state, { label, keepAliveModuleName }) {
+      if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
+        state.openedMenuLists = state.openedMenuLists.concat([{ label, keepAliveModuleName }]);
+      }
+    }
   },
   actions: {
     getHistoryAndFavorite({ commit }) {

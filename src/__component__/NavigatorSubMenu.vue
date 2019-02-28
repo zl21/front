@@ -33,11 +33,18 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        routeTo({ type: data.type, info: { tableName: data.value, tableId: data.id } }, () => {
+        const { type, label } = data;
+        const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${data.value}.${data.id}`;
+        
+        routeTo({ type, info: { tableName: data.value, tableId: data.id } }, () => {
           this.hideMenu();
-          this.increaseKeepAliveLists(`${STANDARD_TABLE_COMPONENT_PREFIX}.${data.value}.${data.id}`);
+          this.increaseKeepAliveLists(keepAliveModuleName);
+          this.increaseOpenedMenuLists({
+            label,
+            keepAliveModuleName
+          });
         });
       },
     },
