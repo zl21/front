@@ -7,7 +7,8 @@ export default {
     collapseHistoryAndFavorite: false,
     history: [],
     favorite: [],
-    menuLists: []
+    menuLists: [],
+    keepAliveLists: []
   },
   mutations: {
     changeSelectedPrimaryMenu(state, index) {
@@ -25,6 +26,11 @@ export default {
     },
     updateMenuLists(state, menuLists) {
       state.menuLists = menuLists;
+    },
+    increaseKeepAliveLists(state, name) {
+      if (!state.keepAliveLists.includes(name)) {
+        state.keepAliveLists = state.keepAliveLists.concat([name]);
+      }
     },
   },
   actions: {

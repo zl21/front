@@ -1,6 +1,9 @@
 import store from './store.config';
 import router from './router.config';
-import { STANDARD_TABLE_LIST_PREFIX, STANDARD_SINGLE_OBJECT_PREFIX } from '../constants/global';
+import {
+  STANDARD_TABLE_LIST_PREFIX,
+  STANDARD_SINGLE_OBJECT_PREFIX
+} from '../constants/global';
 
 export const hideMenu = () => {
   document.body.addEventListener('click', () => {
@@ -8,12 +11,18 @@ export const hideMenu = () => {
   });
 };
 
-export const routeTo = (data) => {
-  store.commit('global/hideMenu');
-  switch (data.type) {
+/**
+ *
+ * @param type 路由目标类型
+ * @param info 路由目标信息
+ * @param cb   回调函数
+ */
+export const routeTo = ({ type, info }, cb) => {
+  if (typeof cb === 'function') { cb(); }
+  switch (type) {
     case 'table':
       router.push({
-        path: `${STANDARD_TABLE_LIST_PREFIX}/${data.value}/${data.id}`,
+        path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
       });
       break;
     default:

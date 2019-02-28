@@ -1,11 +1,17 @@
 <template>
   <keep-alive>
-    <component :is="currentTable" :ref="currentTable"></component>
+    <component
+      :is="currentTable"
+      :ref="currentTable"
+      :include="keepAliveLists"
+    />
   </keep-alive>
 </template>
 
 <script>
   import Vue from 'vue';
+  import { mapState } from 'vuex';
+  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   
   const StandardTableList = () => import('./StandardTableList');
   
@@ -16,10 +22,13 @@
         currentTable: null
       };
     },
+    computed: {
+      ...mapState('global', ['keepAliveLists'])
+    },
     methods: {
       generateComponent() {
         const { tableName, tableId } = this.$route.params;
-        const componentName = `StandardTable.${tableName}.${tableId}`;
+        const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
         Vue.component(componentName, StandardTableList);
         this.currentTable = componentName;
       }
@@ -34,7 +43,3 @@
     }
   };
 </script>
-
-<style scoped>
-
-</style>

@@ -4,9 +4,6 @@
 
 <script>
   export default {
-    mounted() {
-      console.log(this.$route.path, ' mounted .');
-    }
   };
 </script>
 

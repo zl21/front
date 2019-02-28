@@ -19,7 +19,9 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex';
   import { routeTo } from '../__config__/event.config';
+  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   
   export default {
     name: 'NavigatorSubMenu',
@@ -31,8 +33,12 @@
       }
     },
     methods: {
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu']),
       routeTo(data) {
-        routeTo(data);
+        routeTo({ type: data.type, info: { tableName: data.value, tableId: data.id } }, () => {
+          this.hideMenu();
+          this.increaseKeepAliveLists(`${STANDARD_TABLE_COMPONENT_PREFIX}.${data.value}.${data.id}`);
+        });
       },
     },
   };
