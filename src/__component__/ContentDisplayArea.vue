@@ -1,10 +1,18 @@
 <template>
-  <router-view />
+  <div>
+    <TabLists />
+    <router-view />
+  </div>
 </template>
 
 <script>
+  import TabLists from './TabLists';
+  
   export default {
-    name: 'ContentDisplayArea'
+    name: 'ContentDisplayArea',
+    components: {
+      TabLists
+    },
   };
 </script>
 
