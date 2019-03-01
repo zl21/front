@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 模块页签组件 -->
     <TabLists />
     <router-view />
   </div>
