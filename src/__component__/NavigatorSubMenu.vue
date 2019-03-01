@@ -54,7 +54,7 @@
 <style scoped lang="less">
   .navigator-sub-menu {
     border-bottom: 1px solid #d1dbe5;
-    width: 100%;
+    width: calc(100% - 10px);
     max-height: calc(100vh - 50px);
     overflow-y: auto;
     display: flex;
