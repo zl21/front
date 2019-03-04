@@ -1,5 +1,6 @@
 import network from '../../__utils__/network';
 import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
+import router from '../router.config';
 
 export default {
   namespaced: true,
@@ -48,7 +49,13 @@ export default {
     },
     increaseOpenedMenuLists(state, { label, keepAliveModuleName }) {
       if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
-        state.openedMenuLists = state.openedMenuLists.concat([{ label, keepAliveModuleName }]);
+        state.openedMenuLists.forEach((d) => { d.isActive = false; });
+        state.openedMenuLists = state.openedMenuLists.concat([{
+          label,
+          keepAliveModuleName,
+          routeFullPath: router.currentRoute.fullPath,
+          isActive: true
+        }]);
       }
     }
   },
