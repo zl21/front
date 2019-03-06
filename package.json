@@ -46,8 +46,8 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "ag-grid-community": "^20.0.0",
-    "ag-grid-enterprise": "^20.0.0",
+    "ag-grid": "^17.1.1",
+    "ag-grid-enterprise": "^17.1.1",
     "axios": "^0.18.0",
     "burgeon-ui": "^0.1.32",
     "vue": "^2.6.6",
