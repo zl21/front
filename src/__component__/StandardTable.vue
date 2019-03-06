@@ -6,19 +6,20 @@
       v-bind="pageAttribute"
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
-    ></Page>
+    />
     <div
       ref="agGridTableContainer"
-      class="dateilTable"
-    >
-    </div>
+      class="detailTable"
+    />
 
     <div class="queryDesc">
       <div
         v-if="legend.length > 0 & isLegendShow"
         class="legend"
       >
-        <span style="font-weight: bold;">图例:</span>
+        <span style="font-weight: bold;">
+          图例:
+        </span>
         <p
           v-for="(item, index) in legend"
           :key="index"
@@ -49,7 +50,7 @@
     data() {
       return {
         firstLoading: false, // 第一次的loading动态
-        AGTABLE: '', // ag实例
+        agGridInstance: '', // ag实例
       };
     },
     props: {
@@ -181,7 +182,7 @@
     watch: {
       agTableDatas(val) {
         const self = this;
-        if (self.AGTABLE) {
+        if (self.agGridInstance) {
           if (self.isRecreateAgInstance) {
             self.agGridTable(val.tabth, val.row, val);
           } else {
@@ -194,12 +195,12 @@
       isShowAgLoading(val) {
         const self = this;
         if (val) {
-          if (typeof self.AGTABLE === 'function') {
-            self.AGTABLE.showLoading();
+          if (typeof self.agGridInstance === 'function') {
+            self.agGridInstance.showLoading();
           }
         } else {
-          if (typeof self.AGTABLE === 'function') {
-            self.AGTABLE.hideLoading();
+          if (typeof self.agGridInstance === 'function') {
+            self.agGridInstance.hideLoading();
           }
         }
       }
@@ -227,25 +228,17 @@
           obj.sort = item.ordasc ? 'asc' : 'desc';
           obj.colId = item.colname;
         }); // 排序
-        const datas = self.reaptData(data);
+        const datas = self.repeatData(data);
         delete datas.tabth;
         delete datas.row;
 
         datas.hideColumn = self.hideColumn;
-
-        // const errorArr = [];
-        // for (const i in self.errorTable) {
-        //   const obj = {};
-        //   obj.objid = i;
-        //   obj.message = self.errorTable[i].message;
-        //   errorArr.push(obj);
-        // }  待解决
         datas.deleteFailInfo = self.errorArr;
         datas.colPosition = self.colPosition; // 移动列
         datas.pinnedPosition = self.fixedColumn; // 固定列
         // selectIdArr
         self.$nextTick(() => {
-          self.AGTABLE = agTable(this.$refs.agGridTableContainer, {
+          self.agGridInstance = agTable(this.$refs.agGridTableContainer, {
             cssStatus: self.legend, // 颜色配置信息
             defaultSort: arr, // 默认排序
             datas, //  所有返回数据
@@ -316,16 +309,15 @@
           })
             .setCols(th) // 设置数据列
             .setRows(row); // 设置数据行
-          // .setSortModel(arr)
         });
       },
       agGridSetRows(row) {
         const self = this;
-        if (self.AGTABLE) {
-          self.AGTABLE.setRows(row);
+        if (self.agGridInstance) {
+          self.agGridInstance.setRows(row);
         }
       },
-      reaptData(obj) { // 深拷贝
+      repeatData(obj) { // 深拷贝
         if (obj instanceof Array) { // array
           const temp = [];
           obj.forEach((item) => {
@@ -369,7 +361,7 @@
  .standardTable {
    padding: 20px;
  }
-  .dateilTable {
+  .detailTable {
     margin-top: 10px;
   }
 
@@ -388,7 +380,7 @@
          border: 1px solid #575757;
          margin-right: 2px;
          background: white;
-         padding: 0px 3px;
+         padding: 0 3px;
        }
 
        margin-right: 3px;
