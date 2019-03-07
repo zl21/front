@@ -60,9 +60,25 @@ export default {
           keepAliveModuleName,
           routeFullPath: router.currentRoute.fullPath,
           isActive: true,
-          
         }]);
       }
+    },
+    updateActiveMenu({ openedMenuLists }, keepAliveModuleName) {
+      let activeMenuIndex = -1;
+      openedMenuLists.some((d, i) => {
+        if (d.keepAliveModuleName === keepAliveModuleName) {
+          activeMenuIndex = i;
+          return true;
+        } 
+        return false;
+      });
+      openedMenuLists.forEach((d, i) => {
+        if (i === activeMenuIndex) {
+          d.isActive = true;
+        } else {
+          d.isActive = false;
+        }
+      });
     },
     emptyTabs(state) {
       state.openedMenuLists = [];

@@ -11,12 +11,12 @@ export default (router) => {
 
       const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 
-      // 界面刷新时，处理 keepAliveModuleName
+      // 处理 keepAliveModuleName
       if (!keepAliveLists.includes(keepAliveModuleName)) {
         commit('global/increaseKeepAliveLists', keepAliveModuleName);
       }
 
-      // 界面刷新时，处理 openedMenuLists
+      // 处理 openedMenuLists
       if (openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
         let tempInterval = -1;
         tempInterval = setInterval(() => {
@@ -29,6 +29,8 @@ export default (router) => {
             });
           }
         }, 50);
+      } else {
+        commit('global/updateActiveMenu', keepAliveModuleName);
       }
     }
     next();
