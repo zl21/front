@@ -66,18 +66,17 @@ export default {
     },
     emptyTabs(state) {
       state.openedMenuLists = [];
+      state.keepAliveLists = [];
     },
     selectKeepAliveList(state, path) {
       let component = null;
       component = `${path.keepAliveModuleName}`;
-      for (const index in state.keepAliveLists) {
-        if (state.keepAliveLists.indexOf(component) !== -1) {
+      state.keepAliveLists.forEach((element, index) => {
+        if (element === component) {
           state.keepAliveLists.splice(index, 1);
-          console.log(state.keepAliveLists);
-          break;
         } 
-      }
-    },
+      });
+    }, // 清除当前tab的keepAlive
     TabCloseAppoint(state, tab) {
       const selectTabs = state.openedMenuLists;
       const tabRouteFullPath = tab.routeFullPath;
