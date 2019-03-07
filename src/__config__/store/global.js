@@ -102,8 +102,6 @@ export default {
     }, // 关闭当前tab
     switchActiveTab(state, tab) {
       const openedMenuLists = state.openedMenuLists;
-      console.log(3, openedMenuLists.keepAliveModuleName);
-
       openedMenuLists.forEach((element, index) => {
         element.isActive = false;
         if (openedMenuLists[index].keepAliveModuleName === tab.keepAliveModuleName) {

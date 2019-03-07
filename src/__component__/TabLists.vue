@@ -98,7 +98,6 @@
         const tag = this.openedMenuLists[index];
         this.$store.commit('global/switchActiveTab', tag);
         router.push({ path: tag.routeFullPath });
-        console.log(3, tag.keepAliveModuleName);
       },
       handleClose(tag) {
         const self = this;

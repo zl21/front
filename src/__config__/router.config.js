@@ -6,6 +6,7 @@ import Dashboard from '../__component__/Dashboard';
 import StandardTableKeepAlive from '../__component__/StandardTableKeepAlive';
 import StandardSingleObject from '../__component__/StandardSingleObject';
 import { STANDARD_TABLE_LIST_PREFIX, STANDARD_SINGLE_OBJECT_PREFIX } from '../constants/global';
+import navigationGuard from './router.navigation.guard';
 
 Vue.use(VueRouter);
 
@@ -31,7 +32,11 @@ const routes = [
   }
 ];
 
-export default new VueRouter({
+const router = new VueRouter({
   routes,
   mode: 'history'
 });
+
+navigationGuard(router);
+
+export default router;
