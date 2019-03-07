@@ -35,16 +35,9 @@
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        const { type, label } = data;
-        const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${data.value}.${data.id}`;
-        
+        const { type } = data;
         routeTo({ type, info: { tableName: data.value, tableId: data.id } }, () => {
           this.hideMenu();
-          this.increaseKeepAliveLists(keepAliveModuleName);
-          this.increaseOpenedMenuLists({
-            label,
-            keepAliveModuleName
-          });
         });
       },
     },

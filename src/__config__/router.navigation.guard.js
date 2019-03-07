@@ -4,7 +4,7 @@ import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
 export default (router) => {
   router.beforeEach((to, from, next) => {
     // Condition One: 路由到标准列表界面
-    if (to.path.match(/\/SYSTEM\/TABLE\//)) {
+    if (/\/SYSTEM\/TABLE\//.test(to.path)) {
       const { tableName, tableId } = to.params;
       const { commit } = store;
       const { keepAliveLists, openedMenuLists } = store.state.global;
@@ -28,10 +28,9 @@ export default (router) => {
               keepAliveModuleName
             });
           }
-        }, 100);
+        }, 50);
       }
     }
-
     next();
   });
 };
