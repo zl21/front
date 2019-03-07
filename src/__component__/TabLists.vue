@@ -101,7 +101,7 @@
       // },
     },
     methods: {
-      ...mapActions('global', { emptyTabs: 'emptyTabs' },),
+      ...mapActions('global', { emptyTabs: 'emptyTabs' }),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         this.$store.commit('global/switchActiveTab', tag);
