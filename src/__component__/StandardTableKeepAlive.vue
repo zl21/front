@@ -1,9 +1,10 @@
 <template>
-  <keep-alive>
+  <keep-alive
+    :include="keepAliveLists"
+  >
     <component
       :is="currentTable"
       :ref="currentTable"
-      :include="keepAliveLists"
     />
   </keep-alive>
 </template>
