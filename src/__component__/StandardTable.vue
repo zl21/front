@@ -250,28 +250,24 @@
               if (typeof self.onCellSingleClick === 'function') {
                 self.onCellSingleClick(colDef, rowData, target);
               }
-              this.$emit('on-ag-cell-sibgle', colDef, rowData, target, this);
             }, // 单元格单击回调
             cellDoubleClick: (colDef, rowData, target) => {
               // 参数说明同cellSingleClick
               if (typeof self.onCellDoubleClick === 'function') {
                 self.onCellDoubleClick(colDef, rowData, target);
               }
-              this.$emit('on-ag-cell-double', colDef, rowData, target, this);
             }, // 单元格双击回调
             rowSingleClick: (colDef, rowData, target) => {
               // 参数说明同cellSingleClick
               if (typeof self.onRowSingleClick === 'function') {
                 self.onRowSingleClick(colDef, rowData, target);
               }
-              this.$emit('on-ag-row-single', colDef, rowData, target, this);
             }, // 行单击回调
             rowDoubleClick: (colDef, rowData, target) => {
               // 参数说明同cellSingleClick
               if (typeof self.onRowDoubleClick === 'function') {
                 self.onRowDoubleClick(colDef, rowData, target);
               }
-              this.$emit('on-ag-row-double', colDef, rowData, target, this);
             }, // 行双击回调
             onSortChanged: (arrayOfSortInfo) => {
               // 参数说明
@@ -280,31 +276,26 @@
               if (typeof self.onSortChanged === 'function') {
                 self.onSortChanged(arrayOfSortInfo);
               }
-              this.$emit('on-ag-sort-change', arrayOfSortInfo, this);
             }, // 排序事件触发回调
             onColumnVisibleChanged: (colName) => {
               if (typeof self.onColumnVisibleChanged === 'function') {
                 self.onColumnVisibleChanged(colName);
               }
-              this.$emit('on-ag-column-visible-change', colName, this);
             },
             onSelectionChanged: (rowIdArray, rowArray) => {
               if (typeof self.onSelectionChanged === 'function') {
                 self.onSelectionChanged(rowIdArray, rowArray);
               }
-              this.$emit('on-ag-selection-change', rowIdArray, rowArray, this);
             },
             onColumnMoved: (columnState) => { // 记住移动列
               if (typeof self.onColumnMoved === 'function') {
                 self.onColumnMoved(columnState);
               }
-              this.$emit('on-ag-column-move', columnState, this);
             },
             onColumnPinned: (ColumnPinned) => {
               if (typeof self.onColumnPinned === 'function') {
                 self.onColumnPinned(ColumnPinned);
               }
-              this.$emit('on-ag-column-pinned', ColumnPinned, this);
             },
           })
             .setCols(th) // 设置数据列
@@ -344,14 +335,12 @@
         if (typeof self.onPageChange === 'function') {
           self.onPageChange(pageNum);
         }
-        self.$emit('on-page-change', pageNum, this);
       }, // 页码改变
       pageSizeChange(pageSize) {
         const self = this;
         if (typeof self.onPageSizeChange === 'function') {
           self.onPageSizeChange(pageSize);
         }
-        self.$emit('on-page-size-change', pageSize, this);
       }, // 每页条数改变
     }
   };
