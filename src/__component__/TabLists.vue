@@ -115,6 +115,7 @@
       removeKeepAlivePages(path) { 
         this.$store.commit('global/selectKeepAliveList', path);
       },
+      
      
     }
   };
