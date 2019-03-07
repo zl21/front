@@ -1,10 +1,3 @@
-<!-- <div
-      v-for="(tab, tabIndex) in openedMenuLists"
-      :key="`tab-list-${tabIndex}`"
-      class="tab-item"
-    >
-      {{ tab.label }}
-    </div> -->
 <template>
   <div
     v-if="openedMenuLists.length > 0"
@@ -14,7 +7,12 @@
     <span
       v-show="clickShow"
       class="prev"
-    ><i class="iconfont">&#xe610;</i></span>
+    >
+      <img
+        src="../assets/image/leftArrow.png"
+        alt=""
+      >
+    </span>
     <ul
       class="tab-list"
     >
@@ -32,19 +30,33 @@
           <span
             class="close"
             @click.stop="handleClose(tag,index)"
-          ><Icon type="ios-close" /></span>
+          ><img
+            src="../assets/image/iconX.png"
+            alt=""
+          ></span>
         </div>
       </a>
     </ul>
     <span
       v-show="clickShow"
       class="next"
-    ><i class="iconfont">&#xe611;</i></span>
+    >
+      <img
+        src="../assets/image/rightArrow.png"
+        alt=""
+      >
+    </span>
     <router-link to="/">
       <span
         class="emptying"
         @click="emptyTabs"
-      ><i class="iconfont">&#xe617;</i></span>
+      >
+        <img
+          src="../assets/image/delete.png"
+          alt=""
+        >
+      
+      </span>
     </router-link>
   </div>
 </template>
@@ -90,9 +102,7 @@
     },
     methods: {
       ...mapActions('global', { emptyTabs: 'emptyTabs' },),
-      // ...mapActions('global', { TabCloseAppoint: 'TabCloseAppoint' },), 
       switchTab(item, index) {
-        // this.tagIndex = index;
         const tag = this.openedMenuLists[index];
         this.$store.commit('global/switchActiveTab', tag);
         router.push({ path: tag.routeFullPath });
@@ -105,6 +115,7 @@
       removeKeepAlivePages(path) { 
         this.$store.commit('global/selectKeepAliveList', path);
       },
+     
     }
   };
 </script>
@@ -117,14 +128,33 @@
   height: 34px;
   display: flex;
   box-sizing: border-box;
+  >span{
+    display: inline-block;
+    width: 20px;
+    height: 33px;
+    margin: 0;
+    box-sizing: border-box;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 33px;
+    background-color: white;
+    z-index: 22;
+    position: relative;
+    cursor: pointer;
+    .next{
+       border-left: 1px solid #dfdfdf;
+    }
+    .prev{
+      border-right: 1px solid #dfdfdf;
+    }
+  }
   .active {
-  border-top: 2px solid #fd6442;
-    
+    border-top: 2px solid #fd6442;
     border-bottom: 1px solid white;
     .burgeon-tag-text {
     color: #fd6442 !important;
     }
-}
+  }
   .tab-list{
     margin: 0px;
     padding: 0;
@@ -167,7 +197,6 @@
           right: 2px!important;
           line-height: 16px;
           border-radius: 2px;
-          // display: none;
           opacity: 0;
           color: #000000;
           text-align: center;
@@ -175,17 +204,39 @@
           font-size: 12px;
           height: 16px;
           width: 16px;
+          >img{
+            position: relative;
+            left: -2px;
+            top: -2px;
+            width: 19px;
+          }
         }
         .close:hover{
               opacity: 1;
               background-color: #d4d4d4;
-            color: #000000;
+              color: #000000;
             }
-        }
-            
-          
+        } 
     }
     
+  } 
+  >a{
+    color: black;
+    width: 34px;
+    height: 33px;
+    border-left: 1px solid #dfdfdf;
+    text-align: center;
+    line-height: 44px;
+    text-decoration: none;
+    .emptying{
+    width: 35px;
+    height: 33px;
+    display: inline-block;
+    img{
+      width: 17px;
+       height: 20px;
+    }
+  }
   }
 }
 </style>

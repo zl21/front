@@ -93,7 +93,7 @@ export default {
             state.activeTab = selectTabs[lastLength];
             Object.assign(state.activeTab, { isActive: true });
             router.push({
-              path: state.activeTab.path,
+              path: state.activeTab.routeFullPath,
             });
           }
         }
