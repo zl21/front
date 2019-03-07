@@ -12,7 +12,7 @@
     class="openedMenuLists"
   >
     <span
-      v-show="clickshow"
+      v-show="clickShow"
       class="prev"
     ><i class="iconfont">&#xe610;</i></span>
     <ul
@@ -37,7 +37,7 @@
       </a>
     </ul>
     <span
-      v-show="clickshow"
+      v-show="clickShow"
       class="next"
     ><i class="iconfont">&#xe611;</i></span>
     <router-link to="/">
@@ -57,12 +57,10 @@
     name: 'TabLists',
     data() {
       return {
-        SEARCH: '查找',
-        clickshow: false,
+        clickShow: false,
         tagIndex: 0,
       };
     },
-    mounted: {},
     computed: {
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists
@@ -80,10 +78,10 @@
       //       const tagWidth = this.openedMenuLists.length * 122;
       //       const left = Math.abs(tagWidth - width);
       //       if (val.length > length) {
-      //         this.clickshow = true;
+      //         this.clickShow = true;
       //         tabOpenedMenuListsTabListA.setAttribute('left', `-${left}px`);
       //       } else {
-      //         this.clickshow = false;
+      //         this.clickShow = false;
       //         tabOpenedMenuListsTabListA.setAttribute('left', '0px');
       //       }
       //     });
@@ -104,17 +102,9 @@
         this.removeKeepAlivePages(tag);
         self.$store.commit('global/TabCloseAppoint', tag);
       }, // 关闭当前tab
-      removeKeepAlivePages(path) { // 删除左侧最近使用
-        const pageType = this.$route.path.split('/')[2];
-        if (pageType === 'TABLE') {
-          this.$store.commit('global/addExcludedComponents', 
-                             {
-                               keepAliveModuleName: path.keepAliveModuleName
-                             });
-        }
+      removeKeepAlivePages(path) { 
+        this.$store.commit('global/selectKeepAliveList', path);
       },
-     
-      
     }
   };
 </script>
@@ -177,7 +167,8 @@
           right: 2px!important;
           line-height: 16px;
           border-radius: 2px;
-          display: none;
+          // display: none;
+          opacity: 0;
           color: #000000;
           text-align: center;
           cursor: pointer;
@@ -185,16 +176,14 @@
           height: 16px;
           width: 16px;
         }
-          .close:hover{
-            background-color: #d4d4d4;
+        .close:hover{
+              opacity: 1;
+              background-color: #d4d4d4;
             color: #000000;
-          }
-        }
-        	&:hover{
-            .close{
-              display: block!important;
             }
-          }
+        }
+            
+          
     }
     
   }

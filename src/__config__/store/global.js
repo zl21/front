@@ -67,37 +67,46 @@ export default {
     emptyTabs(state) {
       state.openedMenuLists = [];
     },
-    addExcludedComponents(state, path) {
+    selectKeepAliveList(state, path) {
       let component = null;
       component = `${path.keepAliveModuleName}`;
-      if (state.history.indexOf(component) !== -1) {
-        state.history.push(component);
-      } 
+      for (const index in state.keepAliveLists) {
+        if (state.keepAliveLists.indexOf(component) !== -1) {
+          state.keepAliveLists.splice(index, 1);
+          console.log(state.keepAliveLists);
+          break;
+        } 
+      }
     },
     TabCloseAppoint(state, tab) {
-      // const activeTab = state.activeTab;
       const selectTabs = state.openedMenuLists;
+      const tabRouteFullPath = tab.routeFullPath;
       for (const index in selectTabs) {
-        if (selectTabs[index].keepAliveModuleName === tab.keepAliveModuleName) {
+        if (selectTabs[index].routeFullPath === tab.routeFullPath) {
           selectTabs.splice(index, 1);
           break;
         }
       }
-      if (selectTabs.keepAliveModuleName === tab.keepAliveModuleName) {
-        if (state.selectedTabs.length > 0) {
-          state.activeTab = selectTabs[selectTabs.length - 1];
-          router.push({
-            path: state.activeTab.path,
-          });
-        } else {
-          state.activeTab = {
-            isActive: false,
-            keepAliveModuleName: '',
-            label: '',
-          };
-          state.openedMenuLists = [];
-          router.push('/');
+      selectTabs.forEach(() => { // 关闭当前tab时始终打开的是最后一个tab
+        if (tabRouteFullPath) {
+          if (selectTabs) {
+            const lastLength = selectTabs.length - 1;
+            state.activeTab = selectTabs[lastLength];
+            Object.assign(state.activeTab, { isActive: true });
+            router.push({
+              path: state.activeTab.path,
+            });
+          }
         }
+      });
+      if (selectTabs < 1) { // 判断当关闭全部tab页时清空路由
+        state.activeTab = {
+          isActive: false,
+          keepAliveModuleName: '',
+          label: '',
+        };
+        state.openedMenuLists = [];
+        router.push('/');
       }
     }, // 关闭当前tab
     switchActiveTab(state, tab) {
