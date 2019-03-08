@@ -22,7 +22,7 @@ export default {
           },
           {
             weight: 1,
-            style: { margin: '10px', backgroundColor: '#fff' },
+            style: { margin: '10px', backgroundColor: '#fff', overflow: 'auto' },
             component: ContentDisplayArea,
           }
         ]

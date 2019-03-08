@@ -1,10 +1,10 @@
 import network, { urlSearchParams } from '../../__utils__/network';
 
 export default {
-  getQueryListForAg({ commit }) {
+  getQueryListForAg({ commit }, { table }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
-        table: 'AD_TABLE',
+        table,
         column_include_uicontroller: true,
         fixedcolumns: { ISACTIVE: ['=Y'] },
         multiple: [],
@@ -12,6 +12,7 @@ export default {
       }
     })).then((res) => {
       const updateTableData = res.data.data;
+      commit('updateTableData', updateTableData);
     });
   },
 };
