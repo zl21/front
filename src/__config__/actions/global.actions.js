@@ -1,4 +1,4 @@
-import network from '../../__utils__/network';
+import network, { urlSearchParams } from '../../__utils__/network';
 
 export default {
   getHistoryAndFavorite({ commit }) {
@@ -14,5 +14,10 @@ export default {
   },
   emptyTabs({ commit }) {
     commit('emptyTabs');
+  },
+  updateAccessHistory({ commit }, { type, id }) {
+    network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
+      commit('updateHistoryAndFavorite', { history: res.data.data });
+    });
   },
 };

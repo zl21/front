@@ -12,8 +12,12 @@ export default {
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
   },
   updateHistoryAndFavorite(state, { history, favorite }) {
-    state.history = history;
-    state.favorite = favorite;
+    if (history) {
+      state.history = history;
+    }
+    if (favorite) {
+      state.favorite = favorite;
+    }
   },
   updateMenuLists(state, menuLists) {
     state.menuLists = menuLists;

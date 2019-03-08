@@ -82,8 +82,8 @@
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
-        history: ({ history }) => history,
-        favorite: ({ favorite }) => favorite
+        history: ({ history }) => history.concat([]).reverse(),
+        favorite: ({ favorite }) => favorite.concat([]).reverse()
       })
     },
     methods: {

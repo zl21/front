@@ -17,7 +17,8 @@
 </template>
 
 <script>
-
+  import { mapActions } from 'vuex';
+  
   export default {
     data() {
       return {
@@ -28,7 +29,10 @@
     components: {
     },
     methods: {
-      
+      ...mapActions('global', ['updateAccessHistory'])
+    },
+    activated() {
+      this.updateAccessHistory({ type: 'table', id: this.$route.params.tableId });
     }
   };
 </script>
