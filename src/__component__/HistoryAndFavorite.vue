@@ -28,6 +28,7 @@
             <li
               v-for="(d, i) in favorite"
               :key="`favorite-${i}`"
+              @click="routeTo(d)"
             >
               {{ d.label }}
             </li>
@@ -58,6 +59,7 @@
             <li
               v-for="(d, i) in history"
               :key="`history-${i}`"
+              @click="routeTo(d)"
             >
               {{ d.label }}
             </li>
@@ -70,6 +72,7 @@
 
 <script>
   import { mapState, mapActions } from 'vuex';
+  import { routeTo } from '../__config__/event.config';
   
   export default {
     name: 'HistoryAndFavorite',
@@ -87,7 +90,11 @@
       })
     },
     methods: {
-      ...mapActions('global', ['getHistoryAndFavorite'])
+      ...mapActions('global', ['getHistoryAndFavorite']),
+      routeTo(data) {
+        const { type, value, id } = data;
+        routeTo({ type, info: { tableName: value, tableId: id } });
+      },
     },
     mounted() {
       this.getHistoryAndFavorite();

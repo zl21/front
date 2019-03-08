@@ -34,8 +34,8 @@
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        const { type } = data;
-        routeTo({ type, info: { tableName: data.value, tableId: data.id } }, () => {
+        const { type, value, id } = data;
+        routeTo({ type, info: { tableName: value, tableId: id } }, () => {
           this.hideMenu();
         });
       },
