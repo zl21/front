@@ -1,42 +1,36 @@
 <template>
   <div>
-    <h1>Router Info: {{ $route.path }}</h1>
-    <!-- 按钮栏组件 -->
-    <h2>按钮栏组件</h2>
-    <div class="buttonList">
-      <div class="button-group" />
-    </div>
-
-
-    <!-- Form 表单组件 -->
-    <h2>Form 表单组件</h2>
-    
-    <!-- 表格组件 -->
-    <h2>表格组件</h2>
+    <AgTable
+      :pageAttribute="ag.pageAttribute"
+    />
   </div>
 </template>
 
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
+  import router from '../__config__/router.config';
+  import AgTable from './StandardTable';
+  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+  
+  const { tableName, tableId } = router.currentRoute.params;
+  const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   
   export default {
-    data() {
-      return {
-       
-
-      };
-    },
     components: {
+      AgTable
+    },
+    computed: {
+      ...mapState(componentName, {
+        ag: ({ ag }) => ag
+      })
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory'])
+      ...mapActions('global', ['updateAccessHistory']),
+      ...mapActions(componentName, ['getQueryListForAg']),
     },
     activated() {
+      this.getQueryListForAg();
       this.updateAccessHistory({ type: 'table', id: this.$route.params.tableId });
     }
   };
 </script>
-
-<style lang="less">
-
-</style>

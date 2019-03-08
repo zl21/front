@@ -1,5 +1,6 @@
 import store from './store.config';
 import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+import standardTableListModule from './store/standardTableList.store';
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
@@ -32,6 +33,9 @@ export default (router) => {
       } else {
         commit('global/updateActiveMenu', keepAliveModuleName);
       }
+
+      // 动态创建模块
+      store.registerModule(keepAliveModuleName, standardTableListModule);
     }
     next();
   });

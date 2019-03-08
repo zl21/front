@@ -13,6 +13,10 @@ axios.interceptors.response.use(response => response, (error) => {
 export const urlSearchParams = (data) => {
   const params = new URLSearchParams();
   Object.keys(data).forEach((key) => {
+    const dataType = Object.prototype.toString.call(data[key])
+    if (dataType === '[object Object]' || dataType === '[object Array]') {
+      data[key] = JSON.stringify(data[key]);
+    }
     params.append(key, data[key]);
   });
   return params;
