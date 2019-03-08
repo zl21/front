@@ -8,6 +8,7 @@ axios.interceptors.response.use(response => response, (error) => {
   Promise.reject(error);
 });
 
+// 当post请求content-Type: application/x-www-form-urlencoded时，需要将JSON参赛转换成如下函数输入的形式。
 export const urlSearchParams = (data) => {
   const params = new URLSearchParams();
   Object.keys(data).forEach((key) => {
