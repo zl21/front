@@ -1,7 +1,7 @@
 import actions from '../actions/standardTableList.actions';
 import mutations from '../mutations/standardTableList.mutations';
 
-export default {
+export default () => ({
   namespaced: true,
   state: {
     ag: {
@@ -11,4 +11,4 @@ export default {
   },
   actions,
   mutations
-};
+});
