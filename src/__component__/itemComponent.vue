@@ -11,6 +11,10 @@
 </template>
 
 <script>
+  import dataProp from '../__config__/props.config';
+
+  console.log(dataProp);
+
   export default {
     name: 'ItemComponent',
     props: {
@@ -23,7 +27,7 @@
     },
     data() {
       return {
-        currentValue: '', // 当前展示值 
+        currentValue: '', // 当前展示值
       };
     },
     computed: {
@@ -87,9 +91,9 @@
             } else {
               this.$parent.hiddenFormLists(this.items.field, true);
             }
-            
+
             return false;
-          } 
+          }
 
           return item;
         });
