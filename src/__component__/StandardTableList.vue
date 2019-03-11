@@ -15,8 +15,7 @@
 
   const getComponentName = () => {
     const { tableName, tableId } = router.currentRoute.params;
-    const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-    return componentName;
+    return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   };
   
 
@@ -34,14 +33,12 @@
       ...mapActions(getComponentName(), ['getQueryListForAg']),
     },
     mounted() {
+      const { tableName } = this.$route.params;
+      this.getQueryListForAg({ table: tableName });
     },
     activated() {
-      this.$nextTick(() => {
-        console.log(`${getComponentName()}  activated`);
-        const { tableName, tableId } = this.$route.params;
-        this.getQueryListForAg({ table: tableName });
-        this.updateAccessHistory({ type: 'table', id: tableId });
-      });
+      const { tableId } = this.$route.params;
+      this.updateAccessHistory({ type: 'table', id: tableId });
     }
   };
 </script>

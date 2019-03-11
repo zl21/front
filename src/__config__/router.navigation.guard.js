@@ -34,8 +34,10 @@ export default (router) => {
         commit('global/updateActiveMenu', keepAliveModuleName);
       }
 
-      // 动态创建模块
-      store.registerModule(keepAliveModuleName, standardTableListModule);
+      // 判断是否状态中已经存在某个模块，不存在则创建
+      if (store.state[keepAliveModuleName] === undefined) {
+        store.registerModule(keepAliveModuleName, standardTableListModule());
+      }
     }
     next();
   });
