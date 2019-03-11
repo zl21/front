@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%">
-    <RouterView></RouterView>
+    <RouterView />
   </div>
 </template>
 
