@@ -15,7 +15,7 @@ export default {
     keepAliveLabelMaps: {},
     selectedTabs: [], // 当前点击
     activeTab: {
-
+      isActive: true,
     },
   },
   mutations: {
@@ -54,7 +54,6 @@ export default {
     increaseOpenedMenuLists(state, { label, keepAliveModuleName }) {
       if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
         state.openedMenuLists.forEach((d) => { d.isActive = false; });
-        
         state.openedMenuLists = state.openedMenuLists.concat([{
           label,
           keepAliveModuleName,
@@ -62,7 +61,15 @@ export default {
           isActive: true,
           
         }]);
-      }
+      } 
+    },
+    againClickOpenedMenuLists(state, { label, keepAliveModuleName }) {
+      state.openedMenuLists.forEach((d) => {
+        d.isActive = false;
+        if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
+          d.isActive = true;
+        }
+      });
     },
     emptyTabs(state) {
       state.openedMenuLists = [];
@@ -117,7 +124,7 @@ export default {
         }
       });
       Object.assign(state.activeTab, { isActive: true });
-    }
+    },
   },
  
   actions: {
@@ -132,10 +139,7 @@ export default {
         commit('updateMenuLists', res.data.data);
       });
     },
-    emptyTabs({ commit }) {
-      commit('emptyTabs');
-      // commit.state.openedMenuLists = [];
-    },
+  
   },
   
 };

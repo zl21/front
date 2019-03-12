@@ -4,13 +4,19 @@
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
     <div class="history-favorite-container">
-      <div class="favorite">
+      <div
+        class="favorite"
+        @mouseenter="onMouseOverFavoriteSeen"
+        @mouseleave="onMoueOutFavoriteSeen"
+      >
         <div
           class="label"
           :class="{ collapse: collapseHistoryAndFavorite }"
           @click="collapseFavorite = !collapseFavorite"
         >
-          <i class="iconfont icon-liebiao-shoucang left-icon" />
+          <i
+            class="iconfont icon-liebiao-shoucang left-icon"
+          />
           <span v-if="!collapseHistoryAndFavorite">
             收藏夹
             <i
@@ -23,8 +29,11 @@
             />
           </span>
         </div>
-        <transition name="fade">
-          <ul v-if="!collapseFavorite && !collapseHistoryAndFavorite">
+        <transition>
+          <ul
+            v-if="!collapseFavorite && !collapseHistoryAndFavorite ||favoriteSeen"
+            :class="{'onMouseOverShow':favoriteSeen}"
+          >
             <li
               v-for="(d, i) in favorite"
               :key="`favorite-${i}`"
@@ -34,13 +43,19 @@
           </ul>
         </transition>
       </div>
-      <div class="history">
+      <div
+        class="history"
+        @mouseenter="onMouseOverHistorySeen"
+        @mouseleave="onMoueOuthHistorySeen"
+      >
         <div
           class="label"
           :class="{ collapse: collapseHistoryAndFavorite }"
           @click="collapseHistory = !collapseHistory"
         >
-          <i class="iconfont icon-record left-icon" />
+          <i
+            class="iconfont icon-record left-icon"
+          />
           <span v-if="!collapseHistoryAndFavorite">
             最近使用
             <i
@@ -53,8 +68,11 @@
             />
           </span>
         </div>
-        <transition name="fade">
-          <ul v-if="!collapseHistory && !collapseHistoryAndFavorite">
+        <transition>
+          <ul
+            v-if="!collapseHistory && !collapseHistoryAndFavorite || historySeen"
+            :class="{'onMouseOverShow': historySeen}"
+          >
             <li
               v-for="(d, i) in history"
               :key="`history-${i}`"
@@ -76,7 +94,10 @@
     data() {
       return {
         collapseHistory: false,
-        collapseFavorite: false
+        collapseFavorite: false,
+        historySeen: false,
+        favoriteSeen: false
+
       };
     },
     computed: {
@@ -87,7 +108,27 @@
       })
     },
     methods: {
-      ...mapActions('global', ['getHistoryAndFavorite'])
+      ...mapActions('global', ['getHistoryAndFavorite']),
+      onMouseOverHistorySeen() {
+        if (this.collapseHistoryAndFavorite) {
+          this.historySeen = true;
+        }
+      },
+      onMouseOverFavoriteSeen() {
+        if (this.collapseHistoryAndFavorite) {
+          this.favoriteSeen = true;
+        }
+      },
+      onMoueOutFavoriteSeen() {
+        if (this.collapseHistoryAndFavorite) {
+          this.favoriteSeen = false;
+        }
+      },
+      onMoueOuthHistorySeen() {
+        if (this.collapseHistoryAndFavorite) {
+          this.historySeen = false;
+        }
+      }
     },
     mounted() {
       this.getHistoryAndFavorite();
@@ -139,7 +180,26 @@
       div.label:hover {
         background-color: #f1f1f1;
       }
-      
+      .onMouseOverShow{
+        width: 165px;
+        position: fixed;
+        left: 60px;
+        background: white;
+        top: 60px;
+        z-index: 10;
+        padding-left:0;
+
+        li{
+        padding:30px 50px;
+        line-height: 10px;
+           
+        }
+        li:hover{
+          background-color: #ecf5ff;
+            color: #66b1ff;
+        }
+      }
+
       ul {
         padding-left: 20px;
         overflow: hidden;
