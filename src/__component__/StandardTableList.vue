@@ -1,5 +1,6 @@
 <template>
   <div class="StandardTableListRootDiv">
+    <buttonGroup :data-array="dataArray" />
     <FormItemComponent
       :form-item-lists="lists"
       :default-column="4"
@@ -16,6 +17,7 @@
 
 <script>
   import { mapActions, mapState } from 'vuex';
+  import buttonGroup from './button';
   import router from '../__config__/router.config';
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
@@ -29,7 +31,9 @@
 
   export default {
     components: {
-      AgTable, FormItemComponent
+      buttonGroup,
+      AgTable, 
+      FormItemComponent,
     },
     computed: {
       ...mapState(getComponentName(), {
@@ -46,6 +50,62 @@
     },
     data() {
       return {
+        dataArray: {
+          printValue: true,
+          waListButtons: [
+            {
+              action: '/p/c/loadschema',
+              actiontype: 'url',
+              confirm: null,
+              cuscomponent: null,
+              ishide: false,
+              isrefrsh: false,
+              vuedisplay: 'slient',
+              webdesc: '重载',
+              webicon: null,
+              webid: 2221,
+              webname: 'loadschema',
+            }
+          ],
+          buttonGroupShow: [
+  
+            {
+              action: '',
+              defbutton: 'S',
+              icon: '',
+              name: '新增',
+              requestUrlPath: '',
+            },
+            {
+              action: '',
+              defbutton: 'S',
+              icon: '',
+              name: '删除',
+              requestUrlPath: '',
+            },
+            {
+              action: '',
+              defbutton: 'S',
+              icon: '',
+              name: '批量修改',
+              requestUrlPath: '',
+            },
+            {
+              action: '',
+              defbutton: 'S',
+              icon: '',
+              name: '导入',
+              requestUrlPath: '',
+            },
+            {
+              action: '',
+              defbutton: 'S',
+              icon: '',
+              name: '导出',
+              requestUrlPath: '',
+            },
+          ],
+        },
         moduleStateKey: getComponentName(),
         searchData: {
           table: this.$route.params.tableName,
@@ -167,6 +227,7 @@
         ]
       };
     },
+
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapActions(getComponentName(), ['getQueryListForAg']),

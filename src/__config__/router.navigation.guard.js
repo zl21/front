@@ -8,7 +8,7 @@ export default (router) => {
     if (/\/SYSTEM\/TABLE\//.test(to.path)) {
       const { tableName, tableId } = to.params;
       const { commit } = store;
-      const { keepAliveLists, openedMenuLists } = store.state.global;
+      const { keepAliveLists, openedMenuLists, againClickOpenedMenuLists } = store.state.global;
 
       const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 
@@ -31,6 +31,10 @@ export default (router) => {
           }
         }, 50);
       } else {
+        commit('global/againClickOpenedMenuLists', {
+          label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
+          keepAliveModuleName
+        });
         commit('global/updateActiveMenu', keepAliveModuleName);
       }
 

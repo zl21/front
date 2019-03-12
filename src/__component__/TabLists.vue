@@ -1,25 +1,30 @@
 <template>
   <div
     v-if="openedMenuLists.length > 0"
-    id="a"
+    ref="openedMenuLists"
     class="openedMenuLists"
   >
     <span
       v-show="clickShow"
       class="prev"
+      @click="prevClick"
     >
       <img
         src="../assets/image/leftArrow.png"
         alt=""
+        @click="prevClick"
       >
     </span>
     <ul
+      ref="tabList"
       class="tab-list"
     >
       <a
         v-for="(tag, index) in openedMenuLists"
         :key="index"
-        :class="{active:tag.isActive === true,tag}"
+        ref="tabBox"
+        :class="{active:tag.isActive === true}"
+        class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
       >
@@ -40,6 +45,7 @@
     <span
       v-show="clickShow"
       class="next"
+      @click="nextClick"
     >
       <img
         src="../assets/image/rightArrow.png"
@@ -49,7 +55,7 @@
     <router-link to="/">
       <span
         class="emptying"
-        @click="emptyTabs"
+        @click="emptyClick"
       >
         <img
           src="../assets/image/delete.png"
@@ -59,17 +65,19 @@
       </span>
     </router-link>
   </div>
+ 
+  </div>
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+  import { mapState } from 'vuex';
   import router from '../__config__/router.config';
 
   export default {
     name: 'TabLists',
     data() {
       return {
-        clickShow: false,
+        clickShow: true,
         tagIndex: 0,
       };
     },
@@ -77,31 +85,46 @@
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists
       }),
-     
+    },
+    mounted() {
+      const _this = this;
+      window.onresize = () => { // 定义窗口大小变更通知事件
+        _this.tabWidth = document.body.offsetWidth - 180 - 30 + 1 + 10;
+        const tabBox = _this.$refs.openedMenuLists;
+        tabBox.style.width = `${Number(_this.tabWidth)}px`;
+      };
     },
     watch: {
-      // openedMenuLists: {
-      //   handler(val) {
-      //     this.$nextTick(() => {
-      //       const tabOpenedMenuLists = document.getElementsByClassName('openedMenuLists')[0];
-      //       const tabOpenedMenuListsTabListA = document.getElementsByClassName('tag')[0];
-      //       const length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122);
-      //       const width = tabOpenedMenuLists.offsetWidth - 75;
-      //       const tagWidth = this.openedMenuLists.length * 122;
-      //       const left = Math.abs(tagWidth - width);
-      //       if (val.length > length) {
-      //         this.clickShow = true;
-      //         tabOpenedMenuListsTabListA.setAttribute('left', `-${left}px`);
-      //       } else {
-      //         this.clickShow = false;
-      //         tabOpenedMenuListsTabListA.setAttribute('left', '0px');
-      //       }
-      //     });
-      //   },
-      // },
+      openedMenuLists: {
+        handler(val) {
+          this.$nextTick(() => {
+            const _this = this;
+            const tabOpenedMenuLists = _this.$refs.openedMenuLists;
+            const tabOpenedMenuListsTabListA = _this.$refs.tabBox;
+            const length = Math.floor((this.tabWidth) / 122); // 总长减去垃圾桶和2个箭头的宽度/每个tab的宽    计算当前宽度能放几个tab标签
+            const width = this.tabWidth;// 当前页面总宽
+            const tagWidth = this.openedMenuLists.length * 122;// 获取到tab的数量*每个tab的宽度=当前所占的总宽度
+            const left = Math.abs(tagWidth - width);// 绝对值     计算出当没超出的时候剩余多少宽，超出之后超出了多少宽
+            let i = 0;
+            const TabListA = tabOpenedMenuListsTabListA.length;
+            if (val.length > length) { // 判断如果超出当前tab盒子的总宽
+              this.clickShow = true;
+              for (i = 0; i < TabListA; i++) {
+                tabOpenedMenuLists.style.width = `${this.tabWidth}px`;
+                tabOpenedMenuListsTabListA[i].style.left = `-${left}px`;
+              }
+              _this.$refs.tabList.scrollTo({ right: `${val.length - length}`, behavior: 'smooth' });
+            } else {
+              this.clickShow = false;
+              for (i = 0; i < TabListA; i++) {
+                tabOpenedMenuListsTabListA[i].style.left = '0px';
+              }
+            }
+          });
+        },
+      },
     },
     methods: {
-      ...mapActions('global', { emptyTabs: 'emptyTabs' }),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         this.$store.commit('global/switchActiveTab', tag);
@@ -115,7 +138,40 @@
       removeKeepAlivePages(path) { 
         this.$store.commit('global/selectKeepAliveList', path);
       },
-      
+      emptyClick() {
+        this.clickshow = false;
+        this.$store.commit('global/emptyTabs');
+      },
+
+      prevClick() {
+        let i = 0;
+        const domAll = this.$refs.tabBox;
+        const domAllLength = domAll.length;
+        for (i = 0; i < domAllLength; i++) {
+          const tabBoxRight = Number(domAll[i].style.left.replace('px', '').replace('-', '')) - 122;
+          if (tabBoxRight < 0) {
+            domAll[i].style.left = '0px';
+          } else {
+            domAll[i].style.left = `-${tabBoxRight}px`;
+          }
+        }
+      },
+      nextClick() {
+        let i = 0;
+        const domAll = this.$refs.tabBox;
+        const domWidth = this.$refs.tabList.offsetWidth;
+        const tabWidth = this.openedMenuLists.length * 122;
+        const domAllLength = domAll.length;
+        for (i = 0; i < domAllLength; i++) {
+          const tabBoxLeft = Number(domAll[i].style.left.replace('px', '').replace('-', '')) + 122;
+          if (tabBoxLeft >= (tabWidth - domWidth)) {
+            domAll[i].style.left = `-${tabWidth - domWidth}px`;
+          } else {
+            domAll[i].style.left = `-${tabBoxLeft}px`;
+          }
+        }
+      },
+
      
     }
   };
