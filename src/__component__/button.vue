@@ -1,7 +1,6 @@
 <template>
   <div class="buttonList">
     <div class="button-group">
-      <pre>{{ dataArray }}</pre>
       <!-- //查找 -->
       <Button
         type="warning"
@@ -155,7 +154,7 @@
             actiontype: 'url',
             isrefrsh: false,
             webid: 2527,
-            webdesc: '打印',
+            webdesc: '打印rrr',
             webname: 'OutPrint',
             webicon: null,
             action: 'custompage/redirect?print',
@@ -206,7 +205,7 @@
       }
     },
     created() {
-      const _self = this;
+      // const _self = this;
       // _self.buttonMap = buttonmap;
       // _self.ChineseDictionary = ChineseDictionary;
     },
@@ -215,7 +214,7 @@
 
 <style lang="less">
 .buttonList {
-  margin-bottom: 6px;
+  padding: 17px;
   > div {
     display: inline-block;
   }
@@ -237,7 +236,7 @@
     overflow: hidden;
      flex-wrap: wrap ;
      .burgeon-select-dropdown{
-       top: 180px !important;
+      top: 131px !important;
        .burgeon-dropdown-menu{
          min-width: 58px;
          .burgeon-dropdown-item{
@@ -254,7 +253,7 @@
     }
     button {
       height: 24px;
-      line-height: 22px;
+      line-height: 18px;
       width: auto;
       margin-right: 8px;
       margin-left: 0px;
@@ -264,7 +263,6 @@
       border: 1px solid #fd6442;
       border-radius: 2px;
       font-size: 12px;
-      float: left;
       margin-bottom: 4px;
     }
 
