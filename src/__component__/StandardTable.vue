@@ -59,10 +59,9 @@
         default: true
       }, // 是否显示分页
       pageAttribute: {
-        required: true,
+        // required: true,
         type: Object,
-        default: () => {
-        }
+        default: () => ({})
       }, // Page 属性
       onPageChange: {
         type: Function,
@@ -86,7 +85,7 @@
       }, // 是否显示ag的loading
       cssStatus: {
         type: Array,
-        default: () => []
+        default: () => ([])
       }, // 颜色配置信息  /p/cs/getUserConfig 接口返回
       datas: {
         type: Object,
@@ -109,7 +108,7 @@
       }, // 固定列   /p/cs/getUserConfig 接口返回
       errorArr: {
         type: Array,
-        default: () => []
+        default: () => ([])
       }, // 错误信息数组
       onCellSingleClick: {
         type: Function,
@@ -176,7 +175,7 @@
       }, // 是否显示图例,
       legend: {
         type: Array,
-        default: () => []
+        default: () => ([])
       } // 图例,
     },
     watch: {

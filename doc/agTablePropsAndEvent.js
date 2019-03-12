@@ -5,7 +5,7 @@ const props = {
       default: true
     }, // 是否显示分页
     pageAttribute: {
-      required: true,
+      // required: true,
       type: Object,
       default: () => {
       }
