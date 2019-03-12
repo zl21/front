@@ -21,7 +21,6 @@
 <script>
   import { mapMutations } from 'vuex';
   import { routeTo } from '../__config__/event.config';
-  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   
   export default {
     name: 'NavigatorSubMenu',
@@ -35,8 +34,8 @@
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        const { type } = data;
-        routeTo({ type, info: { tableName: data.value, tableId: data.id } }, () => {
+        const { type, value, id } = data;
+        routeTo({ type, info: { tableName: value, tableId: id } }, () => {
           this.hideMenu();
         });
       },
@@ -46,6 +45,7 @@
 
 <style scoped lang="less">
   .navigator-sub-menu {
+    z-index: 9999;
     border-bottom: 1px solid #d1dbe5;
     width: calc(100% - 10px);
     max-height: calc(100vh - 50px);

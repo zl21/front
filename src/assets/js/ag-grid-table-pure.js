@@ -1,9 +1,11 @@
+/* eslint-disable */
 import { Grid } from 'ag-grid';
 import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
-import 'ag-grid-enterprise/main';
+// import 'ag-grid-enterprise/main';
 import { LicenseManager } from 'ag-grid-enterprise/main';
 import { agGridEnterpriseLicenseKey } from './constant';
+import loadingSVG from '../image/loading.svg';
 
 // 设置enterprise key
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
@@ -550,7 +552,7 @@ const initializeAgTable = (container, opt) => {
 
     // 判断agGridTableContainer是否已经被ag实例化
     if (agGridTableContainer.agTable) {
-      agGridTableContainer.agTable.customizeOptions = options;
+      agGridTableContainer.agTable.customizeOptions = Object.assign(agGridTableContainer.agTable.customizeOptions || {}, options || {});
       return agGridTableContainer.agTable;
     }
 
@@ -865,7 +867,7 @@ const initializeAgTable = (container, opt) => {
           NUMBER: {},
           STRING: {},
         },
-        overlayLoadingTemplate: '<img src="../../../static/img/loading.svg" />',
+        overlayLoadingTemplate: `<img src="${loadingSVG}" />`,
         getContextMenuItems(param) {
           return [
             'copy',

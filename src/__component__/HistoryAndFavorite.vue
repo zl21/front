@@ -37,6 +37,7 @@
             <li
               v-for="(d, i) in favorite"
               :key="`favorite-${i}`"
+              @click="routeTo(d)"
             >
               {{ d.label }}
             </li>
@@ -76,6 +77,7 @@
             <li
               v-for="(d, i) in history"
               :key="`history-${i}`"
+              @click="routeTo(d)"
             >
               {{ d.label }}
             </li>
@@ -88,6 +90,7 @@
 
 <script>
   import { mapState, mapActions } from 'vuex';
+  import { routeTo } from '../__config__/event.config';
   
   export default {
     name: 'HistoryAndFavorite',
@@ -103,8 +106,8 @@
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
-        history: ({ history }) => history,
-        favorite: ({ favorite }) => favorite
+        history: ({ history }) => history.concat([]).reverse(),
+        favorite: ({ favorite }) => favorite.concat([]).reverse()
       })
     },
     methods: {
@@ -128,7 +131,11 @@
         if (this.collapseHistoryAndFavorite) {
           this.historySeen = false;
         }
-      }
+      },
+      routeTo(data) {
+        const { type, value, id } = data;
+        routeTo({ type, info: { tableName: value, tableId: id } });
+      },
     },
     mounted() {
       this.getHistoryAndFavorite();

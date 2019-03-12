@@ -1,23 +1,53 @@
 <template>
-  <div>
-    <h1>Router Info: {{ $route.path }}</h1>
-    <!-- 按钮栏组件 -->
-    <h2>按钮栏组件</h2>
+  <div class="StandardTableListRootDiv">
     <buttonGroup :data-array="dataArray" />
-
-
-    <!-- Form 表单组件 -->
-    <h2>Form 表单组件</h2>
-    
-    <!-- 表格组件 -->
-    <h2>表格组件</h2>
+    <FormItemComponent
+      :form-item-lists="lists"
+      :default-column="4"
+    />
+    <AgTable
+      ref="agTableElement"
+      :page-attribute="pageAttribute"
+      :datas="ag.datas"
+      :on-page-change="onPageChange"
+      :on-page-size-change="onPageSizeChange"
+    />
   </div>
 </template>
 
 <script>
+  import { mapActions, mapState } from 'vuex';
   import buttonGroup from './button';
+  import router from '../__config__/router.config';
+  import AgTable from './StandardTable';
+  import FormItemComponent from './FormItemComponent';
+  import itemComponent from './itemComponent';
+  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+
+  const getComponentName = () => {
+    const { tableName, tableId } = router.currentRoute.params;
+    return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+  };
 
   export default {
+    components: {
+      buttonGroup,
+      AgTable, 
+      FormItemComponent,
+    },
+    computed: {
+      ...mapState(getComponentName(), {
+        ag: ({ ag }) => ag,
+        pageAttribute: ({ ag }) => ({
+          current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
+          total: ag.datas.totalRowCount,
+          'page-size-opts': ag.datas.selectrange,
+          'show-elevator': true,
+          'show-sizer': true,
+          'show-total': true
+        })
+      }),
+    },
     data() {
       return {
         dataArray: {
@@ -75,19 +105,161 @@
               requestUrlPath: '',
             },
           ],
-        }
+        },
+        moduleStateKey: getComponentName(),
+        searchData: {
+          table: this.$route.params.tableName,
+          startIndex: 0,
+          range: 10
+        },
+        lists: [
+          {
+            row: 1,
+            col: 1,
+            component: itemComponent,
+            item: {
+              // item 类型
+              type: 'input', // 必填!
+              // label名称
+              title: '商品名称', // 必填!
+              // 字段名称
+              field: 'goods_name', // 必填!
+              // input值
+              value: '1',
+              props: {
+              },
+              event: {
 
+              },
+              validate: // 校验规则  默认onchage
+                {
+                  // 动态计算key
+                  dynamicforcompute: {
+                    // 逻辑运算key
+                    refcolumns: ['is_postage', 'cate_id'],
+                    // 被计算字段（目标）
+                    computecolumn: 'goods_name',
+                    // 中间函数
+                    express: 'is_postage + cate_id'
+                  },
+                  // 提示信息
+                  tip: '',
+                  // 触发方法
+                  trigger: ''
+                }
+            }
+
+
+          },
+          {
+            row: 1,
+            col: 1,
+            // 字段名称
+            component: itemComponent,
+            item: {
+              // item 类型
+              type: 'checkbox', // 必填!
+              // label名称
+              title: '是否包邮', // 必填!
+              // 字段名称
+              field: 'is_postage', // 必填!
+              // input值
+              value: '2',
+              props: {
+
+              },
+              validate: {
+                hidecolumn: {
+                  refcolumn: 'cate_name',
+                  refval: '2'
+                }
+              }
+            }
+          },
+          {
+            row: 1,
+            col: 1,
+            component: itemComponent,
+            item: {
+              // item 类型
+              type: 'DatePicker', // 必填!
+              
+              // label名称
+              title: '产品分类', // 必填!
+              // 字段名称
+              field: 'cate_id', // 必填!
+              // input值
+              value: '',
+              props: {
+                type: 'datetimerange',
+              },
+              validate: [ // 校验规则  默认onchage
+              ]
+            }
+          },
+          {
+            row: 1,
+            col: 1,
+            component: itemComponent,
+            item: {
+              // item 类型
+              type: 'input', // 必填!
+              // label名称
+              title: '产品name', // 必填!
+              // 字段名称
+              field: 'cate_name', // 必填!
+              // input值
+              value: '',
+              props: {
+
+              },
+              validate: {
+                // // 隐藏字段
+                // hidecolumn: {
+                //   // 逻辑运算key
+                //   refcolumn: ['cate_name'],
+                //   // 隐藏条件 value值
+                //   refval: '2'
+                // }
+              }
+            }
+          }
+        ]
       };
     },
-    components: {
-      buttonGroup
-    },
+
     methods: {
-      
+      ...mapActions('global', ['updateAccessHistory']),
+      ...mapActions(getComponentName(), ['getQueryListForAg']),
+      getQueryList() {
+        const { agTableElement } = this.$refs;
+        agTableElement.showAgLoading();
+        this.getQueryListForAg(this.searchData);
+      },
+      onPageChange(page) {
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        this.getQueryList();
+      },
+      onPageSizeChange(pageSize) {
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        this.getQueryList();
+      },
+    },
+    mounted() {
+      this.getQueryList();
+    },
+    activated() {
+      const { tableId } = this.$route.params;
+      this.updateAccessHistory({ type: 'table', id: tableId });
     }
   };
 </script>
 
-<style lang="less">
-
+<style scoped lang="less">
+  .StandardTableListRootDiv {
+    width: 100%;
+    overflow: auto;
+  }
 </style>

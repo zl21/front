@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import global from './store/global';
+import global from './store/global.store';
 
 Vue.use(Vuex);
 

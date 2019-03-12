@@ -47,22 +47,15 @@
   export default {
     name: 'StandardTable',
     components: {},
-    data() {
-      return {
-        firstLoading: false, // 第一次的loading动态
-        agGridInstance: '', // ag实例
-      };
-    },
     props: {
       isPageShow: {
         type: Boolean,
         default: true
       }, // 是否显示分页
       pageAttribute: {
-        required: true,
+        // required: true,
         type: Object,
-        default: () => {
-        }
+        default: () => ({})
       }, // Page 属性
       onPageChange: {
         type: Function,
@@ -80,17 +73,13 @@
         type: Boolean,
         default: false
       }, // 是否重新创建ag实例
-      isShowAgLoading: {
-        type: Boolean,
-        default: false
-      }, // 是否显示ag的loading
       cssStatus: {
         type: Array,
-        default: () => []
+        default: () => ([])
       }, // 颜色配置信息  /p/cs/getUserConfig 接口返回
       datas: {
         type: Object,
-        default: () => {}
+        default: () => ({})
       }, // 所有返回数据  /p/cs/getTableQuery 接口返回
       hideColumn: {
         // required: true,
@@ -109,7 +98,7 @@
       }, // 固定列   /p/cs/getUserConfig 接口返回
       errorArr: {
         type: Array,
-        default: () => []
+        default: () => ([])
       }, // 错误信息数组
       onCellSingleClick: {
         type: Function,
@@ -176,48 +165,13 @@
       }, // 是否显示图例,
       legend: {
         type: Array,
-        default: () => []
+        default: () => ([])
       } // 图例,
     },
     watch: {
-      agTableDatas(val) {
-        const self = this;
-        if (self.agGridInstance) {
-          if (self.isRecreateAgInstance) {
-            self.agGridTable(val.tabth, val.row, val);
-          } else {
-            self.agGridSetRows(val.row);
-          }
-        } else {
-          self.agGridTable(val.tabth, val.row, val);
-        }
+      datas(val) {
+        this.agGridTable(val.tabth, val.row, val);
       },
-      isShowAgLoading(val) {
-        const self = this;
-        if (val) {
-          if (typeof self.agGridInstance === 'function') {
-            self.agGridInstance.showLoading();
-          }
-        } else {
-          if (typeof self.agGridInstance === 'function') {
-            self.agGridInstance.hideLoading();
-          }
-        }
-      }
-    },
-    computed: {
-      agTableDatas() {
-        if (JSON.stringify(this.datas) !== '{}') {
-          const obj = JSON.stringify(this.datas);
-          return JSON.parse(obj);
-        }
-        return {};
-      }
-    },
-    created() {
-    },
-    mounted() {
-
     },
     methods: {
       agGridTable(th, row, data) { // agGrid
@@ -228,107 +182,74 @@
           obj.sort = item.ordasc ? 'asc' : 'desc';
           obj.colId = item.colname;
         }); // 排序
-        const datas = self.repeatData(data);
-        delete datas.tabth;
-        delete datas.row;
-
+        const datas = self.datas;
         datas.hideColumn = self.hideColumn;
         datas.deleteFailInfo = self.errorArr;
         datas.colPosition = self.colPosition; // 移动列
         datas.pinnedPosition = self.fixedColumn; // 固定列
         // selectIdArr
-        self.$nextTick(() => {
-          self.agGridInstance = agTable(this.$refs.agGridTableContainer, {
-            cssStatus: self.legend, // 颜色配置信息
-            defaultSort: arr, // 默认排序
-            datas, //  所有返回数据
-            cellSingleClick: (colDef, rowData, target) => {
-              // 参数说明
-              // colDef：包含表头信息的对象
-              // row：包含当前行所有数据的对象
-              // target：事件触发对象，即event.target所返回的dom结点
-              if (typeof self.onCellSingleClick === 'function') {
-                self.onCellSingleClick(colDef, rowData, target);
-              }
-            }, // 单元格单击回调
-            cellDoubleClick: (colDef, rowData, target) => {
-              // 参数说明同cellSingleClick
-              if (typeof self.onCellDoubleClick === 'function') {
-                self.onCellDoubleClick(colDef, rowData, target);
-              }
-            }, // 单元格双击回调
-            rowSingleClick: (colDef, rowData, target) => {
-              // 参数说明同cellSingleClick
-              if (typeof self.onRowSingleClick === 'function') {
-                self.onRowSingleClick(colDef, rowData, target);
-              }
-            }, // 行单击回调
-            rowDoubleClick: (colDef, rowData, target) => {
-              // 参数说明同cellSingleClick
-              if (typeof self.onRowDoubleClick === 'function') {
-                self.onRowDoubleClick(colDef, rowData, target);
-              }
-            }, // 行双击回调
-            onSortChanged: (arrayOfSortInfo) => {
-              // 参数说明
-              // arrayOfSortInfo: 返回当前用户触发的排序信息
-              // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
-              if (typeof self.onSortChanged === 'function') {
-                self.onSortChanged(arrayOfSortInfo);
-              }
-            }, // 排序事件触发回调
-            onColumnVisibleChanged: (colName) => {
-              if (typeof self.onColumnVisibleChanged === 'function') {
-                self.onColumnVisibleChanged(colName);
-              }
-            },
-            onSelectionChanged: (rowIdArray, rowArray) => {
-              if (typeof self.onSelectionChanged === 'function') {
-                self.onSelectionChanged(rowIdArray, rowArray);
-              }
-            },
-            onColumnMoved: (columnState) => { // 记住移动列
-              if (typeof self.onColumnMoved === 'function') {
-                self.onColumnMoved(columnState);
-              }
-            },
-            onColumnPinned: (ColumnPinned) => {
-              if (typeof self.onColumnPinned === 'function') {
-                self.onColumnPinned(ColumnPinned);
-              }
-            },
-          })
-            .setCols(th) // 设置数据列
-            .setRows(row); // 设置数据行
-        });
-      },
-      agGridSetRows(row) {
-        const self = this;
-        if (self.agGridInstance) {
-          self.agGridInstance.setRows(row);
-        }
-      },
-      repeatData(obj) { // 深拷贝
-        if (obj instanceof Array) { // array
-          const temp = [];
-          obj.forEach((item) => {
-            const temp2 = [];
-            if (item instanceof Array) {
-              item.forEach((item2) => {
-                temp2.push(item2);
-              });
-              temp.push(temp2);
-            } else {
-              temp.push(item);
+        agTable(this.$refs.agGridTableContainer, {
+          cssStatus: self.legend, // 颜色配置信息
+          defaultSort: arr, // 默认排序
+          datas, //  所有返回数据
+          cellSingleClick: (colDef, rowData, target) => {
+            // 参数说明
+            // colDef：包含表头信息的对象
+            // row：包含当前行所有数据的对象
+            // target：事件触发对象，即event.target所返回的dom结点
+            if (typeof self.onCellSingleClick === 'function') {
+              self.onCellSingleClick(colDef, rowData, target);
             }
-          });
-          return temp;
-        } // obj
-        const temp = {};
-        for (const item in obj) {
-          temp[item] = obj[item];
-        }
-        return temp;
+          }, // 单元格单击回调
+          cellDoubleClick: (colDef, rowData, target) => {
+            // 参数说明同cellSingleClick
+            if (typeof self.onCellDoubleClick === 'function') {
+              self.onCellDoubleClick(colDef, rowData, target);
+            }
+          }, // 单元格双击回调
+          rowSingleClick: (colDef, rowData, target) => {
+            // 参数说明同cellSingleClick
+            if (typeof self.onRowSingleClick === 'function') {
+              self.onRowSingleClick(colDef, rowData, target);
+            }
+          }, // 行单击回调
+          rowDoubleClick: (colDef, rowData, target) => {
+            // 参数说明同cellSingleClick
+            if (typeof self.onRowDoubleClick === 'function') {
+              self.onRowDoubleClick(colDef, rowData, target);
+            }
+          }, // 行双击回调
+          onSortChanged: (arrayOfSortInfo) => {
+            // 参数说明
+            // arrayOfSortInfo: 返回当前用户触发的排序信息
+            // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
+            if (typeof self.onSortChanged === 'function') {
+              self.onSortChanged(arrayOfSortInfo);
+            }
+          }, // 排序事件触发回调
+          onColumnVisibleChanged: (colName) => {
+            if (typeof self.onColumnVisibleChanged === 'function') {
+              self.onColumnVisibleChanged(colName);
+            }
+          },
+          onSelectionChanged: (rowIdArray, rowArray) => {
+            if (typeof self.onSelectionChanged === 'function') {
+              self.onSelectionChanged(rowIdArray, rowArray);
+            }
+          },
+          onColumnMoved: (columnState) => { // 记住移动列
+            if (typeof self.onColumnMoved === 'function') {
+              self.onColumnMoved(columnState);
+            }
+          },
+          onColumnPinned: (ColumnPinned) => {
+            if (typeof self.onColumnPinned === 'function') {
+              self.onColumnPinned(ColumnPinned);
+            }
+          },
+        })
+          .setCols(th) // 设置数据列
+          .setRows(row); // 设置数据行
       },
       pageChange(pageNum) {
         const self = this;
@@ -342,6 +263,18 @@
           self.onPageSizeChange(pageSize);
         }
       }, // 每页条数改变
+      showAgLoading() {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.showLoading();
+        }
+      }
+    },
+    activated() {
+      const { agGridTableContainer } = this.$refs;
+      if (agGridTableContainer.agTable) {
+        agGridTableContainer.agTable.fixAgRenderChoke();
+      }
     }
   };
 </script>
