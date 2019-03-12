@@ -73,7 +73,7 @@ function layoutAlgorithm(defaultColumn, lists, type = 'fill') {
     // 对初始化数据进行判断处理
     // 当列数大于默认分列时，将当前元素列改为默认的分列数
     // 当当前项没有设置宽高，默认设为1
-    if (pointer.show === false) {
+    if (pointer.show === false) { // 当属性show为false时，则默认返回位置(-1,-1)即不显示该节点
       if (!coordinateMap[pointerIndex]) { // 记录起始的行列以及宽高，作为function返回值
         pointer.x = -1;
         pointer.y = -1;
