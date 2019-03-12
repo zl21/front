@@ -5,6 +5,7 @@
       :default-column="4"
     />
     <AgTable
+      ref="agTableElement"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
       :on-page-change="onPageChange"
@@ -39,6 +40,7 @@
           'page-size-opts': ag.datas.selectrange,
           'show-elevator': true,
           'show-sizer': true,
+          'show-total': true
         })
       })
     },
@@ -173,19 +175,24 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapActions(getComponentName(), ['getQueryListForAg']),
+      getQueryList() {
+        const { agTableElement } = this.$refs;
+        agTableElement.showAgLoading();
+        this.getQueryListForAg(this.searchData);
+      },
       onPageChange(page) {
         const { range } = this.searchData;
         this.searchData.startIndex = range * (page - 1);
-        this.getQueryListForAg(this.searchData);
+        this.getQueryList();
       },
       onPageSizeChange(pageSize) {
         this.searchData.startIndex = 0;
         this.searchData.range = pageSize;
-        this.getQueryListForAg(this.searchData);
+        this.getQueryList();
       },
     },
     mounted() {
-      this.getQueryListForAg(this.searchData);
+      this.getQueryList();
     },
     activated() {
       const { tableId } = this.$route.params;

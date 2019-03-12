@@ -183,9 +183,6 @@
           obj.colId = item.colname;
         }); // 排序
         const datas = self.datas;
-        delete datas.tabth;
-        delete datas.row;
-
         datas.hideColumn = self.hideColumn;
         datas.deleteFailInfo = self.errorArr;
         datas.colPosition = self.colPosition; // 移动列
@@ -266,6 +263,18 @@
           self.onPageSizeChange(pageSize);
         }
       }, // 每页条数改变
+      showAgLoading() {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.showLoading();
+        }
+      }
+    },
+    activated() {
+      const { agGridTableContainer } = this.$refs;
+      if (agGridTableContainer.agTable) {
+        agGridTableContainer.agTable.fixAgRenderChoke();
+      }
     }
   };
 </script>
