@@ -143,7 +143,7 @@
             component: itemComponent,
             item: {
               // item 类型
-              type: 'AttachFilter', // 必填!
+              type: 'DropDownSelectFilter', // 必填!
               // label名称
               title: '产品name', // 必填!
               // 字段名称
