@@ -32,20 +32,35 @@
       AgTable, FormItemComponent
     },
     computed: {
-      ...mapState(getComponentName(), {
-        ag: ({ ag }) => ag,
-        pageAttribute: ({ ag }) => ({
+      // ...mapState(getComponentName(), {
+      //   // ag: ({ ag }) => ag,
+      //   pageAttribute: ({ ag }) => ({
+      //     current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
+      //     total: ag.datas.totalRowCount,
+      //     'page-size-opts': ag.datas.selectrange,
+      //     'show-elevator': true,
+      //     'show-sizer': true,
+      //     'show-total': true
+      //   })
+      // }),
+      ag() {
+        return this.$store.state[getComponentName()].ag;
+      },
+      pageAttribute() {
+        const ag = this.$store.state[getComponentName()].ag;
+        return {
           current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
           total: ag.datas.totalRowCount,
           'page-size-opts': ag.datas.selectrange,
           'show-elevator': true,
           'show-sizer': true,
           'show-total': true
-        })
-      })
+        };
+      }
     },
     data() {
       return {
+        moduleStateKey: getComponentName(),
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
@@ -168,7 +183,10 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapActions(getComponentName(), ['getQueryListForAg']),
+      // ...mapActions(getComponentName(), ['getQueryListForAg']),
+      getQueryListForAg(searchData) {
+        this.$store.dispatch(`${getComponentName()}/getQueryListForAg`, searchData);
+      },
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
