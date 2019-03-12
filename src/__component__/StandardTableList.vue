@@ -82,7 +82,7 @@
             component: itemComponent,
             item: {
               // item 类型
-              type: 'input', // 必填!
+              type: 'checkbox', // 必填!
               // label名称
               title: '是否包邮', // 必填!
               // 字段名称
@@ -106,7 +106,8 @@
             component: itemComponent,
             item: {
               // item 类型
-              type: 'input', // 必填!
+              type: 'DatePicker', // 必填!
+              
               // label名称
               title: '产品分类', // 必填!
               // 字段名称
@@ -114,7 +115,7 @@
               // input值
               value: '',
               props: {
-
+                type: 'datetimerange',
               },
               validate: [ // 校验规则  默认onchage
               ]

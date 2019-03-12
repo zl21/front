@@ -89,7 +89,7 @@ const checkboxGroupProp = {
     disabled: false
   }
 };
-//单选框
+// 单选框
 const radioboxProp = {
   type: 'radiobox', // 必填!
   // label名称
@@ -157,6 +157,8 @@ const DatePickerProp = {
     editable: false,
   }
 };
+
+// 时间点选择
 const TimePickerProp = {
   type: 'TimePicker', // 必填!
   field: 'section_time', // 必填!
@@ -190,34 +192,27 @@ const TimePickerProp = {
 };
 // 下拉框
 const DropDownSelectFilterProp = {
-  type: 'TimePicker', // 必填!
-  field: 'section_time', // 必填!
-  title: '活动时间', // 必填!
-  // input值, type为timerange value为数组 [start_value,end_value]
-  value: [],
+  type: 'PoptipSelectFilter', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
   props: {
-    type: 'PoptipSelectFilter', // 必填!
-    field: '', // 必填!
-    title: '', // 必填!
-    value: '',
-    props: {
-      // 是否显示气泡提示框 true、false
-      optionTip: true,
-      // 是否显示输入完成后是否禁用 true、false
-      show: true,
-      // 是否显示筛选提示弹窗 true、false
-      filterTip: true,
-      // 是否选中后禁止编辑 true、false
-      disabled: true,
-      // 默认提示框
-      placeholder: null,
-      // 模糊查询的文字信息，支持多列
-      AuotData: [],
-      // 定义选中展示的文字的key
-      columns: [],
-      // 配置弹窗的配置项 model
-      dialog: {}
-    }
+    // 是否显示气泡提示框 true、false
+    optionTip: true,
+    // 是否显示输入完成后是否禁用 true、false
+    show: true,
+    // 是否显示筛选提示弹窗 true、false
+    filterTip: true,
+    // 是否选中后禁止编辑 true、false
+    disabled: true,
+    // 默认提示框
+    placeholder: null,
+    // 模糊查询的文字信息，支持多列
+    AuotData: [],
+    // 定义选中展示的文字的key
+    columns: [],
+    // 配置弹窗的配置项 model
+    dialog: {}
   }
 };
 

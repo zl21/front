@@ -1,7 +1,6 @@
 <template>
   <div
-    id="container"
-    class="container"
+    class="FormItemComponent"
     :style="setWidth"
   >
     <div
@@ -10,7 +9,6 @@
       :key="index"
       :style="setDiv(item)"
     >
-      {{ index }} {{ item.item.field }}
       <component
         :is="item.component"
         :index="index"
@@ -130,18 +128,13 @@
 </script>
 
 <style lang="less">
-#container > div {
-  background-color: skyblue;
-  min-height: 100px;
+.FormItemComponent > div {
   border:1px solid #fff;
   box-sizing: border-box;
 }
-.container {
+.FormItemComponent {
   display: grid;
   grid-template-columns: repeat(4, 20%);
-  grid-auto-rows: minmax(100px,auto);
-  /* grid-row-gap: 0.5em; */
-  /* grid-column-gap: 20px; */
-
+  grid-auto-rows: minmax(auto);
 }
 </style>
