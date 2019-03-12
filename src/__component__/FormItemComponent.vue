@@ -13,6 +13,7 @@
       {{ index }} {{ item.item.field }}
       <component
         :is="item.component"
+        :index="index"
         :items="item.item"
         @inputChange="inputChange"
       />
@@ -34,9 +35,18 @@
           return temp;
         }, []);
       },
+      // 计算属性的 后台传值
+      formDataObject() {
+        return this.newFormItemLists.reduce((option, items) => {
+          option[items.item.field] = items.item.value;
+          return option;
+        }, {});
+      },
+      // 计算属性的 div 的坐标起始点
       setDiv() {
         return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`;
       },
+      // 计算属性的 div的排列格式
       setWidth() {
         // `this` 指向 vm 实例
         const columns = Number(this.defaultColumn) || 2;
@@ -58,36 +68,63 @@
     data() {
       return {
         newFormItemLists: this.formItemLists,
+        indexItem: 0,
         currentChangeItem: ''
       };
     },
     created() {
       // this.formDataObject = this.formItemLists.reduce((array, item) => array.concat(item.item), []);
     },
-    methods: {
-      inputChange(value, items) {
-        this.currentChangeItem = items;
-        this.newFormItemLists.map((item) => {
-          if (item.item.field === items.field) {
-            item.item.value = value;
-          }
+    watch: {
+      formDataObject: {
+        handler(val, old) {
+          this.newFormItemLists.map((items, i) => {
+            const item = items.item;
+            if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+              this.dynamicforcompute(item, val, i);
+            } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
+              const _refcolumn = item.validate.hidecolumn.refcolumn;
 
-          return item;
-        });
+              if (val[_refcolumn] !== old[_refcolumn]) {
+                this.hidecolumn(item, i);
+              }
+            }
+          });
+        },
+        deep: true
+      }
+    },
+    methods: {
+      inputChange(value, items, index) {
+        this.indexItem = index;
+        this.newFormItemLists[index].item.value = value;
       },
-      hiddenFormLists(key, show) {
-        const array = this.newFormItemLists.reduce((temp, current) => {
-          if (current.item.field === key) {
-            current.show = show;
-          }
-          temp.push(current);
+      dynamicforcompute(items, json, index) {
+        // 被计算 属性 加减乘除
+        const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
+          temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
           return temp;
-        }, []);
-        this.newFormItemLists = array;
-        this.currentChangeItem = null;
+        }, items.validate.dynamicforcompute.express);
+        this.newFormItemLists[index].item.value = eval(str);
+      },
+      hidecolumn(items, index) {
+        // 隐藏
+        const refcolumn = items.validate.hidecolumn.refcolumn;
+        const refval = items.validate.hidecolumn.refval;
+
+        this.newFormItemLists = this.newFormItemLists.map((option) => {
+          if (option.item.field === refcolumn) {
+            if (option.item.value === refval) {
+              this.newFormItemLists[index].show = false;
+            } else {
+              this.newFormItemLists[index].show = true;
+            }
+          }
+          return option;
+        });
       }
 
-      
+
     }
   };
 </script>
@@ -102,7 +139,7 @@
 .container {
   display: grid;
   grid-template-columns: repeat(4, 20%);
-  grid-auto-rows: minmax(100px,auto); 
+  grid-auto-rows: minmax(100px,auto);
   /* grid-row-gap: 0.5em; */
   /* grid-column-gap: 20px; */
 
