@@ -47,7 +47,7 @@
       // 计算属性的 div的排列格式
       setWidth() {
         // `this` 指向 vm 实例
-        const columns = Number(this.defaultColumn) || 2;
+        const columns = Number(this.defaultColumn) || 4;
         return `grid-template-columns: repeat(${columns},1fr`;
       }
     },

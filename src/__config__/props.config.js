@@ -1,5 +1,5 @@
 // 输入框
-const inputProp = {
+const input = {
   // item 类型
   type: 'input', // 必填!
   // label名称
@@ -47,10 +47,32 @@ const inputProp = {
     wrap: 'soft',
     // 正则表达式
     regx: null
-  }
+  },
+  event: {
+    // 按下回车键时触发
+    enter: (event, $this) => {},
+    // 设置 icon 属性后，点击图标时触发
+    click: (event, $this) => {},
+    // 数据改变时触发
+    change: (event, $this) => {},
+    // 输入框聚焦时触发
+    focus: (event, $this) => {},
+    // 输入框失去焦点时触发
+    blur: (event, $this) => {},
+    // 原生的 keyup 事件
+    keyup: (event, $this) => {},
+    // 原生的 keydown 事件
+    keydown: (event, $this) => {},
+    // 原生的 keypress 事件
+    keypress: (event, $this) => {},
+    // 开启 search 时可用，点击搜索或按下回车键时触发
+    search: (event, $this) => {},
+    // 添加正则后，校验出错的时候触发
+    regxCheck: (value, $this, errorValue) => {}
+  },
 };
 // 下拉框
-const selectProp = {
+const select = {
   type: 'select', // 必填!
   // label名称
   title: '', // 必填!
@@ -59,38 +81,53 @@ const selectProp = {
   // input值
   value: '',
   // 可选参数
-  options: [], // 必填!
+  options: [
+    // { value: '104', label: '生态蔬菜', disabled: false },
+    // { value: '105', label: '新鲜水果', disabled: false },
+  ],
   props: {
-    // 是否禁用当前项
+    // 是否支持多选
+    multiple: true, 
+    // 多选情况下的样式控制,只在multiple为true有效
+    multipleType: false,
+    // 是否禁用
     disabled: false,
-    // 单选框的尺寸，可选值为 large、small、default 或者不设置
-    size: 'default',
-    // 选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用,可选类型(String, Number, Boolean)
-    'true-value': true,
-    // 没有选中时的值，当使用类似 1 和 0 来判断是否选中时会很有用,可选类型(String, Number, Boolean)
-    'false-value': false
+    // 是否可以清空选项，只在单选时有效
+    clearable: false,
+    // 选择框大小，可选值为large、small、default或者不填
+    size: 'default', 
+    // 选择框默认文字
+    placeholder: '请选择', 
+    // 当下拉列表为空时显示的内容
+    'not-found-text': '无匹配数据',
+    // 在返回选项时，是否将 label 和 value 一并返回，默认只返回 value
+    'label-in-value': false,
+    // 弹窗的展开方向，可选值为 bottom 和 top
+    placement: 'bottom', 
+    // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
+    transfer: true, 
   }
 };
 // 复选框组件
-const checkboxGroupProp = {
-  type: 'checkboxGroup', // 必填!
-  // label名称
-  title: '', // 必填!
-  // 字段名称
-  field: '', // 必填!
-  // input值
-  value: false,
-  // 可选参数
-  options: [], // 必填!
-  props: {
-    // 多选框组的尺寸，可选值为 large、small、default 或者不设置
-    size: 'default',
-    // 是否禁用当前项
-    disabled: false
-  }
-};
+// const checkboxGroup = {
+//   type: 'checkboxGroup', // 必填!
+//   // label名称
+//   title: '', // 必填!
+//   // 字段名称
+//   field: '', // 必填!
+//   // input值
+//   value: false,
+//   // 可选参数
+//   options: [], // 必填!
+//   props: {
+//     // 多选框组的尺寸，可选值为 large、small、default 或者不设置
+//     size: 'default',
+//     // 是否禁用当前项
+//     disabled: false
+//   }
+// };
 // 单选框
-const radioboxProp = {
+const radiobox = {
   type: 'radiobox', // 必填!
   // label名称
   title: '', // 必填!
@@ -107,7 +144,7 @@ const radioboxProp = {
   }
 };
 // 复选框
-const checkboxboxProp = {
+const checkbox = {
   type: 'checkbox', // 必填!
   // label名称
   title: '', // 必填!
@@ -120,11 +157,16 @@ const checkboxboxProp = {
     // 多选框组的尺寸，可选值为 large、small、default 或者不设置
     size: 'default',
     // 是否禁用当前项
-    disabled: false
+    disabled: false,
+    // 支持checkout样式为radio样式
+    circle: false
+  },
+  event: {
+    change: (event, $this) => {},
   }
 };
 // 日期选择
-const DatePickerProp = {
+const DatePicker = {
   type: 'DatePicker', // 必填!
   field: 'section_day', // 必填!
   title: '活动日期', // 必填!
@@ -155,11 +197,13 @@ const DatePickerProp = {
     readonly: false,
     // 文本框是否可以输入
     editable: false,
+    // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
+    transfer: true
   }
 };
 
 // 时间点选择
-const TimePickerProp = {
+const TimePicker = {
   type: 'TimePicker', // 必填!
   field: 'section_time', // 必填!
   title: '活动时间', // 必填!
@@ -188,42 +232,43 @@ const TimePickerProp = {
     readonly: false,
     // 文本框是否可以输入
     editable: false,
+    transfer: true
   }
 };
 // 下拉框
-const DropDownSelectFilterProp = {
-  type: 'PoptipSelectFilter', // 必填!
+const DropDownSelectFilter = {
+  type: 'DropDownSelectFilter', // 必填!
   field: '', // 必填!
   title: '', // 必填!
   value: '',
   props: {
-    // 是否显示气泡提示框 true、false
-    optionTip: true,
-    // 是否显示输入完成后是否禁用 true、false
-    show: true,
-    // 是否显示筛选提示弹窗 true、false
-    filterTip: true,
-    // 是否选中后禁止编辑 true、false
-    disabled: true,
-    // 默认提示框
-    placeholder: null,
-    // 模糊查询的文字信息，支持多列
-    AuotData: [],
-    // 定义选中展示的文字的key
+    // 是否是单选，可选值为 true、false
+    single: true,
+    // 下拉气泡表格里数据
+    data: null,
+    // 数据总条数
+    totalRowCount: 0,
+    // 每页条数
+    pageSize: 10,
+    // 模糊搜索的数据
+    AutoData: [],
+    // 模糊搜索要显示的列
     columns: [],
-    // 配置弹窗的配置项 model
-    dialog: {}
+    // 无数据的时候提示
+    dataEmptyMessage: '暂无数据',
+    // 下拉多选 默认选中数据
+    defaultSelected: []
   }
 };
 
 const dataProp = {
-  DropDownSelectFilterProp,
-  TimePickerProp,
-  DatePickerProp,
-  checkboxboxProp,
-  radioboxProp,
-  checkboxGroupProp,
-  selectProp,
-  inputProp
+  DropDownSelectFilter,
+  TimePicker,
+  DatePicker,
+  checkbox,
+  radiobox,
+  // checkboxGroup,
+  select,
+  input
 };
-export default { dataProp };
+export default dataProp;
