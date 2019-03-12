@@ -32,17 +32,6 @@
       AgTable, FormItemComponent
     },
     computed: {
-      // ...mapState(getComponentName(), {
-      //   // ag: ({ ag }) => ag,
-      //   pageAttribute: ({ ag }) => ({
-      //     current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
-      //     total: ag.datas.totalRowCount,
-      //     'page-size-opts': ag.datas.selectrange,
-      //     'show-elevator': true,
-      //     'show-sizer': true,
-      //     'show-total': true
-      //   })
-      // }),
       ag() {
         return this.$store.state[getComponentName()].ag;
       },
@@ -183,7 +172,6 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      // ...mapActions(getComponentName(), ['getQueryListForAg']),
       getQueryListForAg(searchData) {
         this.$store.dispatch(`${getComponentName()}/getQueryListForAg`, searchData);
       },
