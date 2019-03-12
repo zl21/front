@@ -5,7 +5,6 @@ export default () => ({
   namespaced: true,
   state: {
     ag: {
-      pageAttribute: {},
       datas: {},
     }
   },
