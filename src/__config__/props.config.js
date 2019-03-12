@@ -245,7 +245,7 @@ const DropDownSelectFilter = {
     // 是否是单选，可选值为 true、false
     single: true,
     // 下拉气泡表格里数据
-    data: null,
+    data: {},
     // 数据总条数
     totalRowCount: 0,
     // 每页条数
@@ -261,6 +261,33 @@ const DropDownSelectFilter = {
   }
 };
 
+// 弹框多选
+const AttachFilter = {
+  type: 'AttachFilter', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    value: '13123',
+    // 是否显示气泡提示框 true、false
+    optionTip: true,
+    // 是否显示输入完成后是否禁用 true、false
+    show: true,
+    // 是否显示筛选提示弹窗 true、false
+    filterTip: true,
+    // 是否选中后禁止编辑 true、false
+    disabled: false,
+    // 默认提示框
+    placeholder: null,
+    // 模糊查询的文字信息，支持多列
+    AuotData: [],
+    // 定义选中展示的文字的key
+    columns: [],
+    // 配置弹窗的配置项 model
+    dialog: null
+  }
+};
+
 const dataProp = {
   DropDownSelectFilter,
   TimePicker,
@@ -269,6 +296,7 @@ const dataProp = {
   radiobox,
   // checkboxGroup,
   select,
-  input
+  input,
+  AttachFilter
 };
 export default dataProp;

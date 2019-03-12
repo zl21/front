@@ -108,6 +108,31 @@
 
       <DropDownSelectFilter
         v-if="_items.type === 'DropDownSelectFilter'"
+        :data="_items.props.data"
+        :single="_items.props.single"
+        :total-row-count="_items.props.totalRowCount"
+        :page-size="_items.props.pageSize"
+        :auto-data="_items.props.AutoData"
+        :columns="_items.props.columns"
+        :data-empty-message="_items.props.dataEmptyMessage"
+        :default-selected="_items.props.defaultSelected"
+        @on-fkrp-selected="fkrpSelected"
+        @on-page-change="pageChange"
+        @on-input-value-change="inputValueChange"
+      />
+      <AttachFilter
+        v-if="_items.type === 'AttachFilter'"
+        v-model="_items.value"
+        :value="_items.props.value"
+        :option-tip="_items.props.optionTip"
+        :show="_items.props.show"
+        :filter-tip="_items.props.filterTip"
+        :disabled="_items.props.disabled"
+        :placeholder="_items.props.placeholder"
+        :auot-data="_items.props.AuotData"
+        :columns="_items.props.columns"
+        :dialog="_items.props.dialog"
+        @on-keydown="attachFilterKeyDown"
       />
     </div>
   </div>
@@ -254,7 +279,31 @@
         }
       },
 
-      //
+      // fkrpSelected event
+      fkrpSelected(value, $this) {
+        this._items.value = value;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'fkrpSelected') && typeof this._items.event.fkrpSelected === 'function') {
+          this._items.event.fkrpSelected(value, $this);
+        }
+      },
+      pageChange(value, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange') && typeof this._items.event.pageChange === 'function') {
+          this._items.event.pageChange(value, $this);
+        }
+      },
+      inputValueChange(value, $this) {
+        this._items.value = value;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
+          this._items.event.inputValueChange(value, $this);
+        }
+      },
+
+      // AttachFilter event
+      attachFilterKeyDown(value, $this) {
+        console.log(value, $this, this._items.value);
+      }
     },
     created() {
 
