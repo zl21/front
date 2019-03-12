@@ -59,13 +59,13 @@
       }, // Page 属性
       onPageChange: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 pageNum 页码
         }
       }, // 页码改变的回调
       onPageSizeChange: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 pageSize 每页条数
         }
       }, // 切换每页条数时的回调
@@ -75,7 +75,7 @@
       }, // 是否重新创建ag实例
       cssStatus: {
         type: Array,
-        default: () => ([])
+        default: () => []
       }, // 颜色配置信息  /p/cs/getUserConfig 接口返回
       datas: {
         type: Object,
@@ -98,11 +98,11 @@
       }, // 固定列   /p/cs/getUserConfig 接口返回
       errorArr: {
         type: Array,
-        default: () => ([])
+        default: () => []
       }, // 错误信息数组
       onCellSingleClick: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数说明
           // colDef：包含表头信息的对象
           // row：包含当前行所有数据的对象
@@ -111,25 +111,25 @@
       }, // 单元格单击回调
       onCellDoubleClick: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数说明同cellSingleClick
         }
       }, // 单元格双击回调
       onRowSingleClick: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数说明同cellSingleClick
         }
       }, // 行单击回调
       onRowDoubleClick: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数说明同cellSingleClick
         }
       }, // 行双击回调
       onSortChanged: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数说明
           // arrayOfSortInfo: 返回当前用户触发的排序信息
           // 形如： [{"colId":"PS_C_BRAND_ID.val","sort":"asc"},{"colId":"ECODE.val","sort":"desc"}]
@@ -137,25 +137,25 @@
       }, // 排序事件触发回调
       onColumnVisibleChanged: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 列名
         }
       }, // 显示或者隐藏列的监听
       onSelectionChanged: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
         }
       }, // 行选中事件
       onColumnMoved: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 columnState 移动状态
         }
       }, // 列移动的监听
       onColumnPinned: {
         type: Function,
-        default: () => () => {
+        default: () => {
           // 参数 ColumnPinned 固定列状态
         }
       },
@@ -165,7 +165,7 @@
       }, // 是否显示图例,
       legend: {
         type: Array,
-        default: () => ([])
+        default: () => []
       } // 图例,
     },
     watch: {
