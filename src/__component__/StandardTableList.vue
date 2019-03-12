@@ -66,7 +66,9 @@
               props: {
               },
               event: {
-
+                change: (event, $this) => {
+                  console.log(event, $this);
+                },
               },
               validate: // 校验规则  默认onchage
                 {
@@ -119,7 +121,7 @@
             component: itemComponent,
             item: {
               // item 类型
-              type: 'DatePicker', // 必填!
+              type: 'select', // 必填!
               
               // label名称
               title: '产品分类', // 必填!
@@ -127,8 +129,12 @@
               field: 'cate_id', // 必填!
               // input值
               value: '',
+              options: [
+                { value: '104', label: '生态蔬菜', disabled: false },
+                { value: '105', label: '新鲜水果', disabled: false },
+              ],
               props: {
-                type: 'datetimerange',
+                
               },
               validate: [ // 校验规则  默认onchage
               ]
