@@ -32,20 +32,17 @@
       AgTable, FormItemComponent
     },
     computed: {
-      ag() {
-        return this.$store.state[getComponentName()].ag;
-      },
-      pageAttribute() {
-        const ag = this.$store.state[getComponentName()].ag;
-        return {
+      ...mapState(getComponentName(), {
+        ag: ({ ag }) => ag,
+        pageAttribute: ({ ag }) => ({
           current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
           total: ag.datas.totalRowCount,
           'page-size-opts': ag.datas.selectrange,
           'show-elevator': true,
           'show-sizer': true,
           'show-total': true
-        };
-      }
+        })
+      }),
     },
     data() {
       return {
@@ -72,9 +69,7 @@
               props: {
               },
               event: {
-                change: (event, $this) => {
-                  console.log(event, $this);
-                },
+
               },
               validate: // 校验规则  默认onchage
                 {
@@ -127,7 +122,7 @@
             component: itemComponent,
             item: {
               // item 类型
-              type: 'select', // 必填!
+              type: 'DatePicker', // 必填!
               
               // label名称
               title: '产品分类', // 必填!
@@ -135,12 +130,8 @@
               field: 'cate_id', // 必填!
               // input值
               value: '',
-              options: [
-                { value: '104', label: '生态蔬菜', disabled: false },
-                { value: '105', label: '新鲜水果', disabled: false },
-              ],
               props: {
-                
+                type: 'datetimerange',
               },
               validate: [ // 校验规则  默认onchage
               ]
@@ -178,9 +169,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      getQueryListForAg(searchData) {
-        this.$store.dispatch(`${getComponentName()}/getQueryListForAg`, searchData);
-      },
+      ...mapActions(getComponentName(), ['getQueryListForAg']),
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
