@@ -79,6 +79,14 @@ export default {
         state.keepAliveLists.splice(index, 1);
       }
     });
+  }, 
+  againClickOpenedMenuLists(state, { label, keepAliveModuleName }) {
+    state.openedMenuLists.forEach((d) => {
+      d.isActive = false;
+      if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
+        d.isActive = true;
+      }
+    });
   }, // 清除当前tab的keepAlive
   TabCloseAppoint(state, tab) {
     const selectTabs = state.openedMenuLists;
