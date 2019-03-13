@@ -48,7 +48,7 @@
       setWidth() {
         // `this` 指向 vm 实例
         const columns = Number(this.defaultColumn) || 4;
-        return `grid-template-columns: repeat(${columns},1fr`;
+        return `grid-template-columns: repeat(${columns},${100 / columns}%`;
       }
     },
     props: {
@@ -65,13 +65,18 @@
     },
     data() {
       return {
-        newFormItemLists: this.formItemLists,
+        newFormItemLists: [],
         indexItem: 0,
         currentChangeItem: ''
       };
     },
     created() {
-      // this.formDataObject = this.formItemLists.reduce((array, item) => array.concat(item.item), []);
+      const arr = JSON.parse(JSON.stringify(this.formItemLists));
+      arr.map((temp, index) => {
+        temp.component = this.formItemLists[index].component;
+        return temp;
+      });
+      this.newFormItemLists = arr;
     },
     watch: {
       formDataObject: {
@@ -79,7 +84,9 @@
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              this.dynamicforcompute(item, val, i);
+              if ((val[item.computecolumn] === old[item.computecolumn])) {
+                this.dynamicforcompute(item, val, i);
+              }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
 
@@ -134,7 +141,7 @@
 }
 .FormItemComponent {
   display: grid;
-  grid-template-columns: repeat(4, 20%);
+  grid-template-columns: repeat(4, 25%);
   grid-auto-rows: minmax(auto);
 }
 </style>
