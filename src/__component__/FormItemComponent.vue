@@ -71,7 +71,6 @@
       };
     },
     created() {
-      // this.formDataObject = this.formItemLists.reduce((array, item) => array.concat(item.item), []);
       const arr = JSON.parse(JSON.stringify(this.formItemLists));
       arr.map((temp, index) => {
         temp.component = this.formItemLists[index].component;
@@ -85,7 +84,9 @@
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              this.dynamicforcompute(item, val, i);
+              if ((val[item.computecolumn] === old[item.computecolumn])) {
+                this.dynamicforcompute(item, val, i);
+              }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
 
@@ -102,9 +103,6 @@
       inputChange(value, items, index) {
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;
-
-        // 每一次修改数据都向父节点抛出数据
-        console.log(this.newFormItemLists, this.formItemLists);
       },
       dynamicforcompute(items, json, index) {
         // 被计算 属性 加减乘除
@@ -143,7 +141,7 @@
 }
 .FormItemComponent {
   display: grid;
-  grid-template-columns: repeat(4, 20%);
+  grid-template-columns: repeat(4, 25%);
   grid-auto-rows: minmax(auto);
 }
 </style>

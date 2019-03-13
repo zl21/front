@@ -82,10 +82,9 @@
         :clearable="_items.props.clearable"
         :readonly="_items.props.readonly"
         :editable="_items.props.editable"
-        @on-change="datePickerChange"
+        @on-change="($event,event,instance) => datePickerChange(_items.value=$event,event,instance,_items.props.type)"
         @on-clear="datePickerClear"
       />
-
       <TimePicker
         v-if="_items.type === 'TimePicker'"
         v-model="_items.value"
@@ -164,7 +163,7 @@
     computed: {
       _items() {
         // 将设置的props和默认props进行assign
-        const item = JSON.parse(JSON.stringify(this.items)); 
+        const item = JSON.parse(JSON.stringify(this.items));
         item.props = Object.assign(dataProp[item.type].props, item.props);
         item.event = Object.assign({}, item.event);
         return item;
@@ -254,7 +253,7 @@
 
 
       // datepick event
-      datePickerChange(value, dateType, $this) {
+      datePickerChange(value, type, $this) {
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
           this._items.event.change(value, $this);
