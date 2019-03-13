@@ -12,9 +12,9 @@
 <script>
   import Vue from 'vue';
   import { mapState } from 'vuex';
+  import mixins from '../__config__/mixins/standardTableLists';
   import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
-  
-  const StandardTableList = () => import('./StandardTableList');
+  import StandardTableList from './StandardTableList';
   
   export default {
     name: 'StandardTableKeepAlive',
@@ -30,7 +30,9 @@
       generateComponent() {
         const { tableName, tableId } = this.$route.params;
         const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-        Vue.component(componentName, StandardTableList);
+        if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
+        }
         this.currentTable = componentName;
       }
     },

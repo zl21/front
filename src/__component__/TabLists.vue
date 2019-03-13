@@ -1,7 +1,6 @@
 <template>
   <div
     v-if="openedMenuLists.length > 0"
-    ref="openedMenuLists"
     class="openedMenuLists"
   >
     <span
@@ -16,13 +15,11 @@
       >
     </span>
     <ul
-      ref="tabList"
       class="tab-list"
     >
       <a
         v-for="(tag, index) in openedMenuLists"
         :key="index"
-        ref="tabBox"
         :class="{active:tag.isActive === true}"
         class="tabBox"
         :title="tag.label"
@@ -86,23 +83,18 @@
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists
       }),
     },
-    mounted() {
-      const _this = this;
-      window.onresize = () => { // 定义窗口大小变更通知事件
-        _this.tabWidth = document.body.offsetWidth - 180 - 30 + 1 + 10;
-        const tabBox = _this.$refs.openedMenuLists;
-        tabBox.style.width = `${Number(_this.tabWidth)}px`;
-      };
-    },
     watch: {
       openedMenuLists: {
         handler(val) {
           this.$nextTick(() => {
-            const _this = this;
-            const tabOpenedMenuLists = _this.$refs.openedMenuLists;
-            const tabOpenedMenuListsTabListA = _this.$refs.tabBox;
-            const length = Math.floor((this.tabWidth) / 122); // 总长减去垃圾桶和2个箭头的宽度/每个tab的宽    计算当前宽度能放几个tab标签
-            const width = this.tabWidth;// 当前页面总宽
+            const tabOpenedMenuLists = document.getElementsByClassName('openedMenuLists')[0];
+            const tabOpenedMenuListsTabListA = document.getElementsByClassName('tabBox');
+            let length = 0;
+            let width = 0;
+            if (tabOpenedMenuLists) {
+              length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122); // 总长减去垃圾桶和2个箭头的宽度/每个tab的宽    计算当前宽度能放几个tab标签
+              width = tabOpenedMenuLists.offsetWidth - 75;// 当前页面总宽
+            }
             const tagWidth = this.openedMenuLists.length * 122;// 获取到tab的数量*每个tab的宽度=当前所占的总宽度
             const left = Math.abs(tagWidth - width);// 绝对值     计算出当没超出的时候剩余多少宽，超出之后超出了多少宽
             let i = 0;
@@ -110,10 +102,8 @@
             if (val.length > length) { // 判断如果超出当前tab盒子的总宽
               this.clickShow = true;
               for (i = 0; i < TabListA; i++) {
-                tabOpenedMenuLists.style.width = `${this.tabWidth}px`;
                 tabOpenedMenuListsTabListA[i].style.left = `-${left}px`;
               }
-              _this.$refs.tabList.scrollTo({ right: `${val.length - length}`, behavior: 'smooth' });
             } else {
               this.clickShow = false;
               for (i = 0; i < TabListA; i++) {
@@ -145,7 +135,7 @@
 
       prevClick() {
         let i = 0;
-        const domAll = this.$refs.tabBox;
+        const domAll = document.getElementsByClassName('tabBox');
         const domAllLength = domAll.length;
         for (i = 0; i < domAllLength; i++) {
           const tabBoxRight = Number(domAll[i].style.left.replace('px', '').replace('-', '')) - 122;
@@ -158,8 +148,8 @@
       },
       nextClick() {
         let i = 0;
-        const domAll = this.$refs.tabBox;
-        const domWidth = this.$refs.tabList.offsetWidth;
+        const domAll = document.getElementsByClassName('tabBox');
+        const domWidth = document.getElementsByClassName('tab-list')[0].offsetWidth;
         const tabWidth = this.openedMenuLists.length * 122;
         const domAllLength = domAll.length;
         for (i = 0; i < domAllLength; i++) {
@@ -171,8 +161,6 @@
           }
         }
       },
-
-     
     }
   };
 </script>

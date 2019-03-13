@@ -12,9 +12,6 @@ export default {
       commit('updateMenuLists', res.data.data);
     });
   },
-  emptyTabs({ commit }) {
-    commit('emptyTabs');
-  },
   updateAccessHistory({ commit }, { type, id }) {
     network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
       commit('updateHistoryAndFavorite', { history: res.data.data });
