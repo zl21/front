@@ -16,37 +16,17 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions } from 'vuex';
   import buttonGroup from './button';
-  import router from '../__config__/router.config';
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
   import itemComponent from './itemComponent';
-  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
-
-  const getComponentName = () => {
-    const { tableName, tableId } = router.currentRoute.params;
-    return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-  };
 
   export default {
     components: {
       buttonGroup,
       AgTable,
       FormItemComponent,
-    },
-    computed: {
-      ...mapState(getComponentName(), {
-        ag: ({ ag }) => ag,
-        pageAttribute: ({ ag }) => ({
-          current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
-          total: ag.datas.totalRowCount,
-          'page-size-opts': ag.datas.selectrange,
-          'show-elevator': true,
-          'show-sizer': true,
-          'show-total': true
-        })
-      }),
     },
     data() {
       return {
@@ -106,7 +86,6 @@
             },
           ],
         },
-        moduleStateKey: getComponentName(),
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
@@ -234,7 +213,6 @@
 
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapActions(getComponentName(), ['getQueryListForAg']),
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();

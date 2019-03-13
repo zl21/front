@@ -3,8 +3,6 @@ import VueRouter from 'vue-router';
 import Login from '../__component__/Login';
 import Content from '../__component__/Content';
 import Dashboard from '../__component__/Dashboard';
-import StandardTableKeepAlive from '../__component__/StandardTableKeepAlive';
-import StandardSingleObject from '../__component__/StandardSingleObject';
 import { STANDARD_TABLE_LIST_PREFIX, STANDARD_SINGLE_OBJECT_PREFIX } from '../constants/global';
 import navigationGuard from './router.navigation.guard';
 
@@ -20,10 +18,10 @@ const routes = [
         component: Dashboard
       }, {
         path: `${STANDARD_TABLE_LIST_PREFIX}/:tableName/:tableId`,
-        component: StandardTableKeepAlive
+        component: () => import('../__component__/StandardTableKeepAlive')
       }, {
         path: `${STANDARD_SINGLE_OBJECT_PREFIX}`,
-        component: StandardSingleObject
+        component: () => import('../__component__/StandardSingleObject')
       }]
   },
   {
