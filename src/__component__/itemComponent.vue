@@ -33,7 +33,7 @@
 
       <Checkbox
         v-if="_items.type === 'checkbox'"
-        v-model="_items.props.value"
+        v-model="_items.value"
         :disabled="_items.props.disabled"
         :size="_items.props.size"
         :circle="_items.props.circle"
@@ -175,7 +175,7 @@
     },
     methods: {
       valueChange() { // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        this.$emit('inputChange', this._items.value, this.items.value, this.index);
+        this.$emit('inputChange', this._items.value, this._items, this.index);
       },
       // input event
       inputChange(event, $this) {
@@ -306,7 +306,6 @@
       }
     },
     created() {
-
     }
   };
 </script>
@@ -323,9 +322,9 @@
       width: 90px;
       margin-right: 4px;
       text-align: right;
-      overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: inline-block;
     }
 
     .itemComponent{

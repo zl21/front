@@ -48,7 +48,7 @@
       setWidth() {
         // `this` 指向 vm 实例
         const columns = Number(this.defaultColumn) || 4;
-        return `grid-template-columns: repeat(${columns},1fr`;
+        return `grid-template-columns: repeat(${columns},${100 / columns}%`;
       }
     },
     props: {
@@ -65,13 +65,19 @@
     },
     data() {
       return {
-        newFormItemLists: this.formItemLists,
+        newFormItemLists: [],
         indexItem: 0,
         currentChangeItem: ''
       };
     },
     created() {
       // this.formDataObject = this.formItemLists.reduce((array, item) => array.concat(item.item), []);
+      const arr = JSON.parse(JSON.stringify(this.formItemLists));
+      arr.map((temp, index) => {
+        temp.component = this.formItemLists[index].component;
+        return temp;
+      });
+      this.newFormItemLists = arr;
     },
     watch: {
       formDataObject: {
@@ -96,6 +102,9 @@
       inputChange(value, items, index) {
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;
+
+        // 每一次修改数据都向父节点抛出数据
+        console.log(this.newFormItemLists, this.formItemLists);
       },
       dynamicforcompute(items, json, index) {
         // 被计算 属性 加减乘除
