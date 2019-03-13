@@ -66,8 +66,7 @@
     data() {
       return {
         newFormItemLists: [],
-        indexItem: 0,
-        currentChangeItem: ''
+        indexItem: -1
       };
     },
     created() {
@@ -81,11 +80,16 @@
     watch: {
       formDataObject: {
         handler(val, old) {
+          if (this.indexItem < 0) {
+            return; 
+          }
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              if ((val[item.computecolumn] === old[item.computecolumn])) {
+              if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
+              } else {
+                this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
@@ -94,12 +98,29 @@
                 this.hidecolumn(item, i);
               }
             }
+            return items;
           });
         },
         deep: true
       }
     },
     methods: {
+      formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
+        const formObj = this.newFormItemLists.reduce((obj, current) => {
+          obj[current.item.field] = current.item.value;
+          return obj;
+        }, {});
+        this.$emit('formDataChange', formObj, this.newFormItemLists[this.indexItem]);
+      },
+      resetForm() { // 重置表单
+        const arr = JSON.parse(JSON.stringify(this.formItemLists));
+        arr.map((temp, index) => {
+          temp.component = this.formItemLists[index].component;
+          return temp;
+        });
+        this.newFormItemLists = arr;
+        this.indexItem = -1;
+      },
       inputChange(value, items, index) {
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;

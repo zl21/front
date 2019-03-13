@@ -2,8 +2,10 @@
   <div class="StandardTableListRootDiv">
     <buttonGroup :data-array="dataArray" />
     <FormItemComponent
+      ref="FormItemComponent"
       :form-item-lists="lists"
       :default-column="4"
+      @formDataChange="formDataChange"
     />
     <AgTable
       ref="agTableElement"
@@ -250,6 +252,13 @@
         this.searchData.range = pageSize;
         this.getQueryList();
       },
+      
+
+      // 表单操作
+      formDataChange(data, item) {
+        console.log(data, item);
+      },
+      
     },
     mounted() {
       this.getQueryList();
