@@ -1,3 +1,5 @@
+
+
 export default {
   updateTableData({ ag }, data) {
     ag.datas = data;
@@ -12,9 +14,6 @@ export default {
   },
   updateFormData({ formItems }, data) {
     formItems.data = data;
-  },
-  updateCurrentFormItemsLists({ formItems }, data) {
-    formItems.formItemsLIsts = data;
   },
 
   // 按钮组

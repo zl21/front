@@ -95,131 +95,78 @@
           startIndex: 0,
           range: 10
         },
-        lists: [
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'input', // 必填!
-              // label名称
-              title: '商品名称', // 必填!
-              // 字段名称
-              field: 'goods_name', // 必填!
-              // input值
-              value: '1',
-              props: {
-              },
-              event: {
-
-              },
-              validate: // 校验规则  默认onchage
-                {
-                  // 动态计算key
-                  dynamicforcompute: {
-                    // 逻辑运算key
-                    refcolumns: ['is_postage', 'cate_id'],
-                    // 被计算字段（目标）
-                    computecolumn: 'goods_name',
-                    // 中间函数
-                    express: 'is_postage + cate_id'
-                  },
-                  // 提示信息
-                  tip: '',
-                  // 触发方法
-                  trigger: ''
-                }
-            }
-
-
-          },
-          {
-            row: 1,
-            col: 1,
-            // 字段名称
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'checkbox', // 必填!
-              // label名称
-              title: '是否包邮', // 必填!
-              // 字段名称
-              field: 'is_postage', // 必填!
-              // input值
-              value: false,
-              props: {
-
-              },
-              validate: {
-                hidecolumn: {
-                  refcolumn: 'cate_name',
-                  refval: '2'
-                }
-              }
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'select', // 必填!
-
-              // label名称
-              title: '产品分类', // 必填!
-              // 字段名称
-              field: 'cate_id', // 必填!
-              // input值
-              value: '',
-              options: [
-                { value: '104', label: '生态蔬菜', disabled: false },
-                { value: '105', label: '新鲜水果', disabled: false },
-              ],
-              props: {
-                type: 'datetimerange',
-              },
-              validate: [ // 校验规则  默认onchage
-              ]
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'DropDownSelectFilter', // 必填!
-              // label名称
-              title: '产品name', // 必填!
-              // 字段名称
-              field: 'cate_name', // 必填!
-              // input值
-              value: '',
-              props: {
-
-              },
-              validate: {
-                // // 隐藏字段
-                // hidecolumn: {
-                //   // 逻辑运算key
-                //   refcolumn: ['cate_name'],
-                //   // 隐藏条件 value值
-                //   refval: '2'
-                // }
-              }
-            }
-          }
-        ],
-
+        lists: [],
         param: {
           id: '',
           tablename: '',
         },
       };
     },
+    computed: {
+      formLists() {
+        // 对获取的数据进行处理
+        let items = [];
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLIsts)).reduce((array, current) => {
+          function checkDisplay(item) {
+            let str = '';
+            if (!item.display || item.display === 'text') {
+              str = 'input';
+            }
+            if (item.display === 'OBJ_SELECT') {
+              str = 'select';
+            }
 
+            if (item.display === 'OBJ_FK') {
+              if (item.fkobj.fkdisplay === 'drp') {
+                str = 'DropDownSelectFilter';
+              } else {
+                str = 'AttachFilter';
+              }
+            }
+
+            return str;
+          }
+          const obj = {};
+          obj.row = current.row ? current.row : 1;
+          obj.col = current.col ? current.col : 1;
+          obj.component = itemComponent;
+          obj.item = {
+            type: checkDisplay(current),
+            title: current.coldesc,
+            field: current.colname,
+            value: current.default,
+            props: {},
+            event: {},
+            validate: {}
+          };
+          if (current.combobox) {
+            const arr = current.combobox.reduce((sum, item) => {
+              sum.push({
+                label: item.limitdesc,
+                value: item.limitval
+              });
+              return sum;
+            }, []);
+
+            obj.item.options = arr;
+          }
+          array.push(obj);
+          return array;
+        }, []);
+        return items;
+      }
+    },
+    watch: {
+      formLists() {
+        const arr = JSON.parse(JSON.stringify(this.formLists));
+        arr.map((temp, index) => {
+          temp.component = this.formLists[index].component;
+          return temp;
+        });
+        this.lists = arr;
+        console.log(this.lists);
+      }
+    },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       getQueryList() {

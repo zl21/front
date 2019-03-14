@@ -25,6 +25,14 @@
   export default {
     name: 'FormItemComponent',
     computed: {
+      FormItemLists() {
+        const arr = JSON.parse(JSON.stringify(this.formItemLists));
+        arr.map((temp, index) => {
+          temp.component = this.formItemLists[index].component;
+          return temp;
+        });
+        return arr;
+      },
       // 计算属性的 getter
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
@@ -35,10 +43,12 @@
       },
       // 计算属性的 后台传值
       formDataObject() {
-        return this.newFormItemLists.reduce((option, items) => {
+        let obj = {};
+        obj = this.newFormItemLists.reduce((option, items) => {
           option[items.item.field] = items.item.value;
           return option;
         }, {});
+        return obj;
       },
       // 计算属性的 div 的坐标起始点
       setDiv() {
@@ -70,14 +80,15 @@
       };
     },
     created() {
-      const arr = JSON.parse(JSON.stringify(this.formItemLists));
-      arr.map((temp, index) => {
-        temp.component = this.formItemLists[index].component;
-        return temp;
-      });
-      this.newFormItemLists = arr;
+      
     },
     watch: {
+      FormItemLists: {
+        handler(val) {
+          this.newFormItemLists = val;
+        },
+        deep: true
+      },  
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {
@@ -98,6 +109,8 @@
               if (val[_refcolumn] !== old[_refcolumn]) {
                 this.hidecolumn(item, i);
               }
+            } else {
+              this.formDataChange();
             }
             return items;
           });
@@ -125,6 +138,7 @@
       inputChange(value, items, index) {
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;
+        this.formDataChange();
       },
       dynamicforcompute(items, json, index) {
         // 被计算 属性 加减乘除
