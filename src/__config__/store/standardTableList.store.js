@@ -6,6 +6,15 @@ export default () => ({
   state: {
     ag: {
       datas: {},
+      status4css: [], // 图例数据
+    },
+    formItems: {
+      data: {}, // 整个表单的数据对象
+      defaultFormItemsLIsts: [], // 整个表单请求的item数组
+    },
+    buttons: {
+      tabcmd: {},
+      waListButtons: []
     }
   },
   actions,

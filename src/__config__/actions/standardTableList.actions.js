@@ -13,4 +13,16 @@ export default {
       commit('updateTableData', updateTableData);
     });
   },
+  getTableQueryForForm({ commit }, { table }) {
+    network.post('/p/cs/getTableQuery', urlSearchParams({
+      table,
+      getcmd: 'y'
+    })).then((res) => {
+      const queryData = res.data.data;
+      commit('updateButtonsTabcmd', queryData.tabcmd);
+      commit('updateButtonWaListButtons', queryData.waListButtons);
+      commit('updateTableStatus4css', queryData.datas.status4css);
+      commit('updateDefaultFormItemsLIsts', queryData.datas.dataarry);
+    });
+  }
 };

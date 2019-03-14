@@ -195,10 +195,11 @@
         top: 60px;
         z-index: 10;
         padding-left:0;
-
+        border-radius: 2px;
+       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
         li{
-        padding:30px 50px;
-        line-height: 10px;
+        padding:15px 50px;
+        line-height: 1px;
            
         }
         li:hover{
