@@ -26,10 +26,9 @@
     methods: {
       login() {
         network.post('/p/c/getCaptcha').then((res) => {
-          console.log(res);
           network.post('/p/c/login', urlSearchParams({
             username: 'root',
-            password: 123,
+            password: 'Hellosyman1',
             captcha: res.data.captcha,
             rememberMe: false,
             lang: 'zh_CN',

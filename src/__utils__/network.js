@@ -1,7 +1,12 @@
 import axios from 'axios';
 import router from '../__config__/router.config';
 
-axios.interceptors.response.use(response => response, (error) => {
+axios.interceptors.response.use((response) => {
+  if (response.data.code === -1) {
+    alert(response.data.message);
+  }
+  return response;
+}, (error) => {
   const { status } = error.response;
   if (status === 403) {
     router.push('/login');
@@ -13,7 +18,7 @@ axios.interceptors.response.use(response => response, (error) => {
 export const urlSearchParams = (data) => {
   const params = new URLSearchParams();
   Object.keys(data).forEach((key) => {
-    const dataType = Object.prototype.toString.call(data[key])
+    const dataType = Object.prototype.toString.call(data[key]);
     if (dataType === '[object Object]' || dataType === '[object Array]') {
       data[key] = JSON.stringify(data[key]);
     }

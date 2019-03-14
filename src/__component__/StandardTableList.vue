@@ -23,6 +23,7 @@
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
   import itemComponent from './itemComponent';
+  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
 
   export default {
     components: {
@@ -239,11 +240,17 @@
       
     },
     mounted() {
+      // 记录模块名
+      const { tableName, tableId } = this.$route.params;
+      this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getQueryList();
     },
     activated() {
       const { tableId } = this.$route.params;
       this.updateAccessHistory({ type: 'table', id: tableId });
+    },
+    beforeDestroy() {
+      this.$store.unregisterModule(this.moduleStateName);
     }
   };
 </script>
