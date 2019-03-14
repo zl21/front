@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapMutations } from 'vuex';
   import buttonGroup from './button';
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
@@ -234,8 +234,11 @@
       
 
       // 表单操作
+      getTableQuery() {
+        this.getTableQueryForForm(this.searchData);
+      },
       formDataChange(data, item) {
-        console.log(data, item);
+        this.updateFormData(data);
       },
       
     },
@@ -243,6 +246,7 @@
       // 记录模块名
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+      this.getTableQuery();
       this.getQueryList();
     },
     activated() {

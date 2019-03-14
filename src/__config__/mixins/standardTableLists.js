@@ -1,4 +1,4 @@
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
 import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
 
@@ -9,7 +9,8 @@ const getComponentName = () => {
 
 export default () => ({
   methods: {
-    ...mapActions(getComponentName(), ['getQueryListForAg']),
+    ...mapActions(getComponentName(), ['getQueryListForAg', 'getTableQueryForForm']),
+    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists'])
   },
   computed: {
     ...mapState(getComponentName(), {
@@ -21,7 +22,9 @@ export default () => ({
         'show-elevator': true,
         'show-sizer': true,
         'show-total': true
-      })
+      }),
+      formItems: ({ formItems }) => formItems,
+      buttons: ({ buttons }) => buttons
     }),
   },
 });

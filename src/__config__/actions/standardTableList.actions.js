@@ -13,4 +13,14 @@ export default {
       commit('updateTableData', updateTableData);
     });
   },
+  getTableQueryForForm({ commit }, { table }) {
+    network.post('/p/cs/getTableQuery', urlSearchParams({
+      table,
+      getcmd: 'y'
+    })).then((res) => {
+      // const updateTableData = res.data.data;
+      // commit('updateTableData', updateTableData);
+      console.log(res);
+    });
+  }
 };
