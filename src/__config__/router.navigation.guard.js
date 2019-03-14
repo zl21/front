@@ -8,7 +8,7 @@ export default (router) => {
     if (/\/SYSTEM\/TABLE\//.test(to.path)) {
       const { tableName, tableId } = to.params;
       const { commit } = store;
-      const { keepAliveLists, openedMenuLists, againClickOpenedMenuLists } = store.state.global;
+      const { keepAliveLists, openedMenuLists } = store.state.global;
 
       const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 
