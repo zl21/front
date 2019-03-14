@@ -6,6 +6,7 @@ export default () => ({
   state: {
     ag: {
       datas: {},
+      status4css: [], // 图例数据
     },
     formItems: {
       data: {}, // 整个表单的数据对象

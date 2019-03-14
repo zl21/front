@@ -18,12 +18,13 @@
 </template>
 
 <script>
-  import { mapActions, mapMutations } from 'vuex';
-  import buttonGroup from './button';
+  import { mapActions } from 'vuex';
+  import buttonGroup from './buttonComponent';
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
   import itemComponent from './itemComponent';
   import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+
 
   export default {
     components: {
@@ -210,7 +211,12 @@
               }
             }
           }
-        ]
+        ],
+
+        param: {
+          id: '',
+          tablename: '',
+        },
       };
     },
 
@@ -249,13 +255,13 @@
       this.getTableQuery();
       this.getQueryList();
     },
+    
     activated() {
       const { tableId } = this.$route.params;
       this.updateAccessHistory({ type: 'table', id: tableId });
     },
-    beforeDestroy() {
-      this.$store.unregisterModule(this.moduleStateName);
-    }
+
+
   };
 </script>
 

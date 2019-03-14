@@ -73,7 +73,6 @@
   </div>
 </template>
 <script>
-  // import datevue from '../components/tablelist/date.vue';
   // import buttonmap from '../assets/js/buttonmap';
   // import ChineseDictionary from '../assets/js/ChineseDictionary';
 
@@ -82,40 +81,7 @@
     props: {
       dataArray: {
         type: Object,
-        default: {
-        // waList: { // 动作定义按钮
-        //   type: Boolean,
-        //   default: false
-        // },
-        // actionCollection: { // 是否收藏
-        //   type: Boolean,
-        //   default: false
-        // },
-        // AddDetail: {// 基本操作按钮
-        //   type: Boolean,
-        //   default: false
-        // },
-        // printValue: {// 是否有打印
-        //   type: Boolean,
-        //   default: false
-        // },
-        // waListButtons: { // 自定义按钮数据
-        //   type: Array,
-        //   default: () => [{
-
-        //   },
-        //   ]
-        // },
-        // buttonGroupShow: {// 标准按钮数据
-        //   type: Array,
-        //   default: () => [
-        //     {
-
-        //     }
-        //   ]
-        // },
-
-        }
+        default: () => ({})
       }
 
     },
@@ -191,6 +157,7 @@
       };
     },
     methods: {
+      
       AddDetails(obj) {
         console.log(1);
       },

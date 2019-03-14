@@ -18,9 +18,11 @@ export default {
       table,
       getcmd: 'y'
     })).then((res) => {
-      // const updateTableData = res.data.data;
-      // commit('updateTableData', updateTableData);
-      console.log(res);
+      const queryData = res.data.data;
+      commit('updateButtonsTabcmd', queryData.tabcmd);
+      commit('updateButtonWaListButtons', queryData.waListButtons);
+      commit('updateTableStatus4css', queryData.datas.status4css);
+      commit('updateDefaultFormItemsLIsts', queryData.datas.dataarry);
     });
   }
 };
