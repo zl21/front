@@ -38,15 +38,19 @@ export default {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
-  increaseOpenedMenuLists(state, { label, keepAliveModuleName }) {
+  increaseOpenedMenuLists(state, {
+    label, keepAliveModuleName, type, id, tableName
+  }) {
     if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
       state.openedMenuLists.forEach((d) => { d.isActive = false; });
-
       state.openedMenuLists = state.openedMenuLists.concat([{
         label,
         keepAliveModuleName,
         routeFullPath: router.currentRoute.fullPath,
         isActive: true,
+        type,
+        id,
+        tableName
       }]);
     }
   },
@@ -71,15 +75,15 @@ export default {
     state.openedMenuLists = [];
     state.keepAliveLists = [];
   },
-  selectKeepAliveList(state, path) {
-    let component = null;
-    component = `${path.keepAliveModuleName}`;
-    state.keepAliveLists.forEach((element, index) => {
-      if (element === component) {
-        state.keepAliveLists.splice(index, 1);
-      }
-    });
-  }, 
+  // selectKeepAliveList(state, path) {
+  //   let component = null;
+  //   component = `${path.keepAliveModuleName}`;
+  //   state.keepAliveLists.forEach((element, index) => {
+  //     if (element === component) {
+  //       state.keepAliveLists.splice(index, 1);
+  //     }
+  //   });
+  // }, 
   againClickOpenedMenuLists(state, { label, keepAliveModuleName }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -120,6 +124,7 @@ export default {
     }
   }, // 关闭当前tab
   switchActiveTab(state, tab) {
+    console.log('花花给你', tab);
     const openedMenuLists = state.openedMenuLists;
     openedMenuLists.forEach((element, index) => {
       element.isActive = false;
@@ -127,6 +132,24 @@ export default {
         state.activeTab = state.openedMenuLists[index];
       }
     });
-    Object.assign(state.activeTab, { isActive: true });
-  }
+    state.activeTab.isActive = true;
+    // Object.assign(state.activeTab, { isActive: true });
+
+
+    if (tab.type === 'singleView' || tab.type === 'singleObject') {
+      const component = tab.routeFullPath;
+      const index = state.excludedComponents.indexOf(component);
+      if (index > -1) {
+        state.excludedComponents.splice(index, 1);
+      }
+    }
+  },
+  addExcludedComponents(state, tab) {
+    let component = null;
+    component = `${tab.type}.${tab.name}.${tab.id}`;
+    if (state.excludedComponents.indexOf(component) === -1) {
+      state.excludedComponents.push(component);
+    }
+  },
+
 };
