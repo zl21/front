@@ -146,9 +146,14 @@
             field: current.colname,
             value: current.default,
             props: {},
-            event: {},
+            event: {
+              keydown: (event, $this) => {
+                console.log(event, $this);
+              } 
+            },
             validate: {}
           };
+          // 带有combobox的添加到options属性中
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
               sum.push({
@@ -171,6 +176,7 @@
         const arr = JSON.parse(JSON.stringify(this.formLists));
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
+          temp.item.event = this.formLists[index].item.event;
           return temp;
         });
         this.lists = arr;

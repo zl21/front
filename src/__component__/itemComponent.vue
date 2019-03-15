@@ -164,8 +164,8 @@
       _items() {
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
-        item.props = Object.assign(dataProp[item.type].props, item.props);
-        item.event = Object.assign({}, item.event);
+        item.props = Object.assign(dataProp[item.type].props, this.items.props);
+        item.event = Object.assign({}, this.items.event);
         return item;
       }
     },

@@ -29,6 +29,7 @@
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
         arr.map((temp, index) => {
           temp.component = this.formItemLists[index].component;
+          temp.item.event = this.formItemLists[index].item.event;
           return temp;
         });
         return arr;
