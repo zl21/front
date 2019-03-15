@@ -124,7 +124,6 @@ export default {
     }
   }, // 关闭当前tab
   switchActiveTab(state, tab) {
-    console.log('花花给你', tab);
     const openedMenuLists = state.openedMenuLists;
     openedMenuLists.forEach((element, index) => {
       element.isActive = false;

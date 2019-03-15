@@ -22,7 +22,18 @@ export default () => ({
       // formObj_tableid: this.$route.params.tableId,
       errorData: [], // 弹框内容
       excludedComponents: [], // 针对性缓存相应的组件
-
+      dataArray: {
+        printValue: false,
+        waListButtonsConfig: {
+          waListButtons: []
+        },
+        buttonGroupShowConfig: {
+          buttonGroupShow: []
+        },
+        btnclick: (type, item) => {
+          this.AddDetail(type, item);
+        }
+      },
       
     }
   },

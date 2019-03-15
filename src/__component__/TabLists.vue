@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="openedMenuLists.length > 0"
+    ref="openedMenuLists"
     class="openedMenuLists"
   >
     <span
@@ -15,11 +16,13 @@
       >
     </span>
     <ul
+      ref="tabList"
       class="tab-list"
     >
       <a
         v-for="(tag, index) in openedMenuLists"
         :key="index"
+        ref="tabBox"
         :class="{active:tag.isActive === true}"
         class="tabBox"
         :title="tag.label"
@@ -87,27 +90,22 @@
       openedMenuLists: {
         handler(val) {
           this.$nextTick(() => {
-            const tabOpenedMenuLists = document.getElementsByClassName('openedMenuLists')[0];
-            const tabOpenedMenuListsTabListA = document.getElementsByClassName('tabBox');
-            let length = 0;
-            let width = 0;
+            const tabOpenedMenuLists = this.$refs.openedMenuLists;
             if (tabOpenedMenuLists) {
-              length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122); // 总长减去垃圾桶和2个箭头的宽度/每个tab的宽    计算当前宽度能放几个tab标签
-              width = tabOpenedMenuLists.offsetWidth - 75;// 当前页面总宽
-            }
-            const tagWidth = this.openedMenuLists.length * 122;// 获取到tab的数量*每个tab的宽度=当前所占的总宽度
-            const left = Math.abs(tagWidth - width);// 绝对值     计算出当没超出的时候剩余多少宽，超出之后超出了多少宽
-            let i = 0;
-            const TabListA = tabOpenedMenuListsTabListA.length;
-            if (val.length > length) { // 判断如果超出当前tab盒子的总宽
-              this.clickShow = true;
-              for (i = 0; i < TabListA; i++) {
-                tabOpenedMenuListsTabListA[i].style.left = `-${left}px`;
-              }
-            } else {
-              this.clickShow = false;
-              for (i = 0; i < TabListA; i++) {
-                tabOpenedMenuListsTabListA[i].style.left = '0px';
+              const length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122); 
+              const width = tabOpenedMenuLists.offsetWidth - 75;
+              const tagWidth = this.openedMenuLists.length * 122;
+              const left = Math.abs(tagWidth - width);
+              if (val.length > length) {
+                this.clickShow = true;
+                this.$refs.tabBox.forEach((item) => { 
+                  item.style.left = `-${left}px`; 
+                });
+              } else {
+                this.clickShow = false;
+                this.$refs.tabBox.forEach((item) => { 
+                  item.style.left = '0px';
+                });
               }
             }
           });
@@ -151,32 +149,27 @@
       },
 
       prevClick() {
-        let i = 0;
-        const domAll = document.getElementsByClassName('tabBox');
-        const domAllLength = domAll.length;
-        for (i = 0; i < domAllLength; i++) {
-          const tabBoxRight = Number(domAll[i].style.left.replace('px', '').replace('-', '')) - 122;
+        this.$refs.tabBox.forEach((item) => { 
+          const tabBoxRight = Number(item.style.left.replace('px', '').replace('-', '')) - 122;
           if (tabBoxRight < 0) {
-            domAll[i].style.left = '0px';
+            item.style.left = '0px';
           } else {
-            domAll[i].style.left = `-${tabBoxRight}px`;
+            item.style.left = `-${tabBoxRight}px`;
           }
-        }
+        });
       },
       nextClick() {
-        let i = 0;
-        const domAll = document.getElementsByClassName('tabBox');
-        const domWidth = document.getElementsByClassName('tab-list')[0].offsetWidth;
+        const tabBoxs = this.$refs.tabBox;
+        const domWidth = this.$refs.tabList.offsetWidth;
         const tabWidth = this.openedMenuLists.length * 122;
-        const domAllLength = domAll.length;
-        for (i = 0; i < domAllLength; i++) {
-          const tabBoxLeft = Number(domAll[i].style.left.replace('px', '').replace('-', '')) + 122;
+        tabBoxs.forEach((item) => {
+          const tabBoxLeft = Number(item.style.left.replace('px', '').replace('-', '')) + 122;
           if (tabBoxLeft >= (tabWidth - domWidth)) {
-            domAll[i].style.left = `-${tabWidth - domWidth}px`;
+            item.style.left = `-${tabWidth - domWidth}px`;
           } else {
-            domAll[i].style.left = `-${tabBoxLeft}px`;
+            item.style.left = `-${tabBoxLeft}px`;
           }
-        }
+        });
       },
     }
   };

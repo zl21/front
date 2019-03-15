@@ -1,8 +1,4 @@
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
 export default {
   updateTableData({
     ag
@@ -26,14 +22,6 @@ export default {
   }, data) {
     formItems.data = data;
   },
-<<<<<<< HEAD
-  updateCurrentFormItemsLists({
-    formItems
-  }, data) {
-    formItems.formItemsLIsts = data;
-  },
-=======
->>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
 
   // 按钮组
   updateButtonsTabcmd({
@@ -44,8 +32,14 @@ export default {
   updateButtonWaListButtons({
     buttons
   }, data) {
-    buttons.waListButtons = data;
+    buttons.dataArray.waListButtonsConfig.waListButtons = data;
   },
+  updateDefaultButtonGroupData({ buttons }, data) {
+    buttons.dataArray.buttonGroupShowConfig.buttonGroupShow.push(
+      data
+    );
+  },
+ 
   /**
    * 当前页跳转
    * @param state
@@ -62,7 +56,7 @@ export default {
    */
   TabHref(state, tab) {
     // 清除keep-alive
-    const excludedComponents = this.state.global.openedMenuLists;
+    const excludedComponents = this.state.global.excludedComponents;
 
     if (!tab.back) {
       const component = `${tab.type}.${tab.name}.${tab.id}`;
@@ -76,7 +70,6 @@ export default {
 
       if (excludedComponents.indexOf(component) < 0) {
         excludedComponents.push(component);
-        console.log('判断是否是新增', excludedComponents);
       }
     }
 
@@ -114,10 +107,7 @@ export default {
 
 
     const front = window.appInstance.$route.path.split('/')[1];
-    console.log('🎀', front);
-    console.log('🦋', tab);
     tab.path = `/${front}/${tab.url}`;
-    console.log('🐬', tab.path);
 
     // 移除当前tab
     const activeTab = state.activeTab;

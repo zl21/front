@@ -1,6 +1,6 @@
 <template>
   <div class="StandardTableListRootDiv">
-    <buttonGroup :data-array="dataArray" />
+    <buttonGroup :data-array=" buttons.dataArray" />
     <FormItemComponent
       ref="FormItemComponent"
       :form-item-lists="lists"
@@ -37,137 +37,12 @@
     data() {
       return {
         buttonMap: '', // 按钮字典
-        dataArray: {
-          printValue: false,
-          waListButtonsConfig: {
-            waListButtons: []
-          },
-          buttonGroupShowConfig: {
-            buttonGroupShow: []
-          },
-          btnclick: (type, item) => {
-            this.AddDetail(type, item);
-          }
-        },
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
           range: 10
         },
-<<<<<<< HEAD
-        lists: [
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'input', // 必填!
-              // label名称
-              title: '商品名称', // 必填!
-              // 字段名称
-              field: 'goods_name', // 必填!
-              // input值
-              value: '1',
-              props: {},
-              event: {},
-              // 校验规则  默认onchage
-              validate: {
-                // 动态计算key
-                dynamicforcompute: {
-                  // 逻辑运算key
-                  refcolumns: ['is_postage', 'cate_id'],
-                  // 被计算字段（目标）
-                  computecolumn: 'goods_name',
-                  // 中间函数
-                  express: 'is_postage + cate_id'
-                },
-                // 提示信息
-                tip: '',
-                // 触发方法
-                trigger: ''
-              }
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            // 字段名称
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'checkbox', // 必填!
-              // label名称
-              title: '是否包邮', // 必填!
-              // 字段名称
-              field: 'is_postage', // 必填!
-              // input值
-              value: false,
-              props: {},
-              validate: {
-                hidecolumn: {
-                  refcolumn: 'cate_name',
-                  refval: '2'
-                }
-              }
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'select', // 必填!
-
-              // label名称
-              title: '产品分类', // 必填!
-              // 字段名称
-              field: 'cate_id', // 必填!
-              // input值
-              value: '',
-              options: [
-                { value: '104', label: '生态蔬菜', disabled: false },
-                { value: '105', label: '新鲜水果', disabled: false }
-              ],
-              props: {
-                type: 'datetimerange'
-              },
-              validate: [
-              // 校验规则  默认onchage
-              ]
-            }
-          },
-          {
-            row: 1,
-            col: 1,
-            component: itemComponent,
-            item: {
-              // item 类型
-              type: 'DropDownSelectFilter', // 必填!
-              // label名称
-              title: '产品name', // 必填!
-              // 字段名称
-              field: 'cate_name', // 必填!
-              // input值
-              value: '',
-              props: {},
-              validate: {
-              // // 隐藏字段
-              // hidecolumn: {
-              //   // 逻辑运算key
-              //   refcolumn: ['cate_name'],
-              //   // 隐藏条件 value值
-              //   refval: '2'
-              // }
-              }
-            }
-          }
-        ],
-
-=======
         lists: [],
->>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
         param: {
           id: '',
           tablename: ''
@@ -204,13 +79,11 @@
         }
       };
     },
-<<<<<<< HEAD
-    computed: {},
-=======
     computed: {
       formLists() {
         // 对获取的数据进行处理
         let items = [];
+
         items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLIsts)).reduce((array, current) => {
           const obj = {};
           function checkDisplay(item) {
@@ -259,6 +132,7 @@
             validate: {}
           };
           // 带有combobox的添加到options属性中
+
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
               sum.push({
@@ -267,12 +141,12 @@
               });
               return sum;
             }, []);
-
             obj.item.options = arr;
           }
           array.push(obj);
           return array;
         }, []);
+
         return items;
       }
     },
@@ -287,7 +161,6 @@
         this.lists = arr;
       }
     },
->>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       getQueryList() {
@@ -325,13 +198,11 @@
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str === 'CMD_PRINT') {
-                this.dataArray.printValue = true;
+                this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
-                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(
-                  buttonConfigInfo
-                );
+                this.updateDefaultButtonGroupData(buttonConfigInfo);
               }
             }
           });
@@ -601,7 +472,6 @@
       t = setTimeout(() => {
         // 初始化按钮组数据
         this.getbuttonGroupdata();
-        this.dataArray.waListButtonsConfig.waListButtons = this.buttons.waListButtons;
       }, 1000);
     },
 
