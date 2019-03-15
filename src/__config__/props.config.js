@@ -93,7 +93,7 @@ const select = {
     // 是否禁用
     disabled: false,
     // 是否可以清空选项，只在单选时有效
-    clearable: false,
+    clearable: true,
     // 选择框大小，可选值为large、small、default或者不填
     size: 'default', 
     // 选择框默认文字
@@ -268,7 +268,6 @@ const AttachFilter = {
   title: '', // 必填!
   value: '',
   props: {
-    value: '13123',
     // 是否显示气泡提示框 true、false
     optionTip: true,
     // 是否显示输入完成后是否禁用 true、false
@@ -284,7 +283,8 @@ const AttachFilter = {
     // 定义选中展示的文字的key
     columns: [],
     // 配置弹窗的配置项 model
-    dialog: null
+    dialog: null,
+    datalist: []
   }
 };
 

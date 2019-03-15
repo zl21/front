@@ -107,6 +107,7 @@
         // 对获取的数据进行处理
         let items = [];
         items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLIsts)).reduce((array, current) => {
+          const obj = {};
           function checkDisplay(item) {
             let str = '';
             if (!item.display || item.display === 'text') {
@@ -115,18 +116,27 @@
             if (item.display === 'OBJ_SELECT') {
               str = 'select';
             }
-
             if (item.display === 'OBJ_FK') {
-              if (item.fkobj.fkdisplay === 'drp') {
+              switch (item.fkobj.searchmodel) {
+              case 'drp':
                 str = 'DropDownSelectFilter';
-              } else {
+                break;
+              case 'mrp':
+                str = 'DropDownSelectFilter';
+                break;
+              case 'pop':
                 str = 'AttachFilter';
+                break;
+              case 'mop':
+                str = 'AttachFilter';
+                break;
+              default: break;
               }
             }
 
             return str;
           }
-          const obj = {};
+          
           obj.row = current.row ? current.row : 1;
           obj.col = current.col ? current.col : 1;
           obj.component = itemComponent;
@@ -164,7 +174,6 @@
           return temp;
         });
         this.lists = arr;
-        console.log(this.lists);
       }
     },
     methods: {

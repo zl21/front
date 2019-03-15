@@ -138,7 +138,7 @@
       inputChange(value, items, index) {
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;
-        this.formDataChange();
+        this.newFormItemLists = this.newFormItemLists.concat([]);
       },
       dynamicforcompute(items, json, index) {
         // 被计算 属性 加减乘除

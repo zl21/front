@@ -42,7 +42,7 @@
 
       <Select
         v-if="_items.type === 'select'"
-        :value="_items.value"
+        v-model="_items.value"
         :clearable="_items.props.clearable"
         :multiple="_items.props.multiple"
         :multiple-type="_items.props.multipleType"
@@ -122,7 +122,6 @@
       <AttachFilter
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
-        :value="_items.props.value"
         :option-tip="_items.props.optionTip"
         :show="_items.props.show"
         :filter-tip="_items.props.filterTip"
@@ -131,7 +130,8 @@
         :auot-data="_items.props.AuotData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
-        @on-keydown="attachFilterKeyDown"
+        :datalist="_items.props.datalist"
+        @on-change="attachFilterChange"
       />
     </div>
   </div>
@@ -234,12 +234,14 @@
 
       // select input
       selectChange(value, $this) {
+        this._items.value = value;
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
           this._items.event.change(value, $this);
         }
       },
       selectClear($this) {
+        this._items.value = [];
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
           this._items.event.clear($this);
@@ -300,8 +302,12 @@
       },
 
       // AttachFilter event
-      attachFilterKeyDown(value, $this) {
-        console.log(value, $this, this._items.value);
+      attachFilterChange(value, $this) {
+        this._items.value = value;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
+          this._items.event.change(value, $this);
+        }
       }
     },
     created() {
