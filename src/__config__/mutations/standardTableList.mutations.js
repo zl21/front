@@ -1,4 +1,8 @@
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
 export default {
   updateTableData({
     ag
@@ -22,11 +26,14 @@ export default {
   }, data) {
     formItems.data = data;
   },
+<<<<<<< HEAD
   updateCurrentFormItemsLists({
     formItems
   }, data) {
     formItems.formItemsLIsts = data;
   },
+=======
+>>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
 
   // 按钮组
   updateButtonsTabcmd({

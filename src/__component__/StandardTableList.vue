@@ -54,6 +54,7 @@
           startIndex: 0,
           range: 10
         },
+<<<<<<< HEAD
         lists: [
           {
             row: 1,
@@ -164,6 +165,9 @@
           }
         ],
 
+=======
+        lists: [],
+>>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
         param: {
           id: '',
           tablename: ''
@@ -200,7 +204,90 @@
         }
       };
     },
+<<<<<<< HEAD
     computed: {},
+=======
+    computed: {
+      formLists() {
+        // 对获取的数据进行处理
+        let items = [];
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLIsts)).reduce((array, current) => {
+          const obj = {};
+          function checkDisplay(item) {
+            let str = '';
+            if (!item.display || item.display === 'text') {
+              str = 'input';
+            }
+            if (item.display === 'OBJ_SELECT') {
+              str = 'select';
+            }
+            if (item.display === 'OBJ_FK') {
+              switch (item.fkobj.searchmodel) {
+              case 'drp':
+                str = 'DropDownSelectFilter';
+                break;
+              case 'mrp':
+                str = 'DropDownSelectFilter';
+                break;
+              case 'pop':
+                str = 'AttachFilter';
+                break;
+              case 'mop':
+                str = 'AttachFilter';
+                break;
+              default: break;
+              }
+            }
+
+            return str;
+          }
+          
+          obj.row = current.row ? current.row : 1;
+          obj.col = current.col ? current.col : 1;
+          obj.component = itemComponent;
+          obj.item = {
+            type: checkDisplay(current),
+            title: current.coldesc,
+            field: current.colname,
+            value: current.default,
+            props: {},
+            event: {
+              keydown: (event, $this) => {
+                console.log(event, $this);
+              } 
+            },
+            validate: {}
+          };
+          // 带有combobox的添加到options属性中
+          if (current.combobox) {
+            const arr = current.combobox.reduce((sum, item) => {
+              sum.push({
+                label: item.limitdesc,
+                value: item.limitval
+              });
+              return sum;
+            }, []);
+
+            obj.item.options = arr;
+          }
+          array.push(obj);
+          return array;
+        }, []);
+        return items;
+      }
+    },
+    watch: {
+      formLists() {
+        const arr = JSON.parse(JSON.stringify(this.formLists));
+        arr.map((temp, index) => {
+          temp.component = this.formLists[index].component;
+          temp.item.event = this.formLists[index].item.event;
+          return temp;
+        });
+        this.lists = arr;
+      }
+    },
+>>>>>>> 50e873e9ac62cf22b289cd57f18205c19c0f230b
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       getQueryList() {
