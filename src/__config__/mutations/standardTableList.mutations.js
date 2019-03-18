@@ -9,8 +9,8 @@ export default {
   },
 
   // 表单
-  updateDefaultFormItemsLIsts({ formItems }, data) {
-    formItems.defaultFormItemsLIsts = data;
+  updateDefaultFormItemsLists({ formItems }, data) {
+    formItems.defaultFormItemsLists = data;
   },
   updateFormData({ formItems }, data) {
     formItems.data = data;

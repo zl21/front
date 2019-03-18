@@ -95,11 +95,7 @@
           startIndex: 0,
           range: 10
         },
-        lists: [],
-        param: {
-          id: '',
-          tablename: '',
-        },
+        lists: []
       };
     },
     computed: {

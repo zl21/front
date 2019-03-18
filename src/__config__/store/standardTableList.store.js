@@ -10,7 +10,7 @@ export default () => ({
     },
     formItems: {
       data: {}, // 整个表单的数据对象
-      defaultFormItemsLIsts: [], // 整个表单请求的item数组
+      defaultFormItemsLists: [], // 整个表单请求的item数组
     },
     buttons: {
       tabcmd: {},
