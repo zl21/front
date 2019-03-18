@@ -31,10 +31,14 @@ export default () => ({
           buttonGroupShow: []
         },
         btnclick: (type, item) => {
-          this.AddDetail(type, item);
+          const self = this;
+          return self.AddDetail(type, item);
         }
       },
-      
+      selectIdArr: [], // 保存选中的数据id
+      selectArr: [], // 保存选中数据全部信息
+      dynamicRequestUrl: {},
+      searchobj: {}, // 查询条件
     }
   },
   actions,

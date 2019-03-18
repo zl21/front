@@ -39,10 +39,20 @@ export default {
       data
     );
   },
- 
+  onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
+    buttons.selectIdArr = rowIdArray;
+    buttons.selectArr = rowArray;
+  },
+  deleteTableData({ ag, buttons }) {
+    // ag.selectIdArr.forEach((item, index) => {
+    //   if (_self.sysmentArr.indexOf(item) >= 0) {
+    //     _self.selectSysment.push(item);
+    //   }
+   
+  },
   /**
    * 当前页跳转
-   * @param state
+   * @param state //
    * @param tab
    * {
    *    back: 是否为返回
@@ -106,14 +116,15 @@ export default {
     // 判断前缀 /m 或 /iframe
 
 
-    const front = window.appInstance.$route.path.split('/')[1];
-    tab.path = `/${front}/${tab.url}`;
+    // const front = window.appInstance.$route.path.split('/')[1];
+    // tab.path = `/${front}/${tab.url}`;
 
     // 移除当前tab
     const activeTab = state.activeTab;
-    const selectTabs = state.selectedTabs;
+    const selectTabs = this.state.global.openedMenuLists;
 
     // 判断原始链接来源,没有就赋值
+    console.log('🌹', tab);
     if (!tab.orgTab) tab.orgTab = activeTab.orgTab;
 
     let has = false;

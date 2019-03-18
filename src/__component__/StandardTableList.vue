@@ -1,6 +1,9 @@
 <template>
   <div class="StandardTableListRootDiv">
-    <buttonGroup :data-array=" buttons.dataArray" />
+    <buttonGroup
+      :data-array=" buttons.dataArray"
+      @buttonClick="AddDetail"
+    />
     <FormItemComponent
       ref="FormItemComponent"
       :form-item-lists="lists"
@@ -13,6 +16,7 @@
       :datas="ag.datas"
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
+      :on-selection-changed="onSelectionChanged"
     />
   </div>
 </template>
@@ -36,47 +40,15 @@
     },
     data() {
       return {
-        buttonMap: '', // 按钮字典
+        // buttonMap: '', // 按钮字典
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
           range: 10
         },
         lists: [],
-        param: {
-          id: '',
-          tablename: ''
-        },
-        // 按钮
-        detailState: true, // 是否可以双击查看或点击序号查看
-        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
-        selectIdArr: [], // 保存选中的数据id
-        dataConShow: {// 批量修改
-          dataConShow: false,
-          title: '',
-          tabConfig: {},
-          fixedcolumns: {},
-          reffixedcolumns: {},
-        },
-        formObj: {
-          table: '',
-          column_include_uicontroller: true,
-          fixedcolumns: {},
-          multiple: [],
-        }, // 查询条件
-        treeObj: {
-          table: '',
-          column_include_uicontroller: true,
-          fixedcolumns: {},
-          operator: 2,
-        }, // 查询条件
-        exportQuery: {
-          searchdata: '',
-          filename: '',
-          filetype: '.xlsx',
-          showColumnName: true,
-          menu: ''
-        }
+    
+       
       };
     },
     computed: {
@@ -208,6 +180,9 @@
           });
         }
       },
+      onSelectionChanged(rowIdArray, rowArray) {
+        this.onSelectionChangedAssignment({ rowIdArray, rowArray });
+      },
       AddDetail(type, obj) {
         const { tableName, tableId } = this.$route.params;
         // 双击条状判断
@@ -280,17 +255,20 @@
 
             if (obj.name === this.buttonMap.CMD_DELETE.name) {
               // 删除动作  对用网络请求
-              this.dynamicRequestUrl.delete = obj.requestUrlPath;
+            
 
-              if (this.selectIdArr.length > 0) {
+              if (this.buttons.selectIdArr.length > 0) {
                 const data = {
                   message: `确认执行${obj.name}?`
                 };
-                this.errorData = data;
-                this.errorDialog = true;
-                this.errorDialogClass = 'warning';
-                this.errorDialogTitle = this.ChineseDictionary.WARNING;
-                this.errorDialogBack = true;
+                // console.log(data);
+                this.deleteTableList(obj);
+                // this.getQueryList();
+                // this.errorData = data;
+                // this.errorDialog = true;
+                // this.errorDialogClass = 'warning';
+                // this.errorDialogTitle = this.ChineseDictionary.WARNING;
+                // this.errorDialogBack = true;
               } else {
                 const data = {
                   message: `请先选择需要${obj.name}的记录！`
@@ -308,7 +286,7 @@
             if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
               // 批量提交
               this.dynamicRequestUrl.submit = obj.requestUrlPath;
-              if (this.selectIdArr.length > 0) {
+              if (this.buttons.selectIdArr.length > 0) {
                 const data = {
                   message: `确认执行${obj.name}?`
                 };
@@ -333,7 +311,7 @@
 
             if (obj.name === this.buttonMap.CMD_VOID.name) {
               // 批量作废
-              if (this.selectIdArr.length > 0) {
+              if (this.buttons.selectIdArr.length > 0) {
                 // this.errorTable = {}
                 const data = {
                   message: `确认执行${obj.name}?`
@@ -359,7 +337,7 @@
 
             if (obj.name === this.buttonMap.CMD_UNSUBMIT.name) {
               // 批量反提交
-              if (this.selectIdArr.length > 0) {
+              if (this.buttons.selectIdArr.length > 0) {
                 // this.errorTable = {}
 
                 const data = {
@@ -386,7 +364,7 @@
 
             if (obj.name === this.buttonMap.CMD_EXPORT.name) {
               // 导出
-              if (this.selectIdArr.length == 0) {
+              if (this.buttons.selectIdArr.length == 0) {
                 //  searchdata.fixedcolumns = {}
                 const data = {
                   message:
@@ -402,6 +380,7 @@
 
                 return;
               }
+              this.batchExport();
             }
 
             if (obj.name === this.buttonMap.CMD_IMPORT.name) {
@@ -414,7 +393,7 @@
               // 批量修改
               this.dataConShow.fixedcolumns = this.getJson();
               this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
-              if (this.selectIdArr.length > 0) {
+              if (this.buttons.selectIdArr.length > 0) {
                 this.dataConShow.dataConShow = true;
                 this.dataConShow.title = this.$store.state.activeTab.label;
                 this.dataConShow.tabConfig = {
@@ -422,7 +401,7 @@
                   tablename: this.param.tablename,
                   tableid: formObj_tableid,
                   tabrelation: '1:1',
-                  objid: this.selectIdArr
+                  objid: this.buttons.selectIdArr
                 };
               } else {
                 const data = {
@@ -447,19 +426,35 @@
       batchExport() {
         const { tableName } = this.$route.params;
         // 导出
-        const searchdata = {
+        const searchData = {
           table: tableName,
           column_include_uicontroller: true,
-          fixedcolumns: { ID: this.selectIdArr },
+          fixedcolumns: { ID: this.buttons.selectIdArr },
           range: 10,
-          startIndex: 0
+          startindex: 0,
         };
-        if (this.selectIdArr.length === 0) {
+        const OBJ = {
+          searchdata: searchData,
+          filename: tableName,
+          filetype: '.xlsx',
+          showColumnName: true,
+          menu: tableName,
+        };
+        if (this.buttons.selectIdArr.length === 0) {
           delete this.formObj.fixedcolumns.ID;
-          searchdata.reffixedcolumns = this.treeObj.fixedcolumns;
-        }
-        this.getExportQueryForButtons(this.searchdata);
-      }
+          searchData.reffixedcolumns = this.treeObj.fixedcolumns;
+        } 
+        this.getExportQueryForButtons(OBJ);
+      },
+      deleteTableList(obj) {
+        const { tableName } = this.$route.params;
+        this.buttons.dynamicRequestUrl.delete = obj.requestUrlPath;
+        const objQuery = {
+          tableName,
+          ids: this.buttons.selectIdArr.map(d => parseInt(d))
+        };
+        this.getBatchDeleteForButtons(objQuery);
+      },
     },
     mounted() {
       // 记录模块名

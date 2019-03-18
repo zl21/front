@@ -25,14 +25,26 @@ export default {
       commit('updateDefaultFormItemsLIsts', queryData.datas.dataarry);
     });
   },
-  getExportQueryForButtons({ table }) {
-    console.log(888, table);
+  getExportQueryForButtons({ commit }, {
+    searchdata, filename, filetype, showColumnName, menu
+  }) {
     network.post('/p/cs/export', urlSearchParams({
-      table,
+      searchdata, filename, filetype, showColumnName, menu
     })).then((res) => {
-      if (res.code === 0) {
-        network.get(`/p/cs/download?filename=${res.data}`,);
+      if (res.data.code === 0) {
+        const path = `/p/cs/download?filename=${res.data.data}`;
+        network.get(path);
+        alert('导出成功');
       }
     });
-  }
+  },
+  getBatchDeleteForButtons({ commit }, tableName) {
+    network.post('/p/cs/batchDelete', urlSearchParams({
+      tableName
+    })).then((res) => {
+      const deleteTableData = res.data.data;
+      commit('deleteTableData', deleteTableData);
+    });
+  },
+
 };

@@ -166,8 +166,9 @@
       };
     },
     methods: {
+
       btnclick(type, item) {
-        this.dataArray.btnclick(type, item);
+        this.$emit('buttonClick', type, item);
       },
     },
    
