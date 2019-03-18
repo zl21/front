@@ -9,8 +9,8 @@ const getComponentName = () => {
 
 export default () => ({
   methods: {
-    ...mapActions(getComponentName(), ['getQueryListForAg', 'getTableQueryForForm']),
-    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists'])
+    ...mapActions(getComponentName(), ['getQueryListForAg', 'getTableQueryForForm', 'getExportQueryForButtons']),
+    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists', 'TabHref', 'updateDefaultButtonGroupData']),
   },
   computed: {
     ...mapState(getComponentName(), {

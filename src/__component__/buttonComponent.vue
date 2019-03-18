@@ -9,20 +9,22 @@
         v-text="search"
       />
       <Button
-        v-for="(item, index) in dataArray.buttonGroupShow"
+        v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :key="index"
+        :ref="item.ref"
         type="warning"
-        ghost
-        @click="AddDetails(item)"
-        v-text="item.name"
+        ghost 
+        @click="btnclick('fix', item)"
+        v-text="item.name" 
       />
       <Button
-        v-for="(item, index) in dataArray.waListButtons"
+        v-for="(item, index) in dataArray.waListButtonsConfig.waListButtons"
         :key="item.webid"
+        :ref="item.ref"
         type="warning"
-        ghost
-        @click="webaction(item)"
-        v-text="item.webdesc"
+        ghost 
+        @click="btnclick('custom', item)"
+        v-text="item.webdesc" 
       />
       <Dropdown
         v-if="dataArray.printValue"
@@ -72,9 +74,8 @@
     </div>
   </div>
 </template>
-<script>
-  // import buttonmap from '../assets/js/buttonmap';
-  // import ChineseDictionary from '../assets/js/ChineseDictionary';
+<script> 
+  
 
   export default {
     name: 'ButtonList',
@@ -82,12 +83,13 @@
       dataArray: {
         type: Object,
         default: () => ({})
-      }
-
+      },
+     
     },
-    components: {
-    },
+    components: {},
+  
     mounted() {
+     
     },
     data() {
       return {
@@ -98,22 +100,24 @@
         // buttonMap: '', // 按钮字典
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
-        importData: { // 导出提示
+        importData: {
+          // 导出提示
           importDialog: false,
           importDialogTitle: '',
           mainTable: this.$route.query.tableName,
-          mainId: this.$route.query.id,
+          mainId: this.$route.query.id
         },
         dataConShow: {
           dataConShow: false,
           title: '',
           tabConfig: {},
           fixedcolumns: {},
-          reffixedcolumns: {},
+          reffixedcolumns: {}
         },
         objTableUrl: '', // 判断双击跳转是否是单对象
         errorData: [], // 弹框内容
-        printList: [// 打印列表
+        printList: [
+          // 打印列表
           {
             vuedisplay: 'dialog',
             confirm: '{"isselect":true,"nodesc":"请先选择需要打印的记录！"}',
@@ -153,29 +157,20 @@
             cuscomponent: null,
             ishide: false
           }
-        ] // 打印选择列表
+        ], // 打印选择列表
+        searchData: {
+          table: this.$route.params.tableName,
+          startIndex: 0,
+          range: 10
+        },
       };
     },
     methods: {
-      
-      AddDetails(obj) {
-        console.log(1);
+      btnclick(type, item) {
+        this.dataArray.btnclick(type, item);
       },
-      collectTablelist() {
-        console.log(1);
-      },
-      closeDialog() {
-        console.log(1);
-      },
-      buttonConfirm() {
-        console.log(1);
-      }
     },
-    created() {
-      // const _self = this;
-      // _self.buttonMap = buttonmap;
-      // _self.ChineseDictionary = ChineseDictionary;
-    },
+   
   };
 </script>
 
@@ -201,20 +196,20 @@
     text-align: right;
     font-size: 0;
     overflow: hidden;
-     flex-wrap: wrap ;
-     .burgeon-select-dropdown{
+    flex-wrap: wrap;
+    .burgeon-select-dropdown {
       top: 131px !important;
-       .burgeon-dropdown-menu{
-         min-width: 58px;
-         .burgeon-dropdown-item{
-           padding: 5px 6px;
-         }
-         .burgeon-dropdown-item:hover {
-            background-color: #ecf5ff;
-            color: #66b1ff;
+      .burgeon-dropdown-menu {
+        min-width: 58px;
+        .burgeon-dropdown-item {
+          padding: 5px 6px;
         }
-       }
-     }
+        .burgeon-dropdown-item:hover {
+          background-color: #ecf5ff;
+          color: #66b1ff;
+        }
+      }
+    }
     .ff--el-dropdown {
       float: left;
     }

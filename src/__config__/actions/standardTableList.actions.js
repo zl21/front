@@ -24,5 +24,15 @@ export default {
       commit('updateTableStatus4css', queryData.datas.status4css);
       commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
     });
+  },
+  getExportQueryForButtons({ table }) {
+    console.log(888, table);
+    network.post('/p/cs/export', urlSearchParams({
+      table,
+    })).then((res) => {
+      if (res.code === 0) {
+        network.get(`/p/cs/download?filename=${res.data}`,);
+      }
+    });
   }
 };

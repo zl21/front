@@ -26,7 +26,11 @@ export default (router) => {
             clearInterval(tempInterval);
             commit('global/increaseOpenedMenuLists', {
               label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
-              keepAliveModuleName
+              keepAliveModuleName,
+              type: to.path.split('/')[2],
+              id: tableId,
+              tableName
+              
             });
           }
         }, 50);

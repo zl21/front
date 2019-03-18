@@ -1,15 +1,20 @@
 <template>
-  <div class="navigator-sub-menu" @click.stop>
+  <div
+class="navigator-sub-menu"
+       @click.stop
+>
     <ul
-      class="menu-group"
       v-for="(subMenu, index) in data"
       :key="`subMenu-${index}`"
+      class="menu-group"
     >
-      <li class="title">{{ subMenu.label }}</li>
+      <li class="title">
+        {{ subMenu.label }}
+      </li>
       <li
-        class="item"
         v-for="(endMenu, endIndex) in subMenu.children"
         :key="`endMenu-${endIndex}`"
+        class="item"
         @click="routeTo(endMenu)"
       >
         {{ endMenu.label }}
