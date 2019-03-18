@@ -27,6 +27,7 @@
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
+  import fkQueryList from '../constants/fkHttpRequest';
 
   export default {
     components: {
@@ -83,8 +84,7 @@
       formLists() {
         // 对获取的数据进行处理
         let items = [];
-
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current) => {
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
           function checkDisplay(item) {
             let str = '';
@@ -127,7 +127,20 @@
             event: {
               keydown: (event, $this) => {
                 console.log(event, $this);
-              } 
+              },
+              'popper-show': ($this) => {
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true, 
+                    refcolid: current.colid, 
+                    startindex: 0, 
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    $this.$props.data = res.data.data;
+                  }
+                });
+              }
             },
             validate: {}
           };
