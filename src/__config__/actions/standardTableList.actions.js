@@ -22,7 +22,7 @@ export default {
       commit('updateButtonsTabcmd', queryData.tabcmd);
       commit('updateButtonWaListButtons', queryData.waListButtons);
       commit('updateTableStatus4css', queryData.datas.status4css);
-      commit('updateDefaultFormItemsLIsts', queryData.datas.dataarry);
+      commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
     });
   },
   getExportQueryForButtons({ commit }, {

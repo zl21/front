@@ -26,7 +26,7 @@
   import buttonGroup from './buttonComponent';
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
-  import itemComponent from './itemComponent';
+  import ItemComponent from './ItemComponent';
   import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
@@ -56,7 +56,7 @@
         // 对获取的数据进行处理
         let items = [];
 
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLIsts)).reduce((array, current) => {
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current) => {
           const obj = {};
           function checkDisplay(item) {
             let str = '';
@@ -89,7 +89,7 @@
           
           obj.row = current.row ? current.row : 1;
           obj.col = current.col ? current.col : 1;
-          obj.component = itemComponent;
+          obj.component = ItemComponent;
           obj.item = {
             type: checkDisplay(current),
             title: current.coldesc,
