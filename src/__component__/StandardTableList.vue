@@ -3,7 +3,7 @@
     <buttonGroup :data-array=" buttons.dataArray" />
     <FormItemComponent
       ref="FormItemComponent"
-      :form-item-lists="lists"
+      :form-item-lists="formItemsLists"
       :default-column="4"
       @formDataChange="formDataChange"
     />
@@ -27,6 +27,7 @@
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
+  import fkQueryList from '../constants/fkHttpRequest';
 
   export default {
     components: {
@@ -42,7 +43,7 @@
           startIndex: 0,
           range: 10
         },
-        lists: [],
+        formItemsLists: [],
         param: {
           id: '',
           tablename: ''
@@ -83,8 +84,7 @@
       formLists() {
         // 对获取的数据进行处理
         let items = [];
-
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current) => {
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
           function checkDisplay(item) {
             let str = '';
@@ -127,7 +127,20 @@
             event: {
               keydown: (event, $this) => {
                 console.log(event, $this);
-              } 
+              },
+              'popper-show': ($this) => {
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true, 
+                    refcolid: current.colid, 
+                    startindex: 0, 
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              }
             },
             validate: {}
           };
@@ -158,7 +171,7 @@
           temp.item.event = this.formLists[index].item.event;
           return temp;
         });
-        this.lists = arr;
+        this.formItemsLists = arr;
       }
     },
     methods: {
@@ -180,11 +193,15 @@
       },
 
       // 表单操作
-      getTableQuery() {
+      getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
-      formDataChange(data) {
+      formDataChange(data) { // 表单数据修改
         this.updateFormData(data);
+      },
+      freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
+        this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
       },
 
       // 按钮组操作

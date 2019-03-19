@@ -257,7 +257,9 @@ const DropDownSelectFilter = {
     // 无数据的时候提示
     dataEmptyMessage: '暂无数据',
     // 下拉多选 默认选中数据
-    defaultSelected: []
+    defaultSelected: [],
+    // 是否将弹层放置于 body 内
+    transfer: true
   }
 };
 
