@@ -50,7 +50,7 @@ export default () => ({
       objTableUrl: '', // 判断双击跳转是否是单对象
       activeTabAction: {},
       exeActionData: {},
-      getActionData: {}
+      getActionData: {},
     }
   },
   actions,

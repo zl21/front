@@ -10,7 +10,7 @@ const getComponentName = () => {
 export default () => ({
   methods: {
     ...mapActions(getComponentName(), ['getQueryListForAg', 'getTableQueryForForm', 'getExportQueryForButtons', 'getBatchDeleteForButtons', 'getExeActionDataForButtons', 'getToFavoriteDataForButtons', 'getRemoveFavoriteDataForButtons']),
-    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists', 'TabHref', 'updateDefaultButtonGroupData', 'deleteTableData', 'onSelectionChangedAssignment', 'setActiveTabActionValue', 'updateButtonExeActionData', 'collectTablelist', 'updateButtonSetFavoriteData']),
+    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists', 'TabHref', 'updateDefaultButtonGroupData', 'deleteTableData', 'onSelectionChangedAssignment', 'setActiveTabActionValue', 'updateButtonExeActionData', 'collectTablelist', 'updateButtonSetFavoriteData', 'setActiveTabActionValue']),
   },
   computed: {
     ...mapState(getComponentName(), {
