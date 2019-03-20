@@ -100,8 +100,10 @@
             inputname: current.inputname,
             props: {},
             event: {
-              keydown: (event, $this) => { // 输入框的keydown
-                console.log(event, $this);
+              keydown: (event) => { // 输入框的keydown event, $this
+                if (event.keyCode === 13) { // enter回车查询
+                  this.searchClickData();
+                }
               },
               'popper-show': ($this) => { // 当外键下拉站开始去请求数据
                 fkQueryList({
@@ -116,7 +118,7 @@
                   }
                 });
               },
-              inputValueChange: (value, $this) => {
+              inputValueChange: (value) => {
                 fkFuzzyquerybyak({
                   searchObject: {
                     ak: value,
@@ -153,6 +155,7 @@
                 });
                 return sum;
               }, []));
+              return item;
             });
             obj.item.options = sumArray;
           }
@@ -179,8 +182,7 @@
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
-
-        this.getQueryListForAg(this.searchData);
+        this.searchClickData();
       },
       onPageChange(page) {
         const { range } = this.searchData;
@@ -198,7 +200,9 @@
         this.getTableQueryForForm(this.searchData);
       },
       formDataChange(data) { // 表单数据修改
-        this.updateFormData(data);
+        if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
+          this.updateFormData(data);
+        }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
@@ -793,11 +797,12 @@
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
-      this.getQueryList();
+      
       let t;
       clearTimeout(t);
       t = setTimeout(() => { // 初始化按钮组数据
         this.getbuttonGroupdata();
+        this.getQueryList();
       }, 1000);
     },
 

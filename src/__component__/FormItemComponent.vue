@@ -132,17 +132,22 @@
                 delete obj[current.item.field];
                 obj[current.item.inputname] = current.item.value;
               }
-            } else { // 不为外键则直接生成对应项
+            } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
+              obj[current.item.field] = undefined;
+            } else {
               obj[current.item.field] = current.item.value;
             }
           } else if (current.item.value) { // 处理多个select合并
             obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
-              const key = item.split('|')[0];
-              const value = item.split('|')[1];
-              if (!objData[key]) {
-                objData[key] = [];
+              if (item !== 'bSelect-all') {
+                const key = item.split('|')[0];
+                const value = item.split('|')[1];
+                if (!objData[key]) {
+                  objData[key] = [];
+                }
+                objData[key].push(value);
               }
-              objData[key].push(value);
+              
               return objData;
             }, {}));
           }

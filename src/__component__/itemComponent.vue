@@ -308,6 +308,9 @@
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
           this._items.event.clear($this);
         }
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
+          this._items.event.inputValueChange('', $this);
+        }
       },
       pageChange(value, $this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange') && typeof this._items.event.pageChange === 'function') {
