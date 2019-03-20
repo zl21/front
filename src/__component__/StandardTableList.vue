@@ -8,6 +8,7 @@
       ref="FormItemComponent"
       :form-item-lists="formItemsLists"
       :default-column="4"
+      :searchFoldnum = "formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -47,7 +48,7 @@
           range: 10
         },
         formItemsLists: [],
-       
+
       };
     },
     computed: {
@@ -87,7 +88,7 @@
 
             return str;
           }
-          
+
           obj.row = current.row ? current.row : 1;
           obj.col = current.col ? current.col : 1;
           obj.component = ItemComponent;
@@ -104,9 +105,9 @@
               'popper-show': ($this) => {
                 fkQueryList({
                   searchObject: {
-                    isdroplistsearch: true, 
-                    refcolid: current.colid, 
-                    startindex: 0, 
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
                     range: $this.pageSize
                   },
                   success: (res) => {
@@ -729,7 +730,7 @@
         if (this.buttons.selectIdArr.length === 0) {
           delete this.formObj.fixedcolumns.ID;
           searchData.reffixedcolumns = this.treeObj.fixedcolumns;
-        } 
+        }
         this.getExportQueryForButtons(OBJ);
       },
       deleteTableList(obj) {
@@ -754,7 +755,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-     
+
     },
     mounted() {
       // 记录模块名
