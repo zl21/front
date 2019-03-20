@@ -13,17 +13,10 @@ export default () => ({
       defaultFormItemsLists: [], // 整个表单请求的item数组
     },
     buttons: {
-      tabcmd: {},
-      waListButtons: [],
-      query: {// 页面跳转参数
-        id: '',
-        name: ''
-      },
-      // formObj_tableid: this.$route.params.tableId,
-      errorData: [], // 弹框内容
-      excludedComponents: [], // 针对性缓存相应的组件
       dataArray: {
         printValue: false,
+        actionCollection: true,
+        collectiImg: false, // 是否收藏
         waListButtonsConfig: {
           waListButtons: []
         },
@@ -32,13 +25,32 @@ export default () => ({
         },
         btnclick: (type, item) => {
           const self = this;
-          return self.AddDetail(type, item);
+          return self.buttonClick(type, item);
         }
       },
+      
+      tabcmd: {},
+      waListButtons: [],
+      query: {// 页面跳转参数
+        id: '',
+        name: ''
+      },
+      tableName: '',
+      tableId: '',
+      // formObj_tableid: this.$route.params.tableId,
+      errorData: [], // 弹框内容
+      excludedComponents: [], // 针对性缓存相应的组件
       selectIdArr: [], // 保存选中的数据id
       selectArr: [], // 保存选中数据全部信息
       dynamicRequestUrl: {},
       searchobj: {}, // 查询条件
+      isFold: false,
+      isBig: false,
+      isSolr: false, // 合计是否同时在检索中请求
+      objTableUrl: '', // 判断双击跳转是否是单对象
+      activeTabAction: {},
+      exeActionData: {},
+      getActionData: {}
     }
   },
   actions,

@@ -83,7 +83,7 @@
     },
     computed: {
       ...mapState('global', {
-        openedMenuLists: ({ openedMenuLists }) => openedMenuLists
+        openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
       }),
     },
     watch: {
@@ -123,9 +123,6 @@
         this.removeKeepAlivePages(tag);
         self.$store.commit('global/TabCloseAppoint', tag);
       }, // 关闭当前tab
-      // removeKeepAlivePages(path) { 
-      //   this.$store.commit('global/selectKeepAliveList', path);
-      // },
       removeKeepAlivePages(info) {
         const pageType = this.$route.path.split('/')[2];
         if (pageType === 'TABLE') {
@@ -171,7 +168,8 @@
           }
         });
       },
-    }
+    },
+  
   };
 </script>
 

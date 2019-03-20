@@ -52,6 +52,15 @@ export default {
         id,
         tableName
       }]);
+      state.activeTab = {
+        id,
+        isActive: true,
+        keepAliveModuleName,
+        label,
+        routeFullPath: router.currentRoute.fullPath,
+        tableName,
+        type,
+      };
     }
   },
   updateActiveMenu({ openedMenuLists }, keepAliveModuleName) {
@@ -95,13 +104,7 @@ export default {
   TabCloseAppoint(state, tab) {
     const selectTabs = state.openedMenuLists;
     const tabRouteFullPath = tab.routeFullPath;
-    for (const index in selectTabs) {
-      if (selectTabs[index].routeFullPath === tab.routeFullPath) {
-        selectTabs.splice(index, 1);
-        break;
-      }
-    }
-    selectTabs.forEach(() => { // 关闭当前tab时始终打开的是最后一个tab
+    selectTabs.forEach((item, index) => {
       if (tabRouteFullPath) {
         if (selectTabs) {
           const lastLength = selectTabs.length - 1;
@@ -112,6 +115,13 @@ export default {
           });
         }
       }
+      if (item.routeFullPath === tab.routeFullPath) {
+        selectTabs.splice(index, 1);
+      }
+    });
+   
+    selectTabs.forEach(() => { // 关闭当前tab时始终打开的是最后一个tab
+      
     });
     if (selectTabs < 1) { // 判断当关闭全部tab页时清空路由
       state.activeTab = {
@@ -132,9 +142,6 @@ export default {
       }
     });
     state.activeTab.isActive = true;
-    // Object.assign(state.activeTab, { isActive: true });
-
-
     if (tab.type === 'singleView' || tab.type === 'singleObject') {
       const component = tab.routeFullPath;
       const index = state.excludedComponents.indexOf(component);
