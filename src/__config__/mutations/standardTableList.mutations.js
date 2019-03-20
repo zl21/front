@@ -1,3 +1,4 @@
+import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
 
 export default {
   updateTableData({
@@ -31,16 +32,77 @@ export default {
     buttons
   }, data) {
     buttons.dataArray.waListButtonsConfig.waListButtons = data;
+    const currentModuleName = this.state.global.activeTab.keepAliveModuleName;
+    let favorite = this.state.global.favorite;
+    favorite = favorite.map(item => `${STANDARD_TABLE_COMPONENT_PREFIX}.${item.value}.${item.id}`);
+    if (favorite.filter(d => d === currentModuleName).length > 0) {
+      buttons.dataArray.collectiImg = true;
+    }
   },
+  updateDefaultButtonsdatas({
+    buttons
+  }, data) {
+    buttons.isBig = data.isbig; // 是否为海量表
+    buttons.isSolr = data.isolr; // 是否获取合计
+    buttons.showBigDefaultIcon = data.isbig;
+    buttons.tabledesc = buttons.tabcmd.desc;
+    buttons.tableId = data.tableid;
+    buttons.tableName = data.table;
+    // 双击条状判断
+    buttons.objTableUrl = data.tableurl;
+  },
+  setActiveTabActionValue({
+    buttons
+  }, obj) {
+    buttons.activeTabAction = obj;
+  },
+  updateButtonExeActionData({ buttons }, data) {
+    buttons.ExeActionData = data;
+  },
+  updateButtonGetActionData({ buttons }, data) {
+    buttons.ExeActionData = data;
+  },
+  collectTablelist({ buttons }) {
+    // buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
+  },
+  updateButtonSetFavoriteData({ buttons }, data) {
+    if (data.code === 0) {
+      // if(type==="addRemoveFavorite"){
+
+      // }
+      buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
+
+      this.state.favorite = data.data;
+    }
+  },
+  // updateButtonRemoveFavoriteData({ buttons }, data) {
+  //   if (data.code === 0) {
+  //     this.state.favorite = data.data;
+  //   }
+  // },
+  // setQueryForButtons({
+  //   buttons
+  // }, { tableName, tableId }) {
+  //   buttons.tableId = tableId;
+  //   buttons.tableName = tableName;
+  // },
   updateDefaultButtonGroupData({ buttons }, data) {
-    buttons.dataArray.buttonGroupShowConfig.buttonGroupShow.push(
-      data
-    );
+    buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
- 
+  onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
+    buttons.selectIdArr = rowIdArray;
+    buttons.selectArr = rowArray;
+  },
+  deleteTableData({ ag, buttons }) {
+    // ag.selectIdArr.forEach((item, index) => {
+    //   if (_self.sysmentArr.indexOf(item) >= 0) {
+    //     _self.selectSysment.push(item);
+    //   }
+   
+  },
   /**
    * 当前页跳转
-   * @param state
+   * @param state //
    * @param tab
    * {
    *    back: 是否为返回
@@ -104,14 +166,15 @@ export default {
     // 判断前缀 /m 或 /iframe
 
 
-    const front = window.appInstance.$route.path.split('/')[1];
-    tab.path = `/${front}/${tab.url}`;
+    // const front = window.appInstance.$route.path.split('/')[1];
+    // tab.path = `/${front}/${tab.url}`;
 
     // 移除当前tab
     const activeTab = state.activeTab;
-    const selectTabs = state.selectedTabs;
+    const selectTabs = this.state.global.openedMenuLists;
 
     // 判断原始链接来源,没有就赋值
+    console.log('🌹', tab);
     if (!tab.orgTab) tab.orgTab = activeTab.orgTab;
 
     let has = false;
