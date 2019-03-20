@@ -112,7 +112,7 @@
         :total-row-count="_items.props.totalRowCount"
         :page-size="_items.props.pageSize"
         :auto-data="_items.props.AutoData"
-        :columns="_items.props.columns"
+        :hidecolumns="_items.props.hidecolumns"
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"
         :transfer="_items.props.transfer"
@@ -124,6 +124,7 @@
         @on-keyup="fkrpSelectedInputKeyup"
         @on-keydown="fkrpSelectedInputKeydown"
         @on-popper-show="fkrpSelectedPopperShow"
+        @on-clear="fkrpSelectedClear"
       />
       <AttachFilter
         v-if="_items.type === 'AttachFilter'"
@@ -294,16 +295,26 @@
           this._items.event.fkrpSelected(value, $this);
         }
       },
-      pageChange(value, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange') && typeof this._items.event.pageChange === 'function') {
-          this._items.event.pageChange(value, $this);
-        }
-      },
       inputValueChange(value, $this) {
         this._items.value = value;
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
           this._items.event.inputValueChange(value, $this);
+        }
+      },
+      fkrpSelectedClear($this) {
+        this._items.value = undefined;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
+          this._items.event.clear($this);
+        }
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
+          this._items.event.inputValueChange('', $this);
+        }
+      },
+      pageChange(value, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange') && typeof this._items.event.pageChange === 'function') {
+          this._items.event.pageChange(value, $this);
         }
       },
       fkrpSelectedInputFocus(event, $this) {
