@@ -115,9 +115,15 @@
         :columns="_items.props.columns"
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"
+        :transfer="_items.props.transfer"
         @on-fkrp-selected="fkrpSelected"
         @on-page-change="pageChange"
         @on-input-value-change="inputValueChange"
+        @on-focus="fkrpSelectedInputFocus"
+        @on-blur="fkrpSelectedInputBlur"
+        @on-keyup="fkrpSelectedInputKeyup"
+        @on-keydown="fkrpSelectedInputKeydown"
+        @on-popper-show="fkrpSelectedPopperShow"
       />
       <AttachFilter
         v-if="_items.type === 'AttachFilter'"
@@ -298,6 +304,31 @@
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
           this._items.event.inputValueChange(value, $this);
+        }
+      },
+      fkrpSelectedInputFocus(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'focus') && typeof this._items.event.focus === 'function') {
+          this._items.event.focus(event, $this);
+        }
+      },
+      fkrpSelectedInputBlur(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
+          this._items.event.blur(event, $this);
+        }
+      },
+      fkrpSelectedInputKeyup(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keyup') && typeof this._items.event.keyup === 'function') {
+          this._items.event.keyup(event, $this);
+        }
+      },
+      fkrpSelectedInputKeydown(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keydown') && typeof this._items.event.keydown === 'function') {
+          this._items.event.keydown(event, $this);
+        }
+      },
+      fkrpSelectedPopperShow($this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
+          this._items.event['popper-show']($this);
         }
       },
 

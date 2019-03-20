@@ -6,7 +6,7 @@
     />
     <FormItemComponent
       ref="FormItemComponent"
-      :form-item-lists="lists"
+      :form-item-lists="formItemsLists"
       :default-column="4"
       @formDataChange="formDataChange"
     />
@@ -31,6 +31,7 @@
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
+  import fkQueryList from '../constants/fkHttpRequest';
 
   export default {
     components: {
@@ -45,8 +46,46 @@
           startIndex: 0,
           range: 10
         },
+<<<<<<< HEAD
         lists: [],
        
+=======
+        formItemsLists: [],
+        param: {
+          id: '',
+          tablename: ''
+        },
+        // 按钮
+        detailState: true, // 是否可以双击查看或点击序号查看
+        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
+        selectIdArr: [], // 保存选中的数据id
+        dataConShow: {// 批量修改
+          dataConShow: false,
+          title: '',
+          tabConfig: {},
+          fixedcolumns: {},
+          reffixedcolumns: {},
+        },
+        formObj: {
+          table: '',
+          column_include_uicontroller: true,
+          fixedcolumns: {},
+          multiple: [],
+        }, // 查询条件
+        treeObj: {
+          table: '',
+          column_include_uicontroller: true,
+          fixedcolumns: {},
+          operator: 2,
+        }, // 查询条件
+        exportQuery: {
+          searchdata: '',
+          filename: '',
+          filetype: '.xlsx',
+          showColumnName: true,
+          menu: ''
+        }
+>>>>>>> 9501683fd0ed298dafebee7d999d565800baf587
       };
     },
     computed: {
@@ -56,8 +95,7 @@
       formLists() {
         // 对获取的数据进行处理
         let items = [];
-
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current) => {
+        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
           function checkDisplay(item) {
             let str = '';
@@ -100,7 +138,20 @@
             event: {
               keydown: (event, $this) => {
                 console.log(event, $this);
-              } 
+              },
+              'popper-show': ($this) => {
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true, 
+                    refcolid: current.colid, 
+                    startindex: 0, 
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              }
             },
             validate: {}
           };
@@ -131,7 +182,7 @@
           temp.item.event = this.formLists[index].item.event;
           return temp;
         });
-        this.lists = arr;
+        this.formItemsLists = arr;
       }
     },
     methods: {
@@ -154,13 +205,21 @@
       },
 
       // 表单操作
-      getTableQuery() {
+      getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
-      formDataChange(data) {
+      formDataChange(data) { // 表单数据修改
         this.updateFormData(data);
       },
+<<<<<<< HEAD
       
+=======
+      freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
+        this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
+      },
+
+>>>>>>> 9501683fd0ed298dafebee7d999d565800baf587
       // 按钮组操作
       getbuttonGroupdata() {
         const tabcmdData = this.buttons.tabcmd;
