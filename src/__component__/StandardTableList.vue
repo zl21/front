@@ -46,10 +46,6 @@
           startIndex: 0,
           range: 10
         },
-<<<<<<< HEAD
-        lists: [],
-       
-=======
         formItemsLists: [],
         param: {
           id: '',
@@ -85,7 +81,6 @@
           showColumnName: true,
           menu: ''
         }
->>>>>>> 9501683fd0ed298dafebee7d999d565800baf587
       };
     },
     computed: {
@@ -238,9 +233,6 @@
       formDataChange(data) { // 表单数据修改
         this.updateFormData(data);
       },
-<<<<<<< HEAD
-      
-=======
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
         this.formItemsLists = this.formItemsLists.concat([]);
@@ -251,7 +243,6 @@
         this.formItemsLists = this.formItemsLists.concat([]);
       },
 
->>>>>>> 9501683fd0ed298dafebee7d999d565800baf587
       // 按钮组操作
       getbuttonGroupdata() {
         const tabcmdData = this.buttons.tabcmd;
