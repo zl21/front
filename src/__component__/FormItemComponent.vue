@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
   <div
     class="FormItemComponent"
@@ -122,7 +123,29 @@
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
         const formObj = this.newFormItemLists.reduce((obj, current) => {
-          obj[current.item.field] = current.item.value;
+          if (current.item.field) { // 当存在field时直接生成对象
+            if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
+              if (current.item.value instanceof Array) { // 结果为数组则为选中项
+                delete obj[current.item.inputname];
+                obj[current.item.field] = current.item.value.reduce((sum, temp) => { sum.push(temp.ID); return sum; }, []);
+              } else { // 否则为输入项
+                delete obj[current.item.field];
+                obj[current.item.inputname] = current.item.value;
+              }
+            } else { // 不为外键则直接生成对应项
+              obj[current.item.field] = current.item.value;
+            }
+          } else if (current.item.value) { // 处理多个select合并
+            obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
+              const key = item.split('|')[0];
+              const value = item.split('|')[1];
+              if (!objData[key]) {
+                objData[key] = [];
+              }
+              objData[key].push(value);
+              return objData;
+            }, {}));
+          }
           return obj;
         }, {});
         this.$emit('formDataChange', formObj, this.newFormItemLists[this.indexItem]);

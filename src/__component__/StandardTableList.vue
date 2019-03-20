@@ -27,7 +27,7 @@
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
-  import fkQueryList from '../constants/fkHttpRequest';
+  import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
 
   export default {
     components: {
@@ -86,6 +86,7 @@
         let items = [];
         items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
+          // 判断采用那种表现方式
           function checkDisplay(item) {
             let str = '';
             if (!item.display || item.display === 'text') {
@@ -123,12 +124,13 @@
             title: current.coldesc,
             field: current.colname,
             value: current.default,
+            inputname: current.inputname,
             props: {},
             event: {
-              keydown: (event, $this) => {
+              keydown: (event, $this) => { // 输入框的keydown
                 console.log(event, $this);
               },
-              'popper-show': ($this) => {
+              'popper-show': ($this) => { // 当外键下拉站开始去请求数据
                 fkQueryList({
                   searchObject: {
                     isdroplistsearch: true, 
@@ -140,12 +142,23 @@
                     this.freshDropDownSelectFilterData(res, itemIndex);
                   }
                 });
+              },
+              inputValueChange: (value, $this) => {
+                fkFuzzyquerybyak({
+                  searchObject: {
+                    ak: value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  }
+                });
               }
             },
             validate: {}
           };
           // 带有combobox的添加到options属性中
-
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
               sum.push({
@@ -155,6 +168,20 @@
               return sum;
             }, []);
             obj.item.options = arr;
+          }
+
+          if (current.conds && current.conds.length > 0) {
+            let sumArray = [];
+            current.conds.map((item) => {
+              sumArray = sumArray.concat(item.combobox.reduce((sum, temp) => {
+                sum.push({
+                  label: temp.limitdesc,
+                  value: `${item.colname}|${temp.limitval}`
+                });
+                return sum;
+              }, []));
+            });
+            obj.item.options = sumArray;
           }
           array.push(obj);
           return array;
@@ -201,6 +228,11 @@
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
+      },
+      freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
+        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
+        this.formItemsLists[index].item.props.AutoData = res.data.data;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
 
