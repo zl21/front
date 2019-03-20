@@ -47,40 +47,7 @@
           range: 10
         },
         formItemsLists: [],
-        param: {
-          id: '',
-          tablename: ''
-        },
-        // 按钮
-        detailState: true, // 是否可以双击查看或点击序号查看
-        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
-        selectIdArr: [], // 保存选中的数据id
-        dataConShow: {// 批量修改
-          dataConShow: false,
-          title: '',
-          tabConfig: {},
-          fixedcolumns: {},
-          reffixedcolumns: {},
-        },
-        formObj: {
-          table: '',
-          column_include_uicontroller: true,
-          fixedcolumns: {},
-          multiple: [],
-        }, // 查询条件
-        treeObj: {
-          table: '',
-          column_include_uicontroller: true,
-          fixedcolumns: {},
-          operator: 2,
-        }, // 查询条件
-        exportQuery: {
-          searchdata: '',
-          filename: '',
-          filetype: '.xlsx',
-          showColumnName: true,
-          menu: ''
-        }
+       
       };
     },
     computed: {
@@ -285,12 +252,12 @@
       webactionClick(type, obj) { // 点击自定义按钮 创建table
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
-          // this.buttons.activeTabAction = obj;
+          this.buttons.activeTabAction = obj;
           this.setActiveTabActionValue(obj);
-          if (obj.vuedisplay === 'native') { // 有url地址
-            location.href = obj.action;
-            return;
-          }
+          // if (obj.vuedisplay === 'native') { // 有url地址
+          //   location.href = obj.action;
+          //   return;
+          // }
           if (obj.vuedisplay === 'slient') { // 静默程序            if(obj.confirm){  //有提示
             if (obj.confirm) { // 有提示
               if (obj.confirm.indexOf('{') >= 0) {
@@ -399,7 +366,6 @@
             this.actionDialog.show = true;
             this.actionDialog.title = obj.webdesc;
             const componentName = obj.action.split('?')[0].replace(/\//g, '_');
-
             // Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
             this.dialogComponent = componentName;
           } else if (JSON.parse(obj.confirm).isselect) { // 是否是必选列表项, 动作定义根据列表是否选值
@@ -410,7 +376,6 @@
                   message: confirm.radiodesc,
                 };
                 console.log(data);
-
                 this.errorData = data;
                 this.errorDialog = true;
                 this.errorDialogClass = 'warning';
@@ -756,7 +721,7 @@
               this.dataConShow.tabConfig = {
                 tabledesc: this.$store.state.activeTab.label,
                 tablename: this.param.tablename,
-                tableid: formObj_tableid,
+                tableid: this.buttons.tableId,
                 tabrelation: '1:1',
                 objid: this.buttons.selectIdArr
               };
@@ -834,7 +799,6 @@
       clearTimeout(t);
       t = setTimeout(() => { // 初始化按钮组数据
         this.getbuttonGroupdata();
-        // this.dataArray.waListButtonsConfig.waListButtons = this.buttons.waListButtons;
       }, 1000);
     },
 

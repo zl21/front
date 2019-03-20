@@ -70,7 +70,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
+
   import router from '../__config__/router.config';
 
   export default {
@@ -113,27 +114,27 @@
       },
     },
     methods: {
+      ...mapMutations('global', ['switchActiveTab', 'TabCloseAppoint', 'addExcludedComponents', 'addExcludedComponents', 'emptyTabs']),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
-        this.$store.commit('global/switchActiveTab', tag);
+        this.switchActiveTab(tag);
         router.push({ path: tag.routeFullPath });
       },
       handleClose(tag) {
-        const self = this;
         this.removeKeepAlivePages(tag);
-        self.$store.commit('global/TabCloseAppoint', tag);
+        this.TabCloseAppoint(tag);
       }, // 关闭当前tab
       removeKeepAlivePages(info) {
         const pageType = this.$route.path.split('/')[2];
         if (pageType === 'TABLE') {
-          this.$store.commit('global/addExcludedComponents', {
+          this.addExcludedComponents({
             type: pageType,
             name: this.$route.path.split('/')[3],
             id: this.$route.params.tableId,
           });
         }
         if (pageType === 'singleView' || info.type === 'singleObject') {
-          this.$store.commit('global/addExcludedComponents', {
+          this.addExcludedComponents({
             type: pageType,
             name: this.$route.params.tableName,
             id: parseFloat(this.$route.params.tableId) === -1 ? this.$route.params.pid : this.$route.params.tableId,
@@ -142,7 +143,7 @@
       },
       emptyClick() {
         this.clickshow = false;
-        this.$store.commit('global/emptyTabs');
+        this.emptyTabs();
       },
 
       prevClick() {
