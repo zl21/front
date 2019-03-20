@@ -252,7 +252,6 @@
       webactionClick(type, obj) { // 点击自定义按钮 创建table
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
-          this.buttons.activeTabAction = obj;
           this.setActiveTabActionValue(obj);
           // if (obj.vuedisplay === 'native') { // 有url地址
           //   location.href = obj.action;

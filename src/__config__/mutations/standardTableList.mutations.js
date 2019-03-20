@@ -62,9 +62,9 @@ export default {
   updateButtonGetActionData({ buttons }, data) {
     buttons.ExeActionData = data;
   },
-  collectTablelist({ buttons }) {
-    // buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
-  },
+  // collectTablelist({ buttons }) {
+  //   // buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
+  // },
   updateButtonSetFavoriteData({ buttons }, data) {
     if (data.code === 0) {
       // if(type==="addRemoveFavorite"){
