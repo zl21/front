@@ -5,7 +5,7 @@
       <Button
         type="warning"
         class="searchButton"
-        @click="searchData('search')"
+        @click="btnclick('search')"
         v-text="search"
       />
       <Button
@@ -58,7 +58,7 @@
         v-if="dataArray.actionCollection"
         type="warning"
         ghost
-        @click="collectTablelist"
+        @click="btnclick('Collection')"
       >
         <span>
           <i
@@ -167,7 +167,7 @@
     },
     methods: {
       btnclick(type, item) {
-        this.dataArray.btnclick(type, item);
+        this.$emit('buttonClick', type, item);
       },
     },
    
