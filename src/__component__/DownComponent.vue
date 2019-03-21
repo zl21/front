@@ -78,6 +78,13 @@
     methods: {
       toggle() {
         this.dowClass = !this.dowClass;
+        // 调整ag表格高度
+        setTimeout(() => {
+          const detailTable = document.querySelector('.detailTable');
+          if (detailTable.agTable) {
+            detailTable.agTable.fixContainerHeight();
+          }
+        }, 300);
       }
     }
 
