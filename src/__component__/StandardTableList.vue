@@ -119,6 +119,19 @@
                   }
                 });
               },
+              'on-show': ($this) => { // 当外键下拉站开始去请求数据
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              },
               inputValueChange: (value) => {
                 fkFuzzyquerybyak({
                   searchObject: {
@@ -798,7 +811,7 @@
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
-      
+
       let t;
       clearTimeout(t);
       t = setTimeout(() => { // 初始化按钮组数据
