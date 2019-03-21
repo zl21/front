@@ -15,6 +15,7 @@ export default () => ({
     buttons: {
       dataArray: {
         printValue: false,
+       
         actionCollection: true,
         collectiImg: false, // 是否收藏
         waListButtonsConfig: {
@@ -51,6 +52,22 @@ export default () => ({
       activeTabAction: {},
       exeActionData: {},
       getActionData: {},
+      importData: {
+        // 导出提示
+        importDialog: false,
+        importDialogTitle: '',
+        // mainTable: this.$route.query.tableName,
+        // mainId: this.$route.query.id
+      },
+      importParameters: {},
+      importTemplate: {},
+      errorDialogBack: false, // 是否有返回按钮
+      errorDialogClass: '', // 弹框类型
+
+      errorDialog: '',
+      errorDialogTitle: '',
+
+
     }
   },
   actions,

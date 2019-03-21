@@ -40,7 +40,6 @@ export default {
       if (res.data.code === 0) {
         const path = `/p/cs/download?filename=${res.data.data}`;
         network.get(path);
-        alert('导出成功');
       }
     });
   },
@@ -48,8 +47,10 @@ export default {
     network.post('/p/cs/batchDelete', urlSearchParams({
       tableName
     })).then((res) => {
-      const deleteTableData = res.data.data;
-      commit('deleteTableData', deleteTableData);
+      if (res.data.code) {
+        const deleteTableData = res.data;
+        commit('deleteTableData', deleteTableData);
+      }
     });
   },
   
@@ -88,6 +89,24 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
+  importGetUploadParametersForButtons({ commit },) {
+    network.post('/p/cs/settings', urlSearchParams({
+      configNames: JSON.stringify(['upload.import.max-file-size'])
+    })).then((res) => {
+      const data = res.data;
+      commit('updateButtonImportGetUploadParameters', data);
+    });
+  },
+  downloadImportTemplateForButtons({ commit, buttons }) {
+    network.post('/p/cs/downloadImportTemplate', urlSearchParams({
+      searchdata: {
+        table: buttons.tableName,
+      },
+    })).then((res) => {
+      const data = res.data;
+      commit('updateButtonDownloadImportTemplate', data);
+    });
+  }
 
 
 };

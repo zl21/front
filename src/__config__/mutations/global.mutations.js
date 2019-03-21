@@ -39,25 +39,22 @@ export default {
     }
   },
   increaseOpenedMenuLists(state, {
-    label, keepAliveModuleName, type, id, tableName
+    label, keepAliveModuleName, type, id, tableName, routeFullPath
   }) {
     if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
       state.openedMenuLists.forEach((d) => { d.isActive = false; });
       state.openedMenuLists = state.openedMenuLists.concat([{
         label,
         keepAliveModuleName,
-        routeFullPath: router.currentRoute.fullPath,
+        routeFullPath,
         isActive: true,
-        type,
-        id,
-        tableName
       }]);
       state.activeTab = {
         id,
         isActive: true,
         keepAliveModuleName,
         label,
-        routeFullPath: router.currentRoute.fullPath,
+        routeFullPath,
         tableName,
         type,
       };
@@ -84,15 +81,6 @@ export default {
     state.openedMenuLists = [];
     state.keepAliveLists = [];
   },
-  // selectKeepAliveList(state, path) {
-  //   let component = null;
-  //   component = `${path.keepAliveModuleName}`;
-  //   state.keepAliveLists.forEach((element, index) => {
-  //     if (element === component) {
-  //       state.keepAliveLists.splice(index, 1);
-  //     }
-  //   });
-  // }, 
   againClickOpenedMenuLists(state, { label, keepAliveModuleName }) {
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
@@ -108,7 +96,7 @@ export default {
       if (tabRouteFullPath) {
         if (selectTabs) {
           const lastLength = selectTabs.length - 1;
-          state.activeTab = selectTabs[lastLength];
+          state.activeTab = selectTabs[lastLength];// 关闭当前tab时始终打开的是最后一个tab
           Object.assign(state.activeTab, { isActive: true });
           router.push({
             path: state.activeTab.routeFullPath,
@@ -118,10 +106,6 @@ export default {
       if (item.routeFullPath === tab.routeFullPath) {
         selectTabs.splice(index, 1);
       }
-    });
-   
-    selectTabs.forEach(() => { // 关闭当前tab时始终打开的是最后一个tab
-      
     });
     if (selectTabs < 1) { // 判断当关闭全部tab页时清空路由
       state.activeTab = {
@@ -150,12 +134,12 @@ export default {
       }
     }
   },
-  addExcludedComponents(state, tab) {
-    let component = null;
-    component = `${tab.type}.${tab.name}.${tab.id}`;
-    if (state.excludedComponents.indexOf(component) === -1) {
-      state.excludedComponents.push(component);
-    }
-  },
+  // addExcludedComponents(state, tab) {
+  //   let component = null;
+  //   component = `${tab.type}.${tab.name}.${tab.id}`;
+  //   if (state.excludedComponents.indexOf(component) === -1) {
+  //     state.excludedComponents.push(component);
+  //   }
+  // },
 
 };

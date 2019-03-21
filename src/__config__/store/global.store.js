@@ -12,9 +12,8 @@ export default {
     openedMenuLists: [],
     keepAliveLists: [],
     keepAliveLabelMaps: {},
-    selectedTabs: [], // 当前点击
     activeTab: {},
-    excludedComponents: []
+    // excludedComponents: []
   },
   mutations,
   actions,

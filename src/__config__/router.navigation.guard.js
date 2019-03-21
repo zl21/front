@@ -29,8 +29,8 @@ export default (router) => {
               keepAliveModuleName,
               type: to.path.split('/')[2],
               id: tableId,
-              tableName
-              
+              tableName,
+              routeFullPath: to.path
             });
           }
         }, 50);

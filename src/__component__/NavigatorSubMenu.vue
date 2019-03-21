@@ -1,8 +1,8 @@
 <template>
   <div
-class="navigator-sub-menu"
-       @click.stop
->
+    class="navigator-sub-menu"
+    @click.stop
+  >
     <ul
       v-for="(subMenu, index) in data"
       :key="`subMenu-${index}`"

@@ -3,8 +3,7 @@
     <div class="button-group">
       <!-- //查找 -->
       <Button
-        type="warning"
-        class="searchButton"
+        type="posdefault"
         @click="btnclick('search')"
         v-text="search"
       />
@@ -12,17 +11,15 @@
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :key="index"
         :ref="item.ref"
-        type="warning"
-        ghost 
+        type="fcdefault"
         @click="btnclick('fix', item)"
         v-text="item.name" 
       />
       <Button
-        v-for="(item, index) in dataArray.waListButtonsConfig.waListButtons"
+        v-for="(item) in dataArray.waListButtonsConfig.waListButtons"
         :key="item.webid"
         :ref="item.ref"
-        type="warning"
-        ghost 
+        type="fcdefault"
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
@@ -34,14 +31,13 @@
         type="primary"
         @click="webaction(printList[0])"
       >
-        <Button type="warning">
+        <Button type="fcdefault">
           打印
           <Icon type="ios-arrow-down" />
         </Button>
         <DropdownMenu slot="list">
           <DropdownItem
-            v-for="(item, index) of printList"
-            v-if="index !== 0"
+            v-for="(item) of printList"
             :key="item.webid"
           >
             {{ item.webdesc }}
@@ -56,8 +52,7 @@
       </Dropdown>
       <Button
         v-if="dataArray.actionCollection"
-        type="warning"
-        ghost
+        type="fcdefault"
         @click="btnclick('Collection')"
       >
         <span>
@@ -95,18 +90,8 @@
       return {
         search: '查找',
         errorDialog: false, // 消息弹框
-        // buttonMap: "", // 按钮字典
-        // ChineseDictionary: '', // 中英文转换
-        // buttonMap: '', // 按钮字典
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
-        importData: {
-          // 导出提示
-          importDialog: false,
-          importDialogTitle: '',
-          mainTable: this.$route.query.tableName,
-          mainId: this.$route.query.id
-        },
         dataConShow: {
           dataConShow: false,
           title: '',
@@ -180,21 +165,11 @@
   > div {
     display: inline-block;
   }
-
-  p {
-    line-height: 24px;
-    color: #0f8ee9;
-    display: inline-block;
-
-    &:hover {
-      cursor: pointer;
-    }
   }
   .button-group {
     display: flex;
     justify-content: flex-start;
     text-align: right;
-    font-size: 0;
     overflow: hidden;
     flex-wrap: wrap;
     .burgeon-select-dropdown {
@@ -204,10 +179,6 @@
         .burgeon-dropdown-item {
           padding: 5px 6px;
         }
-        .burgeon-dropdown-item:hover {
-          background-color: #ecf5ff;
-          color: #66b1ff;
-        }
       }
     }
     .ff--el-dropdown {
@@ -216,47 +187,20 @@
     button {
       height: 24px;
       line-height: 18px;
-      width: auto;
       margin-right: 8px;
       margin-left: 0px;
       padding: 0 8px;
-      background: #fff;
-      color: #fd6442;
-      border: 1px solid #fd6442;
-      border-radius: 2px;
-      font-size: 12px;
       margin-bottom: 4px;
     }
-
-    button:not(.searchButton) {
-      &:hover {
-        border-color: rgba(253, 100, 66, 0.6);
-        color: rgba(253, 100, 66, 0.6);
-      }
-    }
-    button.searchButton {
-      background-color: #fd6442;
-      border: 1px solid #fd6442;
-      color: white;
-      &:hover {
-        background-color: #e6502f;
-        color: #f3cec5;
-        border: 1px solid #e6502f;
-      }
-    }
-
     > button:last-child {
       margin-right: 0px;
     }
-
     .hiddenDropdown {
-      font-size: 12px;
       height: 24px;
-      box-sizing: border-box;
       button {
         margin-top: -1px;
       }
     }
   }
-}
+
 </style>

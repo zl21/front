@@ -114,33 +114,34 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['switchActiveTab', 'TabCloseAppoint', 'addExcludedComponents', 'addExcludedComponents', 'emptyTabs']),
+      ...mapMutations('global', ['switchActiveTab', 'TabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         this.switchActiveTab(tag);
         router.push({ path: tag.routeFullPath });
       },
       handleClose(tag) {
-        this.removeKeepAlivePages(tag);
+        // this.removeKeepAlivePages(tag);
         this.TabCloseAppoint(tag);
       }, // 关闭当前tab
-      removeKeepAlivePages(info) {
-        const pageType = this.$route.path.split('/')[2];
-        if (pageType === 'TABLE') {
-          this.addExcludedComponents({
-            type: pageType,
-            name: this.$route.path.split('/')[3],
-            id: this.$route.params.tableId,
-          });
-        }
-        if (pageType === 'singleView' || info.type === 'singleObject') {
-          this.addExcludedComponents({
-            type: pageType,
-            name: this.$route.params.tableName,
-            id: parseFloat(this.$route.params.tableId) === -1 ? this.$route.params.pid : this.$route.params.tableId,
-          });
-        }
-      },
+      // removeKeepAlivePages(info) {
+
+      //   const pageType = this.$route.path.split('/')[2];
+      //   if (pageType === 'TABLE') {
+      //     this.addExcludedComponents({
+      //       type: pageType,
+      //       name: this.$route.path.split('/')[3],
+      //       id: this.$route.params.tableId,
+      //     });
+      //   }
+      //   if (pageType === 'singleView' || info.type === 'singleObject') {
+      //     this.addExcludedComponents({
+      //       type: pageType,
+      //       name: this.$route.params.tableName,
+      //       id: parseFloat(this.$route.params.tableId) === -1 ? this.$route.params.pid : this.$route.params.tableId,
+      //     });
+      //   }
+      // },
       emptyClick() {
         this.clickshow = false;
         this.emptyTabs();
