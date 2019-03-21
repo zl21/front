@@ -104,7 +104,7 @@
       return {
         newFormItemLists: [],
         indexItem: -1,
-        setHeight: 33
+        setHeight: 34,
       };
     },
     mounted() {
@@ -176,7 +176,7 @@
                 }
                 objData[key].push(value);
               }
-              
+
               return objData;
             }, {}));
           }

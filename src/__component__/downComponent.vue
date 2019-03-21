@@ -20,7 +20,7 @@
     >
       {{ title }}<Icon :class="icon" />
     </div>
-    <div class="test-dwonContent">
+    <div :class="dwonContent">
       <slot name="dwonContent" />
     </div>
   </div>
@@ -66,10 +66,13 @@
         return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
       },
       dwonComponent() {
-        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight || 80}px; transition:height  0.5s;` : 'max-height:30000px; transition:height  0.5s;'}`;
+        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:height  0.5s;` : 'max-height:30000px; transition:height  0.5s;'}`;
       },
       icon() {
         return `${this.dowClass === false ? 'iconfont icon-triangle-copy-copy-copy1 ' : 'iconfont icon-triangle-copy-copy-copy1 icon-xiadown'}`;
+      },
+      dwonContent() {
+        return `${this.title ? 'down-contain ' : 'down-contain down-right'}`;
       }
     },
     methods: {
@@ -83,17 +86,16 @@
 
 <style lang="less">
     .dwonComponent{
-        margin-bottom: 10px;
         position: relative;
         border: 1px solid #d8d8d8;
         transition: height .5s;
         box-sizing: border-box;
         overflow: hidden;
-        height: 100px;
+        margin:0  17px;
+        padding-bottom: 8px;
     }
-    .dwonComponent-hide{
-        height: 300px;
-        transition: max-height 0.5s;
+    .down-right{
+        padding-right: 28px;
     }
     .tag-close{
         width: 28px;
