@@ -87,7 +87,7 @@ const select = {
   ],
   props: {
     // 是否支持多选
-    multiple: true, 
+    multiple: true,
     // 多选情况下的样式控制,只在multiple为true有效
     multipleType: false,
     // 是否禁用
@@ -95,17 +95,17 @@ const select = {
     // 是否可以清空选项，只在单选时有效
     clearable: true,
     // 选择框大小，可选值为large、small、default或者不填
-    size: 'default', 
+    size: 'default',
     // 选择框默认文字
-    placeholder: '请选择', 
+    placeholder: '请选择',
     // 当下拉列表为空时显示的内容
     'not-found-text': '无匹配数据',
     // 在返回选项时，是否将 label 和 value 一并返回，默认只返回 value
     'label-in-value': false,
     // 弹窗的展开方向，可选值为 bottom 和 top
-    placement: 'bottom', 
+    placement: 'bottom',
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
-    transfer: true, 
+    transfer: true,
   }
 };
 // 复选框组件
@@ -168,21 +168,21 @@ const checkbox = {
 // 日期选择
 const DatePicker = {
   type: 'DatePicker', // 必填!
-  field: 'section_day', // 必填!
+  field: '', // 必填!
   title: '活动日期', // 必填!
   // input值, type为daterange,datetimerange value为数组 [start_value,end_value]
   value: ['2018-02-20', new Date()],
   props: {
     // 显示类型，可选值为 date、daterange、datetime、datetimerange、year、month
-    type: 'datetimerange', // 必填!
+    type: 'date', // 必填!
     // 展示的日期格式
-    format: 'yyyy-MM-dd HH:mm:ss',
+    format: '',
     // 日期选择器出现的位置，可选值为toptop-starttop-endbottombottom-startbottom-endleftleft-startleft-endrightright-startright-end
     placement: 'bottom-start',
     // 占位文本
     placeholder: '请选择获得时间',
     // 选择器额外配置，比如不可选日期与快捷选项
-    options: null,
+    options: {},
     // 手动控制日期选择器的显示状态，true 为显示，false 为收起。使用该属性后，选择器不会主动关闭。建议配合 slot 及 confirm 和相关事件一起使用
     open: null,
     // 是否显示底部控制栏，开启后，选择完日期，选择器不会主动关闭，需用户确认后才可关闭

@@ -1,17 +1,17 @@
 import network, { urlSearchParams } from '../../__utils__/network';
 
 export default {
-  getQueryListForAg({ commit }, 
+  getQueryListForAg({ commit },
     {
-      table, startIndex, range, 
-      fixedcolumns 
+      table, startIndex, range,
+      fixedcolumns
     }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
         table,
         startindex: startIndex || 0,
         range: range || 10,
-        fixedcolumns 
+        fixedcolumns
       }
     })).then((res) => {
       const updateTableData = res.data.data;
@@ -29,6 +29,8 @@ export default {
       commit('updateTableStatus4css', queryData.datas.status4css);
       commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
       commit('updateDefaultButtonsdatas', queryData.datas);
+      commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+
     });
   },
   getExportQueryForButtons({ commit }, {
@@ -53,7 +55,7 @@ export default {
       }
     });
   },
-  
+
   getExeActionDataForButtons({ commit }, { item, obj }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,

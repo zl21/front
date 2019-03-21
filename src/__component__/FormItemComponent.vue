@@ -1,35 +1,50 @@
+/* eslint-disable no-console */
 <template>
-  <div
-    class="FormItemComponent"
-    :style="setWidth"
+  <DownComponent
+    :title="title"
+    :set-height="setHeight"
+    :search-foldnum="searchFoldnum"
   >
     <div
-      v-for="(item,index) in dataColRol"
-      v-show="item.show !== false"
-      :key="index"
-      :style="setDiv(item)"
+      slot="dwonContent"
+      class="FormItemComponent"
+      :style="setWidth"
     >
-      <component
-        :is="item.component"
-        :index="index"
-        :items="item.item"
-        @inputChange="inputChange"
-      />
+      <div
+        v-for="(item,index) in dataColRol"
+        v-show="item.show !== false"
+        :key="index"
+        class="FormItemComponent-item"
+        :style="setDiv(item)"
+      >
+        <component
+          :is="item.component"
+          :ref="'component_'+index"
+          :index="index"
+          :items="item.item"
+          @inputChange="inputChange"
+        />
+      </div>
     </div>
-  </div>
+  </DownComponent>
 </template>
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
+  import DownComponent from './DownComponent';
 
   export default {
     name: 'FormItemComponent',
+    components: {
+      DownComponent
+    },
     computed: {
       FormItemLists() {
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
         arr.map((temp, index) => {
           temp.component = this.formItemLists[index].component;
           temp.item.event = this.formItemLists[index].item.event;
+          temp.item.props = this.formItemLists[index].item.props;
           return temp;
         });
         return arr;
@@ -72,16 +87,31 @@
         default() {
           return [];
         }
+      },
+      searchFoldnum: {
+        type: [Number, String],
+        default() {
+          return 0;
+        }
+      },
+      title: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
       return {
         newFormItemLists: [],
-        indexItem: -1
+        indexItem: -1,
+        setHeight: 34,
       };
     },
+    mounted() {
+    },
     created() {
-      
+
     },
     watch: {
       FormItemLists: {
@@ -89,11 +119,11 @@
           this.newFormItemLists = val;
         },
         deep: true
-      },  
+      },
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {
-            return; 
+            return;
           }
 
           this.newFormItemLists.map((items, i) => {
@@ -121,11 +151,40 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        const formObj = this.newFormItemLists.reduce((obj, current) => {
-          obj[current.item.field] = current.item.value;
+        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+      },
+      dataProcessing() {
+        return this.newFormItemLists.reduce((obj, current) => {
+          if (current.item.field) { // 当存在field时直接生成对象
+            if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
+              if (current.item.value instanceof Array) { // 结果为数组则为选中项
+                delete obj[current.item.inputname];
+                obj[current.item.field] = current.item.value.reduce((sum, temp) => { sum.push(temp.ID); return sum; }, []);
+              } else { // 否则为输入项
+                delete obj[current.item.field];
+                obj[current.item.inputname] = current.item.value;
+              }
+            } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
+              obj[current.item.field] = undefined;
+            } else {
+              obj[current.item.field] = current.item.value;
+            }
+          } else if (current.item.value) { // 处理多个select合并
+            obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
+              if (item !== 'bSelect-all') {
+                const key = item.split('|')[0];
+                const value = item.split('|')[1];
+                if (!objData[key]) {
+                  objData[key] = [];
+                }
+                objData[key].push(value);
+              }
+
+              return objData;
+            }, {}));
+          }
           return obj;
         }, {});
-        this.$emit('formDataChange', formObj, this.newFormItemLists[this.indexItem]);
       },
       resetForm() { // 重置表单
         const arr = JSON.parse(JSON.stringify(this.formItemLists));

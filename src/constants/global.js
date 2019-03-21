@@ -1,3 +1,25 @@
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_SINGLE_OBJECT_PREFIX = '/SYSTEM/SINGLE-OBJECT';
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'StandardTable';
+
+export const enableGateWay = true;
+
+// 需要走全局公共网关的接口
+export const globalGateWay = [
+  '/p/cs/getSubSystems',
+  '/p/cs/hello',
+  '/p/cs/getHistoryAndFavorite',
+  '/p/cs/getParamList',
+  '/p/cs/setUserParam',
+  '/p/c/login',
+  '/p/cs/logout',
+  '/p/cs/removeFromFavorite',
+  '/p/cs/addToFavorite',
+  '/p/cs/getUserConfig',
+  '/p/cs/setColPosition'
+];
+
+// 不走网关的接口
+export const ignoreGateWay = [
+  '/p/c/get_service_id'
+];

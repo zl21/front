@@ -8,6 +8,7 @@
       ref="FormItemComponent"
       :form-item-lists="formItemsLists"
       :default-column="4"
+      :search-foldnum="formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -51,10 +52,10 @@
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
-  import fkQueryList from '../constants/fkHttpRequest';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-
+  import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
+  import { Capital } from '../constants/regExp';
 
   export default {
     components: {
@@ -79,10 +80,50 @@
         favorite: ({ favorite }) => favorite
       }),
       formLists() {
-        // 对获取的数据进行处理
+        return this.refactoringData(this.formItems.defaultFormItemsLists.concat([]));
+      }
+    },
+    watch: {
+      formLists() {
+        const arr = JSON.parse(JSON.stringify(this.formLists));
+        arr.map((temp, index) => {
+          temp.component = this.formLists[index].component;
+          temp.item.event = this.formLists[index].item.event;
+          temp.item.props = this.formLists[index].item.props;
+          return temp;
+        });
+        if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
+          this.formItemsLists = arr;
+        }
+      }
+    },
+    methods: {
+      ...mapActions('global', ['updateAccessHistory']),
+      getQueryList() {
+        const { agTableElement } = this.$refs;
+        agTableElement.showAgLoading();
+        this.searchClickData();
+      },
+      onPageChange(page) {
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        this.getQueryList();
+      },
+      onPageSizeChange(pageSize) {
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        this.getQueryList();
+      },
+
+      // 表单操作
+      refactoringData(defaultFormItemsLists) { // 对获取的数据进行处理
         let items = [];
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
+        if (this.formItemsLists.length > 0) {
+          return this.formItemsLists;
+        }
+        items = JSON.parse(JSON.stringify(defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
+          // 判断采用那种表现方式
           function checkDisplay(item) {
             let str = '';
             if (!item.display || item.display === 'text') {
@@ -108,10 +149,13 @@
               default: break;
               }
             }
+            if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
+              str = 'DatePicker';
+            }
 
             return str;
           }
-          
+
           obj.row = current.row ? current.row : 1;
           obj.col = current.col ? current.col : 1;
           obj.component = ItemComponent;
@@ -119,22 +163,50 @@
             type: checkDisplay(current),
             title: current.coldesc,
             field: current.colname,
-            value: current.default,
+            value: this.defaultValue(current),
+            inputname: current.inputname,
             props: {},
             event: {
-              keydown: (event, $this) => {
-                console.log(event, $this);
+              keydown: (event) => { // 输入框的keydown event, $this
+                if (event.keyCode === 13) { // enter回车查询
+                  this.searchClickData();
+                }
               },
-              'popper-show': ($this) => {
+              'popper-show': ($this) => { // 当外键下拉站开始去请求数据
                 fkQueryList({
                   searchObject: {
-                    isdroplistsearch: true, 
-                    refcolid: current.colid, 
-                    startindex: 0, 
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
                     range: $this.pageSize
                   },
                   success: (res) => {
                     this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              },
+              'on-show': ($this) => { // 当外键下拉站开始去请求数据
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              },
+              inputValueChange: (value) => {
+                fkFuzzyquerybyak({
+                  searchObject: {
+                    ak: value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterAutoData(res, itemIndex);
                   }
                 });
               }
@@ -142,7 +214,6 @@
             validate: {}
           };
           // 带有combobox的添加到options属性中
-
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
               sum.push({
@@ -153,52 +224,77 @@
             }, []);
             obj.item.options = arr;
           }
+          // 多状态合并的select
+          if (current.conds && current.conds.length > 0) {
+            let sumArray = [];
+            current.conds.map((item) => {
+              sumArray = sumArray.concat(item.combobox.reduce((sum, temp) => {
+                sum.push({
+                  label: temp.limitdesc,
+                  value: `${item.colname}|${temp.limitval}`
+                });
+                return sum;
+              }, []));
+              return item;
+            });
+            obj.item.options = sumArray;
+          }
+
+          // 日期控件属性控制
+          if (current.display === 'OBJ_DATENUMBER') {
+            obj.item.props.type = 'daterange';
+          }
+          if (current.display === 'OBJ_DATE') {
+            obj.item.props.type = 'datetimerange';
+          }
+
+          // 属性isuppercase控制
+          if (current.isuppercase) {
+            obj.item.props.regx = Capital;
+            obj.item.event.regxCheck = (value, $this, errorValue) => {
+              this.lowercaseToUppercase(errorValue, itemIndex);
+            };
+          }
+
           array.push(obj);
           return array;
         }, []);
 
+        if (Object.keys(this.formItems.data).length === 0) {
+          this.formDataChange(items.reduce((obj, current) => {
+            obj[current.item.field] = current.item.value;
+            return obj;
+          }, {}));
+        }
+
         return items;
-      }
-    },
-    watch: {
-      formLists() {
-        const arr = JSON.parse(JSON.stringify(this.formLists));
-        arr.map((temp, index) => {
-          temp.component = this.formLists[index].component;
-          temp.item.event = this.formLists[index].item.event;
-          return temp;
-        });
-        this.formItemsLists = arr;
-      }
-    },
-    methods: {
-      ...mapActions('global', ['updateAccessHistory']),
-      getQueryList() {
-        const { agTableElement } = this.$refs;
-        agTableElement.showAgLoading();
-
-        this.getQueryListForAg(this.searchData);
       },
-      onPageChange(page) {
-        const { range } = this.searchData;
-        this.searchData.startIndex = range * (page - 1);
-        this.getQueryList();
+      defaultValue(item) { // 设置表单的默认值
+        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') { // 日期控件
+          const timeRange = [new Date().toIsoDateString(), new Date().minusDays(Number(item.daterange)).toIsoDateString()];
+          return timeRange;
+        }
+        return item.default;
       },
-      onPageSizeChange(pageSize) {
-        this.searchData.startIndex = 0;
-        this.searchData.range = pageSize;
-        this.getQueryList();
-      },
-
-      // 表单操作
       getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
       formDataChange(data) { // 表单数据修改
-        this.updateFormData(data);
+        if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
+          this.updateFormData(data);
+        }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
+      },
+      freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
+        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
+        this.formItemsLists[index].item.props.AutoData = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
+      },
+      lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
+        this.formItemsLists[index].item.value = errorValue.toUpperCase();
         this.formItemsLists = this.formItemsLists.concat([]);
       },
 
@@ -489,16 +585,32 @@
         }
         // this.buttons.activeTabAction = null;
       },
+      dataProcessing() { // 查询数据处理
+        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
+          if (this.formItems.data[item]) {
+            obj[item] = this.formItems.data[item];
+          }
+          return obj;
+        }, {});
+
+        return Object.keys(jsonData).reduce((obj, item) => {
+          let value = '';
+          this.formItemsLists.every((temp) => {
+            if (temp.item.field === item) { // 等于当前节点，判断节点类型
+              if (temp.item.type === 'DatePicker') { // 当为日期控件时，数据处理
+                value = jsonData[item].join('~');
+              }
+              return false;
+            }
+            return true;
+          });
+          obj[item] = value;
+          return obj;
+        }, {});
+      },
       searchClickData() { // 按钮查找
-        // const hasValueSearchData = {};
-        // const ormItemsData = this.formItems.data;
-        // for (const value in ormItemsData) {
-        //   if (ormItemsData[value] !== undefined) {
-        //     hasValueSearchData[`${value}`] = `${ormItemsData[value]}`;
-        //   }
-        // }
-        // this.searchData.fixedcolumns = hasValueSearchData;
-        // this.getQueryListForAg(this.searchData);
+        this.searchData.fixedcolumns = this.dataProcessing();
+        this.getQueryListForAg(this.searchData);
       },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
@@ -700,7 +812,7 @@
         if (this.buttons.selectIdArr.length === 0) {
           delete this.formObj.fixedcolumns.ID;
           searchData.reffixedcolumns = this.treeObj.fixedcolumns;
-        } 
+        }
         this.getExportQueryForButtons(OBJ);
       },
       deleteTableList() {
@@ -861,12 +973,12 @@
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
-      this.getQueryList();
+
       let t;
       clearTimeout(t);
       t = setTimeout(() => { // 初始化按钮组数据
         this.getbuttonGroupdata();
-      }, 2000);
+      }, 1000);
     },
 
     activated() {
