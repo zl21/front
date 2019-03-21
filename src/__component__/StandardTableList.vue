@@ -57,9 +57,48 @@
         favorite: ({ favorite }) => favorite
       }),
       formLists() {
-        // 对获取的数据进行处理
+        return this.refactoringData(this.formItems.defaultFormItemsLists.concat([]));
+      }
+    },
+    watch: {
+      formLists() {
+        const arr = JSON.parse(JSON.stringify(this.formLists));
+        arr.map((temp, index) => {
+          temp.component = this.formLists[index].component;
+          temp.item.event = this.formLists[index].item.event;
+          temp.item.props = this.formLists[index].item.props;
+          return temp;
+        });
+        if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
+          this.formItemsLists = arr;
+        }
+      }
+    },
+    methods: {
+      ...mapActions('global', ['updateAccessHistory']),
+      getQueryList() {
+        const { agTableElement } = this.$refs;
+        agTableElement.showAgLoading();
+        this.searchClickData();
+      },
+      onPageChange(page) {
+        const { range } = this.searchData;
+        this.searchData.startIndex = range * (page - 1);
+        this.getQueryList();
+      },
+      onPageSizeChange(pageSize) {
+        this.searchData.startIndex = 0;
+        this.searchData.range = pageSize;
+        this.getQueryList();
+      },
+
+      // 表单操作
+      refactoringData(defaultFormItemsLists) { // 对获取的数据进行处理
         let items = [];
-        items = JSON.parse(JSON.stringify(this.formItems.defaultFormItemsLists)).reduce((array, current, itemIndex) => {
+        if (this.formItemsLists.length > 0) {
+          return this.formItemsLists;
+        }
+        items = JSON.parse(JSON.stringify(defaultFormItemsLists)).reduce((array, current, itemIndex) => {
           const obj = {};
           // 判断采用那种表现方式
           function checkDisplay(item) {
@@ -87,7 +126,7 @@
               default: break;
               }
             }
-            if (item.display === 'OBJ_DATENUMBER') {
+            if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
               str = 'DatePicker';
             }
 
@@ -101,7 +140,7 @@
             type: checkDisplay(current),
             title: current.coldesc,
             field: current.colname,
-            value: current.default,
+            value: this.defaultValue(current),
             inputname: current.inputname,
             props: {},
             event: {
@@ -178,6 +217,14 @@
             obj.item.options = sumArray;
           }
 
+          // 日期控件属性控制
+          if (current.display === 'OBJ_DATENUMBER') {
+            obj.item.props.type = 'daterange';
+          }
+          if (current.display === 'OBJ_DATE') {
+            obj.item.props.type = 'datetimerange';
+          }
+
           // 属性isuppercase控制
           if (current.isuppercase) {
             obj.item.props.regx = Capital;
@@ -190,40 +237,22 @@
           return array;
         }, []);
 
-        return items;
-      }
-    },
-    watch: {
-      formLists() {
-        const arr = JSON.parse(JSON.stringify(this.formLists));
-        arr.map((temp, index) => {
-          temp.component = this.formLists[index].component;
-          temp.item.event = this.formLists[index].item.event;
-          temp.item.props = this.formLists[index].item.props;
-          return temp;
-        });
-        this.formItemsLists = arr;
-      }
-    },
-    methods: {
-      ...mapActions('global', ['updateAccessHistory']),
-      getQueryList() {
-        const { agTableElement } = this.$refs;
-        agTableElement.showAgLoading();
-        this.searchClickData();
-      },
-      onPageChange(page) {
-        const { range } = this.searchData;
-        this.searchData.startIndex = range * (page - 1);
-        this.getQueryList();
-      },
-      onPageSizeChange(pageSize) {
-        this.searchData.startIndex = 0;
-        this.searchData.range = pageSize;
-        this.getQueryList();
-      },
+        if (Object.keys(this.formItems.data).length === 0) {
+          this.formDataChange(items.reduce((obj, current) => {
+            obj[current.item.field] = current.item.value;
+            return obj;
+          }, {}));
+        }
 
-      // 表单操作
+        return items;
+      },
+      defaultValue(item) { // 设置表单的默认值
+        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') { // 日期控件
+          const timeRange = [new Date().toIsoDateString(), new Date().minusDays(Number(item.daterange)).toIsoDateString()];
+          return timeRange;
+        }
+        return item.default;
+      },
       getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
@@ -537,8 +566,8 @@
         const hasValueSearchData = {};
         const ormItemsData = this.formItems.data;
         for (const value in ormItemsData) {
-          if (ormItemsData[value] !== undefined) {
-            hasValueSearchData[`${value}`] = `${ormItemsData[value]}`;
+          if (ormItemsData[value]) {
+            hasValueSearchData[value] = ormItemsData[value];
           }
         }
         this.searchData.fixedcolumns = hasValueSearchData;
