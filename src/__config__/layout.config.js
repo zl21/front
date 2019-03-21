@@ -12,8 +12,7 @@ export default {
     {
       weight: 1,
       style: {
-        // backgroundColor: '#f1f1f1'
-        backgroundColor: '#66cc36'
+        backgroundColor: '#f1f1f1'
       },
       layout: {
         direction: 'row',

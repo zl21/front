@@ -176,7 +176,7 @@
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.fixContainerHeight();
           }
-        }, 25);
+        }, 30);
       },
     },
     methods: {
@@ -291,6 +291,7 @@
    padding: 20px 20px 0 20px;
  }
   .detailTable {
+    border: 1px solid #d8d8d8;
     margin-top: 10px;
   }
 
