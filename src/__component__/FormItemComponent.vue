@@ -1,30 +1,43 @@
 /* eslint-disable no-console */
 <template>
-  <div
-    class="FormItemComponent"
-    :style="setWidth"
+  <DownComponent
+    :title="title"
+    :setHeight="setHeight"
+    :search-foldnum="searchFoldnum"
   >
     <div
-      v-for="(item,index) in dataColRol"
-      v-show="item.show !== false"
-      :key="index"
-      :style="setDiv(item)"
+      slot="dwonContent"
+      class="FormItemComponent"
+      :style="setWidth"
     >
-      <component
-        :is="item.component"
-        :index="index"
-        :items="item.item"
-        @inputChange="inputChange"
-      />
+      <div
+        v-for="(item,index) in dataColRol"
+        v-show="item.show !== false"
+        :key="index"
+        class="FormItemComponent-item"
+        :style="setDiv(item)"
+      >
+        <component
+          :is="item.component"
+          :ref="'component_'+index"
+          :index="index"
+          :items="item.item"
+          @inputChange="inputChange"
+        />
+      </div>
     </div>
-  </div>
+  </DownComponent>
 </template>
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
+  import DownComponent from './downComponent';
 
   export default {
     name: 'FormItemComponent',
+    components: {
+      DownComponent
+    },
     computed: {
       FormItemLists() {
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
@@ -73,16 +86,32 @@
         default() {
           return [];
         }
+      },
+      searchFoldnum: {
+        type: [Number, String],
+        default() {
+          return 0;
+        }
+      },
+      title: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
       return {
         newFormItemLists: [],
-        indexItem: -1
+        indexItem: -1,
+        setHeight: 33
       };
     },
+    mounted() {
+
+    },
     created() {
-      
+
     },
     watch: {
       FormItemLists: {
@@ -90,11 +119,11 @@
           this.newFormItemLists = val;
         },
         deep: true
-      },  
+      },
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {
-            return; 
+            return;
           }
 
           this.newFormItemLists.map((items, i) => {

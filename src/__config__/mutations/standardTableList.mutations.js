@@ -21,6 +21,9 @@ export default {
   }, data) {
     formItems.data = data;
   },
+  updateDefaultSearchFoldnum({ formItems }, data){
+    formItems.searchFoldnum = data;
+  },
 
   // 按钮组
   updateButtonsTabcmd({
@@ -98,7 +101,7 @@ export default {
     //   if (_self.sysmentArr.indexOf(item) >= 0) {
     //     _self.selectSysment.push(item);
     //   }
-   
+
   },
   /**
    * 当前页跳转
