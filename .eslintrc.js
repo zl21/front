@@ -27,7 +27,8 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-param-reassign': 'off',
     'vue/script-indent': ["error", 2, { "baseIndent": 1 }],
-    'vue/order-in-components': 'off'
+    'vue/order-in-components': 'off',
+    'no-extend-native':'off'
   },
   overrides: [
     {

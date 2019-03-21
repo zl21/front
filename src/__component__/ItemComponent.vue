@@ -134,7 +134,7 @@
         :filter-tip="_items.props.filterTip"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
-        :AuotData="_items.props.AutoData"
+        :auot-data="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
         :datalist="_items.props.datalist"
