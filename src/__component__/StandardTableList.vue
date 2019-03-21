@@ -8,7 +8,7 @@
       ref="FormItemComponent"
       :form-item-lists="formItemsLists"
       :default-column="4"
-      :searchFoldnum = "formItems.searchFoldnum"
+      :search-foldnum="formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -85,6 +85,9 @@
                 break;
               default: break;
               }
+            }
+            if (item.display === 'OBJ_DATENUMBER') {
+              str = 'DatePicker';
             }
 
             return str;
