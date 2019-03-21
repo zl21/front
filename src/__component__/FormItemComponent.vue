@@ -31,7 +31,7 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import DownComponent from './downComponent';
+  import DownComponent from './DownComponent';
 
   export default {
     name: 'FormItemComponent',
