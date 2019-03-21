@@ -1,29 +1,29 @@
 <template>
-  <div
-    ref="dwonComponent"
-    class="dwonComponent"
-    :style="dwonComponent"
-  >
     <div
-      v-if="searchFoldnum>0"
-      class="tag-close"
+            ref="dwonComponent"
+            class="dwonComponent"
+            :style="dwonComponent"
     >
-      <Icon
-        :class="className"
-        @click="toggle"
-      />
+        <div
+                v-if="searchFoldnum>0"
+                class="tag-close"
+        >
+            <Icon
+                    :class="className"
+                    @click="toggle"
+            />
+        </div>
+        <div
+                v-if="title"
+                class="downComponent-h5"
+                @click="toggle"
+        >
+            {{ title }}<Icon :class="icon" />
+        </div>
+        <div :class="dwonContent">
+            <slot name="dwonContent" />
+        </div>
     </div>
-    <div
-      v-if="title"
-      class="downComponent-h5"
-      @click="toggle"
-    >
-      {{ title }}<Icon :class="icon" />
-    </div>
-    <div :class="dwonContent">
-      <slot name="dwonContent" />
-    </div>
-  </div>
 </template>
 
 <script>
@@ -66,7 +66,7 @@
         return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
       },
       dwonComponent() {
-        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:height  0.5s;` : 'max-height:30000px; transition:height  0.5s;'}`;
+        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:max-height 0.3s;` : 'max-height:30000px;'}`;
       },
       icon() {
         return `${this.dowClass === false ? 'iconfont icon-triangle-copy-copy-copy1 ' : 'iconfont icon-triangle-copy-copy-copy1 icon-xiadown'}`;
