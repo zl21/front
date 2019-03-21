@@ -562,15 +562,38 @@
         }
         // this.buttons.activeTabAction = null;
       },
-      searchClickData() { // 按钮查找
-        const hasValueSearchData = {};
-        const ormItemsData = this.formItems.data;
-        for (const value in ormItemsData) {
-          if (ormItemsData[value]) {
-            hasValueSearchData[value] = ormItemsData[value];
+      dataProcessing() { // 查询数据处理
+        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
+          if (this.formItems.data[item]) {
+            obj[item] = this.formItems.data[item];
           }
-        }
-        this.searchData.fixedcolumns = hasValueSearchData;
+          return obj;
+        }, {});
+
+        return Object.keys(jsonData).reduce((obj, item) => {
+          let value = '';
+          this.formItemsLists.every((temp) => {
+            if (temp.item.field === item) { // 等于当前节点，判断节点类型
+              if (temp.item.type === 'DatePicker') { // 当为日期控件时，数据处理
+                value = jsonData[item].join('~');
+              }
+              return false;
+            }
+            return true;
+          });
+          obj[item] = value;
+          return obj;
+        }, {});
+      },
+      searchClickData() { // 按钮查找
+        // const hasValueSearchData = {};
+        // const ormItemsData = this.formItems.data;
+        // for (const value in ormItemsData) {
+        //   if (ormItemsData[value]) {
+        //     hasValueSearchData[value] = ormItemsData[value];
+        //   }
+        // }
+        this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },
       AddDetailClick(obj) {

@@ -151,7 +151,10 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        const formObj = this.newFormItemLists.reduce((obj, current) => {
+        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+      },
+      dataProcessing() {
+        return this.newFormItemLists.reduce((obj, current) => {
           if (current.item.field) { // 当存在field时直接生成对象
             if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
               if (current.item.value instanceof Array) { // 结果为数组则为选中项
@@ -182,7 +185,6 @@
           }
           return obj;
         }, {});
-        this.$emit('formDataChange', formObj, this.newFormItemLists[this.indexItem]);
       },
       resetForm() { // 重置表单
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
