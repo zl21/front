@@ -8,7 +8,7 @@
       ref="FormItemComponent"
       :form-item-lists="formItemsLists"
       :default-column="4"
-      :searchFoldnum = "formItems.searchFoldnum"
+      :search-foldnum="formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -33,6 +33,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
   import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
+  import { Capital } from '../constants/regExp';
 
   export default {
     components: {
@@ -145,7 +146,7 @@
             }, []);
             obj.item.options = arr;
           }
-
+          // 多状态合并的select
           if (current.conds && current.conds.length > 0) {
             let sumArray = [];
             current.conds.map((item) => {
@@ -160,6 +161,15 @@
             });
             obj.item.options = sumArray;
           }
+
+          // 属性isuppercase控制
+          if (current.isuppercase) {
+            obj.item.props.regx = Capital;
+            obj.item.event.regxCheck = (value, $this, errorValue) => {
+              this.lowercaseToUppercase(errorValue, itemIndex);
+            };
+          }
+
           array.push(obj);
           return array;
         }, []);
@@ -173,6 +183,7 @@
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;
+          temp.item.props = this.formLists[index].item.props;
           return temp;
         });
         this.formItemsLists = arr;
@@ -212,6 +223,10 @@
       freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
         this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
         this.formItemsLists[index].item.props.AutoData = res.data.data;
+        this.formItemsLists = this.formItemsLists.concat([]);
+      },
+      lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
+        this.formItemsLists[index].item.value = errorValue.toUpperCase();
         this.formItemsLists = this.formItemsLists.concat([]);
       },
 

@@ -2,7 +2,7 @@
 <template>
   <DownComponent
     :title="title"
-    :setHeight="setHeight"
+    :set-height="setHeight"
     :search-foldnum="searchFoldnum"
   >
     <div
@@ -44,6 +44,7 @@
         arr.map((temp, index) => {
           temp.component = this.formItemLists[index].component;
           temp.item.event = this.formItemLists[index].item.event;
+          temp.item.props = this.formItemLists[index].item.props;
           return temp;
         });
         return arr;
