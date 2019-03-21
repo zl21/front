@@ -12,7 +12,8 @@ export default {
     {
       weight: 1,
       style: {
-        backgroundColor: '#f1f1f1'
+        // backgroundColor: '#f1f1f1'
+        backgroundColor: '#66cc36'
       },
       layout: {
         direction: 'row',
@@ -22,7 +23,7 @@ export default {
           },
           {
             weight: 1,
-            style: { margin: '10px', backgroundColor: '#fff', overflow: 'auto' },
+            style: { margin: '10px', backgroundColor: '#fff', overflowX: 'hidden' },
             component: ContentDisplayArea,
           }
         ]

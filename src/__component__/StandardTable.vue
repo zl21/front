@@ -171,6 +171,12 @@
     watch: {
       datas(val) {
         this.agGridTable(val.tabth, val.row, val);
+        setTimeout(() => {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.fixContainerHeight();
+          }
+        }, 25);
       },
     },
     methods: {
@@ -188,7 +194,7 @@
         datas.colPosition = self.colPosition; // 移动列
         datas.pinnedPosition = self.fixedColumn; // 固定列
         // selectIdArr
-        agTable(this.$refs.agGridTableContainer, {
+        return agTable(this.$refs.agGridTableContainer, {
           cssStatus: self.legend, // 颜色配置信息
           defaultSort: arr, // 默认排序
           datas, //  所有返回数据
@@ -268,12 +274,13 @@
         if (agGridTableContainer.agTable) {
           agGridTableContainer.agTable.showLoading();
         }
-      }
+      },
     },
     activated() {
       const { agGridTableContainer } = this.$refs;
       if (agGridTableContainer.agTable) {
         agGridTableContainer.agTable.fixAgRenderChoke();
+        agGridTableContainer.agTable.fixContainerHeight();
       }
     }
   };
@@ -281,7 +288,7 @@
 
 <style scoped lang="less">
  .standardTable {
-   padding: 20px;
+   padding: 20px 20px 0 20px;
  }
   .detailTable {
     margin-top: 10px;

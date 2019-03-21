@@ -48,7 +48,6 @@
   import AgTable from './StandardTable';
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
-  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import urlParse from '../__utils__/urlParse';
@@ -609,6 +608,7 @@
         }, {});
       },
       searchClickData() { // 按钮查找
+        const { agTableElement } = this.$refs;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },
@@ -969,9 +969,6 @@
      
     },
     mounted() {
-      // 记录模块名
-      const { tableName, tableId } = this.$route.params;
-      this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
 
       let t;
@@ -979,8 +976,12 @@
       t = setTimeout(() => { // 初始化按钮组数据
         this.getbuttonGroupdata();
       }, 1000);
+      
+      // 临时处理方案
+      setTimeout(() => {
+        this.searchClickData();
+      }, 100);
     },
-
     activated() {
       const { tableId } = this.$route.params;
       this.updateAccessHistory({ type: 'table', id: tableId });

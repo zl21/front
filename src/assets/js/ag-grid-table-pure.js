@@ -531,6 +531,11 @@ const currencyFormat = (value, decimal) => {
  */
 const initializeAgTable = (container, opt) => {
   const agTable = (agGridTableContainer, options) => {
+    agTable.fixContainerHeight = () => {
+      const queryDesc = document.querySelector('.queryDesc');
+      // 重置agGridTableContainer高度
+      agGridTableContainer.style.height = `${document.body.clientHeight - agGridTableContainer.getBoundingClientRect().top - queryDesc.offsetHeight - 20}px`;
+    };
     agTable.customizeOptions = options;
     let isResetAllColumn = false;
     let updateColumnPositionDelay = -1; // column move 延迟计时器
@@ -542,12 +547,8 @@ const initializeAgTable = (container, opt) => {
       return agTable;
     }
     agTable.containerIsNull = false;
-    // 重置agGridTableContainer高度
-    agGridTableContainer.style.height = `${document.body.clientHeight - agGridTableContainer.getBoundingClientRect().top - 30 - 15}px`;
-
     window.onresize = function () {
-      // console.log('window.resize', document.body.clientHeight);
-      agGridTableContainer.style.height = `${document.body.clientHeight - agGridTableContainer.getBoundingClientRect().top - 30 - 15}px`;
+      agTable.fixContainerHeight();
     };
 
     // 判断agGridTableContainer是否已经被ag实例化
