@@ -8,7 +8,7 @@
       ref="FormItemComponent"
       :form-item-lists="formItemsLists"
       :default-column="4"
-      :searchFoldnum = "formItems.searchFoldnum"
+      :search-foldnum="formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -86,6 +86,9 @@
               default: break;
               }
             }
+            if (item.display === 'OBJ_DATENUMBER') {
+              str = 'DatePicker';
+            }
 
             return str;
           }
@@ -107,6 +110,19 @@
                 }
               },
               'popper-show': ($this) => { // 当外键下拉站开始去请求数据
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
+              },
+              'on-show': ($this) => { // 当外键下拉站开始去请求数据
                 fkQueryList({
                   searchObject: {
                     isdroplistsearch: true,
@@ -798,7 +814,7 @@
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
-      
+
       let t;
       clearTimeout(t);
       t = setTimeout(() => { // 初始化按钮组数据

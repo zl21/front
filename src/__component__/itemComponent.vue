@@ -134,11 +134,20 @@
         :filter-tip="_items.props.filterTip"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
-        :auot-data="_items.props.AuotData"
+        :AuotData="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
         :datalist="_items.props.datalist"
+        @on-show="attachFilterPopperShow"
         @on-change="attachFilterChange"
+        @on-select="attachFilterSelected"
+        @on-focus="attachFilterInputFocus"
+        @on-blur="attachFilterInputBlur"
+        @on-keyup="attachFilterInputKeyup"
+        @on-keydown="attachFilterInputKeydown"
+        @on-popclick="attachFilterPopclick"
+        @on-dbpopclick="attachFilterdbPopclick"
+        @on-clear="attachFilterClear"
       />
     </div>
   </div>
@@ -338,8 +347,8 @@
         }
       },
       fkrpSelectedPopperShow($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this);
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'on-show') && typeof this._items.event['on-show'] === 'function') {
+          this._items.event['on-show']($this);
         }
       },
 
@@ -347,10 +356,59 @@
       attachFilterChange(value, $this) {
         this._items.value = value;
         this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(value, $this);
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
+          this._items.event.inputValueChange(value, $this);
         }
-      }
+      },
+      attachFilterSelected(value, $this) {
+        this._items.value = value;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'fkrpSelected') && typeof this._items.event.fkrpSelected === 'function') {
+          this._items.event.fkrpSelected(value, $this);
+        }
+      },
+      attachFilterInputFocus(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'focus') && typeof this._items.event.focus === 'function') {
+          this._items.event.focus(event, $this);
+        }
+      },
+      attachFilterInputBlur(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
+          this._items.event.blur(event, $this);
+        }
+      },
+      attachFilterInputKeyup(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keyup') && typeof this._items.event.keyup === 'function') {
+          this._items.event.keyup(event, $this);
+        }
+      },
+      attachFilterInputKeydown(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keydown') && typeof this._items.event.keydown === 'function') {
+          this._items.event.keydown(event, $this);
+        }
+      },
+      attachFilterPopclick(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popclick') && typeof this._items.event.popclick === 'function') {
+          this._items.event.popclick(event, $this);
+        }
+      },
+      attachFilterdbPopclick(event, $this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'dbpopclick') && typeof this._items.event.dbpopclick === 'function') {
+          this._items.event.dbpopclick(event, $this);
+        }
+      },
+      attachFilterClear(event, $this) {
+        this._items.value = undefined;
+        this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
+          this._items.event.clear($this);
+        }
+      },
+      attachFilterPopperShow($this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
+          this._items.event['popper-show']($this);
+        }
+      },
     },
     created() {
     }
@@ -364,6 +422,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top:8px;
 
     .itemLabel{
       width: 90px;
