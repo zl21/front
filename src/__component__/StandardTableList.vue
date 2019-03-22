@@ -973,10 +973,9 @@
       const { tableName, tableId } = this.$route.params;
       this.moduleStateName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       this.getTableQuery();
-
-      let t;
-      clearTimeout(t);
-      t = setTimeout(() => { // 初始化按钮组数据
+      this.getQueryListForAg(this.searchData);
+      clearTimeout(window.timer);
+      window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
     },
