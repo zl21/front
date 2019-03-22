@@ -30,7 +30,6 @@ export default {
       commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
       commit('updateDefaultButtonsdatas', queryData.datas);
       commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
-
     });
   },
   getExportQueryForButtons({ commit }, {

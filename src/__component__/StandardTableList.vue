@@ -997,10 +997,9 @@
     },
     mounted() {
       this.getTableQuery();
-
-      let t;
-      clearTimeout(t);
-      t = setTimeout(() => { // 初始化按钮组数据
+      this.getQueryListForAg(this.searchData);
+      clearTimeout(window.timer);
+      window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
       
