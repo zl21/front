@@ -1,8 +1,8 @@
 <template>
     <div
-            ref="dwonComponent"
-            class="dwonComponent"
-            :style="dwonComponent"
+            ref="downComponent"
+            class="downComponent"
+            :style="downComponent"
     >
         <div
                 v-if="searchFoldnum>0"
@@ -20,7 +20,7 @@
         >
             {{ title }}<Icon :class="icon" />
         </div>
-        <div :class="dwonContent">
+        <div :class="downContent">
             <slot name="dwonContent" />
         </div>
     </div>
@@ -29,7 +29,7 @@
 <script>
 
   export default {
-    name: 'DwonComponent',
+    name: 'DownComponent',
     props: {
       index: {
         type: Number,
@@ -65,13 +65,13 @@
       className() {
         return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
       },
-      dwonComponent() {
-        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:max-height 0.3s;` : 'max-height:30000px;'}`;
+      downComponent() {
+        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
       },
       icon() {
         return `${this.dowClass === false ? 'iconfont icon-triangle-copy-copy-copy1 ' : 'iconfont icon-triangle-copy-copy-copy1 icon-xiadown'}`;
       },
-      dwonContent() {
+      downContent() {
         return `${this.title ? 'down-contain ' : 'down-contain down-right'}`;
       }
     },
@@ -92,7 +92,7 @@
 </script>
 
 <style lang="less">
-    .dwonComponent{
+    .downComponent{
         position: relative;
         border: 1px solid #d8d8d8;
         transition: height .5s;
