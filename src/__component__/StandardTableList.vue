@@ -229,6 +229,7 @@
             },
             validate: {}
           };
+
           // 带有combobox的添加到options属性中
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
@@ -275,6 +276,23 @@
             };
           }
 
+          // 外键的单选多选判断
+          if (current.display === 'OBJ_FK') {
+            switch (current.fkobj.searchmodel) {
+            case 'drp':
+              obj.item.props.single = true;
+              break;
+            case 'mrp':
+              obj.item.props.single = false;
+              break;
+            case 'pop':
+              break;
+            case 'mop':
+              break;
+            default: break;
+            }
+          }
+
           array.push(obj);
           return array;
         }, []);
@@ -297,6 +315,22 @@
           const timeRange = [`${new Date().minusDays(Number(item.daterange)).toIsoDateString()} 00:00:00`, `${new Date().toIsoDateString()} 23:59:59`];
           return timeRange;
         }
+
+        if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
+          const arr = [];
+          arr.push(item.default);
+          return arr;
+        }
+        
+        if (item.display === 'OBJ_FK') { // 外键默认值
+          const arr = [];
+          arr.push({
+            ID: item.refobjid,
+            Label: item.default
+          });
+          return arr;
+        }
+
         return item.default;
       },
       getTableQuery() { // 获取列表的查询字段
@@ -638,12 +672,17 @@
               value = jsonData[item];
               return false;
             }
-            if (!temp.item.field && temp.item.type === 'select') { // 处理合并型select
+
+            if (!temp.item.field && temp.item.type === 'select' && item.indexOf(':ENAME') < 0) { // 处理合并型select
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
 
-            
+            if (!temp.item.field && temp.item.type === 'select' && item.indexOf(':ENAME') < 0) { // 处理合并型select
+              value = jsonData[item].map(option => `=${option}`);
+              return false;
+            } // 外键查询输入情况
+            value = jsonData[item];
             return true;
           });
           if (value) {

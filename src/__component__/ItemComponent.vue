@@ -114,7 +114,7 @@
         :auto-data="_items.props.AutoData"
         :hidecolumns="_items.props.hidecolumns"
         :data-empty-message="_items.props.dataEmptyMessage"
-        :default-selected="_items.props.defaultSelected"
+        :default-selected="_items.value"
         :transfer="_items.props.transfer"
         @on-fkrp-selected="fkrpSelected"
         @on-page-change="pageChange"
