@@ -9,8 +9,33 @@ const getComponentName = () => {
 
 export default () => ({
   methods: {
-    ...mapActions(getComponentName(), ['getQueryListForAg', 'getTableQueryForForm', 'getExportQueryForButtons', 'getBatchDeleteForButtons', 'getExeActionDataForButtons', 'getToFavoriteDataForButtons', 'getRemoveFavoriteDataForButtons', 'importGetUploadParameters', 'importGetUploadParametersForButtons']),
-    ...mapMutations(getComponentName(), ['updateFormData', 'updateFormLists', 'updateDefaultButtonGroupData', 'deleteTableData', 'onSelectionChangedAssignment', 'setActiveTabActionValue', 'updateButtonExeActionData', 'collectTablelist', 'updateButtonSetFavoriteData', 'setActiveTabActionValue', 'setImportDialogTitle', 'setErrorModalValue']),
+    ...mapActions(getComponentName(),
+      [
+        'getQueryListForAg',
+        'getTableQueryForForm',
+        'getExportQueryForButtons',
+        'getBatchDeleteForButtons',
+        'getExeActionDataForButtons',
+        'getToFavoriteDataForButtons',
+        'getRemoveFavoriteDataForButtons',
+        'importGetUploadParameters',
+        'importGetUploadParametersForButtons'
+      ]),
+    ...mapMutations(getComponentName(),
+      [
+        'updateFormData',
+        'updateFormLists',
+        'updateDefaultButtonGroupData',
+        'deleteTableData',
+        'onSelectionChangedAssignment',
+        'setActiveTabActionValue',
+        'updateButtonExeActionData',
+        'collectTablelist',
+        'updateButtonSetFavoriteData',
+        'setActiveTabActionValue',
+        'setImportDialogTitle',
+        'setErrorModalValue'
+      ]),
   },
   computed: {
     ...mapState(getComponentName(), {
