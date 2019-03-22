@@ -175,7 +175,7 @@
                   this.searchClickData();
                 }
               },
-              'popper-show': ($this) => { // 当外键下拉站开始去请求数据
+              'popper-show': ($this) => { // 当外键下拉展开时去请求数据
                 fkQueryList({
                   searchObject: {
                     isdroplistsearch: true,
@@ -201,7 +201,7 @@
                   }
                 });
               },
-              inputValueChange: (value) => {
+              inputValueChange: (value) => { // 外键的模糊搜索
                 fkFuzzyquerybyak({
                   searchObject: {
                     ak: value,
@@ -210,6 +210,19 @@
                   },
                   success: (res) => {
                     this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  }
+                });
+              },
+              pageChange: (currentPage, $this) => { // 外键的分页查询
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 10 * ($this.currentPage - 1),
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
                   }
                 });
               }
@@ -296,6 +309,7 @@
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
       freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
