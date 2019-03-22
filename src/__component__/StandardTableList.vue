@@ -152,6 +152,10 @@
               str = 'DatePicker';
             }
 
+            if (item.display === 'OBJ_TIME') {
+              str = 'TimePicker';
+            }
+
             return str;
           }
 
@@ -246,6 +250,9 @@
           if (current.display === 'OBJ_DATE') {
             obj.item.props.type = 'datetimerange';
           }
+          if (current.display === 'OBJ_TIME') {
+            obj.item.props.type = 'timerange';
+          }
 
           // 属性isuppercase控制
           if (current.isuppercase) {
@@ -269,8 +276,12 @@
         return items;
       },
       defaultValue(item) { // 设置表单的默认值
-        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') { // 日期控件
+        if (item.display === 'OBJ_DATENUMBER') { // 日期控件
           const timeRange = [new Date().toIsoDateString(), new Date().minusDays(Number(item.daterange)).toIsoDateString()];
+          return timeRange;
+        }
+        if (item.display === 'OBJ_DATE') {
+          const timeRange = [`${new Date().minusDays(Number(item.daterange)).toIsoDateString()} 00:00:00`, `${new Date().toIsoDateString()} 23:59:59`];
           return timeRange;
         }
         return item.default;
@@ -596,14 +607,30 @@
           let value = '';
           this.formItemsLists.every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker') { // 当为日期控件时，数据处理
+              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange') && (jsonData[item][0] && jsonData[item][1])) { // 当为日期控件时，数据处理
                 value = jsonData[item].join('~');
+              }
+
+              if (temp.item.type === 'TimePicker' && temp.item.props.type === 'timerange' && (jsonData[item][0] && jsonData[item][1])) { // 时分秒的时间段处理
+                value = jsonData[item].join('~');
+              }
+              if (temp.item.type === 'select') { // 处理select，分为单个字段select和合并型select
+                value = jsonData[item].map(option => `=${option}`);
               }
               return false;
             }
+            if (!temp.item.field && temp.item.type === 'select') { // 处理合并型select
+              value = jsonData[item].map(option => `=${option}`);
+              return false;
+            }
+
+            
             return true;
           });
-          obj[item] = value;
+          if (value) {
+            obj[item] = value;
+          }
+          
           return obj;
         }, {});
       },
@@ -980,7 +1007,7 @@
       // 临时处理方案
       setTimeout(() => {
         this.searchClickData();
-      }, 100);
+      }, 500);
     },
     activated() {
       const { tableId } = this.$route.params;
