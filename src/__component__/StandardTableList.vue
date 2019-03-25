@@ -281,9 +281,11 @@
             switch (current.fkobj.searchmodel) {
             case 'drp':
               obj.item.props.single = true;
+              obj.item.props.defaultSelected = this.defaultValue(current);
               break;
             case 'mrp':
               obj.item.props.single = false;
+              obj.item.props.defaultSelected = this.defaultValue(current);
               break;
             case 'pop':
               break;
@@ -322,7 +324,7 @@
           return arr;
         }
         
-        if (item.display === 'OBJ_FK') { // 外键默认值
+        if (item.display === 'OBJ_FK' && item.default) { // 外键默认值
           const arr = [];
           arr.push({
             ID: item.refobjid,
