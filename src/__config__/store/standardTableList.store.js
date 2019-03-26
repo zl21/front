@@ -16,13 +16,12 @@ export default () => ({
     buttons: {
       dataArray: {
         printValue: false,
-       
-        actionCollection: true,
+        actionCollection: false,
         collectiImg: false, // 是否收藏
-        waListButtonsConfig: {
+        waListButtonsConfig: {// 自定义按钮
           waListButtons: []
         },
-        buttonGroupShowConfig: {
+        buttonGroupShowConfig: {// 标准按钮
           buttonGroupShow: []
         },
         btnclick: (type, item) => {
@@ -64,9 +63,10 @@ export default () => ({
       importTemplate: {},
       errorDialogBack: false, // 是否有返回按钮
       errorDialogClass: '', // 弹框类型
-
       errorDialog: '',
       errorDialogTitle: '',
+      detailState: true, // 是否可以双击查看或点击序号查看
+      actionLoading: true,
 
 
     }

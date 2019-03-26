@@ -51,7 +51,7 @@
         </DropdownMenu>
       </Dropdown>
       <Button
-        v-if="dataArray.actionCollection"
+        v-if="!dataArray.actionCollection"
         type="fcdefault"
         @click="btnclick('Collection')"
       >
