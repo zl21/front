@@ -153,6 +153,10 @@
               str = 'DatePicker';
             }
 
+            if (item.display === 'OBJ_TIME') {
+              str = 'TimePicker';
+            }
+
             return str;
           }
 
@@ -172,7 +176,7 @@
                   this.searchClickData();
                 }
               },
-              'popper-show': ($this) => { // 当外键下拉站开始去请求数据
+              'popper-show': ($this) => { // 当外键下拉展开时去请求数据
                 fkQueryList({
                   searchObject: {
                     isdroplistsearch: true,
@@ -198,7 +202,7 @@
                   }
                 });
               },
-              inputValueChange: (value) => {
+              inputValueChange: (value) => { // 外键的模糊搜索
                 fkFuzzyquerybyak({
                   searchObject: {
                     ak: value,
@@ -209,10 +213,24 @@
                     this.freshDropDownSelectFilterAutoData(res, itemIndex);
                   }
                 });
+              },
+              pageChange: (currentPage, $this) => { // 外键的分页查询
+                fkQueryList({
+                  searchObject: {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 10 * ($this.currentPage - 1),
+                    range: $this.pageSize
+                  },
+                  success: (res) => {
+                    this.freshDropDownSelectFilterData(res, itemIndex);
+                  }
+                });
               }
             },
             validate: {}
           };
+
           // 带有combobox的添加到options属性中
           if (current.combobox) {
             const arr = current.combobox.reduce((sum, item) => {
@@ -247,6 +265,9 @@
           if (current.display === 'OBJ_DATE') {
             obj.item.props.type = 'datetimerange';
           }
+          if (current.display === 'OBJ_TIME') {
+            obj.item.props.type = 'timerange';
+          }
 
           // 属性isuppercase控制
           if (current.isuppercase) {
@@ -254,6 +275,25 @@
             obj.item.event.regxCheck = (value, $this, errorValue) => {
               this.lowercaseToUppercase(errorValue, itemIndex);
             };
+          }
+
+          // 外键的单选多选判断
+          if (current.display === 'OBJ_FK') {
+            switch (current.fkobj.searchmodel) {
+            case 'drp':
+              obj.item.props.single = true;
+              obj.item.props.defaultSelected = this.defaultValue(current);
+              break;
+            case 'mrp':
+              obj.item.props.single = false;
+              obj.item.props.defaultSelected = this.defaultValue(current);
+              break;
+            case 'pop':
+              break;
+            case 'mop':
+              break;
+            default: break;
+            }
           }
 
           array.push(obj);
@@ -270,10 +310,30 @@
         return items;
       },
       defaultValue(item) { // 设置表单的默认值
-        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') { // 日期控件
+        if (item.display === 'OBJ_DATENUMBER') { // 日期控件
           const timeRange = [new Date().toIsoDateString(), new Date().minusDays(Number(item.daterange)).toIsoDateString()];
           return timeRange;
         }
+        if (item.display === 'OBJ_DATE') {
+          const timeRange = [`${new Date().minusDays(Number(item.daterange)).toIsoDateString()} 00:00:00`, `${new Date().toIsoDateString()} 23:59:59`];
+          return timeRange;
+        }
+
+        if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
+          const arr = [];
+          arr.push(item.default);
+          return arr;
+        }
+        
+        if (item.display === 'OBJ_FK' && item.default) { // 外键默认值
+          const arr = [];
+          arr.push({
+            ID: item.refobjid,
+            Label: item.default
+          });
+          return arr;
+        }
+
         return item.default;
       },
       getTableQuery() { // 获取列表的查询字段
@@ -286,6 +346,7 @@
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
       freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
@@ -595,14 +656,40 @@
           let value = '';
           this.formItemsLists.every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker') { // 当为日期控件时，数据处理
+              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange') && (jsonData[item][0] && jsonData[item][1])) { // 当为日期控件时，数据处理
                 value = jsonData[item].join('~');
+                return false;
               }
+
+              if (temp.item.type === 'TimePicker' && temp.item.props.type === 'timerange' && (jsonData[item][0] && jsonData[item][1])) { // 时分秒的时间段处理
+                value = jsonData[item].join('~');
+                return false;
+              }
+              if (temp.item.type === 'select') { // 处理select，分为单个字段select和合并型select
+                value = jsonData[item].map(option => `=${option}`);
+                return false;
+              }
+
+              value = jsonData[item];
               return false;
             }
+
+            if (!temp.item.field && temp.item.type === 'select' && item.indexOf(':ENAME') < 0) { // 处理合并型select
+              value = jsonData[item].map(option => `=${option}`);
+              return false;
+            }
+
+            if (!temp.item.field && temp.item.type === 'select' && item.indexOf(':ENAME') < 0) { // 处理合并型select
+              value = jsonData[item].map(option => `=${option}`);
+              return false;
+            } // 外键查询输入情况
+            value = jsonData[item];
             return true;
           });
-          obj[item] = value;
+          if (value) {
+            obj[item] = value;
+          }
+          
           return obj;
         }, {});
       },
@@ -982,7 +1069,7 @@
       // 临时处理方案
       setTimeout(() => {
         this.searchClickData();
-      }, 100);
+      }, 500);
     },
     activated() {
       const { tableId } = this.$route.params;

@@ -125,7 +125,7 @@
           if (this.indexItem < 0) {
             return;
           }
-
+          
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
