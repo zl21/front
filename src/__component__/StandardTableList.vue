@@ -45,7 +45,7 @@
 <script>
   import { mapActions, mapState } from 'vuex';
   import ButtonGroup from './ButtonComponent';
-  import AgTable from './StandardTable';
+  import AgTable from './AgTable';
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
   import buttonmap from '../assets/js/buttonmap';
