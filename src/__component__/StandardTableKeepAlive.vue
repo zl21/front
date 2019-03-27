@@ -4,7 +4,6 @@
   >
     <component
       :is="currentTable"
-      :ref="currentTable"
     />
   </keep-alive>
 </template>

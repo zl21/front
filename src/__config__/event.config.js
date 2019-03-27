@@ -2,7 +2,6 @@ import store from './store.config';
 import router from './router.config';
 import {
   STANDARD_TABLE_LIST_PREFIX,
-  STANDARD_SINGLE_OBJECT_PREFIX
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -27,7 +26,7 @@ export const routeTo = ({ type, info }, cb) => {
       break;
     default:
       router.push({
-        path: `${STANDARD_SINGLE_OBJECT_PREFIX}`,
+        path: '/',
       });
       break;
   }

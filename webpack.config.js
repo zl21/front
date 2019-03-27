@@ -88,6 +88,7 @@ module.exports = env => ({
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
+      chunksSortMode: 'none', // 为解决toposort的Cyclic dependency问题
       title: projectConfig.projectsTitle,
       template: './index.html',
       inject: true,
