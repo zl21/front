@@ -5,7 +5,7 @@ import {
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
-import verticalTableDetailModule from './store/verticalTableDetail'
+import verticalTableDetailModule from './store/verticalTableDetail';
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
