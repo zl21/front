@@ -13,7 +13,7 @@
   import { mapState } from 'vuex';
   import mixins from '../__config__/mixins/verticalTableDetail';
   import { VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../constants/global';
-  import VerticalTableDetail from './VerticalTableDetail';
+  import VerticalTableDetail from './V.TableDetail';
   
   export default {
     name: 'VerticalTableDetailKeepAlive',

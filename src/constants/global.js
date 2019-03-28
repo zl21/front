@@ -3,8 +3,8 @@ export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
 export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
 
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'StandardTable';
-export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'HorizontalTableDetail';
-export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'VerticalTableDetail';
+export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'H.TableDetail';
+export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'V.TableDetail';
 
 export const enableGateWay = true;
 

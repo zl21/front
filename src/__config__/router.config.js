@@ -25,10 +25,10 @@ const routes = [
         component: () => import('../__component__/StandardTableKeepAlive')
       }, {
         path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/:tableName/:tableId/:itemId`,
-        component: () => import('../__component__/HorizontalTableDetailKeepAlive')
+        component: () => import('../__component__/H.TableDetailKeepAlive')
       }, {
         path: `${VERTICAL_TABLE_DETAIL_PREFIX}/:tableName/:tableId/:itemId`,
-        component: () => import('../__component__/VerticalTableDetailKeepAlive')
+        component: () => import('../__component__/V.TableDetailKeepAlive')
       }]
   },
   {
