@@ -1,6 +1,10 @@
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
-export const STANDARD_SINGLE_OBJECT_PREFIX = '/SYSTEM/SINGLE-OBJECT';
+export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
+export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
+
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'StandardTable';
+export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'HorizontalTableDetail';
+export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'VerticalTableDetail';
 
 export const enableGateWay = true;
 

@@ -11,12 +11,12 @@
 <script>
   import Vue from 'vue';
   import { mapState } from 'vuex';
-  import mixins from '../__config__/mixins/standardTableLists';
-  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
-  import StandardTableList from './StandardTableList';
+  import mixins from '../__config__/mixins/verticalTableDetail';
+  import { VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../constants/global';
+  import VerticalTableDetail from './VerticalTableDetail';
   
   export default {
-    name: 'StandardTableKeepAlive',
+    name: 'VerticalTableDetailKeepAlive',
     data() {
       return {
         currentTable: null
@@ -27,10 +27,10 @@
     },
     methods: {
       generateComponent() {
-        const { tableName, tableId } = this.$route.params;
-        const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+        const { tableName, tableId, itemId } = this.$route.params;
+        const componentName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
         if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, VerticalTableDetail)));
         }
         this.currentTable = componentName;
       }
