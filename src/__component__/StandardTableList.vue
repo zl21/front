@@ -775,20 +775,21 @@
 
           if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
             // 批量提交
-            this.dynamicRequestUrl.submit = obj.requestUrlPath;
-            if (this.buttons.selectIdArr.length > 0) {
-              const data = {
-                title: '警告',
-                content: `确认执行${obj.name}?`
-              };
-              this.$Modal.fcWarning(data);
-            } else {
-              const data = {
-                title: '警告',
-                content: `请先选择需要${obj.name}的记录！`
-              };
-              this.$Modal.fcWarning(data);
-            }
+            this.buttons.dynamicRequestUrl.submit = obj.requestUrlPath;
+            this.batchSubmit();
+            // if (this.buttons.selectIdArr.length > 0) {
+            //   const data = {
+            //     title: '警告',
+            //     content: `确认执行${obj.name}?`
+            //   };
+            //   this.$Modal.fcWarning(data);
+            // } else {
+            //   const data = {
+            //     title: '警告',
+            //     content: `请先选择需要${obj.name}的记录！`
+            //   };
+            //   this.$Modal.fcWarning(data);
+            // }
           }
 
           if (obj.name === this.buttonMap.CMD_VOID.name) {
@@ -913,6 +914,124 @@
           
         this.batchVoidForButtons(searchdata);
       },
+      batchSubmit() {
+        // constthis = this;
+        const url = this.buttons.dynamicRequestUrl.submit;
+        const tableName = this.buttons.tableName;
+        const ids = this.buttons.selectIdArr.map(d => parseInt(d));
+       
+        this.batchSubmitForButtons({ url, tableName, ids });
+        if (this.buttons.batchSubmitData.code === 0) {
+           
+        }
+        // request({
+        //   method: 'post',
+        //   url: this.buttons.dynamicRequestUrl.submit || '/p/cs/batchSubmit',
+        //   data: obj,
+        //   contentType: 'application/json'
+        // }).then((res) => {
+        //   this.actionLoading = false;
+
+        //   res = res.data;
+
+        //   if (res.code == 0) {
+        //     this.errorTable = {};
+        //     this.selectSysment.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = `数据为系统保留字段，不允许${_self.buttonMap.CMD_SUBMIT.name}`;
+        //       this.$set(_self.errorTable, item, obj);
+        //     });
+
+        //     const data = {
+        //       message: res.message,
+        //     };
+        //     this.errorData = data;
+        //     this.errorDialog = true;
+        //     this.errorDialogClass = 'success';
+        //     this.errorDialogTitle = this.ChineseDictionary.PROMPT;
+        //     this.errorDialogBack = false;
+
+        //     if ($('.main-content').find('.myTree').length > 0) {
+        //       const destroyTab = vm.$children[0].$children[0].$children[3].$children[0].$children;
+        //       const thisComponent = `${'action' + '_'}${_self.param.tablename}_${_self.$route.query.id}`;
+        //       vm.$nextTick(() => {
+        //         for (let i = 0; i < destroyTab.length; i++) {
+        //           const element = destroyTab[i];
+        //           if (element.$vnode.data.ref == thisComponent) {
+        //             if (thisComponent.indexOf('action') > -1) {
+        //               element.getTableWay(true);
+        //             }
+        //             return;
+        //           }
+        //         }
+        //       });
+        //     } else {
+        //       this.searchData('backfresh');
+        //     }
+        //   } else if (res.message) {
+        //     if ($('.main-content').find('.myTree').length > 0) {
+        //       const destroyTab = vm.$children[0].$children[0].$children[3].$children[0].$children;
+        //       const thisComponent = `${'action' + '_'}${_self.param.tablename}_${_self.formObj_tableid}`;
+        //       vm.$nextTick(() => {
+        //         for (let i = 0; i < destroyTab.length; i++) {
+        //           const element = destroyTab[i];
+        //           if (element.$vnode.data.ref == thisComponent) {
+        //             if (thisComponent.indexOf('action') > -1) {
+        //               element.getTableWay(false);
+        //             }
+        //           }
+        //         }
+        //       });
+        //     }
+        //     this.selectSysment.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = `数据为系统保留字段，不允许${_self.buttonMap.CMD_SUBMIT.name}`;
+        //       this.$set(_self.errorTable, item, obj);
+        //     });
+        //     res.data.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = item.message;
+        //       this.$set(_self.errorTable, item.objid, obj);
+        //     });
+        //     this.searchData('backfresh');
+        //   } else if (res.data) {
+        //     let refParam;
+        //     if (typeof res.data === 'string') refParam = JSON.parse(res.data);
+        //     else refParam = res.data;
+        //     if (refParam.actionname) {
+        //       axios({
+        //         method: 'post',
+        //         url: '/p/cs/getAction',
+        //         data: {
+        //           actionid: 0,
+        //           webaction: refParam.actionname,
+        //         },
+        //       }).then((res) => {
+        //         this.actionLoading = false;
+        //         if (res.data.code === 0) {
+        //           const tab = res.data.data;
+        //           if (refParam) {
+        //             for (const key of Object.keys(refParam)) {
+        //               tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+        //             }
+        //           }
+        //           this.webaction(tab);
+        //         }
+        //       });
+        //     } else {
+        //       this.searchData('backfresh');
+        //     }
+        //   } else {
+        //     this.searchData('backfresh');
+        //   }
+        // }).catch((error) => {
+        //   this.actionLoading = false;
+        //   this.searchData('backfresh');
+        // });
+      },
       clickButtonsCollect() { // 收藏
         const params = {
           id: this.buttons.tableId,
@@ -927,6 +1046,25 @@
         }
       },
       errorconfirmDialog() {
+        const arr = [];
+
+        this.buttons.selectIdArr.forEach((item, index) => {
+          if (this.buttons.sysmentArr.indexOf(item) >= 0) {
+            this.buttons.selectSysment.push(item);
+          } else {
+            arr.push(item);
+          }
+        });
+        this.onSelectionChangedAssignment({ arr, rowArray });
+        // this.buttons.selectIdArr = arr;
+        if (this.buttons.selectIdArr.length === 0) {
+          this.buttons.selectSysment.forEach((item, index) => {
+            const obj = {};
+            obj.flag = true;
+            obj.message = `数据为系统保留字段，不允许${this.buttonMap.CMD_DELETE.name}`;
+            this.$set(this.errorTable, item, obj);
+          });
+        }
         this.$nextTick(() => {
           if (this.buttons.selectIdArr.length > 0) {
             if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {

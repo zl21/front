@@ -95,6 +95,9 @@ export default {
     buttons.errorDialogClass = 'fcWarning';
     buttons.errorDialogTitle = errorDialogTitle;
   },
+  updateButtonbatchSubmitData({ buttons }, data) {
+    buttons.batchSubmitData = data;
+  }
   
  
 };

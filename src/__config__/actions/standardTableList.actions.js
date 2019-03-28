@@ -23,13 +23,15 @@ export default {
       table,
       getcmd: 'y'
     })).then((res) => {
-      const queryData = res.data.data;
-      commit('updateButtonsTabcmd', queryData.tabcmd);
-      commit('updateButtonWaListButtons', queryData.waListButtons);
-      commit('updateTableStatus4css', queryData.datas.status4css);
-      commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
-      commit('updateDefaultButtonsdatas', queryData.datas);
-      commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+      if (res.data.code === 0) {
+        const queryData = res.data.data;
+        commit('updateButtonsTabcmd', queryData.tabcmd);
+        commit('updateButtonWaListButtons', queryData.waListButtons);
+        commit('updateTableStatus4css', queryData.datas.status4css);
+        commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
+        commit('updateDefaultButtonsdatas', queryData.datas);
+        commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+      }
     });
   },
   getExportQueryForButtons({
@@ -113,6 +115,13 @@ export default {
       const messageData = res.data.message;
       commit('batchVoidForButtonsData', messageData);
     });
+  },
+  batchSubmitForButtons({ commit }, { url, tableName, ids }) { // 调用调接口
+    network.post(url || '/p/cs/batchSubmit', {
+      tableName, 
+      ids
+    }).then((res) => {
+      commit('updateButtonbatchSubmitData', res.data);
+    });
   }
-
 };

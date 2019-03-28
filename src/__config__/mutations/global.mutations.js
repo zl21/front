@@ -109,32 +109,24 @@ export default {
   TabCloseAppoint(state, tab) {
     const selectTabs = state.openedMenuLists;
     const tabRouteFullPath = tab.routeFullPath;
+
     selectTabs.forEach((item, index) => {
-      if (tabRouteFullPath) {
-        if (selectTabs) {
-          const lastLength = selectTabs.length - 1;
-          state.activeTab = selectTabs[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
-          Object.assign(state.activeTab, {
-            isActive: true
-          });
-          router.push({
-            path: state.activeTab.routeFullPath,
-          });
-        }
-      }
       if (item.routeFullPath === tab.routeFullPath) {
         selectTabs.splice(index, 1);
       }
+      if (tabRouteFullPath) {
+        if (selectTabs.length > 0) {
+          const lastLength = selectTabs.length - 1;
+          state.activeTab = selectTabs[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
+          state.activeTab.isActive = true;
+          router.push({
+            path: state.activeTab.routeFullPath,
+          });
+        } else {
+          router.push('/');
+        }
+      } 
     });
-    if (selectTabs < 1) { // 判断当关闭全部tab页时清空路由
-      state.activeTab = {
-        isActive: false,
-        keepAliveModuleName: '',
-        label: '',
-      };
-      state.openedMenuLists = [];
-      router.push('/');
-    }
   }, // 关闭当前tab
   switchActiveTab(state, tab) {
     const openedMenuLists = state.openedMenuLists;
@@ -154,7 +146,6 @@ export default {
     }
   },
   TabHref(state, tab) {
-    // debugger;
     if (!tab.url) { 
       tab.url = '';
       // 特殊处理单对象路由
@@ -176,7 +167,7 @@ export default {
           param.push(`${item}=${obj[item]}`);
         }
         return obj;
-      }, []);
+      }, {});
     } else if (tab.url.indexOf('id=') < 0) {
       // 如果没有query,只需要拼接id
       param.push(`id=${tab.id}`);

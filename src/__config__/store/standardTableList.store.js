@@ -67,6 +67,9 @@ export default () => ({
       errorDialogTitle: '',
       detailState: true, // 是否可以双击查看或点击序号查看
       actionLoading: true,
+      batchSubmitData: {},
+      sysmentArr: [], // 系统数据
+      selectSysment: [], // 选中的系统数据
 
 
     }
