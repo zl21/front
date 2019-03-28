@@ -922,7 +922,12 @@
        
         this.batchSubmitForButtons({ url, tableName, ids });
         if (this.buttons.batchSubmitData.code === 0) {
-           
+          this.selectSysment.forEach((item, index) => {
+            const obj = {};
+            obj.flag = true;
+            obj.message = `数据为系统保留字段，不允许${_self.buttonMap.CMD_SUBMIT.name}`;
+            this.$set(_self.errorTable, item, obj);
+          });
         }
         // request({
         //   method: 'post',
@@ -1194,7 +1199,6 @@
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
       }
-     
     },
     mounted() {
       this.getTableQuery();

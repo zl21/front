@@ -1,7 +1,6 @@
 import axios from 'axios';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
-
 import { ignoreGateWay, enableGateWay, globalGateWay } from '../__config__/global';
 
 axios.interceptors.request.use((config) => {
@@ -9,7 +8,6 @@ axios.interceptors.request.use((config) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.serviceIdMap;
   const serviceName = store.state.activeTab.tableName;
-  const serviceIdArray = [];
   if (!enableGateWay) {
     return config;
   }
@@ -20,10 +18,7 @@ axios.interceptors.request.use((config) => {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
-  Object.values(serviceId).forEach((b) => {
-    serviceIdArray.push(b);
-  });
-  if (serviceIdArray.indexOf(serviceName) === -1) {
+  if (serviceId[serviceName] !== 'undefined') {
     const serviceIdMapApi = serviceId[serviceName];
     config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
     return config;
