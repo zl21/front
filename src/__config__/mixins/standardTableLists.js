@@ -25,7 +25,8 @@ export default () => ({
         'importGetUploadParameters',
         'importGetUploadParametersForButtons',
         'batchVoidForButtons',
-        'batchSubmitForButtons'
+        'batchSubmitForButtons',
+        'batchUnSubmitForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -41,7 +42,8 @@ export default () => ({
         'setActiveTabActionValue',
         'setImportDialogTitle',
         'setErrorModalValue',
-        'updateButtonbatchSubmitData'
+        'updateButtonbatchSubmitData',
+        'updateButtonbatchUnSubmitData',
         
       ]),
   },

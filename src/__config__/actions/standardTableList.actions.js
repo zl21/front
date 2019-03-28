@@ -50,9 +50,9 @@ export default {
     network.post('/p/cs/batchDelete', objQuery).then((res) => {
       if (res && res.data.code) {
         const deleteTableData = res.data;
-        commit('deleteTableData', deleteTableData);
+        commit('updateButtonDeleteData', deleteTableData);
       }
-    });
+    }); 
   },
 
   getExeActionDataForButtons({ commit }, { item, obj }) {
@@ -122,6 +122,13 @@ export default {
       ids
     }).then((res) => {
       commit('updateButtonbatchSubmitData', res.data);
+    });
+  },
+  batchUnSubmitForButtons({ commit }, obj) { // 调用调接口
+    network.post('/p/cs/batchUnSubmit', {
+      obj
+    }).then((res) => {
+      commit('updateButtonbatchUnSubmitData', res.data);
     });
   }
 };

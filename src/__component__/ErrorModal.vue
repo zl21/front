@@ -4,6 +4,7 @@
     <Modal
       v-model="errorDialog"
       :title="title"
+      footer-hide="errorDialogBack"
       @on-ok="confirmDialog()"
       @on-cancel="closeDialog()"
     >
@@ -48,6 +49,10 @@
       // },
       hiddenButton: {
         type: Boolean,
+      },
+      errorDialogBack: {
+        type: Boolean,
+        
       },
  
 
