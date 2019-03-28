@@ -89,11 +89,15 @@ export default {
   updateButtonDownloadImportTemplate({ buttons }, data) {
     buttons.importTemplate = data;
   },
-  setErrorModalValue({ buttons }, { data, errorDialogTitle }) { // 设置error弹窗提示信息
+  setErrorModalValue({ buttons }, { data, errorDialogTitle, errorDialogvalue }) { // 设置error弹窗提示信息
     buttons.errorData = data;
-    buttons.errorDialog = true;
+    buttons.errorDialog = errorDialogvalue;
     buttons.errorDialogClass = 'fcWarning';
     buttons.errorDialogTitle = errorDialogTitle;
+  },
+  updateButtonbatchSubmitData({ buttons }, data) {
+    buttons.batchSubmitData = data;
   }
+  
  
 };

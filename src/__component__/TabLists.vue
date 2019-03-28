@@ -121,27 +121,8 @@
         router.push({ path: tag.routeFullPath });
       },
       handleClose(tag) {
-        // this.removeKeepAlivePages(tag);
         this.TabCloseAppoint(tag);
       }, // 关闭当前tab
-      // removeKeepAlivePages(info) {
-
-      //   const pageType = this.$route.path.split('/')[2];
-      //   if (pageType === 'TABLE') {
-      //     this.addExcludedComponents({
-      //       type: pageType,
-      //       name: this.$route.path.split('/')[3],
-      //       id: this.$route.params.tableId,
-      //     });
-      //   }
-      //   if (pageType === 'singleView' || info.type === 'singleObject') {
-      //     this.addExcludedComponents({
-      //       type: pageType,
-      //       name: this.$route.params.tableName,
-      //       id: parseFloat(this.$route.params.tableId) === -1 ? this.$route.params.pid : this.$route.params.tableId,
-      //     });
-      //   }
-      // },
       emptyClick() {
         this.clickshow = false;
         this.emptyTabs();
@@ -206,9 +187,10 @@
   .active {
     border-top: 2px solid #fd6442;
     border-bottom: 1px solid white;
-    .burgeon-tag-text {
-    color: #fd6442 !important;
-    }
+      color: #fd6442 !important;
+
+    // .burgeon-tag-text {
+    // }
   }
   .tab-list{
     margin: 0px;
@@ -225,6 +207,8 @@
       text-decoration: none;
       position: relative;
       cursor: pointer;
+      color: #000;
+
       .openedMenuListsItem{
         height: 31px;
         width: 81px;
@@ -235,7 +219,6 @@
         background-color: #fff;
         box-sizing: content-box;
         text-align: center;
-        color: #000;
         border: none;
         border-top: 2px solid #fff;
         border-right: 1px solid #dfdfdf;

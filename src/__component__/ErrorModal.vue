@@ -4,8 +4,8 @@
     <Modal
       v-model="errorDialog"
       :title="title"
-      @on-ok="closeDialog(true)"
-      @on-cancel="closeDialog(false)"
+      @on-ok="confirmDialog()"
+      @on-cancel="closeDialog()"
     >
       <p
         v-for="(item, index) in errorMessage"
@@ -58,17 +58,13 @@
       };
     },
     methods: {
-      closeDialog(option) {
-        this.$emit('refreshbizlines', false, option);
+      closeDialog() {
+        this.$emit('closeDialog');
+      },
+      confirmDialog() {
+        this.$emit('confirmDialog');
       }
     },
-    mounted() {
-      console.log('🍊', this.errorDialog);
-      if (this.errorMessage.length > 0) {
-        this.errorFlag = true;
-      } else {
-        this.errorFlag = false;
-      }
-    },
+  
   };
 </script>

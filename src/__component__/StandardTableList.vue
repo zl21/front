@@ -1,7 +1,7 @@
 <template>
   <div class="StandardTableListRootDiv">
     <ButtonGroup
-      :data-array=" buttons.dataArray"
+      :data-array="buttons.dataArray"
       @buttonClick="buttonClick"
     />
     <FormItemComponent
@@ -37,7 +37,8 @@
       :dialog-class="buttons.errorDialogClass"
       :error-dialog="buttons.errorDialog"
       :title="buttons.errorDialogTitle"
-      @refreshbizlines="errorDialogClose"
+      @closeDialog="errorDialogClose"
+      @confirmDialog="errorconfirmDialog"
     />
   </div>
 </template>
@@ -359,13 +360,13 @@
       },
 
       // 按钮组操作
-      getbuttonGroupdata() {
+      getbuttonGroupdata() { // 获取按钮数据
         const tabcmdData = this.buttons.tabcmd;
         if (tabcmdData.cmds) {
           const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (item === 'actionView') {
-              this.detailState = tabcmdData.prem[index];
+              this.buttons.detailState = tabcmdData.prem[index];
             } else if (tabcmdData.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
@@ -383,7 +384,7 @@
           this.updateDefaultButtonGroupData(buttonGroupShow);
         }
       },
-      onSelectionChanged(rowIdArray, rowArray) {
+      onSelectionChanged(rowIdArray, rowArray) { // 获取表格选中明细
         this.onSelectionChangedAssignment({ rowIdArray, rowArray });
       },
       buttonClick(type, obj) {
@@ -401,10 +402,10 @@
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
           this.setActiveTabActionValue(obj);
-          // if (obj.vuedisplay === 'native') { // 有url地址
-          //   location.href = obj.action;
-          //   return;
-          // }
+          if (obj.vuedisplay === 'native') { // 接口返回有url地址
+            location.href = obj.action;
+            return;
+          }
           if (obj.vuedisplay === 'slient') { // 静默程序            if(obj.confirm){  //有提示
             if (obj.confirm) { // 有提示
               if (obj.confirm.indexOf('{') >= 0) {
@@ -583,8 +584,7 @@
         }, 300);
       },
       webActionSlient(item) {
-        const self = this;
-        self.actionLoading = true;
+        // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
           ids: this.buttons.selectIdArr,
@@ -595,7 +595,6 @@
         let errorAction = null;
         let refParam = null;
         const getActionData = this.buttons.getActionData;
-
         const exeActionData = this.buttons.exeActionData;
         if (exeActionData) {
           // 如果返回了id和tablename;
@@ -607,16 +606,16 @@
           if (nextOperate.failure) errorAction = nextOperate.failure;
         }
         if (exeActionData.code === 0) {
-          if (successAction) {
+          if (successAction) { // 如果有静默后需要执行的操作
             this.getActionDataForButtons(successAction);
             if (getActionData.code === 0) {
               const tab = getActionData.data;
               if (refParam) {
-                // for (const key of Object.keys(refParam)) {
-                //   tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-                // }
+                for (const key of Object.keys(refParam)) {
+                  tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+                }
               }
-              self.webactionClick(tab);
+              this.webactionClick(tab);
             }
           }
         } else if (getActionData.code === -1 && !getActionData.message && errorAction) {
@@ -624,23 +623,23 @@
           if (getActionData.code === 0) {
             const tab = getActionData.data;
             if (refParam) {
-              // for (const key of Object.keys(refParam)) {
-              //   tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-              // }
+              for (const key of Object.keys(refParam)) {
+                tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+              }
             }
-            self.webactionClick(tab);
+            this.webactionClick(tab);
           }
         } else {
-          self.actionLoading = false;
-          self.errorTable = {};
+          this.actionLoading = false;
+          this.errorTable = {};
           if (getActionData.data) {
             getActionData.data.forEach(() => {
               const objs = {};
               objs.flag = true;
               objs.message = item.message;
-              self.$set(self.errorTable, item.objid, objs);
+              this.$set(this.errorTable, item.objid, objs);
             });
-            // self.searchData('fresh');
+            // this.searchData('fresh');
           }
         }
         // this.buttons.activeTabAction = null;
@@ -695,7 +694,6 @@
         }, {});
       },
       searchClickData() { // 按钮查找
-        const { agTableElement } = this.$refs;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },
@@ -703,6 +701,7 @@
         const { tableName, tableId } = this.$route.params;
         // 双击条状判断
         const objTableUrl = this.ag.datas.tableurl;
+        const objdistype = this.ag.datas.objdistype;
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
           // this.buttons.errorData = [];
@@ -711,47 +710,42 @@
             const ptype = this.$route.path.split('/')[2];
             if (objTableUrl) {
               // 跳转的是单对象
-              console.log('跳转的是单对象');
               const name = objTableUrl.split('?')[0].split('/')[3];
-              const query = urlParse(objTableUrl);
+              // const query = urlParse(objTableUrl);
               this.$store.commit('global/TabOpen', {
                 id: -1,
                 type: 'action',
                 name,
-                label: `${obj.webdesc}编辑`,
+                label: `${obj.name}编辑`,
                 query: Object.assign(
                   {
                     id: -1,
                     tableName,
                     pid: tableId,
                     ptype,
-                    ptitle: obj.webdesc,
-                    tabTitle: `${obj.webdesc}编辑`
+                    ptitle: obj.name,
+                    tabTitle: `${obj.name}编辑`
                   },
-                  query
+                 
                 )
               });
-            } else if (this.objdistype === 'tabpanle') {
-              console.log('跳转的是tabpanle');
-
+            } else if (objdistype === 'tabpanle') {
               this.$store.commit('global/TabHref', {
                 id: -1,
                 type: 'singleObject',
                 name: tableName,
-                label: `${obj.webdesc}编辑`,
+                label: `${obj.name}编辑`,
                 query: {
                   id: -1,
                   tableName,
                   pid: tableId,
                   ptype,
-                  ptitle: obj.webdesc,
-                  tabTitle: `${obj.webdesc}编辑`
+                  ptitle: obj.name,
+                  tabTitle: `${obj.name}编辑`
                 }
               });
             } else {
-              console.log('其他的', obj);
-
-              this.TabHref({
+              this.$store.commit('global/TabHref', {
                 id: -1,
                 type: 'singleView',
                 name: tableName,
@@ -774,38 +768,40 @@
                 content: `确认执行${obj.name}?`,
               };
               const errorDialogTitle = this.ChineseDictionary.WARNING;
-            
-              this.setErrorModalValue({ data, errorDialogTitle });
+              const errorDialogvalue = true;
+              this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
             }
           }
 
           if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
             // 批量提交
-            this.dynamicRequestUrl.submit = obj.requestUrlPath;
-            if (this.buttons.selectIdArr.length > 0) {
-              const data = {
-                title: '警告',
-                content: `确认执行${obj.name}?`
-              };
-              this.$Modal.fcWarning(data);
-            } else {
-              const data = {
-                title: '警告',
-                content: `请先选择需要${obj.name}的记录！`
-              };
-              this.$Modal.fcWarning(data);
-            }
+            this.buttons.dynamicRequestUrl.submit = obj.requestUrlPath;
+            this.batchSubmit();
+            // if (this.buttons.selectIdArr.length > 0) {
+            //   const data = {
+            //     title: '警告',
+            //     content: `确认执行${obj.name}?`
+            //   };
+            //   this.$Modal.fcWarning(data);
+            // } else {
+            //   const data = {
+            //     title: '警告',
+            //     content: `请先选择需要${obj.name}的记录！`
+            //   };
+            //   this.$Modal.fcWarning(data);
+            // }
           }
 
           if (obj.name === this.buttonMap.CMD_VOID.name) {
             // 批量作废
             if (this.buttons.selectIdArr.length > 0) {
-              // this.errorTable = {}
               const data = {
                 title: '警告',
                 content: `确认执行${obj.name}?`
               };
-              this.$Modal.fcWarning(data);
+              const errorDialogTitle = this.ChineseDictionary.WARNING;
+              const errorDialogvalue = true;
+              this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
             } else {
               const data = {
                 title: '警告',
@@ -903,12 +899,138 @@
         this.getExportQueryForButtons(OBJ);
       },
       deleteTableList() {
-        const { tableName } = this.$route.params;
         const objQuery = {
-          tableName,
+          tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
         };
         this.getBatchDeleteForButtons(objQuery);
+        this.getQueryListForAg(this.searchData);
+      },
+      batchVoid() {
+        const searchdata = {
+          table: this.buttons.tableName,
+          ids: this.buttons.selectIdArr.map(d => parseInt(d))
+        };
+          
+        this.batchVoidForButtons(searchdata);
+      },
+      batchSubmit() {
+        // constthis = this;
+        const url = this.buttons.dynamicRequestUrl.submit;
+        const tableName = this.buttons.tableName;
+        const ids = this.buttons.selectIdArr.map(d => parseInt(d));
+       
+        this.batchSubmitForButtons({ url, tableName, ids });
+        if (this.buttons.batchSubmitData.code === 0) {
+           
+        }
+        // request({
+        //   method: 'post',
+        //   url: this.buttons.dynamicRequestUrl.submit || '/p/cs/batchSubmit',
+        //   data: obj,
+        //   contentType: 'application/json'
+        // }).then((res) => {
+        //   this.actionLoading = false;
+
+        //   res = res.data;
+
+        //   if (res.code == 0) {
+        //     this.errorTable = {};
+        //     this.selectSysment.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = `数据为系统保留字段，不允许${_self.buttonMap.CMD_SUBMIT.name}`;
+        //       this.$set(_self.errorTable, item, obj);
+        //     });
+
+        //     const data = {
+        //       message: res.message,
+        //     };
+        //     this.errorData = data;
+        //     this.errorDialog = true;
+        //     this.errorDialogClass = 'success';
+        //     this.errorDialogTitle = this.ChineseDictionary.PROMPT;
+        //     this.errorDialogBack = false;
+
+        //     if ($('.main-content').find('.myTree').length > 0) {
+        //       const destroyTab = vm.$children[0].$children[0].$children[3].$children[0].$children;
+        //       const thisComponent = `${'action' + '_'}${_self.param.tablename}_${_self.$route.query.id}`;
+        //       vm.$nextTick(() => {
+        //         for (let i = 0; i < destroyTab.length; i++) {
+        //           const element = destroyTab[i];
+        //           if (element.$vnode.data.ref == thisComponent) {
+        //             if (thisComponent.indexOf('action') > -1) {
+        //               element.getTableWay(true);
+        //             }
+        //             return;
+        //           }
+        //         }
+        //       });
+        //     } else {
+        //       this.searchData('backfresh');
+        //     }
+        //   } else if (res.message) {
+        //     if ($('.main-content').find('.myTree').length > 0) {
+        //       const destroyTab = vm.$children[0].$children[0].$children[3].$children[0].$children;
+        //       const thisComponent = `${'action' + '_'}${_self.param.tablename}_${_self.formObj_tableid}`;
+        //       vm.$nextTick(() => {
+        //         for (let i = 0; i < destroyTab.length; i++) {
+        //           const element = destroyTab[i];
+        //           if (element.$vnode.data.ref == thisComponent) {
+        //             if (thisComponent.indexOf('action') > -1) {
+        //               element.getTableWay(false);
+        //             }
+        //           }
+        //         }
+        //       });
+        //     }
+        //     this.selectSysment.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = `数据为系统保留字段，不允许${_self.buttonMap.CMD_SUBMIT.name}`;
+        //       this.$set(_self.errorTable, item, obj);
+        //     });
+        //     res.data.forEach((item, index) => {
+        //       const obj = {};
+        //       obj.flag = true;
+        //       obj.message = item.message;
+        //       this.$set(_self.errorTable, item.objid, obj);
+        //     });
+        //     this.searchData('backfresh');
+        //   } else if (res.data) {
+        //     let refParam;
+        //     if (typeof res.data === 'string') refParam = JSON.parse(res.data);
+        //     else refParam = res.data;
+        //     if (refParam.actionname) {
+        //       axios({
+        //         method: 'post',
+        //         url: '/p/cs/getAction',
+        //         data: {
+        //           actionid: 0,
+        //           webaction: refParam.actionname,
+        //         },
+        //       }).then((res) => {
+        //         this.actionLoading = false;
+        //         if (res.data.code === 0) {
+        //           const tab = res.data.data;
+        //           if (refParam) {
+        //             for (const key of Object.keys(refParam)) {
+        //               tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+        //             }
+        //           }
+        //           this.webaction(tab);
+        //         }
+        //       });
+        //     } else {
+        //       this.searchData('backfresh');
+        //     }
+        //   } else {
+        //     this.searchData('backfresh');
+        //   }
+        // }).catch((error) => {
+        //   this.actionLoading = false;
+        //   this.searchData('backfresh');
+        // });
       },
       clickButtonsCollect() { // 收藏
         const params = {
@@ -923,86 +1045,93 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-      errorDialogClose(value, option) {
-        // const arr = [];
-        this.errorDialog = value;
+      errorconfirmDialog() {
+        const arr = [];
+
+        this.buttons.selectIdArr.forEach((item, index) => {
+          if (this.buttons.sysmentArr.indexOf(item) >= 0) {
+            this.buttons.selectSysment.push(item);
+          } else {
+            arr.push(item);
+          }
+        });
+        this.onSelectionChangedAssignment({ arr, rowArray });
+        // this.buttons.selectIdArr = arr;
+        if (this.buttons.selectIdArr.length === 0) {
+          this.buttons.selectSysment.forEach((item, index) => {
+            const obj = {};
+            obj.flag = true;
+            obj.message = `数据为系统保留字段，不允许${this.buttonMap.CMD_DELETE.name}`;
+            this.$set(this.errorTable, item, obj);
+          });
+        }
         this.$nextTick(() => {
-          if (option) {
-            if (this.buttons.selectIdArr.length > 0) {
-              if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {
-                this.batchUnSubmit();
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_SUBMIT.name) >= 0) {
-                this.batchSubmit();
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_DELETE.name) >= 0) {
-                this.deleteTableList();
-                return;
-              } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_VOID.name) >= 0) {
-                this.batchVoid();
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              }
+          if (this.buttons.selectIdArr.length > 0) {
+            if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {
+              this.batchUnSubmit();
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
+            } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_SUBMIT.name) >= 0) {
+              this.batchSubmit();
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
+            } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_DELETE.name) >= 0) {
+              this.deleteTableList();// 按钮删除动作
+              return;
+            } if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_VOID.name) >= 0) {
+              this.batchVoid();// 按钮作废动作
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
             }
-            if (this.activeTabAction) {
-              if (this.activeTabAction.vuedisplay === 'slient' && option && this.errorDialogClass === 'warning') {
-                if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                    if (JSON.parse(this.activeTabAction.confirm).isradio) {
-                      // 单选
-                      if (this.selectIdArr.length === 1) {
-                        this.webActionSlient(this.activeTabAction); // 静默执行
-                      }
-                    } else if (this.selectIdArr.length > 0) {
-                      this.webActionSlient(this.activeTabAction);
+          }
+          if (this.activeTabAction) {
+            if (this.activeTabAction.vuedisplay === 'slient' && option && this.errorDialogClass === 'warning') {
+              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+                    // 单选
+                    if (this.selectIdArr.length === 1) {
+                      this.webActionSlient(this.activeTabAction); // 静默执行
                     }
-                  } else {
+                  } else if (this.selectIdArr.length > 0) {
                     this.webActionSlient(this.activeTabAction);
                   }
                 } else {
                   this.webActionSlient(this.activeTabAction);
                 }
-                return;
+              } else {
+                this.webActionSlient(this.activeTabAction);
               }
-              if (this.activeTabAction.vuedisplay === 'navbar' && option && this.errorDialogClass === 'warning') {
-                if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                    if (JSON.parse(this.activeTabAction.confirm).isradio) {
-                      // 单选
-                      if (this.selectIdArr.length === 1) {
-                        this.objTabActionNavbar(this.activeTabAction); // 新标签跳转
-                      }
-                    } else if (this.selectIdArr.length > 0) {
-                      this.objTabActionNavbar(this.activeTabAction);
+              return;
+            }
+            if (this.activeTabAction.vuedisplay === 'navbar' && option && this.errorDialogClass === 'warning') {
+              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+                    // 单选
+                    if (this.selectIdArr.length === 1) {
+                      this.objTabActionNavbar(this.activeTabAction); // 新标签跳转
                     }
-                  } else {
+                  } else if (this.selectIdArr.length > 0) {
                     this.objTabActionNavbar(this.activeTabAction);
                   }
                 } else {
                   this.objTabActionNavbar(this.activeTabAction);
                 }
-                return;
+              } else {
+                this.objTabActionNavbar(this.activeTabAction);
               }
-              if (option && this.activeTabAction.vuedisplay === 'dialog' && this.errorDialogClass === 'warning') { // 弹窗动作定义提示后操作
-                if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                    if (JSON.parse(this.activeTabAction.confirm).isradio) {
-                      // 单选
-                      if (this.selectIdArr.length === 1) {
-                        const obj = this.activeTabAction;
-                        this.actionDialog.queryString = obj.action.split('?')[1];
-                        this.actionDialog.show = true;
-                        this.actionDialog.title = obj.webdesc;
-                        const componentName = obj.action.split('?')[0].replace(/\//g, '_');
-                        Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
-                        this.dialogComponent = componentName;
-                      }
-                    } else if (this.selectIdArr.length > 0) {
+              return;
+            }
+            if (option && this.activeTabAction.vuedisplay === 'dialog' && this.errorDialogClass === 'warning') { // 弹窗动作定义提示后操作
+              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+                    // 单选
+                    if (this.selectIdArr.length === 1) {
                       const obj = this.activeTabAction;
                       this.actionDialog.queryString = obj.action.split('?')[1];
                       this.actionDialog.show = true;
@@ -1010,10 +1139,8 @@
                       const componentName = obj.action.split('?')[0].replace(/\//g, '_');
                       Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                       this.dialogComponent = componentName;
-                    } else {
-                      // this.webActionSlient(this.activeTabAction)
                     }
-                  } else {
+                  } else if (this.selectIdArr.length > 0) {
                     const obj = this.activeTabAction;
                     this.actionDialog.queryString = obj.action.split('?')[1];
                     this.actionDialog.show = true;
@@ -1021,6 +1148,8 @@
                     const componentName = obj.action.split('?')[0].replace(/\//g, '_');
                     Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                     this.dialogComponent = componentName;
+                  } else {
+                    // this.webActionSlient(this.activeTabAction)
                   }
                 } else {
                   const obj = this.activeTabAction;
@@ -1031,28 +1160,40 @@
                   Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                   this.dialogComponent = componentName;
                 }
+              } else {
+                const obj = this.activeTabAction;
+                this.actionDialog.queryString = obj.action.split('?')[1];
+                this.actionDialog.show = true;
+                this.actionDialog.title = obj.webdesc;
+                const componentName = obj.action.split('?')[0].replace(/\//g, '_');
+                Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
+                this.dialogComponent = componentName;
               }
             }
-            if (this.errorData.message.indexOf('批量更新') >= 0) {
-              this.dataConShow.dataConShow = true;
-              this.dataConShow.title = this.$store.state.activeTab.label;
-              this.dataConShow.tabConfig = {
-                tabledesc: this.$store.state.activeTab.label,
-                tablename: this.param.tablename,
-                tableid: this.formObj_tableid,
-                tabrelation: '1:1',
-                objid: this.selectIdArr,
-              };
-              this.dataConShow.fixedcolumns = this.getJson();
-              this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
-            } else if (this.errorData.message.indexOf('操作会执行全量导出') >= 0) {
-              this.batchExport();
-            } else if (this.selectSysment.length > 0) {
-              this.searchData('backfresh');
-            }
+          }
+          if (this.errorData.message.indexOf('批量更新') >= 0) {
+            this.dataConShow.dataConShow = true;
+            this.dataConShow.title = this.$store.state.activeTab.label;
+            this.dataConShow.tabConfig = {
+              tabledesc: this.$store.state.activeTab.label,
+              tablename: this.param.tablename,
+              tableid: this.formObj_tableid,
+              tabrelation: '1:1',
+              objid: this.selectIdArr,
+            };
+            this.dataConShow.fixedcolumns = this.getJson();
+            this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
+          } else if (this.errorData.message.indexOf('操作会执行全量导出') >= 0) {
+            this.batchExport();
+          } else if (this.selectSysment.length > 0) {
+            this.searchData('backfresh');
           }
         });
       },
+      errorDialogClose() {
+        const errorDialogvalue = false;
+        this.setErrorModalValue({ errorDialogvalue });
+      }
      
     },
     mounted() {

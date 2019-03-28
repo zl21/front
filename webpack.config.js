@@ -5,30 +5,33 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const projectConfig = require('./project.config');
 
+const proxyLists = ['/p/c'];
+const proxyListsForGateway = ['/ad-app/p/c'];
+
+const target = 'http://47.99.229.124:10001'; // 框架研发网关开启环境
 module.exports = env => ({
   entry: {
     index: './index.js',
   },
   devServer: {
     compress: true,
-    port: 8190,
+    port: 8090,
     host: '127.0.0.1',
-    open: true,
+    open: false,
     historyApiFallback: {
       rewrites: [
         { from: /.*/, to: path.posix.join('/', 'index.html') },
       ],
     },
     publicPath: '/',
-    proxy: {
-      '/p/c': {
-        // target: 'http://47.99.94.15:9090/mock/70/r3/1.4',
-        target: 'http://47.99.229.124:1024',
-        pathRewrite: {
-          '^/p/c': '/p/c',
-        },
-      },
-    },
+    proxy: [{
+      context: proxyLists,
+      target
+    }, {
+      context: proxyListsForGateway,
+      target
+    }]
+   
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',

@@ -23,16 +23,18 @@ export default {
       table,
       getcmd: 'y'
     })).then((res) => {
-      const queryData = res.data.data;
-      commit('updateButtonsTabcmd', queryData.tabcmd);
-      commit('updateButtonWaListButtons', queryData.waListButtons);
-      commit('updateTableStatus4css', queryData.datas.status4css);
-      commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
-      commit('updateDefaultButtonsdatas', queryData.datas);
-      commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+      if (res.data.code === 0) {
+        const queryData = res.data.data;
+        commit('updateButtonsTabcmd', queryData.tabcmd);
+        commit('updateButtonWaListButtons', queryData.waListButtons);
+        commit('updateTableStatus4css', queryData.datas.status4css);
+        commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
+        commit('updateDefaultButtonsdatas', queryData.datas);
+        commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+      }
     });
   },
-  getExportQueryForButtons({ commit }, {
+  getExportQueryForButtons({
     searchdata, filename, filetype, showColumnName, menu
   }) {
     network.post('/p/cs/export', urlSearchParams({
@@ -44,11 +46,9 @@ export default {
       }
     });
   },
-  getBatchDeleteForButtons({ commit }, tableName) {
-    network.post('/p/cs/batchDelete', urlSearchParams({
-      tableName
-    })).then((res) => {
-      if (res.data.code) {
+  getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
+    network.post('/p/cs/batchDelete', objQuery).then((res) => {
+      if (res && res.data.code) {
         const deleteTableData = res.data;
         commit('deleteTableData', deleteTableData);
       }
@@ -90,7 +90,7 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  importGetUploadParametersForButtons({ commit },) {
+  importGetUploadParametersForButtons({ commit }) {
     network.post('/p/cs/settings', urlSearchParams({
       configNames: JSON.stringify(['upload.import.max-file-size'])
     })).then((res) => {
@@ -98,16 +98,30 @@ export default {
       commit('updateButtonImportGetUploadParameters', data);
     });
   },
-  downloadImportTemplateForButtons({ commit, buttons }) {
+  downloadImportTemplateForButtons({ commit }, tableName) {
     network.post('/p/cs/downloadImportTemplate', urlSearchParams({
       searchdata: {
-        table: buttons.tableName,
+        table: tableName,
       },
     })).then((res) => {
       const data = res.data;
       commit('updateButtonDownloadImportTemplate', data);
     });
+  },
+  batchVoidForButtons({ commit }, searchdata) { // 调用作废接口
+    network.post('/p/cs/batchVoid', urlSearchParams({
+      searchdata
+    })).then((res) => {
+      const messageData = res.data.message;
+      commit('batchVoidForButtonsData', messageData);
+    });
+  },
+  batchSubmitForButtons({ commit }, { url, tableName, ids }) { // 调用调接口
+    network.post(url || '/p/cs/batchSubmit', {
+      tableName, 
+      ids
+    }).then((res) => {
+      commit('updateButtonbatchSubmitData', res.data);
+    });
   }
-
-
 };

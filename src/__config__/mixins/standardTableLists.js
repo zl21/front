@@ -23,7 +23,9 @@ export default () => ({
         'getToFavoriteDataForButtons',
         'getRemoveFavoriteDataForButtons',
         'importGetUploadParameters',
-        'importGetUploadParametersForButtons'
+        'importGetUploadParametersForButtons',
+        'batchVoidForButtons',
+        'batchSubmitForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -38,7 +40,9 @@ export default () => ({
         'updateButtonSetFavoriteData',
         'setActiveTabActionValue',
         'setImportDialogTitle',
-        'setErrorModalValue'
+        'setErrorModalValue',
+        'updateButtonbatchSubmitData'
+        
       ]),
   },
   computed: {
