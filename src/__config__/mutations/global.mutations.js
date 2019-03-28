@@ -1,7 +1,9 @@
 import {
-  STANDARD_TABLE_COMPONENT_PREFIX
+  HORIZONTAL_TABLE_DETAIL_PREFIX,
+  VERTICAL_TABLE_DETAIL_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
+
 
 export default {
   changeSelectedPrimaryMenu(state, index) {
@@ -145,100 +147,39 @@ export default {
       }
     }
   },
-  TabHref(state, tab) {
-    if (!tab.url) { 
-      tab.url = '';
-      // 特殊处理单对象路由
-      if (tab.type === 'singleView' || tab.type === 'singleObject') {
-        tab.url = `${tab.type}/${tab.type}`;
-      } else {
-        tab.url = `${tab.type}/${tab.name}`;
-      }
-    }
-    if (tab.url.indexOf('?') < 0) {
-      tab.url += '?';
-    }
-    // 将query拼接url
-    const param = [];
-    if (tab.query) {
-      Object.keys(tab.query).reduce((obj, item) => {
-        if (tab.query[item]) {
-          obj[item] = tab.query[item];
-          param.push(`${item}=${obj[item]}`);
-        }
-        return obj;
-      }, {});
-    } else if (tab.url.indexOf('id=') < 0) {
-      // 如果没有query,只需要拼接id
-      param.push(`id=${tab.id}`);
-    }
-    // 判断url是否已经有条件值
-    if (tab.url.indexOf('=') > 0 && param.length > 0) {
-      tab.url += '&';
-    }
-    tab.url += param.join('&');
-
-    // 判断前缀 /m 或 /iframe
-    const front = this.state.global.activeTab.routeFullPath.split('/')[1];
-    tab.routeFullPath = `/${front}/${tab.url}`;
-
-    // 移除当前tab
-    const activeTab = state.activeTab;
-    const selectTabs = state.openedMenuLists;
-
-    // 判断原始链接来源,没有就赋值
-    if (!tab.orgTab) tab.orgTab = activeTab.orgTab;
-    let has = false;
-    let localHas = false;
-    let localIndex;
-    let activeIndex; // 已存在的序号
-    // 循环,判断
-    // 判断菜单是否已存在
-    selectTabs.forEach((item, index) => {
-      const type = item.routeFullPath.split('/')[2];
-      const name = item.routeFullPath.split('/')[3];
-      const id = item.routeFullPath.split('/')[4];
-      if (type === tab.type && name === tab.name && id === tab.id) { // 判断是否存在当前tab
-        localIndex = index;
-        localHas = true;
-      }
-      if (type === activeTab.type && name === activeTab.tableName && id === activeTab.id) { // 判断是否是当前tab
-        activeIndex = index;
-        if (!localHas) {
-          state.openedMenuLists[activeIndex] = tab; // 菜单替换
-          has = true;
-        }
-      }
-    });
-  
-    if (localHas) {
-      state.activeTab = state.openedMenuLists[localIndex];
-      state.openedMenuLists.splice(activeIndex, 1);
+  TabHref(state, {
+    type, tableName, tableId, label, val 
+  }) {
+    let path = '';
+    let ModuleName = '';
+    if (type === 'tableDetailHorizontal') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${val}`;
+      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${val}`;
       router.push({
-        path: tab.routeFullPath,
-      });
-    } else {
-      if (!has) state.openedMenuLists.push(tab);
-      state.activeTab = tab;
-      router.push({
-        path: tab.routeFullPath,
+        path
       });
     }
-    // 不管是否存在,都重新刷新列表
-    this._vm.$nextTick(() => {
-      // 如果是返回,且是列表,刷新
-      if (tab.back && (tab.type === 'table' || tab.type === 'action')) {
-        const components = this._vm.$children[0].$children[0].$children[3].$children[0].$children;
-        components.forEach((item) => {
-          if ((tab.type === 'table' && item.$vnode.data.ref === (`${tab.type}.${tab.name}.${tab.id}`))) {
-            item.searchData('backfresh'); // 返回,列表界面刷新
-          }
-          if (tab.type === 'action' && item.$vnode.data.ref === (`${tab.type}.${tab.name}.${tab.id}`) && item.$refs.mytable) {
-            item.searchData();
-          }
-        });
+    if (type === 'tableDetailVertical') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${val}`;
+      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${val}`;
+
+      router.push({
+        path
+      });
+    }
+    const afterClickActiveTab = {
+      routeFullPath: path,
+      isActive: true,
+      keepAliveModuleName: ModuleName,
+      label,
+    };
+    state.openedMenuLists.forEach((item) => {
+      if (item.routeFullPath === state.activeTab.routeFullPath) {
+        Object.assign(item, afterClickActiveTab);
+        state.activeTab = afterClickActiveTab;
       }
     });
-  },
+  }
+ 
 
 };

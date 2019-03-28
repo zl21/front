@@ -1,7 +1,8 @@
 import store from './store.config';
 import router from './router.config';
 import {
-  STANDARD_TABLE_LIST_PREFIX,
+  HORIZONTAL_TABLE_DETAIL_PREFIX,
+  STANDARD_TABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX,
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -22,6 +23,16 @@ export const routeTo = ({ type, info }, cb) => {
     case 'table':
       router.push({
         path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
+      });
+      break;
+    case 'tableDetailVertical':
+      router.push({
+        path: `${VERTICAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
+      });
+      break;
+    case 'tableDetailHorizontal':
+      router.push({
+        path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
       });
       break;
     default:

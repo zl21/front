@@ -18,6 +18,7 @@
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
+      :on-row-double-click="onRowDoubleClick"
     />
     <ImportDialog
       v-if="buttons.importData.importDialog"
@@ -30,7 +31,7 @@
       :main-id="buttons.importData.mainId"
       @confirmImport="searchData('fresh')"
     />
-    
+
     <ErrorModal
       v-if="buttons.errorDialog"
       :error-message="buttons.errorData"
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapState, mapMutations } from 'vuex';
   import ButtonGroup from './ButtonComponent';
   import AgTable from './AgTable';
   import FormItemComponent from './FormItemComponent';
@@ -56,6 +57,7 @@
   import ErrorModal from './ErrorModal';
   import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
+  import { routeTo } from '../__config__/event.config';
 
   export default {
     components: {
@@ -99,6 +101,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
+      ...mapMutations('global', ['TabHref']),
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
@@ -114,6 +117,22 @@
         this.searchData.range = pageSize;
         this.getQueryList();
       },
+      onRowDoubleClick(colDef, row) {
+        const { tableName, tableId } = this.$route.params;
+        const { val } = row.ID;
+        const label = `${this.$store.state.global.activeTab.label}编辑`;
+        if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+          const type = 'tableDetailHorizontal';
+          this.TabHref({
+            type, tableName, tableId, label, val 
+          });
+        } else { // 单对象上下结构
+          const type = 'tableDetailVertical';
+          this.TabHref({
+            type, tableName, tableId, label, val 
+          });
+        }
+      }, // ag表格行双击回调
 
       // 表单操作
       refactoringData(defaultFormItemsLists) { // 对获取的数据进行处理
@@ -324,7 +343,7 @@
           arr.push(item.default);
           return arr;
         }
-        
+
         if (item.display === 'OBJ_FK' && item.default) { // 外键默认值
           const arr = [];
           arr.push({
@@ -689,7 +708,7 @@
           if (value) {
             obj[item] = value;
           }
-          
+
           return obj;
         }, {});
       },
@@ -709,10 +728,12 @@
             // 新增
             const ptype = this.$route.path.split('/')[2];
             if (objTableUrl) {
+              alert(1);
+
               // 跳转的是单对象
               const name = objTableUrl.split('?')[0].split('/')[3];
               // const query = urlParse(objTableUrl);
-              this.$store.commit('global/TabOpen', {
+              this.TabHref({
                 id: -1,
                 type: 'action',
                 name,
@@ -726,11 +747,13 @@
                     ptitle: obj.name,
                     tabTitle: `${obj.name}编辑`
                   },
-                 
+
                 )
               });
             } else if (objdistype === 'tabpanle') {
-              this.$store.commit('global/TabHref', {
+              alert(1);
+
+              this.TabHref({
                 id: -1,
                 type: 'singleObject',
                 name: tableName,
@@ -745,7 +768,8 @@
                 }
               });
             } else {
-              this.$store.commit('global/TabHref', {
+              alert(1);
+              this.TabHref({
                 id: -1,
                 type: 'singleView',
                 name: tableName,
@@ -1130,7 +1154,7 @@
       window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
-      
+
       // 临时处理方案
       setTimeout(() => {
         this.searchClickData();

@@ -89,9 +89,9 @@ export default {
   updateButtonDownloadImportTemplate({ buttons }, data) {
     buttons.importTemplate = data;
   },
-  updateButtonDeleteData({ buttons }, data){
-    this.batchDeleteData=data
-  }
+  updateButtonDeleteData({ buttons }, data) {
+    this.batchDeleteData = data;
+  },
   setErrorModalValue({ buttons }, { data, errorDialogTitle, errorDialogvalue }) { // 设置error弹窗提示信息
     buttons.errorData = data;
     buttons.errorDialog = errorDialogvalue;
