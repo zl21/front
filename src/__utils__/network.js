@@ -24,7 +24,6 @@ axios.interceptors.request.use((config) => {
     serviceIdArray.push(b);
   });
   if (serviceIdArray.indexOf(serviceName) === -1) {
-    alert('根据serviceIdMap判断');
     const serviceIdMapApi = serviceId[serviceName];
     config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
     return config;
