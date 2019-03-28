@@ -18,6 +18,7 @@
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
+      :on-row-double-click="onRowDoubleClick"
     />
     <ImportDialog
       v-if="buttons.importData.importDialog"
@@ -30,7 +31,7 @@
       :main-id="buttons.importData.mainId"
       @confirmImport="searchData('fresh')"
     />
-    
+
     <ErrorModal
       v-if="buttons.errorDialog"
       :error-message="buttons.errorData"
@@ -56,6 +57,7 @@
   import ErrorModal from './ErrorModal';
   import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
+  import { routeTo } from '../__config__/event.config';
 
   export default {
     components: {
@@ -114,6 +116,19 @@
         this.searchData.range = pageSize;
         this.getQueryList();
       },
+      onRowDoubleClick(colDef, row) {
+        if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+          const type = 'tableDetailHorizontal';
+          const { tableName, tableId } = this.$route.params;
+          const { val } = row.ID;
+          routeTo({ type, info: { tableName, tableId, itemId: val } });
+        } else { // 单对象上下结构
+          const type = 'tableDetailVertical';
+          const { tableName, tableId } = this.$route.params;
+          const { val } = row.ID;
+          routeTo({ type, info: { tableName, tableId, itemId: val } });
+        }
+      }, // ag表格行双击回调
 
       // 表单操作
       refactoringData(defaultFormItemsLists) { // 对获取的数据进行处理
@@ -324,7 +339,7 @@
           arr.push(item.default);
           return arr;
         }
-        
+
         if (item.display === 'OBJ_FK' && item.default) { // 外键默认值
           const arr = [];
           arr.push({
@@ -689,7 +704,7 @@
           if (value) {
             obj[item] = value;
           }
-          
+
           return obj;
         }, {});
       },
@@ -726,7 +741,7 @@
                     ptitle: obj.name,
                     tabTitle: `${obj.name}编辑`
                   },
-                 
+
                 )
               });
             } else if (objdistype === 'tabpanle') {
@@ -911,7 +926,7 @@
           table: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
         };
-          
+
         this.batchVoidForButtons(searchdata);
       },
       batchSubmit() {
@@ -919,10 +934,10 @@
         const url = this.buttons.dynamicRequestUrl.submit;
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
-       
+
         this.batchSubmitForButtons({ url, tableName, ids });
         if (this.buttons.batchSubmitData.code === 0) {
-           
+
         }
         // request({
         //   method: 'post',
@@ -1194,7 +1209,7 @@
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
       }
-     
+
     },
     mounted() {
       this.getTableQuery();
@@ -1203,7 +1218,7 @@
       window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
-      
+
       // 临时处理方案
       setTimeout(() => {
         this.searchClickData();
