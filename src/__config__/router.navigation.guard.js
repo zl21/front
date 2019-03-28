@@ -6,6 +6,7 @@ import {
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
+import horizontalTableDetailModule from './store/horizontalTableDetail';
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
@@ -74,6 +75,11 @@ export default (router) => {
       // 处理 keepAliveModuleName
       if (!keepAliveLists.includes(keepAliveModuleName)) {
         commit('global/increaseKeepAliveLists', keepAliveModuleName);
+      }
+
+      // 判断是否状态中已经存在某个模块，不存在则创建
+      if (store.state[keepAliveModuleName] === undefined) {
+        store.registerModule(keepAliveModuleName, horizontalTableDetailModule());
       }
     }
     next();
