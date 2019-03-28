@@ -17,7 +17,9 @@ export const globalGateWay = [
   '/p/cs/setHideColumn',
   '/p/c/getCaptcha',
   '/p/cs/getTableQuery',
-  '/p/cs/QueryList'
+  '/p/cs/QueryList',
+  '/p/cs/objectTab',
+  '/p/cs/getObject'
 ];
 
 // 不走网关的接口
