@@ -71,6 +71,21 @@
     // isfk
   }; // 标签映射
 
+//  jumpCurrentPage(val) {
+//         // 分页初始化参数
+//         this.reloadPage = true;
+//         this.startIndex = (val - 1) * this.searchdata.range;
+//         this.searchdata.startindex = (val - 1) * this.searchdata.range;
+//         this.tableChooseList = [];
+//         this.getObjectTableItem();
+//       },
+//       // 改变一页显示记录数
+//       selectPageSizeChange(val) {
+//         this.searchdata.range = val;
+//         this.searchdata.startindex = 0;
+//         this.getObjectTableItem();
+//       },
+
   export default {
     name: 'TableDetailCollection',
     components: {
@@ -134,6 +149,9 @@
       //           }
 
       filterColumns(data) {
+        if (!data) {
+          return;
+        }
         // 整合表头数据
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
@@ -160,6 +178,9 @@
         return headColumn.concat(renderColumns);
       },
       filterData(rows) {
+        if (!rows) {
+          return;
+        }
         // 整合数据源
         const data = rows.map((ele, index) => {
           const item = {

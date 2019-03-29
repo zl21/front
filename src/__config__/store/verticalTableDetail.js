@@ -18,19 +18,21 @@ export default () => ({
       }
     },
     tabPanels: [], // tab数据
-    buttonsData: {
-      isShow: false,
-      buttonsTabcmd: {}, // 按钮数据
-      buttonsTabwebact: {}, // 动作定义按钮数据
-    },
-    formData: {
-      isShow: false,
-      data: []
-    }, // 表单数据
-    tableData: {
-      isShow: false,
-      data: {}
-    } // 表格数据
+    activaRefFormInfo: { // 当前激活tab子表
+      buttonsData: {
+        isShow: false,
+        buttonsTabcmd: {}, // 按钮数据
+        buttonsTabwebact: {}, // 动作定义按钮数据
+      },
+      formData: {
+        isShow: false,
+        data: []
+      }, // 表单数据
+      tableData: {
+        isShow: false,
+        data: {}
+      } // 表格数据
+    }
   },
   actions,
   mutations

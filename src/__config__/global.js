@@ -19,7 +19,9 @@ export const globalGateWay = [
   '/p/cs/getTableQuery',
   '/p/cs/QueryList',
   '/p/cs/objectTab',
-  '/p/cs/getObject'
+  '/p/cs/getObject',
+  '/p/cs/objectTableItem',
+  '/p/cs/inputForitem'
 ];
 
 // 不走网关的接口
