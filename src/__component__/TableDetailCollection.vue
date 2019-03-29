@@ -46,13 +46,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
-import { VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX } from "../constants/global";
-import router from '../__config__/router.config';
-// const getComponentName = () => {
 
-//   const { tableName, tableId, itemId } = router.currentRoute.params;
-//   return `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-// };
 const EXCEPT_COLUMN_NAME = "ID"; // 排除显示列（ID）
 const COLLECTION_INDEX = "COLLECTION_INDEX"; // 序号
 const DISPLAY_ENUM = {
@@ -65,6 +59,8 @@ const DISPLAY_ENUM = {
   // OBJ_TIME:
   // isfk
 }; // 标签映射
+
+
 
 //  jumpCurrentPage(val) {
 //         // 分页初始化参数
@@ -85,11 +81,12 @@ export default {
   name: "TableDetailCollection",
   components: {
     // NavigatorPrimaryMenu
+   
   },
   data() {
     return {
-      columns: [],
-      data: [],
+      // columns: [],
+      // data: [],
       searchInfo: "", // 输入框搜索内容
       searchCondition: null // 查询条件
     };
@@ -120,13 +117,16 @@ export default {
       return this.columns.filter(
         ele => ele.name !== EXCEPT_COLUMN_NAME && ele.isfilter
       );
-    }
+    },
+   data() {
+     return this.filterData(this.dataSource.row);
+   },
+   columns() {
+     return this.filterColumns(this.dataSource.tabth);
+   }
+    
   },
   methods: {
-    //  ...mapActions(getComponentName(),
-    //   [
-    //     'getTableListForRefTable'
-    //   ]),
     
     //   ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
     //   ...mapActions('global', ['getMenuLists']),
@@ -344,15 +344,6 @@ export default {
   mounted() {
     //   this.getMenuLists();
   },
-  watch: {
-    dataSource: {
-      handler(val) {
-        this.data = this.filterData(val.row);
-
-        this.columns = this.filterColumns(val.tabth);
-      }
-    }
-  }
 };
 </script>
 
