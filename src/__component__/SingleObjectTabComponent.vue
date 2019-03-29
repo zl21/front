@@ -4,11 +4,16 @@
             v-if="tableData.isShow"
             :dataSource="tableDatas"
     />
+    <horizontal-button
+            :tabcmd="buttonsData.buttonsTabcmd"
+            :tabwebact="buttonsData.buttonsTabwebact"
+            v-if="buttonsData.isShow"></horizontal-button>
   </div>
 </template>
 
 <script>
   import horizontalTable from './TableDetailCollection';
+  import horizontalButton from './SingleObjectButtons';
 
   export default {
     data() {
@@ -16,7 +21,8 @@
     },
     name: 'SingleObjectTabComponent',
     components: {
-      horizontalTable
+      horizontalTable,
+      horizontalButton
     },
     props: {
       tableData: {
