@@ -145,19 +145,35 @@
         @on-blur="attachFilterInputBlur"
         @on-keyup="attachFilterInputKeyup"
         @on-keydown="attachFilterInputKeydown"
+        @on-ok="attachFilterOk"
         @on-popclick="attachFilterPopclick"
-        @on-dbpopclick="attachFilterdbPopclick"
         @on-clear="attachFilterClear"
-      />
+      >
+        <div
+          v-if="_items.componentType"
+          slot="daigo"
+        >
+          <component
+            :is="_items.componentType"
+            ref="complex"
+            :fkobj="_items.props.fkobj"
+            :filter="filterList"
+          />
+        </div>
+      </AttachFilter>
     </div>
   </div>
 </template>
 
 <script>
   import dataProp from '../__config__/props.config';
+  // 弹窗多选面板
+  import Dialog from './ComplexsDialog';
 
   export default {
     name: 'ItemComponent',
+    components: {
+    },
     props: {
       items: {
         type: Object,
@@ -174,15 +190,27 @@
     },
     data() {
       return {
+        filterDate: {
+
+        }
       };
     },
     computed: {
       _items() {
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
+        // const item = this.items;
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
+        if (item.type === 'AttachFilter') {
+          // 大弹窗卡槽页面
+          item.componentType = Dialog;
+        }
         item.event = Object.assign({}, this.items.event);
         return item;
+      },
+      filterList() {
+        // 气泡选中过滤条件
+        return this.filterDate;
       }
     },
     watch: {
@@ -356,15 +384,17 @@
       attachFilterChange(value, $this) {
         this._items.value = value;
         this.valueChange();
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
+          this._items.event['popper-value']($this, value, value, this.index);
+        }
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
-          this._items.event.inputValueChange(value, $this);
+          this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterSelected(value, $this) {
-        this._items.value = value;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'fkrpSelected') && typeof this._items.event.fkrpSelected === 'function') {
-          this._items.event.fkrpSelected(value, $this);
+        this._items.value = value.label;
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
+          this._items.event['popper-value']($this, value.label, [value.value], this.index);
         }
       },
       attachFilterInputFocus(event, $this) {
@@ -387,30 +417,45 @@
           this._items.event.keydown(event, $this);
         }
       },
-      attachFilterPopclick(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popclick') && typeof this._items.event.popclick === 'function') {
-          this._items.event.popclick(event, $this);
-        }
-      },
-      attachFilterdbPopclick(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'dbpopclick') && typeof this._items.event.dbpopclick === 'function') {
-          this._items.event.dbpopclick(event, $this);
+      attachFilterPopclick(event, row, targName, $this) {
+        if (targName !== 'I' && event !== 1) {
+          // 打开弹窗
+
+          $this.showModal = true;
+          if (event !== 0) {
+            console.log(JSON.parse(row.query));
+            this.filterDate = JSON.parse(row.query).value;
+          }
+        } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-detail') && typeof this._items.event['popper-value'] === 'function') {
+          this._items.event['on-delete']($this, row.key);
         }
       },
       attachFilterClear(event, $this) {
         this._items.value = undefined;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
-          this._items.event.clear($this);
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
+          this._items.event['popper-value']($this, '', [], this.index);
         }
       },
       attachFilterPopperShow($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this);
+          this._items.event['popper-show']($this,this._items,this.index);
         }
       },
+      attachFilterOk($this) {
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
+          if($this._data.IN >0 ){
+            let value = `已经选中${$this._data.IN}条数据`;
+            this._items.value = value;
+            // $this.$parent.$parent.InputVale = `已经选中${$this._data.IN}条数据`;
+            this._items.event['popper-value']($this,value, $this._data.IN, this.index);
+
+          }
+
+        }
+      }
     },
     created() {
+
     }
   };
 </script>
