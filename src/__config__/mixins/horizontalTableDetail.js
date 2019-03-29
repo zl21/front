@@ -15,16 +15,25 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
-      tabPanel: ({ tabPanels }) => tabPanels
+      tabPanel: ({ tabPanels }) => tabPanels,
+      tableDatas: ({ tableData }) => tableData,
+      buttonsDatas: ({ buttonsData }) => buttonsData,
+      formDatas: ({ formData }) => formData
     })
   },
   methods: {
     ...mapActions(getComponentName(),
       [
         'getObjectTabForMainTable',
-        'getObjectForMainTableForm'
+        'getObjectForMainTableForm',
+        'getObjectTabForChildTableButtons',
+        'getInputForitemForChildTableForm',
+        'getItemObjForChildTableForm',
+        'getObjectTableItemForTableData'
       ]),
     ...mapMutations(getComponentName(),
-      []),
+      [
+        'updateIsShow'
+      ]),
   },
 });

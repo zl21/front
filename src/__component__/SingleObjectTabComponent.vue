@@ -1,17 +1,44 @@
 <template>
-  <div>SingleObjectTabComponent</div>
+  <div style="overflow: auto">
+    <horizontal-table
+            v-if="tableData.isShow"
+            :dataSource="tableDatas"
+    />
+  </div>
 </template>
 
 <script>
+  import horizontalTable from './TableDetailCollection';
+
   export default {
     data() {
       return {};
     },
     name: 'SingleObjectTabComponent',
-    components: {},
-    methods: {},
+    components: {
+      horizontalTable
+    },
+    props: {
+      tableData: {
+        type: Object,
+        default: () => ({})
+      },
+      buttonsData: {
+        type: Object,
+        default: () => ({})
+      },
+      formData: {
+        type: Object,
+        default: () => ({})
+      }
+    },
     watch: {},
-    computed: {}
+    computed: {
+      tableDatas() {
+        return this.tableData.data;
+      }
+    },
+    methods: {}
   };
 </script>
 

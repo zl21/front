@@ -43,7 +43,7 @@ export default {
   }, // 获取主表面板信息
   getInputForitemForChildTableForm({ commit }, { table }) {
     // 参数说明 table 子表表名
-    network.post('/p/cs/getObject', urlSearchParams({
+    network.post('/p/cs/inputForitem', urlSearchParams({
       table,
       inlinemode: 'Y'
     })).then((res) => {
@@ -66,17 +66,19 @@ export default {
       }
     });
   }, // 获取子表面板信息
-  getObjectTableItemForTableData({ commit }, { table, objid, refcolid, searchdata }) {
+  getObjectTableItemForTableData({ commit }, {
+    table, objid, refcolid, searchdata
+  }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id,searchdata查询条件
-    network.post('/p/cs/itemObj', urlSearchParams({
+    network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid,
       refcolid,
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.addcolums;
-        commit('updateFormData', formData);
+        const tableData = res.data.data;
+        commit('updateTableData', tableData);
       }
     });
   }
