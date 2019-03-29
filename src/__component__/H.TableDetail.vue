@@ -6,6 +6,7 @@
 
 <script>
   import { mapActions, mapState } from 'vuex';
+  import tabComponent from './SingleObjectTabComponent';
 
   export default {
     data() {
@@ -14,17 +15,35 @@
     },
     computed: {
       ...mapState('global', {
-        favorite: ({ favorite }) => favorite
+        favorite: ({ favorite }) => favorite,
+        activeTab: ({ activeTab }) => activeTab
       }),
+      tabPanels() {
+        const arr = [];
+        this.tabPanel.forEach((item, index) => {
+          const obj = { ...item };
+          if (index === 0) {
+            obj.label = this.activeTab.label;
+          }
+          obj.component = tabComponent;
+          obj.cilckCallback = this.tabClick;
+          arr.push(obj);
+        });
+        return arr;
+      }
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory'])
+      ...mapActions('global', ['updateAccessHistory']),
+      tabClick(index, name, instance) {
+        console.log(index, name, instance);
+      }
     },
     activated() {
 
     },
+    mounted() {
+    },
     created() {
-      console.log('created');
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });
