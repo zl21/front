@@ -5,10 +5,19 @@ export default () => ({
   namespaced: true,
   state: {
     tabPanels: [], // tab数据
-    buttonsTabcmd: {}, // 按钮数据
-    buttonsTabwebact: {}, // 动作定义按钮数据
-    formData: [], // 表单数据
-    tableData: {} // 表格数据
+    buttonsData: {
+      isShow: false,
+      buttonsTabcmd: {}, // 按钮数据
+      buttonsTabwebact: {}, // 动作定义按钮数据
+    },
+    formData: {
+      isShow: false,
+      data: []
+    }, // 表单数据
+    tableData: {
+      isShow: false,
+      data: {}
+    } // 表格数据
   },
   actions,
   mutations

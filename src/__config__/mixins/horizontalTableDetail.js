@@ -28,6 +28,7 @@ export default () => ({
           obj.component = tabComponent;
           arr.push(obj);
         });
+        console.log(arr);
         return arr;
       }
     }),

@@ -5,7 +5,6 @@
 </template>
 
 <script>
-  import tabPanel from './SingleObjectTabComponent';
   import { mapActions, mapState } from 'vuex';
 
   export default {
@@ -22,6 +21,10 @@
       ...mapActions('global', ['updateAccessHistory'])
     },
     activated() {
+
+    },
+    created() {
+      console.log('created');
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });

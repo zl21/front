@@ -11,7 +11,8 @@ export default {
     state.tabPanels = arr;
   },
   updateButtonsData(state, data) { // 更新按钮数据
-    state.buttonsTabcmd = data.tabcmd;
-    state.buttonsTabwebact = data.tabwebact;
+    state.buttonsData.isShow = true;
+    state.buttonsData.buttonsTabcmd = data.tabcmd;
+    state.buttonsData.buttonsTabwebact = data.tabwebact;
   }
 };
