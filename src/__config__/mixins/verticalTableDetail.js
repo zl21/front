@@ -25,7 +25,8 @@ export default () => ({
     ...mapActions(getComponentName(),
       [
         'getObjectForMainTableForm',
-        'getObjectTabForMainTable'
+        'getObjectTabForMainTable',
+        'getTableListForRefTable'
       ]),
     ...mapMutations(getComponentName(),
       []),

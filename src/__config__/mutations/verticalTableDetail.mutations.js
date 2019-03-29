@@ -11,22 +11,25 @@ export default {
     });
     state.tabPanels = arr;
   },
-  updateMainButtonsData(state, data) { // 更新主表按钮数据
+  updateMainButtonsData({mainFormInfo}, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    state.mainFormInfo.buttonsData.buttonsTabcmd = data.tabcmd;
-    state.mainFormInfo.buttonsData.buttonsTabwebact = data.tabwebact;
+    mainFormInfo.buttonsData.buttonsTabcmd = data.tabcmd;
+    mainFormInfo.buttonsData.buttonsTabwebact = data.tabwebact;
   },
-  updateRefButtonsData(state, data) { // 更新子表按钮数据
-    state.activaRefFormInfo.buttonsData.isShow = true; /** warn: 导出好像必有 */ 
-    state.activaRefFormInfo.buttonsData.buttonsTabcmd = data.tabcmd;
-    state.activaRefFormInfo.buttonsData.buttonsTabwebact = data.tabwebact;
+  updateRefButtonsData({activaRefFormInfo}, data) { // 更新子表按钮数据
+    activaRefFormInfo.buttonsData.isShow = true; /** warn: 导出好像必有 */ 
+    activaRefFormInfo.buttonsData.buttonsTabcmd = data.tabcmd;
+    activaRefFormInfo.buttonsData.buttonsTabwebact = data.tabwebact;
   },
-  updateFormDataForRefTable(state, data) { // 更新子表表单数据
-    state.activaRefFormInfo.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
-    state.activaRefFormInfo.formData.data = data.inpubobj || [] ;
+  updateFormDataForRefTable({activaRefFormInfo}, data) { // 更新子表表单数据
+    activaRefFormInfo.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
+    activaRefFormInfo.formData.data = data.inpubobj || [] ;
   },
-  updateTableListForRefTable(state, data) { // 更新子表列表数据
-    state.activaRefFormInfo.tableData.isShow = data.tabth && data.tabth.length > 0;
-    state.activaRefFormInfo.tableData.data = data;
+  updateTableListForRefTable({activaRefFormInfo}, data) { // 更新子表列表数据
+    activaRefFormInfo.tableData.isShow = data.tabth && data.tabth.length > 0;
+    activaRefFormInfo.tableData.data = data;
+  },
+  updateActiveRefFormInfo({activaRefFormInfo}, data) {
+    activaRefFormInfo.refInfo = data;
   }
 };

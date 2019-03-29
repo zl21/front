@@ -37,6 +37,7 @@ export default {
             this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
           }
           if (resData.reftabs[0].refcolid !== -1) {
+            commit('updateActiveRefFormInfo', resData.reftabs[0]);
             const firstReftab = resData.reftabs[0];
             // 获取第一个tab的子表表单
             if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {

@@ -19,6 +19,7 @@ export default () => ({
     },
     tabPanels: [], // tab数据
     activaRefFormInfo: { // 当前激活tab子表
+      refInfo: {}, // 子表信息
       buttonsData: {
         isShow: false,
         buttonsTabcmd: {}, // 按钮数据
