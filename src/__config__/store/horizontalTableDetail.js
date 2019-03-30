@@ -14,6 +14,10 @@ export default () => ({
       isShow: false,
       data: []
     }, // 表单数据
+    panelData: {
+      isShow: false,
+      data: []
+    }, // 面板数据
     tableData: {
       isShow: false,
       data: {}

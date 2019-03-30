@@ -18,7 +18,8 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tableDatas: ({ tableData }) => tableData,
       buttonsDatas: ({ buttonsData }) => buttonsData,
-      formDatas: ({ formData }) => formData
+      formDatas: ({ formData }) => formData,
+      panelDatas: ({ panelData }) => panelData,
     })
   },
   methods: {

@@ -9,12 +9,15 @@
 </template>
 
 <script>
+  /* eslint-disable no-lonely-if */
+
   import { mapActions, mapState } from 'vuex';
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
     data() {
       return {
+        tabCurrentIndex: 0
       };
     },
     computed: {
@@ -29,7 +32,8 @@
           const attributeObj = {
             tableData: this.tableDatas,
             buttonsData: this.buttonsDatas,
-            formData: this.formDatas
+            formData: this.formDatas,
+            panelData: this.panelDatas
           };
           if (index === 0) {
             obj.label = this.activeTab.label;
@@ -45,6 +49,7 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       tabClick(index) {
+        this.tabCurrentIndex = index;
         this.updateIsShow();
         if (index === 0) {
           this.getMainTable();
@@ -53,19 +58,22 @@
             if (this.tabPanel[index].refcolid !== -1) {
               this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename });
             }
-            const { itemId } = this.$route.params;
+            const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
+            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
             this.getObjectTableItemForTableData({
               table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             });
           } else if (this.tabPanel[index].tabrelation === '1:1') {
-            const { itemId } = this.$route.params;
+            const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
+            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
             this.getItemObjForChildTableForm({ table: tablename, objid: itemId, refcolid });
           }
         }
       }, // tab切换触发的方法
       getMainTable() {
+        this.updateIsShow();
         const { tableName, itemId } = this.$route.params;
         this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({ table: tableName, objid: itemId });

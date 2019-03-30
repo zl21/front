@@ -37,7 +37,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data.addcolums;
-        commit('updateFormData', formData);
+        commit('updatePanelData', formData);
       }
     });
   }, // 获取主表面板信息
@@ -62,7 +62,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data.addcolums;
-        commit('updateFormData', formData);
+        commit('updatePanelData', formData);
       }
     });
   }, // 获取子表面板信息
