@@ -10,7 +10,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-        commit('updateButtonsData', resData);
+        // commit('updateButtonsData', resData);
         commit('updateTabPanelsData', resData);
       }
     });

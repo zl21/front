@@ -1,6 +1,6 @@
 <template>
   <div class="horizontalTableDetail">
-    <tab-panels
+    <TabPanels
       type="line"
       :tab-margin-left="20"
       :tab-panels="tabPanels"
@@ -17,7 +17,6 @@
   export default {
     data() {
       return {
-        tabCurrentIndex: 0
       };
     },
     computed: {
@@ -29,18 +28,11 @@
         const arr = [];
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
-          const attributeObj = {
-            tableData: this.tableDatas,
-            buttonsData: this.buttonsDatas,
-            formData: this.formDatas,
-            panelData: this.panelDatas
-          };
           if (index === 0) {
             obj.label = this.activeTab.label;
           }
           obj.component = tabComponent;
           obj.cilckCallback = this.tabClick;
-          obj.componentAttribute = attributeObj;
           arr.push(obj);
         });
         return arr;
@@ -49,8 +41,7 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       tabClick(index) {
-        this.tabCurrentIndex = index;
-        this.updateIsShow();
+        this.updateTabCurrentIndex(index);
         if (index === 0) {
           this.getMainTable();
         } else {
@@ -73,7 +64,6 @@
         }
       }, // tab切换触发的方法
       getMainTable() {
-        this.updateIsShow();
         const { tableName, itemId } = this.$route.params;
         this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({ table: tableName, objid: itemId });

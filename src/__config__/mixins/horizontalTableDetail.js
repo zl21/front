@@ -15,11 +15,7 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
-      tabPanel: ({ tabPanels }) => tabPanels,
-      tableDatas: ({ tableData }) => tableData,
-      buttonsDatas: ({ buttonsData }) => buttonsData,
-      formDatas: ({ formData }) => formData,
-      panelDatas: ({ panelData }) => panelData,
+      tabPanel: ({ tabPanels }) => tabPanels
     })
   },
   methods: {
@@ -34,7 +30,7 @@ export default () => ({
       ]),
     ...mapMutations(getComponentName(),
       [
-        'updateIsShow'
+        'updateTabCurrentIndex'
       ]),
   },
 });
