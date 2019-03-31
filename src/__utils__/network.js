@@ -11,10 +11,10 @@ axios.interceptors.request.use((config) => {
   if (!enableGateWay) {
     return config;
   }
-  if (ignoreGateWay.indexOf(url) !== -1) { 
+  if (ignoreGateWay.includes(url)) { 
     return config;
   }
-  if (globalGateWay.indexOf(url) !== -1) { 
+  if (globalGateWay.includes(url)) { 
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }

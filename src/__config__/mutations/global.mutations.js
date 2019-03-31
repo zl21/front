@@ -139,15 +139,8 @@ export default {
       }
     });
     state.activeTab.isActive = true;
-    if (tab.type === 'singleView' || tab.type === 'singleObject') {
-      const component = tab.routeFullPath;
-      const index = state.excludedComponents.indexOf(component);
-      if (index > -1) {
-        state.excludedComponents.splice(index, 1);
-      }
-    }
   },
-  TabHref(state, {
+  TabHref(state, {// 在当前页面跳转
     type, tableName, tableId, label, val 
   }) {
     let path = '';
@@ -162,7 +155,6 @@ export default {
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${val}`;
       ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${val}`;
-
       router.push({
         path
       });
@@ -179,7 +171,42 @@ export default {
         state.activeTab = afterClickActiveTab;
       }
     });
-  }
+  },
+  TabOpen(state, // 打开新的tab页
+    tab) {
+    let path = '';
+    if (tab.type === 'tableDetailHorizontal') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.val}`;
+      router.push({
+        path
+      });
+    }
+    if (tab.type === 'tableDetailVertical') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.val}`;
+      router.push({
+        path
+      });
+    }
+    if (tab.type === 'tableDetailAction') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.pathType}`;
+      router.push({
+        path
+      });
+    }
+    const afterClickActiveTab = {
+      routeFullPath: path,
+      isActive: true,
+      label: tab.label
+    };
+    state.openedMenuLists.forEach((item) => {
+      if (item.routeFullPath === state.activeTab.routeFullPath) {
+        state.openedMenuLists.push(afterClickActiveTab);
+        item.isActive = false;
+        state.activeTab = afterClickActiveTab;
+      }
+    });
+    // 添加到新的列表中
+  },
  
 
 };
