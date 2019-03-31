@@ -152,7 +152,6 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        //console.log(this.dataProcessing());
         this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
       dataProcessing() {
@@ -169,11 +168,10 @@
             } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
               obj[current.item.field] = undefined;
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
-              console.log(current.item.props.Selected);
-              if (current.item.props.Selected.length > 0 && typeof current.item.props.Selected === 'object') {
+              if ( current.item.props.Selected.length > 0) {
                 obj[current.item.field] = current.item.props.Selected;
               } else {
-                obj[current.item.inputname] = current.item.props.defaultSelected;
+                obj[current.item.inputname] = current.item.value;
               }
             } else {
               obj[current.item.field] = current.item.value;

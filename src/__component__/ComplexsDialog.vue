@@ -36,7 +36,11 @@
       filter: Object,
       default() {
         return {};
-      }
+      },
+      canChinese: {
+          type: Boolean,
+          default: true
+      }//是否可以模糊搜索中文
     },
     computed: {
       Tree() {
@@ -47,6 +51,7 @@
     data() {
       return {
         treedata: [], // 左边shu
+        treeSelectData:[],
         componentData: [
           {
             tab: '筛选结果',
@@ -91,7 +96,9 @@
         },
         index: 0,
         text: { // 后台 传值
-          result: []
+          result: [
+            
+          ]
         }
       };
     },
@@ -131,42 +138,23 @@
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
-
-        if (index === 1) {
-          this.IN = data.ids || [];
-          this.resultData.list = [];
-          data.data.list.forEach((item) => {
-            // 展示选中内容的key
-            item.string = item[this.akname];
-            if (type !== 'all') {
-              if (this.verifyTem(this.resultData.list, item.ID)) {
-                this.resultData.list.push(item);
+        this.IN = data.ids || [];
+        if (index === 1 && type !== 'search') {
+          this.resultData.list =JSON.parse(JSON.stringify(this.text.result));
+          this.resultData.list.map((item)=>{
+              if(item.exclude){
+                item.exclude = false;
+              }else{
+                item.exclude = true;
               }
-            }
-          });
-          // 排除 的
-          this.NOTIN.forEach((id) => {
-            this.componentData[0].list.forEach((option, key) => {
-              if (id === option.ID) {
-                option.exclude = true;
-                option.string = option[this.akname];
-                this.resultData.list.push(option);
-              }
-            });
+              item.string = item.screen_string;
+              item.ID = item.id_list;
+              return item;
           });
           this.resultData.total = data.data.total;
         }
 
-        if (type === 'all') {
-          console.log(this.HRORG_STRING);
-          if (this.HRORG_STRING.length > 0) {
-            this.resultData.list.unshift({
-              string: this.HRORG_STRING.join(',')
-            });
-          }
-        }
-
-
+        
         this.componentData[index] = Object.assign(this.componentData[index], data.data);
 
         const header = JSON.parse(data.header);
@@ -192,11 +180,19 @@
                 key: 'action',
                 render: h => h('div', {
                   domProps: {
-                    innerHTML: '<i class="iconfont icon-bj_delete2"></i>'
+                    innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
                   },
                   on: {
                     click: () => {
-                      this.deleteLi(key, columns);
+                      let row = this.componentData[1].list[key-1];
+                       this.NOTIN.push(row.ID);
+                      this.text.result.push({
+                          exclude: false,
+                          id_list:row.ID,
+                          screen:row.ID,
+                          screen_string:row[this.akname]
+                      });
+                      this.deleteLi(key-1, row,'td');
                     }
                   }
                 })
@@ -211,13 +207,14 @@
         this.HRORG_ID = Object.keys(data).reduce((item, option) => {
           if (data[option].ID) {
             item.push(data[option].ID);
-            this.HRORG_STRING.push(data[option].value);
+            this.HRORG_STRING.push(data[option].NAME);
           }
           return item;
         }, []);
       },
       changeTtree(obj) {
         this.treeId(obj);
+        this.treeSelectData = obj;
         if (this.HRORG_ID.length > 0) {
           this.sendMessage.CONDITION = {};
           this.sendMessage.CONDITION[this.AKNAME] = this.HRORG_ID;
@@ -232,11 +229,17 @@
       },
       changePage(index) {
         // 点击页面
+        if( index === this.sendMessage.PAGENUM){
+          return false;
+        }
         this.sendMessage.PAGENUM = index;
         this.multipleSelectionTable(this.sendMessage, this.index);
       },
       changePageSize(index) {
         // 点击显示条数
+        if(index === this.sendMessage.PAGESIZE){
+            return false;
+        }
         this.sendMessage.PAGESIZE = index;
         this.multipleSelectionTable(this.sendMessage, this.index);
       },
@@ -259,11 +262,23 @@
           const checkd = this.verify(this.NOTIN, row.ID);
           if (checkd) {
             this.NOTIN.push(row.ID);
+            this.text.result.push({
+                exclude: false,
+                id_list:row.ID,
+                screen:row.ID,
+                screen_string:row[this.akname]
+            });
           }
         } else {
           const checkdIN = this.verify(this.IN, row.ID);
           if (checkdIN) {
             this.IN.push(row.ID);
+            this.text.result.push({
+                exclude: true,
+                id_list:row.ID,
+                screen:row.ID,
+                screen_string:row[this.akname]
+            });
           }
         }
       },
@@ -281,64 +296,119 @@
         return false;
       },
       inputsearch(event) {
-        this.sendMessage.GLOBAL = event.trim();
+        let str = '';
+        if (this.canChinese) {
+          str = event.match(/[A-Za-z0-9\u4e00-\u9fa5]*/g);
+        } else {
+          str = event.match(/[A-Za-z0-9]*/g);
+        }
+        this.sendMessage.GLOBAL = str[0].trim();
         this.sendMessage.CONDITION = {};
-        this.multipleSelectionTable(this.sendMessage, this.index);
+        this.clearIndexPage();
+        this.multipleSelectionTable(this.sendMessage, this.index ,'search');
+      },
+      clearIndexPage(){
+        // 清除页面选中值
+        this.sendMessage.PAGESIZE = 50;
+        this.sendMessage.PAGENUM = 1;
       },
       checkboxChange(value) {
         this.checkbox = value;
       },
       transfertwo() {
+       // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         if (this.HRORG_ID.length > 0) {
-          this.sendMessage.CONDITION = {};
-          this.sendMessage.CONDITION[this.AKNAME] = this.HRORG_ID;
+          console.log(!this.checkbox);
+          if(!this.checkbox){
+            this.sendMessage.CONDITION = [];
+            this.EXCLUDE = '';
+             this.HRORG_ID.forEach((x) =>{
+              this.sendMessage.CONDITION.push({
+                [this.AKNAME] : [x]
+              })
+            });
+            this.text.result.push({
+                exclude: true,
+                id_list:this.HRORG_ID,
+                screen:this.sendMessage.CONDITION,
+                screen_string:this.HRORG_STRING.join(',')
+              })
+            this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+          }else{
+            this.EXCLUDE = [];
+            this.sendMessage.CONDITION = '';
+            this.HRORG_ID.forEach((x) =>{
+              this.EXCLUDE.push({
+                [this.AKNAME] : [x]
+              });
+            });
+            this.text.result.push({
+                exclude: false,
+                id_list:this.HRORG_ID,
+                screen:this.EXCLUDE,
+                screen_string:this.HRORG_STRING.join(',')
+              })
+          
+            this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+
+          }
+          
         } else {
           this.sendMessage.CONDITION = '';
+          this.sendMessage.EXCLUDE = '';
+          this.clearIndexPage();
+          return false;
         }
-        this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
       },
       transfer() {
         this.multipleScreenResultCheck(this.sendMessage, 1);
       },
-      deleteLi(index, row) {
+      deleteLi(index, row ,type) {
+        if(type !== 'td'){
+          this.text.result.splice(index, 1);
+        }
         if (!row.exclude) {
-          const indexI = (row.ID.toString()).indexOf(this.IN.join(','));
+          const indexI = this.IN.findIndex((x)=>x=== row.ID);
           if (indexI !== -1) {
             this.IN.splice(indexI, 1);
           }
         } else {
-          const indexI = (row.ID.toString()).indexOf(this.NOTIN.join(','));
+          const indexI = this.NOTIN.findIndex((x)=>x=== row.ID);
           if (indexI !== -1) {
             this.NOTIN.splice(indexI, 1);
           }
         }
-        this.resultData.list.splice(index, 1);
-        if (this.resultData.total > 0) {
-          this.resultData.total--;
+        if (this.text.result.length > 0 ) {
+         this.multipleScreenResultCheck(this.sendMessage, 1);
         } else {
-          this.resultData.total = 0;
+          if( type ==='td'){
+            this.multipleScreenResultCheck(this.sendMessage, 1);
+          }else{
+            this.resultData.total = 0;
+            this.text.result = [];
+            this.resultData.list = [];
+            this.clearIndexPage();
+
+          }
+          
         }
       },
       deleBtn() {
         this.resultData.list = [];
+        this.text.result = [];
         this.IN = [];
         this.NOTIN = [];
         this.resultData.total = 0;
+        this.sendMessage.CONDITION = '';
+        this.EXCLUDE = '';
+        this.clearIndexPage();
+
       },
       saveBtn(value) {
         if (value.length < 1) {
           this.$Message.info('模板名称不能为空');
         }
-        this.resultData.list.forEach((item) => {
-          if (!item.exclude && item.ID) {
-            this.text.result.push({
-              exclude: true,
-              id_list: [item.ID],
-              screen: item.ID,
-              screen_string: item.string
-            });
-          }
-        });
+        
         const savemessage = {
           tableid: this.fkobj.reftableid,
           modelname: value,
@@ -385,7 +455,7 @@
           }
         });
       },
-      multipleSelectionTable(obj, index) {
+      multipleSelectionTable(obj, index ,name) {
         multipleComple.multipleSelectionTable({
           searchObject: {
             param: {
@@ -397,7 +467,7 @@
             }
           },
           success: (res) => {
-            this.dateRestructure(res.data.data, index);
+            this.dateRestructure(res.data.data, index ,name);
           }
         });
       },
@@ -405,6 +475,7 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
+        console.log(obj);
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
@@ -449,10 +520,16 @@
         const tableData = Object.assign(this.sendMessage, this.fkobj);
         this.sendMessage = tableData;
         this.multipleSelectionTable(tableData, 0);
-        if (Object.keys(this.filter).length > 1) {
-          this.sendMessage = this.filter;
-          this.multipleScreenResultCheckFiter(this.filter, 1);
+        if (Object.prototype.hasOwnProperty.call(this.filter, 'value')){
+          if(this.filter.text){
+                    //  有默认值
+            this.text.result = JSON.parse(this.filter.text).result;
         }
+          //  有默认值
+          this.sendMessage = this.filter.value;
+          this.multipleScreenResultCheckFiter(this.filter.value, 1);
+        }
+        
       }
 
     },
@@ -474,6 +551,14 @@
   .burgeon-select-item{
     position: relative;
 
+  }
+  .span_action{
+    position: relative;
+    display: block;
+    height: 30px;
+    width: 20px;
+    margin: 0 auto;
+    text-align: center;
   }
   .icon-bj_delete2{
     position: absolute;

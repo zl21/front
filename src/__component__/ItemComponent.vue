@@ -204,6 +204,7 @@
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           item.componentType = Dialog;
+          item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
         }
         item.event = Object.assign({}, this.items.event);
         return item;
@@ -385,16 +386,18 @@
         this._items.value = value;
         this.valueChange();
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['popper-value']($this, value, value, this.index);
+          this._items.event['popper-value']($this, value, 'change', this.index);
         }
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
-          this._items.event.inputValueChange('', $this);
+          this._items.event.inputValueChange(value, $this);
         }
+
       },
-      attachFilterSelected(value, $this) {
-        this._items.value = value.label;
+      attachFilterSelected(row, $this) {
+        this._items.value = row.label;
+        this._items.props.selected = row.value;
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['popper-value']($this, value.label, [value.value], this.index);
+          this._items.event['popper-value']($this, row.label, row.value, this.index);
         }
       },
       attachFilterInputFocus(event, $this) {
@@ -423,15 +426,15 @@
 
           $this.showModal = true;
           if (event !== 0) {
-            console.log(JSON.parse(row.query));
-            this.filterDate = JSON.parse(row.query).value;
+            console.log(row.label);
+            this.filterDate = JSON.parse(row.label);
           }
-        } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-detail') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['on-delete']($this, row.key);
+        } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
+          this._items.event['on-delete']($this, this._items,row.key ,this.index);
         }
       },
       attachFilterClear(event, $this) {
-        this._items.value = undefined;
+        this._items.value = '';
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
           this._items.event['popper-value']($this, '', [], this.index);
         }
@@ -446,7 +449,7 @@
           if($this._data.IN >0 ){
             let value = `已经选中${$this._data.IN}条数据`;
             this._items.value = value;
-            // $this.$parent.$parent.InputVale = `已经选中${$this._data.IN}条数据`;
+            this.valueChange();
             this._items.event['popper-value']($this,value, $this._data.IN, this.index);
 
           }

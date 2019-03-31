@@ -89,6 +89,7 @@
     watch: {
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
+      
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;
@@ -197,15 +198,37 @@
                   this.searchClickData();
                 }
               },
-              'on-delete': ($this, key) =>{
-                     console.log($this, key);
+              'on-delete': ($this,item, key, index) =>{
+                fkDelMultiQuery({
+                  searchObject: {
+                    tableid:item.props.fkobj.reftableid,
+                    modelname:key
+                  },
+                  success: (res) => {
+                    fkGetMultiQuery({
+                      searchObject: {
+                        tableid:item.props.fkobj.reftableid
+                      },
+                      success: (res) => {
+                        this.freshDropDownPopFilterData(res, index);
+                      }
+                    });
+                  }
+                });
+
               },
               'popper-value': ($this ,value ,Selected ,index) => { // 当外键下拉展开时去请求数据
-                    this.formLists[index].item.value = value;
-                    this.formLists[index].item.props.Selected = Selected;
+                   
+                    this.formItemsLists[index].item.value = value;
+                    if(Selected !== 'change'){
+                      this.formItemsLists[index].item.props.Selected = Selected;
+                    }
+                    //this.formItemsLists = this.formItemsLists.concat([]);
+
+                    console.log(this.formItemsLists[index].item ,value ,Selected );
               },
               'popper-show': ($this,item ,index) => { // 当气泡拉展开时去请求数据
-                fkQueryList({
+                fkGetMultiQuery({
                   searchObject: {
                     tableid:item.props.fkobj.reftableid
                   },
@@ -320,16 +343,7 @@
               break;
             case 'mop':
               obj.item.props.fkobj = current.fkobj;
-              obj.item.props.datalist = [
-                {
-                  value: '更多筛选',
-                  lable: 0
-                },
-                {
-                  value: '导入',
-                  lable: 2
-                }
-              ];
+              obj.item.props.datalist =[];
               obj.item.props.Selected = [];
               break;
             default: break;
@@ -373,7 +387,9 @@
           });
           return arr;
         }
-
+        // if(item.display === 'OBJ_FK' && item.fkobj){
+        //     return '';
+        // }
         return item.default;
       },
       getTableQuery() { // 获取列表的查询字段
@@ -386,9 +402,17 @@
       },
       freshDropDownPopFilterData(res, index) { // 外键下拉时，更新下拉数据
         // this.formItemsLists[index].item.props.datalist = res.data.data;
-        console.log(res);
-        this.formItemsLists[index].item.props.datalist = res.data.data.totalRowCount;
-        this.formItemsLists = this.formItemsLists.concat([]);
+        if( res.length >0 ){
+            res.forEach((item)=>{
+              item.label = item.value;
+              item.value = item.key;
+              item.delete = true;
+            });
+            this.formItemsLists[index].item.props.datalist = res;
+        }else{
+            this.formItemsLists[index].item.props.datalist = res;
+
+        }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = res.data.data;
