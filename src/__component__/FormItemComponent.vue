@@ -1,32 +1,56 @@
 /* eslint-disable no-console */
 <template>
-  <DownComponent
-    :title="title"
-    :set-height="setHeight"
-    :search-foldnum="searchFoldnum"
-  >
-    <div
-      slot="dwonContent"
-      class="FormItemComponent"
-      :style="setWidth"
+  <div>
+    <!-- 需要下拉 -->
+    <DownComponent
+      :title="title"
+      :set-height="setHeight"
+      :search-foldnum="searchFoldnum"
+      v-if="searchFoldnum>0"
     >
       <div
-        v-for="(item,index) in dataColRol"
-        v-show="item.show !== false"
-        :key="index"
-        class="FormItemComponent-item"
-        :style="setDiv(item)"
+        slot="dwonContent"
+        class="FormItemComponent"
+        :style="setWidth"
       >
-        <component
-          :is="item.component"
-          :ref="'component_'+index"
-          :index="index"
-          :items="item.item"
-          @inputChange="inputChange"
+        <div
+          v-for="(item,index) in dataColRol"
+          v-show="item.show !== false"
+          :key="index"
+          class="FormItemComponent-item"
+          :style="setDiv(item)"
+        >
+          <component
+            :is="item.component"
+            :ref="'component_'+index"
+            :index="index"
+            :items="item.item"
+            @inputChange="inputChange"
+          />
+        </div>
+      </div>
+    </DownComponent>
+    <div class="FormItemComponent"
+            :style="setWidth"
+         v-if="searchFoldnum === 0"
+    >
+        <div v-for="(item,index) in dataColRol"
+                v-show="item.show !== false"
+                :key="index"
+                class="FormItemComponent-item"
+                :style="setDiv(item)"
+        >
+            <component
+                    :is="item.component"
+                    :ref="'component_'+index"
+                    :index="index"
+                    :items="item.item"
+                    @inputChange="inputChange"
         />
       </div>
     </div>
-  </DownComponent>
+
+  </div>
 </template>
 
 <script>
