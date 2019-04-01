@@ -92,11 +92,19 @@ export default {
   updateButtonDeleteData({ buttons }, data) {
     this.batchDeleteData = data;
   },
-  setErrorModalValue({ buttons }, { data, errorDialogTitle, errorDialogvalue }) { // 设置error弹窗提示信息
+  setErrorModalValue({ buttons }, {
+    data, errorDialogTitle, errorDialogvalue, errorDialogBack 
+  }) { // 设置error弹窗提示信息
     buttons.errorData = data;
     buttons.errorDialog = errorDialogvalue;
     buttons.errorDialogClass = 'fcWarning';
     buttons.errorDialogTitle = errorDialogTitle;
+    buttons.errorDialogBack = errorDialogBack;
+  },
+  setActionDialog({ buttons }, obj) {
+    // buttons.actionDialog.queryString = obj.action.split('/')[1];
+    buttons.actionDialog.show = true;
+    buttons.actionDialog.title = obj.webdesc;
   },
   updateButtonbatchSubmitData({ buttons }, data) { // 批量提交
     buttons.batchSubmitData = data;

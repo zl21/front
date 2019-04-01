@@ -44,6 +44,7 @@ export default () => ({
         'setErrorModalValue',
         'updateButtonbatchSubmitData',
         'updateButtonbatchUnSubmitData',
+        'setActionDialog'
       
         
       ]),

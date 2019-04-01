@@ -12,6 +12,7 @@
   import StandardTableList from './StandardTableList';
   import CustomPages from '../assets/js/customComponent';
 
+  const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
     name: 'StandardTableKeepAlive',
     data() {
@@ -32,7 +33,9 @@
         }
         CustomPages.forEach((b) => {
           if (b.filePath === customPage) {
+            const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${b.name}`;
             this.currentTable = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}.${b.name}`; 
+            Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] },)));
           }
         });
         this.currentTable = componentName;
