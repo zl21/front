@@ -10,8 +10,8 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          data: data
-        ,
+          data
+        },
         formData: {
           isShow: false,
           data: []
