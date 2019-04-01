@@ -5,6 +5,15 @@
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
     />
+    <horizontal-form
+            v-if="formData.isShow"
+            :defaultData="formData.data"
+    ></horizontal-form>
+    <horizontal-form
+            v-if="panelData.isShow"
+            type="PanelForm"
+            :defaultData="panelData.data"
+    ></horizontal-form>
     <!--<div v-if="panelData.isShow">-->
       <!--<Collapse-->
         <!--class="panelForm"-->
@@ -31,6 +40,7 @@
 <script>
   import horizontalTable from './TableDetailCollection';
   import horizontalButton from './SingleObjectButtons';
+  import horizontalForm from './CompositeForm';
 
   export default {
     data() {
@@ -39,7 +49,8 @@
     name: 'SingleObjectTabComponent',
     components: {
       horizontalTable,
-      horizontalButton
+      horizontalButton,
+      horizontalForm
     },
     props: {
       tableData: {
