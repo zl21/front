@@ -1,6 +1,7 @@
 import network, { urlSearchParams } from '../../__utils__/network';
 import router from '../router.config';
 import { VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../../constants/global';
+
 const getComponentName = () => {
   const { tableName, tableId, itemId } = router.currentRoute.params;
   return `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
@@ -15,7 +16,7 @@ export default {
       commit('updateObjectForMainTableForm', resData);
     });
   },
-  getObjectTabForMainTable({ commit }, { // 获取主表按钮和子表信息
+  getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
     table, objid
   }) {
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -28,17 +29,17 @@ export default {
         commit('updateMainButtonsData', resData);
         commit('updateMainTabPanelsData', resData);
         if (resData.reftabs && resData.reftabs.length > 0) {
+          const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
             const param = {
-              table: table,
-              objid: objid
+              table: firstReftab.tablename,
+              objid
             };
             this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
           }
           if (resData.reftabs[0].refcolid !== -1) {
-            commit('updateActiveRefFormInfo', resData.reftabs[0]);
-            const firstReftab = resData.reftabs[0];
+            // commit('updateActiveRefFormInfo', resData.reftabs[0]);
             // 获取第一个tab的子表表单
             if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
               const formParam = {
@@ -52,7 +53,7 @@ export default {
               if (this._actions[`${getComponentName()}/getTableListForRefTable`] && this._actions[`${getComponentName()}/getTableListForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getTableListForRefTable`][0] === 'function') {
                 const tableParam = {
                   table: firstReftab.tablename,
-                  objid: objid,
+                  objid,
                   refcolid: firstReftab.refcolid,
                   startindex: 0,
                   // range:
@@ -65,7 +66,6 @@ export default {
 
             }
           }
-
         }
       }
     });
@@ -89,7 +89,7 @@ export default {
   }) {
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
-      inlinemode: inlinemode
+      inlinemode
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
@@ -98,13 +98,15 @@ export default {
     });
   },
   getTableListForRefTable({ commit }, { // 获取子表列表数据
-    table, objid, refcolid, startindex, range, fixedcolumns  // fixedcolumns - objectIds
+    table, objid, refcolid, startindex, range, fixedcolumns // fixedcolumns - objectIds
   }) {
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid, // -1 代表新增
       refcolid,
-      searchdata: { column_include_uicontroller: true, startindex: startindex, range: range, fixedcolumns: fixedcolumns }
+      searchdata: {
+        column_include_uicontroller: true, startindex, range, fixedcolumns 
+      }
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
