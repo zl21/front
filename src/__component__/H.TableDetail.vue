@@ -31,6 +31,7 @@
           if (index === 0) {
             obj.label = this.activeTab.label;
           }
+          obj.componentAttribute.type = 'horizontal';
           obj.component = tabComponent;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
@@ -65,7 +66,7 @@
       }, // tab切换触发的方法
       getMainTable() {
         const { tableName, itemId } = this.$route.params;
-        this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({ table: tableName, objid: itemId });
       }
     },

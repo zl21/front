@@ -10,14 +10,14 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          data: { ...data }
+          data
         },
         formData: {
           isShow: false,
           data: []
         },
         panelData: {
-          isShow: false,
+          isShow: true,
           data: []
         },
         tableData: {
