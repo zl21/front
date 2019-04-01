@@ -21,37 +21,6 @@
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
     />
-    <!-- 自定义动作弹框 -->
-    <!--:tablename: 当前表名-->
-    <!-- <TipsDialog
-      v-if="true"
-      class="action-dialog"
-      :visible.sync="actionDialog.show"
-      :title="actionDialog.title"
-      :close-on-click-modal="false"
-      :show-close="true"
-    >
-    
-      <component
-        :is="dialogComponent"
-        :ref="dialogComponent"
-        :obj-list=" formItems.defaultFormItemsLists"
-        :id-arr="buttons.selectIdArr"
-        :row-arr="buttons.selectArr"
-        :tablename="buttons.tableName"
-        :stop-or-enabled="buttons.actionDialog.queryString"
-        :special-title="buttons.actionDialog.title"
-        :webid="buttons.activeTabAction.webid"
-        :row-data=" ag.datas.row"
-        :action-special="actionSpecial"
-        :active-tab-action="activeTabAction"
-        @jumpNavbar="objTabActionNavbar"
-        @invokePrint="invokePrint"
-        @uploadError="obtainTableError"
-        @confirmImport="searchData('backfresh')"
-        @closeActionDialog="closeActionDialog"
-      />
-    </TipsDialog> -->
     <Modal
       v-model="actionModal"
       title="Common Modal dialog box title"
@@ -98,9 +67,13 @@
   import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-  import { fkQueryList, fkFuzzyquerybyak ,fkGetMultiQuery,fkDelMultiQuery } from '../constants/fkHttpRequest';
+  import {
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+  } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
+  import aaa from '../__utils__/network.1';
+
 
   const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
@@ -243,16 +216,16 @@
                   this.searchClickData();
                 }
               },
-              'on-delete': ($this,item, key, index) =>{
+              'on-delete': ($this, item, key, index) => {
                 fkDelMultiQuery({
                   searchObject: {
-                    tableid:item.props.fkobj.reftableid,
-                    modelname:key
+                    tableid: item.props.fkobj.reftableid,
+                    modelname: key
                   },
                   success: (res) => {
                     fkGetMultiQuery({
                       searchObject: {
-                        tableid:item.props.fkobj.reftableid
+                        tableid: item.props.fkobj.reftableid
                       },
                       success: (res) => {
                         this.freshDropDownPopFilterData(res, index);
@@ -260,22 +233,18 @@
                     });
                   }
                 });
-
               },
-              'popper-value': ($this ,value ,Selected ,index) => { // 当外键下拉展开时去请求数据
-                   
-                    this.formItemsLists[index].item.value = value;
-                    if(Selected !== 'change'){
-                      this.formItemsLists[index].item.props.Selected = Selected;
-                    }
-                    //this.formItemsLists = this.formItemsLists.concat([]);
-
-                    console.log(this.formItemsLists[index].item ,value ,Selected );
+              'popper-value': ($this, value, Selected, index) => { // 当外键下拉展开时去请求数据
+                this.formItemsLists[index].item.value = value;
+                if (Selected !== 'change') {
+                  this.formItemsLists[index].item.props.Selected = Selected;
+                }
+                // this.formItemsLists = this.formItemsLists.concat([]);
               },
-              'popper-show': ($this,item ,index) => { // 当气泡拉展开时去请求数据
+              'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
                 fkGetMultiQuery({
                   searchObject: {
-                    tableid:item.props.fkobj.reftableid
+                    tableid: item.props.fkobj.reftableid
                   },
                   success: (res) => {
                     this.freshDropDownPopFilterData(res, index);
@@ -372,7 +341,7 @@
 
           // 外键的单选多选判断
 
-        if (current.display === 'OBJ_FK') {
+          if (current.display === 'OBJ_FK') {
             switch (current.fkobj.searchmodel) {
             case 'drp':
               obj.item.props.single = true;
@@ -388,7 +357,7 @@
               break;
             case 'mop':
               obj.item.props.fkobj = current.fkobj;
-              obj.item.props.datalist =[];
+              obj.item.props.datalist = [];
               obj.item.props.Selected = [];
               break;
             default: break;
@@ -447,16 +416,15 @@
       },
       freshDropDownPopFilterData(res, index) { // 外键下拉时，更新下拉数据
         // this.formItemsLists[index].item.props.datalist = res.data.data;
-        if( res.length >0 ){
-            res.forEach((item)=>{
-              item.label = item.value;
-              item.value = item.key;
-              item.delete = true;
-            });
-            this.formItemsLists[index].item.props.datalist = res;
-        }else{
-            this.formItemsLists[index].item.props.datalist = res;
-
+        if (res.length > 0) {
+          res.forEach((item) => {
+            item.label = item.value;
+            item.value = item.key;
+            item.delete = true;
+          });
+          this.formItemsLists[index].item.props.datalist = res;
+        } else {
+          this.formItemsLists[index].item.props.datalist = res;
         }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
@@ -515,8 +483,6 @@
       },
       webactionClick(type, obj) { // 点击自定义按钮 创建table
         clearTimeout(window.timer);
-        console.log(obj);
-        console.log(JSON.parse(obj.confirm));
         window.timer = setTimeout(() => {
           this.setActiveTabActionValue(obj);
           if (obj.vuedisplay === 'native') { // 接口返回有url地址
@@ -566,7 +532,6 @@
               this.webActionSlient(obj);
             }
           } else if (obj.vuedisplay === 'navbar') {
-            console.log(obj.confirm);
             // !JSON.parse(obj.confirm.isselect)
             if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
               this.objTabActionNavbar(obj); // 新标签跳转
@@ -603,15 +568,12 @@
               }
             }
           } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-            console.log(obj);
             this.actionDialog.queryString = obj.action.split('?')[1];
             this.actionDialog.show = true;
             this.actionDialog.title = obj.webdesc;
-            console.log(obj.action);
             const componentName = obj.action.split('?')[0].replace(/\//g, '_');
             Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
           } else if (JSON.parse(obj.confirm).isselect) { // 是否是必选列表项, 动作定义根据列表是否选值
-            alert(1);
             const confirm = JSON.parse(obj.confirm);
             if (this.buttons.selectIdArr.length > 0) {
               if (confirm.isradio && this.selectIdArr.length !== 1) {
@@ -1032,7 +994,6 @@
         }
       },
       errorconfirmDialog() {
-        console.log('11');
         // const arr = [];
 
         // this.buttons.selectIdArr.forEach((item, index) => {
@@ -1045,7 +1006,6 @@
         // this.buttons.selectIdArr = arr;
        
         this.$nextTick(() => {
-          console.log('11111');
           if (this.buttons.selectIdArr.length > 0) {
             if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {
               this.batchUnSubmit();
@@ -1106,7 +1066,6 @@
               }
               return;
             }
-            console.log(this.buttons);
             if (this.buttons.activeTabAction.vuedisplay === 'dialog') { // 弹窗动作定义提示后操作
               if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
                 if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
@@ -1114,7 +1073,6 @@
                     // 单选
                     if (this.buttons.selectIdArr.length === 1) {
                       const obj = this.buttons.activeTabAction;
-                      console.log(obj);
                       this.actionDialog.queryString = obj.action.split('?')[1];
                       this.actionDialog.show = true;
                       this.actionDialog.title = obj.webdesc;
@@ -1131,16 +1089,11 @@
                     Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                     this.dialogComponent = componentName;
                   } else {
-                    console.log('11111111111');
                     const obj = this.buttons.activeTabAction;
-                    console.log(obj);
-
                     this.actionModal = true;
                     const componentName = 'aaaa';
-                    console.log(componentName);
                     Vue.component(componentName, Vue.extend(_import_custom(obj.action)));
                     // this.dialogComponent = componentName;
-                    console.log(componentName);
                     this.componentId = componentName;
                     // this.webActionSlient(this.buttons.activeTabAction)
                   }
