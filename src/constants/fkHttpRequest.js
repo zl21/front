@@ -16,3 +16,17 @@ export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
     }
   });
 };
+export const fkGetMultiQuery = function fkGetMultiQuery(params) {
+  network.post('/p/cs/getMultiQuery', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res.data.data);
+    }
+  });
+};
+export const fkDelMultiQuery = function fkDelMultiQuery(params) {
+  network.post('/p/cs/delMultiQuery', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};

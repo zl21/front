@@ -1,4 +1,5 @@
 // import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import router from '../router.config';
 import { HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../../constants/global';
 // import store from '../store.config';
@@ -11,5 +12,25 @@ const getComponentName = () => {
 export default () => ({
   mounted() {
     this.moduleComponentName = getComponentName();
+  },
+  computed: {
+    ...mapState(getComponentName(), {
+      tabPanel: ({ tabPanels }) => tabPanels
+    })
+  },
+  methods: {
+    ...mapActions(getComponentName(),
+      [
+        'getObjectTabForMainTable',
+        'getObjectForMainTableForm',
+        'getObjectTabForChildTableButtons',
+        'getInputForitemForChildTableForm',
+        'getItemObjForChildTableForm',
+        'getObjectTableItemForTableData'
+      ]),
+    ...mapMutations(getComponentName(),
+      [
+        'updateTabCurrentIndex'
+      ]),
   },
 });

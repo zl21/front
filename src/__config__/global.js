@@ -18,7 +18,12 @@ export const globalGateWay = [
   '/p/c/getCaptcha',
   '/p/cs/getTableQuery',
   '/p/cs/QueryList',
-  '/p/cs/test/accept'// 验收接口
+  '/p/cs/test/accept', // 验收接口
+  '/p/cs/objectTab',
+  '/p/cs/getObject',
+  '/p/cs/objectTableItem',
+  '/p/cs/inputForitem',
+  '/p/cs/itemObj'
 ];
 
 // 不走网关的接口

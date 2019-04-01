@@ -283,10 +283,17 @@ const AttachFilter = {
     // 模糊查询的文字信息，支持多列
     AuotData: [],
     // 定义选中展示的文字的key
-    columns: [],
+    hideColumnsKey: ['id'],
     // 配置弹窗的配置项 model
     dialog: null,
-    datalist: []
+    datalist: [{
+      value: '更多筛选',
+      lable: 0
+    },
+    {
+      value: '导入',
+      lable: 2
+    }]
   }
 };
 

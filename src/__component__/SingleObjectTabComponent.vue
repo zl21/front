@@ -1,19 +1,73 @@
 <template>
-  <div>SingleObjectTabComponent</div>
+  <div style="overflow: auto">
+    <horizontal-button
+      v-if="buttonsData.isShow"
+      :tabcmd="buttonsData.data.tabcmd"
+      :tabwebact="buttonsData.data.tabwebact"
+    />
+    <!--<div v-if="panelData.isShow">-->
+      <!--<Collapse-->
+        <!--class="panelForm"-->
+        <!--v-for="(item, index) in panelData.data"-->
+        <!--:key="index"-->
+        <!--:value="item.hrdisplay"-->
+      <!--&gt;-->
+        <!--<Panel-->
+          <!--:name=''-->
+          <!--title-type="center"-->
+        <!--&gt;-->
+          <!--{{ item.parentdesc }}-->
+        <!--</Panel>-->
+      <!--</Collapse>-->
+    <!--</div>-->
+    <horizontal-table
+      v-if="tableData.isShow"
+      :data-source="tableData.data"
+      :canEidt="buttonsData.data.objreadonly"
+    />
+  </div>
 </template>
 
 <script>
+  import horizontalTable from './TableDetailCollection';
+  import horizontalButton from './SingleObjectButtons';
+
   export default {
     data() {
       return {};
     },
     name: 'SingleObjectTabComponent',
-    components: {},
-    methods: {},
+    components: {
+      horizontalTable,
+      horizontalButton
+    },
+    props: {
+      tableData: {
+        type: Object,
+        default: () => ({})
+      }, // 表格数据
+      buttonsData: {
+        type: Object,
+        default: () => ({})
+      }, // 按钮数据
+      formData: {
+        type: Object,
+        default: () => ({})
+      }, // 表单数据
+      panelData: {
+        type: Object,
+        default: () => ({})
+      } // 面板数据
+    },
     watch: {},
-    computed: {}
+    computed: {
+    },
+    methods: {}
   };
 </script>
 
 <style lang="less">
+  .panelForm{
+    margin-bottom: 10px;
+  }
 </style>

@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="StandardTableListRootDiv">
     <ButtonGroup
@@ -97,7 +98,7 @@
   import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-  import { fkQueryList, fkFuzzyquerybyak } from '../constants/fkHttpRequest';
+  import { fkQueryList, fkFuzzyquerybyak ,fkGetMultiQuery,fkDelMultiQuery } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
 
@@ -133,6 +134,7 @@
     watch: {
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
+      
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;
@@ -169,12 +171,12 @@
         if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
           const type = 'tableDetailHorizontal';
           this.TabHref({
-            type, tableName, tableId, label, val 
+            type, tableName, tableId, label, val
           });
         } else { // 单对象上下结构
           const type = 'tableDetailVertical';
           this.TabHref({
-            type, tableName, tableId, label, val 
+            type, tableName, tableId, label, val
           });
         }
       }, // ag表格行双击回调
@@ -213,6 +215,7 @@
               default: break;
               }
             }
+
             if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
               str = 'DatePicker';
             }
@@ -240,16 +243,42 @@
                   this.searchClickData();
                 }
               },
-              'popper-show': ($this) => { // 当外键下拉展开时去请求数据
-                fkQueryList({
+              'on-delete': ($this,item, key, index) =>{
+                fkDelMultiQuery({
                   searchObject: {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: 0,
-                    range: $this.pageSize
+                    tableid:item.props.fkobj.reftableid,
+                    modelname:key
                   },
                   success: (res) => {
-                    this.freshDropDownSelectFilterData(res, itemIndex);
+                    fkGetMultiQuery({
+                      searchObject: {
+                        tableid:item.props.fkobj.reftableid
+                      },
+                      success: (res) => {
+                        this.freshDropDownPopFilterData(res, index);
+                      }
+                    });
+                  }
+                });
+
+              },
+              'popper-value': ($this ,value ,Selected ,index) => { // 当外键下拉展开时去请求数据
+                   
+                    this.formItemsLists[index].item.value = value;
+                    if(Selected !== 'change'){
+                      this.formItemsLists[index].item.props.Selected = Selected;
+                    }
+                    //this.formItemsLists = this.formItemsLists.concat([]);
+
+                    console.log(this.formItemsLists[index].item ,value ,Selected );
+              },
+              'popper-show': ($this,item ,index) => { // 当气泡拉展开时去请求数据
+                fkGetMultiQuery({
+                  searchObject: {
+                    tableid:item.props.fkobj.reftableid
+                  },
+                  success: (res) => {
+                    this.freshDropDownPopFilterData(res, index);
                   }
                 });
               },
@@ -342,7 +371,8 @@
           }
 
           // 外键的单选多选判断
-          if (current.display === 'OBJ_FK') {
+
+        if (current.display === 'OBJ_FK') {
             switch (current.fkobj.searchmodel) {
             case 'drp':
               obj.item.props.single = true;
@@ -353,8 +383,13 @@
               obj.item.props.defaultSelected = this.defaultValue(current);
               break;
             case 'pop':
+              obj.item.props.fkobj = current.fkobj;
+              obj.item.props.Selected = [];
               break;
             case 'mop':
+              obj.item.props.fkobj = current.fkobj;
+              obj.item.props.datalist =[];
+              obj.item.props.Selected = [];
               break;
             default: break;
             }
@@ -397,7 +432,9 @@
           });
           return arr;
         }
-
+        // if(item.display === 'OBJ_FK' && item.fkobj){
+        //     return '';
+        // }
         return item.default;
       },
       getTableQuery() { // 获取列表的查询字段
@@ -406,6 +443,20 @@
       formDataChange(data) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
           this.updateFormData(data);
+        }
+      },
+      freshDropDownPopFilterData(res, index) { // 外键下拉时，更新下拉数据
+        // this.formItemsLists[index].item.props.datalist = res.data.data;
+        if( res.length >0 ){
+            res.forEach((item)=>{
+              item.label = item.value;
+              item.value = item.key;
+              item.delete = true;
+            });
+            this.formItemsLists[index].item.props.datalist = res;
+        }else{
+            this.formItemsLists[index].item.props.datalist = res;
+
         }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
