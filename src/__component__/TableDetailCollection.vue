@@ -10,7 +10,7 @@
           show-sizer
           show-total
         />
-        <div class="detail-search">
+        <div class="detail-search" v-if="filterList.length > 0">
           <Select 
           v-model="searchCondition" 
           clearable 
@@ -97,7 +97,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    canEidt: {
+    readonly: {
       // 能否编辑
       type: Boolean,
       default: true
@@ -208,7 +208,7 @@ export default {
     },
     collectionCellRender(cellData, index) {
       // 给cell赋render
-      if (!cellData.ismodify || !this.canEidt) {
+      if (!cellData.ismodify || !this.readonly) {
         // 不可编辑状态 显示label
         return (h, params) =>
           h("div", [
