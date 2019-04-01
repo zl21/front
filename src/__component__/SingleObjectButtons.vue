@@ -1,13 +1,15 @@
 <template>
   <div>
     <ButtonGroup
-      :data-array="buttons.dataArray"
-      @buttonClick="buttonClick"
+      :data-array="dataArray"
     />
   </div>
 </template>
 
 <script>
+  import buttonmap from '../assets/js/buttonmap';
+  import ButtonGroup from './ButtonComponent';
+
   export default {
     data() {
       return {
@@ -16,15 +18,10 @@
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮
-            waListButtons: [
-              {
-            
-              },
-          
-            ]
+            waListButtons: []
           },
           buttonGroupShowConfig: {// 标准按钮
-            buttonGroupShow: this.getTabName()
+            buttonGroupShow: []
           },
           btnclick: (type, item) => {
             const self = this;
@@ -34,7 +31,9 @@
       };
     },
     name: 'SingleObjectButtons',
-    components: {},
+    components: {
+      ButtonGroup
+    },
     watch: {},
     computed: {},
     props: {
@@ -75,17 +74,15 @@
       },
       getTabName() {
         const buttonsData = this.buttonsData();
-        const buttonsDataValue = [];
-        Object.keys(buttonsData).map((item) => { // 转换按钮数据格式
+        Object.keys(buttonsData).forEach((item) => { // 转换按钮数据格式
           const buttonValue = item.split('action').join('CMD_'); 
-          console.log(666, this.buttonmap[buttonValue].name);
-
-          return buttonsDataValue.push(this.buttonmap[buttonValue].name);
+          this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonmap[buttonValue]);
         });
       },
     },
     mounted() {
       this.buttonsData();
+      this.getTabName();
     }
   };
 </script>

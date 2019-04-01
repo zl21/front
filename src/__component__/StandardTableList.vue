@@ -72,6 +72,8 @@
   } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
+  import ModuleName from '../__utils__/getModuleName.js';
+
 
   const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
@@ -764,7 +766,7 @@
             }
             if (objTableUrl) {
               // 跳转的是单对象
-              // const query = urlParse(objTableUrl);
+              const query = urlParse(objTableUrl);
               alert('暂未增加自定义跳转逻辑');
             } else if (objdistype === 'tabpanle') {
               const type = 'tableDetailHorizontal'; // 左右结构的单对项页面
@@ -1180,6 +1182,8 @@
     },
     created() {
       this.buttonMap = buttonmap;
+      console.log(666, this.buttonmap);
+
       this.ChineseDictionary = ChineseDictionary;
     }
   };
