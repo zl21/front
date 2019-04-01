@@ -1,35 +1,24 @@
 <template>
   <div style="overflow: auto">
-    <horizontal-button
+    <component
+      :is="'SingleObjectButtons'"
       v-if="buttonsData.isShow"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
     />
-    <horizontal-form
-            v-if="formData.isShow"
-            :defaultData="formData.data"
-    ></horizontal-form>
-    <horizontal-form
-            v-if="panelData.isShow"
-            type="PanelForm"
-            :defaultData="panelData.data"
-    ></horizontal-form>
-    <!--<div v-if="panelData.isShow">-->
-      <!--<Collapse-->
-        <!--class="panelForm"-->
-        <!--v-for="(item, index) in panelData.data"-->
-        <!--:key="index"-->
-        <!--:value="item.hrdisplay"-->
-      <!--&gt;-->
-        <!--<Panel-->
-          <!--:name=''-->
-          <!--title-type="center"-->
-        <!--&gt;-->
-          <!--{{ item.parentdesc }}-->
-        <!--</Panel>-->
-      <!--</Collapse>-->
-    <!--</div>-->
-    <horizontal-table
+    <component
+      :is="'CompositeForm'"
+      v-if="formData.isShow"
+      :default-data="formData.data"
+    />
+    <component
+      :is="'CompositeFormPanel'"
+      v-if="panelData.isShow"
+      type="PanelForm"
+      :default-data="panelData.data"
+    />
+    <component
+      :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       :data-source="tableData.data"
       :readonly="buttonsData.data.objreadonly"
@@ -38,21 +27,26 @@
 </template>
 
 <script>
-  import horizontalTable from './TableDetailCollection';
-  import horizontalButton from './SingleObjectButtons';
-  import horizontalForm from './CompositeForm';
+  import Vue from 'vue';
+  import tableDetailCollection from './TableDetailCollection';
+  import singleObjectButtons from './SingleObjectButtons';
+  import compositeForm from './CompositeForm';
+  import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
+  import verticalMixins from '../__config__/mixins/verticalTableDetail';
 
   export default {
     data() {
-      return {};
+      return {
+      };
     },
     name: 'SingleObjectTabComponent',
     components: {
-      horizontalTable,
-      horizontalButton,
-      horizontalForm
     },
     props: {
+      type: {
+        type: String,
+        default: 'vertical'
+      },
       tableData: {
         type: Object,
         default: () => ({})
@@ -73,7 +67,27 @@
     watch: {},
     computed: {
     },
-    methods: {}
+    mounted() {
+      // this.generateComponent();
+    },
+    created() {
+      this.generateComponent();
+    },
+    methods: {
+      generateComponent() {
+        if (this.type === 'vertical') {
+          Vue.component('TableDetailCollection', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
+          Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+          Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
+          Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
+        } else {
+          Vue.component('TableDetailCollection', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, tableDetailCollection)));
+          Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
+          Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
+          Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
+        }
+      }
+    }
   };
 </script>
 
