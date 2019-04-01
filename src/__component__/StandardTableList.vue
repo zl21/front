@@ -72,8 +72,6 @@
   } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
-  import aaa from '../__utils__/network.1';
-
 
   const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
