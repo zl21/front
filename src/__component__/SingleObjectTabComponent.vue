@@ -23,7 +23,7 @@
     <horizontal-table
       v-if="tableData.isShow"
       :data-source="tableData.data"
-      :canEidt="buttonsData.data.objreadonly"
+      :readonly="buttonsData.data.objreadonly"
     />
   </div>
 </template>
