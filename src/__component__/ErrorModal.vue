@@ -4,7 +4,7 @@
     <Modal
       v-model="errorDialog"
       :title="title"
-      footer-hide="errorDialogBack"
+      :footer-hide="errorDialogBack"
       @on-ok="confirmDialog()"
       @on-cancel="closeDialog()"
     >
@@ -52,7 +52,7 @@
       },
       errorDialogBack: {
         type: Boolean,
-        
+        default: false
       },
  
 

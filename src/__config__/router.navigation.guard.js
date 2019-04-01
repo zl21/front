@@ -82,6 +82,20 @@ export default (router) => {
         store.registerModule(keepAliveModuleName, horizontalTableDetailModule());
       }
     }
+    // Condition Three: 路由到table类型的列表明细界面
+    if (/\/SYSTEM\/TABLE_DETAIL\/H\//.test(to.path)) {
+      const keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+
+      // 处理 keepAliveModuleName
+      if (!keepAliveLists.includes(keepAliveModuleName)) {
+        commit('global/increaseKeepAliveLists', keepAliveModuleName);
+      }
+
+      // 判断是否状态中已经存在某个模块，不存在则创建
+      if (store.state[keepAliveModuleName] === undefined) {
+        store.registerModule(keepAliveModuleName, horizontalTableDetailModule());
+      }
+    }
     next();
   });
 };

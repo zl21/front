@@ -34,7 +34,7 @@ export default {
   updateButtonWaListButtons({
     buttons
   }, data) {
-    buttons.dataArray.waListButtonsConfig.waListButtons = data;
+    // buttons.dataArray.waListButtonsConfig.waListButtons = data;
     const currentModuleName = this.state.global.activeTab.keepAliveModuleName;
     let favorite = this.state.global.favorite;
     favorite = favorite.map(item => `${STANDARD_TABLE_COMPONENT_PREFIX}.${item.value}.${item.id}`);

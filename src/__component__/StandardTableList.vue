@@ -21,9 +21,19 @@
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
     />
+    <Modal
+      v-model="actionModal"
+      title="Common Modal dialog box title"
+    >
+      <keep-alive
+        include=""
+        exclude=""
+      >
+        <component :is="componentId" />
+      </keep-alive>
+    </Modal>
     <ImportDialog
       v-if="buttons.importData.importDialog"
-      :visible.sync="buttons.importData.importDialog"
       :name="buttons.importData.importDialog"
       :show-close="true"
       :title="buttons.importData.importDialogTitle"
@@ -46,6 +56,7 @@
 </template>
 
 <script>
+  import Vue from 'vue';
   import { mapActions, mapState, mapMutations } from 'vuex';
   import ButtonGroup from './ButtonComponent';
   import AgTable from './AgTable';
@@ -56,20 +67,27 @@
   import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-  import { fkQueryList, fkFuzzyquerybyak ,fkGetMultiQuery,fkDelMultiQuery } from '../constants/fkHttpRequest';
+  import {
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+  } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
+  import ModuleName from '../__utils__/getModuleName.js';
 
+
+  const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
     components: {
       ButtonGroup,
       AgTable,
       FormItemComponent,
       ImportDialog,
-      ErrorModal
+      ErrorModal,
     },
     data() {
       return {
+        actionModal: false,
+        componentId: null,
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
@@ -103,7 +121,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['TabHref']),
+      ...mapMutations('global', ['TabHref', 'TabOpen']),
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
@@ -198,16 +216,16 @@
                   this.searchClickData();
                 }
               },
-              'on-delete': ($this,item, key, index) =>{
+              'on-delete': ($this, item, key, index) => {
                 fkDelMultiQuery({
                   searchObject: {
-                    tableid:item.props.fkobj.reftableid,
-                    modelname:key
+                    tableid: item.props.fkobj.reftableid,
+                    modelname: key
                   },
                   success: (res) => {
                     fkGetMultiQuery({
                       searchObject: {
-                        tableid:item.props.fkobj.reftableid
+                        tableid: item.props.fkobj.reftableid
                       },
                       success: (res) => {
                         this.freshDropDownPopFilterData(res, index);
@@ -215,22 +233,18 @@
                     });
                   }
                 });
-
               },
-              'popper-value': ($this ,value ,Selected ,index) => { // 当外键下拉展开时去请求数据
-                   
-                    this.formItemsLists[index].item.value = value;
-                    if(Selected !== 'change'){
-                      this.formItemsLists[index].item.props.Selected = Selected;
-                    }
-                    //this.formItemsLists = this.formItemsLists.concat([]);
-
-                    console.log(this.formItemsLists[index].item ,value ,Selected );
+              'popper-value': ($this, value, Selected, index) => { // 当外键下拉展开时去请求数据
+                this.formItemsLists[index].item.value = value;
+                if (Selected !== 'change') {
+                  this.formItemsLists[index].item.props.Selected = Selected;
+                }
+                // this.formItemsLists = this.formItemsLists.concat([]);
               },
-              'popper-show': ($this,item ,index) => { // 当气泡拉展开时去请求数据
+              'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
                 fkGetMultiQuery({
                   searchObject: {
-                    tableid:item.props.fkobj.reftableid
+                    tableid: item.props.fkobj.reftableid
                   },
                   success: (res) => {
                     this.freshDropDownPopFilterData(res, index);
@@ -327,7 +341,7 @@
 
           // 外键的单选多选判断
 
-        if (current.display === 'OBJ_FK') {
+          if (current.display === 'OBJ_FK') {
             switch (current.fkobj.searchmodel) {
             case 'drp':
               obj.item.props.single = true;
@@ -343,7 +357,7 @@
               break;
             case 'mop':
               obj.item.props.fkobj = current.fkobj;
-              obj.item.props.datalist =[];
+              obj.item.props.datalist = [];
               obj.item.props.Selected = [];
               break;
             default: break;
@@ -402,16 +416,15 @@
       },
       freshDropDownPopFilterData(res, index) { // 外键下拉时，更新下拉数据
         // this.formItemsLists[index].item.props.datalist = res.data.data;
-        if( res.length >0 ){
-            res.forEach((item)=>{
-              item.label = item.value;
-              item.value = item.key;
-              item.delete = true;
-            });
-            this.formItemsLists[index].item.props.datalist = res;
-        }else{
-            this.formItemsLists[index].item.props.datalist = res;
-
+        if (res.length > 0) {
+          res.forEach((item) => {
+            item.label = item.value;
+            item.value = item.key;
+            item.delete = true;
+          });
+          this.formItemsLists[index].item.props.datalist = res;
+        } else {
+          this.formItemsLists[index].item.props.datalist = res;
         }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
@@ -476,43 +489,32 @@
             location.href = obj.action;
             return;
           }
+
           if (obj.vuedisplay === 'slient') { // 静默程序            if(obj.confirm){  //有提示
             if (obj.confirm) { // 有提示
               if (obj.confirm.indexOf('{') >= 0) {
-                if (JSON.parse(obj.confirm).isselect) {
+                if (!obj.confirm || JSON.parse(obj.confirm).isselect) {
                   if (this.selectIdArr.length === 0) {
                     const data = {
-                      message: JSON.parse(obj.confirm).nodesc,
+                      content: JSON.parse(obj.confirm).nodesc,
                     };
-                    console.log(data);
-
-                    this.buttons.errorData = data;
-                    this.buttons.errorDialog = true;
-                    this.buttons.errorDialogClass = 'warning';
-                    this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                    this.buttons.errorDialogBack = true;
+                    const errorDialogTitle = this.ChineseDictionary.WARNING;
+                    const errorDialogvalue = true;
+                    this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
                   } else if (JSON.parse(obj.confirm).isradio && this.selectIdArr.length !== 1) {
                     const data = {
-                      message: JSON.parse(obj.confirm).radiodesc,
+                      content: JSON.parse(obj.confirm).radiodesc,
                     };
-                    console.log(data);
-
-                    this.buttons.errorData = data;
-                    this.buttons.errorDialog = true;
-                    this.buttons.errorDialogClass = 'warning';
-                    this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                    this.buttons.errorDialogBack = true;
+                    const errorDialogTitle = this.ChineseDictionary.WARNING;
+                    const errorDialogvalue = true;
+                    this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
                   } else if (JSON.parse(obj.confirm).desc) {
                     const data = {
                       message: JSON.parse(obj.confirm).desc,
                     };
-                    console.log(data);
-
-                    this.buttons.errorData = data;
-                    this.buttons.errorDialog = true;
-                    this.buttons.errorDialogClass = 'warning';
-                    this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                    this.buttons.errorDialogBack = true;
+                    const errorDialogTitle = this.ChineseDictionary.WARNING;
+                    const errorDialogvalue = true;
+                    this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
                   } else {
                     // 参数都不存在,直接执行
                     this.webActionSlient(obj);
@@ -520,61 +522,47 @@
                 }
               } else {
                 const data = {
-                  message: obj.confirm,
+                  content: obj.confirm,
                 };
-                console.log(data);
-
-                this.buttons.errorData = data;
-                this.buttons.errorDialog = true;
-                this.buttons.errorDialogClass = 'warning';
-                this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                this.buttons.errorDialogBack = true;
+                const errorDialogTitle = this.ChineseDictionary.WARNING;
+                const errorDialogvalue = true;
+                this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
               }
             } else {
               this.webActionSlient(obj);
             }
           } else if (obj.vuedisplay === 'navbar') {
+            // !JSON.parse(obj.confirm.isselect)
             if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
               this.objTabActionNavbar(obj); // 新标签跳转
             } else { // 动作定义根据列表是否选值
               const confirm = JSON.parse(obj.confirm);
               if (this.selectIdArr.length > 0) {
-                if (confirm.isradio && this.selectIdArr.length != 1) {
+                if (confirm.isradio && this.selectIdArr.length !== 1) {
                   const data = {
-                    message: confirm.radiodesc,
+                    content: confirm.radiodesc,
                   };
-                  console.log(data);
-
-                  this.buttons.errorData = data;
-                  this.buttons.errorDialog = true;
-                  this.buttons.errorDialogClass = 'warning';
-                  this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                  this.buttons.errorDialogBack = true;
+                  const errorDialogTitle = this.ChineseDictionary.WARNING;
+                  const errorDialogvalue = true;
+                  this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
                 } else if (confirm.desc) {
                   const data = {
-                    message: confirm.desc.replace('{isselect}', this.selectIdArr.length),
+                    content: confirm.desc.replace('{isselect}', this.selectIdArr.length),
                   };
-                  console.log(data);
-
-                  this.buttons.errorData = data;
-                  this.buttons.errorDialog = true;
-                  this.buttons.errorDialogClass = 'warning';
-                  this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                  this.buttons.errorDialogBack = true;
+                  const errorDialogTitle = this.ChineseDictionary.WARNING;
+                  const errorDialogvalue = true;
+                  this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
                 } else {
                   this.objTabActionNavbar(obj); // 新标签跳转
                 }
               } else if (confirm.nodesc) {
                 const data = {
-                  message: confirm.nodesc,
+                  content: confirm.nodesc,
                 };
-                console.log(data);
-
-                this.buttons.errorData = data;
-                this.buttons.errorDialog = true;
-                this.buttons.errorDialogClass = 'warning';
-                this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                this.buttons.errorDialogBack = true;
+                 
+                const errorDialogTitle = this.ChineseDictionary.WARNING;
+                const errorDialogvalue = true;
+                this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
               } else {
                 this.objTabActionNavbar(obj); // 新标签跳转
               }
@@ -584,72 +572,57 @@
             this.actionDialog.show = true;
             this.actionDialog.title = obj.webdesc;
             const componentName = obj.action.split('?')[0].replace(/\//g, '_');
-            // Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
-            this.dialogComponent = componentName;
+            Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
           } else if (JSON.parse(obj.confirm).isselect) { // 是否是必选列表项, 动作定义根据列表是否选值
             const confirm = JSON.parse(obj.confirm);
-            if (this.selectIdArr.length > 0) {
-              if (confirm.isradio && this.selectIdArr.length != 1) {
+            if (this.buttons.selectIdArr.length > 0) {
+              if (confirm.isradio && this.selectIdArr.length !== 1) {
                 const data = {
-                  message: confirm.radiodesc,
+                  content: confirm.radiodesc,
                 };
-                console.log(data);
-                this.buttons.errorData = data;
-                this.buttons.errorDialog = true;
-                this.buttons.errorDialogClass = 'warning';
-                this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                this.buttons.errorDialogBack = true;
+                const errorDialogTitle = this.ChineseDictionary.WARNING;
+                const errorDialogvalue = true;
+                this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
               } else if (confirm.desc) {
                 const data = {
-                  message: confirm.desc.replace('{isselect}', this.selectIdArr.length),
+                  content: confirm.desc.replace('{isselect}', this.selectIdArr.length),
                 };
-                console.log(data);
-
-                this.buttons.errorData = data;
-                this.buttons.errorDialog = true;
-                this.buttons.errorDialogClass = 'warning';
-                this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-                this.buttons.errorDialogBack = true;
+                const errorDialogTitle = this.ChineseDictionary.WARNING;
+                const errorDialogvalue = true;
+                this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
               } else {
                 this.actionDialog.queryString = obj.action.split('?')[1];
                 this.actionDialog.show = true;
                 this.actionDialog.title = obj.webdesc;
                 const componentName = obj.action.split('?')[0].replace(/\//g, '_');
 
-                // Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
+                Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                 this.dialogComponent = componentName;
               }
             } else if (confirm.nodesc) {
               const data = {
-                message: confirm.nodesc,
+                content: confirm.nodesc,
               };
-              console.log(data);
-
-              this.buttons.errorData = data;
-              this.buttons.errorDialog = true;
-              this.buttons.errorDialogClass = 'warning';
-              this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-              this.buttons.errorDialogBack = true;
+              const errorDialogTitle = this.ChineseDictionary.WARNING;
+              const errorDialogvalue = true;
+              this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
             } else {
               this.actionDialog.queryString = obj.action.split('?')[1];
               this.actionDialog.show = true;
               this.actionDialog.title = obj.webdesc;
               const componentName = obj.action.split('?')[0].replace(/\//g, '_');
 
-              // Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
+              Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
               this.dialogComponent = componentName;
             }
           } else {
             const message = obj.confirm.indexOf('{') >= 0 ? JSON.parse(obj.confirm).nodesc : obj.confirm;
             const data = {
-              message,
+              content: message
             };
-            console.log(data);
-            this.buttons.errorData = data;
-            this.buttons.errorDialog = true;
-            this.buttons.errorDialogClass = 'warning';
-            this.buttons.errorDialogTitle = this.ChineseDictionary.WARNING;
-            this.buttons.errorDialogBack = true;
+            const errorDialogTitle = this.ChineseDictionary.WARNING;
+            const errorDialogvalue = true;
+            this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
           }
         }, 300);
       },
@@ -712,8 +685,9 @@
             // this.searchData('fresh');
           }
         }
-        // this.buttons.activeTabAction = null;
+        this.buttons.activeTabAction = null;
       },
+     
       dataProcessing() { // 查询数据处理
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item]) {
@@ -777,62 +751,32 @@
           // this.buttons.errorData = [];
           if (obj.name === this.buttonMap.CMD_ADD.name) {
             // 新增
-            const ptype = this.$route.path.split('/')[2];
-            if (objTableUrl) {
-              alert(1);
-
-              // 跳转的是单对象
-              const name = objTableUrl.split('?')[0].split('/')[3];
-              // const query = urlParse(objTableUrl);
+            const itemId = -1;
+            const label = `${obj.name}编辑`;
+            if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+              const type = 'tableDetailHorizontal';
               this.TabHref({
-                id: -1,
-                type: 'action',
-                name,
-                label: `${obj.name}编辑`,
-                query: Object.assign(
-                  {
-                    id: -1,
-                    tableName,
-                    pid: tableId,
-                    ptype,
-                    ptitle: obj.name,
-                    tabTitle: `${obj.name}编辑`
-                  },
-
-                )
+                type, tableName, tableId, label, itemId 
               });
-            } else if (objdistype === 'tabpanle') {
-              alert(1);
-
+            } else { // 单对象上下结构
+              const type = 'tableDetailVertical';
               this.TabHref({
-                id: -1,
-                type: 'singleObject',
-                name: tableName,
-                label: `${obj.name}编辑`,
-                query: {
-                  id: -1,
-                  tableName,
-                  pid: tableId,
-                  ptype,
-                  ptitle: obj.name,
-                  tabTitle: `${obj.name}编辑`
-                }
+                type, tableName, tableId, label, itemId 
+              });
+            }
+            if (objTableUrl) {
+              // 跳转的是单对象
+              const query = urlParse(objTableUrl);
+              alert('暂未增加自定义跳转逻辑');
+            } else if (objdistype === 'tabpanle') {
+              const type = 'tableDetailHorizontal'; // 左右结构的单对项页面
+              this.TabHref({
+                type, tableName, tableId, label, itemId 
               });
             } else {
-              alert(1);
+              const type = 'tableDetailVertical'; // 左右结构的单对项页面
               this.TabHref({
-                id: -1,
-                type: 'singleView',
-                name: tableName,
-                label: `${obj.name}编辑`,
-                query: {
-                  id: -1,
-                  tableName,
-                  pid: tableId,
-                  ptype,
-                  ptitle: obj.name,
-                  tabTitle: `${obj.name}编辑`
-                }
+                type, tableName, tableId, label, itemId 
               });
             }
           }
@@ -974,10 +918,10 @@
           showColumnName: true,
           menu: tableName,
         };
-        if (this.buttons.selectIdArr.length === 0) {
-          delete this.formObj.fixedcolumns.ID;
-          searchData.reffixedcolumns = this.treeObj.fixedcolumns;
-        }
+        // if (this.buttons.selectIdArr.length === 0) {
+        //   delete this.formObj.fixedcolumns.ID;
+        //   searchData.reffixedcolumns = this.treeObj.fixedcolumns;
+        // }
         this.getExportQueryForButtons(OBJ);
       },
       deleteTableList() {
@@ -1060,14 +1004,7 @@
         //   }
         // });
         // this.buttons.selectIdArr = arr;
-        if (this.buttons.selectIdArr.length === 0) {
-          this.buttons.selectSysment.forEach((item, index) => {
-            const obj = {};
-            obj.flag = true;
-            obj.message = `数据为系统保留字段，不允许${this.buttonMap.CMD_DELETE.name}`;
-            this.$set(this.errorTable, item, obj);
-          });
-        }
+       
         this.$nextTick(() => {
           if (this.buttons.selectIdArr.length > 0) {
             if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {
@@ -1090,52 +1027,52 @@
               return;
             }
           }
-          if (this.activeTabAction) {
-            if (this.activeTabAction.vuedisplay === 'slient' && option && this.errorDialogClass === 'warning') {
-              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+          if (this.buttons.activeTabAction) {
+            if (this.buttons.activeTabAction.vuedisplay === 'slient') { // slient静默跳转页面类型按钮
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.buttons.activeTabAction.confirm).isradio) {
                     // 单选
-                    if (this.selectIdArr.length === 1) {
-                      this.webActionSlient(this.activeTabAction); // 静默执行
+                    if (this.buttons.selectIdArr.length === 1) {
+                      this.webActionSlient(this.buttons.activeTabAction); // 静默执行
                     }
-                  } else if (this.selectIdArr.length > 0) {
-                    this.webActionSlient(this.activeTabAction);
+                  } else if (this.buttons.selectIdArr.length > 0) {
+                    this.webActionSlient(this.buttons.activeTabAction);
                   }
                 } else {
-                  this.webActionSlient(this.activeTabAction);
+                  this.webActionSlient(this.buttons.activeTabAction);
                 }
               } else {
-                this.webActionSlient(this.activeTabAction);
+                this.webActionSlient(this.buttons.activeTabAction);
               }
               return;
             }
-            if (this.activeTabAction.vuedisplay === 'navbar' && option && this.errorDialogClass === 'warning') {
-              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+            if (this.buttons.activeTabAction.vuedisplay === 'navbar') {
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.buttons.activeTabAction.confirm).isradio) {
                     // 单选
-                    if (this.selectIdArr.length === 1) {
-                      this.objTabActionNavbar(this.activeTabAction); // 新标签跳转
+                    if (this.buttons.selectIdArr.length === 1) {
+                      this.objTabActionNavbar(this.buttons.activeTabAction); // 新标签跳转
                     }
-                  } else if (this.selectIdArr.length > 0) {
-                    this.objTabActionNavbar(this.activeTabAction);
+                  } else if (this.buttons.selectIdArr.length > 0) {
+                    this.objTabActionNavbar(this.buttons.activeTabAction);
                   }
                 } else {
-                  this.objTabActionNavbar(this.activeTabAction);
+                  this.objTabActionNavbar(this.buttons.activeTabAction);
                 }
               } else {
-                this.objTabActionNavbar(this.activeTabAction);
+                this.objTabActionNavbar(this.buttons.activeTabAction);
               }
               return;
             }
-            if (option && this.activeTabAction.vuedisplay === 'dialog' && this.errorDialogClass === 'warning') { // 弹窗动作定义提示后操作
-              if (this.activeTabAction.confirm.indexOf('{') >= 0) {
-                if (JSON.parse(this.activeTabAction.confirm).isselect) {
-                  if (JSON.parse(this.activeTabAction.confirm).isradio) {
+            if (this.buttons.activeTabAction.vuedisplay === 'dialog') { // 弹窗动作定义提示后操作
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (JSON.parse(this.buttons.activeTabAction.confirm).isradio) {
                     // 单选
-                    if (this.selectIdArr.length === 1) {
-                      const obj = this.activeTabAction;
+                    if (this.buttons.selectIdArr.length === 1) {
+                      const obj = this.buttons.activeTabAction;
                       this.actionDialog.queryString = obj.action.split('?')[1];
                       this.actionDialog.show = true;
                       this.actionDialog.title = obj.webdesc;
@@ -1143,8 +1080,8 @@
                       Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                       this.dialogComponent = componentName;
                     }
-                  } else if (this.selectIdArr.length > 0) {
-                    const obj = this.activeTabAction;
+                  } else if (this.buttons.selectIdArr.length > 0) {
+                    const obj = this.buttons.activeTabAction;
                     this.actionDialog.queryString = obj.action.split('?')[1];
                     this.actionDialog.show = true;
                     this.actionDialog.title = obj.webdesc;
@@ -1152,10 +1089,16 @@
                     Vue.component(componentName, Vue.extend(_import_custom(obj.action.split('?')[0])));
                     this.dialogComponent = componentName;
                   } else {
-                    // this.webActionSlient(this.activeTabAction)
+                    const obj = this.buttons.activeTabAction;
+                    this.actionModal = true;
+                    const componentName = 'aaaa';
+                    Vue.component(componentName, Vue.extend(_import_custom(obj.action)));
+                    // this.dialogComponent = componentName;
+                    this.componentId = componentName;
+                    // this.webActionSlient(this.buttons.activeTabAction)
                   }
                 } else {
-                  const obj = this.activeTabAction;
+                  const obj = this.buttons.activeTabAction;
                   this.actionDialog.queryString = obj.action.split('?')[1];
                   this.actionDialog.show = true;
                   this.actionDialog.title = obj.webdesc;
@@ -1164,7 +1107,7 @@
                   this.dialogComponent = componentName;
                 }
               } else {
-                const obj = this.activeTabAction;
+                const obj = this.buttons.activeTabAction;
                 this.actionDialog.queryString = obj.action.split('?')[1];
                 this.actionDialog.show = true;
                 this.actionDialog.title = obj.webdesc;
@@ -1174,7 +1117,7 @@
               }
             }
           }
-          if (this.errorData.message.indexOf('批量更新') >= 0) {
+          if (this.buttons.errorData.content.indexOf('批量更新') >= 0) {
             this.dataConShow.dataConShow = true;
             this.dataConShow.title = this.$store.state.activeTab.label;
             this.dataConShow.tabConfig = {
@@ -1186,9 +1129,9 @@
             };
             this.dataConShow.fixedcolumns = this.getJson();
             this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
-          } else if (this.errorData.message.indexOf('操作会执行全量导出') >= 0) {
+          } else if (this.buttons.errorData.content.indexOf('操作会执行全量导出') >= 0) {
             this.batchExport();
-          } else if (this.selectSysment.length > 0) {
+          } else if (this.buttons.selectSysment.length > 0) {
             this.searchData('backfresh');
           }
         });
@@ -1196,7 +1139,29 @@
       errorDialogClose() {
         const errorDialogvalue = false;
         this.setErrorModalValue({ errorDialogvalue });
-      }
+      },
+      objTabActionNavbar(tab) { // 判断跳转到哪个页面
+        const pathType = tab.action.split('/')[2];
+        const tableName = this.buttons.tableName;
+        const tableId = this.buttons.tableId;
+        const label = tab.webdesc;
+        if (tab.action) {
+          if (pathType === 'ACTION') {
+            tab.action = eval(`\`${tab.action}\``);
+            //            判断是否是有父级标签
+            const type = 'tableDetailAction';
+            this.TabOpen({
+              type, tableName, tableId, label 
+            });
+          } else if (pathType === 'TABLE') {
+            tab.action = eval(`\`${tab.action}\``);
+            const type = 'tableDetailAction';
+            this.TabOpen({
+              type, tableName, tableId, label, pathType
+            });
+          }
+        }
+      },
     },
     mounted() {
       this.getTableQuery();
@@ -1217,6 +1182,8 @@
     },
     created() {
       this.buttonMap = buttonmap;
+      console.log(666, this.buttonmap);
+
       this.ChineseDictionary = ChineseDictionary;
     }
   };

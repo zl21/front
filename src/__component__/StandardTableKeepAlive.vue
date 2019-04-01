@@ -1,10 +1,6 @@
 <template>
-  <keep-alive
-    :include="keepAliveLists"
-  >
-    <component
-      :is="currentTable"
-    />
+  <keep-alive :include="keepAliveLists">
+    <component :is="currentTable" />
   </keep-alive>
 </template>
 
@@ -14,7 +10,8 @@
   import mixins from '../__config__/mixins/standardTableLists';
   import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   import StandardTableList from './StandardTableList';
-  
+  import CustomPages from '../assets/js/customComponent';
+
   export default {
     name: 'StandardTableKeepAlive',
     data() {
@@ -29,11 +26,17 @@
       generateComponent() {
         const { tableName, tableId } = this.$route.params;
         const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+        const customPage = this.$route.fullPath.split('/')[4];
         if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
         }
+        CustomPages.forEach((b) => {
+          if (b.filePath === customPage) {
+            this.currentTable = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}.${b.name}`; 
+          }
+        });
         this.currentTable = componentName;
-      }
+      } 
     },
     mounted() {
       this.generateComponent();

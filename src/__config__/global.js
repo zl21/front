@@ -18,6 +18,7 @@ export const globalGateWay = [
   '/p/c/getCaptcha',
   '/p/cs/getTableQuery',
   '/p/cs/QueryList',
+  '/p/cs/test/accept', // 验收接口
   '/p/cs/objectTab',
   '/p/cs/getObject',
   '/p/cs/objectTableItem',

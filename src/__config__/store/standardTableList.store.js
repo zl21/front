@@ -19,7 +19,33 @@ export default () => ({
         actionCollection: false,
         collectiImg: false, // 是否收藏
         waListButtonsConfig: {// 自定义按钮
-          waListButtons: []
+          waListButtons: [
+            {
+              // action: ' /SYSTEM/TABLE/AD_TABLE',
+              // actiontype: 'url',
+              // confirm: null,
+              // cuscomponent: null,
+              // ishide: false,
+              // isrefrsh: true,
+              // vuedisplay: 'dialog',
+              // webdesc: '验收',
+              // webicon: null,
+              // webid: 2461,
+              // webname: 'DL_B_STORE_PAL_SUM',
+              action: 'Dialog/Confirm',
+              actiontype: 'rpc',
+              confirm: '{"isselect":true,"nodesc":"请先选择需要启用的记录"}',
+              cuscomponent: null,
+              ishide: false,
+              isrefrsh: false,
+              vuedisplay: 'dialog',
+              webdesc: 'VIP账户启用',
+              webicon: null,
+              webid: 2187,
+              webname: 'VP_C_VIP_ACCEnable',
+            },
+          
+          ]
         },
         buttonGroupShowConfig: {// 标准按钮
           buttonGroupShow: []
@@ -63,7 +89,7 @@ export default () => ({
       importTemplate: {},
       errorDialogBack: false, // 是否有返回按钮
       errorDialogClass: '', // 弹框类型
-      errorDialog: '',
+      errorDialog: false,
       errorDialogTitle: '',
       detailState: true, // 是否可以双击查看或点击序号查看
       actionLoading: true,
@@ -71,8 +97,14 @@ export default () => ({
       sysmentArr: [], // 系统数据
       selectSysment: [], // 选中的系统数据，
       batchUnSubmitData: {}, // 批量反提交返回数据
-      batchDeleteData: {}// 删除返回数据
-
+      batchDeleteData: {}, // 删除返回数据
+      dialogComponent: null, // 静默按钮需要渲染的组件
+      actionDialog: { // 自定义动作弹框
+        show: false,
+        title: '',
+        queryString: '',
+      },
+      
     }
   },
   actions,
