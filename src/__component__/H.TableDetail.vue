@@ -66,7 +66,7 @@
       }, // tab切换触发的方法
       getMainTable() {
         const { tableName, itemId } = this.$route.params;
-        this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({ table: tableName, objid: itemId });
       }
     },

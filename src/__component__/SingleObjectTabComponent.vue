@@ -21,6 +21,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       :data-source="tableData.data"
+      :type="type"
       :readonly="buttonsData.data.objreadonly"
     />
   </div>

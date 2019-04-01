@@ -1,4 +1,11 @@
 import network, { urlSearchParams } from '../../__utils__/network';
+import router from '../router.config';
+import { HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../../constants/global';
+
+const getComponentName = () => {
+  const { tableName, tableId, itemId } = router.currentRoute.params;
+  return `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+};
 
 export default {
   getObjectTabForMainTable({ commit }, { table, objid }) {
@@ -10,8 +17,15 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-        // commit('updateButtonsData', resData);
         commit('updateTabPanelsData', resData);
+        // debugger;
+        if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
+          const param = {
+            table,
+            objid
+          };
+          this._actions[`${getComponentName()}/getObjectForMainTableForm`][0](param);
+        }
       }
     });
   }, // 获取主表按钮和子表信息
@@ -30,6 +44,7 @@ export default {
     });
   }, // 获取子表按钮
   getObjectForMainTableForm({ commit }, { table, objid }) {
+    console.log(111);
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     network.post('/p/cs/getObject', urlSearchParams({
       table,
