@@ -1,11 +1,10 @@
 <template>
   <div>
-    <h1>{{ $route.params.tableName }}</h1>
-    <h1>{{ $route.params.tableId }}</h1>
-    <h1>{{ $route.params.itemId }}</h1>
+
     <TabPanels
       type="line"
       :tab-margin-left="20"
+      :type="'singleCard'"
       :tab-panels="tabPanels"
     />
     <!-- <TableDetailCollection
