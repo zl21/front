@@ -533,8 +533,10 @@ const initializeAgTable = (container, opt) => {
   const agTable = (agGridTableContainer, options) => {
     agTable.fixContainerHeight = () => {
       const queryDesc = document.querySelector('.queryDesc');
-      // 重置agGridTableContainer高度
-      agGridTableContainer.style.height = `${document.body.clientHeight - agGridTableContainer.getBoundingClientRect().top - queryDesc.offsetHeight - 20}px`;
+      if (queryDesc) {
+        // 重置agGridTableContainer高度
+        agGridTableContainer.style.height = `${document.body.clientHeight - agGridTableContainer.getBoundingClientRect().top - queryDesc.offsetHeight - 20}px`;
+      }
     };
     agTable.customizeOptions = options;
     let isResetAllColumn = false;

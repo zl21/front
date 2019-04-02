@@ -1182,8 +1182,6 @@
     },
     created() {
       this.buttonMap = buttonmap;
-      console.log(666, this.buttonmap);
-
       this.ChineseDictionary = ChineseDictionary;
     }
   };

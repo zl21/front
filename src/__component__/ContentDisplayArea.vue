@@ -2,7 +2,9 @@
   <div>
     <!-- 模块页签组件 -->
     <TabLists />
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
   </div>
 </template>
 

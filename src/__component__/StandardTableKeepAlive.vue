@@ -27,7 +27,7 @@
         const { tableName, tableId } = this.$route.params;
         const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
         const customPage = this.$route.fullPath.split('/')[4];
-        if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
+        if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
         }
         CustomPages.forEach((b) => {
