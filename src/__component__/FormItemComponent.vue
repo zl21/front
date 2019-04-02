@@ -3,10 +3,10 @@
   <div>
     <!-- 需要下拉 -->
     <DownComponent
+      v-if="searchFoldnum>0"
       :title="title"
       :set-height="setHeight"
       :search-foldnum="searchFoldnum"
-      v-if="searchFoldnum>0"
     >
       <div
         slot="dwonContent"
@@ -30,26 +30,27 @@
         </div>
       </div>
     </DownComponent>
-    <div class="FormItemComponent"
-            :style="setWidth"
-         v-if="searchFoldnum === 0"
+    <div
+      v-if="searchFoldnum === 0"
+      class="FormItemComponent"
+      :style="setWidth"
     >
-        <div v-for="(item,index) in dataColRol"
-                v-show="item.show !== false"
-                :key="index"
-                class="FormItemComponent-item"
-                :style="setDiv(item)"
-        >
-            <component
-                    :is="item.component"
-                    :ref="'component_'+index"
-                    :index="index"
-                    :items="item.item"
-                    @inputChange="inputChange"
+      <div
+        v-for="(item,index) in dataColRol"
+        v-show="item.show !== false"
+        :key="index"
+        class="FormItemComponent-item"
+        :style="setDiv(item)"
+      >
+        <component
+          :is="item.component"
+          :ref="'component_'+index"
+          :index="index"
+          :items="item.item"
+          @inputChange="inputChange"
         />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -193,7 +194,7 @@
             } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
               obj[current.item.field] = undefined;
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
-              if ( current.item.props.Selected.length > 0) {
+              if (current.item.props.Selected.length > 0) {
                 obj[current.item.field] = current.item.props.Selected;
               } else {
                 obj[current.item.inputname] = current.item.value;
