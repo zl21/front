@@ -5,3 +5,4 @@ node_modules
 # files
 package-lock.json
 __test_script__/
+dist/
