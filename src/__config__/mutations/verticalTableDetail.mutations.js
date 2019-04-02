@@ -1,7 +1,7 @@
 export default {
   updateObjectForMainTableForm({ mainFormInfo }, data) { // 更新主表面板数据
-    mainFormInfo.formData = data.addcolums || [];
-    mainFormInfo.isShow = data.addcolums && data.addcolums.length > 0;
+    mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;    
+    mainFormInfo.formData.data = data.addcolums || [];
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
