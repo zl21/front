@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="verticalTableDetail">
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.buttonsTabcmd"
       :tabwebact="mainFormInfo.buttonsData.buttonsTabwebact"
@@ -97,4 +97,8 @@
 </script>
 
 <style scoped>
+  .verticalTableDetail {
+    flex: 1;
+    overflow-y: auto;
+  }
 </style>

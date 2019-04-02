@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dispalyArea">
     <!-- 模块页签组件 -->
     <TabLists />
     <keep-alive>
@@ -10,7 +10,7 @@
 
 <script>
   import TabLists from './TabLists';
-  
+
   export default {
     name: 'ContentDisplayArea',
     components: {
@@ -20,5 +20,9 @@
 </script>
 
 <style scoped>
-
+  .dispalyArea {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 </style>
