@@ -10,6 +10,7 @@
       type="PanelForm"
     />
     <TabPanels
+      v-if="tabPanels.length >0"
       type="line"
       :tab-margin-left="20"
       is-keep-alive
