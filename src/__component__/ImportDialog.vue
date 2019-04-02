@@ -19,10 +19,10 @@
           v-if="mode=='import'"
           class="import-panel"
         >
-          <div class="el-upload__tip">
+          <div>
             {{ ChineseDictionary.IMPORTTITLE }}<a @click.stop="downloadTemplate">{{ ChineseDictionary.DOWNTEMPLATE }}</a>
           </div>
-          <div class="upload">
+          <div>
             <input
               id=""
               type="file"
@@ -34,8 +34,7 @@
             <label for="选择文件上传" />
             <div
               slot="tip"
-              class="upload-tip"
-            >
+>
               {{ ChineseDictionary.FILEMAX }}{{ fileSize }}
             </div>
           </div>
@@ -43,14 +42,13 @@
           <transition name="fade">
             <span
               v-if="loading"
-              class="uploadmessage"
             >数据正在导入中，请稍候
             </span>
           </transition>
         </div>
       </div>
       <div slot="footer">
-        <div class="button-panel">
+        <div>
           <Button
             v-if="mode=='import'"
             :disabled="loading"
@@ -202,7 +200,6 @@
     methods: {
       fileChange(e) {
         this.files = e.target.files;
-        console.log(this.files);
       },
       // 发送请求, 获取上传参数
       axiosSetting() {

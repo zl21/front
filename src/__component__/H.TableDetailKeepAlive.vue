@@ -29,7 +29,7 @@
       generateComponent() {
         const { tableName, tableId, itemId } = this.$route.params;
         const componentName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-        if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
+        if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, HorizontalTableDetail)));
         }
         this.currentTable = componentName;

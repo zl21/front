@@ -8,13 +8,12 @@ export default () => ({
       tableName: null,
       tableId: null,
       itemId: null,
-      buttonsData: {
-        buttonsTabcmd: {}, // 主表按钮数据
-        buttonsTabwebact: {}, // 主表动作定义按钮数据
+      buttonsData: { // 主表按钮数据
+        data: {}
       },
       formData: {
         isShow: false,
-        data: [] // 主表面板数据
+        data: {} // 主表面板数据
       }
     },
     tabPanels: [], // tab数据

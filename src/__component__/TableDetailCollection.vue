@@ -36,12 +36,11 @@
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
-              @on-search="tableSearch"
-              @on-enter="tableSearch"
+              @on-search="getTabelList"
             >
             <Button
               slot="prepend"
-              @click="tableSearch"
+              @click="getTabelList"
             >
               搜索
             </Button>
@@ -50,7 +49,6 @@
         </div>
       </div>
       <div class="table-outside">
-        {{ totalData }}
         <Table
           ref="selection"
           :height="tableHeight"
@@ -88,7 +86,7 @@
         searchInfo: '', // 输入框搜索内容
         searchCondition: null, // 查询条件
         pageInfo: {
-          currentPageIndex: this.dataSource.start || 0, // 当前页码
+          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
           pageSize: this.dataSource.defaultrange || 10 // 显示条数
         },
         DISPLAY_ENUM: {
@@ -246,15 +244,9 @@
       },
       collectionCellRender(cellData, index) {
         // 给cell赋render
-        if (!cellData.ismodify || !this.readonly) {
+        if (!cellData.ismodify || this.readonly) {
           // 不可编辑状态 显示label
-          return (h, params) => h('div', [
-            h('span', {
-              domProps: {
-                innerHTML: params.row[cellData.colname]
-              }
-            })
-          ]);
+          return null;
         }
         if (
           typeof 
@@ -329,28 +321,29 @@
           return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
         } if (cellData.type === 'NUMBER') {
           return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
-        } if (cellData.type === 'STRING' && cellData.isuppercase) {
+        } if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
           return Capital;
         }
         return null;
       },
-      getTableListForRefTable() {
-      // 获取列表数据
-      },
-      tableSearch() {
+      getTabelList() {
         // 搜索事件
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
+        const { itemId } = this.$route.params;
+        // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
-          startindex: 0,
-          range: 10,
+          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+          range: this.pageInfo.pageSize,
+          table: this.tabPanel[this.tabCurrentIndex].tablename,
+          objid: itemId,
+          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
           fixedcolumns
         };
-        // this.getTableListForRefTable();
-      
-        this.$emit('tableSearch', params);
+        this.getTableListForRefTable(params);
+        this.searchInfo = '';
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调
@@ -358,7 +351,7 @@
           return;
         }
         this.pageInfo.currentPageIndex = index;
-        this.getTableListForRefTable();
+        this.getTabelList();
       },
       pageSizeChangeEvent(index) {
         // 分页 切换每页条数时的回调
@@ -366,7 +359,7 @@
           return;
         }
         this.pageInfo.pageSize = index;
-        this.getTableListForRefTable();
+        this.getTabelList();
       },
       // 深拷贝
       deepClone(source) {

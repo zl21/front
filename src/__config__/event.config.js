@@ -7,7 +7,9 @@ import {
 
 export const hideMenu = () => {
   document.body.addEventListener('click', () => {
-    store.commit('global/hideMenu');
+    if (store.state.global.primaryMenuIndex !== -1) {
+      store.commit('global/hideMenu');
+    }
   });
 };
 

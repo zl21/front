@@ -65,6 +65,10 @@ export default () => ({
     }),
   },
   beforeDestroy() {
-    store.unregisterModule(this.moduleComponentName);
+    try {
+      store.unregisterModule(this.moduleComponentName);
+    } catch (e) {
+      console.log(e);
+    }
   }
 });

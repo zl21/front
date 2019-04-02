@@ -12,17 +12,18 @@ export default () => {
   let keepAliveModuleName = '';
   let { itemId } = routerparams;
   const { tableName, tableId } = routerparams;
+  if (itemId === -1) {
+    itemId = 'New';
+  }
   // Condition One: 路由到标准列表界面名称
   if (/\/SYSTEM\/TABLE\//.test(routerPath)) {
     keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
-  if (itemId === -1) {
-    itemId = 'New';
-    // Condition Two: 路由到上下结构（纵向布局）的列表明细界面名称
-    if (/\/SYSTEM\/TABLE_DETAIL\/V\//.test(routerPath)) {
-      keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-    }
+  // Condition Two: 路由到上下结构（纵向布局）的列表明细界面名称
+  if (/\/SYSTEM\/TABLE_DETAIL\/V\//.test(routerPath)) {
+    keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
   }
+  
   
   // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面名称
   if (/\/SYSTEM\/TABLE_DETAIL\/H\//.test(routerPath)) {

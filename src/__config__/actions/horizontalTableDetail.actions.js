@@ -44,14 +44,13 @@ export default {
     });
   }, // 获取子表按钮
   getObjectForMainTableForm({ commit }, { table, objid }) {
-    console.log(111);
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     network.post('/p/cs/getObject', urlSearchParams({
       table,
       objid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.addcolums;
+        const formData = res.data.data;
         commit('updatePanelData', formData);
       }
     });
@@ -63,7 +62,7 @@ export default {
       inlinemode: 'Y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.inpubobj;
+        const formData = res.data.data;
         commit('updateFormData', formData);
       }
     });
@@ -76,7 +75,7 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.addcolums;
+        const formData = res.data.data;
         commit('updatePanelData', formData);
       }
     });

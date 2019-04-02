@@ -82,7 +82,6 @@ export default (router) => {
         store.registerModule(keepAliveModuleName, horizontalTableDetailModule());
       }
     }
-   
     next();
   });
 };
