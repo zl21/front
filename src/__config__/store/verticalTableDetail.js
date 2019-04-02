@@ -13,7 +13,7 @@ export default () => ({
       },
       formData: {
         isShow: false,
-        data: [] // 主表面板数据
+        data: {} // 主表面板数据
       }
     },
     tabPanels: [], // tab数据

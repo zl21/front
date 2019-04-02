@@ -14,11 +14,11 @@ export default {
         },
         formData: {
           isShow: false,
-          data: []
+          data: {}
         },
         panelData: {
           isShow: true,
-          data: []
+          data: {}
         },
         tableData: {
           isShow: false,
