@@ -489,7 +489,7 @@
     .label-tip{
       color: red;
       font-size: 16px;
-      vertical-align: '-webkit-baseline-middle';
+      vertical-align: middle;
       position: relative;
       top: -1px;
       right: 3px;
