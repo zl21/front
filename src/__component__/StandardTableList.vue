@@ -1,6 +1,7 @@
 <!--suppress ALL -->
 <template>
   <div class="StandardTableListRootDiv">
+    <ImageComponent />
     <ButtonGroup
       :data-array="buttons.dataArray"
       @buttonClick="buttonClick"
@@ -68,6 +69,8 @@
   import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
+  import ImageComponent from './Image';
+
   import {
     fkQueryList,
     fkFuzzyquerybyak,
@@ -76,7 +79,8 @@
   } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
-  import ModuleName from '../__utils__/getModuleName.js';
+  // import ModuleName from '../__utils__/getModuleName.js';
+
 
   const importCustom = file => require(`../__component__/${file}.vue`).default;
 
@@ -87,7 +91,8 @@
       AgTable,
       FormItemComponent,
       ImportDialog,
-      ErrorModal
+      ErrorModal,
+      ImageComponent
     },
     data() {
       return {
@@ -1217,114 +1222,101 @@
         //   }
         // });
         // this.buttons.selectIdArr = arr;
-        if (value === true) {
-          this.$nextTick(() => {
-            if (this.buttons.selectIdArr.length > 0) {
-              if (
-                this.buttons.errorData.content.indexOf(
-                  this.buttonMap.CMD_UNSUBMIT.name
-                ) >= 0
-              ) {
-                this.batchUnSubmit();
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              }
-              if (
-                this.buttons.errorData.content.indexOf(
-                  this.buttonMap.CMD_SUBMIT.name
-                ) >= 0
-              ) {
-                this.batchSubmit();
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              }
-              if (
-                this.buttons.errorData.content.indexOf(
-                  this.buttonMap.CMD_DELETE.name
-                ) >= 0
-              ) {
-                this.deleteTableList(); // 按钮删除动作
-                return;
-              }
-              if (
-                this.buttons.errorData.content.indexOf(
-                  this.buttonMap.CMD_VOID.name
-                ) >= 0
-              ) {
-                this.batchVoid(); // 按钮作废动作
-                this.selectIdArr = [];
-                this.selectArr = [];
-                return;
-              }
+       
+        this.$nextTick(() => {
+          if (this.buttons.selectIdArr.length > 0) {
+            if (
+              this.buttons.errorData.content.indexOf(
+                this.buttonMap.CMD_UNSUBMIT.name
+              ) >= 0
+            ) {
+              this.batchUnSubmit();
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
             }
-            if (this.buttons.activeTabAction) {
-              if (this.buttons.activeTabAction.vuedisplay === 'slient') {
-                // slient静默跳转页面类型按钮
-                if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
-                    if (
-                      JSON.parse(this.buttons.activeTabAction.confirm).isradio
-                    ) {
-                      // 单选
-                      if (this.buttons.selectIdArr.length === 1) {
-                        this.webActionSlient(this.buttons.activeTabAction); // 静默执行
-                      }
-                    } else if (this.buttons.selectIdArr.length > 0) {
-                      this.webActionSlient(this.buttons.activeTabAction);
+            if (
+              this.buttons.errorData.content.indexOf(
+                this.buttonMap.CMD_SUBMIT.name
+              ) >= 0
+            ) {
+              this.batchSubmit();
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
+            }
+            if (
+              this.buttons.errorData.content.indexOf(
+                this.buttonMap.CMD_DELETE.name
+              ) >= 0
+            ) {
+              this.deleteTableList(); // 按钮删除动作
+              return;
+            }
+            if (
+              this.buttons.errorData.content.indexOf(
+                this.buttonMap.CMD_VOID.name
+              ) >= 0
+            ) {
+              this.batchVoid(); // 按钮作废动作
+              this.selectIdArr = [];
+              this.selectArr = [];
+              return;
+            }
+          }
+          if (this.buttons.activeTabAction) {
+            if (this.buttons.activeTabAction.vuedisplay === 'slient') {
+              // slient静默跳转页面类型按钮
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (
+                    JSON.parse(this.buttons.activeTabAction.confirm).isradio
+                  ) {
+                    // 单选
+                    if (this.buttons.selectIdArr.length === 1) {
+                      this.webActionSlient(this.buttons.activeTabAction); // 静默执行
                     }
-                  } else {
+                  } else if (this.buttons.selectIdArr.length > 0) {
                     this.webActionSlient(this.buttons.activeTabAction);
                   }
                 } else {
                   this.webActionSlient(this.buttons.activeTabAction);
                 }
-                return;
+              } else {
+                this.webActionSlient(this.buttons.activeTabAction);
               }
-              if (this.buttons.activeTabAction.vuedisplay === 'navbar') {
-                if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
-                    if (
-                      JSON.parse(this.buttons.activeTabAction.confirm).isradio
-                    ) {
-                      // 单选
-                      if (this.buttons.selectIdArr.length === 1) {
-                        this.objTabActionNavbar(this.buttons.activeTabAction); // 新标签跳转
-                      }
-                    } else if (this.buttons.selectIdArr.length > 0) {
-                      this.objTabActionNavbar(this.buttons.activeTabAction);
+              return;
+            }
+            if (this.buttons.activeTabAction.vuedisplay === 'navbar') {
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (
+                    JSON.parse(this.buttons.activeTabAction.confirm).isradio
+                  ) {
+                    // 单选
+                    if (this.buttons.selectIdArr.length === 1) {
+                      this.objTabActionNavbar(this.buttons.activeTabAction); // 新标签跳转
                     }
-                  } else {
+                  } else if (this.buttons.selectIdArr.length > 0) {
                     this.objTabActionNavbar(this.buttons.activeTabAction);
                   }
                 } else {
                   this.objTabActionNavbar(this.buttons.activeTabAction);
                 }
-                return;
+              } else {
+                this.objTabActionNavbar(this.buttons.activeTabAction);
               }
-              if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
-                // 弹窗动作定义提示后操作
-                if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
-                  if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
-                    if (
-                      JSON.parse(this.buttons.activeTabAction.confirm).isradio
-                    ) {
-                      // 单选
-                      if (this.buttons.selectIdArr.length === 1) {
-                        const obj = this.buttons.activeTabAction;
-                        this.setActionDialog(obj);
-
-                        const componentName = obj.action
-                          .split('?')[0]
-                          .replace(/\//g, '_');
-                        Vue.component(
-                          componentName,
-                          Vue.extend(importCustom(obj.action.split('?')[0]))
-                        );
-                        this.dialogComponent = componentName;
-                      }
-                    } else if (this.buttons.selectIdArr.length > 0) {
+              return;
+            }
+            if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
+              // 弹窗动作定义提示后操作
+              if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
+                  if (
+                    JSON.parse(this.buttons.activeTabAction.confirm).isradio
+                  ) {
+                    // 单选
+                    if (this.buttons.selectIdArr.length === 1) {
                       const obj = this.buttons.activeTabAction;
                       this.setActionDialog(obj);
 
@@ -1336,25 +1328,8 @@
                         Vue.extend(importCustom(obj.action.split('?')[0]))
                       );
                       this.dialogComponent = componentName;
-                    } else {
-                      const obj = this.buttons.activeTabAction;
-                      this.actionModal = true;
-                      const componentName = obj.action
-                        .split('?')[0]
-                        .replace(/\//g, '_');
-                      console.log('☁️', importCustom(obj.action));
-                      console.log('☁️', importCustom(obj.action));
-
-                      Vue.component(
-                        componentName,
-                        Vue.extend(importCustom(obj.action))
-                      );
-
-                      this.dialogComponent = componentName;
-                      this.componentId = componentName;
-                      this.webActionSlient(this.buttons.activeTabAction);
                     }
-                  } else {
+                  } else if (this.buttons.selectIdArr.length > 0) {
                     const obj = this.buttons.activeTabAction;
                     this.setActionDialog(obj);
 
@@ -1366,6 +1341,23 @@
                       Vue.extend(importCustom(obj.action.split('?')[0]))
                     );
                     this.dialogComponent = componentName;
+                  } else {
+                    const obj = this.buttons.activeTabAction;
+                    this.actionModal = true;
+                    const componentName = obj.action
+                      .split('?')[0]
+                      .replace(/\//g, '_');
+                    console.log('☁️', importCustom(obj.action));
+                    console.log('☁️', importCustom(obj.action));
+
+                    Vue.component(
+                      componentName,
+                      Vue.extend(importCustom(obj.action))
+                    );
+
+                    this.dialogComponent = componentName;
+                    this.componentId = componentName;
+                    this.webActionSlient(this.buttons.activeTabAction);
                   }
                 } else {
                   const obj = this.buttons.activeTabAction;
@@ -1380,31 +1372,41 @@
                   );
                   this.dialogComponent = componentName;
                 }
+              } else {
+                const obj = this.buttons.activeTabAction;
+                this.setActionDialog(obj);
+
+                const componentName = obj.action
+                  .split('?')[0]
+                  .replace(/\//g, '_');
+                Vue.component(
+                  componentName,
+                  Vue.extend(importCustom(obj.action.split('?')[0]))
+                );
+                this.dialogComponent = componentName;
               }
             }
-            if (this.buttons.errorData.content.indexOf('批量更新') >= 0) {
-              this.dataConShow.dataConShow = true;
-              this.dataConShow.title = this.$store.state.activeTab.label;
-              this.dataConShow.tabConfig = {
-                tabledesc: this.$store.state.activeTab.label,
-                tablename: this.param.tablename,
-                tableid: this.formObj_tableid,
-                tabrelation: '1:1',
-                objid: this.selectIdArr
-              };
-              this.dataConShow.fixedcolumns = this.getJson();
-              this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
-            } else if (
-              this.buttons.errorData.content.indexOf('操作会执行全量导出') >= 0
-            ) {
-              this.batchExport();
-            } else if (this.buttons.selectSysment.length > 0) {
-              this.searchData('backfresh');
-            }
-          });
-        } else {
-          this.errorDialogClose;
-        }
+          }
+          if (this.buttons.errorData.content.indexOf('批量更新') >= 0) {
+            this.dataConShow.dataConShow = true;
+            this.dataConShow.title = this.$store.state.activeTab.label;
+            this.dataConShow.tabConfig = {
+              tabledesc: this.$store.state.activeTab.label,
+              tablename: this.param.tablename,
+              tableid: this.formObj_tableid,
+              tabrelation: '1:1',
+              objid: this.selectIdArr
+            };
+            this.dataConShow.fixedcolumns = this.getJson();
+            this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
+          } else if (
+            this.buttons.errorData.content.indexOf('操作会执行全量导出') >= 0
+          ) {
+            this.batchExport();
+          } else if (this.buttons.selectSysment.length > 0) {
+            this.searchData('backfresh');
+          }
+        });
       },
       errorDialogClose() {
         const errorDialogvalue = false;

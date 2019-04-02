@@ -27,17 +27,17 @@
       generateComponent() {
         const { tableName, tableId } = this.$route.params;
         const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-        const customPage = this.$route.fullPath.split('/')[4];
+        // const customPage = this.$route.fullPath.split('/')[4];
         if (this.$children.map(d => d.$vnode.data.ref).indexOf(componentName) === -1) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
         }
-        CustomPages.forEach((b) => {
-          if (b.filePath === customPage) {
-            const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${b.name}`;
-            this.currentTable = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}.${b.name}`; 
-            Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] },)));
-          }
-        });
+        // CustomPages.forEach((b) => {
+        //   if (b.filePath === customPage) {
+        //     const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${b.name}`;
+        //     this.currentTable = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}.${b.name}`; 
+        //     Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] },)));
+        //   }
+        // });
         this.currentTable = componentName;
       } 
     },
