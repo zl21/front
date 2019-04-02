@@ -1,7 +1,7 @@
 export default {
   updateObjectForMainTableForm({ mainFormInfo }, data) { // 更新主表面板数据
-    mainFormInfo.formData = data.addcolums || [];
-    mainFormInfo.isShow = data.addcolums && data.addcolums.length > 0;
+    mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;    
+    mainFormInfo.formData.data = data.addcolums || [];
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
@@ -32,14 +32,12 @@ export default {
   },
   updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    mainFormInfo.buttonsData.buttonsTabcmd = data.tabcmd;
-    mainFormInfo.buttonsData.buttonsTabwebact = data.tabwebact;
+    mainFormInfo.buttonsData.data = data;
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.buttonsData.isShow = false; /** warn: 导出好像必有 */ 
-    componentAttribute.buttonsData.buttonsTabcmd = data.tabcmd;
-    componentAttribute.buttonsData.buttonsTabwebact = data.tabwebact;
+    componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
