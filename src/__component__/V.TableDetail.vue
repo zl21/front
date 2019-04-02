@@ -6,11 +6,13 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      class="panelForm"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
     />
     <TabPanels
       v-if="tabPanels.length >0"
+      class="tabPanel"
       type="line"
       :tab-margin-left="20"
       is-keep-alive
@@ -98,9 +100,15 @@
   };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .verticalTableDetail {
     flex: 1;
     overflow-y: auto;
+    .panelForm {
+      margin: 0 20px;
+    }
+    .tabPanel {
+      margin: 10px 20px;
+    }
   }
 </style>
