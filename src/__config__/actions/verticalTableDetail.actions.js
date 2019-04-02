@@ -50,7 +50,7 @@ export default {
             }
             // 获取第一个tab的子表列表数据
             if (resData.reftabs[0].tabrelation === '1:m') {
-              if (this._actions[`${getComponentName()}/getTableListForRefTable`] && this._actions[`${getComponentName()}/getTableListForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getTableListForRefTable`][0] === 'function') {
+              if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                 const tableParam = {
                   table: firstReftab.tablename,
                   objid,
@@ -59,7 +59,7 @@ export default {
                   // range:
                   fixedcolumns: {}
                 };
-                this._actions[`${getComponentName()}/getTableListForRefTable`][0](tableParam);
+                this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
               }
             } else if (resData.reftabs[0].tabrelation === '1:1') {
               // 获取子表面板数据
@@ -97,7 +97,7 @@ export default {
       }
     });
   },
-  getTableListForRefTable({ commit }, { // 获取子表列表数据
+  getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
     table, objid, refcolid, startindex, range, fixedcolumns // fixedcolumns - objectIds
   }) {
     network.post('/p/cs/objectTableItem', urlSearchParams({

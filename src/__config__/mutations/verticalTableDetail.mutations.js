@@ -11,19 +11,19 @@ export default {
       obj.componentAttribute = {
         buttonsData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         formData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         panelData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         tableData: {
           isShow: false,
-          data: {}
+          data: ({})
         }
       };
       arr.push(obj);
@@ -36,7 +36,7 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
-    componentAttribute.buttonsData.isShow = false; /** warn: 导出好像必有 */
+    componentAttribute.buttonsData.isShow = false;
     componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据

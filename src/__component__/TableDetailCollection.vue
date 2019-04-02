@@ -2,16 +2,26 @@
   <div class="TableDetailCollection">
     <div class="detail-collection">
       <div class="detail-top">
-        <Page
-          :total="dataSource.totalRowCount"
-          :page-size-opts="dataSource.selectrange"
-          size="small"
-          show-elevator
-          show-sizer
-          show-total
-          @on-change="pageChangeEvent"
-          @on-page-size-change="pageSizeChangeEvent"
-        />
+        <div class="page-buttons">
+          <Page
+            :total="dataSource.totalRowCount"
+            :page-size-opts="dataSource.selectrange"
+            size="small"
+            show-elevator
+            show-sizer
+            show-total
+            @on-change="pageChangeEvent"
+            @on-page-size-change="pageSizeChangeEvent"
+          />
+          <ul class="detail-buttons">
+            <a
+              v-for="item in buttonGroups"
+              :key="item.name"
+            >
+              【{{ item.name }}】
+            </a>
+          </ul>
+        </div>
         <div
           v-if="filterList.length > 0"
           class="detail-search"
@@ -57,14 +67,20 @@
           :data="data"
           :total-data="totalData"
         />
+        <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
   import { Capital } from '../constants/regExp';
+  import {
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
+  } from '../constants/fkHttpRequest';
+  import buttonmap from '../assets/js/buttonmap';
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -85,15 +101,22 @@
         // data: [],
         searchInfo: '', // 输入框搜索内容
         searchCondition: null, // 查询条件
-        pageInfo: {
+        pageInfo: { // 列表的分页
           currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
           pageSize: this.dataSource.defaultrange || 10 // 显示条数
         },
+        fkData: ({ totalRowCount: 0 }), // // 外键下拉选择（drp mrp） 的数据
+        fkDropPageInfo: { // 外键下拉选择（drp mrp） 的分页
+          currentPageIndex: 1, // 当前页码
+          pageSize: 10 // 显示条数
+        },
+        fkAutoData: [], // 外键关联下拉 模糊搜索数据
         DISPLAY_ENUM: {
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
-          mop: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender }
+          drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender }
           // OBJ_DATENUMBER: ''
           // OBJ_DATE:
           // OBJ_TIME:
@@ -119,7 +142,7 @@
       },
       type: {
         type: String,
-        default: pageType.vertical
+        default: pageType.Vertical
       },
     },
     computed: {
@@ -146,7 +169,7 @@
       },
       totalData() {
         const total = [];
-        if (this.type === pageType.Horizontal) {
+        if (this.isHorizontal) {
           if (this.dataSource.isFullRangeSubTotalEnabled) {
             // 总计
             const cell = {
@@ -179,6 +202,34 @@
           }
         }
         return total;
+      },
+      isHorizontal() { // 是否是左右结构
+        return this.type === pageType.Horizontal;
+      },
+      buttonGroups() { // 按钮组的数据组合
+        const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        const buttonGroupShow = [];
+        if (tabcmd.cmds) {
+          tabcmd.cmds.map((item, index) => {
+            if (tabcmd.prem[index]) {
+              const type = item.split('action');
+              const str = `CMD_${type[1].toUpperCase()}`;
+              if (str !== 'CMD_MODIFY') { // 保存不显示
+                let buttonConfigInfo = buttonmap[str];
+                if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                  buttonConfigInfo = buttonmap.CMD_REF_DELETE;
+                }
+                buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                buttonGroupShow.push(
+                  buttonConfigInfo
+                );
+              }
+            }
+            return item;
+          });
+        }
+        buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        return buttonGroupShow;
       }
     
     },
@@ -248,13 +299,10 @@
           // 不可编辑状态 显示label
           return null;
         }
-        if (
-          typeof 
-            this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag) === 'function'
-        ) {
-          return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
-        }
-        return null;
+        if (cellData.isfk && cellData.fkdisplay) {
+          return this.DISPLAY_ENUM[cellData.fkdisplay].event(cellData, this.DISPLAY_ENUM[cellData.fkdisplay].tag);
+        } 
+        return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
       inputRender(cellData, tag) {
         // 输入框
@@ -291,9 +339,7 @@
       selectRender(cellData, tag) {
         // 下拉框
         return (h, params) => h('div', [
-          h(
-            tag,
-            {
+          h(tag, {
               style: {
                 width: '100px'
               },
@@ -311,8 +357,51 @@
                 value: item.limitval,
                 label: item.limitdesc
               }
-            }))
-          )
+            })))
+        ]);
+      },
+      dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            props: {
+              defaultSelected: [{ ID: this.dataSource.row[params.index][cellData.colname].colid, Label: params.row[cellData.colname] }], // TODO
+              single: cellData.fkdisplay === 'drp',
+              pageSize: this.fkDropPageInfo.pageSize,
+              totalRowCount: this.fkData.totalRowCount,
+              data: this.fkData,
+              transfer: true,
+              AutoData: this.fkAutoData,
+              hidecolumns: ['id', 'value']
+            },
+            on: {
+              'on-popper-show': () => {
+                this.fkDropPageInfo.currentPageIndex = 1;
+                this.getFKList();
+                // debugger;
+              },
+              'on-page-change': (value) => {
+                this.fkDropPageInfo.currentPageIndex = value;
+                this.getFKList();
+              },
+              'on-input-value-change': (value) => {
+                fkFuzzyquerybyak({
+                  
+                  searchObject: {
+                    ak: value,
+                    colid: this.dataSource.row[params.index][cellData.colname].colid,  
+                    fixedcolumns: {}
+                  },
+                  success: (res) => {
+                    this.fkAutoData = res.data.data;
+                  }
+                });
+              }
+              
+            }
+          })
         ]);
       },
       inputRegx(cellData) {
@@ -342,8 +431,27 @@
           refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
           fixedcolumns
         };
-        this.getTableListForRefTable(params);
+        this.getObjectTableItemForTableData(params);
         this.searchInfo = '';
+      },
+      getFKList() {
+        // 获取外键关联的数据
+        this.fkData.totalRowCount = 0;
+        this.fkData = ({});
+        const searchdata = {
+          isdroplistsearch: true, 
+          refcolid: 165316, // TODO
+          fixedcolumns: { PS_C_BRAND_ID: '=7' }, // TODO
+          startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize, 
+          range: this.fkDropPageInfo.pageSize
+        };
+        fkQueryList({
+          searchObject: searchdata,
+          success: (res) => {
+            const fkData = res.data.data;
+            this.fkData = fkData;
+          }
+        });
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调
@@ -394,6 +502,16 @@
       margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
+      .page-buttons {
+        display: flex;
+      }
+      .detail-buttons {
+        margin-left: 10px;
+        a {
+          line-height: 26px;
+          vertical-align: middle;
+        }
+      }
       .detail-search {
         display: inline-block;
         display: flex;

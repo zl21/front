@@ -12,7 +12,7 @@
     <TabPanels
       type="line"
       :tab-margin-left="20"
-      isKeepAlive
+      is-keep-alive
       :type="'singleCard'"
       :tab-panels="tabPanels"
     />
@@ -84,9 +84,10 @@
             inlinemode: refTab.tabinlinemode
           };
           this.getFormDataForRefTable(formParam);
+          this.getObjectTabForRefTable({ table: refTab.tablename, itemId });
         }
         if (refTab.tabrelation === '1:m') {
-          this.getTableListForRefTable({
+          this.getObjectTableItemForTableData({
             table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }
           });
         } else if (refTab.tabrelation === '1:1') {

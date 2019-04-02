@@ -25,15 +25,16 @@ export default () => ({
       [
         'getObjectForMainTableForm',
         'getObjectTabForMainTable',
-        'getTableListForRefTable',
-        'getFormDataForRefTable'
+        'getObjectTableItemForTableData',
+        'getFormDataForRefTable',
+        'getObjectTabForRefTable'
       ]),
     ...mapMutations(getComponentName(),
       [
         'updateTabCurrentIndex'
       ]),
   },
-  // beforeDestroy() {
-  //   store.unregisterModule(this.moduleComponentName);
-  // }
+  beforeDestroy() {
+    store.unregisterModule(this.moduleComponentName);
+  }
 });

@@ -82,6 +82,12 @@ const buttonmap = {
     defbutton: 'X',
     action: '',
   },
+  CMD_REF_DELETE: {
+    name: '删除明细',
+    icon: '',
+    defbutton: 'X',
+    action: '',
+  },
   CMD_SUBMIT: {
     name: '提交',
     icon: '',
