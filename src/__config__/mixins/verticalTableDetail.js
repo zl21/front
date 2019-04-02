@@ -16,6 +16,7 @@ export default () => ({
     ...mapState(getComponentName(), {
       mainFormInfo: ({ mainFormInfo }) => mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
+      tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
     }),
     
   },
