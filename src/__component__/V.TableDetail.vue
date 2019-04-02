@@ -1,9 +1,18 @@
 <template>
   <div>
-
+    <single-object-buttons
+      :tabcmd="mainFormInfo.buttonsData.buttonsTabcmd"
+      :tabwebact="mainFormInfo.buttonsData.buttonsTabwebact"
+    />
+    <composite-form
+      v-if="mainFormInfo.formData.isShow"
+      :default-data="mainFormInfo.formData.data"
+      type="PanelForm"
+    />
     <TabPanels
       type="line"
       :tab-margin-left="20"
+      isKeepAlive
       :type="'singleCard'"
       :tab-panels="tabPanels"
     />
@@ -19,8 +28,10 @@
   import { mapActions, mapState } from 'vuex';
 
   // import TableDetailCollection from './TableDetailCollection';
+  // import router from '../__config__/router.config';
   import tabComponent from './SingleObjectTabComponent';
-  import router from '../__config__/router.config';
+  import singleObjectButtons from './SingleObjectButtons';
+  import compositeForm from './CompositeForm';
 
 
   export default {
@@ -30,7 +41,7 @@
       }),
       tabPanels() {
         const arr = [];
-        
+
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
           obj.componentAttribute.type = 'vertical';
@@ -40,6 +51,10 @@
         });
         return arr;
       }
+    },
+    components: {
+      singleObjectButtons,
+      compositeForm
     },
     mounted() {
     },
@@ -77,21 +92,6 @@
         } else if (refTab.tabrelation === '1:1') {
         }
       },
-
-      // 列表查询
-      getRefTableSearchList({ startindex, range, fixedcolumns }) {
-        const { itemId } = this.$route.params;
-        // table, objid, refcolid, startindex, range, fixedcolumns
-        const params = {
-          startindex,
-          range,
-          fixedcolumns,
-          // table: this.activeRefFormInfo.refInfo.tablename,
-          objid: itemId,
-          // refcolid: this.activeRefFormInfo.refInfo.refcolid,
-        };
-        this.getTableListForRefTable(params);
-      }
     }
   };
 </script>

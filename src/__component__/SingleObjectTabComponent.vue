@@ -1,25 +1,29 @@
 <template>
-  <div style="overflow: auto">
+  <div class="tabComponent">
     <component
       :is="'SingleObjectButtons'"
       v-if="buttonsData.isShow"
+      class="objectButtons"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
     />
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      class="form"
       :default-data="formData.data"
     />
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"
     />
     <component
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
+      class="objectTable"
       :data-source="tableData.data"
       :type="type"
       :readonly="buttonsData.data.objreadonly"
@@ -93,7 +97,19 @@
 </script>
 
 <style lang="less">
-  .panelForm{
-    margin-bottom: 10px;
+  .tabComponent{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .objectButtons {
+    }
+    .form {
+    }
+    .formPanel {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .objectTable {
+    }
   }
 </style>
