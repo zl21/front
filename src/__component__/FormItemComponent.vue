@@ -72,6 +72,8 @@
           temp.item.props = this.formItemLists[index].item.props;
           return temp;
         });
+        // 兼容 tab 切换
+        this.newFormItemLists = arr;
         return arr;
       },
       // 计算属性的 getter
@@ -136,7 +138,6 @@
     mounted() {
     },
     created() {
-
     },
     watch: {
       FormItemLists: {

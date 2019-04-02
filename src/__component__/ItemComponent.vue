@@ -1,6 +1,7 @@
 <template>
   <div class="ItemComponentRoot">
     <span class="itemLabel">
+      <span v-if="_items.required" class="label-tip">*</span>
       {{ _items.title }}:
     </span>
     <div class="itemComponent">
@@ -484,6 +485,14 @@
     .itemComponent{
       flex: 1;
       overflow: hidden;
+    }
+    .label-tip{
+      color: red;
+      font-size: 16px;
+      vertical-align: '-webkit-baseline-middle';
+      position: relative;
+      top: -1px;
+      right: 3px;
     }
   }
 </style>
