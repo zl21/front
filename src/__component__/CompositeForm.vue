@@ -5,20 +5,22 @@
       <Collapse
         v-for="(item,index) in computdefaultData"
         :key="index"
-        v-model="item.hrdisplay"
+        v-model="item.hrdisplay "
         active-key="index"
         @on-change="CollapseClose(index,item.hrdisplay)"
       >
         <Panel
           :key="index"
           title-type="center"
-          :name="item.hrdisplay"
+          :name="item.hrdisplay ==='expand' ? 'expand' :'false'"
         >
           {{ item.parentdesc }}
           <div slot="content">
             <FormItemComponent
               :form-item-lists="item.childs"
-              :default-column="computdefaultData.objviewcol"
+              :formIndex = "index"
+              :type = "type"
+              :default-column="defaultData.objviewcol"
             />
           </div>
         </Panel>
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-  import FormItemComponent from './FormItemComponent';
+  import FormItemComponent from './ComFormItemComponent';
   import ItemComponent from './ItemComponent';
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
@@ -67,7 +69,6 @@
       computdefaultData() {
         let items = [];
         // 有面板的数据
-        console.log(Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj'));
         if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
           items = this.defaultData.addcolums.reduce((array, current) => {
             let tem = [];
@@ -87,7 +88,6 @@
             return array;
           }, []);
           this.newdefaultData = items;
-          this.newdefaultData.objviewcol = this.defaultData.objviewcol;
         } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
           // 表单的数据
           items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
@@ -166,7 +166,7 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res, itemIndex);
+                  this.freshDropDownSelectFilterData(res);
                 }
               });
             },
@@ -179,7 +179,7 @@
                 },
                 success: (res) => {
                   console.log('000');
-                  this.freshDropDownSelectFilterAutoData(res, itemIndex);
+                  this.freshDropDownSelectFilterAutoData(res);
                 }
               });
             },
@@ -192,7 +192,7 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res, itemIndex);
+                  this.freshDropDownSelectFilterData(res);
                 }
               });
             }
@@ -316,7 +316,7 @@
           item.props.type = 'date';
         }
 
-        
+
         if (current.display === 'OBJ_FK') {
           switch (current.fkobj.searchmodel) {
           case 'drp':
@@ -363,18 +363,18 @@
         }
       },
       freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
-        this.formItemsLists[index].item.props.data = res.data.data;
-        this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
-        this.formItemsLists = this.formItemsLists.concat([]);
+        // this.formItemsLists[index].item.props.data = res.data.data;
+        // this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
+        // this.formItemsLists = this.formItemsLists.concat([]);
       },
       freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
-        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
-        this.formItemsLists[index].item.props.AutoData = res.data.data;
-        this.formItemsLists = this.formItemsLists.concat([]);
+        // this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
+        // this.formItemsLists[index].item.props.AutoData = res.data.data;
+        // this.formItemsLists = this.formItemsLists.concat([]);
       },
       lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
-        this.formItemsLists[index].item.value = errorValue.toUpperCase();
-        this.formItemsLists = this.formItemsLists.concat([]);
+        // this.formItemsLists[index].item.value = errorValue.toUpperCase();
+        // this.formItemsLists = this.formItemsLists.concat([]);
       }
     },
     mounted() {
