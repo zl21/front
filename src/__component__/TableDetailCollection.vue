@@ -497,7 +497,6 @@
 <style scoped lang="less">
 .TableDetailCollection {
   .detail-collection {
-    margin: 5px;
     .detail-top {
       margin-bottom: 10px;
       display: flex;
