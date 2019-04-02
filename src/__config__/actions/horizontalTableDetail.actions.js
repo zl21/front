@@ -50,7 +50,7 @@ export default {
       objid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.addcolums;
+        const formData = res.data.data;
         commit('updatePanelData', formData);
       }
     });
@@ -62,7 +62,7 @@ export default {
       inlinemode: 'Y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.inpubobj;
+        const formData = res.data.data;
         commit('updateFormData', formData);
       }
     });
@@ -75,7 +75,7 @@ export default {
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
-        const formData = res.data.data.addcolums;
+        const formData = res.data.data;
         commit('updatePanelData', formData);
       }
     });
