@@ -102,6 +102,9 @@
     display: flex;
     flex-direction: column;
     .objectButtons {
+      .buttonList {
+        padding-left: 0;
+      }
     }
     .form {
     }
