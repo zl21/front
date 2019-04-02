@@ -58,16 +58,12 @@ export default {
   }, // 更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
-    if (data && data.length > 0) {
-      componentAttribute.formData.isShow = true;
-    }
+    componentAttribute.formData.isShow = true;
     componentAttribute.formData.data = data;
   }, // 更新form数据
   updatePanelData(state, data) {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
-    if (data && data.length > 0) {
-      componentAttribute.panelData.isShow = true;
-    }
+    componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   }, // 更新form数据
   updateTableData(state, data) {
