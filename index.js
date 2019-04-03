@@ -54,7 +54,6 @@ const getGateWayServiceId = () => {
 
 if (enableGateWay) {
   getGateWayServiceId();
-  init();
 } else {
   init();
 }

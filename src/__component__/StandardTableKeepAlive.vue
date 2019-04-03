@@ -8,7 +8,7 @@
   import Vue from 'vue';
   import { mapState } from 'vuex';
   import mixins from '../__config__/mixins/standardTableLists';
-  import { STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+  import { STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_TABLE_LIST_PREFIX } from '../constants/global';
   import StandardTableList from './StandardTableList';
   import CustomPages from '../assets/js/customComponent';
 
@@ -25,6 +25,8 @@
     methods: {
       generateComponent() {
         const { tableName, tableId } = this.$route.params;
+        const { routePrefix } = this.$route.meta;
+        if (routePrefix !== STANDARD_TABLE_LIST_PREFIX) { return; }
         const componentName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
         const customPage = this.$route.fullPath.split('/')[4];
         if (Vue.component(componentName) === undefined) {

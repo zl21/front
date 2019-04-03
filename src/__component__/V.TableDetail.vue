@@ -6,13 +6,15 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      class="panelForm"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
     />
     <TabPanels
-      type="line"
+      v-if="tabPanels.length > 0"
+      class="tabPanel"
       :tab-margin-left="20"
-      isKeepAlive
+      is-keep-alive
       :type="'singleCard'"
       :tab-panels="tabPanels"
     />
@@ -71,12 +73,8 @@
           return;
         }
         this.updateTabCurrentIndex(index);
-
         const { itemId } = this.$route.params;
         const refTab = this.tabPanel[index];
-        if (refTab.reftabs && refTab.reftabs.length > 0) {
-          this.getObjectTabForRefTable(refTab.tablename, itemId);
-        }
         if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
           // 获取子表表单
           const formParam = {
@@ -84,9 +82,10 @@
             inlinemode: refTab.tabinlinemode
           };
           this.getFormDataForRefTable(formParam);
+          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
         }
         if (refTab.tabrelation === '1:m') {
-          this.getTableListForRefTable({
+          this.getObjectTableItemForTableData({
             table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }
           });
         } else if (refTab.tabrelation === '1:1') {
@@ -96,9 +95,15 @@
   };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .verticalTableDetail {
     flex: 1;
     overflow-y: auto;
+    .panelForm {
+      margin: 0 20px;
+    }
+    .tabPanel {
+      margin: 10px 20px;
+    }
   }
 </style>

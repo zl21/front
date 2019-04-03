@@ -15,7 +15,8 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
-      tabPanel: ({ tabPanels }) => tabPanels
+      tabPanel: ({ tabPanels }) => tabPanels,
+      tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
     })
   },
   methods: {

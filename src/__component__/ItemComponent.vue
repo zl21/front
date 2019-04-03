@@ -187,6 +187,18 @@
         default() {
           return 0;
         }
+      },
+      formIndex: {
+        type: Number,
+        default() {
+          return 0;
+        }
+      },
+      type: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
@@ -459,6 +471,7 @@
       }
     },
     created() {
+      //console.log(this.type,this.formIndex);
 
     }
   };

@@ -23,7 +23,8 @@ export const globalGateWay = [
   '/p/cs/getObject',
   '/p/cs/objectTableItem',
   '/p/cs/inputForitem',
-  '/p/cs/itemObj'
+  '/p/cs/itemObj',
+  '/p/cs/fuzzyquerybyak'
 ];
 
 // 不走网关的接口
