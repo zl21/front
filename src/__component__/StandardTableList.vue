@@ -412,7 +412,7 @@
       formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
           if (this.formItemsLists.length > 0) {
-            this.formItemsLists[index].item.value = item.value;
+            this.formItemsLists[index].item.value = item.item.value;
           }
           
           this.updateFormData(data);
