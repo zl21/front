@@ -34,7 +34,7 @@ export default () => ({
         'updateTabCurrentIndex'
       ]),
   },
-  beforeDestroy() {
-    store.unregisterModule(this.moduleComponentName);
-  }
+  // beforeDestroy() {
+  //   store.unregisterModule(this.moduleComponentName);
+  // }
 });

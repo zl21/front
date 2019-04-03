@@ -11,9 +11,8 @@
       type="PanelForm"
     />
     <TabPanels
-      v-if="tabPanels.length >0"
+      v-if="tabPanels.length > 0"
       class="tabPanel"
-      type="line"
       :tab-margin-left="20"
       is-keep-alive
       :type="'singleCard'"
@@ -74,12 +73,8 @@
           return;
         }
         this.updateTabCurrentIndex(index);
-
         const { itemId } = this.$route.params;
         const refTab = this.tabPanel[index];
-        if (refTab.reftabs && refTab.reftabs.length > 0) {
-          this.getObjectTabForRefTable(refTab.tablename, itemId);
-        }
         if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
           // 获取子表表单
           const formParam = {
@@ -87,7 +82,7 @@
             inlinemode: refTab.tabinlinemode
           };
           this.getFormDataForRefTable(formParam);
-          this.getObjectTabForRefTable({ table: refTab.tablename, itemId });
+          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
         }
         if (refTab.tabrelation === '1:m') {
           this.getObjectTableItemForTableData({
