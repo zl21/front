@@ -71,7 +71,6 @@
       </div>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
@@ -116,11 +115,10 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender }
-          // OBJ_DATENUMBER: ''
-          // OBJ_DATE:
-          // OBJ_TIME:
-          // isfk
+          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
+          OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
+          OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
         } // 标签映射
       };
     },
@@ -208,6 +206,9 @@
       },
       buttonGroups() { // 按钮组的数据组合
         const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        if (!tabcmd) {
+          return [];
+        }
         const buttonGroupShow = [];
         if (tabcmd.cmds) {
           tabcmd.cmds.map((item, index) => {
@@ -399,7 +400,33 @@
                   }
                 });
               }
-              
+            }
+          })
+        ]);
+      },
+      datePickertRender(cellData, tag) { // 日趋选择
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            props: {
+              type: cellData.display === 'OBJ_DATE' ? 'date' : 'datetime',
+              value: new Date(Date.parse(params.row[cellData.colname].replace(/-/g, '/'))),
+              transfer: true
+            }
+          })
+        ]);
+      },
+      timePickerRender(cellData, tag) { // 时间选择
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            props: {
+              value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
+              transfer: true
             }
           })
         ]);
