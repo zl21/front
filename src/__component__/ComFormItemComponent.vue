@@ -170,9 +170,14 @@
       VerificationForm:{
         handler(val, old) {
           if( JSON.stringify(val) !== JSON.stringify(old)){
+            if(Object.keys(val).length < 1){
+              return false;
+            }
+
             let arr = [];
                 arr = val.reduce((item ,current) => {
-               if(current.value.length ===0){
+                  console.log(current.value);
+               if(current.value === '' || current.value === undefined){
                  // 判断必须输入的值是否为空
                  item[current.key] = current.label;
                }

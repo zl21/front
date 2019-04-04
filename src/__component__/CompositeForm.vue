@@ -86,14 +86,18 @@
         formData:{},  // 监听form变化
         VerificationForm:{},  // 校验form
         defaultFormData:{},    // form 默认值
+        childForm:{
+          childs:[]
+        },
         expand: 'expand'    // 面板是否展开
       };
     },
     computed: {
       computdefaultData: {
             get:function(){
-              console.log('computdefaultData');
               let items = [];
+              // 存放单个form child
+              this.childForm.childs = [];
             // 有面板的数据
             if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
               items = this.defaultData.addcolums.reduce((array, current,index) => {
@@ -105,14 +109,20 @@
                     array2.push(option);
                     return array2;
                   }, []);
+                  array.push({
+                    childs: tem,
+                    hrdisplay: current.hrdisplay,
+                    parentdesc: current.parentdesc,
+                    parentname: current.parentname
+                  });
+                }else if(Object.prototype.hasOwnProperty.call(current, 'child')){
+                  const option = this.reduceForm([], current.child,index);
+                  if( option.item ) {
+                    this.childForm.childs.push(option);
+                  }
                 }
-                array.push({
-                  childs: tem,
-                  hrdisplay: current.hrdisplay,
-                  parentdesc: current.parentdesc,
-                  parentname: current.parentname
-                });
                 return array;
+
               }, []);
             } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
               // 表单的数据
@@ -123,7 +133,13 @@
                 return array;
               }, []);
             }
-            return items;
+            // 数据重组  默认展开
+              if( this.childForm.childs[0] ){
+                this.childForm.hrdisplay = 'expand';
+                items.push(this.childForm);
+              }
+
+              return items;
           },
           set:function(val){
               return val;
@@ -391,13 +407,13 @@
         }
         // 日期控件属性控制
         if (current.display === 'OBJ_DATENUMBER') {
-          item.props.type = 'date';
+          item.props.type = 'datetime';
         }
         if (current.display === 'OBJ_DATE') {
-          item.props.type = 'date';
+          item.props.type = 'datetime';
         }
         if (current.display === 'OBJ_TIME') {
-          item.props.type = 'date';
+          item.props.type = 'datetime';
         }
 
 
