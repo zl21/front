@@ -49,6 +49,7 @@
 
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
+          obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.type = 'vertical';
           obj.component = tabComponent;
           obj.cilckCallback = this.tabClick;

@@ -26,9 +26,9 @@
           v-if="filterList.length > 0"
           class="detail-search"
         >
-          <Select 
-            v-model="searchCondition" 
-            clearable 
+          <Select
+            v-model="searchCondition"
+            clearable
             placeholder="查询条件"
             @on-clear="searchCondition=null"
           >
@@ -90,12 +90,12 @@
   const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
-  
+
 
   export default {
     name: 'TableDetailCollection',
     components: {
-   
+
     },
     data() {
       return {
@@ -197,7 +197,7 @@
             const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
             needSubtotalList.map((ele) => {
               const needSubtotalDatas = [];
-              this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); // 
+              this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
               const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
               cell[ele.colname] = `${totalNumber}`;
               return ele;
@@ -241,13 +241,13 @@
       isMainTableReadonly() {
         if (this.type === pageType.Vertical) {
           return this.mainFormInfo.buttonsData.data.objreadonly;
-        } 
+        }
         return false;
       }
-    
+
     },
     methods: {
-    
+
       //   ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
       //   ...mapActions('global', ['getMenuLists']),
 
@@ -313,7 +313,7 @@
           };
           const tabth = copyDataSoucre.tabth.filter(item => item.colname !== EXCEPT_COLUMN_NAME);
           tabth.map((tab) => {
-            let val = ele[tab.colname].val;            
+            let val = ele[tab.colname].val;
             switch (tab.display) {
             case 'check':
               {
@@ -364,12 +364,12 @@
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
-          
+
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
           return this.DISPLAY_ENUM[cellData.fkdisplay].event(cellData, this.DISPLAY_ENUM[cellData.fkdisplay].tag);
-        } 
+        }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
       inputRender(cellData, tag) {
@@ -414,14 +414,14 @@
               'on-change': (currentValue, data) => {
                 const currentCheck = cellData.combobox.filter(ele => ele.limitdis === currentValue);
                 const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
-                
+
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
 
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
-            
+
           })
         ]);
       },
@@ -485,7 +485,7 @@
                 fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
-                    colid: this.dataSource.row[params.index][cellData.colname].colid,  
+                    colid: this.dataSource.row[params.index][cellData.colname].colid,
                     fixedcolumns: {
                       whereKeys: this.getMainRefobjid(params, cellData)
                     }
@@ -569,7 +569,7 @@
             },
             props: {
               value: params.row[cellData.colname],
-              type: 'time',           
+              type: 'time',
               // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
               transfer: true
             },
@@ -590,7 +590,7 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-              
+
             }
           }
         });
@@ -598,7 +598,7 @@
       dropDefaultSelectedData(params, cellData, tag) {
         // drp mrp 初始数据赋值
         const defaultData = [];
-        if (tag === 'drp') { 
+        if (tag === 'drp') {
           if (this.dataSource.row[params.index][cellData.colname]) {
             const data = {
               ID: this.dataSource.row[params.index][cellData.colname].refobjid,
@@ -693,7 +693,7 @@
           isdroplistsearch: true,
           refcolid: this.dataSource.row[params.index][cellData.colname].colid, // TODO
           fixedcolumns: this.getMainRefobjid(params, cellData),
-          startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize, 
+          startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize,
           range: this.fkDropPageInfo.pageSize
         };
         fkQueryList({
@@ -804,6 +804,7 @@
 
 <style scoped lang="less">
 .TableDetailCollection {
+  margin: 0 5px 15px 5px;
   .detail-collection {
     .detail-top {
       margin-bottom: 10px;
