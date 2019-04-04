@@ -18,7 +18,7 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
     }),
-    
+
   },
   methods: {
     ...mapActions(getComponentName(),
@@ -31,7 +31,8 @@ export default () => ({
       ]),
     ...mapMutations(getComponentName(),
       [
-        'updateTabCurrentIndex'
+        'updateTabCurrentIndex',
+        'updateData'
       ]),
   },
   // beforeDestroy() {

@@ -12,6 +12,7 @@
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
+      @InitializationForm="InitializationForm"
     />
     <TabPanels
       v-if="tabPanels.length > 0"
@@ -29,7 +30,6 @@
 </template>
 
 <script>
-
   import { mapActions, mapState } from 'vuex';
 
   // import TableDetailCollection from './TableDetailCollection';
@@ -69,6 +69,12 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
+      InitializationForm(val) {
+        const tableName = this.$route.params.tableName;
+        const obj = {};
+        obj[tableName] = val;
+        this.updateData({ tableName, value: obj });
+      },
       tabClick(index) {
         // tab点击
         if (index === this.tabCurrentIndex) {
@@ -94,9 +100,9 @@
         }
       },
     },
-    beforeDestroy() {
-      // this.$store.unregisterModule(this.moduleComponentName);
-    }
+    // beforeDestroy() {
+    //   // this.$store.unregisterModule(this.moduleComponentName);
+    // }
   };
 </script>
 

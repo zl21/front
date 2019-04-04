@@ -10,7 +10,6 @@
 
 <script>
   /* eslint-disable no-lonely-if */
-
   import { mapActions, mapState } from 'vuex';
   import tabComponent from './SingleObjectTabComponent';
 

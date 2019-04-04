@@ -63,4 +63,8 @@ export default {
   updateTabCurrentIndex(state, index) { // 更新当前tab的索引
     state.tabCurrentIndex = index;
   },
+  updateData(state, data) {
+    console.log(data);
+    state[data.tableName].default = data.value;
+  }
 };
