@@ -5,7 +5,7 @@
             :style="downComponent"
     >
         <div
-                v-if="searchFoldnum>0"
+                v-if="rowAll > searchFoldnum"
                 class="tag-close"
         >
             <Icon
@@ -43,6 +43,12 @@
           return 0;
         }
       },
+      rowAll:{
+        type: [Number, String],
+        default() {
+          return 0;
+        }
+      },
       searchFoldnum: {
         type: [Number, String],
         default() {
@@ -66,7 +72,7 @@
         return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
       },
       downComponent() {
-        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 16}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
+        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
       },
       icon() {
         return `${this.dowClass === false ? 'iconfont icon-triangle-copy-copy-copy1 ' : 'iconfont icon-triangle-copy-copy-copy1 icon-xiadown'}`;

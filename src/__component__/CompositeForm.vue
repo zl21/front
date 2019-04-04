@@ -20,6 +20,7 @@
               :form-item-lists="item.childs"
               :ref="'FormComponent_'+index"
               :mountdataForm = "mountdataForm"
+              :VerifyMessage = "VerifyMessage"
               :key = "index"
               @formDataChange ="formDataChange"
               :type = "type"
@@ -32,6 +33,7 @@
     <template v-if="type === ''">
       <FormItemComponent
       @formDataChange ="formDataChange"
+      :VerifyMessage = "VerifyMessage"
       :mountdataForm = "mountdataForm"
       ref="FormComponent_0"
       :form-item-lists="computdefaultData" />
@@ -80,10 +82,11 @@
     },
     data() {
       return {
-        newdefaultData:[],
-        formData:{},
-        defaultFormData:{},
-        expand: 'expand'
+        newdefaultData:[],  // 初始化form
+        formData:{},  // 监听form变化
+        VerificationForm:{},  // 校验form
+        defaultFormData:{},    // form 默认值
+        expand: 'expand'    // 面板是否展开
       };
     },
     computed: {
@@ -129,41 +132,39 @@
       },
 
     },
-    watch:{
-          formData:{
-            handler(val, old) {
-                if( JSON.stringify(val) !== JSON.stringify(this.defaultFormData)){
-                  console.log();
-
-                 if( this.moduleFormType === 'H'){
-                    //  if( this.type.length >0 ){
-                    //     this.updateTableData(val);
-                    //  } else {
-                    //    this.updatePanelData(val);
-                    //  }
-                 }else{
-                      //  this.updateFormDataForRefTable(val);
-                 }
-
-                }
-
-            },
-            deep: true
-
-
-          }
-
-
-    },
     methods: {
       CollapseClose(index) {
       },
       Comparison(obj, obj2){
-        
+
+      },
+      formDataChange(data) {
+        // 表单数据修改  判断vuex 里面是否有input name
+        this.formData = Object.assign(this.formData,data);
+        let key = Object.keys(data)[0];
+        if(key.split(':').length >1){
+          delete this.formData[key.split(':')[0]];
+        } else {
+          delete this.formData[key +':NAME'];
+        }
+        this.$emit('formChange',this.formData);
+
+      },
+      VerifyMessage(value){
+        // 获取需要校验的表单
+        this.VerificationForm = value;
+        let arr =Object.keys(this.VerificationForm).reduce((item,current,index) => {
+           item.push(`请输入${this.VerificationForm[current]}`)
+            return item;
+        },[]);
+        this.$emit('VerifyMessage', arr);
+
       },
       mountdataForm(value){
-            // 默认值
+            // 获取表单默认值
         this.defaultFormData = Object.assign(this.defaultFormData,value);
+        this.$emit('InitializationForm', this.defaultFormData);
+
         console.log(' 默认值' );
       },
       reduceForm(array, current, index) {
@@ -266,6 +267,10 @@
 
         return obj;
       },
+      searchClickData() {
+        // 按钮查找
+        console.log('需要查找吗');
+      },
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
@@ -311,10 +316,26 @@
         // 设置表单的默认值
         if (item.valuedata === 'N') {
           return false;
-        } if (item.valuedata === 'Y') {
+        } else if (item.valuedata === 'Y') {
           return true;
         }
-        return item.valuedata;
+        if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
+          const arr = [];
+          arr.push(item.valuedata);
+          return arr;
+        }
+
+        if (item.fkdisplay === 'drp') { // 外键默认值
+          const arr = [];
+          arr.push({
+            ID: item.refobjid,
+            Label: item.valuedata
+          });
+          return arr;
+        } else {
+          return item.valuedata;
+        }
+        //
       },
       propsType(current, item) {
         // 表单 props
@@ -385,12 +406,12 @@
           case 'drp':
             item.props.single = true;
             item.props.data = {};
-            //item.props.defaultSelected = this.defaultValue(current);
+            item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
-            //item.props.defaultSelected = this.defaultValue(current);
+            item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             item.props.fkobj = current.fkobj;
@@ -408,9 +429,6 @@
       },
       getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
-      },
-      formDataChange(data) { // 表单数据修改
-        this.formData = data;
       },
       freshDropDownPopFilterData(res, index ,current) { // 外键下拉时，更新下拉数据
         if (res.length > 0) {
