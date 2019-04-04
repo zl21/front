@@ -89,6 +89,7 @@
   };
   const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
+  const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
   
 
   export default {
@@ -662,6 +663,8 @@
         //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
         // }
         this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
+        // 表单验证
+        this.verifyMessage();
       },
       getTabelList() {
         // 搜索事件
@@ -739,6 +742,25 @@
           }
         }
         return fixedcolumns;
+      },
+      verifyMessage() {
+        // 表达验证
+        const verifyData = [];
+        const data = this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename];
+        data.map((ele) => {
+          Reflect.ownKeys(ele).forEach((key) => {
+            const value = ele[key];
+            if (value === null || value === undefined || value === '') {
+              const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
+              if (titleArray.length > 0) {
+                verifyData.push(`请输入${titleArray[0].name}`);
+              }
+            }
+          });
+          return ele;
+        });
+        console.log(verifyData);
+        this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调
