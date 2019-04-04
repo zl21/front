@@ -10,6 +10,8 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.tableId"
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
@@ -17,6 +19,8 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.tableId"
       :module-form-type="type"
       class="formPanel"
       type="PanelForm"
@@ -53,6 +57,14 @@
       type: {
         type: String,
         default: 'vertical'
+      },
+      tableName: {
+        type: String,
+        default: ''
+      },
+      tableId: {
+        type: String,
+        default: ''
       },
       tableData: {
         type: Object,

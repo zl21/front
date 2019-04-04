@@ -32,6 +32,8 @@
             if (index === 0) {
               obj.label = this.activeTab.label;
             }
+            obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.type = 'horizontal';
             obj.componentAttribute.type = 'horizontal';
             obj.component = tabComponent;
             obj.cilckCallback = this.tabClick;

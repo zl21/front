@@ -6,6 +6,8 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.tableId"
       class="panelForm"
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
@@ -31,7 +33,6 @@
   import { mapActions, mapState } from 'vuex';
 
   // import TableDetailCollection from './TableDetailCollection';
-  // import router from '../__config__/router.config';
   import tabComponent from './SingleObjectTabComponent';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
