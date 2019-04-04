@@ -5,9 +5,8 @@ export default () => ({
   namespaced: true,
   state: {
     mainFormInfo: {
-      tableName: null,
-      tableId: null,
-      itemId: null,
+      tablename: null,
+      tableid: null,
       buttonsData: { // 主表按钮数据
         data: ({})
       },
@@ -18,30 +17,6 @@ export default () => ({
     },
     tabPanels: [], // tab数据
     tabCurrentIndex: 0,
-    updateMainTableData: {
-      before: {
-        formData: {},
-        panelFormData: {},
-        tableData: []
-      },
-      after: {
-        formData: {},
-        panelFormData: {},
-        tableData: []
-      }
-    },
-    updateChildTableData: {
-      before: {
-        formData: {},
-        panelFormData: {},
-        tableData: []
-      },
-      after: {
-        formData: {},
-        panelFormData: {},
-        tableData: []
-      }
-    },
     checkTipsInfo: {
       formInfo: [],
       panelFormInfo: [],

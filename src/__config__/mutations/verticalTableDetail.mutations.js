@@ -1,7 +1,15 @@
+import router from '../router.config';
+
 export default {
-  updateObjectForMainTableForm({ mainFormInfo }, data) { // 更新主表面板数据
-    mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
-    mainFormInfo.formData.data = data || [];
+  updateObjectForMainTableForm(state, data) { // 更新主表面板数据
+    const { tableName, tableId } = router.currentRoute.params;
+    state.mainFormInfo.tablename = tableName;
+    state.mainFormInfo.tableid = tableId;
+    state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
+    state.mainFormInfo.formData.data = data || [];
+    state[tableName] = {
+      add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
+    };
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
@@ -25,6 +33,9 @@ export default {
           isShow: false,
           data: ({})
         }
+      };
+      state[item.tablename] = {
+        add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
       };
       arr.push(obj);
     });

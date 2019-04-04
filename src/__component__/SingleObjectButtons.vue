@@ -2,6 +2,7 @@
   <div>
     <ButtonGroup
       :data-array="dataArray"
+      @buttonClick="buttonClick"
     />
   </div>
 </template>
@@ -47,7 +48,9 @@
       }
     },
     methods: {
-       
+      buttonClick(obj, name) {
+        console.log(obj, name);
+      },
       buttonsData() {
         const cmds = this.tabcmd.cmds;
         const prem = this.tabcmd.prem;
@@ -75,7 +78,7 @@
       getTabName() {
         const buttonsData = this.buttonsData();
         Object.keys(buttonsData).forEach((item) => { // 转换按钮数据格式
-          const buttonValue = item.split('action').join('CMD_'); 
+          const buttonValue = item.split('action').join('CMD_');
           this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonmap[buttonValue]);
         });
       },

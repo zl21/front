@@ -5,7 +5,7 @@ export default {
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
       label: '标签',
-      table: tableName,
+      tablename: tableName,
       id: tableId,
       componentAttribute: {
         buttonsData: {
@@ -48,6 +48,11 @@ export default {
         }
       };
       arr.push(obj);
+    });
+    arr.forEach((item) => {
+      state[item.tablename] = {
+        add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
+      };
     });
     state.tabPanels = arr;
   }, // 更新按钮数据
