@@ -178,7 +178,7 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem], this.indexItem);
       },
       dataProcessing() {
         return this.newFormItemLists.reduce((obj, current) => {

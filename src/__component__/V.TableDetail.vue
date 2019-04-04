@@ -91,6 +91,9 @@
         } else if (refTab.tabrelation === '1:1') {
         }
       },
+    },
+    beforeDestroy() {
+      // this.$store.unregisterModule(this.moduleComponentName);
     }
   };
 </script>

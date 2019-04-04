@@ -231,6 +231,9 @@
         }
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         return buttonGroupShow;
+      },
+      isMainTableReadonly() {
+        return this.mainFormInfo.buttonsData.data.objreadonly;
       }
     
     },
@@ -296,8 +299,13 @@
       },
       collectionCellRender(cellData, index) {
         // 给cell赋render
-        if (!cellData.ismodify || this.readonly) {
+        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
           // 不可编辑状态 显示label
+          if (cellData.isfk) {
+            // 如果是外键关联 显示 别针icon
+            return this.fkIconRender(cellData);
+          }
+          
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -316,6 +324,15 @@
               value: params.row[cellData.colname],
               regx: this.inputRegx(cellData),
               maxlength: cellData.length
+            },
+            on: {
+              'on-change': (event, data) => {
+                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              }
+              // 'on-focus': (event) => {
+              //   event.stopPropagation();
+              //   event.preventDefault();
+              // }
             }
           })
         ]);
@@ -333,7 +350,13 @@
               ).length > 0 ? cellData.combobox.filter(
                 ele => ele.limitdesc === params.row[cellData.colname]
               )[0].limitdis : null
+            },
+            on: {
+              'on-change': (event, data) => {
+                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              }
             }
+            
           })
         ]);
       },
@@ -351,6 +374,11 @@
                     ele => ele.limitdesc === params.row[cellData.colname]
                   )[0].limitval
                   : null
+              },
+              on: {
+                'on-change': (event, data) => {
+                  this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                }
               }
             },
             cellData.combobox.map(item => h('Option', {
@@ -368,7 +396,7 @@
               width: '100px'
             },
             props: {
-              defaultSelected: [{ ID: this.dataSource.row[params.index][cellData.colname].colid, Label: params.row[cellData.colname] }], // TODO
+              defaultSelected: this.dropDefaultSelectedData(params, cellData),
               single: cellData.fkdisplay === 'drp',
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
@@ -380,6 +408,7 @@
             on: {
               'on-popper-show': () => {
                 this.fkDropPageInfo.currentPageIndex = 1;
+                this.fkAutoData = [];
                 this.getFKList();
                 // debugger;
               },
@@ -387,18 +416,51 @@
                 this.fkDropPageInfo.currentPageIndex = value;
                 this.getFKList();
               },
-              'on-input-value-change': (value) => {
+              'on-input-value-change': (data, value) => {
+                this.fkAutoData = [];
                 fkFuzzyquerybyak({
-                  
                   searchObject: {
-                    ak: value,
+                    ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,  
                     fixedcolumns: {}
                   },
                   success: (res) => {
                     this.fkAutoData = res.data.data;
+                    const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                    if (autoData.length === 0) {
+                      // autodata中没有 清空输入框
+                      value.notAutoData = true;
+                    } else {
+                      delete value.notAutoData;
+                    }
                   }
                 });
+              },
+              'on-blur': (event, value) => {
+                if (value.notAutoData) {
+                  // autodata中没有 清空输入框 及上次选中的值
+                  value.inputValue = '';
+                  delete value.notAutoData;
+                } else if (this.fkAutoData.length > 0) {
+                  const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                  value.inputValue = autoData[0].value;
+                }
+                this.fkAutoData = [];
+                let ids = null;
+                if (value.transferDefaultSelected) {
+                  ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                }
+                console.log(ids);
+                this.putDataFromCell(value.transferDefaultSelected ? value.transferDefaultSelected[0].ID : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-fkrp-selected': (data, value) => {
+                this.fkAutoData = [];
+                let ids = null;
+                if (value.transferDefaultSelected) {
+                  ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                }
+                console.log(ids);
+                this.putDataFromCell(value.transferDefaultSelected ? value.transferDefaultSelected[0].ID : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
           })
@@ -408,12 +470,17 @@
         return (h, params) => h('div', [
           h(tag, {
             style: {
-              width: '100px'
+              width: cellData.display === 'OBJ_DATENUMBER' ? '100px' : '150px'
             },
             props: {
-              type: cellData.display === 'OBJ_DATE' ? 'date' : 'datetime',
-              value: new Date(Date.parse(params.row[cellData.colname].replace(/-/g, '/'))),
+              value: params.row[cellData.colname],
+              type: cellData.display === 'OBJ_DATENUMBER' ? 'date' : 'datetime',
               transfer: true
+            },
+            on: {
+              'on-change': (event, dateType, data) => {
+                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              }
             }
           })
         ]);
@@ -425,11 +492,43 @@
               width: '100px'
             },
             props: {
-              value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
+              value: params.row[cellData.colname],              
+              // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
               transfer: true
+            },
+            on: {
+              'on-change': (event, dateType, data) => {
+                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              }
             }
           })
         ]);
+      },
+      fkIconRender(cellData) {
+        // 外键关联到icon
+        return (h, params) => h('div', {
+          domProps: {
+            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer" >&#xe625;</i>${params.row[cellData.colname]}`
+          },
+          on: {
+            click: (event) => {
+              // TODO 外键关联跳转
+              
+            }
+          }
+        });
+      },
+      dropDefaultSelectedData(params, cellData) {
+        // drp mrp 初始数据赋值
+        const defaultData = [];
+        if (this.dataSource.row[params.index][cellData.colname]) {
+          const data = {
+            ID: this.dataSource.row[params.index][cellData.colname].colid,
+            Label: params.row[cellData.colname]
+          };
+          defaultData.push(data);
+        }
+        return defaultData;
       },
       inputRegx(cellData) {
         // 输入框正则
@@ -441,6 +540,10 @@
           return Capital;
         }
         return null;
+      },
+      putDataFromCell(currentValue, oldValue, colname, IDValue) {
+        // 组装数据 存入store
+        console.log(currentValue, oldValue, colname, IDValue);
       },
       getTabelList() {
         // 搜索事件
@@ -475,8 +578,7 @@
         fkQueryList({
           searchObject: searchdata,
           success: (res) => {
-            const fkData = res.data.data;
-            this.fkData = fkData;
+            this.fkData = res.data.data;
           }
         });
       },

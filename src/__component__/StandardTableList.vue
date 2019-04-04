@@ -409,8 +409,12 @@
       getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
-      formDataChange(data) { // 表单数据修改
+      formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
+          if (this.formItemsLists.length > 0) {
+            this.formItemsLists[index].item.value = item.item.value;
+          }
+          
           this.updateFormData(data);
         }
       },
@@ -700,8 +704,12 @@
           let value = '';
           this.formItemsLists.every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
-              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange') && (jsonData[item][0] && jsonData[item][1])) { // 当为日期控件时，数据处理
-                value = jsonData[item].join('~');
+              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
+                if ((jsonData[item][0] && jsonData[item][1])) {
+                  value = jsonData[item].join('~');
+                } else {
+                  value = '';
+                }
                 return false;
               }
 
