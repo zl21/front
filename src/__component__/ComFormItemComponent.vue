@@ -176,7 +176,6 @@
 
             let arr = [];
                 arr = val.reduce((item ,current) => {
-                  console.log(current.value);
                if(current.value === '' || current.value === undefined){
                  // 判断必须输入的值是否为空
                  item[current.key] = current.label;
