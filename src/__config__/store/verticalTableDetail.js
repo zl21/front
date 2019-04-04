@@ -18,6 +18,35 @@ export default () => ({
     },
     tabPanels: [], // tab数据
     tabCurrentIndex: 0,
+    updateMainTableData: {
+      before: {
+        formData: {},
+        panelFormData: {},
+        tableData: []
+      },
+      after: {
+        formData: {},
+        panelFormData: {},
+        tableData: []
+      }
+    },
+    updateChildTableData: {
+      before: {
+        formData: {},
+        panelFormData: {},
+        tableData: []
+      },
+      after: {
+        formData: {},
+        panelFormData: {},
+        tableData: []
+      }
+    },
+    checkTipsInfo: {
+      formInfo: [],
+      panelFormInfo: [],
+      tableInfo: []
+    }
   },
   actions,
   mutations
