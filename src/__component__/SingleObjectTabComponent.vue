@@ -10,12 +10,14 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :module-form-type="type"
       class="form"
       :default-data="formData.data"
     />
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :module-form-type="type"
       class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"

@@ -7,6 +7,7 @@
     <composite-form
       v-if="mainFormInfo.formData.isShow"
       class="panelForm"
+      module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
     />
