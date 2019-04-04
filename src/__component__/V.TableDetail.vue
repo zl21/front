@@ -12,6 +12,7 @@
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
+      @formChange="formChange"
       @InitializationForm="InitializationForm"
     />
     <TabPanels
@@ -70,10 +71,20 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       InitializationForm(val) {
-        const tableName = this.$route.params.tableName;
+        const { tableName } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.updateData({ tableName, value: obj });
+        this.updateDefaultData({ tableName, value: obj });
+      },
+      formChange(val) {
+        const { tableName, itemId } = this.$route.params;
+        const obj = {};
+        obj[tableName] = val;
+        if (itemId === -1) {
+          this.updateAddData({ tableName, value: obj });
+        } else {
+          this.updateModifyData({ tableName, value: obj });
+        }
       },
       tabClick(index) {
         // tab点击

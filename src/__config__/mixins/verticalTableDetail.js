@@ -32,7 +32,11 @@ export default () => ({
     ...mapMutations(getComponentName(),
       [
         'updateTabCurrentIndex',
-        'updateData'
+        'updateDefaultData',
+        'updateAddData',
+        'updateModifyData',
+        'updateDeleteData',
+        'updateCheckedInfoData'
       ]),
   },
   // beforeDestroy() {
