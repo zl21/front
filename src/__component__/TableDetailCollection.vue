@@ -717,19 +717,19 @@
               const defaultValue = mainTablePanelData.default;
               const modifyValue = mainTablePanelData.modify;
               // 先从修改里找 如果修改的里面没有 就从默认值里取
-              if (modifyValue[row.refcolval.srccol] && modifyValue[row.refcolval.srccol].length > 0) {
-                const colname = modifyValue[row.refcolval.srccol][0].ID;
+              if (modifyValue[cellData.refcolval.srccol] && modifyValue[cellData.refcolval.srccol].length > 0) {
+                const colname = modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
                 }
               } else {
                 // 默认值取
-                const colname = defaultValue[row.refcolval.srccol][0];
+                const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0].ID;
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
                 }
               }
-              const colname = mainTablePanelData[row.refcolval.srccol];
+              const colname = mainTablePanelData[cellData.refcolval.srccol];
               if (colname && mainTablePanelData.isfk) {
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
