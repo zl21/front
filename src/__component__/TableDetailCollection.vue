@@ -516,7 +516,6 @@
                 if (value.transferDefaultSelected) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                console.log(ids);
                 this.putDataFromCell(value.transferDefaultSelected ? ids : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
@@ -597,15 +596,18 @@
       },
       dropDefaultSelectedData(params, cellData, tag) {
         // drp mrp 初始数据赋值
-        // if (tag === 'drp') { // TODO
-
-        // } else {
-          
-        // }
         const defaultData = [];
-        if (this.dataSource.row[params.index][cellData.colname]) {
+        if (tag === 'drp') { 
+          if (this.dataSource.row[params.index][cellData.colname]) {
+            const data = {
+              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+              Label: params.row[cellData.colname]
+            };
+            defaultData.push(data);
+          }
+        } else if (this.dataSource.row[params.index][cellData.colname]) {
           const data = {
-            ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+            ID: this.dataSource.row[params.index][cellData.colname].val, // WARN mrp的id默认值是用的val
             Label: params.row[cellData.colname]
           };
           defaultData.push(data);
@@ -659,9 +661,6 @@
         //   param[colname] = oldValue;
         //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
         // }
-        console.log(currentValue, oldValue, colname, IDValue);
-        console.log(this.afterSendData);
-        console.log(this.beforeSendData);
         this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
       },
       getTabelList() {
@@ -704,7 +703,6 @@
       getMainRefobjid(params, cellData) {
         // 外键关联的情况下 取行colid
         const fixedcolumns = {};
-        let express = '';
         const row = this.dataSource.row[params.index][cellData.colname];
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
@@ -712,10 +710,25 @@
             fixedcolumns[cellData.refcolval.fixcolumn] = row[cellData.colname].colid;
           } else {
             // 先判断主表是否有关联字段  没有则取行的colid
-            express = cellData.refcolval.expre === 'equal' ? '=' : '';
+            const express = cellData.refcolval.expre === 'equal' ? '=' : '';
             if (cellData.refcolval.maintable) {
               // 需要从主表取
               const mainTablePanelData = this.$store.state[this.moduleComponentName][this.mainFormInfo.tablename];
+              const defaultValue = mainTablePanelData.default;
+              const modifyValue = mainTablePanelData.modify;
+              // 先从修改里找 如果修改的里面没有 就从默认值里取
+              if (modifyValue[row.refcolval.srccol] && modifyValue[row.refcolval.srccol].length > 0) {
+                const colname = modifyValue[row.refcolval.srccol][0].ID;
+                if (colname) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
+                }
+              } else {
+                // 默认值取
+                const colname = defaultValue[row.refcolval.srccol][0];
+                if (colname) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
+                }
+              }
               const colname = mainTablePanelData[row.refcolval.srccol];
               if (colname && mainTablePanelData.isfk) {
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
