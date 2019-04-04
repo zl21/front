@@ -87,6 +87,8 @@
     Horizontal: 'horizontal',
     Vertical: 'vertical'
   };
+  const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
+  const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   
 
   export default {
@@ -119,7 +121,9 @@
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
-        } // 标签映射
+        }, // 标签映射
+        beforeSendData: {}, // 之前的数据
+        afterSendData: {}, // 改后的数据
       };
     },
     props: {
@@ -154,6 +158,7 @@
         );
       },
       data() {
+        this.filterBeforeData();
         return this.filterData(this.dataSource.row); // 每列的数据
       },
       columns() {
@@ -233,7 +238,10 @@
         return buttonGroupShow;
       },
       isMainTableReadonly() {
-        return this.mainFormInfo.buttonsData.data.objreadonly;
+        if (this.type === pageType.Vertical) {
+          return this.mainFormInfo.buttonsData.data.objreadonly;
+        } 
+        return false;
       }
     
     },
@@ -289,6 +297,56 @@
           return item;
         });
         return data;
+      },
+      filterBeforeData() {
+        // 组装beforeData
+        if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
+          return;
+        }
+        const copyDataSoucre = this.deepClone(this.dataSource);
+        const beforeData = {};
+        beforeData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+        copyDataSoucre.row.map((ele) => {
+          const param = {
+            EXCEPT_COLUMN_NAME: ele[EXCEPT_COLUMN_NAME].val
+          };
+          const tabth = copyDataSoucre.tabth.filter(item => item.colname !== EXCEPT_COLUMN_NAME);
+          tabth.map((tab) => {
+            let val = ele[tab.colname].val;            
+            switch (tab.display) {
+            case 'check':
+              {
+                const currentCheck = tab.combobox.filter(box => box.limitdesc === ele[tab.colname].val);
+                const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
+                val = limitval;
+              }
+              break;
+            case 'OBJ_DATENUMBER':
+              val = ele[tab.colname].val.replace(/\-/g, '');
+              break;
+            default:
+              break;
+            }
+            if (tab.isfk) {
+              switch (tab.fkdisplay) {
+              case 'drp':
+                val = ele[tab.colname].refobjid;
+                break;
+              case 'mrp':
+                val = ele[tab.colname].val; // mrp快鱼之前是存的val
+                break;
+              default:
+                break;
+              }
+            }
+            param[tab.colname] = val;
+            return tab;
+          });
+          beforeData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+          return ele;
+        });
+        this.beforeSendData = beforeData;
+        this.$emit(TABLE_BEFORE_DATA, this.beforeSendData);
       },
       renderData(columns) {
         const renderColumns = columns.map((ele, index) => {
@@ -352,8 +410,14 @@
               )[0].limitdis : null
             },
             on: {
-              'on-change': (event, data) => {
-                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              'on-change': (currentValue, data) => {
+                const currentCheck = cellData.combobox.filter(ele => ele.limitdis === currentValue);
+                const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
+                
+                const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
+                const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
+
+                this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
             
@@ -396,7 +460,7 @@
               width: '100px'
             },
             props: {
-              defaultSelected: this.dropDefaultSelectedData(params, cellData),
+              defaultSelected: this.dropDefaultSelectedData(params, cellData, tag),
               single: cellData.fkdisplay === 'drp',
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
@@ -409,12 +473,11 @@
               'on-popper-show': () => {
                 this.fkDropPageInfo.currentPageIndex = 1;
                 this.fkAutoData = [];
-                this.getFKList();
-                // debugger;
+                this.getFKList(params, cellData);
               },
               'on-page-change': (value) => {
                 this.fkDropPageInfo.currentPageIndex = value;
-                this.getFKList();
+                this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
                 this.fkAutoData = [];
@@ -422,7 +485,9 @@
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,  
-                    fixedcolumns: {}
+                    fixedcolumns: {
+                      whereKeys: this.getMainRefobjid(params, cellData)
+                    }
                   },
                   success: (res) => {
                     this.fkAutoData = res.data.data;
@@ -442,6 +507,7 @@
                   value.inputValue = '';
                   delete value.notAutoData;
                 } else if (this.fkAutoData.length > 0) {
+                  // 当选择模糊搜索结果的时候
                   const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
                   value.inputValue = autoData[0].value;
                 }
@@ -451,7 +517,7 @@
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
                 console.log(ids);
-                this.putDataFromCell(value.transferDefaultSelected ? value.transferDefaultSelected[0].ID : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(value.transferDefaultSelected ? ids : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
                 this.fkAutoData = [];
@@ -459,8 +525,11 @@
                 if (value.transferDefaultSelected) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                console.log(ids);
-                this.putDataFromCell(value.transferDefaultSelected ? value.transferDefaultSelected[0].ID : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(value.transferDefaultSelected ? ids : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-clear': (value) => {
+                this.fkAutoData = [];
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
           })
@@ -470,7 +539,7 @@
         return (h, params) => h('div', [
           h(tag, {
             style: {
-              width: cellData.display === 'OBJ_DATENUMBER' ? '100px' : '150px'
+              width: cellData.display === 'OBJ_DATENUMBER' ? '110px' : '160px'
             },
             props: {
               value: params.row[cellData.colname],
@@ -479,7 +548,14 @@
             },
             on: {
               'on-change': (event, dateType, data) => {
-                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                let value = event;
+                if (cellData.display === 'OBJ_DATENUMBER') {
+                  //  YYYYmmdd
+                  if (value) {
+                    value = value.replace(/\-/g, '');
+                  }
+                }
+                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
           })
@@ -492,7 +568,8 @@
               width: '100px'
             },
             props: {
-              value: params.row[cellData.colname],              
+              value: params.row[cellData.colname],
+              type: 'time',           
               // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
               transfer: true
             },
@@ -518,12 +595,17 @@
           }
         });
       },
-      dropDefaultSelectedData(params, cellData) {
+      dropDefaultSelectedData(params, cellData, tag) {
         // drp mrp 初始数据赋值
+        // if (tag === 'drp') { // TODO
+
+        // } else {
+          
+        // }
         const defaultData = [];
         if (this.dataSource.row[params.index][cellData.colname]) {
           const data = {
-            ID: this.dataSource.row[params.index][cellData.colname].colid,
+            ID: this.dataSource.row[params.index][cellData.colname].refobjid,
             Label: params.row[cellData.colname]
           };
           defaultData.push(data);
@@ -543,7 +625,44 @@
       },
       putDataFromCell(currentValue, oldValue, colname, IDValue) {
         // 组装数据 存入store
+        if (this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
+          const rowDatas = this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+          if (rowDatas.length > 0) {
+            rowDatas[0][colname] = currentValue;
+          } else {
+            const param = {};
+            param[EXCEPT_COLUMN_NAME] = IDValue;
+            param[colname] = currentValue;
+            this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+          }
+        } else {
+          this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+          const param = {};
+          param[EXCEPT_COLUMN_NAME] = IDValue;
+          param[colname] = currentValue;
+          this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+        }
+        // if (this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
+        //   const rowDatas = this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+        //   if (rowDatas.length > 0) {
+        //     rowDatas[0][colname] = oldValue;
+        //   } else {
+        //     const param = {};
+        //     param[EXCEPT_COLUMN_NAME] = IDValue;
+        //     param[colname] = oldValue;
+        //     this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+        //   }
+        // } else {
+        //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+        //   const param = {};
+        //   param[EXCEPT_COLUMN_NAME] = IDValue;
+        //   param[colname] = oldValue;
+        //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+        // }
         console.log(currentValue, oldValue, colname, IDValue);
+        console.log(this.afterSendData);
+        console.log(this.beforeSendData);
+        this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
       },
       getTabelList() {
         // 搜索事件
@@ -564,14 +683,14 @@
         this.getObjectTableItemForTableData(params);
         this.searchInfo = '';
       },
-      getFKList() {
+      getFKList(params, cellData) {
         // 获取外键关联的数据
         this.fkData.totalRowCount = 0;
         this.fkData = ({});
         const searchdata = {
-          isdroplistsearch: true, 
-          refcolid: 165316, // TODO
-          fixedcolumns: { PS_C_BRAND_ID: '=7' }, // TODO
+          isdroplistsearch: true,
+          refcolid: this.dataSource.row[params.index][cellData.colname].colid, // TODO
+          fixedcolumns: this.getMainRefobjid(params, cellData),
           startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize, 
           range: this.fkDropPageInfo.pageSize
         };
@@ -581,6 +700,32 @@
             this.fkData = res.data.data;
           }
         });
+      },
+      getMainRefobjid(params, cellData) {
+        // 外键关联的情况下 取行colid
+        const fixedcolumns = {};
+        let express = '';
+        const row = this.dataSource.row[params.index][cellData.colname];
+        if (cellData.refcolval) {
+          if (this.type === pageType.Horizontal) {
+            // 左右结构取行内的colid
+            fixedcolumns[cellData.refcolval.fixcolumn] = row[cellData.colname].colid;
+          } else {
+            // 先判断主表是否有关联字段  没有则取行的colid
+            express = cellData.refcolval.expre === 'equal' ? '=' : '';
+            if (cellData.refcolval.maintable) {
+              // 需要从主表取
+              const mainTablePanelData = this.$store.state[this.moduleComponentName][this.mainFormInfo.tablename];
+              const colname = mainTablePanelData[row.refcolval.srccol];
+              if (colname && mainTablePanelData.isfk) {
+                fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+              }
+            } else {
+              fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+            }
+          }
+        }
+        return fixedcolumns;
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调
@@ -618,7 +763,6 @@
       }
     },
     mounted() {
-    //   this.getMenuLists();
     },
   };
 </script>
