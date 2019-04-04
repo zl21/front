@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div class="singleObjectButton">
     <ButtonGroup
       :data-array="dataArray"
       @buttonClick="buttonClick"
+      class="buttonGroup"
     />
   </div>
 </template>
@@ -91,4 +92,9 @@
 </script>
 
 <style lang="less">
+  .singleObjectButton {
+    .buttonGroup {
+      padding: 10px 20px 5px 20px;
+    }
+  }
 </style>
