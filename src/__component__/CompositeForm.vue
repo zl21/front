@@ -180,10 +180,8 @@
             // 获取表单默认值
         this.defaultFormData = Object.assign(this.defaultFormData,value);
         this.$emit('InitializationForm', this.defaultFormData);
-
-        console.log(' 默认值' );
       },
-      reduceForm(array, current, index) {
+      reduceForm: function (array, current, index) {
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -194,7 +192,7 @@
           field: current.colname,
           value: this.defaultValue(current),
           inputname: current.inputname,
-          props: { ...current },
+          props: {...current},
           event: {
             keydown: (event) => { // 输入框的keydown event, $this
               if (event.keyCode === 13) { // enter回车查询
@@ -213,7 +211,7 @@
                       tableid: item.props.fkobj.reftableid
                     },
                     success: (res) => {
-                      this.freshDropDownPopFilterData(res, index ,current);
+                      this.freshDropDownPopFilterData(res, index, current);
                     }
                   });
                 }
@@ -227,12 +225,13 @@
               // this.formItemsLists = this.formItemsLists.concat([]);
             },
             'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
+              console.log(item);
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
                 },
                 success: (res) => {
-                  this.freshDropDownPopFilterData(res, index ,current);
+                  this.freshDropDownPopFilterData(res, index, current);
                 }
               });
             },
@@ -245,7 +244,7 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res, index , current);
+                  this.freshDropDownSelectFilterData(res, index, current);
                 }
               });
             },
@@ -257,7 +256,7 @@
                   fixedcolumns: {}
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterAutoData(res, index , current);
+                  this.freshDropDownSelectFilterAutoData(res, index, current);
                 }
               });
             },
@@ -270,17 +269,15 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res, index , current);
+                  this.freshDropDownSelectFilterData(res, index, current);
                 }
               });
             }
           },
-          validate: {
-          }
+          validate: {}
         };
         // 属性赋值
         this.propsType(current, obj.item);
-
         return obj;
       },
       searchClickData() {
@@ -309,7 +306,7 @@
             str = 'DropDownSelectFilter';
             break;
           case 'pop':
-            str = 'AttachFilter';
+            str = 'DropDownSelectFilter';
             break;
           case 'mop':
             str = 'AttachFilter';
@@ -318,11 +315,11 @@
           }
         }
 
-        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
+        if (item.display === 'OBJ_DATE' || item.display === 'OBJ_DATENUMBER') {
           str = 'DatePicker';
         }
 
-        if (item.display === 'OBJ_TIME') {
+        if (item.display === 'OBJ_TIME' ) {
           str = 'TimePicker';
         }
 
@@ -341,7 +338,7 @@
           return arr;
         }
 
-        if (item.fkdisplay === 'drp') { // 外键默认值
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop') { // 外键默认值
           const arr = [];
           arr.push({
             ID: item.refobjid,
@@ -406,14 +403,33 @@
           item.props.type = 'textarea';
         }
         // 日期控件属性控制
+        // if (current.display === 'OBJ_DATENUMBER') {
+        //   item.props.type = 'daterange';
+        // }
+        // if (current.display === 'OBJ_DATE') {
+        //   item.props.type = 'datetimerange';
+        // }
+        // if (current.display === 'OBJ_TIME') {
+        //   item.props.type = 'daterange';
+        // }
+
         if (current.display === 'OBJ_DATENUMBER') {
           item.props.type = 'datetime';
         }
+        if (current.display === 'OBJ_TIME') {
+          item.props.type = 'timerange';
+
+        }
         if (current.display === 'OBJ_DATE') {
           item.props.type = 'datetime';
+
+          if( current.type === 'STRING' ){
+
+           }
+
         }
         if (current.display === 'OBJ_TIME') {
-          item.props.type = 'datetime';
+          item.props.type = 'timerange';
         }
 
 
@@ -430,11 +446,17 @@
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
-            item.props.fkobj = current.fkobj;
-            item.props.Selected = [];
+            item.props.single = false;
+            item.props.data = {};
+            item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mop':
-            item.props.fkobj = current.fkobj;
+            item.props.type = 'AttachFilter';
+            item.props.fkobj = {
+              refobjid: current.refobjid,
+              reftable: current.reftable,
+              reftableid:current.reftableid
+            };
             item.props.datalist = [];
             item.props.Selected = [];
             break;
