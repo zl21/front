@@ -352,6 +352,7 @@
       },
       propsType(current, item) {
         // 表单 props
+        item.props.disabled = item.props.readonly;
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
@@ -525,6 +526,22 @@
   };
 </script>
 
-<style scoped>
-
+<style>
+  .burgeon-collapse > .burgeon-collapse-item > .burgeon-collapse-header{
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 24px;
+    font-size: 12px;
+    height: 28px;
+    font-weight: normal;
+    color: #1f2d3d;
+    background: #f8f7f7;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: solid 1px #b4b4b4
+  }
+  .burgeon-collapse{
+    margin-bottom: 10px;
+  }
 </style>
