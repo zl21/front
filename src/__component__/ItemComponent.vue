@@ -220,15 +220,13 @@
           item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
         }
         item.event = Object.assign({}, this.items.event);
+
         return item;
       },
       filterList() {
         // 气泡选中过滤条件
         return this.filterDate;
       }
-    },
-    watch: {
-
     },
     methods: {
       valueChange() { // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步

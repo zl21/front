@@ -1,38 +1,7 @@
 /* eslint-disable no-console */
 <template>
   <div>
-    <!-- 需要下拉 -->
-    <DownComponent
-      v-if="searchFoldnum>0"
-      :title="title"
-      :set-height="setHeight"
-      :search-foldnum="searchFoldnum"
-    >
-      <div
-        slot="dwonContent"
-        class="FormItemComponent"
-        :style="setWidth"
-      >
-        <div
-          v-for="(item,index) in dataColRol"
-          v-show="item.show !== false"
-          :key="index"
-          class="FormItemComponent-item"
-          :style="setDiv(item)"
-        >
-          <component
-            :is="item.component"
-            :ref="'component_'+index"
-            :index="index"
-            :formIndex="formIndex"
-            :type="type"
-            :items="item.item"
-            @inputChange="inputChange"
-          />
-        </div>
-      </div>
-    </DownComponent>
-    <div
+   <div
       v-if="searchFoldnum === 0"
       class="FormItemComponent"
       :style="setWidth"
@@ -48,7 +17,6 @@
           :is="item.component"
           :ref="'component_'+index"
           :index="index"
-          :formIndex="formIndex"
           :type="type"
           :items="item.item"
           @inputChange="inputChange"
@@ -60,29 +28,26 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import DownComponent from './DownComponent';
 
 
   export default {
     name: 'FormItemComponent',
-    components: {
-      DownComponent
-    },
     computed: {
-      FormItemLists() {
-        const arr = JSON.parse(JSON.stringify(this.formItemLists));
-        arr.map((temp, index) => {
-          temp.component = this.formItemLists[index].component;
-          temp.item.event = this.formItemLists[index].item.event;
-          temp.item.props = this.formItemLists[index].item.props;
-          return temp;
-        });
-        // 兼容 tab 切换
-        this.newFormItemLists = arr;
-        return arr;
+      FormItemLists: {
+        get:function () {
+          const arr = JSON.parse(JSON.stringify(this.formItemLists));
+          this.newFormItemLists = arr.concat([]);
+          return arr;
+
+        },
+        set:function(newValue){
+          this.newFormItemLists = newValue;
+        }
+
       },
       // 计算属性的 getter
       dataColRol() {
+       this.newFormItemLists = this.formItemLists.concat([]);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);
@@ -137,26 +102,29 @@
         default() {
           return '';
         }
+      },
+      mountdataForm:{
+        type: Function,
+        default() {
+          return '';
+        }
       }
     },
     data() {
       return {
-        newFormItemLists: [],
         indexItem: -1,
+        newFormItemLists:[],
         setHeight: 34
       };
     },
     mounted() {
+      let data = this.dataProcessing();
+      // 传值默认data
+      this.mountdataForm(data)
     },
     created() {
     },
     watch: {
-      FormItemLists: {
-        handler(val) {
-          this.newFormItemLists = val;
-        },
-        deep: true
-      },
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {

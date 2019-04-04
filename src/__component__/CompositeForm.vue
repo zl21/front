@@ -18,7 +18,10 @@
           <div slot="content">
             <FormItemComponent
               :form-item-lists="item.childs"
-              :formIndex = "index"
+              :ref="'FormComponent_'+index"
+              :mountdataForm = "mountdataForm"
+              :key = "index"
+              @formDataChange ="formDataChange"
               :type = "type"
               :default-column="defaultData.objviewcol"
             />
@@ -27,7 +30,11 @@
       </Collapse>
     </template>
     <template v-if="type === ''">
-      <FormItemComponent :form-item-lists="computdefaultData" />
+      <FormItemComponent
+      @formDataChange ="formDataChange"
+      :mountdataForm = "mountdataForm"
+      ref="FormComponent_0"
+      :form-item-lists="computdefaultData" />
     </template>
   </div>
 </template>
@@ -57,54 +64,109 @@
         default() {
           return '';
         }
+      },
+      moduleFormType:{
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      updateForm:{
+        type:Function,
+        default() {
+          return '';
+        }
       }
     },
     data() {
       return {
-        newdefaultData: {},
+        newdefaultData:[],
+        formData:{},
+        defaultFormData:{},
         expand: 'expand'
       };
     },
     computed: {
-      computdefaultData() {
-        let items = [];
-        // 有面板的数据
-        if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
-          items = this.defaultData.addcolums.reduce((array, current) => {
-            let tem = [];
-            if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
-              tem = current.childs.reduce((array2, current2, itemIndex2) => {
-                const option = this.reduceForm(array2, current2, itemIndex2);
-                array2.push(option);
-                return array2;
+      computdefaultData: {
+            get:function(){
+              console.log('computdefaultData');
+              let items = [];
+            // 有面板的数据
+            if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
+              items = this.defaultData.addcolums.reduce((array, current,index) => {
+                let tem = [];
+                if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
+                  tem = current.childs.reduce((array2, current2, itemIndex2) => {
+                    current2.formIndex = index;
+                    const option = this.reduceForm(array2, current2, itemIndex2);
+                    array2.push(option);
+                    return array2;
+                  }, []);
+                }
+                array.push({
+                  childs: tem,
+                  hrdisplay: current.hrdisplay,
+                  parentdesc: current.parentdesc,
+                  parentname: current.parentname
+                });
+                return array;
+              }, []);
+            } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
+              // 表单的数据
+              items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
+                current.formIndex = 'inpubobj';
+                const option = this.reduceForm(array, current, itemIndex);
+                array.push(option);
+                return array;
               }, []);
             }
-            array.push({
-              childs: tem,
-              hrdisplay: current.hrdisplay,
-              parentdesc: current.parentdesc,
-              parentname: current.parentname
-            });
-            return array;
-          }, []);
-          this.newdefaultData = items;
-        } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
-          // 表单的数据
-          items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
-            const option = this.reduceForm(array, current, itemIndex);
-            array.push(option);
-            return array;
-          }, []);
-          this.newdefaultData = items;
-        }
-        return this.newdefaultData;
-      }
+            return items;
+          },
+          set:function(val){
+              return val;
+          }
+
+      },
+
+    },
+    watch:{
+          formData:{
+            handler(val, old) {
+                if( JSON.stringify(val) !== JSON.stringify(this.defaultFormData)){
+                  console.log();
+
+                 if( this.moduleFormType === 'H'){
+                    //  if( this.type.length >0 ){
+                    //     this.updateTableData(val);
+                    //  } else {
+                    //    this.updatePanelData(val);
+                    //  }
+                 }else{
+                      //  this.updateFormDataForRefTable(val);
+                 }
+
+                }
+
+            },
+            deep: true
+
+
+          }
+
+
     },
     methods: {
       CollapseClose(index) {
-        this.newdefaultData[index].hrdisplay = '';
       },
-      reduceForm(array, current) {
+      Comparison(obj, obj2){
+        
+      },
+      mountdataForm(value){
+            // 默认值
+        this.defaultFormData = Object.assign(this.defaultFormData,value);
+        console.log(' 默认值' );
+      },
+      reduceForm(array, current, index) {
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -134,7 +196,7 @@
                       tableid: item.props.fkobj.reftableid
                     },
                     success: (res) => {
-                      this.freshDropDownPopFilterData(res, index);
+                      this.freshDropDownPopFilterData(res, index ,current);
                     }
                   });
                 }
@@ -153,7 +215,7 @@
                   tableid: item.props.fkobj.reftableid
                 },
                 success: (res) => {
-                  this.freshDropDownPopFilterData(res, index);
+                  this.freshDropDownPopFilterData(res, index ,current);
                 }
               });
             },
@@ -166,7 +228,7 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res);
+                  this.freshDropDownSelectFilterData(res, index , current);
                 }
               });
             },
@@ -178,8 +240,7 @@
                   fixedcolumns: {}
                 },
                 success: (res) => {
-                  console.log('000');
-                  this.freshDropDownSelectFilterAutoData(res);
+                  this.freshDropDownSelectFilterAutoData(res, index , current);
                 }
               });
             },
@@ -192,7 +253,7 @@
                   range: $this.pageSize
                 },
                 success: (res) => {
-                  this.freshDropDownSelectFilterData(res);
+                  this.freshDropDownSelectFilterData(res, index , current);
                 }
               });
             }
@@ -206,6 +267,7 @@
         return obj;
       },
       checkDisplay(item) {
+        // 组件显示类型
         let str = '';
         if (!item.display || item.display === 'text' || item.display === 'textarea') {
           str = 'input';
@@ -245,7 +307,8 @@
 
         return str;
       },
-      defaultValue(item) { // 设置表单的默认值
+      defaultValue(item) {
+        // 设置表单的默认值
         if (item.valuedata === 'N') {
           return false;
         } if (item.valuedata === 'Y') {
@@ -254,7 +317,7 @@
         return item.valuedata;
       },
       propsType(current, item) {
-        // input
+        // 表单 props
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
@@ -317,15 +380,17 @@
         }
 
 
-        if (current.display === 'OBJ_FK') {
-          switch (current.fkobj.searchmodel) {
+        if (current.display === 'text') {
+          switch (current.fkdisplay) {
           case 'drp':
             item.props.single = true;
-            item.props.defaultSelected = this.defaultValue(current);
+            item.props.data = {};
+            //item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mrp':
             item.props.single = false;
-            item.props.defaultSelected = this.defaultValue(current);
+            item.props.data = {};
+            //item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             item.props.fkobj = current.fkobj;
@@ -345,36 +410,54 @@
         this.getTableQueryForForm(this.searchData);
       },
       formDataChange(data) { // 表单数据修改
-        if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
-          this.updateFormData(data);
-        }
+        this.formData = data;
       },
-      freshDropDownPopFilterData(res, index) { // 外键下拉时，更新下拉数据
-        // this.formItemsLists[index].item.props.datalist = res.data.data;
+      freshDropDownPopFilterData(res, index ,current) { // 外键下拉时，更新下拉数据
         if (res.length > 0) {
           res.forEach((item) => {
             item.label = item.value;
             item.value = item.key;
             item.delete = true;
           });
-          this.formItemsLists[index].item.props.datalist = res;
-        } else {
-          this.formItemsLists[index].item.props.datalist = res;
+          let item = []
+          if( current.formIndex !== 'inpubobj'){
+            item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+          } else {
+            item = this.$refs[`FormComponent_0`].newFormItemLists;
+          }
+
+          item[index].item.props.datalist = res;
         }
       },
-      freshDropDownSelectFilterData(res, index) { // 外键下拉时，更新下拉数据
-        // this.formItemsLists[index].item.props.data = res.data.data;
-        // this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
-        // this.formItemsLists = this.formItemsLists.concat([]);
+      freshDropDownSelectFilterData(res, index ,current) { // 外键下拉时，更新下拉数据
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+           item[index].item.props.totalRowCount = res.data.data.totalRowCount;
+           item[index].item.props.data = res.data.data;
       },
-      freshDropDownSelectFilterAutoData(res, index) { // 外键的模糊搜索数据更新
-        // this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
-        // this.formItemsLists[index].item.props.AutoData = res.data.data;
-        // this.formItemsLists = this.formItemsLists.concat([]);
+      freshDropDownSelectFilterAutoData(res, index ,current) { // 外键的模糊搜索数据更新
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+           item[index].item.props.hidecolumns = ['id', 'value'];
+           item[index].item.props.AutoData = res.data.data;
+
       },
       lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
-        // this.formItemsLists[index].item.value = errorValue.toUpperCase();
-        // this.formItemsLists = this.formItemsLists.concat([]);
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+            item.item.value = errorValue.toUpperCase();
       }
     },
     mounted() {
