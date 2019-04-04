@@ -15,6 +15,8 @@
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
+      @formChange="formChange"
+      @InitializationForm="initForm"
     />
     <component
       :is="'CompositeFormPanel'"
@@ -25,6 +27,8 @@
       class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"
+      @formChange="formPanelChange"
+      @InitializationForm="initFormPanel"
     />
     <component
       :is="'TableDetailCollection'"
@@ -44,6 +48,7 @@
   import compositeForm from './CompositeForm';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
+  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     data() {
@@ -105,7 +110,41 @@
           Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
           Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
         }
-      }
+      },
+      formChange(val) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        const obj = {};
+        obj[tableName] = val;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        }
+      },
+      initForm(val) {
+        const { tableName } = this;
+        const obj = {};
+        obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+      },
+      formPanelChange(val) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        const obj = {};
+        obj[tableName] = val;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        }
+      },
+      initFormPanel(val) {
+        const { tableName } = this;
+        const obj = {};
+        obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+      },
     }
   };
 </script>
