@@ -69,6 +69,7 @@
           :columns="columns"
           :data="data"
           :total-data="totalData"
+          @on-row-click="tableClick"
         />
         <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
       </div>
@@ -93,6 +94,7 @@
   const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
+  const TABLE_SELECTED_ROW = 'tableSelectedRow'; // emit 选中的行
 
 
   export default {
@@ -387,6 +389,11 @@
               regx: this.inputRegx(cellData),
               maxlength: cellData.length
             },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
             on: {
               'on-change': (event, data) => {
                 this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
@@ -413,6 +420,11 @@
                 ele => ele.limitdesc === params.row[cellData.colname]
               )[0].limitdis : null
             },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
             on: {
               'on-change': (currentValue, data) => {
                 const currentCheck = cellData.combobox.filter(ele => ele.limitdis === currentValue);
@@ -424,7 +436,6 @@
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
             }
-
           })
         ]);
       },
@@ -442,6 +453,11 @@
                     ele => ele.limitdesc === params.row[cellData.colname]
                   )[0].limitval
                   : null
+              },
+              nativeOn: {
+                click: (e) => {
+                  e.stopPropagation();
+                }
               },
               on: {
                 'on-change': (event, data) => {
@@ -472,6 +488,11 @@
               transfer: true,
               AutoData: this.fkAutoData,
               hidecolumns: ['id', 'value']
+            },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
             },
             on: {
               'on-popper-show': () => {
@@ -556,6 +577,11 @@
               type: cellData.display === 'OBJ_DATENUMBER' ? 'date' : 'datetime',
               transfer: true
             },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
             on: {
               'on-change': (event, dateType, data) => {
                 let value = event;
@@ -583,6 +609,11 @@
               // value: new Date(Date.parse(`${new Date().getFullYear()} - ${params.row[cellData.colname]}`.replace(/-/g, '/'))),
               transfer: true
             },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
             on: {
               'on-change': (event, dateType, data) => {
                 this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
@@ -600,7 +631,7 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-
+              event.stopPropagation();
             }
           }
         });
@@ -624,6 +655,14 @@
           defaultData.push(data);
         }
         return defaultData;
+      },
+      tableClick(data, index, event, a, b, c) {
+        
+         //   event.stopPropagation();
+              //   event.preventDefault();
+      },
+      tabledblClick(data, index) {
+
       },
       inputRegx(cellData) {
         // 输入框正则
