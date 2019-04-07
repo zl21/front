@@ -13,7 +13,10 @@
             @on-change="pageChangeEvent"
             @on-page-size-change="pageSizeChangeEvent"
           />
-          <ul class="detail-buttons">
+          <ul
+            v-if="!isHorizontal"
+            class="detail-buttons"
+          >
             <a
               v-for="item in buttonGroups"
               :key="item.name"
@@ -481,6 +484,9 @@
                 this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
+                if (!value.inputValue) {
+                  value.transferDefaultSelected = [];
+                }
                 this.fkAutoData = [];
                 fkFuzzyquerybyak({
                   searchObject: {
@@ -511,21 +517,25 @@
                   // 当选择模糊搜索结果的时候
                   const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
                   value.inputValue = autoData[0].value;
+                  value.transferDefaultSelected = [{
+                    ID: autoData[0].id,
+                    Label: autoData[0].value
+                  }];
                 }
                 this.fkAutoData = [];
                 let ids = null;
-                if (value.transferDefaultSelected) {
+                if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                this.putDataFromCell(value.transferDefaultSelected ? ids : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
                 this.fkAutoData = [];
                 let ids = null;
-                if (value.transferDefaultSelected) {
+                if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                this.putDataFromCell(value.transferDefaultSelected ? ids : null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-clear': (value) => {
                 this.fkAutoData = [];
@@ -804,7 +814,7 @@
 
 <style scoped lang="less">
 .TableDetailCollection {
-  margin: 0 5px 15px 5px;
+  margin: 10px 5px 15px 5px;
   .detail-collection {
     .detail-top {
       margin-bottom: 10px;
