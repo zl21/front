@@ -188,7 +188,6 @@
             if(Object.keys(val).length < 1){
               return false;
             }
-            console.log(val,'val');
             let arr = [];
                 arr = val.reduce((item ,current) => {
                if(current.value === '' || current.value === undefined){

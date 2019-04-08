@@ -173,8 +173,6 @@
            item.push(`请输入${this.VerificationForm[current]}`)
             return item;
         },[]);
-
-        console.log(arr);
         this.$emit('VerifyMessage', arr);
 
       },
@@ -229,7 +227,6 @@
               // this.formItemsLists = this.formItemsLists.concat([]);
             },
             'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
-              console.log(item);
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
@@ -286,7 +283,6 @@
       },
       searchClickData() {
         // 按钮查找
-        console.log('需要查找吗');
       },
       checkDisplay(item) {
         // 组件显示类型
