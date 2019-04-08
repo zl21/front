@@ -284,7 +284,7 @@
       },
       searchClickData() {
         // 按钮查找
-        this.$emit('enter');
+        this.$emit('on-formEnter');
       },
       checkDisplay(item) {
         // 组件显示类型
