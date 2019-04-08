@@ -85,6 +85,7 @@
   } from '../constants/fkHttpRequest';
   import buttonmap from '../assets/js/buttonmap';
   import Dialog from './ComplexsDialog';
+  import dataProp from '../__config__/props.config';
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -129,7 +130,7 @@
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
-          // image: { tag: 'img', event: this.timePickerRender }
+          image: { tag: 'Poptip', event: this.imageRender }
         }, // 标签映射
         beforeSendData: {}, // 之前的数据
         afterSendData: {}, // 改后的数据
@@ -147,7 +148,7 @@
         default: true
       },
       tableHeight: {
-        // 表哥高度 默认300px
+        // 表格高度 默认300px
         type: Number,
         default: 300
       },
@@ -374,6 +375,10 @@
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
+          if (cellData.display === 'image') {
+            // 不可编辑话 图片也是能照常render出来的
+            return this.imageRender(cellData, this.DISPLAY_ENUM[cellData.display].tag)
+          }
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
@@ -583,11 +588,7 @@
               width: '100px'
             },
             props: {
-              // optionTip: true,
-              show: true,
-              filterTip: true,
-              AuotData: [],
-              hideColumnsKey: ['id'],
+              ...dataProp[tag].props,
               ...cellData
             },
             nativeOn: {
@@ -616,10 +617,12 @@
                     tableid: item.props.fkobj.reftableid
                   },
                   success: (res) => {
-                    // this.freshDropDownPopFilterData(res, index, current);
+                    this.freshDropDownPopFilterData(res, cellData, tag);
                   }
                 });
               },
+              '@on-ok': (event, value) => {
+              }
             //   'on-popper-show': () => {
             //     this.fkDropPageInfo.currentPageIndex = 1;
             //     this.fkAutoData = [];
@@ -760,6 +763,50 @@
             }
           }
         });
+      },
+      imageRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '40px'
+            },
+            props: {
+              trigger: 'hover',
+              transfer: true,
+              content: 'content'
+            },
+            scopedSlots: {
+              default: () => h('img', {
+                style: {
+                  height: '20px'
+                },
+                domProps: {
+                  src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
+                }
+              }),
+              content: () => h('img', {
+                style: {
+                  width: '150px',
+                  'vertical-align': 'middle',
+                  padding: '8px 0px'
+                },
+                domProps: {
+                  src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
+                }
+              }),
+            },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
+            // on: {
+            //   'on-change': (event, dateType, data) => {
+            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
+            // }
+          })
+        ]);
       },
       dropDefaultSelectedData(params, cellData, tag) {
         // drp mrp 初始数据赋值
@@ -952,6 +999,12 @@
         }
         this.pageInfo.pageSize = index;
         this.getTabelList();
+      },
+      isJsonString(str) {
+        if (typeof JSON.parse(str) === 'object') {
+          return true;
+        }
+        return false;
       },
       // 深拷贝
       deepClone(source) {
