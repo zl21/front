@@ -58,15 +58,30 @@
         let obj = {};
         this.VerificationForm = [];
         obj = this.newFormItemLists.reduce((option, items) => {
-          option[items.item.field] = items.item.value;
-          if( items.item.required === true ){
-             // 赋值 需要校验的 值
-             this.VerificationForm.push({
-               value: items.item.value,
-               key : items.item.field,
-               label: items.item.title
-             });
+          if(Array.isArray(items.item.value)){
+             if(Object.hasOwnProperty.call(items.item.value[0],'ID')){
+               option[items.item.field] = [items.item.value[0].ID];
+               if( items.item.required === true ){
+                 // 赋值 需要校验的 值
+                 this.VerificationForm.push({
+                   value:items.item.value[0].ID,
+                   key : items.item.field,
+                   label: items.item.title
+                 });
+               }
+             }
+          }else{
+            option[items.item.field] = items.item.value;
+            if( items.item.required === true ){
+              // 赋值 需要校验的 值
+              this.VerificationForm.push({
+                value: items.item.value,
+                key : items.item.field,
+                label: items.item.title
+              });
+            }
           }
+
           return option;
         }, {});
         return obj;
@@ -173,7 +188,7 @@
             if(Object.keys(val).length < 1){
               return false;
             }
-
+            console.log(val,'val');
             let arr = [];
                 arr = val.reduce((item ,current) => {
                if(current.value === '' || current.value === undefined){

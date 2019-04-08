@@ -173,12 +173,16 @@
            item.push(`请输入${this.VerificationForm[current]}`)
             return item;
         },[]);
+
+        console.log(arr);
         this.$emit('VerifyMessage', arr);
 
       },
       mountdataForm(value){
             // 获取表单默认值
         this.defaultFormData = Object.assign(this.defaultFormData,value);
+        //console.log(this.defaultFormData);
+
         this.$emit('InitializationForm', this.defaultFormData);
       },
       reduceForm: function (array, current, index) {
