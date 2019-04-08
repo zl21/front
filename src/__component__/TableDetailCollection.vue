@@ -84,6 +84,7 @@
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
   import buttonmap from '../assets/js/buttonmap';
+  import Dialog from './ComplexsDialog';
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -124,9 +125,11 @@
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mop: { tag: 'AttachFilter', event: this.attachFilterRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
+          // image: { tag: 'img', event: this.timePickerRender }
         }, // 标签映射
         beforeSendData: {}, // 之前的数据
         afterSendData: {}, // 改后的数据
@@ -245,7 +248,9 @@
       },
       isMainTableReadonly() {
         if (this.type === pageType.Vertical) {
-          return this.mainFormInfo.buttonsData.data.objreadonly;
+          if (this.mainFormInfo.buttonsData) {
+            return this.mainFormInfo.buttonsData.data.objreadonly;
+          }
         }
         return false;
       }
@@ -369,11 +374,16 @@
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
-
           return null;
         }
         if (cellData.isfk && cellData.fkdisplay) {
+          if (!this.DISPLAY_ENUM[cellData.fkdisplay]) {
+            return null;
+          }
           return this.DISPLAY_ENUM[cellData.fkdisplay].event(cellData, this.DISPLAY_ENUM[cellData.fkdisplay].tag);
+        }
+        if (!this.DISPLAY_ENUM[cellData.display]) {
+          return null;
         }
         return this.DISPLAY_ENUM[cellData.display].event(cellData, this.DISPLAY_ENUM[cellData.display].tag);
       },
@@ -562,6 +572,121 @@
                 this.fkAutoData = [];
                 this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
+            }
+          })
+        ]);
+      },
+      attachFilterRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            props: {
+              // optionTip: true,
+              show: true,
+              filterTip: true,
+              AuotData: [],
+              hideColumnsKey: ['id'],
+              ...cellData
+            },
+            nativeOn: {
+              click: (e) => {
+                e.stopPropagation();
+              }
+            },
+            scopedSlots: {
+              daigo: props => h('div', [
+                h(Dialog, {
+                  props: {
+                    fkobj: {
+                      refobjid: cellData.refobjid,
+                      reftable: cellData.reftable,
+                      reftableid: cellData.reftableid
+                    }
+                  }
+                })
+              ])
+            },
+            on: {
+              'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
+                console.log(item);
+                fkGetMultiQuery({
+                  searchObject: {
+                    tableid: item.props.fkobj.reftableid
+                  },
+                  success: (res) => {
+                    // this.freshDropDownPopFilterData(res, index, current);
+                  }
+                });
+              },
+            //   'on-popper-show': () => {
+            //     this.fkDropPageInfo.currentPageIndex = 1;
+            //     this.fkAutoData = [];
+            //     this.getFKList(params, cellData);
+            //   },
+            //   'on-page-change': (value) => {
+            //     this.fkDropPageInfo.currentPageIndex = value;
+            //     this.getFKList(params, cellData);
+            //   },
+            //   'on-input-value-change': (data, value) => {
+            //     if (!value.inputValue) {
+            //       value.transferDefaultSelected = [];
+            //     }
+            //     this.fkAutoData = [];
+            //     fkFuzzyquerybyak({
+            //       searchObject: {
+            //         ak: data,
+            //         colid: this.dataSource.row[params.index][cellData.colname].colid,
+            //         fixedcolumns: {
+            //           whereKeys: this.getMainRefobjid(params, cellData)
+            //         }
+            //       },
+            //       success: (res) => {
+            //         this.fkAutoData = res.data.data;
+            //         const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+            //         if (autoData.length === 0) {
+            //           // autodata中没有 清空输入框
+            //           value.notAutoData = true;
+            //         } else {
+            //           delete value.notAutoData;
+            //         }
+            //       }
+            //     });
+            //   },
+            //   'on-blur': (event, value) => {
+            //     if (value.notAutoData) {
+            //       // autodata中没有 清空输入框 及上次选中的值
+            //       value.inputValue = '';
+            //       delete value.notAutoData;
+            //     } else if (this.fkAutoData.length > 0) {
+            //       // 当选择模糊搜索结果的时候
+            //       const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+            //       value.inputValue = autoData[0].value;
+            //       value.transferDefaultSelected = [{
+            //         ID: autoData[0].id,
+            //         Label: autoData[0].value
+            //       }];
+            //     }
+            //     this.fkAutoData = [];
+            //     let ids = null;
+            //     if (value.transferDefaultSelected.length > 0) {
+            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+            //     }
+            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   },
+            //   'on-fkrp-selected': (data, value) => {
+            //     this.fkAutoData = [];
+            //     let ids = null;
+            //     if (value.transferDefaultSelected.length > 0) {
+            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+            //     }
+            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   },
+            //   'on-clear': (value) => {
+            //     this.fkAutoData = [];
+            //     this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
             }
           })
         ]);
@@ -810,7 +935,6 @@
           });
           return ele;
         });
-        console.log(verifyData);
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
       pageChangeEvent(index) {

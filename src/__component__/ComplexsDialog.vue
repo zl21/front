@@ -29,18 +29,22 @@
   export default {
     name: 'ComplexSelect',
     props: {
-      fkobj: Object,
-      default() {
-        return {};
+      fkobj: {
+        type: Object,
+        default() {
+          return {};
+        }
       },
-      filter: Object,
-      default() {
-        return {};
+      filter: {
+        type: Object,
+        default() {
+          return {};
+        }
       },
       canChinese: {
-          type: Boolean,
-          default: true
-      }//是否可以模糊搜索中文
+        type: Boolean,
+        default: true
+      }// 是否可以模糊搜索中文
     },
     computed: {
       Tree() {
@@ -51,7 +55,7 @@
     data() {
       return {
         treedata: [], // 左边shu
-        treeSelectData:[],
+        treeSelectData: [],
         componentData: [
           {
             tab: '筛选结果',
@@ -140,16 +144,16 @@
         }
         this.IN = data.ids || [];
         if (index === 1 && type !== 'search') {
-          this.resultData.list =JSON.parse(JSON.stringify(this.text.result));
-          this.resultData.list.map((item)=>{
-              if(item.exclude){
-                item.exclude = false;
-              }else{
-                item.exclude = true;
-              }
-              item.string = item.screen_string;
-              item.ID = item.id_list;
-              return item;
+          this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
+          this.resultData.list.map((item) => {
+            if (item.exclude) {
+              item.exclude = false;
+            } else {
+              item.exclude = true;
+            }
+            item.string = item.screen_string;
+            item.ID = item.id_list;
+            return item;
           });
           this.resultData.total = data.data.total;
         }
@@ -184,15 +188,15 @@
                   },
                   on: {
                     click: () => {
-                      let row = this.componentData[1].list[key-1];
-                       this.NOTIN.push(row.ID);
+                      const row = this.componentData[1].list[key - 1];
+                      this.NOTIN.push(row.ID);
                       this.text.result.push({
-                          exclude: false,
-                          id_list:row.ID,
-                          screen:row.ID,
-                          screen_string:row[this.akname]
+                        exclude: false,
+                        id_list: row.ID,
+                        screen: row.ID,
+                        screen_string: row[this.akname]
                       });
-                      this.deleteLi(key-1, row,'td');
+                      this.deleteLi(key - 1, row, 'td');
                     }
                   }
                 })
@@ -229,7 +233,7 @@
       },
       changePage(index) {
         // 点击页面
-        if( index === this.sendMessage.PAGENUM){
+        if (index === this.sendMessage.PAGENUM) {
           return false;
         }
         this.sendMessage.PAGENUM = index;
@@ -237,8 +241,8 @@
       },
       changePageSize(index) {
         // 点击显示条数
-        if(index === this.sendMessage.PAGESIZE){
-            return false;
+        if (index === this.sendMessage.PAGESIZE) {
+          return false;
         }
         this.sendMessage.PAGESIZE = index;
         this.multipleSelectionTable(this.sendMessage, this.index);
@@ -263,10 +267,10 @@
           if (checkd) {
             this.NOTIN.push(row.ID);
             this.text.result.push({
-                exclude: false,
-                id_list:row.ID,
-                screen:row.ID,
-                screen_string:row[this.akname]
+              exclude: false,
+              id_list: row.ID,
+              screen: row.ID,
+              screen_string: row[this.akname]
             });
           }
         } else {
@@ -274,10 +278,10 @@
           if (checkdIN) {
             this.IN.push(row.ID);
             this.text.result.push({
-                exclude: true,
-                id_list:row.ID,
-                screen:row.ID,
-                screen_string:row[this.akname]
+              exclude: true,
+              id_list: row.ID,
+              screen: row.ID,
+              screen_string: row[this.akname]
             });
           }
         }
@@ -305,9 +309,9 @@
         this.sendMessage.GLOBAL = str[0].trim();
         this.sendMessage.CONDITION = {};
         this.clearIndexPage();
-        this.multipleSelectionTable(this.sendMessage, this.index ,'search');
+        this.multipleSelectionTable(this.sendMessage, this.index, 'search');
       },
-      clearIndexPage(){
+      clearIndexPage() {
         // 清除页面选中值
         this.sendMessage.PAGESIZE = 50;
         this.sendMessage.PAGENUM = 1;
@@ -316,43 +320,41 @@
         this.checkbox = value;
       },
       transfertwo() {
-       // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
+        // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         if (this.HRORG_ID.length > 0) {
           console.log(!this.checkbox);
-          if(!this.checkbox){
+          if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
             this.EXCLUDE = '';
-             this.HRORG_ID.forEach((x) =>{
+            this.HRORG_ID.forEach((x) => {
               this.sendMessage.CONDITION.push({
-                [this.AKNAME] : [x]
-              })
-            });
-            this.text.result.push({
-                exclude: true,
-                id_list:this.HRORG_ID,
-                screen:this.sendMessage.CONDITION,
-                screen_string:this.HRORG_STRING.join(',')
-              })
-            this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
-          }else{
-            this.EXCLUDE = [];
-            this.sendMessage.CONDITION = '';
-            this.HRORG_ID.forEach((x) =>{
-              this.EXCLUDE.push({
-                [this.AKNAME] : [x]
+                [this.AKNAME]: [x]
               });
             });
             this.text.result.push({
-                exclude: false,
-                id_list:this.HRORG_ID,
-                screen:this.EXCLUDE,
-                screen_string:this.HRORG_STRING.join(',')
-              })
+              exclude: true,
+              id_list: this.HRORG_ID,
+              screen: this.sendMessage.CONDITION,
+              screen_string: this.HRORG_STRING.join(',')
+            });
+            this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+          } else {
+            this.EXCLUDE = [];
+            this.sendMessage.CONDITION = '';
+            this.HRORG_ID.forEach((x) => {
+              this.EXCLUDE.push({
+                [this.AKNAME]: [x]
+              });
+            });
+            this.text.result.push({
+              exclude: false,
+              id_list: this.HRORG_ID,
+              screen: this.EXCLUDE,
+              screen_string: this.HRORG_STRING.join(',')
+            });
           
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
-
           }
-          
         } else {
           this.sendMessage.CONDITION = '';
           this.sendMessage.EXCLUDE = '';
@@ -363,34 +365,30 @@
       transfer() {
         this.multipleScreenResultCheck(this.sendMessage, 1);
       },
-      deleteLi(index, row ,type) {
-        if(type !== 'td'){
+      deleteLi(index, row, type) {
+        if (type !== 'td') {
           this.text.result.splice(index, 1);
         }
         if (!row.exclude) {
-          const indexI = this.IN.findIndex((x)=>x=== row.ID);
+          const indexI = this.IN.findIndex(x => x === row.ID);
           if (indexI !== -1) {
             this.IN.splice(indexI, 1);
           }
         } else {
-          const indexI = this.NOTIN.findIndex((x)=>x=== row.ID);
+          const indexI = this.NOTIN.findIndex(x => x === row.ID);
           if (indexI !== -1) {
             this.NOTIN.splice(indexI, 1);
           }
         }
-        if (this.text.result.length > 0 ) {
-         this.multipleScreenResultCheck(this.sendMessage, 1);
+        if (this.text.result.length > 0) {
+          this.multipleScreenResultCheck(this.sendMessage, 1);
+        } else if (type === 'td') {
+          this.multipleScreenResultCheck(this.sendMessage, 1);
         } else {
-          if( type ==='td'){
-            this.multipleScreenResultCheck(this.sendMessage, 1);
-          }else{
-            this.resultData.total = 0;
-            this.text.result = [];
-            this.resultData.list = [];
-            this.clearIndexPage();
-
-          }
-          
+          this.resultData.total = 0;
+          this.text.result = [];
+          this.resultData.list = [];
+          this.clearIndexPage();
         }
       },
       deleBtn() {
@@ -402,7 +400,6 @@
         this.sendMessage.CONDITION = '';
         this.EXCLUDE = '';
         this.clearIndexPage();
-
       },
       saveBtn(value) {
         if (value.length < 1) {
@@ -455,7 +452,7 @@
           }
         });
       },
-      multipleSelectionTable(obj, index ,name) {
+      multipleSelectionTable(obj, index, name) {
         multipleComple.multipleSelectionTable({
           searchObject: {
             param: {
@@ -467,7 +464,7 @@
             }
           },
           success: (res) => {
-            this.dateRestructure(res.data.data, index ,name);
+            this.dateRestructure(res.data.data, index, name);
           }
         });
       },
@@ -520,16 +517,15 @@
         const tableData = Object.assign(this.sendMessage, this.fkobj);
         this.sendMessage = tableData;
         this.multipleSelectionTable(tableData, 0);
-        if (Object.prototype.hasOwnProperty.call(this.filter, 'value')){
-          if(this.filter.text){
-                    //  有默认值
+        if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
+          if (this.filter.text) {
+            //  有默认值
             this.text.result = JSON.parse(this.filter.text).result;
-        }
+          }
           //  有默认值
           this.sendMessage = this.filter.value;
           this.multipleScreenResultCheckFiter(this.filter.value, 1);
         }
-        
       }
 
     },
