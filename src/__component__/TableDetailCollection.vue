@@ -617,7 +617,7 @@
                     tableid: item.props.fkobj.reftableid
                   },
                   success: (res) => {
-                    // this.freshDropDownPopFilterData(res, index, current);
+                    this.freshDropDownPopFilterData(res, cellData, tag);
                   }
                 });
               },
@@ -788,6 +788,7 @@
                 style: {
                   width: '150px',
                   'vertical-align': 'middle',
+                  padding: '8px 0px'
                 },
                 domProps: {
                   src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
