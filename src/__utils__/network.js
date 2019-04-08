@@ -23,6 +23,7 @@ axios.interceptors.request.use((config) => {
     config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
     return config;
   }
+  return config;
 });
 
 axios.interceptors.response.use((response) => {
@@ -37,6 +38,28 @@ axios.interceptors.response.use((response) => {
   }
   Promise.reject(error);
 });
+
+export const getGateway = (url) => {
+  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const serviceId = store.state.serviceIdMap;
+  const serviceName = store.state.activeTab.tableName;
+  if (!enableGateWay) {
+    return url;
+  }
+  if (ignoreGateWay.includes(url)) { 
+    return url;
+  }
+  if (globalGateWay.includes(url)) { 
+    url = globalServiceId ? `/${globalServiceId}${url}` : url;
+    return url;
+  }
+  if (serviceId[serviceName] !== 'undefined') {
+    const serviceIdMapApi = serviceId[serviceName];
+    url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+    return url;
+  }
+  return url;
+};
 
 // 当post请求content-Type: application/x-www-form-urlencoded时，需要将JSON参赛转换成如下函数输入的形式。
 export const urlSearchParams = (data) => {
