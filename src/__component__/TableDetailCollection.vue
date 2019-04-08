@@ -120,6 +120,7 @@
           pageSize: 10 // 显示条数
         },
         fkAutoData: [], // 外键关联下拉 模糊搜索数据
+        popFilterData: {}, // mop气泡的特殊数据
         DISPLAY_ENUM: {
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
@@ -604,25 +605,73 @@
                       refobjid: cellData.refobjid,
                       reftable: cellData.reftable,
                       reftableid: cellData.reftableid
-                    }
+                    },
+                    filter: this.popFilterData
                   }
                 })
               ])
             },
             on: {
-              'popper-show': ($this, item, index) => { // 当气泡拉展开时去请求数据
+              'on-show': (value, item) => { // 当气泡拉展开时去请求数据
                 console.log(item);
+                dataProp[tag].props.datalist = [];
                 fkGetMultiQuery({
                   searchObject: {
-                    tableid: item.props.fkobj.reftableid
+                    tableid: cellData.reftableid
                   },
                   success: (res) => {
                     this.freshDropDownPopFilterData(res, cellData, tag);
                   }
                 });
               },
-              '@on-ok': (event, value) => {
-              }
+              'on-ok': ($this, data) => {
+                // debugger;
+                if ($this._data.IN.length > 0) {
+                  const value = `已经选中${$this._data.IN.length}条数据`;
+                  dataProp[tag].props.value = value;
+                  dataProp[tag].props.Selected = $this._data.IN;
+                  // this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+                } else {
+                  dataProp[tag].props.value = '';
+                  dataProp[tag].props.Selected = [];
+                  // this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+                }
+              },
+              'on-popclick': (event, row, targName, $this) => {
+                if (targName !== 'I' && event !== 1) {
+                  // 打开弹窗
+                  $this.showModal = true;
+                  if (event !== 0) {
+                    this.popFilterData = JSON.parse(row.label);
+                  }
+                }
+              },
+              'on-change': (data, data2, value) => {
+                // if (!value.InputVale) {
+                //   value.transferDefaultSelected = [];
+                // }
+                // this.fkAutoData = [];
+                // fkFuzzyquerybyak({
+                //   searchObject: {
+                //     ak: data,
+                //     colid: this.dataSource.row[params.index][cellData.colname].colid,
+                //     fixedcolumns: {
+                //       whereKeys: this.getMainRefobjid(params, cellData)
+                //     }
+                //   },
+                //   success: (res) => {
+                //     this.fkAutoData = res.data.data;
+                //     const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                //     if (autoData.length === 0) {
+                //       // autodata中没有 清空输入框
+                //       value.notAutoData = true;
+                //     } else {
+                //       delete value.notAutoData;
+                //     }
+                //   }
+                // });
+              },
+
             //   'on-popper-show': () => {
             //     this.fkDropPageInfo.currentPageIndex = 1;
             //     this.fkAutoData = [];
@@ -827,6 +876,24 @@
           defaultData.push(data);
         }
         return defaultData;
+      },
+      freshDropDownPopFilterData(res, cellData, tag) {
+        // mop 气泡点击事件
+        if (res.length > 0) {
+          res.forEach((item) => {
+            item.label = item.value;
+            item.value = item.key;
+            item.delete = true;
+          });
+          // let item = [];
+          // if (cellData.formIndex !== 'inpubobj') {
+          //   item = this.$refs[`FormComponent_${cellData.formIndex}`][0].newFormItemLists;
+          // } else {
+          //   item = this.$refs[`FormComponent_0`].newFormItemLists;
+          // }
+
+          dataProp[tag].props.datalist = res;
+        }
       },
       tableSelectedChange(data) {
         const param = {};
