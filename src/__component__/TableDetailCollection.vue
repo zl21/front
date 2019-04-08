@@ -70,6 +70,7 @@
           :data="data"
           :total-data="totalData"
           @on-row-click="tableClick"
+          @on-selection-change="tableSelectedChange"
         />
         <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
       </div>
@@ -656,13 +657,15 @@
         }
         return defaultData;
       },
-      tableClick(data, index, event, a, b, c) {
+      tableSelectedChange(data) {
+        const param = {};
+        const datas = data.reduce((acc, cur) => {
+          acc.push(cur[EXCEPT_COLUMN_NAME]);
+          return acc;
+        }, []);
         
-         //   event.stopPropagation();
-              //   event.preventDefault();
-      },
-      tabledblClick(data, index) {
-
+        param[this.tabPanel[this.tabCurrentIndex].tablename] = datas;
+        this.$emit(TABLE_SELECTED_ROW, param);
       },
       inputRegx(cellData) {
         // 输入框正则
