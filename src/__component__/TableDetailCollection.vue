@@ -69,7 +69,6 @@
           :columns="columns"
           :data="data"
           :total-data="totalData"
-          @on-row-click="tableClick"
           @on-selection-change="tableSelectedChange"
         />
         <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
