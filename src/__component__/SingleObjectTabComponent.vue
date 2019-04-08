@@ -17,6 +17,7 @@
       :default-data="formData.data"
       @formChange="formChange"
       @InitializationForm="initForm"
+      @VerifyMessage="verifyForm"
     />
     <component
       :is="'CompositeFormPanel'"
@@ -29,6 +30,7 @@
       :default-data="panelData.data"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
+      @VerifyMessage="verifyFormPanel"
     />
     <component
       :is="'TableDetailCollection'"
@@ -37,6 +39,10 @@
       :data-source="tableData.data"
       :type="type"
       :readonly="buttonsData.data.objreadonly"
+      @tableBeforeData="tableBeforeData"
+      @tableDataChange="tableDataChange"
+      @tableSelectedRow="tableSelectedRow"
+      @tableVerifyMessage="tableVerifyMessage"
     />
   </div>
 </template>
@@ -126,7 +132,15 @@
         const { tableName } = this;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+        // this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+      },
+      verifyForm(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+      },
+      verifyFormPanel(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       },
       formPanelChange(val) {
         const { tableName } = this;
@@ -145,6 +159,27 @@
         obj[tableName] = val;
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
+      tableBeforeData(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: data });
+      },
+      tableDataChange(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: data });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
+        }
+      },
+      tableSelectedRow(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
+      },
+      tableVerifyMessage(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+      }
     }
   };
 </script>
