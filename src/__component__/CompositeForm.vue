@@ -198,6 +198,7 @@
           event: {
             keydown: (event) => { // 输入框的keydown event, $this
               if (event.keyCode === 13) { // enter回车查询
+
                 this.searchClickData();
               }
             },
@@ -283,6 +284,7 @@
       },
       searchClickData() {
         // 按钮查找
+        this.$emit('enter');
       },
       checkDisplay(item) {
         // 组件显示类型
