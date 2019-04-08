@@ -195,8 +195,7 @@
       }
     }
     .form {
-      margin-bottom: 10px;
-      padding: 4px 10px;
+      padding: 0 10px 8px 10px;
       background-color: #F8F8F8;
     }
     .formPanel {
