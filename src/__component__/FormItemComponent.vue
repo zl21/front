@@ -198,7 +198,7 @@
             } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
               obj[current.item.field] = undefined;
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
-              if (current.item.props.Selected.length > 0) {
+              if (current.item.props.Selected[0] !== undefined) {
                 obj[current.item.field] = current.item.props.Selected;
               } else {
                 obj[current.item.inputname] = current.item.value;
@@ -271,6 +271,9 @@
 .FormItemComponent > div {
   /*border:1px solid #fff;*/
   box-sizing: border-box;
+}
+.itemComponent .burgeon-date-picker{
+    width: 100%;
 }
 .FormItemComponent {
   display: grid;

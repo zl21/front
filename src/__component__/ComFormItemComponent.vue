@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 <template>
   <div>
-   <div
+    <div
       v-if="searchFoldnum === 0"
       class="FormItemComponent"
       :style="setWidth"
@@ -34,19 +34,19 @@
     name: 'FormItemComponent',
     computed: {
       FormItemLists: {
-        get:function () {
+        get() {
           const arr = JSON.parse(JSON.stringify(this.formItemLists));
           this.newFormItemLists = arr.concat([]);
           return arr;
         },
-        set:function(newValue){
+        set(newValue) {
           this.newFormItemLists = newValue;
         }
 
       },
       // 计算属性的 getter
       dataColRol() {
-       this.newFormItemLists = this.formItemLists.concat([]);
+        this.newFormItemLists = this.formItemLists.concat([]);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);
@@ -58,25 +58,25 @@
         let obj = {};
         this.VerificationForm = [];
         obj = this.newFormItemLists.reduce((option, items) => {
-          if(Array.isArray(items.item.value)){
-             if(Object.hasOwnProperty.call(items.item.value[0],'ID')){
-               option[items.item.field] = [items.item.value[0].ID];
-               if( items.item.required === true ){
-                 // 赋值 需要校验的 值
-                 this.VerificationForm.push({
-                   value:items.item.value[0].ID,
-                   key : items.item.field,
-                   label: items.item.title
-                 });
-               }
-             }
-          }else{
+          if (Array.isArray(items.item.value)) {
+            if (Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+              option[items.item.field] = [items.item.value[0].ID];
+              if (items.item.required === true) {
+                // 赋值 需要校验的 值
+                this.VerificationForm.push({
+                  value: items.item.value[0].ID,
+                  key: items.item.field,
+                  label: items.item.title
+                });
+              }
+            }
+          } else {
             option[items.item.field] = items.item.value;
-            if( items.item.required === true ){
+            if (items.item.required === true) {
               // 赋值 需要校验的 值
               this.VerificationForm.push({
                 value: items.item.value,
-                key : items.item.field,
+                key: items.item.field,
                 label: items.item.title
               });
             }
@@ -126,13 +126,13 @@
           return '';
         }
       },
-      mountdataForm:{
+      mountdataForm: {
         type: Function,
         default() {
           return '';
         }
       },
-      VerifyMessage:{
+      verifyMessage: {
         type: Function,
         default() {
           return '';
@@ -142,15 +142,15 @@
     data() {
       return {
         indexItem: -1,
-        newFormItemLists:[],   // 当前form list
-        changeFormData:{},     // 当前form 被改动的key
-        VerificationForm:[],  // 当前form 需要校验的key
+        newFormItemLists: [], // 当前form list
+        changeFormData: {}, // 当前form 被改动的key
+        VerificationForm: [], // 当前form 需要校验的key
         setHeight: 34
       };
     },
     mounted() {
       // 传值默认data
-      this.mountdataForm(this.formDataObject)
+      this.mountdataForm(this.formDataObject);
     },
     created() {
     },
@@ -175,27 +175,27 @@
                 this.hidecolumn(item, i);
               }
             } else {
-             // this.formDataChange();
+              // this.formDataChange();
             }
             return items;
           });
         },
         deep: true
       },
-      VerificationForm:{
+      VerificationForm: {
         handler(val, old) {
-          if( JSON.stringify(val) !== JSON.stringify(old)){
-            if(Object.keys(val).length < 1){
+          if (JSON.stringify(val) !== JSON.stringify(old)) {
+            if (Object.keys(val).length < 1) {
               return false;
             }
             let arr = [];
-                arr = val.reduce((item ,current) => {
-               if(current.value === '' || current.value === undefined){
-                 // 判断必须输入的值是否为空
-                 item[current.key] = current.label;
-               }
-               return item;
-            },{});
+            arr = val.reduce((item, current) => {
+              if (current.value === '' || current.value === undefined) {
+                // 判断必须输入的值是否为空
+                item[current.key] = current.label;
+              }
+              return item;
+            }, {});
             this.VerifyMessage(arr);
           }
         },
@@ -204,8 +204,8 @@
     },
     methods: {
       formDataChange() {
-       // console.log(this.changeFormData,'formDataChange');
-        //this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+        // console.log(this.changeFormData,'formDataChange');
+        // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
       dataProcessing(current) {
         // change 后台传值
@@ -213,12 +213,12 @@
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
             if (current.item.value instanceof Array) { // 结果为数组则为选中项
-             // delete obj[current.item.inputname];
+              // delete obj[current.item.inputname];
               obj[current.item.field] = current.item.value.reduce((sum, temp) => {
                 sum.push(temp.ID); return sum;
               }, []);
             } else { // 否则为输入项
-              //delete obj[current.item.field];
+              // delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) {
@@ -264,7 +264,7 @@
         this.indexItem = index;
         this.newFormItemLists[index].item.value = value;
         this.newFormItemLists = this.newFormItemLists.concat([]);
-        this.dataProcessing(this.newFormItemLists[index],index);
+        this.dataProcessing(this.newFormItemLists[index], index);
       },
       dynamicforcompute(items, json, index) {
         // 被计算 属性 加减乘除

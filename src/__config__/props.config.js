@@ -285,7 +285,14 @@ const AttachFilter = {
     // 定义选中展示的文字的key
     hideColumnsKey: ['id'],
     // 配置弹窗的配置项 model
-    dialog: null,
+    dialog: {
+      model:{
+        mask: true,
+        draggable: true,
+        scrollable: true
+      }
+
+    },
     datalist: [{
       value: '更多筛选',
       lable: 0

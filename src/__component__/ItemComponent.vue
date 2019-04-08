@@ -1,7 +1,10 @@
 <template>
   <div class="ItemComponentRoot">
     <span class="itemLabel">
-      <span v-if="_items.required" class="label-tip">*</span>
+      <span
+        v-if="_items.required"
+        class="label-tip"
+      >*</span>
       {{ _items.title }}:
     </span>
     <div class="itemComponent">
@@ -402,7 +405,6 @@
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
           this._items.event.inputValueChange(value, $this);
         }
-
       },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
@@ -441,7 +443,7 @@
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
-          this._items.event['on-delete']($this, this._items,row.key ,this.index);
+          this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
       attachFilterClear(event, $this) {
@@ -452,24 +454,22 @@
       },
       attachFilterPopperShow($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this,this._items,this.index);
+          this._items.event['popper-show']($this, this._items, this.index);
         }
       },
       attachFilterOk($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          if($this._data.IN >0 ){
-            let value = `已经选中${$this._data.IN}条数据`;
+          if ($this._data.IN > 0) {
+            const value = `已经选中${$this._data.IN.length}条数据`;
             this._items.value = value;
-            this.valueChange();
-            this._items.event['popper-value']($this,value, $this._data.IN, this.index);
-
+            this._items.Selected = $this._data.IN;
+            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
           }
-
         }
       }
     },
     created() {
-      //console.log(this.type,this.formIndex);
+      // console.log(this.type,this.formIndex);
 
     }
   };
