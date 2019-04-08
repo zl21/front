@@ -19,8 +19,8 @@
             <FormItemComponent
               :form-item-lists="item.childs"
               :ref="'FormComponent_'+index"
+              :VerifyMessageForm = "VerifyMessageForm"
               :mountdataForm = "mountdataForm"
-              :VerifyMessage = "VerifyMessage"
               :key = "index"
               @formDataChange ="formDataChange"
               :type = "type"
@@ -33,7 +33,7 @@
     <template v-if="type === ''">
       <FormItemComponent
       @formDataChange ="formDataChange"
-      :VerifyMessage = "VerifyMessage"
+      :VerifyMessageForm = "VerifyMessageForm"
       :mountdataForm = "mountdataForm"
       ref="FormComponent_0"
       :form-item-lists="computdefaultData" />
@@ -166,7 +166,7 @@
         this.$emit('formChange',this.formData);
 
       },
-      VerifyMessage(value){
+      VerifyMessageForm(value){
         // 获取需要校验的表单
         this.VerificationForm = value;
         let arr =Object.keys(this.VerificationForm).reduce((item,current,index) => {
@@ -220,10 +220,19 @@
                 }
               });
             },
-            'popper-value': ($this, value, Selected, index) => { // 当外键下拉展开时去请求数据
-              this.formItemsLists[index].item.value = value;
+            'popper-value': ($this, value, Selected) => { // 当外键下拉展开时去请求数据
+              console.log('popper');
+              let item = []
+              console.log($this, value, Selected,'popper-value');
+              if( current.formIndex !== 'inpubobj'){
+                item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+              } else {
+                item = this.$refs[`FormComponent_0`].newFormItemLists;
+              }
+
+              item[index].item.value = value;
               if (Selected !== 'change') {
-                this.formItemsLists[index].item.props.Selected = Selected;
+                item[index].item.props.Selected = Selected;
               }
               // this.formItemsLists = this.formItemsLists.concat([]);
             },
@@ -451,10 +460,18 @@
               reftableid:current.reftableid
             };
             item.props.datalist = [];
-            item.props.Selected = [];
+            item.props.Selected = [{
+              label:current.refobjid,
+              value:current.valuedata
+            }];
             break;
           default: break;
           }
+        }
+        if( current.display === "image" ){
+          // 待确定
+          item.props.type = 'text';
+          item.props = {};
         }
         return item;
       },

@@ -286,7 +286,8 @@ const AttachFilter = {
     hideColumnsKey: ['id'],
     // 配置弹窗的配置项 model
     dialog: {
-      model:{
+      model: {
+        title: '弹窗多选',
         mask: true,
         draggable: true,
         scrollable: true

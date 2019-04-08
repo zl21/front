@@ -216,9 +216,11 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
+
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
+          console.log(item);
           item.componentType = Dialog;
           item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
         }
@@ -459,10 +461,14 @@
       },
       attachFilterOk($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          if ($this._data.IN > 0) {
+          if ($this._data.IN.length > 0) {
             const value = `已经选中${$this._data.IN.length}条数据`;
             this._items.value = value;
             this._items.Selected = $this._data.IN;
+            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+          } else {
+            this._items.value = '';
+            this._items.Selected = [];
             this._items.event['popper-value']($this, value, $this._data.IN, this.index);
           }
         }

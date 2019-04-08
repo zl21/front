@@ -53,33 +53,43 @@
           return temp;
         }, []);
       },
-      // 计算属性的 后台传值
-      formDataObject() {
-        let obj = {};
-        this.VerificationForm = [];
+      VerificationForm() {
+        let obj = {}; // 当前form 需要校验的key
         obj = this.newFormItemLists.reduce((option, items) => {
           if (Array.isArray(items.item.value)) {
             if (Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
-              option[items.item.field] = [items.item.value[0].ID];
               if (items.item.required === true) {
                 // 赋值 需要校验的 值
-                this.VerificationForm.push({
+                option.push({
                   value: items.item.value[0].ID,
                   key: items.item.field,
                   label: items.item.title
                 });
               }
             }
+          } else if (items.item.required === true) {
+            // 赋值 需要校验的 值
+            option.push({
+              value: items.item.value,
+              key: items.item.field,
+              label: items.item.title
+            });
+          }
+
+          return option;
+        }, []);
+        return obj;
+      },
+      // 计算属性的 后台传值
+      formDataObject() {
+        let obj = {};
+        obj = this.newFormItemLists.reduce((option, items) => {
+          if (Array.isArray(items.item.value)) {
+            if (Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+              option[items.item.field] = [items.item.value[0].ID];
+            }
           } else {
             option[items.item.field] = items.item.value;
-            if (items.item.required === true) {
-              // 赋值 需要校验的 值
-              this.VerificationForm.push({
-                value: items.item.value,
-                key: items.item.field,
-                label: items.item.title
-              });
-            }
           }
 
           return option;
@@ -132,7 +142,7 @@
           return '';
         }
       },
-      verifyMessage: {
+      VerifyMessageForm: {
         type: Function,
         default() {
           return '';
@@ -144,7 +154,6 @@
         indexItem: -1,
         newFormItemLists: [], // 当前form list
         changeFormData: {}, // 当前form 被改动的key
-        VerificationForm: [], // 当前form 需要校验的key
         setHeight: 34
       };
     },
@@ -196,8 +205,9 @@
               }
               return item;
             }, {});
-            this.VerifyMessage(arr);
+            this.VerifyMessageForm(arr);
           }
+          return [];
         },
         deep: true
       }

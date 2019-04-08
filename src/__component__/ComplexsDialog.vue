@@ -101,7 +101,7 @@
         index: 0,
         text: { // 后台 传值
           result: [
-            
+
           ]
         }
       };
@@ -158,7 +158,7 @@
           this.resultData.total = data.data.total;
         }
 
-        
+
         this.componentData[index] = Object.assign(this.componentData[index], data.data);
 
         const header = JSON.parse(data.header);
@@ -194,7 +194,7 @@
                         exclude: false,
                         id_list: row.ID,
                         screen: row.ID,
-                        screen_string: row[this.akname]
+                        screen_string: this.toStringName(row, this.akname)
                       });
                       this.deleteLi(key - 1, row, 'td');
                     }
@@ -215,6 +215,14 @@
           }
           return item;
         }, []);
+      },
+      toStringName(row, akname) {
+        const aknameArr = akname.split(',');
+        const items = aknameArr.reduce((arr, item) => {
+          arr.push(row[item]);
+          return arr;
+        }, []);
+        return items.join('');
       },
       changeTtree(obj) {
         this.treeId(obj);
@@ -251,7 +259,7 @@
         // 表格双击
         if (this.index === 0) {
           this.clickChoose(row);
-          row.string = row[this.akname];
+          row.string = this.toStringName(row, this.akname);
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
       },
@@ -270,7 +278,7 @@
               exclude: false,
               id_list: row.ID,
               screen: row.ID,
-              screen_string: row[this.akname]
+              screen_string: this.toStringName(row, this.akname)
             });
           }
         } else {
@@ -281,7 +289,7 @@
               exclude: true,
               id_list: row.ID,
               screen: row.ID,
-              screen_string: row[this.akname]
+              screen_string: this.toStringName(row, this.akname)
             });
           }
         }
@@ -352,7 +360,7 @@
               screen: this.EXCLUDE,
               screen_string: this.HRORG_STRING.join(',')
             });
-          
+
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
           }
         } else {
@@ -388,6 +396,8 @@
           this.resultData.total = 0;
           this.text.result = [];
           this.resultData.list = [];
+          this.IN = [];
+          this.NOTIN = [];
           this.clearIndexPage();
         }
       },
@@ -405,7 +415,7 @@
         if (value.length < 1) {
           this.$Message.info('模板名称不能为空');
         }
-        
+
         const savemessage = {
           tableid: this.fkobj.reftableid,
           modelname: value,
@@ -472,7 +482,6 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
-        console.log(obj);
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
