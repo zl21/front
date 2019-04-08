@@ -355,6 +355,7 @@
       propsType(current, item) {
         // 表单 props
         item.props.disabled = item.props.readonly;
+        item.props.maxlength = item.props.length;
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
@@ -405,17 +406,6 @@
         if (current.display === 'textarea') {
           item.props.type = 'textarea';
         }
-        // 日期控件属性控制
-        // if (current.display === 'OBJ_DATENUMBER') {
-        //   item.props.type = 'daterange';
-        // }
-        // if (current.display === 'OBJ_DATE') {
-        //   item.props.type = 'datetimerange';
-        // }
-        // if (current.display === 'OBJ_TIME') {
-        //   item.props.type = 'daterange';
-        // }
-
         if (current.display === 'OBJ_DATENUMBER') {
           item.props.type = 'datetime';
         }
@@ -541,7 +531,6 @@
     background: #f8f7f7;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    border-bottom: solid 1px #b4b4b4
   }
   .burgeon-collapse{
     margin-bottom: 10px;

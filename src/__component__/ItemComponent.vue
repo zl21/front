@@ -485,7 +485,7 @@
     padding-top:8px;
 
     .itemLabel{
-      width: 90px;
+      width: 120px;
       margin-right: 4px;
       text-align: right;
       text-overflow: ellipsis;

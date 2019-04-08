@@ -301,6 +301,9 @@
   /*border:1px solid #fff;*/
   box-sizing: border-box;
 }
+.itemComponent .burgeon-date-picker{
+    width: 100%;
+}
 .FormItemComponent {
   display: grid;
   grid-template-columns: repeat(4, 25%);
