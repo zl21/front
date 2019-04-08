@@ -779,7 +779,7 @@
                 }
               } else {
                 // 默认值取
-                const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0].ID;
+                const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
                 }
