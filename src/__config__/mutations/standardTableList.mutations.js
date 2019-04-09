@@ -102,6 +102,8 @@ export default {
     buttons.batchUnSubmitData = data;
   },
   updateUserConfig(state, { userConfig }) {
-    state.userConfig = userConfig;
+    state.hideColumn = userConfig.hideColumn;
+    state.colPosition = userConfig.colPosition;
+    state.fixedColumn = userConfig.fixedColumn;
   },
 };

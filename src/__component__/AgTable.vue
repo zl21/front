@@ -45,7 +45,7 @@
   import agTable from '../assets/js/ag-grid-table-pure';
 
   export default {
-    name: 'StandardTable',
+    name: 'AgTable',
     components: {},
     props: {
       isPageShow: {

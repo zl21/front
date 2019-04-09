@@ -52,6 +52,9 @@ export default () => ({
   computed: {
     ...mapState(getComponentName(), {
       ag: ({ ag }) => ag,
+      hideColumn: ({ hideColumn }) => hideColumn,
+      colPosition: ({ colPosition }) => colPosition,
+      fixedColumn: ({ fixedColumn }) => fixedColumn,
       pageAttribute: ({ ag }) => ({
         current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 0,
         total: ag.datas.totalRowCount || 0,
