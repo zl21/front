@@ -286,7 +286,7 @@
   };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
  .standardTable {
    padding: 20px 20px 0 20px;
  }
@@ -296,7 +296,8 @@
   }
 
  .queryDesc {
-   line-height: 30px;
+   margin: 5px 0;
+   line-height: 18px;
    display: flex;
 
    > div {
