@@ -52,9 +52,9 @@ export default () => ({
     ...mapState(getComponentName(), {
       ag: ({ ag }) => ag,
       pageAttribute: ({ ag }) => ({
-        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
-        total: ag.datas.totalRowCount,
-        'page-size-opts': ag.datas.selectrange,
+        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 0,
+        total: ag.datas.totalRowCount || 0,
+        'page-size-opts': ag.datas.selectrange || [10, 25, 50, 100],
         'show-elevator': true,
         'show-sizer': true,
         'show-total': true
