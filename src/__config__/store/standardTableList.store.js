@@ -15,37 +15,12 @@ export default () => ({
     },
     buttons: {
       dataArray: {
-        printValue: false,
-        actionCollection: false,
+        printValue: false, // 是否显示打印
+        actionCollection: true, // 是否显示收藏
         collectiImg: false, // 是否收藏
+        search: true,
         waListButtonsConfig: {// 自定义按钮
-          waListButtons: [
-            {
-              // action: ' /SYSTEM/TABLE/AD_TABLE',
-              // actiontype: 'url',
-              // confirm: null,
-              // cuscomponent: null,
-              // ishide: false,
-              // isrefrsh: true,
-              // vuedisplay: 'dialog',
-              // webdesc: '验收',
-              // webicon: null,
-              // webid: 2461,
-              // webname: 'DL_B_STORE_PAL_SUM',
-              action: 'Dialog/Confirm',
-              actiontype: 'rpc',
-              confirm: '{"isselect":true,"nodesc":"请先选择需要启用的记录"}',
-              cuscomponent: null,
-              ishide: false,
-              isrefrsh: false,
-              vuedisplay: 'dialog',
-              webdesc: 'VIP账户启用',
-              webicon: null,
-              webid: 2187,
-              webname: 'VP_C_VIP_ACCEnable',
-            },
-          
-          ]
+          waListButtons: []
         },
         buttonGroupShowConfig: {// 标准按钮
           buttonGroupShow: []

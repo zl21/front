@@ -1,7 +1,15 @@
+import router from '../router.config';
+
 export default {
-  updateObjectForMainTableForm({ mainFormInfo }, data) { // 更新主表面板数据
-    mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
-    mainFormInfo.formData.data = data || [];
+  updateObjectForMainTableForm(state, data) { // 更新主表面板数据
+    const { tableName, tableId } = router.currentRoute.params;
+    state.mainFormInfo.tablename = tableName;
+    state.mainFormInfo.tableid = tableId;
+    state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
+    state.mainFormInfo.formData.data = data || [];
+    state[tableName] = {
+      add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
+    };
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
@@ -11,20 +19,23 @@ export default {
       obj.componentAttribute = {
         buttonsData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         formData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         panelData: {
           isShow: false,
-          data: {}
+          data: ({})
         },
         tableData: {
           isShow: false,
-          data: {}
+          data: ({})
         }
+      };
+      state[item.tablename] = {
+        add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
       };
       arr.push(obj);
     });
@@ -36,7 +47,7 @@ export default {
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
-    componentAttribute.buttonsData.isShow = false; /** warn: 导出好像必有 */
+    componentAttribute.buttonsData.isShow = false;
     componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
@@ -52,4 +63,19 @@ export default {
   updateTabCurrentIndex(state, index) { // 更新当前tab的索引
     state.tabCurrentIndex = index;
   },
+  updateDefaultData(state, data) {
+    state[data.tableName].default = data.value;
+  },
+  updateAddData(state, data) {
+    state[data.tableName].add = data.value;
+  },
+  updateModifyData(state, data) {
+    state[data.tableName].modify = data.value;
+  },
+  updateDeleteData(state, data) {
+    state[data.tableName].delete = data.value;
+  },
+  updateCheckedInfoData(state, data) {
+    state[data.tableName].checkedInfo = data.value;
+  }
 };

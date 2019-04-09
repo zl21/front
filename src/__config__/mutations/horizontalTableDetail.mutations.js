@@ -5,7 +5,7 @@ export default {
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
       label: '标签',
-      table: tableName,
+      tablename: tableName,
       id: tableId,
       componentAttribute: {
         buttonsData: {
@@ -49,6 +49,11 @@ export default {
       };
       arr.push(obj);
     });
+    arr.forEach((item) => {
+      state[item.tablename] = {
+        add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
+      };
+    });
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateButtonsData(state, data) {
@@ -74,4 +79,19 @@ export default {
   updateTabCurrentIndex(state, index) {
     state.tabCurrentIndex = index;
   }, // 更新当前tab的索引
+  updateDefaultData(state, data) {
+    state[data.tableName].default = data.value;
+  },
+  updateAddData(state, data) {
+    state[data.tableName].add = data.value;
+  },
+  updateModifyData(state, data) {
+    state[data.tableName].modify = data.value;
+  },
+  updateDeleteData(state, data) {
+    state[data.tableName].delete = data.value;
+  },
+  updateCheckedInfoData(state, data) {
+    state[data.tableName].checkedInfo = data.value;
+  }
 };

@@ -23,8 +23,8 @@ export default () => {
   if (/\/SYSTEM\/TABLE_DETAIL\/V\//.test(routerPath)) {
     keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
   }
-  
-  
+
+
   // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面名称
   if (/\/SYSTEM\/TABLE_DETAIL\/H\//.test(routerPath)) {
     keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;

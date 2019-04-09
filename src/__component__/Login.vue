@@ -24,6 +24,7 @@
   export default {
     name: 'Login',
     methods: {
+      
       login() {
         network.post('/p/c/getCaptcha').then((res) => {
           network.post('/p/c/login', urlSearchParams({

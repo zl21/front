@@ -1,13 +1,13 @@
 import axios from 'axios';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
-import { ignoreGateWay, enableGateWay, globalGateWay } from '../__config__/global';
+import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
 
 axios.interceptors.request.use((config) => {
+  const { tableName } = router.currentRoute.params;
   const url = config.url;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceId = store.state.serviceIdMap;
-  const serviceName = store.state.activeTab.tableName;
+  const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   if (!enableGateWay) {
     return config;
   }
@@ -18,11 +18,14 @@ axios.interceptors.request.use((config) => {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
-  if (serviceId[serviceName] !== 'undefined') {
-    const serviceIdMapApi = serviceId[serviceName];
-    config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
-    return config;
+  if (tableName) {
+    if (serviceId[tableName] !== 'undefined') {
+      const serviceIdMapApi = serviceId[tableName];
+      config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+      return config;
+    }
   }
+ 
   return config;
 });
 
@@ -32,10 +35,14 @@ axios.interceptors.response.use((response) => {
   }
   return response;
 }, (error) => {
-  const { status } = error.response;
-  if (status === 403) {
-    router.push('/login');
+  if (error.response) {
+    const { status } = error.response;
+    if (status === 403) {
+      router.push('/login');
+    }
   }
+ 
+ 
   Promise.reject(error);
 });
 

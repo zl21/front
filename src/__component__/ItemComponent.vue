@@ -1,6 +1,10 @@
 <template>
   <div class="ItemComponentRoot">
     <span class="itemLabel">
+      <span
+        v-if="_items.required"
+        class="label-tip"
+      >*</span>
       {{ _items.title }}:
     </span>
     <div class="itemComponent">
@@ -186,6 +190,18 @@
         default() {
           return 0;
         }
+      },
+      formIndex: {
+        type: Number,
+        default() {
+          return 0;
+        }
+      },
+      type: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
@@ -200,22 +216,22 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
+
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
+          console.log(item);
           item.componentType = Dialog;
           item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
         }
         item.event = Object.assign({}, this.items.event);
+
         return item;
       },
       filterList() {
         // 气泡选中过滤条件
         return this.filterDate;
       }
-    },
-    watch: {
-
     },
     methods: {
       valueChange() { // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
@@ -391,7 +407,6 @@
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
           this._items.event.inputValueChange(value, $this);
         }
-
       },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
@@ -430,7 +445,7 @@
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
-          this._items.event['on-delete']($this, this._items,row.key ,this.index);
+          this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
       attachFilterClear(event, $this) {
@@ -441,23 +456,26 @@
       },
       attachFilterPopperShow($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this,this._items,this.index);
+          this._items.event['popper-show']($this, this._items, this.index);
         }
       },
       attachFilterOk($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          if($this._data.IN >0 ){
-            let value = `已经选中${$this._data.IN}条数据`;
+          if ($this._data.IN.length > 0) {
+            const value = `已经选中${$this._data.IN.length}条数据`;
             this._items.value = value;
-            this.valueChange();
-            this._items.event['popper-value']($this,value, $this._data.IN, this.index);
-
+            this._items.Selected = $this._data.IN;
+            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+          } else {
+            this._items.value = '';
+            this._items.Selected = [];
+            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
           }
-
         }
       }
     },
     created() {
+      // console.log(this.type,this.formIndex);
 
     }
   };
@@ -473,7 +491,7 @@
     padding-top:8px;
 
     .itemLabel{
-      width: 90px;
+      width: 120px;
       margin-right: 4px;
       text-align: right;
       text-overflow: ellipsis;
@@ -484,6 +502,14 @@
     .itemComponent{
       flex: 1;
       overflow: hidden;
+    }
+    .label-tip{
+      color: red;
+      font-size: 16px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+      right: 3px;
     }
   }
 </style>

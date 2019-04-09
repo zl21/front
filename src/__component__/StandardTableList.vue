@@ -1,7 +1,6 @@
 <!--suppress ALL -->
 <template>
   <div class="StandardTableListRootDiv">
-    <ImageComponent />
     <ButtonGroup
       :data-array="buttons.dataArray"
       @buttonClick="buttonClick"
@@ -69,7 +68,6 @@
   import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-  import ImageComponent from './Image';
 
   import {
     fkQueryList,
@@ -92,7 +90,6 @@
       FormItemComponent,
       ImportDialog,
       ErrorModal,
-      ImageComponent
     },
     data() {
       return {
@@ -151,7 +148,7 @@
       },
       onRowDoubleClick(colDef, row) {
         const { tableName, tableId } = this.$route.params;
-        const { val } = row.ID;
+        const id = row.ID.val;  
         const label = `${this.$store.state.global.activeTab.label}编辑`;
         if (this.ag.datas.objdistype === 'tabpanle') {
           // 单对象左右结构
@@ -161,7 +158,7 @@
             tableName,
             tableId,
             label,
-            val
+            id
           });
         } else {
           // 单对象上下结构
@@ -171,7 +168,7 @@
             tableName,
             tableId,
             label,
-            val
+            id
           });
         }
       }, // ag表格行双击回调
@@ -464,9 +461,12 @@
         // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
-      formDataChange(data) {
-        // 表单数据修改
+      formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
+          if (this.formItemsLists.length > 0) {
+            this.formItemsLists[index].item.value = item.item.value;
+          }
+          
           this.updateFormData(data);
         }
       },
@@ -859,16 +859,13 @@
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
           this.formItemsLists.every((temp) => {
-            if (temp.item.field === item) {
-              // 等于当前节点，判断节点类型
-              if (
-                temp.item.type === 'DatePicker'
-                && (temp.item.props.type === 'datetimerange'
-                || temp.item.props.type === 'daterange')
-                && (jsonData[item][0] && jsonData[item][1])
-              ) {
-                // 当为日期控件时，数据处理
-                value = jsonData[item].join('~');
+            if (temp.item.field === item) { // 等于当前节点，判断节点类型
+              if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
+                if ((jsonData[item][0] && jsonData[item][1])) {
+                  value = jsonData[item].join('~');
+                } else {
+                  value = '';
+                }
                 return false;
               }
 
@@ -935,7 +932,7 @@
           // this.buttons.errorData = [];
           if (obj.name === this.buttonMap.CMD_ADD.name) {
             // 新增
-            const itemId = -1;
+            const id = -1;
             const label = `${obj.name}编辑`;
             if (this.ag.datas.objdistype === 'tabpanle') {
               // 单对象左右结构
@@ -945,7 +942,7 @@
                 tableName,
                 tableId,
                 label,
-                itemId
+                id
               });
             } else {
               // 单对象上下结构
@@ -955,7 +952,7 @@
                 tableName,
                 tableId,
                 label,
-                itemId
+                id
               });
             }
             if (objTableUrl) {
@@ -969,7 +966,7 @@
                 tableName,
                 tableId,
                 label,
-                itemId
+                id
               });
             } else {
               const type = 'tableDetailVertical'; // 左右结构的单对项页面
@@ -978,7 +975,7 @@
                 tableName,
                 tableId,
                 label,
-                itemId
+                id
               });
             }
           }

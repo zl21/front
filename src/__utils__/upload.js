@@ -7,17 +7,16 @@ class Upload {
     this.Method = obj.Method || 'POST';
     this.sendData = obj.sendData || {};
     if (this.file.size > this.imgSize) {
-		  // 文件大小自定义限制
-			  if (Object.prototype.hasOwnProperty.call(this.event, 'onerror')) {
-			  this.event.onerror('文件内容过大');
+      if (Object.prototype.hasOwnProperty.call(this.event, 'onerror')) {
+        this.event.onerror('文件内容过大');
       }
       return;
     }
-		  this.init(this.file);
+    this.init(this.file);
   }
 
   init(file) {
-    this.transformFileToFormData(file);
+    this.transformFileToDataUrl(file);
   }
 
   // 将file转成dataUrl
@@ -25,19 +24,22 @@ class Upload {
     // 封装好的函数
     const reader = new FileReader();
     // file转dataUrl是个异步函数，要将代码写在回调里
+    const self = this;
     reader.onload = function (e) {
-			    if (Object.prototype.hasOwnProperty.call(this.event, 'onload') && typeof this.event.onload === 'function') {
-			      	this.event.onload(e);
-			     }
+      console.log(self.event);
+      if (Object.prototype.hasOwnProperty.call(self.event, 'onload') && typeof self.event.onload === 'function') {
+        self.event.onload(e);
+      }
     };
     reader.onloadstart = function (e) {
-      if (Object.prototype.hasOwnProperty.call(this.event, 'onloadstart') && typeof this.event.onloadstart === 'function') {
-        this.event.onloadstart(e);
+      if (Object.prototype.hasOwnProperty.call(self.event, 'onloadstart') && typeof self.event.onloadstart === 'function') {
+        self.event.onloadstart(e);
       }
     };
     reader.onloadend = function (e) {
-      if (Object.prototype.hasOwnProperty.call(this.event, 'onloadend') && typeof this.event.onloadend === 'function') {
-        this.event.onloadend(e);
+      if (Object.prototype.hasOwnProperty.call(self.event, 'onloadend') && typeof self.event.onloadend === 'function') {
+        self.event.onloadend(e);
+        self.transformFileToFormData(file);
       }
     };
     reader.onerror = function (e) {
@@ -83,11 +85,8 @@ class Upload {
           if (Object.prototype.hasOwnProperty.call(that.event, 'success') && typeof that.event.success === 'function') {
             that.event.success(result);
           }
-        } else {
-          // 上传失败
-          if (Object.prototype.hasOwnProperty.call(that.event, 'onerror') && typeof that.event.onerror === 'function') {
-            that.event.onerror(result);
-          }
+        } else if (Object.prototype.hasOwnProperty.call(that.event, 'onerror') && typeof that.event.onerror === 'function') {
+          that.event.onerror(result);
         }
       }
     };
@@ -96,4 +95,4 @@ class Upload {
   }
 }
 
-export { Upload };
+export default Upload;

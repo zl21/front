@@ -7,14 +7,13 @@ import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App';
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
+import './src/assets/theme/custom.less';
 import './src/constants/dateApi';
-import axios from 'axios';
 
 import network from './src/__utils__/network';
-import { enableGateWay } from './src/__config__/global';
+import { enableGateWay } from './src/constants/global';
 
 Vue.use(BurgeonUi);
-
 const createDOM = () => {
   const div = document.createElement('div');
   div.setAttribute('id', getGuid());
@@ -32,19 +31,21 @@ const init = () => {
 };
 const getCategory = () => {
   network.post('/p/cs/getSubSystems').then((res) => {
-    if (res.data.data.length > 0) {
-      store.state.global.serviceIdMap = res.data.data.map(d => d.children)
+    if (res.data.data) {
+      const serviceIdMaps = res.data.data.map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .filter(d => d.type === 'table' || d.type === 'action')
         .reduce((a, c) => { a[c.value] = c.serviceId; return a; }, {});
+      window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
     }
   });
 };
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+    
     getCategory();
     setTimeout(() => {
       init();
@@ -54,7 +55,6 @@ const getGateWayServiceId = () => {
 
 if (enableGateWay) {
   getGateWayServiceId();
-  init();
 } else {
   init();
 }

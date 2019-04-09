@@ -3,10 +3,11 @@
   <div>
     <!-- 需要下拉 -->
     <DownComponent
+      v-if="dataColRol.length >0"
       :title="title"
       :set-height="setHeight"
+      :rowAll = "rowAll"
       :search-foldnum="searchFoldnum"
-      v-if="searchFoldnum>0"
     >
       <div
         slot="dwonContent"
@@ -30,26 +31,27 @@
         </div>
       </div>
     </DownComponent>
-    <div class="FormItemComponent"
-            :style="setWidth"
-         v-if="searchFoldnum === 0"
+    <div
+      v-if="searchFoldnum === 0"
+      class="FormItemComponent"
+      :style="setWidth"
     >
-        <div v-for="(item,index) in dataColRol"
-                v-show="item.show !== false"
-                :key="index"
-                class="FormItemComponent-item"
-                :style="setDiv(item)"
-        >
-            <component
-                    :is="item.component"
-                    :ref="'component_'+index"
-                    :index="index"
-                    :items="item.item"
-                    @inputChange="inputChange"
+      <div
+        v-for="(item,index) in dataColRol"
+        v-show="item.show !== false"
+        :key="index"
+        class="FormItemComponent-item"
+        :style="setDiv(item)"
+      >
+        <component
+          :is="item.component"
+          :ref="'component_'+index"
+          :index="index"
+          :items="item.item"
+          @inputChange="inputChange"
         />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -72,12 +74,16 @@
           temp.item.props = this.formItemLists[index].item.props;
           return temp;
         });
+        // 兼容 tab 切换
+        this.newFormItemLists = arr;
         return arr;
       },
       // 计算属性的 getter
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
+          // 计算显示行数
+          this.rowAll = list[current].row+list[current].y-1;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -130,13 +136,13 @@
       return {
         newFormItemLists: [],
         indexItem: -1,
+        rowAll:0,
         setHeight: 34
       };
     },
     mounted() {
     },
     created() {
-
     },
     watch: {
       FormItemLists: {
@@ -176,7 +182,7 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem], this.indexItem);
       },
       dataProcessing() {
         return this.newFormItemLists.reduce((obj, current) => {
@@ -192,7 +198,7 @@
             } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
               obj[current.item.field] = undefined;
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
-              if ( current.item.props.Selected.length > 0) {
+              if (current.item.props.Selected[0] !== undefined) {
                 obj[current.item.field] = current.item.props.Selected;
               } else {
                 obj[current.item.inputname] = current.item.value;
@@ -263,8 +269,11 @@
 
 <style lang="less">
 .FormItemComponent > div {
-  border:1px solid #fff;
+  /*border:1px solid #fff;*/
   box-sizing: border-box;
+}
+.itemComponent .burgeon-date-picker{
+    width: 100%;
 }
 .FormItemComponent {
   display: grid;

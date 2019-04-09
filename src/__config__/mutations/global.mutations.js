@@ -3,6 +3,7 @@ import {
   VERTICAL_TABLE_DETAIL_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
+// import ModuleName from '../../__utils__/getModuleName';
 
 
 export default {
@@ -141,20 +142,21 @@ export default {
     state.activeTab.isActive = true;
   },
   TabHref(state, {// 在当前页面跳转
-    type, tableName, tableId, label, val 
+    type, tableName, tableId, label, id 
   }) {
+    console.log(345, type, tableName, tableId, label, id);
     let path = '';
     let ModuleName = '';
     if (type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${val}`;
-      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${val}`;
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${id}`;
       router.push({
         path
       });
     }
     if (type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${val}`;
-      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${val}`;
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${id}`;
       router.push({
         path
       });
@@ -176,13 +178,13 @@ export default {
     tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.val}`;
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
       router.push({
         path
       });
     }
     if (tab.type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.val}`;
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
       router.push({
         path
       });

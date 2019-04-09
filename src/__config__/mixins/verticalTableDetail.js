@@ -18,19 +18,25 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
     }),
-    
+
   },
   methods: {
     ...mapActions(getComponentName(),
       [
         'getObjectForMainTableForm',
         'getObjectTabForMainTable',
-        'getTableListForRefTable',
-        'getFormDataForRefTable'
+        'getObjectTableItemForTableData',
+        'getFormDataForRefTable',
+        'getObjectTabForRefTable'
       ]),
     ...mapMutations(getComponentName(),
       [
-        'updateTabCurrentIndex'
+        'updateTabCurrentIndex',
+        'updateDefaultData',
+        'updateAddData',
+        'updateModifyData',
+        'updateDeleteData',
+        'updateCheckedInfoData'
       ]),
   },
   // beforeDestroy() {

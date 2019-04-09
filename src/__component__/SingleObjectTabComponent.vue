@@ -10,15 +10,27 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.tableId"
+      :module-form-type="type"
       class="form"
       :default-data="formData.data"
+      @formChange="formChange"
+      @InitializationForm="initForm"
+      @VerifyMessage="verifyForm"
     />
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.tableId"
+      :module-form-type="type"
       class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"
+      @formChange="formPanelChange"
+      @InitializationForm="initFormPanel"
+      @VerifyMessage="verifyFormPanel"
     />
     <component
       :is="'TableDetailCollection'"
@@ -27,6 +39,10 @@
       :data-source="tableData.data"
       :type="type"
       :readonly="buttonsData.data.objreadonly"
+      @tableBeforeData="tableBeforeData"
+      @tableDataChange="tableDataChange"
+      @tableSelectedRow="tableSelectedRow"
+      @tableVerifyMessage="tableVerifyMessage"
     />
   </div>
 </template>
@@ -38,6 +54,7 @@
   import compositeForm from './CompositeForm';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
+  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     data() {
@@ -51,6 +68,14 @@
       type: {
         type: String,
         default: 'vertical'
+      },
+      tableName: {
+        type: String,
+        default: ''
+      },
+      tableId: {
+        type: String,
+        default: ''
       },
       tableData: {
         type: Object,
@@ -91,6 +116,69 @@
           Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
           Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
         }
+      },
+      formChange(val) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        const obj = {};
+        obj[tableName] = val;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        }
+      },
+      initForm(val) {
+        const { tableName } = this;
+        const obj = {};
+        obj[tableName] = val;
+        // this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+      },
+      verifyForm(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+      },
+      verifyFormPanel(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+      },
+      formPanelChange(val) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        const obj = {};
+        obj[tableName] = val;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        }
+      },
+      initFormPanel(val) {
+        const { tableName } = this;
+        const obj = {};
+        obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+      },
+      tableBeforeData(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: data });
+      },
+      tableDataChange(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId === -1) {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: data });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
+        }
+      },
+      tableSelectedRow(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
+      },
+      tableVerifyMessage(data) {
+        const { tableName } = this;
+        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       }
     }
   };
@@ -102,8 +190,13 @@
     display: flex;
     flex-direction: column;
     .objectButtons {
+      .buttonList {
+        padding-left: 0;
+      }
     }
     .form {
+      padding: 0 10px 8px 10px;
+      background-color: #F8F8F8;
     }
     .formPanel {
       flex: 1;

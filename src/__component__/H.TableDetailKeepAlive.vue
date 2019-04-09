@@ -12,8 +12,9 @@
   import Vue from 'vue';
   import { mapState } from 'vuex';
   import mixins from '../__config__/mixins/horizontalTableDetail';
-  import { HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../constants/global';
+  import { HORIZONTAL_TABLE_DETAIL_PREFIX } from '../constants/global';
   import HorizontalTableDetail from './H.TableDetail';
+  import moduleName from '../__utils__/getModuleName';
   
   export default {
     name: 'HorizontalTableDetailKeepAlive',
@@ -27,8 +28,10 @@
     },
     methods: {
       generateComponent() {
-        const { tableName, tableId, itemId } = this.$route.params;
-        const componentName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+        const { routePrefix } = this.$route.meta;
+        if (routePrefix !== HORIZONTAL_TABLE_DETAIL_PREFIX) { return; }
+        const componentName = moduleName();
+
         if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, HorizontalTableDetail)));
         }

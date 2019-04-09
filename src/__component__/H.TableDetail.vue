@@ -10,7 +10,6 @@
 
 <script>
   /* eslint-disable no-lonely-if */
-
   import { mapActions, mapState } from 'vuex';
   import tabComponent from './SingleObjectTabComponent';
 
@@ -26,16 +25,19 @@
       }),
       tabPanels() {
         const arr = [];
-        this.tabPanel.forEach((item, index) => {
-          const obj = { ...item };
-          if (index === 0) {
-            obj.label = this.activeTab.label;
-          }
-          obj.componentAttribute.type = 'horizontal';
-          obj.component = tabComponent;
-          obj.cilckCallback = this.tabClick;
-          arr.push(obj);
-        });
+        if (this.tabPanel) {
+          this.tabPanel.forEach((item, index) => {
+            const obj = { ...item };
+            if (index === 0) {
+              obj.label = this.activeTab.label;
+            }
+            obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.type = 'horizontal';
+            obj.component = tabComponent;
+            obj.cilckCallback = this.tabClick;
+            arr.push(obj);
+          });
+        }
         return arr;
       }
     },
@@ -81,9 +83,22 @@
   };
 </script>
 
-<style scoped>
+<style lang="less">
   .horizontalTableDetail {
     padding: 0 20px;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+    .burgeon-tabs-panels{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      .burgeon-tabs-panels-content{
+        flex: 1;
+        overflow: hidden;
+        height: 100%;
+      }
+    }
   }
 
 </style>

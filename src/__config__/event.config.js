@@ -1,5 +1,7 @@
 import store from './store.config';
 import router from './router.config';
+import moduleName from '../__utils__/getModuleName';
+
 import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX,

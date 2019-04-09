@@ -5,19 +5,23 @@ export default () => ({
   namespaced: true,
   state: {
     mainFormInfo: {
-      tableName: null,
-      tableId: null,
-      itemId: null,
+      tablename: null,
+      tableid: null,
       buttonsData: { // 主表按钮数据
-        data: {}
+        data: ({})
       },
       formData: {
         isShow: false,
-        data: {} // 主表面板数据
+        data: ({}) // 主表面板数据
       }
     },
     tabPanels: [], // tab数据
     tabCurrentIndex: 0,
+    checkTipsInfo: {
+      formInfo: [],
+      panelFormInfo: [],
+      tableInfo: []
+    }
   },
   actions,
   mutations

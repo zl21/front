@@ -18,9 +18,26 @@
       padding: 0;
       margin: 0;
     }
+     /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+     ::-webkit-scrollbar {
+      width: 8px!important;
+      height: 8px!important;
+    }
+
   </style>
 </head>
 <body>
-  
+  <script type="text/javascript">
+      var _maq = _maq || [];
+      _maq.push(['_setAccount', 'uuid']);
+      (function () {
+          var ma = document.createElement('script');
+          ma.type = 'text/javascript';
+          ma.async = true;
+          ma.src = "http://localhost:8190/src/constants/ma.js";
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ma, s);
+      })();
+  </script>
 </body>
 </html>

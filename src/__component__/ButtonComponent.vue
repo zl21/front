@@ -3,6 +3,7 @@
     <div class="button-group">
       <!-- //查找 -->
       <Button
+        v-if="dataArray.search"
         type="posdefault"
         @click="btnclick('search')"
         v-text="search"
@@ -12,7 +13,7 @@
         :key="index"
         :ref="item.ref"
         type="fcdefault"
-        @click="btnclick('fix', item)"
+        @click="btnclick('fix', item,index)"
         v-text="item.name" 
       />
       <Button
@@ -51,7 +52,7 @@
         </DropdownMenu>
       </Dropdown>
       <Button
-        v-if="!dataArray.actionCollection"
+        v-if="dataArray.actionCollection"
         type="fcdefault"
         @click="btnclick('Collection')"
       >
