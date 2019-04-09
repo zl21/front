@@ -5,12 +5,7 @@ export default () => ({
   namespaced: true,
   state: {
     tabPanels: [], // tab数据
-    tabCurrentIndex: 0, // 更新数据
-    checkTipsInfo: {
-      formInfo: [],
-      panelFormInfo: [],
-      tableInfo: []
-    }
+    tabCurrentIndex: 0 // 更新数据
   },
   actions,
   mutations

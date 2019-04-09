@@ -16,12 +16,7 @@ export default () => ({
       }
     },
     tabPanels: [], // tab数据
-    tabCurrentIndex: 0,
-    checkTipsInfo: {
-      formInfo: [],
-      panelFormInfo: [],
-      tableInfo: []
-    }
+    tabCurrentIndex: 0
   },
   actions,
   mutations
