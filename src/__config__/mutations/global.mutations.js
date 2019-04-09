@@ -28,7 +28,7 @@ export default {
   },
   updateMenuLists(state, menuLists) {
     state.menuLists = menuLists;
-    state.keepAliveLabelMaps = JSON.parse(JSON.stringify(menuLists))
+    state.keepAliveLabelMaps = menuLists
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .map(d => d.children)
@@ -37,6 +37,15 @@ export default {
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
+        return a;
+      }, {});
+    state.serviceIdMap = menuLists.map(d => d.children)
+      .reduce((a, c) => a.concat(c))
+      .map(d => d.children)
+      .reduce((a, c) => a.concat(c))
+      .filter(d => d.type === 'table' || d.type === 'action')
+      .reduce((a, c) => {
+        a[c.value] = c.serviceId;
         return a;
       }, {});
   },
@@ -127,7 +136,7 @@ export default {
         } else {
           router.push('/');
         }
-      } 
+      }
     });
   }, // 关闭当前tab
   switchActiveTab(state, tab) {
@@ -141,7 +150,7 @@ export default {
     state.activeTab.isActive = true;
   },
   TabHref(state, {// 在当前页面跳转
-    type, tableName, tableId, label, val 
+    type, tableName, tableId, label, val
   }) {
     let path = '';
     let ModuleName = '';
@@ -207,6 +216,6 @@ export default {
     });
     // 添加到新的列表中
   },
- 
+
 
 };

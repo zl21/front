@@ -26,7 +26,8 @@ export default () => ({
         'importGetUploadParametersForButtons',
         'batchVoidForButtons',
         'batchSubmitForButtons',
-        'batchUnSubmitForButtons'
+        'batchUnSubmitForButtons',
+        'updateUserConfig'
       ]),
     ...mapMutations(getComponentName(),
       [

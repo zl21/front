@@ -1172,6 +1172,7 @@
       },
     },
     mounted() {
+      this.updateUserConfig({type: 'table', id: this.$route.params.tableId});
       this.getTableQuery();
       this.getQueryListForAg(this.searchData);
       clearTimeout(window.timer);
