@@ -213,8 +213,7 @@
           }
           if (this.dataSource.isSubTotalEnabled) {
             const cell = {
-              COLLECTION_INDEX: '合计',
-              FILTER: '123'
+              COLLECTION_INDEX: '合计'
             };
             const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
             needSubtotalList.map((ele) => {
