@@ -2,8 +2,8 @@
   <div class="singleObjectButton">
     <ButtonGroup
       :data-array="dataArray"
-      @buttonClick="buttonClick"
       class="buttonGroup"
+      @buttonClick="buttonClick"
     />
   </div>
 </template>
@@ -49,52 +49,151 @@
       }
     },
     methods: {
-      buttonClick(obj, name) {
-        console.log(obj, name);
-      },
-      buttonsData() {
-        const cmds = this.tabcmd.cmds;
-        const prem = this.tabcmd.prem;
-        const newcmds = [];
-        const newprem = [];
-        const newtabs = {};
-        for (let i = 0; i < cmds.length; i++) {
-          const cmd = cmds[i];
-          newcmds.push(cmd);
+      buttonClick(type, obj) {
+        if (type === 'fix') {
+          this.objectTabAction(obj, index);
+        } else if (type === 'custom') {
+          this.webactionClick(type, obj);
+        } else if (type === 'Collection') {
+          this.clickButtonsCollect();
+        } else {
+          this.searchClickData();
         }
-        for (let i = 0; i < prem.length; i++) {
-          const pre = prem[i];
-          newprem.push(pre);
-        }
-        for (let j = 0; j < newcmds.length; j++) {
-          const element = newcmds[j];
-          if (element === 'actionPRINT' && newprem[j]) {
-            this.printValue = true;
-          } else {
-            newtabs[element] = newprem[j];
-          }
-        }
-        return newtabs;
+     
+        // }, 300);
       },
-      getTabName() {
-        const buttonsData = this.buttonsData();
-        Object.keys(buttonsData).forEach((item) => { // 转换按钮数据格式
-          const buttonValue = item.split('action').join('CMD_');
-          this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonmap[buttonValue]);
-        });
+      objectTabAction(obj, index) {
+        // clearTimeout(window.timer);
+
+        // window.timer = setTimeout(() => {
+        switch (index) {
+        case 'actionADD': // 新增
+          this.objectAdd();
+          break;
+        case 'actionMODIFY': // 保存
+          this.objectSave();
+          break;
+        case 'actionEXPORT': // 导出
+          this.objectEXPORT();
+          break;
+        case 'actionGROUPSUBMIT': // 批量提交
+          this.objectGROUPSUBMIT();
+          break;
+        case 'actionDELETE': // 删除
+          this.objectTryDelete();
+          break;
+        case 'actionSUBMIT': // 提交
+          this.objectTrySubmit();
+          break;
+        case 'actionUNSUBMIT': // 取消提交
+          this.objectTryUnSubmit();
+          break;
+        case 'actionVOID': // 作废
+          this.objectTryVoid();
+          break;
+        case 'actionCANCOPY': // 复制
+          this.copyFlag = true;
+          this.objectCopy();
+
+          break;
+        case 'actionCopyBill':
+          this.objectCopyBill();
+          break;
+        default:
+          break;
+        }
       },
+   
+      // buttonsData(tabcmd) {
+      //   const cmds = tabcmd.cmds;
+      //   const prem = tabcmd.prem;
+      //   const newcmds = [];
+      //   const newprem = [];
+      //   const newtabs = {};
+      //   for (let i = 0; i < cmds.length; i++) {
+      //     const cmd = cmds[i];
+      //     newcmds.push(cmd);
+      //   }
+      //   for (let i = 0; i < prem.length; i++) {
+      //     const pre = prem[i];
+      //     newprem.push(pre);
+      //   }
+      //   for (let j = 0; j < newcmds.length; j++) {
+      //     const element = newcmds[j];
+      //     if (element === 'actionPRINT' && newprem[j]) {
+      //       this.dataArray.printValue = true;
+      //     } else {
+      //       newtabs[element] = newprem[j];
+      //       // console.log('🥤', newprem);
+      //     }
+      //   }
+      //   console.log('🐟', newtabs);
+
+      //   return newtabs;
+      //   // newcmds = cmds.reduce((arr, item) => { 
+      //   //   arr.push(item);
+      //   //   return arr;
+      //   // }, []);
+      //   // newprem = prem.reduce((arr, item) => { 
+      //   //   arr.push(item);
+      //   //   return arr;
+      //   // }, []);
+      //   // newcmds = newcmds.forEach((item, index) => {
+      //   //   const element = newcmds[index];
+      //   //   if (element === 'actionPRINT' && newprem[index]) {
+      //   //     this.dataArray.printValue = true;
+      //   //   } else {
+      //   //     newtabs[element] = newprem[index];
+      //   //   }
+      //   // });
+      //   // return newtabs;
+
+      //   // console.log(567, newtabs);
+     
+      //   // for (let j = 0; j < newcmds.length; j++) {
+      //   //   const element = newcmds[j];
+      //   //   if (element === 'actionPRINT' && newprem[j]) {
+      //   //     this.printValue = true;
+      //   //   } else {
+      //   //     newtabs[element] = newprem[j];
+      //   //   }
+      //   // }
+      //   // console.log(777, newtabs);
+      //   // return newtabs;
+      // },
+      getbuttonGroupData(tabcmd) {
+        const tabcmdData = tabcmd;
+        if (tabcmdData.cmds) {
+          // const buttonGroupShow = [];
+          tabcmdData.cmds.forEach((item, index) => {
+            if (tabcmdData.prem[index]) {
+              const type = item.split('action');
+              const str = `CMD_${type[1].toUpperCase()}`;
+              if (str === 'CMD_PRINT') {
+                this.dataArray.printValue = true;
+              } else {
+                const buttonConfigInfo = this.buttonMap[str];
+                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+              }
+            }
+          });
+        }
+      }
     },
     mounted() {
-      this.buttonsData();
-      this.getTabName();
+      this.getbuttonGroupData(this.tabcmd);
+    },
+    created() {
+      this.buttonMap = buttonmap;
     }
   };
 </script>
 
 <style lang="less">
-  .singleObjectButton {
-    .buttonGroup {
-      padding: 10px 20px 5px 20px;
-    }
+.singleObjectButton {
+  .buttonGroup {
+    padding: 10px 20px 5px 20px;
   }
+}
 </style>

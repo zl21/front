@@ -20,7 +20,8 @@ export const globalGateWay = [
   '/p/cs/removeFromFavorite',
   '/p/cs/addToFavorite',
   '/p/cs/getUserConfig',
-  '/p/cs/setColPosition'
+  '/p/cs/setColPosition',
+  '/p/c/getCaptcha'
 ];
 
 // 不走网关的接口
