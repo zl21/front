@@ -70,6 +70,7 @@
           :data="data"
           :total-data="totalData"
           @on-selection-change="tableSelectedChange"
+          @on-sort-change="tableSortChange"
         />
         <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
       </div>
@@ -128,7 +129,7 @@
                               value: '导入',
                               lable: 2
                             }],
-        copyDataSource: {},
+        currentOrderList: [], // 当前排序的内容
         DISPLAY_ENUM: {
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
@@ -178,8 +179,10 @@
       },
       data() {
         this.filterBeforeData();
-        this.copyDataSource = this.deepClone(this.dataSource);
         return this.filterData(this.dataSource.row); // 每列的数据
+      },
+      copyDataSource() {
+        return this.deepClone(this.dataSource);
       },
       columns() {
         return this.filterColumns(this.dataSource.tabth); // 每列的属性
@@ -281,10 +284,22 @@
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
           .map((ele) => {
-            const item = Object.assign(ele, {
+            const param = {
               title: ele.name,
               key: ele.colname
-            });
+            };
+            if (ele.isorder) {
+              param.sortable = 'custom';
+            }
+            if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+              this.dataSource.ordids.map((order) => {
+                if (ele.colname === order.colname) {
+                  param.sortType = order.ordasc ? 'asc' : 'desc';
+                }
+                return order;
+              });
+            }
+            const item = Object.assign(ele, param);
             return item;
           });
         const renderColumns = this.renderData(columns);
@@ -745,74 +760,6 @@
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [data.value];
                 this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               }
-
-            //   'on-popper-show': () => {
-            //     this.fkDropPageInfo.currentPageIndex = 1;
-            //     this.fkAutoData = [];
-            //     this.getFKList(params, cellData);
-            //   },
-            //   'on-page-change': (value) => {
-            //     this.fkDropPageInfo.currentPageIndex = value;
-            //     this.getFKList(params, cellData);
-            //   },
-            //   'on-input-value-change': (data, value) => {
-            //     if (!value.inputValue) {
-            //       value.transferDefaultSelected = [];
-            //     }
-            //     this.fkAutoData = [];
-            //     fkFuzzyquerybyak({
-            //       searchObject: {
-            //         ak: data,
-            //         colid: this.dataSource.row[params.index][cellData.colname].colid,
-            //         fixedcolumns: {
-            //           whereKeys: this.getMainRefobjid(params, cellData)
-            //         }
-            //       },
-            //       success: (res) => {
-            //         this.fkAutoData = res.data.data;
-            //         const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-            //         if (autoData.length === 0) {
-            //           // autodata中没有 清空输入框
-            //           value.notAutoData = true;
-            //         } else {
-            //           delete value.notAutoData;
-            //         }
-            //       }
-            //     });
-            //   },
-            //   'on-blur': (event, value) => {
-            //     if (value.notAutoData) {
-            //       // autodata中没有 清空输入框 及上次选中的值
-            //       value.inputValue = '';
-            //       delete value.notAutoData;
-            //     } else if (this.fkAutoData.length > 0) {
-            //       // 当选择模糊搜索结果的时候
-            //       const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-            //       value.inputValue = autoData[0].value;
-            //       value.transferDefaultSelected = [{
-            //         ID: autoData[0].id,
-            //         Label: autoData[0].value
-            //       }];
-            //     }
-            //     this.fkAutoData = [];
-            //     let ids = null;
-            //     if (value.transferDefaultSelected.length > 0) {
-            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
-            //     }
-            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   },
-            //   'on-fkrp-selected': (data, value) => {
-            //     this.fkAutoData = [];
-            //     let ids = null;
-            //     if (value.transferDefaultSelected.length > 0) {
-            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
-            //     }
-            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   },
-            //   'on-clear': (value) => {
-            //     this.fkAutoData = [];
-            //     this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   }
             }
           }, [
             h('div', {
@@ -1055,12 +1002,15 @@
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
-          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-          range: this.pageInfo.pageSize,
           table: this.tabPanel[this.tabCurrentIndex].tablename,
           objid: itemId,
           refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
-          fixedcolumns
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
         };
         this.getObjectTableItemForTableData(params);
         this.searchInfo = '';
@@ -1140,6 +1090,47 @@
           return ele;
         });
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
+      },
+      tableSortChange(value) {
+        const tableName = this.tabPanel[this.tabCurrentIndex].tablename;
+        let flag = this.currentOrderList.some((ele) => {
+          if (`${tableName}.${value.key}` === ele.column) {
+            ele.asc = value.order === 'asc';
+            return true;
+          }
+        });
+        if (value.order === 'normal') {
+          this.currentOrderList = this.currentOrderList.filter(ele => `${tableName}.${value.key}` !== ele.column);
+          flag = true;
+        }
+        if (!flag) {
+          this.currentOrderList.push({
+            column: `${tableName}.${value.key}`,
+            asc: value.order === 'asc'
+          });
+        }
+        const fixedcolumns = {};
+        if (this.searchCondition) {
+          fixedcolumns[this.searchCondition] = this.searchInfo;
+        }
+        const { itemId } = this.$route.params;
+        // table, objid, refcolid, startindex, range, fixedcolumns
+        const params = {
+          table: this.tabPanel[this.tabCurrentIndex].tablename,
+          objid: itemId,
+          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
+        };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          params.searchdata.orderby = this.currentOrderList;
+        }
+        this.getObjectTableItemForTableData(params);
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调
