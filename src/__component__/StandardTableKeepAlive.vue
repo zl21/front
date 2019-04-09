@@ -13,7 +13,7 @@
   import CustomPages from '../assets/js/customComponent';
 
   export default {
-    name: 'StandardTableKeepAlive',
+    name: 'S.Table.KeepAlive',
     data() {
       return {
         currentTable: null

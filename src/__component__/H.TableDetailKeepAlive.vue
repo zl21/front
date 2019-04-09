@@ -16,7 +16,7 @@
   import HorizontalTableDetail from './H.TableDetail';
   
   export default {
-    name: 'HorizontalTableDetailKeepAlive',
+    name: 'H.Table.KeepAlive',
     data() {
       return {
         currentTable: null
