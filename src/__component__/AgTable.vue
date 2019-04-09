@@ -296,7 +296,6 @@
   }
 
  .queryDesc {
-   height: 20px;
    line-height: 30px;
    display: flex;
 
