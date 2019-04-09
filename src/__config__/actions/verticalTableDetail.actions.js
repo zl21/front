@@ -55,15 +55,23 @@ export default {
                   table: firstReftab.tablename,
                   objid,
                   refcolid: firstReftab.refcolid,
-                  startindex: 0,
-                  // range:
-                  fixedcolumns: {}
+                  searchdata: { 
+                    column_include_uicontroller: true
+                  }
+                  
                 };
                 this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
               }
             } else if (resData.reftabs[0].tabrelation === '1:1') {
               // 获取子表面板数据
-
+              if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
+                const tableParam = {
+                  table: firstReftab.tablename,
+                  objid,
+                  refcolid: firstReftab.refcolid,
+                };
+                this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+              }
             }
           }
         }
@@ -98,20 +106,31 @@ export default {
     });
   },
   getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
-    table, objid, refcolid, startindex, range, fixedcolumns // fixedcolumns - objectIds
+    table, objid, refcolid, searchdata // fixedcolumns - objectIds
   }) {
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
       objid, // -1 代表新增
       refcolid,
-      searchdata: {
-        column_include_uicontroller: true, startindex, range, fixedcolumns 
-      }
+      searchdata 
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
         commit('updateTableListForRefTable', resData);
       }
     });
-  }
+  },
+  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
+    // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
+    network.post('/p/cs/itemObj', urlSearchParams({
+      table,
+      objid,
+      refcolid
+    })).then((res) => {
+      if (res.data.code === 0) {
+        const formData = res.data.data;
+        commit('updatePanelData', formData);
+      }
+    });
+  },
 };

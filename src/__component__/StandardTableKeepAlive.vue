@@ -14,7 +14,7 @@
 
   const _import_custom = file => require(`../__component__/${file}.vue`).default;
   export default {
-    name: 'StandardTableKeepAlive',
+    name: 'S.Table.KeepAlive',
     data() {
       return {
         currentTable: null

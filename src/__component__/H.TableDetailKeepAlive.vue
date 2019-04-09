@@ -17,7 +17,7 @@
   import moduleName from '../__utils__/getModuleName';
   
   export default {
-    name: 'HorizontalTableDetailKeepAlive',
+    name: 'H.Table.KeepAlive',
     data() {
       return {
         currentTable: null

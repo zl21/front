@@ -77,5 +77,10 @@ export default {
   },
   updateCheckedInfoData(state, data) {
     state[data.tableName].checkedInfo = data.value;
-  }
+  },
+  updatePanelData(state, data) { // 更新子表面板数据
+    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    componentAttribute.panelData.isShow = true;
+    componentAttribute.panelData.data = data;
+  }, 
 };

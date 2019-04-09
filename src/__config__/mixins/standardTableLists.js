@@ -26,7 +26,8 @@ export default () => ({
         'importGetUploadParametersForButtons',
         'batchVoidForButtons',
         'batchSubmitForButtons',
-        'batchUnSubmitForButtons'
+        'batchUnSubmitForButtons',
+        'updateUserConfig'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -52,10 +53,13 @@ export default () => ({
   computed: {
     ...mapState(getComponentName(), {
       ag: ({ ag }) => ag,
+      hideColumn: ({ hideColumn }) => hideColumn,
+      colPosition: ({ colPosition }) => colPosition,
+      fixedColumn: ({ fixedColumn }) => fixedColumn,
       pageAttribute: ({ ag }) => ({
-        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange,
-        total: ag.datas.totalRowCount,
-        'page-size-opts': ag.datas.selectrange,
+        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 0,
+        total: ag.datas.totalRowCount || 0,
+        'page-size-opts': ag.datas.selectrange || [10, 25, 50, 100],
         'show-elevator': true,
         'show-sizer': true,
         'show-total': true

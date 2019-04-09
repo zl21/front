@@ -16,6 +16,11 @@
       ref="agTableElement"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
+      :css-status="ag.status4css"
+      :legend="ag.status4css"
+      :hide-column="hideColumn"
+      :col-position="colPosition"
+      :fixed-column="fixedColumn"
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
@@ -70,10 +75,7 @@
   import ErrorModal from './ErrorModal';
 
   import {
-    fkQueryList,
-    fkFuzzyquerybyak,
-    fkGetMultiQuery,
-    fkDelMultiQuery
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
@@ -466,7 +468,7 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
-          
+
           this.updateFormData(data);
         }
       },
@@ -847,8 +849,7 @@
         this.setActiveTabActionValue(null);
       },
 
-      dataProcessing() {
-        // 查询数据处理
+      dataProcessing() { // 查询数据处理
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item]) {
             obj[item] = this.formItems.data[item];
@@ -1219,7 +1220,7 @@
         //   }
         // });
         // this.buttons.selectIdArr = arr;
-       
+
         this.$nextTick(() => {
           if (this.buttons.selectIdArr.length > 0) {
             if (
@@ -1441,6 +1442,7 @@
       }
     },
     mounted() {
+      this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       this.getTableQuery();
       this.getQueryListForAg(this.searchData);
       clearTimeout(window.timer);

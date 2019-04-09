@@ -70,6 +70,7 @@
           :data="data"
           :total-data="totalData"
           @on-selection-change="tableSelectedChange"
+          @on-sort-change="tableSortChange"
         />
         <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
       </div>
@@ -85,7 +86,6 @@
   } from '../constants/fkHttpRequest';
   import buttonmap from '../assets/js/buttonmap';
   import Dialog from './ComplexsDialog';
-  import dataProp from '../__config__/props.config';
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -121,6 +121,15 @@
         },
         fkAutoData: [], // 外键关联下拉 模糊搜索数据
         popFilterData: {}, // mop气泡的特殊数据
+        popFilterDataList: [{
+                              value: '更多筛选',
+                              lable: 0
+                            },
+                            {
+                              value: '导入',
+                              lable: 2
+                            }],
+        currentOrderList: [], // 当前排序的内容
         DISPLAY_ENUM: {
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
@@ -171,6 +180,9 @@
       data() {
         this.filterBeforeData();
         return this.filterData(this.dataSource.row); // 每列的数据
+      },
+      copyDataSource() {
+        return this.deepClone(this.dataSource);
       },
       columns() {
         return this.filterColumns(this.dataSource.tabth); // 每列的属性
@@ -272,10 +284,22 @@
         const columns = data
           .filter(ele => ele.name !== EXCEPT_COLUMN_NAME)
           .map((ele) => {
-            const item = Object.assign(ele, {
+            const param = {
               title: ele.name,
               key: ele.colname
-            });
+            };
+            if (ele.isorder) {
+              param.sortable = 'custom';
+            }
+            if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
+              this.dataSource.ordids.map((order) => {
+                if (ele.colname === order.colname) {
+                  param.sortType = order.ordasc ? 'asc' : 'desc';
+                }
+                return order;
+              });
+            }
+            const item = Object.assign(ele, param);
             return item;
           });
         const renderColumns = this.renderData(columns);
@@ -378,7 +402,7 @@
           }
           if (cellData.display === 'image') {
             // 不可编辑话 图片也是能照常render出来的
-            return this.imageRender(cellData, this.DISPLAY_ENUM[cellData.display].tag)
+            return this.imageRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
           return null;
         }
@@ -589,32 +613,63 @@
               width: '100px'
             },
             props: {
-              ...dataProp[tag].props,
-              ...cellData
+              value: this.copyDataSource.row[params.index][cellData.colname].val,
+              // Selected: [this.dataSource.row[params.index][cellData.colname].colid], // TODO 多选的id默认值不清楚
+              optionTip: true,
+              // 是否显示输入完成后是否禁用 true、false
+              show: true,
+              // 是否显示筛选提示弹窗 true、false
+              filterTip: true,
+              // 是否选中后禁止编辑 true、false
+              disabled: false,
+              // 默认提示框
+              placeholder: null,
+              // 定义选中展示的文字的key
+              hideColumnsKey: ['id'],
+              // 配置弹窗的配置项 model
+              dialog: {
+                model: {
+                  title: '弹窗多选',
+                  mask: true,
+                  draggable: true,
+                  scrollable: true
+                }
+              },
+              datalist: this.popFilterDataList,
+              ...cellData,
+              // 模糊查询的文字信息，支持多列
+              AuotData: this.fkAutoData 
             },
             nativeOn: {
               click: (e) => {
                 e.stopPropagation();
               }
             },
-            scopedSlots: {
-              daigo: props => h('div', [
-                h(Dialog, {
-                  props: {
-                    fkobj: {
-                      refobjid: cellData.refobjid,
-                      reftable: cellData.reftable,
-                      reftableid: cellData.reftableid
-                    },
-                    filter: this.popFilterData
-                  }
-                })
-              ])
-            },
+            // scopedSlots: {
+            //   daigo: props => h('div', [
+            //     h(Dialog, {
+            //       props: {
+            //         fkobj: {
+            //           refobjid: cellData.refobjid,
+            //           reftable: cellData.reftable,
+            //           reftableid: cellData.reftableid
+            //         },
+            //         filter: this.popFilterData
+            //       }
+            //     })
+            //   ])
+            // },
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
                 console.log(item);
-                dataProp[tag].props.datalist = [];
+                this.popFilterDataList = [{
+                                            value: '更多筛选',
+                                            lable: 0
+                                          },
+                                          {
+                                            value: '导入',
+                                            lable: 2
+                                          }];
                 fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
@@ -624,18 +679,26 @@
                   }
                 });
               },
-              'on-ok': ($this, data) => {
+              'on-ok': ($this) => {
                 // debugger;
                 if ($this._data.IN.length > 0) {
                   const value = `已经选中${$this._data.IN.length}条数据`;
-                  dataProp[tag].props.value = value;
-                  dataProp[tag].props.Selected = $this._data.IN;
-                  // this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+                  this.copyDataSource.row[params.index][cellData.colname].val = value;
+                  this.copyDataSource.row[params.index][cellData.colname].Selected = $this._data.IN;
                 } else {
-                  dataProp[tag].props.value = '';
-                  dataProp[tag].props.Selected = [];
-                  // this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+                  this.copyDataSource.row[params.index][cellData.colname].val = '';
+                  this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                 }
+                let ids = null;
+                if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
+                  ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
+                }
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-clear': (a, b, $this) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = '';
+                this.copyDataSource.row[params.index][cellData.colname].Selected = [];
+                this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-popclick': (event, row, targName, $this) => {
                 if (targName !== 'I' && event !== 1) {
@@ -647,103 +710,77 @@
                 }
               },
               'on-change': (data, data2, value) => {
-                // if (!value.InputVale) {
-                //   value.transferDefaultSelected = [];
-                // }
-                // this.fkAutoData = [];
-                // fkFuzzyquerybyak({
-                //   searchObject: {
-                //     ak: data,
-                //     colid: this.dataSource.row[params.index][cellData.colname].colid,
-                //     fixedcolumns: {
-                //       whereKeys: this.getMainRefobjid(params, cellData)
-                //     }
-                //   },
-                //   success: (res) => {
-                //     this.fkAutoData = res.data.data;
-                //     const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-                //     if (autoData.length === 0) {
-                //       // autodata中没有 清空输入框
-                //       value.notAutoData = true;
-                //     } else {
-                //       delete value.notAutoData;
-                //     }
-                //   }
-                // });
+                this.fkAutoData = [];
+                if (!data) {
+                  this.copyDataSource.row[params.index][cellData.colname].val = '';
+                  this.copyDataSource.row[params.index][cellData.colname].Selected = [];
+                  return;
+                }
+                fkFuzzyquerybyak({
+                  searchObject: {
+                    ak: data,
+                    colid: this.copyDataSource.row[params.index][cellData.colname].colid,
+                    fixedcolumns: {
+                      whereKeys: this.getMainRefobjid(params, cellData)
+                    }
+                  },
+                  success: (res) => {
+                    this.fkAutoData = res.data.data;
+                    const autoData = this.fkAutoData.filter(ele => (data && ele.value.toUpperCase().indexOf(data.toUpperCase()) > -1));
+                    if (autoData.length === 0) {
+                      // autodata中没有 清空输入框
+                      value.notAutoData = true;
+                    } else {
+                      delete value.notAutoData;
+                    }
+                  }
+                });
               },
-
-            //   'on-popper-show': () => {
-            //     this.fkDropPageInfo.currentPageIndex = 1;
-            //     this.fkAutoData = [];
-            //     this.getFKList(params, cellData);
-            //   },
-            //   'on-page-change': (value) => {
-            //     this.fkDropPageInfo.currentPageIndex = value;
-            //     this.getFKList(params, cellData);
-            //   },
-            //   'on-input-value-change': (data, value) => {
-            //     if (!value.inputValue) {
-            //       value.transferDefaultSelected = [];
-            //     }
-            //     this.fkAutoData = [];
-            //     fkFuzzyquerybyak({
-            //       searchObject: {
-            //         ak: data,
-            //         colid: this.dataSource.row[params.index][cellData.colname].colid,
-            //         fixedcolumns: {
-            //           whereKeys: this.getMainRefobjid(params, cellData)
-            //         }
-            //       },
-            //       success: (res) => {
-            //         this.fkAutoData = res.data.data;
-            //         const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-            //         if (autoData.length === 0) {
-            //           // autodata中没有 清空输入框
-            //           value.notAutoData = true;
-            //         } else {
-            //           delete value.notAutoData;
-            //         }
-            //       }
-            //     });
-            //   },
-            //   'on-blur': (event, value) => {
-            //     if (value.notAutoData) {
-            //       // autodata中没有 清空输入框 及上次选中的值
-            //       value.inputValue = '';
-            //       delete value.notAutoData;
-            //     } else if (this.fkAutoData.length > 0) {
-            //       // 当选择模糊搜索结果的时候
-            //       const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-            //       value.inputValue = autoData[0].value;
-            //       value.transferDefaultSelected = [{
-            //         ID: autoData[0].id,
-            //         Label: autoData[0].value
-            //       }];
-            //     }
-            //     this.fkAutoData = [];
-            //     let ids = null;
-            //     if (value.transferDefaultSelected.length > 0) {
-            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
-            //     }
-            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   },
-            //   'on-fkrp-selected': (data, value) => {
-            //     this.fkAutoData = [];
-            //     let ids = null;
-            //     if (value.transferDefaultSelected.length > 0) {
-            //       ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
-            //     }
-            //     this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   },
-            //   'on-clear': (value) => {
-            //     this.fkAutoData = [];
-            //     this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   }
+              'on-blur': (data, event, value) => {
+                if (value.notAutoData) {
+                  // autodata中没有 清空输入框 及上次选中的值
+                  value.InputVale = '';
+                  delete value.notAutoData;
+                } else if (this.fkAutoData.length > 0) {
+                  // 当选择模糊搜索结果的时候
+                  const autoData = this.fkAutoData.filter(ele => (data && ele.value.toUpperCase().indexOf(data.toUpperCase()) > -1));
+                  this.copyDataSource.row[params.index][cellData.colname].val = autoData[0].value;
+                  this.copyDataSource.row[params.index][cellData.colname].Selected = [autoData[0].id];
+                }
+                this.fkAutoData = [];
+                let ids = null;
+                if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
+                  ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
+                }
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-select': (data, value) => {
+                this.fkAutoData = [];
+                this.copyDataSource.row[params.index][cellData.colname].val = data.label;
+                this.copyDataSource.row[params.index][cellData.colname].Selected = [data.value];
+                this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              }
             }
-          })
+          }, [
+            h('div', {
+                slot: 'daigo',
+              },
+              [
+                h(Dialog, {
+                  props: {
+                    fkobj: {
+                      refobjid: cellData.refobjid,
+                      reftable: cellData.reftable,
+                      reftableid: cellData.reftableid
+                    },
+                    filter: this.popFilterData
+                  }
+                })
+              ]),
+          ])
         ]);
       },
-      datePickertRender(cellData, tag) { // 日趋选择
+      datePickertRender(cellData, tag) { // 日期选择
         return (h, params) => h('div', [
           h(tag, {
             style: {
@@ -891,8 +928,7 @@
           // } else {
           //   item = this.$refs[`FormComponent_0`].newFormItemLists;
           // }
-
-          dataProp[tag].props.datalist = res;
+          this.popFilterDataList = this.popFilterDataList.concat(res);
         }
       },
       tableSelectedChange(data) {
@@ -935,6 +971,7 @@
           param[colname] = currentValue;
           this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
         }
+        console.log(currentValue, oldValue);
         // if (this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
         //   const rowDatas = this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
         //   if (rowDatas.length > 0) {
@@ -965,12 +1002,15 @@
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
-          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-          range: this.pageInfo.pageSize,
           table: this.tabPanel[this.tabCurrentIndex].tablename,
           objid: itemId,
           refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
-          fixedcolumns
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
         };
         this.getObjectTableItemForTableData(params);
         this.searchInfo = '';
@@ -1050,6 +1090,47 @@
           return ele;
         });
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
+      },
+      tableSortChange(value) {
+        const tableName = this.tabPanel[this.tabCurrentIndex].tablename;
+        let flag = this.currentOrderList.some((ele) => {
+          if (`${tableName}.${value.key}` === ele.column) {
+            ele.asc = value.order === 'asc';
+            return true;
+          }
+        });
+        if (value.order === 'normal') {
+          this.currentOrderList = this.currentOrderList.filter(ele => `${tableName}.${value.key}` !== ele.column);
+          flag = true;
+        }
+        if (!flag) {
+          this.currentOrderList.push({
+            column: `${tableName}.${value.key}`,
+            asc: value.order === 'asc'
+          });
+        }
+        const fixedcolumns = {};
+        if (this.searchCondition) {
+          fixedcolumns[this.searchCondition] = this.searchInfo;
+        }
+        const { itemId } = this.$route.params;
+        // table, objid, refcolid, startindex, range, fixedcolumns
+        const params = {
+          table: this.tabPanel[this.tabCurrentIndex].tablename,
+          objid: itemId,
+          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
+        };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          params.searchdata.orderby = this.currentOrderList;
+        }
+        this.getObjectTableItemForTableData(params);
       },
       pageChangeEvent(index) {
         // 分页 页码改变的回调

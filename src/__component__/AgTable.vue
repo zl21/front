@@ -45,7 +45,7 @@
   import agTable from '../assets/js/ag-grid-table-pure';
 
   export default {
-    name: 'StandardTable',
+    name: 'AgTable',
     components: {},
     props: {
       isPageShow: {
@@ -76,7 +76,7 @@
       cssStatus: {
         type: Array,
         default: () => []
-      }, // 颜色配置信息  /p/cs/getUserConfig 接口返回
+      }, // 颜色配置信息  /p/cs/getTableQuery 接口返回
       datas: {
         type: Object,
         default: () => ({})
@@ -296,7 +296,6 @@
   }
 
  .queryDesc {
-   height: 20px;
    line-height: 30px;
    display: flex;
 

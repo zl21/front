@@ -31,10 +31,7 @@ export default {
   }, data) {
     buttons.tabcmd = data;
   },
-  updateButtonWaListButtons({
-    buttons
-  }, data) {
-    buttons.dataArray.waListButtonsConfig.waListButtons = data;
+  updateButtonWaListButtons({ buttons }) {
     const currentModuleName = this.state.global.activeTab.keepAliveModuleName;
     let favorite = this.state.global.favorite;
     favorite = favorite.map(item => `${STANDARD_TABLE_COMPONENT_PREFIX}.${item.value}.${item.id}`);
@@ -111,7 +108,10 @@ export default {
   },
   updateButtonbatchUnSubmitData({ buttons }, data) { // 批量反提交
     buttons.batchUnSubmitData = data;
-  }
-  
- 
+  },
+  updateUserConfig(state, { userConfig }) {
+    state.hideColumn = userConfig.hideColumn;
+    state.colPosition = userConfig.colPosition;
+    state.fixedColumn = userConfig.fixedColumn;
+  },
 };
