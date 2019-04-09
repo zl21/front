@@ -17,6 +17,7 @@
       :page-attribute="pageAttribute"
       :datas="ag.datas"
       :cssStatus="ag.status4css"
+      :legend="ag.status4css"
       :hideColumn="hideColumn"
       :colPosition="colPosition"
       :fixedColumn="fixedColumn"
@@ -72,7 +73,7 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
   import { Capital } from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
@@ -111,7 +112,7 @@
     watch: {
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
-      
+
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;
@@ -418,7 +419,7 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
-          
+
           this.updateFormData(data);
         }
       },
@@ -567,7 +568,7 @@
                 const data = {
                   content: confirm.nodesc,
                 };
-                 
+
                 const errorDialogTitle = this.ChineseDictionary.WARNING;
                 const errorDialogvalue = true;
                 this.setErrorModalValue({ data, errorDialogTitle, errorDialogvalue });
@@ -695,7 +696,7 @@
         }
         this.buttons.activeTabAction = null;
       },
-     
+
       dataProcessing() { // 查询数据处理
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item]) {
@@ -768,12 +769,12 @@
             if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
               const type = 'tableDetailHorizontal';
               this.TabHref({
-                type, tableName, tableId, label, itemId 
+                type, tableName, tableId, label, itemId
               });
             } else { // 单对象上下结构
               const type = 'tableDetailVertical';
               this.TabHref({
-                type, tableName, tableId, label, itemId 
+                type, tableName, tableId, label, itemId
               });
             }
             if (objTableUrl) {
@@ -783,12 +784,12 @@
             } else if (objdistype === 'tabpanle') {
               const type = 'tableDetailHorizontal'; // 左右结构的单对项页面
               this.TabHref({
-                type, tableName, tableId, label, itemId 
+                type, tableName, tableId, label, itemId
               });
             } else {
               const type = 'tableDetailVertical'; // 左右结构的单对项页面
               this.TabHref({
-                type, tableName, tableId, label, itemId 
+                type, tableName, tableId, label, itemId
               });
             }
           }
@@ -1016,7 +1017,7 @@
         //   }
         // });
         // this.buttons.selectIdArr = arr;
-       
+
         this.$nextTick(() => {
           if (this.buttons.selectIdArr.length > 0) {
             if (this.buttons.errorData.content.indexOf(this.buttonMap.CMD_UNSUBMIT.name) >= 0) {
@@ -1163,7 +1164,7 @@
             //            判断是否是有父级标签
             const type = 'tableDetailAction';
             this.TabOpen({
-              type, tableName, tableId, label 
+              type, tableName, tableId, label
             });
           } else if (pathType === 'TABLE') {
             tab.action = eval(`\`${tab.action}\``);
