@@ -215,7 +215,7 @@
                 this.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }

@@ -29,7 +29,6 @@ const init = () => {
     render: createElement => createElement(App)
   }).$mount(rootDom);
 };
-<<<<<<< HEAD
 const getCategory = () => {
   network.post('/p/cs/getSubSystems').then((res) => {
     if (res.data.data) {
@@ -48,12 +47,6 @@ const getGateWayServiceId = () => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
     
     getCategory();
-=======
-
-const getGateWayServiceId = () => {
-  network.get('/p/c/get_service_id').then((res) => {
-    window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
->>>>>>> 2dcb4499b11b04ba978cfd9d0b93100a80c0abce
     setTimeout(() => {
       init();
     }, 0);
