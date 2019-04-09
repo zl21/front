@@ -1209,7 +1209,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-      errorconfirmDialog(value) {
+      errorconfirmDialog() {
         // const arr = [];
 
         // this.buttons.selectIdArr.forEach((item, index) => {

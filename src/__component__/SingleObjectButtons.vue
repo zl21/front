@@ -12,11 +12,14 @@
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
 
+
   export default {
     data() {
       return {
         dataArray: {
-          printValue: false,
+          refresh: true, // 显示刷新
+          back: true, // 显示刷新
+          printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮
@@ -30,13 +33,21 @@
             return self.buttonClick(type, item);
           }
         },
+      
       };
     },
     name: 'SingleObjectButtons',
     components: {
-      ButtonGroup
+      ButtonGroup,
     },
-    watch: {},
+    watch: {
+      tabcmd: {
+        handler(val) {
+          this.getbuttonGroupData(val);
+        },
+        deep: true
+      },
+    },
     computed: {},
     props: {
       tabcmd: {
@@ -49,13 +60,17 @@
       }
     },
     methods: {
-      buttonClick(type, obj) {
+      buttonClick(type, obj, index) {
         if (type === 'fix') {
           this.objectTabAction(obj, index);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
+        } else if (type === 'back') {
+          this.clickButtonsBack();
+        } else if (type === 'refresh') {
+          this.clickButtonsRefresh();
         } else {
           this.searchClickData();
         }
@@ -103,7 +118,7 @@
           break;
         }
       },
-   
+     
       // buttonsData(tabcmd) {
       //   const cmds = tabcmd.cmds;
       //   const prem = tabcmd.prem;

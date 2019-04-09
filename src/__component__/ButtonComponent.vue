@@ -67,6 +67,18 @@
           >&#xe62b;</i>
         </span>
       </Button>
+      <Button
+        v-if="dataArray.refresh"
+        type="fcdefault"
+        @click="btnclick('refresh')"
+        v-text="refresh"
+      />
+      <Button
+        v-if="dataArray.back"
+        type="fcdefault"
+        @click="btnclick('back')"
+        v-text="back"
+      />
     </div>
   </div>
 </template>
@@ -90,6 +102,8 @@
     data() {
       return {
         search: '查找',
+        refresh: '刷新',
+        back: '返回',
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
