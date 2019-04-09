@@ -13,7 +13,7 @@ export default {
     keepAliveLists: [],
     keepAliveLabelMaps: {},
     activeTab: {},
-    // serviceIdMap: {}
+    serviceIdMap: {}
   },
   mutations,
   actions,

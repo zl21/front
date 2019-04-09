@@ -13,6 +13,9 @@ export default () => ({
       defaultFormItemsLists: [], // 整个表单请求的item数组
       searchFoldnum: '', // 表单展示行数
     },
+    hideColumn: '',
+    colPosition: '',
+    fixedColumn: '',
     buttons: {
       dataArray: {
         printValue: false,
