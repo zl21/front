@@ -4,14 +4,18 @@ export default {
   getQueryListForAg({ commit },
     {
       table, startIndex, range,
-      fixedcolumns
+      // eslint-disable-next-line camelcase
+      fixedcolumns, column_include_uicontroller = true,
+      multiple = []
     }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
         table,
         startindex: startIndex || 0,
         range: range || 10,
-        fixedcolumns
+        fixedcolumns,
+        column_include_uicontroller,
+        multiple
       }
     })).then((res) => {
       const updateTableData = res.data.data;
