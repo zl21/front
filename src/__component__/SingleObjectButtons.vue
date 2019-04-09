@@ -103,49 +103,7 @@
           break;
         }
       },
-      objectCopyAdd() {
-        const self = this;
-        self.pageIsNew = true;
-        const copylist = self.configList;
-        for (const key in self.tabAction) { // 新增只显示保存，不显示其余操作
-          if (key !== 'actionMODIFY') {
-            self.tabAction[key] = false;
-          }
-        }
-        self.storageItem.id = '-1';
-        axios({
-          method: 'post',
-          url: '/p/cs/getObject',
-          data: {
-            table: self.$route.query.tableName,
-            objid: -1,
-          },
-        })
-          .then((res) => {
-            self.objViewConfig.configrow = res.data.data.objviewcol;
-            const newlist = self.reNullConfigList(res.data.data.addcolums);
-
-            res.data.data.addcolums.forEach((item, index) => {
-              if (item.childs) {
-                item.childs.forEach((temp) => {
-                  self.defaultConfig.push(self.reaptData(temp));
-                });
-              } else {
-                self.defaultConfig.push(self.reaptData(item.child));
-              }
-            });
-            setTimeout(() => {
-              self.configList = self.copyList(copylist, newlist);
-
-              self.$nextTick(() => {
-                $('.item-obj .input-wrap input').eq(0).focus(); // 第一个输入框获取焦点
-              });
-            }, 100);
-          })
-          .catch((err) => {
-
-          });
-      },
+   
       // buttonsData(tabcmd) {
       //   const cmds = tabcmd.cmds;
       //   const prem = tabcmd.prem;
