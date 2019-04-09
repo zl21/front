@@ -76,7 +76,7 @@
       cssStatus: {
         type: Array,
         default: () => []
-      }, // 颜色配置信息  /p/cs/getUserConfig 接口返回
+      }, // 颜色配置信息  /p/cs/getTableQuery 接口返回
       datas: {
         type: Object,
         default: () => ({})

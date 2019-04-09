@@ -16,6 +16,7 @@
       ref="agTableElement"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
+      :cssStatus="ag.status4css"
       :hideColumn="hideColumn"
       :colPosition="colPosition"
       :fixedColumn="fixedColumn"
