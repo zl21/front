@@ -153,7 +153,6 @@ export default {
   },
   TabHref(state, // 在当前页面跳转
     tab) {
-    console.log('🐑', tab);
     let path = '';
     let ModuleName = '';
     if (tab.type === 'tableDetailHorizontal') {
