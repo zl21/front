@@ -1,8 +1,13 @@
 import {
+  VERTICAL_TABLE_DETAIL_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX
+  STANDARD_TABLE_LIST_PREFIX,
+  STANDARD_TABLE_COMPONENT_PREFIX,
+  HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
+  VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
+
 // import ModuleName from '../../__utils__/getModuleName';
 
 
@@ -154,19 +159,38 @@ export default {
   TabHref(state, // 在当前页面跳转
     tab) {
     let path = '';
+   
     let ModuleName = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
+      ModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
       router.push({
         path
       });
     }
     if (tab.type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
+      ModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
+     
       router.push({
         path
+      });
+    }
+    if (tab.back) {
+      Object.keys(state.keepAliveLabelMaps).forEach((item) => {
+        if (item.indexOf(`${tab.tableName}.${tab.tableId}`) !== -1) { 
+          tab.label = state.keepAliveLabelMaps[item];
+        }
+      });   
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tab.tableName}/${tab.tableId}`;
+      ModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}`;
+      router.push({
+        path
+      });
+      state.keepAliveLists.forEach((item, index) => {
+        if (item === state.activeTab.keepAliveModuleName) {
+          state.keepAliveLists.splice(index, 1);
+        }
       });
     }
     const afterClickActiveTab = {

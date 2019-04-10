@@ -123,10 +123,17 @@
           break;
         }
       },
+    
       clickButtonsBack() {
-        
+        const { tableId, tableName } = this.$route.params;
+        const param = {
+          tableId,
+          tableName,
+          back: true,
+        };
+       
+        this.$store.commit('global/TabHref', param);
       },
-     
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
