@@ -12,6 +12,7 @@
 <script>
   /* eslint-disable no-lonely-if */
   import { mapActions, mapState } from 'vuex';
+  import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
@@ -34,7 +35,8 @@
             }
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.type = 'horizontal';
-            obj.component = tabComponent;
+            Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
+            obj.component = `${item.tablename}_TapComponent`;
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
           });
