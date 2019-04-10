@@ -54,9 +54,7 @@
             <Button
               slot="prepend"
               @click="getTabelList"
-            >
-              搜索
-            </Button>
+            >搜索</Button>
             </Input>
           </div>
         </div>
@@ -519,7 +517,7 @@
               width: '100px'
             },
             props: {
-              defaultSelected: this.dropDefaultSelectedData(params, cellData, tag),
+              defaultSelected: this.dropDefaultSelectedData(params, cellData),
               single: cellData.fkdisplay === 'drp',
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
@@ -893,10 +891,10 @@
           })
         ]);
       },
-      dropDefaultSelectedData(params, cellData, tag) {
+      dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
         const defaultData = [];
-        if (tag === 'drp') {
+        if (cellData.fkdisplay === 'drp') {
           if (this.dataSource.row[params.index][cellData.colname]) {
             const data = {
               ID: this.dataSource.row[params.index][cellData.colname].refobjid,
@@ -970,7 +968,7 @@
           param[colname] = currentValue;
           this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
         }
-        console.log(currentValue, oldValue);
+        // console.log(currentValue, oldValue);
         // if (this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
         //   const rowDatas = this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
         //   if (rowDatas.length > 0) {
@@ -1039,7 +1037,7 @@
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
             // 左右结构取行内的colid
-            fixedcolumns[cellData.refcolval.fixcolumn] = row[cellData.colname].colid;
+            fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
           } else {
             // 先判断主表是否有关联字段  没有则取行的colid
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
@@ -1212,6 +1210,10 @@
             .burgeon-btn {
               height: 25px;
               line-height: 2px;
+              span {
+                bottom: 2px;
+                position: relative;
+              }
             }
           }
         }
