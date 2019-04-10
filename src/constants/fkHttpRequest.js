@@ -30,3 +30,17 @@ export const fkDelMultiQuery = function fkDelMultiQuery(params) {
     }
   });
 };
+export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
+  network.post('/p/cs/uploadProgress', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
+export const fkObjectSave = function fkObjectSave(params) {
+  network.post('/p/cs/objectSave', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};

@@ -182,6 +182,10 @@
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
+  // 上传图片
+  import {
+    fkQueuploadProgressry, fkObjectSave
+  } from '../constants/fkHttpRequest';
 
   export default {
     name: 'ItemComponent',
@@ -248,7 +252,6 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
-        console.log(event);
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
           this._items.event.change(event, $this);
         }
@@ -490,6 +493,41 @@
       },
       uploadFileChangeSuccess(result) {
         console.log('result',result);
+        let self = this;
+      
+        fkQueuploadProgressry({
+            searchObject: {
+              uploadId:result.data.UploadId
+            },
+            success: (res) => {
+              // if( res.code !== 0 ){
+              //     return false;
+              // }
+              let parms = {
+                    fixedData:{
+                      [this._items.props.itemdata.masterName]:{'NAME':result.data.Name,URL:result.data.Url}
+                    },
+                    objId: this._items.props.itemdata.objId,
+                    table: this._items.props.itemdata.masterName
+                  }
+              self.upSaveImg(parms);
+
+            }
+        });
+            
+              
+            
+      },
+      upSaveImg(obj){
+        fkObjectSave({
+                 searchObject: {
+                   ...obj
+                  },
+                  success: (res) => {
+                    console.log(res);
+                  }
+        });
+           
       },
       uploadFileChangeOnerror(result) {
         console.log('err',result);

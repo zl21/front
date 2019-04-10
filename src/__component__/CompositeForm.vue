@@ -394,11 +394,13 @@
 
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
+          item.props.empty = '';
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
           }
           if (item.type === 'NUMBER') {
             item.props.type = 'number';
+            item.props.empty = 0;
           }
           if (current.isnotnull === true) {
             item.required = true;
@@ -507,6 +509,8 @@
             width: 200,
             height: 200,
             readonly: current.readonly,
+            masterName:this.masterName,
+            objId:this.masterId,
             sendData:{
               path:`${this.masterName}/${this.masterId}/`
             },
