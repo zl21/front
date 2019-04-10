@@ -2,6 +2,7 @@
   <div class="verticalTableDetail">
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.buttonsTabcmd"
+      objectType="vertical"
       :tabwebact="mainFormInfo.buttonsData.buttonsTabwebact"
     />
     <composite-form
@@ -20,6 +21,7 @@
       class="tabPanel"
       :tab-margin-left="20"
       is-keep-alive
+      isKeepAlive
       :type="'singleCard'"
       :tab-panels="tabPanels"
     />
