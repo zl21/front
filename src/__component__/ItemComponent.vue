@@ -166,17 +166,14 @@
         </div>
       </AttachFilter>
 
-        <!--<ImageUpload-->
-                <!--v-if="_items.type === 'ImageUpload'"-->
-                <!--:itemdata="_items.props.itemdata"-->
-                <!--@upload-file-change="uploadFileChange"-->
-                <!--@deleteImg="deleteImg"-->
-                <!--@uploadFileChangeSuccess="uploadFileChangeSuccess"-->
-                <!--@uploadFileChangeOnerror="uploadFileChangeOnerror"-->
-                <!--@uploadFileChangeOnload="uploadFileChangeOnload"-->
-                <!--@uploadFileChangeOnloadstart="uploadFileChangeOnloadstart"-->
-                <!--@uploadFileChangeOnloadend="uploadFileChangeOnloadend"-->
-        <!--&gt;</ImageUpload>-->
+        <ImageUpload
+                v-if="_items.type === 'ImageUpload'"
+                :itemdata="_items.props.itemdata"
+                @upload-file-change="uploadFileChange"
+                @deleteImg="deleteImg"
+                @uploadFileChangeSuccess="uploadFileChangeSuccess"
+                @uploadFileChangeOnerror="uploadFileChangeOnerror"
+        ></ImageUpload>
     </div>
   </div>
 </template>
@@ -185,6 +182,10 @@
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
+  // 上传图片
+  import {
+    fkQueuploadProgressry, fkObjectSave
+  } from '../constants/fkHttpRequest';
 
   export default {
     name: 'ItemComponent',
@@ -491,19 +492,45 @@
         console.log(item, index);
       },
       uploadFileChangeSuccess(result) {
-        console.log(result);
+        console.log('result',result);
+        let self = this;
+      
+        fkQueuploadProgressry({
+            searchObject: {
+              uploadId:result.data.UploadId
+            },
+            success: (res) => {
+              // if( res.code !== 0 ){
+              //     return false;
+              // }
+              let parms = {
+                    fixedData:{
+                      [this._items.props.itemdata.masterName]:{'NAME':result.data.Name,URL:result.data.Url}
+                    },
+                    objId: this._items.props.itemdata.objId,
+                    table: this._items.props.itemdata.masterName
+                  }
+              self.upSaveImg(parms);
+
+            }
+        });
+            
+              
+            
+      },
+      upSaveImg(obj){
+        fkObjectSave({
+                 searchObject: {
+                   ...obj
+                  },
+                  success: (res) => {
+                    console.log(res);
+                  }
+        });
+           
       },
       uploadFileChangeOnerror(result) {
-        console.log(result);
-      },
-      uploadFileChangeOnload(e) {
-        console.log(e);
-      },
-      uploadFileChangeOnloadstart(e) {
-        console.log(e);
-      },
-      uploadFileChangeOnloadend(e) {
-        console.log(e);
+        console.log('err',result);
       }
     },
     created() {

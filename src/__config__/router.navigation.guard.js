@@ -1,8 +1,11 @@
 import store from './store.config';
 import {
+  STANDARD_TABLE_LIST_PREFIX,
+  VERTICAL_TABLE_DETAIL_PREFIX,
+  HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
   VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
-  HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX
+  HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -13,126 +16,79 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const { tableName, tableId, itemId } = to.params;
-    // Condition One: 路由到标准列表界面
-    if (/\/SYSTEM\/TABLE\//.test(to.path)) {
-      const keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+    const { routePrefix } = to.meta;
+    const moduleGenerator = {
+      [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
+      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: verticalTableDetailModule,
+      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: horizontalTableDetailModule,
+    };
+    const labelSuffix = {
+      [STANDARD_TABLE_COMPONENT_PREFIX]: '',
+      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: '编辑',
+      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: '编辑',
+    };
+    let dynamicModuleTag = '';
+    let keepAliveModuleName = '';
+    const originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 
-      // 处理 keepAliveModuleName
-      if (!keepAliveLists.includes(keepAliveModuleName)) {
-        commit('global/increaseKeepAliveLists', keepAliveModuleName);
-      }
+    switch (routePrefix) {
+      // Condition One: 路由到标准列表界面名称
+      case STANDARD_TABLE_LIST_PREFIX:
+        keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+        dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
+        break;
 
-      // 处理 openedMenuLists
-      if (openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
-        let tempInterval = -1;
-        tempInterval = setInterval(() => {
-          const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
-          if (ready) {
-            clearInterval(tempInterval);
-            commit('global/increaseOpenedMenuLists', {
-              label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
-              keepAliveModuleName,
-              type: to.path.split('/')[2],
-              id: tableId,
-              tableName,
-              routeFullPath: to.path
-            });
-          }
-        }, 50);
-      } else {
-        commit('global/againClickOpenedMenuLists', {
-          label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
-          keepAliveModuleName
-        });
-        commit('global/updateActiveMenu', keepAliveModuleName);
-      }
+      // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面名称
+      case VERTICAL_TABLE_DETAIL_PREFIX:
+        keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+        dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
+        break;
 
-      // 判断是否状态中已经存在某个模块，不存在则创建
-      if (store.state[keepAliveModuleName] === undefined) {
-        store.registerModule(keepAliveModuleName, standardTableListModule());
-      }
+      // Condition Three: 路由到table类型的列表明细界面名称
+      case HORIZONTAL_TABLE_DETAIL_PREFIX:
+        keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+        dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
+        break;
+
+      default:
+        break;
     }
 
-    // Condition Two: 路由到上下结构（纵向布局）的列表明细界面
-    if (/\/SYSTEM\/TABLE_DETAIL\/V\//.test(to.path)) {
-      const keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-
-      // 处理 keepAliveModuleName
-      if (!keepAliveLists.includes(keepAliveModuleName)) {
-        commit('global/increaseKeepAliveLists', keepAliveModuleName);
-      }
-      
-      // 处理 openedMenuLists
-      if (openedMenuLists.length === 0) {
-        let tempInterval = -1;
-        tempInterval = setInterval(() => {
-          const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
-          if (ready) {
-            let label = '';
-            Object.keys(store.state.global.keepAliveLabelMaps).forEach((item) => {
-              if (item.indexOf(`${tableName}.${tableId}`) !== -1) { 
-                label = `${store.state.global.keepAliveLabelMaps[item]}编辑`;
-              }
-            });   
-            clearInterval(tempInterval);
-            commit('global/increaseOpenedMenuLists', {
-              label,
-              keepAliveModuleName,
-              type: to.path.split('/')[2],
-              id: tableId,
-              tableName,
-              routeFullPath: to.path
-            });
-          }
-        }, 0);
-      }
-      
-
-      // 判断是否状态中已经存在某个模块，不存在则创建
-      if (store.state[keepAliveModuleName] === undefined) {
-        store.registerModule(keepAliveModuleName, verticalTableDetailModule());
-      }
+    // 处理 keepAliveModuleName
+    if (!keepAliveLists.includes(keepAliveModuleName)) {
+      commit('global/increaseKeepAliveLists', keepAliveModuleName);
     }
 
-    // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面
-    if (/\/SYSTEM\/TABLE_DETAIL\/H\//.test(to.path)) {
-      const keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-
-      // 处理 keepAliveModuleName
-      if (!keepAliveLists.includes(keepAliveModuleName)) {
-        commit('global/increaseKeepAliveLists', keepAliveModuleName);
-      }
-     
-      // 处理 openedMenuLists
-      if (openedMenuLists.length === 0) {
-        let tempInterval = -1;
-        tempInterval = setInterval(() => {
-          const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
-          if (ready) {
-            let label = '';
-            Object.keys(store.state.global.keepAliveLabelMaps).forEach((item) => {
-              if (item.indexOf(`${tableName}.${tableId}`) !== -1) { 
-                label = `${store.state.global.keepAliveLabelMaps[item]}编辑`;
-              }
-            });   
-            clearInterval(tempInterval);
-            commit('global/increaseOpenedMenuLists', {
-              label,
-              keepAliveModuleName,
-              type: to.path.split('/')[2],
-              id: tableId,
-              tableName,
-              routeFullPath: to.path
-            });
-          }
-        }, 0);
-      }
-      
-      // 判断是否状态中已经存在某个模块，不存在则创建
-      if (store.state[keepAliveModuleName] === undefined) {
-        store.registerModule(keepAliveModuleName, horizontalTableDetailModule());
-      }
+    // 判断是否状态中已经存在某个模块，不存在则创建
+    if (dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
+      store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
+
+    // 处理 openedMenuLists
+    if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
+      let tempInterval = -1;
+      tempInterval = setInterval(() => {
+        const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+        if (ready) {
+          clearInterval(tempInterval);
+          commit('global/increaseOpenedMenuLists', {
+            label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            keepAliveModuleName,
+            type: to.path.split('/')[2],
+            id: tableId,
+            tableName,
+            routeFullPath: to.path
+          });
+        }
+      }, 25);
+    } else {
+      commit('global/againClickOpenedMenuLists', {
+        label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+        keepAliveModuleName
+      });
+      commit('global/updateActiveMenu', keepAliveModuleName);
+    }
+
     next();
   });
 };

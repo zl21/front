@@ -14,7 +14,7 @@
 
 
   export default {
-    name: 'STableKeepAlive',
+    name: 'S.Table.KeepAlive',
     data() {
       return {
         currentTable: null
