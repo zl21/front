@@ -20,6 +20,7 @@
       class="tabPanel"
       :tab-margin-left="20"
       is-keep-alive
+      isKeepAlive
       :type="'singleCard'"
       :tab-panels="tabPanels"
     />
