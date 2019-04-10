@@ -3,6 +3,7 @@
     <component
       :is="'SingleObjectButtons'"
       v-if="buttonsData.isShow"
+      :objectType="type"
       class="objectButtons"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
