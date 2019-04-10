@@ -1,9 +1,9 @@
 import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX
+  VERTICAL_TABLE_DETAIL_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX,
+  KEEP_MENU_STATE
 } from '../../constants/global';
 import router from '../router.config';
-// import ModuleName from '../../__utils__/getModuleName';
 
 
 export default {
@@ -55,14 +55,7 @@ export default {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
-  increaseOpenedMenuLists(state, {
-    label,
-    keepAliveModuleName,
-    type,
-    id,
-    tableName,
-    routeFullPath
-  }) {
+  increaseOpenedMenuLists(state, { label, keepAliveModuleName, type, id, tableName, routeFullPath }) {
     if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
       state.openedMenuLists.forEach((d) => {
         d.isActive = false;
@@ -151,36 +144,16 @@ export default {
     });
     state.activeTab.isActive = true;
   },
-  TabHref(state, // 在当前页面跳转
-    tab) {
+  TabHref(state, tab) {
     let path = '';
-    let ModuleName = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
-      router.push({
-        path
-      });
+      router.push({ path });
     }
     if (tab.type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
-      router.push({
-        path
-      });
+      router.push({ path });
     }
-    const afterClickActiveTab = {
-      routeFullPath: path,
-      isActive: true,
-      keepAliveModuleName: ModuleName,
-      label: tab.label
-    };
-    state.openedMenuLists.forEach((item) => {
-      if (item.routeFullPath === state.activeTab.routeFullPath) {
-        Object.assign(item, afterClickActiveTab);
-        state.activeTab = afterClickActiveTab;
-      }
-    });
   },
   TabOpen(state, // 打开新的tab页
     tab) {
