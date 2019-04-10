@@ -77,7 +77,7 @@
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
-  import { Capital } from '../constants/regExp';
+  import regExp from '../constants/regExp';
   import { routeTo } from '../__config__/event.config';
   // import ModuleName from '../__utils__/getModuleName.js';
 
@@ -369,7 +369,7 @@
 
             // 属性isuppercase控制
             if (current.isuppercase) {
-              obj.item.props.regx = Capital;
+              obj.item.props.regx = regExp.Capital;
               obj.item.event.regxCheck = (value, $this, errorValue) => {
                 this.lowercaseToUppercase(errorValue, itemIndex);
               };
