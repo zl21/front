@@ -143,7 +143,9 @@
       verifyMessageForm: {
         type: Function,
         default() {
-          return '';
+          return function () {
+            
+          };
         }
       }
     },
