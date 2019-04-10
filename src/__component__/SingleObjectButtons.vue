@@ -126,39 +126,7 @@
       clickButtonsBack() {
         
       },
-      objectAdd() { // 新增
-        const self = this;
-        self.pageIsNew = true;
-        this.getObjectTab();
-        self.storageItem.id = '-1';
-        axios({
-          method: 'post',
-          url: '/p/cs/getObject',
-          data: {
-            table: self.$route.query.tableName,
-            objid: -1,
-          },
-        })
-          .then((res) => {
-            self.objViewConfig.configrow = res.data.data.objviewcol;
-            const list = self.reNullConfigList(res.data.data.addcolums);
-            res.data.data.addcolums.forEach((item, index) => {
-              if (item.childs) {
-                item.childs.forEach((temp) => {
-                  self.defaultConfig.push(self.reaptData(temp));
-                });
-              } else {
-                self.defaultConfig.push(self.reaptData(item.child));
-              }
-            });
-            setTimeout(() => {
-              self.configList = list;
-            }, 100);
-            $('.item-obj .input-wrap input').eq(0).focus(); // 第一个输入框获取焦点
-          })
-          .catch((err) => {
-          });
-      },
+     
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
