@@ -165,6 +165,18 @@
           />
         </div>
       </AttachFilter>
+
+        <!--<ImageUpload-->
+                <!--v-if="_items.type === 'ImageUpload'"-->
+                <!--:itemdata="_items.props.itemdata"-->
+                <!--@upload-file-change="uploadFileChange"-->
+                <!--@deleteImg="deleteImg"-->
+                <!--@uploadFileChangeSuccess="uploadFileChangeSuccess"-->
+                <!--@uploadFileChangeOnerror="uploadFileChangeOnerror"-->
+                <!--@uploadFileChangeOnload="uploadFileChangeOnload"-->
+                <!--@uploadFileChangeOnloadstart="uploadFileChangeOnloadstart"-->
+                <!--@uploadFileChangeOnloadend="uploadFileChangeOnloadend"-->
+        <!--&gt;</ImageUpload>-->
     </div>
   </div>
 </template>
@@ -220,7 +232,6 @@
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
-          console.log(item);
           item.componentType = Dialog;
           item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
         }
@@ -472,6 +483,27 @@
             this._items.event['popper-value']($this, value, $this._data.IN, this.index);
           }
         }
+      },
+      uploadFileChange(e) {
+        console.log(e);
+      },
+      deleteImg(item, index) {
+        console.log(item, index);
+      },
+      uploadFileChangeSuccess(result) {
+        console.log(result);
+      },
+      uploadFileChangeOnerror(result) {
+        console.log(result);
+      },
+      uploadFileChangeOnload(e) {
+        console.log(e);
+      },
+      uploadFileChangeOnloadstart(e) {
+        console.log(e);
+      },
+      uploadFileChangeOnloadend(e) {
+        console.log(e);
       }
     },
     created() {

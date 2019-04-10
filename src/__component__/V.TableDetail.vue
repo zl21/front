@@ -7,7 +7,7 @@
     <composite-form
       v-if="mainFormInfo.formData.isShow"
       :master-name="$route.params.tableName"
-      :master-id="$route.params.tableId"
+      :master-id="$route.params.itemId"
       class="panelForm"
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"

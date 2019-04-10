@@ -17,14 +17,14 @@
           {{ item.parentdesc }}
           <div slot="content">
             <FormItemComponent
-              :ref="'FormComponent_'+index"
-              :key="index"
               :form-item-lists="item.childs"
-              :verify-message-form="VerifyMessageForm"
-              :mountdata-form="mountdataForm"
-              :type="type"
+              :ref="'FormComponent_'+index"
+              :VerifyMessageForm = "VerifyMessageForm"
+              :mountdataForm = "mountdataForm"
+              :key = "index"
+              @formDataChange ="formDataChange"
+              :type = "type"
               :default-column="defaultData.objviewcol"
-              @formDataChange="formDataChange"
             />
           </div>
         </Panel>
@@ -32,12 +32,11 @@
     </template>
     <template v-if="type === ''">
       <FormItemComponent
-        ref="FormComponent_0"
-        :verify-message-form="VerifyMessageForm"
-        :mountdata-form="mountdataForm"
-        :form-item-lists="computdefaultData"
-        @formDataChange="formDataChange"
-      />
+      @formDataChange ="formDataChange"
+      :VerifyMessageForm = "VerifyMessageForm"
+      :mountdataForm = "mountdataForm"
+      ref="FormComponent_0"
+      :form-item-lists="computdefaultData" />
     </template>
   </div>
 </template>
@@ -48,6 +47,7 @@
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
+  import { Capital } from '../constants/regExp';
 
   export default {
     name: 'CompositeForm',
@@ -68,14 +68,26 @@
           return '';
         }
       },
-      moduleFormType: {
+      moduleFormType:{
         type: String,
         default() {
           return '';
         }
       },
-      updateForm: {
-        type: Function,
+      updateForm:{
+        type:Function,
+        default() {
+          return '';
+        }
+      },
+      masterName:{
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      masterId:{
+        type: String,
         default() {
           return '';
         }
@@ -83,67 +95,68 @@
     },
     data() {
       return {
-        newdefaultData: [], // 初始化form
-        formData: {}, // 监听form变化
-        VerificationForm: {}, // 校验form
-        defaultFormData: {}, // form 默认值
-        childForm: {
-          childs: []
+        newdefaultData:[],  // 初始化form
+        formData:{},  // 监听form变化
+        VerificationForm:{},  // 校验form
+        defaultFormData:{},    // form 默认值
+        childForm:{
+          childs:[]
         },
-        expand: 'expand' // 面板是否展开
+        expand: 'expand'    // 面板是否展开
       };
     },
     computed: {
       computdefaultData: {
-        get() {
-          let items = [];
-          // 存放单个form child
-          this.childForm.childs = [];
-          // 有面板的数据
-          if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
-            items = this.defaultData.addcolums.reduce((array, current, index) => {
-              let tem = [];
-              if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
-                tem = current.childs.reduce((array2, current2, itemIndex2) => {
-                  current2.formIndex = index;
-                  const option = this.reduceForm(array2, current2, itemIndex2);
-                  array2.push(option);
-                  return array2;
-                }, []);
-                array.push({
-                  childs: tem,
-                  hrdisplay: current.hrdisplay,
-                  parentdesc: current.parentdesc,
-                  parentname: current.parentname
-                });
-              } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
-                const option = this.reduceForm([], current.child, index);
-                if (option.item) {
-                  this.childForm.childs.push(option);
+            get:function(){
+              let items = [];
+              // 存放单个form child
+              this.childForm.childs = [];
+            // 有面板的数据
+            if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
+              items = this.defaultData.addcolums.reduce((array, current,index) => {
+                let tem = [];
+                if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
+                  tem = current.childs.reduce((array2, current2, itemIndex2) => {
+                    current2.formIndex = index;
+                    const option = this.reduceForm(array2, current2, itemIndex2);
+                    array2.push(option);
+                    return array2;
+                  }, []);
+                  array.push({
+                    childs: tem,
+                    hrdisplay: current.hrdisplay,
+                    parentdesc: current.parentdesc,
+                    parentname: current.parentname
+                  });
+                }else if(Object.prototype.hasOwnProperty.call(current, 'child')){
+                  const option = this.reduceForm([], current.child,index);
+                  if( option.item ) {
+                    this.childForm.childs.push(option);
+                  }
                 }
-              }
-              return array;
-            }, []);
-          } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
-            // 表单的数据
-            items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
-              current.formIndex = 'inpubobj';
-              const option = this.reduceForm(array, current, itemIndex);
-              array.push(option);
-              return array;
-            }, []);
-          }
-          // 数据重组  默认展开
-          if (this.childForm.childs[0]) {
-            this.childForm.hrdisplay = 'expand';
-            items.push(this.childForm);
-          }
+                return array;
 
-          return items;
-        },
-        set(val) {
-          return val;
-        }
+              }, []);
+            } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
+              // 表单的数据
+              items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
+                current.formIndex = 'inpubobj';
+                const option = this.reduceForm(array, current, itemIndex);
+                array.push(option);
+                return array;
+              }, []);
+            }
+            // 数据重组  默认展开
+              if( this.childForm.childs[0] ){
+                this.childForm.hrdisplay = 'expand';
+                items.push(this.childForm);
+              }
+
+              return items;
+          },
+          set:function(val){
+              return val;
+          }
 
       },
 
@@ -151,37 +164,37 @@
     methods: {
       CollapseClose(index) {
       },
-      Comparison(obj, obj2) {
+      Comparison(obj, obj2){
 
       },
       formDataChange(data) {
         // 表单数据修改  判断vuex 里面是否有input name
-        this.formData = Object.assign(this.formData, data);
-        const key = Object.keys(data)[0];
-        if (key.split(':').length > 1) {
+        this.formData = Object.assign(this.formData,data);
+        let key = Object.keys(data)[0];
+        if(key.split(':').length >1){
           delete this.formData[key.split(':')[0]];
         } else {
-          delete this.formData[`${key}:NAME`];
+          delete this.formData[key +':NAME'];
         }
-        this.$emit('formChange', this.formData);
+        this.$emit('formChange',this.formData);
+
       },
-      VerifyMessageForm(value) {
+      VerifyMessageForm(value){
         // 获取需要校验的表单
         this.VerificationForm = value;
-        const arr = Object.keys(this.VerificationForm).reduce((item, current, index) => {
-          item.push(`请输入${this.VerificationForm[current]}`);
-          return item;
-        }, []);
+        let arr =Object.keys(this.VerificationForm).reduce((item,current,index) => {
+           item.push(`请输入${this.VerificationForm[current]}`)
+            return item;
+        },[]);
         this.$emit('VerifyMessage', arr);
-      },
-      mountdataForm(value) {
-        // 获取表单默认值
-        this.defaultFormData = Object.assign(this.defaultFormData, value);
-        // console.log(this.defaultFormData);
 
+      },
+      mountdataForm(value){
+            // 获取表单默认值
+        this.defaultFormData = Object.assign(this.defaultFormData,value);
         this.$emit('InitializationForm', this.defaultFormData);
       },
-      reduceForm(array, current, index) {
+      reduceForm: function (array, current, index) {
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -192,10 +205,11 @@
           field: current.colname,
           value: this.defaultValue(current),
           inputname: current.inputname,
-          props: { ...current },
+          props: {...current},
           event: {
             keydown: (event) => { // 输入框的keydown event, $this
               if (event.keyCode === 13) { // enter回车查询
+
                 this.searchClickData();
               }
             },
@@ -219,12 +233,12 @@
             },
             'popper-value': ($this, value, Selected) => { // 当外键下拉展开时去请求数据
               console.log('popper');
-              let item = [];
-              console.log($this, value, Selected, 'popper-value');
-              if (current.formIndex !== 'inpubobj') {
+              let item = []
+              console.log($this, value, Selected,'popper-value');
+              if( current.formIndex !== 'inpubobj'){
                 item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
               } else {
-                item = this.$refs.FormComponent_0.newFormItemLists;
+                item = this.$refs[`FormComponent_0`].newFormItemLists;
               }
 
               item[index].item.value = value;
@@ -285,6 +299,15 @@
           validate: {}
         };
         // 属性赋值
+        // 属性isuppercase控制
+        if (current.isuppercase) {
+          obj.item.props.regx = Capital;
+          obj.item.event.regxCheck = (value, $this, errorValue) => {
+            this.lowercaseToUppercase(errorValue, itemIndex);
+          };
+        }
+
+
         this.propsType(current, obj.item);
         return obj;
       },
@@ -304,6 +327,10 @@
         // check
         if (item.display === 'check') {
           str = 'checkbox';
+        }
+        // 上传图片
+        if( item.display === "image" ){
+          str = 'ImageUpload';
         }
         if (item.display === 'text') {
           switch (item.fkdisplay) {
@@ -327,7 +354,7 @@
           str = 'DatePicker';
         }
 
-        if (item.display === 'OBJ_TIME') {
+        if (item.display === 'OBJ_TIME' ) {
           str = 'TimePicker';
         }
 
@@ -337,7 +364,7 @@
         // 设置表单的默认值
         if (item.valuedata === 'N') {
           return false;
-        } if (item.valuedata === 'Y') {
+        } else if (item.valuedata === 'Y') {
           return true;
         }
         if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
@@ -353,15 +380,16 @@
             Label: item.valuedata
           });
           return arr;
-        } 
-        return item.valuedata;
-        
+        } else {
+          return item.valuedata;
+        }
         //
       },
       propsType(current, item) {
         // 表单 props
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
+
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
           if (item.display === 'textarea') {
@@ -417,13 +445,15 @@
         }
         if (current.display === 'OBJ_TIME') {
           item.props.type = 'timerange';
+
         }
         if (current.display === 'OBJ_DATE') {
           item.props.type = 'datetime';
 
-          if (current.type === 'STRING') {
+          if( current.type === 'STRING' ){
 
-          }
+           }
+
         }
         if (current.display === 'OBJ_TIME') {
           item.props.type = 'timerange';
@@ -452,72 +482,84 @@
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
-              reftableid: current.reftableid
+              reftableid:current.reftableid
             };
             item.props.datalist = [];
             item.props.Selected = [{
-              label: current.refobjid,
-              value: current.valuedata
+              label:current.refobjid,
+              value:current.valuedata
             }];
             break;
           default: break;
           }
         }
-        if (current.display === 'image') {
+        if( current.display === "image" ){
           // 待确定
-          item.props.type = 'text';
-          item.props = {};
+          item.props.type = 'ImageUpload';
+          //let valuedata = JSON.parse(current.valuedata);
+          let valuedata = [{"NAME":"1.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/4aedfab6-1cf9-4e15-b70e-47e19c49b7a8.jpg"},{"NAME":"2.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1e71f4d0-7b7f-4656-9b3a-2fc18f529987.jpg"},{"NAME":"3.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/034f373c-0d3c-4dd4-9729-3ea2804cc29e.jpg"},{"NAME":"4.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/9882ceb1-49f9-4da7-8742-fbdf8bc60f80.jpg"},{"NAME":"5.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1202ae27-e450-4c68-8430-133d5d58352d.jpg"}];
+          item.props.itemdata = {
+            colname: current.colname,
+            width: 200,
+            height: 200,
+            readonly: current.readonly,
+            sendData:{},
+            url:`/${this.masterName}/${this.masterId}`,
+            valuedata:valuedata
+          };
+
         }
         return item;
       },
       getTableQuery() { // 获取列表的查询字段
         this.getTableQueryForForm(this.searchData);
       },
-      freshDropDownPopFilterData(res, index, current) { // 外键下拉时，更新下拉数据
+      freshDropDownPopFilterData(res, index ,current) { // 外键下拉时，更新下拉数据
         if (res.length > 0) {
           res.forEach((item) => {
             item.label = item.value;
             item.value = item.key;
             item.delete = true;
           });
-          let item = [];
-          if (current.formIndex !== 'inpubobj') {
+          let item = []
+          if( current.formIndex !== 'inpubobj'){
             item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
           } else {
-            item = this.$refs.FormComponent_0.newFormItemLists;
+            item = this.$refs[`FormComponent_0`].newFormItemLists;
           }
 
           item[index].item.props.datalist = res;
         }
       },
-      freshDropDownSelectFilterData(res, index, current) { // 外键下拉时，更新下拉数据
-        let item = [];
-        if (current.formIndex !== 'inpubobj') {
-          item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
-        } else {
-          item = this.$refs.FormComponent_0.newFormItemLists;
-        }
-        item[index].item.props.totalRowCount = res.data.data.totalRowCount;
-        item[index].item.props.data = res.data.data;
+      freshDropDownSelectFilterData(res, index ,current) { // 外键下拉时，更新下拉数据
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+           item[index].item.props.totalRowCount = res.data.data.totalRowCount;
+           item[index].item.props.data = res.data.data;
       },
-      freshDropDownSelectFilterAutoData(res, index, current) { // 外键的模糊搜索数据更新
-        let item = [];
-        if (current.formIndex !== 'inpubobj') {
-          item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
-        } else {
-          item = this.$refs.FormComponent_0.newFormItemLists;
-        }
-        item[index].item.props.hidecolumns = ['id', 'value'];
-        item[index].item.props.AutoData = res.data.data;
+      freshDropDownSelectFilterAutoData(res, index ,current) { // 外键的模糊搜索数据更新
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+           item[index].item.props.hidecolumns = ['id', 'value'];
+           item[index].item.props.AutoData = res.data.data;
+
       },
       lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
-        let item = [];
-        if (current.formIndex !== 'inpubobj') {
-          item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
-        } else {
-          item = this.$refs.FormComponent_0.newFormItemLists;
-        }
-        item.item.value = errorValue.toUpperCase();
+            let item = []
+            if( current.formIndex !== 'inpubobj'){
+              item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
+            } else {
+              item = this.$refs[`FormComponent_0`].newFormItemLists;
+            }
+            item.item.value = errorValue.toUpperCase();
       }
     },
     mounted() {

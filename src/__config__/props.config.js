@@ -304,6 +304,24 @@ const AttachFilter = {
     }]
   }
 };
+// 弹框多选
+const ImageUpload = {
+  type: 'ImageUpload', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    itemdata: {
+      url: '', // 上传地址
+      sendData: {}, // 上传参数
+      width: 200,
+      height: 200,
+      colname: 'IMAGE',
+      readonly: false,
+      valuedata: []
+    }
+  }
+};
 
 const dataProp = {
   DropDownSelectFilter,
@@ -314,6 +332,7 @@ const dataProp = {
   // checkboxGroup,
   select,
   input,
-  AttachFilter
+  AttachFilter,
+  ImageUpload
 };
 export default dataProp;
