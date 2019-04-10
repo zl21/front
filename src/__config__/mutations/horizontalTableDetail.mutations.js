@@ -31,7 +31,7 @@ export default {
       obj.label = item.tabledesc;
       obj.componentAttribute = {
         buttonsData: {
-          isShow: false,
+          isShow: true,
           data: {}
         },
         formData: {
