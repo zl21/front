@@ -94,7 +94,6 @@
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
-      console.log('🐰', this.dialogBack);
     },
     mounted() {
       if (this.errorDialog) this.showFlag = true;

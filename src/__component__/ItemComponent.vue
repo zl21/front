@@ -166,17 +166,14 @@
         </div>
       </AttachFilter>
 
-        <!--<ImageUpload-->
-                <!--v-if="_items.type === 'ImageUpload'"-->
-                <!--:itemdata="_items.props.itemdata"-->
-                <!--@upload-file-change="uploadFileChange"-->
-                <!--@deleteImg="deleteImg"-->
-                <!--@uploadFileChangeSuccess="uploadFileChangeSuccess"-->
-                <!--@uploadFileChangeOnerror="uploadFileChangeOnerror"-->
-                <!--@uploadFileChangeOnload="uploadFileChangeOnload"-->
-                <!--@uploadFileChangeOnloadstart="uploadFileChangeOnloadstart"-->
-                <!--@uploadFileChangeOnloadend="uploadFileChangeOnloadend"-->
-        <!--&gt;</ImageUpload>-->
+        <ImageUpload
+                v-if="_items.type === 'ImageUpload'"
+                :itemdata="_items.props.itemdata"
+                @upload-file-change="uploadFileChange"
+                @deleteImg="deleteImg"
+                @uploadFileChangeSuccess="uploadFileChangeSuccess"
+                @uploadFileChangeOnerror="uploadFileChangeOnerror"
+        ></ImageUpload>
     </div>
   </div>
 </template>
@@ -251,6 +248,7 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
+        console.log(event);
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
           this._items.event.change(event, $this);
         }
@@ -491,19 +489,10 @@
         console.log(item, index);
       },
       uploadFileChangeSuccess(result) {
-        console.log(result);
+        console.log('result',result);
       },
       uploadFileChangeOnerror(result) {
-        console.log(result);
-      },
-      uploadFileChangeOnload(e) {
-        console.log(e);
-      },
-      uploadFileChangeOnloadstart(e) {
-        console.log(e);
-      },
-      uploadFileChangeOnloadend(e) {
-        console.log(e);
+        console.log('err',result);
       }
     },
     created() {

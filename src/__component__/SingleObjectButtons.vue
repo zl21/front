@@ -58,7 +58,11 @@
       tabwebact: {
         type: Object,
         default: () => ({})
-      }
+      },
+      objectType: {
+        type: String,
+        default: ''
+      },
     },
     methods: {
       buttonClick(type, obj, index) {
@@ -122,63 +126,7 @@
       clickButtonsBack() {
         
       },
-      // buttonsData(tabcmd) {
-      //   const cmds = tabcmd.cmds;
-      //   const prem = tabcmd.prem;
-      //   const newcmds = [];
-      //   const newprem = [];
-      //   const newtabs = {};
-      //   for (let i = 0; i < cmds.length; i++) {
-      //     const cmd = cmds[i];
-      //     newcmds.push(cmd);
-      //   }
-      //   for (let i = 0; i < prem.length; i++) {
-      //     const pre = prem[i];
-      //     newprem.push(pre);
-      //   }
-      //   for (let j = 0; j < newcmds.length; j++) {
-      //     const element = newcmds[j];
-      //     if (element === 'actionPRINT' && newprem[j]) {
-      //       this.dataArray.printValue = true;
-      //     } else {
-      //       newtabs[element] = newprem[j];
-      //       // console.log('🥤', newprem);
-      //     }
-      //   }
-      //   console.log('🐟', newtabs);
-
-      //   return newtabs;
-      //   // newcmds = cmds.reduce((arr, item) => { 
-      //   //   arr.push(item);
-      //   //   return arr;
-      //   // }, []);
-      //   // newprem = prem.reduce((arr, item) => { 
-      //   //   arr.push(item);
-      //   //   return arr;
-      //   // }, []);
-      //   // newcmds = newcmds.forEach((item, index) => {
-      //   //   const element = newcmds[index];
-      //   //   if (element === 'actionPRINT' && newprem[index]) {
-      //   //     this.dataArray.printValue = true;
-      //   //   } else {
-      //   //     newtabs[element] = newprem[index];
-      //   //   }
-      //   // });
-      //   // return newtabs;
-
-      //   // console.log(567, newtabs);
      
-      //   // for (let j = 0; j < newcmds.length; j++) {
-      //   //   const element = newcmds[j];
-      //   //   if (element === 'actionPRINT' && newprem[j]) {
-      //   //     this.printValue = true;
-      //   //   } else {
-      //   //     newtabs[element] = newprem[j];
-      //   //   }
-      //   // }
-      //   // console.log(777, newtabs);
-      //   // return newtabs;
-      // },
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
