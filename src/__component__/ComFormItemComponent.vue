@@ -36,7 +36,6 @@
       FormItemLists: {
         get() {
           const arr = JSON.parse(JSON.stringify(this.formItemLists));
-          this.newFormItemLists = arr.concat([]);
           return arr;
         },
         set(newValue) {
@@ -46,7 +45,6 @@
       },
       // 计算属性的 getter
       dataColRol() {
-        this.newFormItemLists = this.formItemLists.concat([]);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);
@@ -142,7 +140,7 @@
           return '';
         }
       },
-      VerifyMessageForm: {
+      verifyMessageForm: {
         type: Function,
         default() {
           return '';
@@ -152,7 +150,7 @@
     data() {
       return {
         indexItem: -1,
-        newFormItemLists: [], // 当前form list
+        newFormItemLists: this.formItemLists, // 当前form list
         changeFormData: {}, // 当前form 被改动的key
         setHeight: 34
       };

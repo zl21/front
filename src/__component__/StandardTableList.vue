@@ -150,7 +150,7 @@
       },
       onRowDoubleClick(colDef, row) {
         const { tableName, tableId } = this.$route.params;
-        const id = row.ID.val;  
+        const id = row.ID.val;
         const label = `${this.$store.state.global.activeTab.label}编辑`;
         if (this.ag.datas.objdistype === 'tabpanle') {
           // 单对象左右结构
@@ -1209,7 +1209,7 @@
           this.getToFavoriteDataForButtons(params);
         }
       },
-      errorconfirmDialog(value) {
+      errorconfirmDialog() {
         // const arr = [];
 
         // this.buttons.selectIdArr.forEach((item, index) => {
@@ -1466,7 +1466,8 @@
   };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
+  @import url('../assets/css/custom-ext.less');
 .StandardTableListRootDiv {
   width: 100%;
   overflow: auto;

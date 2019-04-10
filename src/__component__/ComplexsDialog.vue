@@ -63,7 +63,7 @@
             list: [],
             search: '',
             pageOptions: [10, 20, 50, 100],
-            height: 370,
+            height: 340,
             searchName: '全局检索',
             checked: false
           },
@@ -71,7 +71,7 @@
             tab: '查看选中结果',
             columns: [],
             list: [],
-            height: 370,
+            height: 340,
             pageOptions: [10, 20, 50, 100],
             search: '',
             searchName: '查询结果'
