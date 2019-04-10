@@ -367,7 +367,10 @@
                 val = ele[tab.colname].refobjid;
                 break;
               case 'mrp':
-                val = ele[tab.colname].val; // mrp快鱼之前是存的val
+                val = ele[tab.colname].refobjid; // mrp快鱼之前是存的val
+                break;
+              case 'mop':
+                val = ele[tab.colname].refobjid;
                 break;
               default:
                 break;
@@ -611,7 +614,7 @@
             },
             props: {
               value: this.copyDataSource.row[params.index][cellData.colname].val,
-              // Selected: [this.dataSource.row[params.index][cellData.colname].colid], // TODO 多选的id默认值不清楚
+              Selected: typeof this.copyDataSource.row[params.index][cellData.colname].refobjid === 'string' ? this.dataSource.row[params.index][cellData.colname].refobjid.split(',') : [this.dataSource.row[params.index][cellData.colname].refobjid], // TODO 多选的id默认值不清楚
               optionTip: true,
               // 是否显示输入完成后是否禁用 true、false
               show: true,
@@ -672,7 +675,7 @@
                     tableid: cellData.reftableid
                   },
                   success: (res) => {
-                    this.freshDropDownPopFilterData(res, cellData, tag);
+                    this.freshDropDownPopFilterData(res, cellData);
                   }
                 });
               },
@@ -903,15 +906,30 @@
             defaultData.push(data);
           }
         } else if (this.dataSource.row[params.index][cellData.colname]) {
-          const data = {
-            ID: this.dataSource.row[params.index][cellData.colname].val, // WARN mrp的id默认值是用的val
-            Label: params.row[cellData.colname]
-          };
-          defaultData.push(data);
+          let ids = [];
+          const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
+          const val = this.dataSource.row[params.index][cellData.colname].val;
+          if (typeof refobjid === 'string') {
+            ids = refobjid.split(',');
+          }
+          if (ids.length > 0) {
+            ids.map((ele, index) => {
+              val.split(',').map((item, ind) => {
+                if (index === ind) {
+                  defaultData.push({
+                    ID: ele,
+                    Label: item
+                  });
+                }
+                return item;
+              });
+              return ele;
+            });
+          }
         }
         return defaultData;
       },
-      freshDropDownPopFilterData(res, cellData, tag) {
+      freshDropDownPopFilterData(res, cellData) {
         // mop 气泡点击事件
         if (res.length > 0) {
           res.forEach((item) => {
