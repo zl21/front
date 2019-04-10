@@ -155,23 +155,25 @@
         if (this.ag.datas.objdistype === 'tabpanle') {
           // 单对象左右结构
           const type = 'tableDetailHorizontal';
-          this.TabHref({
+          const tab = {
             type,
             tableName,
             tableId,
             label,
             id
-          });
+          };
+          this.TabHref(tab);
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';
-          this.TabHref({
+          const tab = {
             type,
             tableName,
             tableId,
             label,
             id
-          });
+          };
+          this.TabHref(tab);
         }
       }, // ag表格行双击回调
 
@@ -1345,9 +1347,6 @@
                     const componentName = obj.action
                       .split('?')[0]
                       .replace(/\//g, '_');
-                    console.log('☁️', importCustom(obj.action));
-                    console.log('☁️', importCustom(obj.action));
-
                     Vue.component(
                       componentName,
                       Vue.extend(importCustom(obj.action))
@@ -1421,22 +1420,24 @@
             tab.action = eval(`\`${tab.action}\``);
             //            判断是否是有父级标签
             const type = 'tableDetailAction';
-            this.TabOpen({
+            const param = {
               type,
               tableName,
               tableId,
               label
-            });
+            };
+            this.TabOpen(param);
           } else if (pathType === 'TABLE') {
             tab.action = eval(`\`${tab.action}\``);
             const type = 'tableDetailAction';
-            this.TabOpen({
+            const param = {
               type,
               tableName,
               tableId,
               label,
               pathType
-            });
+            };
+            this.TabOpen(param);
           }
         }
       }

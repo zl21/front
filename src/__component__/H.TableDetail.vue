@@ -2,6 +2,7 @@
   <div class="horizontalTableDetail">
     <TabPanels
       type="line"
+      isKeepAlive
       :tab-margin-left="20"
       :tab-panels="tabPanels"
     />

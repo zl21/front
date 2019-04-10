@@ -106,6 +106,7 @@ export default {
   emptyTabs(state) {
     state.openedMenuLists = [];
     state.keepAliveLists = [];
+    state.activeTab = {};
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -150,21 +151,20 @@ export default {
     });
     state.activeTab.isActive = true;
   },
-  TabHref(state, {// 在当前页面跳转
-    type, tableName, tableId, label, id 
-  }) {
+  TabHref(state, // 在当前页面跳转
+    tab) {
     let path = '';
     let ModuleName = '';
-    if (type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${id}`;
+    if (tab.type === 'tableDetailHorizontal') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
+      ModuleName = `${HORIZONTAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
       router.push({
         path
       });
     }
-    if (type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tableName}.${tableId}.${id}`;
+    if (tab.type === 'tableDetailVertical') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
+      ModuleName = `${VERTICAL_TABLE_DETAIL_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
       router.push({
         path
       });
@@ -173,7 +173,7 @@ export default {
       routeFullPath: path,
       isActive: true,
       keepAliveModuleName: ModuleName,
-      label,
+      label: tab.label
     };
     state.openedMenuLists.forEach((item) => {
       if (item.routeFullPath === state.activeTab.routeFullPath) {
