@@ -34,8 +34,7 @@
 
 <script>
   import { mapActions, mapState } from 'vuex';
-
-  // import TableDetailCollection from './TableDetailCollection';
+  import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
@@ -53,7 +52,8 @@
           const obj = { ...item };
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.type = 'vertical';
-          obj.component = tabComponent;
+          Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
+          obj.component = `${item.tablename}_TapComponent`;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
