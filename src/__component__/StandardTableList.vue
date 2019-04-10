@@ -1347,9 +1347,6 @@
                     const componentName = obj.action
                       .split('?')[0]
                       .replace(/\//g, '_');
-                    console.log('☁️', importCustom(obj.action));
-                    console.log('☁️', importCustom(obj.action));
-
                     Vue.component(
                       componentName,
                       Vue.extend(importCustom(obj.action))
