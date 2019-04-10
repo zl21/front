@@ -61,6 +61,26 @@ export default (router) => {
       if (!keepAliveLists.includes(keepAliveModuleName)) {
         commit('global/increaseKeepAliveLists', keepAliveModuleName);
       }
+      
+      // 处理 openedMenuLists
+      if (openedMenuLists.length === 0) {
+        let tempInterval = -1;
+        tempInterval = setInterval(() => {
+          const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+          if (ready) {
+            clearInterval(tempInterval);
+            commit('global/increaseOpenedMenuLists', {
+              label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
+              keepAliveModuleName,
+              type: to.path.split('/')[2],
+              id: tableId,
+              tableName,
+              routeFullPath: to.path
+            });
+          }
+        }, 50);
+      }
+      
 
       // 判断是否状态中已经存在某个模块，不存在则创建
       if (store.state[keepAliveModuleName] === undefined) {
@@ -76,7 +96,32 @@ export default (router) => {
       if (!keepAliveLists.includes(keepAliveModuleName)) {
         commit('global/increaseKeepAliveLists', keepAliveModuleName);
       }
-
+     
+      // 处理 openedMenuLists
+      if (openedMenuLists.length === 0) {
+        let tempInterval = -1;
+        tempInterval = setInterval(() => {
+          const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+          if (ready) {
+            let label = '';
+            Object.keys(store.state.global.keepAliveLabelMaps).forEach((item) => {
+              if (item.indexOf(`${tableName}.${tableId}`) !== -1) { 
+                label = store.state.global.keepAliveLabelMaps[item];
+              }
+            });   
+            clearInterval(tempInterval);
+            commit('global/increaseOpenedMenuLists', {
+              label,
+              keepAliveModuleName,
+              type: to.path.split('/')[2],
+              id: tableId,
+              tableName,
+              routeFullPath: to.path
+            });
+          }
+        }, 0);
+      }
+      
       // 判断是否状态中已经存在某个模块，不存在则创建
       if (store.state[keepAliveModuleName] === undefined) {
         store.registerModule(keepAliveModuleName, horizontalTableDetailModule());

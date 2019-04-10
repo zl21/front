@@ -119,7 +119,9 @@
           break;
         }
       },
-     
+      clickButtonsBack() {
+        
+      },
       // buttonsData(tabcmd) {
       //   const cmds = tabcmd.cmds;
       //   const prem = tabcmd.prem;
@@ -191,7 +193,6 @@
                 const buttonConfigInfo = this.buttonMap[str];
                 // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
-                console.log('🍓', this.dataArray.buttonGroupShowConfig.buttonGroupShow);
               }
             }
           });

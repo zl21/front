@@ -26,7 +26,6 @@ class Upload {
     // file转dataUrl是个异步函数，要将代码写在回调里
     const self = this;
     reader.onload = function (e) {
-      console.log(self.event);
       if (Object.prototype.hasOwnProperty.call(self.event, 'onload') && typeof self.event.onload === 'function') {
         self.event.onload(e);
       }
