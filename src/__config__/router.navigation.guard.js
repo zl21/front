@@ -68,9 +68,15 @@ export default (router) => {
         tempInterval = setInterval(() => {
           const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
           if (ready) {
+            let label = '';
+            Object.keys(store.state.global.keepAliveLabelMaps).forEach((item) => {
+              if (item.indexOf(`${tableName}.${tableId}`) !== -1) { 
+                label = `${store.state.global.keepAliveLabelMaps[item]}编辑`;
+              }
+            });   
             clearInterval(tempInterval);
             commit('global/increaseOpenedMenuLists', {
-              label: store.state.global.keepAliveLabelMaps[keepAliveModuleName],
+              label,
               keepAliveModuleName,
               type: to.path.split('/')[2],
               id: tableId,
@@ -78,7 +84,7 @@ export default (router) => {
               routeFullPath: to.path
             });
           }
-        }, 50);
+        }, 0);
       }
       
 
@@ -106,7 +112,7 @@ export default (router) => {
             let label = '';
             Object.keys(store.state.global.keepAliveLabelMaps).forEach((item) => {
               if (item.indexOf(`${tableName}.${tableId}`) !== -1) { 
-                label = store.state.global.keepAliveLabelMaps[item];
+                label = `${store.state.global.keepAliveLabelMaps[item]}编辑`;
               }
             });   
             clearInterval(tempInterval);
