@@ -124,7 +124,7 @@ export default {
       }
     });
   }, // 清除当前tab的keepAlive
-  TabCloseAppoint(state, tab) {
+  tabCloseAppoint(state, tab) {
     const selectTabs = state.openedMenuLists;
     const tabRouteFullPath = tab.routeFullPath;
 
@@ -156,7 +156,7 @@ export default {
     });
     state.activeTab.isActive = true;
   },
-  TabHref(state, // 在当前页面跳转
+  tabHref(state, // 在当前页面跳转
     tab) {
     let path = '';
    
@@ -206,7 +206,7 @@ export default {
       }
     });
   },
-  TabOpen(state, // 打开新的tab页
+  tabOpen(state, // 打开新的tab页
     tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {

@@ -132,7 +132,7 @@
           back: true,
         };
        
-        this.$store.commit('global/TabHref', param);
+        this.$store.commit('global/tabHref', param);
       },
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;

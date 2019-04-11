@@ -132,7 +132,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['TabHref', 'TabOpen']),
+      ...mapMutations('global', ['tabHref', 'TabOpen']),
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
@@ -162,7 +162,7 @@
             label,
             id
           };
-          this.TabHref(tab);
+          this.tabHref(tab);
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';
@@ -173,7 +173,7 @@
             label,
             id
           };
-          this.TabHref(tab);
+          this.tabHref(tab);
         }
       }, // ag表格行双击回调
 
@@ -940,7 +940,7 @@
             if (this.ag.datas.objdistype === 'tabpanle') {
               // 单对象左右结构
               const type = 'tableDetailHorizontal';
-              this.TabHref({
+              this.tabHref({
                 type,
                 tableName,
                 tableId,
@@ -950,7 +950,7 @@
             } else {
               // 单对象上下结构
               const type = 'tableDetailVertical';
-              this.TabHref({
+              this.tabHref({
                 type,
                 tableName,
                 tableId,
@@ -964,7 +964,7 @@
               alert('暂未增加自定义跳转逻辑');
             } else if (objdistype === 'tabpanle') {
               const type = 'tableDetailHorizontal'; // 左右结构的单对项页面
-              this.TabHref({
+              this.tabHref({
                 type,
                 tableName,
                 tableId,
@@ -973,7 +973,7 @@
               });
             } else {
               const type = 'tableDetailVertical'; // 左右结构的单对项页面
-              this.TabHref({
+              this.tabHref({
                 type,
                 tableName,
                 tableId,
