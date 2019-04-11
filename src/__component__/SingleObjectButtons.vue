@@ -33,7 +33,7 @@
             return self.buttonClick(type, item);
           }
         },
-      
+        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
       };
     },
     name: 'SingleObjectButtons',
@@ -45,6 +45,10 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           this.getbuttonGroupData(val);
+          val.forEach((d, i) => {
+            this.dynamicRequestUrl[d] = this.tabcmd.paths[i];
+          });
+          // 处理dynamicRequestUrl
         },
         deep: true
       },
@@ -152,10 +156,18 @@
             }
           });
         }
-      }
+      },
+      // 删除
+      deleteObject() {
+      
+      },
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
+
+      this.tabcmd.cmds.forEach((d, i) => {
+        this.dynamicRequestUrl[d] = this.tabcmd.paths[i];
+      });
     },
     created() {
       this.buttonMap = buttonmap;
