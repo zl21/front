@@ -45,9 +45,8 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           this.getbuttonGroupData(val);
-          val.forEach((d, i) => {
-            this.dynamicRequestUrl[d] = this.tabcmd.paths[i];
-          });
+          this.getdynamicRequestUrl(val.paths);
+         
           // 处理dynamicRequestUrl
         },
         deep: true
@@ -69,9 +68,14 @@
       },
     },
     methods: {
-      buttonClick(type, obj, index) {
+      getdynamicRequestUrl(paths) { // 获取接口返回路径
+        paths.forEach((d, i) => {
+          this.dynamicRequestUrl[d] = paths[i];
+        });
+      },
+      buttonClick(type, obj) {
         if (type === 'fix') {
-          this.objectTabAction(obj, index);
+          this.objectTabAction(obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -86,11 +90,11 @@
      
         // }, 300);
       },
-      objectTabAction(obj, index) {
+      objectTabAction(obj) {
         // clearTimeout(window.timer);
 
         // window.timer = setTimeout(() => {
-        switch (index) {
+        switch (obj.eName) {
         case 'actionADD': // 新增
           this.objectAdd();
           break;
@@ -141,7 +145,6 @@
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
-          // const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (tabcmdData.prem[index]) {
               const type = item.split('action');
@@ -150,7 +153,8 @@
                 this.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                this.buttonMap[str].eName = item;
+                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }
@@ -158,16 +162,10 @@
         }
       },
       // 删除
-      deleteObject() {
-      
-      },
+   
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
-
-      this.tabcmd.cmds.forEach((d, i) => {
-        this.dynamicRequestUrl[d] = this.tabcmd.paths[i];
-      });
     },
     created() {
       this.buttonMap = buttonmap;
