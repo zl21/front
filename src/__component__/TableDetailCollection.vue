@@ -614,7 +614,7 @@
             },
             props: {
               value: this.copyDataSource.row[params.index][cellData.colname].val,
-              Selected: typeof this.copyDataSource.row[params.index][cellData.colname].refobjid === 'string' ? this.dataSource.row[params.index][cellData.colname].refobjid.split(',') : [this.dataSource.row[params.index][cellData.colname].refobjid], // TODO 多选的id默认值不清楚
+              // Selected: typeof this.copyDataSource.row[params.index][cellData.colname].refobjid === 'string' ? this.dataSource.row[params.index][cellData.colname].refobjid.split(',') : [this.dataSource.row[params.index][cellData.colname].refobjid], // 组件暂无该props
               optionTip: true,
               // 是否显示输入完成后是否禁用 true、false
               show: true,
@@ -851,48 +851,53 @@
         });
       },
       imageRender(cellData, tag) {
-        return (h, params) => h('div', [
-          h(tag, {
-            style: {
-              width: '40px'
-            },
-            props: {
-              trigger: 'hover',
-              transfer: true,
-              content: 'content'
-            },
-            scopedSlots: {
-              default: () => h('img', {
-                style: {
-                  height: '20px'
-                },
-                domProps: {
-                  src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
+        return (h, params) => {
+          if (!params.row[cellData.colname]) {
+            return null;
+          }
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '40px'
+              },
+              props: {
+                trigger: 'hover',
+                transfer: true,
+                content: 'content'
+              },
+              scopedSlots: {
+                default: () => h('img', {
+                  style: {
+                    height: '20px'
+                  },
+                  domProps: {
+                    src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
+                  }
+                }),
+                content: () => h('img', {
+                  style: {
+                    width: '150px',
+                    'vertical-align': 'middle',
+                    padding: '8px 0px'
+                  },
+                  domProps: {
+                    src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
+                  }
+                }),
+              },
+              nativeOn: {
+                click: (e) => {
+                  e.stopPropagation();
                 }
-              }),
-              content: () => h('img', {
-                style: {
-                  width: '150px',
-                  'vertical-align': 'middle',
-                  padding: '8px 0px'
-                },
-                domProps: {
-                  src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
-                }
-              }),
-            },
-            nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
-            },
-            // on: {
-            //   'on-change': (event, dateType, data) => {
-            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-            //   }
-            // }
-          })
-        ]);
+              },
+              // on: {
+              //   'on-change': (event, dateType, data) => {
+              //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              //   }
+              // }
+            })
+          ]);
+        };
       },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
