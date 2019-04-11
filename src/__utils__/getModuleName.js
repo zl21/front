@@ -14,7 +14,7 @@ export default () => {
   const { routePrefix } = meta;
   const { tableName, tableId, itemId } = params;
   let keepAliveModuleName = '';
-  const paramItemId = Number(itemId) === -1 ? `${itemId}` : 'New';
+  const paramItemId = Number(itemId) === -1 ? 'New' : `${itemId}`;
   switch (routePrefix) {
     // Condition One: 路由到标准列表界面名称
     case STANDARD_TABLE_LIST_PREFIX:
