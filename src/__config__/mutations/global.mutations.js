@@ -57,8 +57,12 @@ export default {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
+  toggleActiveMenu(state, index) {
+    state.openedMenuLists.forEach((d) => { d.isActive = false; });
+    state.openedMenuLists[index].isActive = true;
+  },
   increaseOpenedMenuLists(state, {
-    label, keepAliveModuleName, tableName, routeFullPath
+    label, keepAliveModuleName, tableName, routeFullPath, routePrefix
   }) {
     const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
     const currentTabInfo = {
@@ -66,6 +70,7 @@ export default {
       keepAliveModuleName,
       tableName,
       routeFullPath,
+      routePrefix
     };
     if (notExist) {
       state.openedMenuLists = state.openedMenuLists
@@ -112,7 +117,7 @@ export default {
   tabCloseAppoint(state, tab) {
     const selectTabs = state.openedMenuLists;
     const tabRouteFullPath = tab.routeFullPath;
-
+    state.keepAliveLists.splice(state.keepAliveLists.indexOf(tab.keepAliveModuleName), 1);
     selectTabs.forEach((item, index) => {
       if (item.routeFullPath === tab.routeFullPath) {
         selectTabs.splice(index, 1);
@@ -130,46 +135,33 @@ export default {
       }
     });
   }, // 关闭当前tab
-  switchActiveTab(state, tab) {
-    const openedMenuLists = state.openedMenuLists;
-    openedMenuLists.forEach((element, index) => {
-      element.isActive = false;
-      if (openedMenuLists[index].keepAliveModuleName === tab.keepAliveModuleName) {
-        state.activeTab = state.openedMenuLists[index];
-      }
-    });
-  },
-  tabHref(state, // 在当前页面跳转
-    tab) {
+  tabHref(state, {
+    back, label, type, tableName, tableId, id
+  }) {
     let path = '';
-
-    let ModuleName = '';
-    if (tab.type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
-      router.push({
-        path
-      });
+    let routePrefix = '';
+    let keepAliveModuleName = '';
+    if (type === 'tableDetailHorizontal') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      routePrefix = HORIZONTAL_TABLE_DETAIL_PREFIX;
+      keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${id}`;
+      router.push({ path });
     }
-    if (tab.type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
-      ModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
-
-      router.push({
-        path
-      });
+    if (type === 'tableDetailVertical') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      routePrefix = VERTICAL_TABLE_DETAIL_PREFIX;
+      keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${id}`;
+      router.push({ path });
     }
-    if (tab.back) {
+    if (back) {
       Object.keys(state.keepAliveLabelMaps).forEach((item) => {
-        if (item.indexOf(`${tab.tableName}.${tab.tableId}`) !== -1) {
-          tab.label = state.keepAliveLabelMaps[item];
+        if (item.indexOf(`${tableName}.${tableId}`) !== -1) {
+          label = state.keepAliveLabelMaps[item];
         }
       });
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tab.tableName}/${tab.tableId}`;
-      ModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}`;
-      router.push({
-        path
-      });
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+      router.push({ path });
       state.keepAliveLists.forEach((item, index) => {
         if (item === state.activeTab.keepAliveModuleName) {
           state.keepAliveLists.splice(index, 1);
@@ -177,10 +169,11 @@ export default {
       });
     }
     const afterClickActiveTab = {
+      label,
+      keepAliveModuleName,
       routeFullPath: path,
+      routePrefix,
       isActive: true,
-      keepAliveModuleName: ModuleName,
-      label: tab.label
     };
     state.openedMenuLists.forEach((item) => {
       if (item.routeFullPath === state.activeTab.routeFullPath) {
@@ -224,6 +217,4 @@ export default {
     });
     // 添加到新的列表中
   },
-
-
 };

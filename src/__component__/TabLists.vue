@@ -65,8 +65,6 @@
       </span>
     </router-link>
   </div>
- 
-  </div>
 </template>
 
 <script>
@@ -114,10 +112,9 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['switchActiveTab', 'tabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
+      ...mapMutations('global', ['tabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
-        this.switchActiveTab(tag);
         router.push({ path: tag.routeFullPath });
       },
       handleClose(tag) {

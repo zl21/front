@@ -16,7 +16,7 @@
   import VerticalTableDetail from './V.TableDetail';
   
   export default {
-    name: 'V.Table.KeepAlive',
+    name: `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
         currentTable: null

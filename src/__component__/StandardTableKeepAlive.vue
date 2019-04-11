@@ -8,13 +8,13 @@
   import Vue from 'vue';
   import { mapState } from 'vuex';
   import mixins from '../__config__/mixins/standardTableLists';
-  import { STANDARD_TABLE_LIST_PREFIX } from '../constants/global';
+  import { STANDARD_TABLE_LIST_PREFIX, STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
   import StandardTableList from './StandardTableList';
   import moduleName from '../__utils__/getModuleName';
 
 
   export default {
-    name: 'S.Table.KeepAlive',
+    name: `${STANDARD_TABLE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
         currentTable: null
