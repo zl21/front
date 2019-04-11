@@ -4,12 +4,9 @@ import {
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
-  VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX
+  VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
 } from '../../constants/global';
 import router from '../router.config';
-
-// import ModuleName from '../../__utils__/getModuleName';
-
 
 export default {
   changeSelectedPrimaryMenu(state, index) {
@@ -61,32 +58,20 @@ export default {
     }
   },
   increaseOpenedMenuLists(state, {
-    label,
-    keepAliveModuleName,
-    type,
-    id,
-    tableName,
-    routeFullPath
+    label, keepAliveModuleName, tableName, routeFullPath
   }) {
-    if (state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0) {
-      state.openedMenuLists.forEach((d) => {
-        d.isActive = false;
-      });
-      state.openedMenuLists = state.openedMenuLists.concat([{
-        label,
-        keepAliveModuleName,
-        routeFullPath,
-        isActive: true,
-      }]);
-      state.activeTab = {
-        id,
-        isActive: true,
-        keepAliveModuleName,
-        label,
-        routeFullPath,
-        tableName,
-        type,
-      };
+    const notExist = state.openedMenuLists.filter(d => d.label === label && d.keepAliveModuleName === keepAliveModuleName).length === 0;
+    const currentTabInfo = {
+      label,
+      keepAliveModuleName,
+      tableName,
+      routeFullPath,
+    };
+    if (notExist) {
+      state.openedMenuLists = state.openedMenuLists
+        .map(d => Object.assign({}, d, { isActive: false }))
+        .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
+      state.activeTab = currentTabInfo;
     }
   },
   updateActiveMenu({
@@ -136,7 +121,6 @@ export default {
         if (selectTabs.length > 0) {
           const lastLength = selectTabs.length - 1;
           state.activeTab = selectTabs[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
-          state.activeTab.isActive = true;
           router.push({
             path: state.activeTab.routeFullPath,
           });
@@ -154,12 +138,11 @@ export default {
         state.activeTab = state.openedMenuLists[index];
       }
     });
-    state.activeTab.isActive = true;
   },
   tabHref(state, // 在当前页面跳转
     tab) {
     let path = '';
-   
+
     let ModuleName = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
@@ -171,17 +154,17 @@ export default {
     if (tab.type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
       ModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}.${tab.id}`;
-     
+
       router.push({
         path
       });
     }
     if (tab.back) {
       Object.keys(state.keepAliveLabelMaps).forEach((item) => {
-        if (item.indexOf(`${tab.tableName}.${tab.tableId}`) !== -1) { 
+        if (item.indexOf(`${tab.tableName}.${tab.tableId}`) !== -1) {
           tab.label = state.keepAliveLabelMaps[item];
         }
-      });   
+      });
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tab.tableName}/${tab.tableId}`;
       ModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tab.tableName}.${tab.tableId}`;
       router.push({

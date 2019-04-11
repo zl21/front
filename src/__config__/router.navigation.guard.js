@@ -6,6 +6,7 @@ import {
   STANDARD_TABLE_COMPONENT_PREFIX,
   VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
+  KEEP_MODULE_STATE_WHEN_CLICK_MENU,
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -65,6 +66,21 @@ export default (router) => {
     }
 
     // 处理 openedMenuLists
+    let existModuleIndex = -1;
+    const existModule = openedMenuLists.filter((d, i) => {
+      if (d.tableName === tableName) {
+        existModuleIndex = i;
+        return true;
+      }
+      return false;
+    })[0];
+
+    if (KEEP_MODULE_STATE_WHEN_CLICK_MENU && routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule) {
+      // 判断：当前路由是通过按钮菜单触发，并且页面中已经存在改菜单按钮对应的模块。
+      openedMenuLists[existModuleIndex].isActive = true;
+      return;
+    }
+
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
       let tempInterval = -1;
       tempInterval = setInterval(() => {
@@ -74,10 +90,9 @@ export default (router) => {
           commit('global/increaseOpenedMenuLists', {
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            type: to.path.split('/')[2],
-            id: tableId,
             tableName,
-            routeFullPath: to.path
+            routeFullPath: to.path,
+            routePrefix
           });
         }
       }, 25);
