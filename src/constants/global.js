@@ -8,6 +8,8 @@ export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'V';
 
 export const enableGateWay = true;
 
+export const KEEP_MENU_STATE = true;
+
 // 需要走全局公共网关的接口
 export const globalGateWay = [
   '/p/cs/getSubSystems',

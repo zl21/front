@@ -143,7 +143,9 @@
       verifyMessageForm: {
         type: Function,
         default() {
-          return '';
+          return function () {
+
+          };
         }
       }
     },
@@ -203,7 +205,9 @@
               }
               return item;
             }, {});
-            this.VerifyMessageForm(arr);
+            if (this.VerifyMessageForm) {
+              this.VerifyMessageForm(arr);
+            }
           }
           return [];
         },
@@ -238,8 +242,10 @@
             } else {
               obj[current.item.inputname] = current.item.value;
             }
-          } else {
+          } else if (current.item.value.length > 0) {
             obj[current.item.field] = current.item.value;
+          } else {
+            obj[current.item.field] = current.item.empty;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {

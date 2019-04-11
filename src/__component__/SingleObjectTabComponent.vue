@@ -3,6 +3,7 @@
     <component
       :is="'SingleObjectButtons'"
       v-if="buttonsData.isShow"
+      :objectType="type"
       class="objectButtons"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
@@ -36,6 +37,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       class="objectTable"
+      :tableName="tableName"
       :data-source="tableData.data"
       :type="type"
       :readonly="buttonsData.data.objreadonly"
@@ -61,7 +63,6 @@
       return {
       };
     },
-    name: 'SingleObjectTabComponent',
     components: {
     },
     props: {

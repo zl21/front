@@ -47,7 +47,7 @@
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
-  import { Capital } from '../constants/regExp';
+  import regExp  from '../constants/regExp';
 
   export default {
     name: 'CompositeForm',
@@ -232,9 +232,7 @@
               });
             },
             'popper-value': ($this, value, Selected) => { // 当外键下拉展开时去请求数据
-              console.log('popper');
               let item = []
-              console.log($this, value, Selected,'popper-value');
               if( current.formIndex !== 'inpubobj'){
                 item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
               } else {
@@ -301,11 +299,12 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          obj.item.props.regx = Capital;
+          obj.item.props.regx = regExp.Capital;
           obj.item.event.regxCheck = (value, $this, errorValue) => {
             this.lowercaseToUppercase(errorValue, itemIndex);
           };
         }
+
 
 
         this.propsType(current, obj.item);
@@ -389,18 +388,24 @@
         // 表单 props
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
+        if(current.type === 'NUMBER'){
+          item.props.regx = regExp.Digital;
+        }
 
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
+          item.props.empty = '';
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
+          }
+          if (item.type === 'NUMBER') {
+            item.props.type = 'number';
+            item.props.empty = 0;
           }
           if (current.isnotnull === true) {
             item.required = true;
           }
-          if (item.type === 'NUMBER') {
-            item.props.type = 'number';
-          }
+
         }
         // 外键的单选多选判断
 
@@ -465,20 +470,24 @@
           case 'drp':
             item.props.single = true;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             item.props.single = false;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
+            item.props.empty = 0;
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
@@ -497,14 +506,19 @@
           // 待确定
           item.props.type = 'ImageUpload';
           //let valuedata = JSON.parse(current.valuedata);
+          console.log(this);
           let valuedata = [{"NAME":"1.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/4aedfab6-1cf9-4e15-b70e-47e19c49b7a8.jpg"},{"NAME":"2.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1e71f4d0-7b7f-4656-9b3a-2fc18f529987.jpg"},{"NAME":"3.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/034f373c-0d3c-4dd4-9729-3ea2804cc29e.jpg"},{"NAME":"4.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/9882ceb1-49f9-4da7-8742-fbdf8bc60f80.jpg"},{"NAME":"5.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1202ae27-e450-4c68-8430-133d5d58352d.jpg"}];
           item.props.itemdata = {
             colname: current.colname,
             width: 200,
             height: 200,
             readonly: current.readonly,
-            sendData:{},
-            url:`/${this.masterName}/${this.masterId}`,
+            masterName:this.masterName,
+            objId:this.masterId,
+            sendData:{
+              path:`${this.masterName}/${this.masterId}/`
+            },
+            url:'/ad-app/p/cs/upload2',
             valuedata:valuedata
           };
 

@@ -70,7 +70,7 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
         />
-        <span v-if="isHorizontal">查询条件:{{ dataSource.queryDesc }}</span>
+        <div v-if="isHorizontal" class="queryCondition">查询条件:{{ dataSource.queryDesc }}</div>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import { Capital } from '../constants/regExp';
+  import regExp from '../constants/regExp';
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
@@ -160,6 +160,10 @@
         type: Number,
         default: 300
       },
+      tableName: {
+        type: String,
+        default: ''
+      }, // 表名
       type: {
         type: String,
         default: pageType.Vertical
@@ -267,6 +271,11 @@
       }
 
     },
+    watch: {
+      beforeSendData(val) {
+        this.$emit(TABLE_BEFORE_DATA, val);
+      }
+    },
     methods: {
 
       //   ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
@@ -334,12 +343,12 @@
       },
       filterBeforeData() {
         // 组装beforeData
-        if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
+        if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tableName]) {
           return;
         }
         const copyDataSoucre = this.deepClone(this.dataSource);
         const beforeData = {};
-        beforeData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+        beforeData[this.tableName] = [];
         copyDataSoucre.row.map((ele) => {
           const param = {
             EXCEPT_COLUMN_NAME: ele[EXCEPT_COLUMN_NAME].val
@@ -379,11 +388,10 @@
             param[tab.colname] = val;
             return tab;
           });
-          beforeData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+          beforeData[this.tableName].push(param);
           return ele;
         });
         this.beforeSendData = beforeData;
-        this.$emit(TABLE_BEFORE_DATA, this.beforeSendData);
       },
       renderData(columns) {
         const renderColumns = columns.map((ele, index) => {
@@ -638,7 +646,7 @@
               datalist: this.popFilterDataList,
               ...cellData,
               // 模糊查询的文字信息，支持多列
-              AuotData: this.fkAutoData 
+              AuotData: this.fkAutoData
             },
             nativeOn: {
               click: (e) => {
@@ -957,7 +965,7 @@
           acc.push(cur[EXCEPT_COLUMN_NAME]);
           return acc;
         }, []);
-        
+
         param[this.tabPanel[this.tabCurrentIndex].tablename] = datas;
         this.$emit(TABLE_SELECTED_ROW, param);
       },
@@ -968,7 +976,7 @@
         } if (cellData.type === 'NUMBER') {
           return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
         } if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
-          return Capital;
+          return regExp.Capital;
         }
         return null;
       },
@@ -1243,6 +1251,9 @@
       }
     }
     .table-outside {
+    }
+    .queryCondition {
+      margin-top: 5px;
     }
   }
 }

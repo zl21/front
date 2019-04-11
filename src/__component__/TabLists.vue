@@ -121,7 +121,7 @@
         router.push({ path: tag.routeFullPath });
       },
       handleClose(tag) {
-        this.TabCloseAppoint(tag);
+        this.tabCloseAppoint(tag);
       }, // 关闭当前tab
       emptyClick() {
         this.clickshow = false;
