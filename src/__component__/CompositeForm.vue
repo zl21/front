@@ -470,20 +470,24 @@
           case 'drp':
             item.props.single = true;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             item.props.single = false;
             item.props.data = {};
+            item.props.empty = 0;
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
+            item.props.empty = 0;
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
