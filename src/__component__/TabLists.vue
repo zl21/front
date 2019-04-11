@@ -114,7 +114,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['switchActiveTab', 'TabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
+      ...mapMutations('global', ['switchActiveTab', 'tabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         this.switchActiveTab(tag);

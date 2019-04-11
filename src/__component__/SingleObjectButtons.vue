@@ -162,7 +162,42 @@
         }
       },
       // 删除
-   
+      objectTryDelete() {
+
+        // const primaryTableParams = {};
+        // primaryTableParams[this.storageItem.name || this.$route.query.tableName] = {
+        //   ID: this.storageItem.id || this.$route.query.id,
+        //   isdelmtable: true,
+        // };
+        // axios({
+        //   url: this.dynamicRequestUrl.actionDELETE || '/p/cs/objectDelete',
+        //   method: 'POST',
+        //   contentType: 'application/json',
+        //   // data: {
+        //   //   table: this.storageItem.name || this.$route.query.tableName,
+        //   //   objid: this.storageItem.id || this.$route.query.id,
+        //   //   isdelmtable: true,
+        //   // },
+        //   data: this.dynamicRequestUrl.actionDELETE ? (this.reftabs.length === 0 ? {
+        //     ID: this.storageItem.id || this.$route.query.id,
+        //     isdelmtable: true
+        //   } : primaryTableParams) : {
+        //     table: this.storageItem.name || this.$route.query.tableName,
+        //     objId: this.storageItem.id || this.$route.query.id,
+        //     delMTable: true,
+        //   }
+        // })
+        //   .then((res) => {
+        //     if (res.data.code == 0) {
+        //       this.$message({
+        //         message: res.data.message,
+        //         type: 'success',
+        //         duration: 1500,
+        //       });
+        //       this.objectAddReturn();
+        //     }
+        //   });
+      },
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
