@@ -85,7 +85,6 @@ export default (router) => {
     if (KEEP_MODULE_STATE_WHEN_CLICK_MENU && routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule) {
       const isBackToTableList = existModule !== STANDARD_TABLE_LIST_PREFIX && from.fullPath === existModule.routeFullPath; // 表示从明细界面跳转到列表界面。
       const isArouseTableList = to.fullPath === existModule.routeFullPath; // 当前打开的模块中，已经存在相同的路由模块。
-      console.log({ isBackToTableList, isArouseTableList });
       if (!isArouseTableList && !isBackToTableList) {
         // 判断：当前路由是通过按钮菜单触发，并且页面中已经存在改菜单按钮对应的模块。
         commit('global/toggleActiveMenu', existModuleIndex);
