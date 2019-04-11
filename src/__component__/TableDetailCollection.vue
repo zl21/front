@@ -78,7 +78,7 @@
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
-  import { Capital } from '../constants/regExp';
+  import regExp from '../constants/regExp';
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
@@ -971,7 +971,7 @@
         } if (cellData.type === 'NUMBER') {
           return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
         } if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
-          return Capital;
+          return regExp.Capital;
         }
         return null;
       },
