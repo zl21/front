@@ -5,6 +5,7 @@
       v-if="buttonsData.isShow"
       :objectType="type"
       class="objectButtons"
+      :itemName="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
     />
