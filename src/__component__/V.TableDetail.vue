@@ -36,9 +36,11 @@
   import { mapActions, mapState } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
+  import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
 
+  Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
 
   export default {
     computed: {
@@ -61,7 +63,6 @@
       }
     },
     components: {
-      singleObjectButtons,
       compositeForm
     },
     mounted() {
