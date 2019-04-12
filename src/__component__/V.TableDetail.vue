@@ -40,7 +40,6 @@
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
 
-  Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
 
   export default {
     computed: {
@@ -68,6 +67,7 @@
     mounted() {
     },
     created() {
+      Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });
