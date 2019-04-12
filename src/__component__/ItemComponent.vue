@@ -166,14 +166,14 @@
         </div>
       </AttachFilter>
 
-        <ImageUpload
-                v-if="_items.type === 'ImageUpload'"
-                :itemdata="_items.props.itemdata"
-                @upload-file-change="uploadFileChange"
-                @deleteImg="deleteImg"
-                @uploadFileChangeSuccess="uploadFileChangeSuccess"
-                @uploadFileChangeOnerror="uploadFileChangeOnerror"
-        ></ImageUpload>
+      <ImageUpload
+        v-if="_items.type === 'ImageUpload'"
+        :dataitem="_items.props.itemdata"
+        @upload-file-change="uploadFileChange"
+        @deleteImg="deleteImg"
+        @uploadFileChangeSuccess="uploadFileChangeSuccess"
+        @uploadFileChangeOnerror="uploadFileChangeOnerror"
+      />
     </div>
   </div>
 </template>
@@ -492,45 +492,54 @@
         console.log(item, index);
       },
       uploadFileChangeSuccess(result) {
-        console.log('result',result);
-        let self = this;
-      
-        fkQueuploadProgressry({
-            searchObject: {
-              uploadId:result.data.UploadId
-            },
-            success: (res) => {
-              // if( res.code !== 0 ){
-              //     return false;
-              // }
-              let parms = {
-                    fixedData:{
-                      [this._items.props.itemdata.masterName]:{'NAME':result.data.Name,URL:result.data.Url}
-                    },
-                    objId: this._items.props.itemdata.objId,
-                    table: this._items.props.itemdata.masterName
-                  }
-              self.upSaveImg(parms);
+        console.log('result', typeof result, result.length, '55');
+        const self = this;
+        if (result.length < 1) {
+          return false;
+        }
+        const resultData = JSON.parse(result);
 
+        fkQueuploadProgressry({
+          searchObject: {
+            uploadId: resultData.data.UploadId
+          },
+          success: (res) => {
+            if (res.data.code !== 0) {
+              return false;
             }
+            const fixedData = [{ NAME: resultData.data.Name, URL: resultData.data.Url }];
+            const parms = {
+              fixedData: {
+                [this._items.props.itemdata.masterName]: {
+                  [this._items.props.itemdata.colname]: JSON.stringify(fixedData)
+                }
+              },
+              objId: this._items.props.itemdata.objId,
+              table: this._items.props.itemdata.masterName
+            };
+            self.upSaveImg(parms, fixedData);
+          }
         });
-            
-              
-            
       },
-      upSaveImg(obj){
+      upSaveImg(obj, fixedData) {
         fkObjectSave({
-                 searchObject: {
-                   ...obj
-                  },
-                  success: (res) => {
-                    console.log(res);
-                  }
+          searchObject: {
+            ...obj
+          },
+          success: (res) => {
+            if (res.data.code !== 0) {
+              return false;
+            }
+            const data = fixedData[0];
+            this._items.props.itemdata.valuedata.push({
+              NAME: data.NAME,
+              URL: data.URL
+            });
+          }
         });
-           
       },
       uploadFileChangeOnerror(result) {
-        console.log('err',result);
+        console.log('err', result);
       }
     },
     created() {

@@ -565,18 +565,7 @@
     margin: 0 auto;
     text-align: center;
   }
-  .icon-bj_delete2{
-    position: absolute;
-    right: 5px;
-    top: 7px;
-    border-radius: 100%;
-    font-size: 14px;
-    &:hover {
-     background-color: #e6502f;
-     color: #f3cec5;
-     border: 1px solid #e6502f;
-   }
-  }
+
   .burgeon--dialog {
     .right_center {
       ul li{
@@ -586,5 +575,32 @@
         }
       }
     }
+      .icon-bj_delete2{
+          position: absolute;
+          right: 5px;
+          top: 7px;
+          border-radius: 100%;
+          font-size: 14px;
+          &:hover {
+              background-color: #e6502f;
+              color: #f3cec5;
+              border: 1px solid #e6502f;
+          }
+      }
+  }
+  .burgeon-poptip-body{
+      padding: 0px;
+      .icon-bj_delete2{
+          position: absolute;
+          right: 5px;
+          top: 7px;
+          border-radius: 100%;
+          font-size: 14px;
+          &:hover {
+              background-color: #e6502f;
+              color: #f3cec5;
+              border: 1px solid #e6502f;
+          }
+      }
   }
 </style>

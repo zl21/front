@@ -140,7 +140,7 @@
           return '';
         }
       },
-      verifyMessageForm: {
+      verifymessageform: {
         type: Function,
         default() {
           return function () {
@@ -205,8 +205,8 @@
               }
               return item;
             }, {});
-            if (this.VerifyMessageForm) {
-              this.VerifyMessageForm(arr);
+            if (this.verifymessageform) {
+              this.verifymessageform(arr);
             }
           }
           return [];

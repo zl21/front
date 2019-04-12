@@ -19,7 +19,7 @@
             <FormItemComponent
               :form-item-lists="item.childs"
               :ref="'FormComponent_'+index"
-              :VerifyMessageForm = "VerifyMessageForm"
+              :verifymessageform = "VerifyMessageForm"
               :mountdataForm = "mountdataForm"
               :key = "index"
               @formDataChange ="formDataChange"
@@ -33,7 +33,7 @@
     <template v-if="type === ''">
       <FormItemComponent
       @formDataChange ="formDataChange"
-      :VerifyMessageForm = "VerifyMessageForm"
+      :verifymessageform = "VerifyMessageForm"
       :mountdataForm = "mountdataForm"
       ref="FormComponent_0"
       :form-item-lists="computdefaultData" />
@@ -301,7 +301,7 @@
         if (current.isuppercase) {
           obj.item.props.regx = regExp.Capital;
           obj.item.event.regxCheck = (value, $this, errorValue) => {
-            this.lowercaseToUppercase(errorValue, itemIndex);
+            this.lowercaseToUppercase(errorValue, index, current);
           };
         }
 
@@ -505,9 +505,7 @@
         if( current.display === "image" ){
           // 待确定
           item.props.type = 'ImageUpload';
-          //let valuedata = JSON.parse(current.valuedata);
-          console.log(this);
-          let valuedata = [{"NAME":"1.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/4aedfab6-1cf9-4e15-b70e-47e19c49b7a8.jpg"},{"NAME":"2.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1e71f4d0-7b7f-4656-9b3a-2fc18f529987.jpg"},{"NAME":"3.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/034f373c-0d3c-4dd4-9729-3ea2804cc29e.jpg"},{"NAME":"4.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/9882ceb1-49f9-4da7-8742-fbdf8bc60f80.jpg"},{"NAME":"5.jpg","URL":"http://profcweb.oss-cn-hangzhou.aliyuncs.com/PS_C_PRO/15083511/1202ae27-e450-4c68-8430-133d5d58352d.jpg"}];
+          let valuedata =current.valuedata ? JSON.parse(current.valuedata) :'';
           item.props.itemdata = {
             colname: current.colname,
             width: 200,
@@ -566,14 +564,14 @@
            item[index].item.props.AutoData = res.data.data;
 
       },
-      lowercaseToUppercase(errorValue, index) { // 将字符串转化为大写
+      lowercaseToUppercase(errorValue, index, current) { // 将字符串转化为大写
             let item = []
             if( current.formIndex !== 'inpubobj'){
               item = this.$refs[`FormComponent_${current.formIndex}`][0].newFormItemLists;
             } else {
               item = this.$refs[`FormComponent_0`].newFormItemLists;
             }
-            item.item.value = errorValue.toUpperCase();
+            item[index].item.value = errorValue.toUpperCase();
       }
     },
     mounted() {
