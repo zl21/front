@@ -9,9 +9,12 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
-
+  import moduleName from '../__utils__/getModuleName';
+  import router from '../__config__/router.config';
+  
 
   export default {
     data() {
@@ -34,6 +37,9 @@
           }
         },
         dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
+        tableName: '', // 主表表名
+        tableId: '', // 主表ID
+        itemId: ''// 子表ID
       };
     },
     name: 'SingleObjectButtons',
@@ -52,7 +58,11 @@
         deep: true
       },
     },
-    computed: {},
+    computed: {
+      ...mapState('global', ['keepAliveLists']),
+     
+      ...mapState(moduleName(), ['tabCurrentIndex'])
+    },
     props: {
       tabcmd: {
         type: Object,
@@ -66,6 +76,11 @@
         type: String,
         default: ''
       },
+      itemName: {
+        type: String,
+        default: ''
+      },
+
     },
     methods: {
       getdynamicRequestUrl(paths) { // 获取接口返回路径
@@ -154,55 +169,41 @@
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 this.buttonMap[str].eName = item;
-                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }
           });
         }
       },
-      // 删除
-      objectTryDelete() {
-
-        // const primaryTableParams = {};
-        // primaryTableParams[this.storageItem.name || this.$route.query.tableName] = {
-        //   ID: this.storageItem.id || this.$route.query.id,
-        //   isdelmtable: true,
-        // };
-        // axios({
-        //   url: this.dynamicRequestUrl.actionDELETE || '/p/cs/objectDelete',
-        //   method: 'POST',
-        //   contentType: 'application/json',
-        //   // data: {
-        //   //   table: this.storageItem.name || this.$route.query.tableName,
-        //   //   objid: this.storageItem.id || this.$route.query.id,
-        //   //   isdelmtable: true,
-        //   // },
-        //   data: this.dynamicRequestUrl.actionDELETE ? (this.reftabs.length === 0 ? {
-        //     ID: this.storageItem.id || this.$route.query.id,
-        //     isdelmtable: true
-        //   } : primaryTableParams) : {
-        //     table: this.storageItem.name || this.$route.query.tableName,
-        //     objId: this.storageItem.id || this.$route.query.id,
-        //     delMTable: true,
-        //   }
-        // })
-        //   .then((res) => {
-        //     if (res.data.code == 0) {
-        //       this.$message({
-        //         message: res.data.message,
-        //         type: 'success',
-        //         duration: 1500,
-        //       });
-        //       this.objectAddReturn();
-        //     }
-        //   });
+      objectSave() { // 按钮保存操作
+        switch (this.objectType) { // 判断是横向布局还是纵向布局
+        case 'horizontal': // 横向布局
+          this.horizontal();
+          break;
+        case 'vertical': // 纵向布局
+          this.vertical();
+          break;
+        default:
+          break;
+        }
       },
+      horizontal() {
+        console.log('🐘', this.tabCurrentIndex);
+      },
+      vertical() {
+      },
+     
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
+      console.log('🐘', this.tabCurrentIndex);
     },
     created() {
+      const { tableName, tableId, itemId } = router.currentRoute.params;
+      this.tableName = tableName;
+      this.tableId = tableId;
+      this.itemId = itemId;
       this.buttonMap = buttonmap;
     }
   };
