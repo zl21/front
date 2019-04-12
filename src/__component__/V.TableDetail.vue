@@ -1,9 +1,9 @@
 <template>
   <div class="verticalTableDetail">
     <single-object-buttons
-      :tabcmd="mainFormInfo.buttonsData.buttonsTabcmd"
+      :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       objectType="vertical"
-      :tabwebact="mainFormInfo.buttonsData.buttonsTabwebact"
+      :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"

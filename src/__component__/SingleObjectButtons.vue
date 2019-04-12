@@ -33,7 +33,7 @@
             return self.buttonClick(type, item);
           }
         },
-      
+        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
       };
     },
     name: 'SingleObjectButtons',
@@ -45,6 +45,9 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           this.getbuttonGroupData(val);
+          this.getdynamicRequestUrl(val.paths);
+         
+          // 处理dynamicRequestUrl
         },
         deep: true
       },
@@ -65,9 +68,14 @@
       },
     },
     methods: {
-      buttonClick(type, obj, index) {
+      getdynamicRequestUrl(paths) { // 获取接口返回路径
+        paths.forEach((d, i) => {
+          this.dynamicRequestUrl[d] = paths[i];
+        });
+      },
+      buttonClick(type, obj) {
         if (type === 'fix') {
-          this.objectTabAction(obj, index);
+          this.objectTabAction(obj);
         } else if (type === 'custom') {
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
@@ -82,11 +90,11 @@
      
         // }, 300);
       },
-      objectTabAction(obj, index) {
+      objectTabAction(obj) {
         // clearTimeout(window.timer);
 
         // window.timer = setTimeout(() => {
-        switch (index) {
+        switch (obj.eName) {
         case 'actionADD': // 新增
           this.objectAdd();
           break;
@@ -137,7 +145,6 @@
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
-          // const buttonGroupShow = [];
           tabcmdData.cmds.forEach((item, index) => {
             if (tabcmdData.prem[index]) {
               const type = item.split('action');
@@ -146,13 +153,51 @@
                 this.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                this.buttonMap[str].eName = item;
+                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }
           });
         }
-      }
+      },
+      // 删除
+      objectTryDelete() {
+
+        // const primaryTableParams = {};
+        // primaryTableParams[this.storageItem.name || this.$route.query.tableName] = {
+        //   ID: this.storageItem.id || this.$route.query.id,
+        //   isdelmtable: true,
+        // };
+        // axios({
+        //   url: this.dynamicRequestUrl.actionDELETE || '/p/cs/objectDelete',
+        //   method: 'POST',
+        //   contentType: 'application/json',
+        //   // data: {
+        //   //   table: this.storageItem.name || this.$route.query.tableName,
+        //   //   objid: this.storageItem.id || this.$route.query.id,
+        //   //   isdelmtable: true,
+        //   // },
+        //   data: this.dynamicRequestUrl.actionDELETE ? (this.reftabs.length === 0 ? {
+        //     ID: this.storageItem.id || this.$route.query.id,
+        //     isdelmtable: true
+        //   } : primaryTableParams) : {
+        //     table: this.storageItem.name || this.$route.query.tableName,
+        //     objId: this.storageItem.id || this.$route.query.id,
+        //     delMTable: true,
+        //   }
+        // })
+        //   .then((res) => {
+        //     if (res.data.code == 0) {
+        //       this.$message({
+        //         message: res.data.message,
+        //         type: 'success',
+        //         duration: 1500,
+        //       });
+        //       this.objectAddReturn();
+        //     }
+        //   });
+      },
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
