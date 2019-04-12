@@ -11,7 +11,9 @@
 <script>
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
-
+  import moduleName from '../__utils__/getModuleName';
+  import router from '../__config__/router.config';
+  
 
   export default {
     data() {
@@ -34,6 +36,15 @@
           }
         },
         dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
+        tableName: '', // 主表表名
+        tableId: '', // 主表ID
+        itemId: '', // 子表ID
+        currentParameter: {
+          add: {}, // 新增保存需要的参数
+          checkedInfo: {}, // 验证信息
+          delete: {}, // 删除时需要用到的参数
+          modify: {}, // 修改保存时用到的参数
+        }
       };
     },
     name: 'SingleObjectButtons',
@@ -45,14 +56,14 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           this.getbuttonGroupData(val);
-          this.getdynamicRequestUrl(val.paths);
-         
-          // 处理dynamicRequestUrl
+          this.getdynamicRequestUrl(val.paths);// 处理dynamicRequestUrl
         },
         deep: true
       },
     },
-    computed: {},
+    computed: {
+    
+    },
     props: {
       tabcmd: {
         type: Object,
@@ -66,6 +77,11 @@
         type: String,
         default: ''
       },
+      itemName: {
+        type: String,
+        default: ''
+      },
+
     },
     methods: {
       getdynamicRequestUrl(paths) { // 获取接口返回路径
@@ -154,55 +170,54 @@
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 this.buttonMap[str].eName = item;
-                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }
           });
         }
       },
-      // 删除
-      objectTryDelete() {
-
-        // const primaryTableParams = {};
-        // primaryTableParams[this.storageItem.name || this.$route.query.tableName] = {
-        //   ID: this.storageItem.id || this.$route.query.id,
-        //   isdelmtable: true,
-        // };
-        // axios({
-        //   url: this.dynamicRequestUrl.actionDELETE || '/p/cs/objectDelete',
-        //   method: 'POST',
-        //   contentType: 'application/json',
-        //   // data: {
-        //   //   table: this.storageItem.name || this.$route.query.tableName,
-        //   //   objid: this.storageItem.id || this.$route.query.id,
-        //   //   isdelmtable: true,
-        //   // },
-        //   data: this.dynamicRequestUrl.actionDELETE ? (this.reftabs.length === 0 ? {
-        //     ID: this.storageItem.id || this.$route.query.id,
-        //     isdelmtable: true
-        //   } : primaryTableParams) : {
-        //     table: this.storageItem.name || this.$route.query.tableName,
-        //     objId: this.storageItem.id || this.$route.query.id,
-        //     delMTable: true,
-        //   }
-        // })
-        //   .then((res) => {
-        //     if (res.data.code == 0) {
-        //       this.$message({
-        //         message: res.data.message,
-        //         type: 'success',
-        //         duration: 1500,
-        //       });
-        //       this.objectAddReturn();
-        //     }
-        //   });
+      objectSave() { // 按钮保存操作
+        switch (this.objectType) { // 判断是横向布局还是纵向布局
+        case 'horizontal': // 横向布局
+          this.horizontal();
+          break;
+        case 'vertical': // 纵向布局
+          this.vertical();
+          break;
+        default:
+          break;
+        }
       },
+      horizontal() {
+        this.determineSaveType();
+      }, // 横向布局，用来区分获取的参数
+      vertical() {
+        this.determineSaveType();
+      }, // 纵向布局
+      determineSaveType() {
+        if (this.itemId === '-1') { // 主表新增保存
+          console.log('主表新增保存');
+        } else if (this.itemId !== '-1') { // 主表编辑保存
+          console.log('主表编辑保存');
+        } else { // 编辑新增保存
+          console.log('编辑新增保存');
+        }
+      }
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
+      Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+        if (current === this.itemName) {
+          this.currentParameter = this.updateData[current];
+        }
+        return obj;
+      }, {});
     },
     created() {
+      const { tableName, tableId, itemId } = router.currentRoute.params;
+      this.tableName = tableName;
+      this.tableId = tableId;
+      this.itemId = itemId;
       this.buttonMap = buttonmap;
     }
   };
