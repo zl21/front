@@ -54,7 +54,9 @@
             <Button
               slot="prepend"
               @click="getTabelList"
-            >搜索</Button>
+            >
+              搜索
+            </Button>
             </Input>
           </div>
         </div>
@@ -70,7 +72,12 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
         />
-        <div v-if="isHorizontal" class="queryCondition">查询条件:{{ dataSource.queryDesc }}</div>
+        <div
+          v-if="isHorizontal"
+          class="queryCondition"
+        >
+          查询条件:{{ dataSource.queryDesc }}
+        </div>
       </div>
     </div>
   </div>
@@ -966,7 +973,7 @@
           return acc;
         }, []);
 
-        param[this.tabPanel[this.tabCurrentIndex].tablename] = datas;
+        param[this.tableName] = datas;
         this.$emit(TABLE_SELECTED_ROW, param);
       },
       inputRegx(cellData) {
@@ -982,40 +989,40 @@
       },
       putDataFromCell(currentValue, oldValue, colname, IDValue) {
         // 组装数据 存入store
-        if (this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
-          const rowDatas = this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+        if (this.afterSendData[this.tableName]) {
+          const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           if (rowDatas.length > 0) {
             rowDatas[0][colname] = currentValue;
           } else {
             const param = {};
             param[EXCEPT_COLUMN_NAME] = IDValue;
             param[colname] = currentValue;
-            this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+            this.afterSendData[this.tableName].push(param);
           }
         } else {
-          this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+          this.afterSendData[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
           param[colname] = currentValue;
-          this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+          this.afterSendData[this.tableName].push(param);
         }
         // console.log(currentValue, oldValue);
-        // if (this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename]) {
-        //   const rowDatas = this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+        // if (this.beforeSendData[this.tableName]) {
+        //   const rowDatas = this.beforeSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
         //   if (rowDatas.length > 0) {
         //     rowDatas[0][colname] = oldValue;
         //   } else {
         //     const param = {};
         //     param[EXCEPT_COLUMN_NAME] = IDValue;
         //     param[colname] = oldValue;
-        //     this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+        //     this.beforeSendData[this.tableName].push(param);
         //   }
         // } else {
-        //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename] = [];
+        //   this.beforeSendData[this.tableName] = [];
         //   const param = {};
         //   param[EXCEPT_COLUMN_NAME] = IDValue;
         //   param[colname] = oldValue;
-        //   this.beforeSendData[this.tabPanel[this.tabCurrentIndex].tablename].push(param);
+        //   this.beforeSendData[this.tableName].push(param);
         // }
         this.$emit(TABLE_DATA_CHANGE, this.afterSendData);
         // 表单验证
@@ -1030,7 +1037,7 @@
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
-          table: this.tabPanel[this.tabCurrentIndex].tablename,
+          table: this.tableName,
           objid: itemId,
           refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
           searchdata: {
@@ -1104,7 +1111,7 @@
       verifyMessage() {
         // 表达验证
         const verifyData = [];
-        const data = this.afterSendData[this.tabPanel[this.tabCurrentIndex].tablename];
+        const data = this.afterSendData[this.tableName];
         data.map((ele) => {
           Reflect.ownKeys(ele).forEach((key) => {
             const value = ele[key];
@@ -1120,7 +1127,7 @@
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
       tableSortChange(value) {
-        const tableName = this.tabPanel[this.tabCurrentIndex].tablename;
+        const tableName = this.tableName;
         let flag = this.currentOrderList.some((ele) => {
           if (`${tableName}.${value.key}` === ele.column) {
             ele.asc = value.order === 'asc';
@@ -1144,7 +1151,7 @@
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
-          table: this.tabPanel[this.tabCurrentIndex].tablename,
+          table: this.tableName,
           objid: itemId,
           refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
           searchdata: {
