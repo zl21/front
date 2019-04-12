@@ -17,6 +17,7 @@ export default () => ({
     ...mapState(getComponentName(), {
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
+      updateData: ({ updateData }) => updateData,
     })
   },
   methods: {

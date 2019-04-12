@@ -34,7 +34,7 @@ export default {
           data: ({})
         }
       };
-      state[item.tablename] = {
+      state.updateData[item.tablename] = {
         add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
       };
       arr.push(obj);
@@ -64,23 +64,23 @@ export default {
     state.tabCurrentIndex = index;
   },
   updateDefaultData(state, data) {
-    state[data.tableName].default = data.value;
+    state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
-    state[data.tableName].add = data.value;
+    state.updateData[data.tableName].add = data.value;
   },
   updateModifyData(state, data) {
-    state[data.tableName].modify = data.value;
+    state.updateData[data.tableName].modify = data.value;
   },
   updateDeleteData(state, data) {
-    state[data.tableName].delete = data.value;
+    state.updateData[data.tableName].delete = data.value;
   },
   updateCheckedInfoData(state, data) {
-    state[data.tableName].checkedInfo = data.value;
+    state.updateData[data.tableName].checkedInfo = data.value;
   },
   updatePanelData(state, data) { // 更新子表面板数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
-  }, 
+  },
 };
