@@ -189,14 +189,23 @@
         }
       },
       horizontal() {
+        this.determineSaveType();
       }, // 横向布局，用来区分获取的参数
       vertical() {
+        this.determineSaveType();
       }, // 纵向布局
-     
+      determineSaveType() {
+        if (this.itemId === '-1') { // 主表新增保存
+          console.log('主表新增保存');
+        } else if (this.itemId !== '-1') { // 主表编辑保存
+          console.log('主表编辑保存');
+        } else { // 编辑新增保存
+          console.log('编辑新增保存');
+        }
+      }
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
-      console.log('🍊', this.updateData);
       Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
         if (current === this.itemName) {
           this.currentParameter = this.updateData[current];
