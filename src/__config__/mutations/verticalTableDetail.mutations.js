@@ -7,7 +7,7 @@ export default {
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = data || [];
-    state[tableName] = {
+    state.updateData[tableName] = {
       add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
     };
   },
