@@ -9,7 +9,6 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
   import moduleName from '../__utils__/getModuleName';
@@ -39,7 +38,13 @@
         dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
         tableName: '', // 主表表名
         tableId: '', // 主表ID
-        itemId: ''// 子表ID
+        itemId: '', // 子表ID
+        currentParameter: {
+          add: {}, // 新增保存需要的参数
+          checkedInfo: {}, // 验证信息
+          delete: {}, // 删除时需要用到的参数
+          modify: {}, // 修改保存时用到的参数
+        }
       };
     },
     name: 'SingleObjectButtons',
@@ -51,17 +56,13 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           this.getbuttonGroupData(val);
-          this.getdynamicRequestUrl(val.paths);
-         
-          // 处理dynamicRequestUrl
+          this.getdynamicRequestUrl(val.paths);// 处理dynamicRequestUrl
         },
         deep: true
       },
     },
     computed: {
-      ...mapState('global', ['keepAliveLists']),
-     
-      ...mapState(moduleName(), ['tabCurrentIndex'])
+    
     },
     props: {
       tabcmd: {
@@ -169,7 +170,6 @@
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 this.buttonMap[str].eName = item;
-                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
             }
@@ -189,15 +189,20 @@
         }
       },
       horizontal() {
-        console.log('🐘', this.tabCurrentIndex);
-      },
+      }, // 横向布局，用来区分获取的参数
       vertical() {
-      },
+      }, // 纵向布局
      
     },
     mounted() {
       this.getbuttonGroupData(this.tabcmd);
-      console.log('🐘', this.tabCurrentIndex);
+      console.log('🍊', this.updateData);
+      Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+        if (current === this.itemName) {
+          this.currentParameter = this.updateData[current];
+        }
+        return obj;
+      }, {});
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;
