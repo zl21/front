@@ -10,24 +10,24 @@
     :mask="mask"
     :mask-closable="maskClosable"
     :transfer="transfer"
-    :name="name"
     :footer-hide="footerHide"
     :ok-text="okText"
     :cancel-text="cancelText"
     @on-cancel="onCancel"
     @on-ok="onOk"
-    @on-keydown="keydown($event)"
-  />
+  >
+    <p>{{ contentText }}</p>
+  </Modal>
 </template>
 
 <script>
   export default {
     name: 'JordanDialog',
     props: {
-      showModal: {
-        type: Boolean,
-        default: () => false
-      }, // 是否可以滚动
+      // showModal: {
+      //   type: Boolean,
+      //   default: () => false
+      // }, // 是否可以滚动
       title: {
         type: String,
         default: () => '标题'
@@ -61,18 +61,9 @@
         type: Boolean,
         default: () => true
       }, // 是否将弹层放在body内
-      name: {
-        type: String,
-        default: () => ' '
-      }, // 组件名称
-      url: {
-        type: String,
-        default: () => ' '
-      }, // 组件路由
-    
       footerHide: {
         type: Boolean,
-        default: () => true
+        default: () => false
       }, // 是否显示底部
       okText: {
         type: String,
@@ -90,32 +81,37 @@
         type: Function,
         default: () => {}
       },
-      quit: {
-        type: Function,
-        default: () => {}
-      }
+      contentText: {
+        type: String,
+        default: () => '暂无提示'
+      },
     },
     data() {
       return {
-        modal: true,
-        commonObj: {},
+        showModal: false,
       };
     },
     mounted() {
     },
     methods: {
+      open() {
+        this.showModal = true;
+      },
+      
       // 确定
       onOk() {
         if (typeof this.confirm === 'function') {
           this.confirm();
         }
+        // this.$emit('confirm');
       },
       // 取消
       onCancel() {
-        if (typeof this.quit === 'function') {
-          this.quit();
+        if (typeof this.cancelFun === 'function') {
+          this.cancelFun();
         }
-      }
+      },
+    
     }
   };
 </script>

@@ -120,6 +120,7 @@ export default {
       }
     });
   },
+  // 按钮
   getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -133,4 +134,36 @@ export default {
       }
     });
   },
+  getNewMainTableSaveData({ commit }, parame) { // 主表保存
+    const { tableName } = parame;
+    const { modify } = parame;
+    const { objId } = parame;
+
+    network.post('/p/cs/objectSave', {
+      table: tableName, // 主表表名
+      objId, // 固定传值-1 表示新增
+      fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+        ...modify
+      }
+    }).then((res) => {
+      // if (res.data.code === 0) {
+      const data = res.data;
+      commit('updateNewMainTableSaveData', data);
+      // }
+    });
+  },
+  getNewMainTableDeleteData({ commit }, { table, objId }) { // 主表保存
+    network.post('/p/cs/objectDelete', {
+      table, // 主表表名
+      objId, 
+      delMTable: true
+    }).then((res) => {
+      // if (res.data.code === 0) {
+      // const data = res.data;
+      // commit('updateNewMainTableDeleteData', data);
+      // }
+    });
+  },
+
+ 
 };

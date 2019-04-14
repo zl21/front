@@ -8,7 +8,8 @@ export default () => ({
       tablename: null,
       tableid: null,
       buttonsData: { // 主表按钮数据
-        data: ({})
+        data: ({}),
+        newMainTableSaveData: {}, // 主表新增保存返回data
       },
       formData: {
         isShow: false,

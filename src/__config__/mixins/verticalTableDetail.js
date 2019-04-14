@@ -29,7 +29,9 @@ export default () => ({
         'getObjectTableItemForTableData',
         'getFormDataForRefTable',
         'getObjectTabForRefTable',
-        'getItemObjForChildTableForm'
+        'getItemObjForChildTableForm',
+        'getNewMainTableSaveData',
+        'getNewMainTableDeleteData'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -39,7 +41,7 @@ export default () => ({
         'updateModifyData',
         'updateDeleteData',
         'updateCheckedInfoData',
-        'updatePanelData'
+        'updatePanelData',
       ]),
   },
   // beforeDestroy() {

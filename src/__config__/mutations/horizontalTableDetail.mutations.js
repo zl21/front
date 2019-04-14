@@ -93,5 +93,6 @@ export default {
   },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
-  }
+  },
+  
 };

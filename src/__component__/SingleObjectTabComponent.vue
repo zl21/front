@@ -3,9 +3,9 @@
     <component
       :is="'SingleObjectButtons'"
       v-if="buttonsData.isShow"
-      :objectType="type"
+      :object-type="type"
       class="objectButtons"
-      :itemName="tableName"
+      :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
     />
@@ -38,7 +38,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       class="objectTable"
-      :tableName="tableName"
+      :table-name="tableName"
       :data-source="tableData.data"
       :type="type"
       :readonly="buttonsData.data.objreadonly"
@@ -100,6 +100,7 @@
     computed: {
     },
     mounted() {
+      console.log('查看子表名', this.tableName);
       // this.generateComponent();
     },
     created() {

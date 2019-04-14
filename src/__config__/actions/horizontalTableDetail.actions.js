@@ -95,5 +95,36 @@ export default {
         commit('updateTableData', tableData);
       }
     });
-  }
+  },
+  // 按钮
+  getNewMainTableSaveData({ commit }, parame) { // 主表保存
+    const { tableName } = parame;
+    const { modify } = parame;
+    const { objId } = parame;
+
+    network.post('/p/cs/objectSave', {
+      table: tableName, // 主表表名
+      objId, // 固定传值-1 表示新增
+      fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+        ...modify
+      }
+    }).then((res) => {
+      // if (res.data.code === 0) {
+      const data = res.data.data;
+      commit('updateNewMainTableSaveData', data);
+      // }
+    });
+  },
+  getNewMainTableDeleteData({ commit }, { table, objId }) { // 主表保存
+    network.post('/p/cs/objectDelete', {
+      table, // 主表表名
+      objId, 
+      delMTable: true
+    }).then((res) => {
+      // if (res.data.code === 0) {
+      // const data = res.data;
+      // commit('updateNewMainTableDeleteData', data);
+      // }
+    });
+  },
 };

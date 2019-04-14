@@ -83,4 +83,8 @@ export default {
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   },
+  updateNewMainTableSaveData(state, data) { // 主表新增保存返回信息
+    state.mainFormInfo.buttonsData.newMainTableSaveData = data;
+  },
+  
 };

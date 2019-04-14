@@ -2,7 +2,7 @@
   <div class="horizontalTableDetail">
     <TabPanels
       type="line"
-      isKeepAlive
+      is-keep-alive
       :tab-margin-left="20"
       :tab-panels="tabPanels"
     />
@@ -47,6 +47,7 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       tabClick(index) {
+        console.log('🐰', index);
         this.updateTabCurrentIndex(index);
         if (index === 0) {
           this.getMainTable();

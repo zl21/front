@@ -28,11 +28,13 @@ export default () => ({
         'getObjectTabForChildTableButtons',
         'getInputForitemForChildTableForm',
         'getItemObjForChildTableForm',
-        'getObjectTableItemForTableData'
+        'getObjectTableItemForTableData',
+        'getNewMainTableSaveData',
+        'getNewMainTableDeleteData'
       ]),
     ...mapMutations(getComponentName(),
       [
-        'updateTabCurrentIndex'
+        'updateTabCurrentIndex',
       ]),
   },
 });
