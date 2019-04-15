@@ -16,7 +16,7 @@
         v-if="!errorFlag"
         v-html="errorMessage.content"
       />
-      <div
+      <!-- <div
         v-if="!hiddenButton"
         slot="footer"
       >
@@ -44,7 +44,7 @@
         >
           {{ ChineseDictionary.ENSURE }}
         </Button>
-      </div>
+      </div> -->
     </Modal>
   </div>
 </template>
@@ -109,6 +109,7 @@
         this.$emit('closeDialog');
       },
       confirmDialog() {
+        alert(11);
         this.$emit('confirmDialog');
       }
     },
