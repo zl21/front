@@ -87,7 +87,7 @@ export default {
     buttons.importTemplate = data;
   },
   updateButtonDeleteData({ buttons }, data) {
-    this.batchDeleteData = data;
+    buttons.batchDeleteData = data;
   },
   setErrorModalValue({ buttons }, {
     data, errorDialogTitle, errorDialogvalue, errorDialogBack 
