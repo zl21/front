@@ -22,8 +22,8 @@ export default () => ({
         'getInputForitemForChildTableForm',
         'getItemObjForChildTableForm',
         'getObjectTableItemForTableData',
-        'getNewMainTableSaveData',
-        'getNewMainTableDeleteData'
+        'performMainTableSaveAction',
+        'performMainTableDeleteAction'
       ]),
     ...mapMutations(getComponentName(),
       [

@@ -243,16 +243,25 @@
           if (this.dynamicUrl) { // 有path
                 
           } else { // 没有path
-            // alert('有path');
           }
         } else if (this.dynamicUrl) { // 有path，没有子表
-          // console.log('没有path');
+          console.log('有path');
+        
+          this.$refs.dialogRef.open();
+          this.dialogConfig = {
+            contentText: '确认执行删除?',
+            confirm: () => {
+              this.performMainTableDeleteAction({ path: this.dynamicUrl, table: this.tableName, objId: this.itemId });
+              this.$Message.success('删除成功');
+              this.clickButtonsBack();
+            }
+          };
         } else { // 没有path
           this.$refs.dialogRef.open();
           this.dialogConfig = {
             contentText: '确认执行删除?',
             confirm: () => {
-              this.getNewMainTableDeleteData({ table: this.tableName, objId: this.itemId });
+              this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               this.$Message.success('删除成功');
               this.clickButtonsBack();
             }
@@ -292,7 +301,10 @@
           if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
             // console.log('没有子表');
             if (this.dynamicUrl) { // 配置path
-              // console.log('配置path的逻辑暂无添加', this.dynamicRequestUrl);
+              console.log(' 主表新增保存,配置path的', this.dynamicUrl);
+              // const objId = -1;
+              const path = this.dynamicUrl;
+              this.savaNewTable(path);
             } else { // 没有配置path
               const objId = -1;
               this.savaNewTable(objId);
@@ -312,7 +324,9 @@
             if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
               // console.log('没有子表', this.dynamicUrl);
               if (this.dynamicUrl) { // 配置path
-                // console.log('配置path的逻辑暂无添加');
+                console.log('编辑新增保存,配置path的逻辑');
+                const path = this.dynamicUrl;
+                this.savaNewTable(path);
               } else { // 没有配置path
                 const objId = -1;
                 this.savaNewTable(objId);
@@ -321,9 +335,9 @@
             if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
               // console.log('有子表');
               if (this.dynamicRequestUrl) { // 配置path
-
+                     
               } else { // 没有配置path
-
+              
               }
             }
           } else {
@@ -331,12 +345,11 @@
             if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
               // console.log('没有子表', this.dynamicUrl);
               if (this.dynamicUrl) { // 配置path
-                // console.log('配置path的逻辑暂无添加');
+                console.log('主表编辑保存,配置path的逻辑');
+                const path = this.dynamicUrl;
+                this.savaNewTable(path);
               } else { // 没有配置path
-                // console.log('查看子表id');
-
                 const objId = this.itemId;
-               
                 this.savaNewTable(objId);
               }
             }
@@ -351,19 +364,20 @@
           }
         } 
       },
-      savaNewTable(objId) { // 主表新增保存方法
+      savaNewTable(path, objId) { // 主表新增保存方法
         const tableName = this.tableName;
         const parame = {
           ...this.currentParameter,
           tableName,
-          objId
+          objId,
+          path
         };
-        this.getNewMainTableSaveData(parame);
+        this.performMainTableSaveAction(parame);
         // if (this.info) {
         // clearTimeout(window.timer);
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.newMainTableSaveData.code === 0) {
-            console.log('暂无添加横向布局有path的逻辑');// 有path
+            // console.log('暂无添加横向布局有path的逻辑');// 有path
             // const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
             // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
             // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
