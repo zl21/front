@@ -1,11 +1,5 @@
 import network, { urlSearchParams } from '../../__utils__/network';
-import router from '../router.config';
-import { HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../../constants/global';
-
-const getComponentName = () => {
-  const { tableName, tableId, itemId } = router.currentRoute.params;
-  return `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-};
+import getComponentName from '../../__utils__/getModuleName';
 
 export default {
   getObjectTabForMainTable({ commit }, { table, objid }) {
@@ -118,7 +112,7 @@ export default {
   getNewMainTableDeleteData({ commit }, { table, objId }) { // 主表保存
     network.post('/p/cs/objectDelete', {
       table, // 主表表名
-      objId, 
+      objId,
       delMTable: true
     }).then((res) => {
       // if (res.data.code === 0) {
