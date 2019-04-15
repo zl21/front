@@ -38,6 +38,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       class="objectTable"
+      :tableHeight="type === 'vertical'? 300: 0"
       :table-name="tableName"
       :data-source="tableData.data"
       :type="type"

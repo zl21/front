@@ -65,7 +65,8 @@ export default {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = true;
     componentAttribute.formData.data = data;
-  }, // 更新form数据
+  }, //
+
   updatePanelData(state, data) {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.panelData.isShow = true;

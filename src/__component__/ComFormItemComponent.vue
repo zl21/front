@@ -45,6 +45,9 @@
       },
       // 计算属性的 getter
       dataColRol() {
+        console.log('newFormItemLists');
+
+        console.log(this.newFormItemLists);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);
@@ -225,12 +228,12 @@
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
             if (current.item.value instanceof Array) { // 结果为数组则为选中项
-              // delete obj[current.item.inputname];
+              delete obj[current.item.inputname];
               obj[current.item.field] = current.item.value.reduce((sum, temp) => {
                 sum.push(temp.ID); return sum;
-              }, []);
+              }, []).join(',');
             } else { // 否则为输入项
-              // delete obj[current.item.field];
+              delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) {
@@ -238,7 +241,7 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
             if (current.item.props.Selected.length > 0) {
-              obj[current.item.field] = current.item.props.Selected;
+              obj[current.item.field] = current.item.props.Selected[0];
             } else {
               obj[current.item.inputname] = current.item.value;
             }

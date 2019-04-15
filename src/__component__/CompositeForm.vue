@@ -110,6 +110,7 @@
             get:function(){
               let items = [];
               // 存放单个form child
+
               this.childForm.childs = [];
             // 有面板的数据
             if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
@@ -151,7 +152,6 @@
                 this.childForm.hrdisplay = 'expand';
                 items.push(this.childForm);
               }
-
               return items;
           },
           set:function(val){
@@ -209,7 +209,6 @@
           event: {
             keydown: (event) => { // 输入框的keydown event, $this
               if (event.keyCode === 13) { // enter回车查询
-
                 this.searchClickData();
               }
             },
@@ -360,14 +359,16 @@
         return str;
       },
       defaultValue(item) {
-
+        // if(!item.valuedata){
+        //   item.valuedata = '';
+        //   return '';
+        // }
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          return `${item.valuedata} 00:00:00`
+          return `${item.valuedata} 00:00:00` || ''
         }
         if (item.display === 'OBJ_TIME') {
-           console.log(item.valuedata);
           // const timeRange = [
           //   `${new Date()
           //     .minusDays(Number(item.daterange))
@@ -375,7 +376,7 @@
           //   `${new Date().toIsoDateString()} 23:59:59`
           // ];
           // return timeRange;
-          return item.valuedata;
+          return item.valuedata || '';
         }
         // 设置表单的默认值
         if (item.valuedata === 'N') {
@@ -392,12 +393,12 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop') { // 外键默认值
           const arr = [];
           arr.push({
-            ID: item.refobjid,
-            Label: item.valuedata
+            ID: item.refobjid || '',
+            Label: item.valuedata || ''
           });
           return arr;
         } else {
-          return item.valuedata;
+          return item.valuedata || '';
         }
         //
       },
