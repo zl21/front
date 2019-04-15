@@ -522,7 +522,7 @@
                 this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 buttonGroupShow.push(buttonConfigInfo);
               }
             }
@@ -990,10 +990,13 @@
               };
               const errorDialogTitle = this.ChineseDictionary.WARNING;
               const errorDialogvalue = true;
+              const errorDialogBack = true;
+
               this.setErrorModalValue({
                 data,
                 errorDialogTitle,
-                errorDialogvalue
+                errorDialogvalue,
+                errorDialogBack
               });
             } else {
               const data = {
