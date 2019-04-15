@@ -1,11 +1,6 @@
 import network, { urlSearchParams } from '../../__utils__/network';
-import router from '../router.config';
-import { VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../../constants/global';
+import getComponentName from '../../__utils__/getModuleName';
 
-const getComponentName = () => {
-  const { tableName, tableId, itemId } = router.currentRoute.params;
-  return `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
-};
 export default {
   getObjectForMainTableForm({ commit }, { table, objid }) { // 获取主表面板数据
     network.post('/p/cs/getObject', urlSearchParams({
@@ -55,10 +50,10 @@ export default {
                   table: firstReftab.tablename,
                   objid,
                   refcolid: firstReftab.refcolid,
-                  searchdata: { 
+                  searchdata: {
                     column_include_uicontroller: true
                   }
-                  
+
                 };
                 this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
               }
@@ -112,7 +107,7 @@ export default {
       table,
       objid, // -1 代表新增
       refcolid,
-      searchdata 
+      searchdata
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
@@ -155,7 +150,7 @@ export default {
   getNewMainTableDeleteData({ commit }, { table, objId }) { // 主表保存
     network.post('/p/cs/objectDelete', {
       table, // 主表表名
-      objId, 
+      objId,
       delMTable: true
     }).then((res) => {
       // if (res.data.code === 0) {
@@ -165,5 +160,5 @@ export default {
     });
   },
 
- 
+
 };
