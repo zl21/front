@@ -50,10 +50,8 @@ export default {
   },
   getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
     network.post('/p/cs/batchDelete', objQuery).then((res) => {
-      if (res && res.data.code) {
-        const deleteTableData = res.data;
-        commit('updateButtonDeleteData', deleteTableData);
-      }
+      const deleteTableData = res.data;
+      commit('updateButtonDeleteData', deleteTableData);
     }); 
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {

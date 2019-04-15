@@ -57,7 +57,6 @@
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
-        console.log('tabPanels', arr);
         return arr;
       }
     },
@@ -65,7 +64,7 @@
       compositeForm
     },
     mounted() {
-     
+
     },
     created() {
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
@@ -100,7 +99,6 @@
         const { itemId } = this.$route.params;
         const refTab = this.tabPanel[index];
         if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
-          alert(111);
           // 获取子表表单
           const formParam = {
             table: refTab.tablename,
@@ -110,14 +108,10 @@
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
         }
         if (refTab.tabrelation === '1:m') {
-          alert(222);
-
           this.getObjectTableItemForTableData({
             table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }
           });
         } else if (refTab.tabrelation === '1:1') {
-          alert(333);
-
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
           this.getItemObjForChildTableForm({ table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid });
         }

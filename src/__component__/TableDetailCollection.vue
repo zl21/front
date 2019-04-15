@@ -64,7 +64,8 @@
       <div class="table-outside">
         <Table
           ref="selection"
-          :height="tableHeight"
+          class="table-in"
+          :height="tableHeight? tableHeight :true"
           border
           :columns="columns"
           :data="data"
@@ -72,12 +73,12 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
         />
-        <div
-          v-if="isHorizontal"
-          class="queryCondition"
-        >
-          查询条件:{{ dataSource.queryDesc }}
-        </div>
+      </div>
+      <div
+              v-if="isHorizontal"
+              class="queryCondition"
+      >
+        查询条件:{{ dataSource.queryDesc }}
       </div>
     </div>
   </div>
@@ -165,7 +166,7 @@
       tableHeight: {
         // 表格高度 默认300px
         type: Number,
-        default: 300
+        default: 0
       },
       tableName: {
         type: String,
@@ -1215,8 +1216,16 @@
 
 <style scoped lang="less">
 .TableDetailCollection {
-  margin: 10px 5px 15px 5px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  margin: 10px 5px 5px 5px;
   .detail-collection {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: hidden;
     .detail-top {
       margin-bottom: 10px;
       display: flex;
@@ -1258,6 +1267,12 @@
       }
     }
     .table-outside {
+      flex: 1;
+      overflow-y: hidden;
+      display: flex;
+      .table-in {
+        flex: 1;
+      }
     }
     .queryCondition {
       margin-top: 5px;
