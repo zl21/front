@@ -350,7 +350,7 @@
         }
 
         if (item.display === 'OBJ_DATE' || item.display === 'OBJ_DATENUMBER') {
-          str = 'DatePicker';
+            str = 'DatePicker';
         }
 
         if (item.display === 'OBJ_TIME' ) {
@@ -360,6 +360,23 @@
         return str;
       },
       defaultValue(item) {
+
+        // 设置表单的默认值
+        if (item.display === 'OBJ_DATENUMBER') {
+          // 日期控件
+          return `${item.valuedata} 00:00:00`
+        }
+        if (item.display === 'OBJ_TIME') {
+           console.log(item.valuedata);
+          // const timeRange = [
+          //   `${new Date()
+          //     .minusDays(Number(item.daterange))
+          //     .toIsoDateString()} 00:00:00`,
+          //   `${new Date().toIsoDateString()} 23:59:59`
+          // ];
+          // return timeRange;
+          return item.valuedata;
+        }
         // 设置表单的默认值
         if (item.valuedata === 'N') {
           return false;
@@ -449,7 +466,7 @@
           item.props.type = 'datetime';
         }
         if (current.display === 'OBJ_TIME') {
-          item.props.type = 'timerange';
+          item.props.type = 'time';
 
         }
         if (current.display === 'OBJ_DATE') {
@@ -461,7 +478,7 @@
 
         }
         if (current.display === 'OBJ_TIME') {
-          item.props.type = 'timerange';
+          item.props.type = 'time';
         }
 
 
