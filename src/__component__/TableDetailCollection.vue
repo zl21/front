@@ -65,7 +65,7 @@
         <Table
           ref="selection"
           class="table-in"
-          :height="true"
+          :height="tableHeight? tableHeight :true"
           border
           :columns="columns"
           :data="data"
@@ -166,7 +166,7 @@
       tableHeight: {
         // 表格高度 默认300px
         type: Number,
-        default: 300
+        default: 0
       },
       tableName: {
         type: String,

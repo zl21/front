@@ -38,6 +38,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       class="objectTable"
+      :tableHeight="type === 'vertical'? 300: 0"
       :table-name="tableName"
       :data-source="tableData.data"
       :type="type"
@@ -100,7 +101,7 @@
     computed: {
     },
     mounted() {
-      console.log('查看子表名', this.tableName);
+      // console.log('查看子表名', this.tableName);
       // this.generateComponent();
     },
     created() {
