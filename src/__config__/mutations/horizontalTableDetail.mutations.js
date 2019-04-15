@@ -51,7 +51,7 @@ export default {
     });
     arr.forEach((item) => {
       state.updateData[item.tablename] = {
-        add: {}, modify: {}, delete: {}, default: {}, checkedInfo: []
+        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: []
       };
     });
     state.tabPanels = arr;
@@ -94,5 +94,5 @@ export default {
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
-  
+
 };
