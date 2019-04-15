@@ -57,7 +57,6 @@
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
-        console.log('tabPanels', arr);
         return arr;
       }
     },
