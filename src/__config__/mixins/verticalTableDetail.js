@@ -7,7 +7,7 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
-      mainFormInfo: ({ mainFormInfo }) => mainFormInfo,
+      mainFormInfo: ({ ...mainFormInfo }) => mainFormInfo.mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
