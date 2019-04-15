@@ -23,8 +23,8 @@ export default () => ({
         'getFormDataForRefTable',
         'getObjectTabForRefTable',
         'getItemObjForChildTableForm',
-        'getNewMainTableSaveData',
-        'getNewMainTableDeleteData'
+        'performMainTableSaveAction',
+        'performMainTableDeleteAction'
       ]),
     ...mapMutations(getComponentName(),
       [

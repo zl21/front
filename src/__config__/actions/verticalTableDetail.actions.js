@@ -129,7 +129,7 @@ export default {
       }
     });
   },
-  getNewMainTableSaveData({ commit }, parame) { // 主表保存
+  performMainTableSaveAction({ commit }, parame) { // 主表保存
     const { tableName } = parame;
     const { modify } = parame;
     const { objId } = parame;
@@ -147,15 +147,15 @@ export default {
       // }
     });
   },
-  getNewMainTableDeleteData({ commit }, { table, objId }) { // 主表保存
+  performMainTableDeleteAction({ commit }, { table, objId }) { // 主表删除
     network.post('/p/cs/objectDelete', {
       table, // 主表表名
       objId,
       delMTable: true
     }).then((res) => {
       // if (res.data.code === 0) {
-      // const data = res.data;
-      // commit('updateNewMainTableDeleteData', data);
+      const data = res.data;
+      commit('updateNewMainTableDeleteData', data);
       // }
     });
   },

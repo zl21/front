@@ -101,7 +101,6 @@
     computed: {
     },
     mounted() {
-      // console.log('查看子表名', this.tableName);
       // this.generateComponent();
     },
     created() {

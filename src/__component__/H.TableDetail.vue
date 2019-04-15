@@ -47,7 +47,6 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       tabClick(index) {
-        console.log('🐰', index);
         this.updateTabCurrentIndex(index);
         if (index === 0) {
           this.getMainTable();
