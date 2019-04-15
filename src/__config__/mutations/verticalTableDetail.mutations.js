@@ -6,7 +6,10 @@ export default {
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
-    state.mainFormInfo.formData.data = data || [];
+    state.mainFormInfo.formData.data = {};
+    setTimeout(() => {
+      state.mainFormInfo.formData.data = Object.assign({} ,data);
+    }, 0);
     state.updateData[tableName] = {
       add: Object.assign({}, { [tableName]: {} }), modify: Object.assign({}, { [tableName]: {} }), delete: Object.assign({}, { [tableName]: {} }), default: {}, checkedInfo: []
     };
