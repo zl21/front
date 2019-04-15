@@ -106,12 +106,12 @@ module.exports = env => ({
     splitChunks: {
       chunks: 'all',
     },
-    minimizer: [new UglifyJsPlugin({
-      uglifyOptions: {
-        compress: {
-          drop_console: env && env.production
-        }
-      }
-    })]
+    // minimizer: [new UglifyJsPlugin({
+    //   uglifyOptions: {
+    //     compress: {
+    //       drop_console: env && env.production
+    //     }
+    //   }
+    // })]
   },
 });

@@ -28,6 +28,8 @@ export default (router) => {
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: Number(itemId) === -1 ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: Number(itemId) === -1 ? '新增' : '编辑',
     };
+
+    const paramItemId = Number(itemId) === -1 ? 'New' : `${itemId}`;
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
     const originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
@@ -41,13 +43,13 @@ export default (router) => {
 
       // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面名称
       case VERTICAL_TABLE_DETAIL_PREFIX:
-        keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+        keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
         dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
         break;
 
       // Condition Three: 路由到table类型的列表明细界面名称
       case HORIZONTAL_TABLE_DETAIL_PREFIX:
-        keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
+        keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
         dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
         break;
 
