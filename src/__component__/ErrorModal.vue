@@ -109,7 +109,6 @@
         this.$emit('closeDialog');
       },
       confirmDialog() {
-        alert(11);
         this.$emit('confirmDialog');
       }
     },

@@ -1148,15 +1148,17 @@
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
         };
         this.getBatchDeleteForButtons(objQuery);
-        if (this.buttons.batchSubmitData.code === 0) {
-          const message = this.buttons.batchDeleteData.message;
-          const data = {
-            title: '成功',
-            content: `${message}`
-          };
-          this.$Modal.fcSuccess(data);
-          this.getQueryListForAg(this.searchData);
-        }
+        setTimeout(() => {
+          if (this.buttons.batchDeleteData.code === 0) {
+            const message = this.buttons.batchDeleteData.message;
+            const data = {
+              title: '成功',
+              content: `${message}`
+            };
+            this.$Modal.fcSuccess(data);
+            this.getQueryListForAg(this.searchData);
+          }
+        }, 1000);
       },
       batchVoid() {
         const searchdata = {
