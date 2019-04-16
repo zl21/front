@@ -61,13 +61,13 @@
       }
     },
     components: {
-      compositeForm
     },
     mounted() {
 
     },
     created() {
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+      Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });
