@@ -45,9 +45,6 @@
       },
       // 计算属性的 getter
       dataColRol() {
-        console.log('newFormItemLists');
-
-        console.log(this.newFormItemLists);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);

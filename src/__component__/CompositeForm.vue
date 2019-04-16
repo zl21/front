@@ -16,7 +16,8 @@
         >
           {{ item.parentdesc }}
           <div slot="content">
-            <FormItemComponent
+              <component v-if="FormItemComponent"
+              :is="FormItemComponent"
               :form-item-lists="item.childs"
               :ref="'FormComponent_'+index"
               :verifymessageform = "VerifyMessageForm"
@@ -48,11 +49,11 @@
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
   import regExp  from '../constants/regExp';
+  import Vue  from 'vue';
 
   export default {
     name: 'CompositeForm',
     components: {
-      FormItemComponent
     },
     props: {
       defaultData: {
@@ -98,19 +99,22 @@
         newdefaultData:[],  // 初始化form
         formData:{},  // 监听form变化
         VerificationForm:{},  // 校验form
+        watchComputFormList:[],
+        FormItemComponent:Vue.extend(FormItemComponent),
         defaultFormData:{},    // form 默认值
         childForm:{
           childs:[]
         },
+        tip:'new',
         expand: 'expand'    // 面板是否展开
       };
     },
     computed: {
       computdefaultData: {
             get:function(){
+              console.log('computdefaultData');
               let items = [];
               // 存放单个form child
-
               this.childForm.childs = [];
             // 有面板的数据
             if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
@@ -124,7 +128,7 @@
                     return array2;
                   }, []);
                   array.push({
-                    childs: tem,
+                    childs: tem.concat([]),
                     hrdisplay: current.hrdisplay,
                     parentdesc: current.parentdesc,
                     parentname: current.parentname
@@ -155,10 +159,29 @@
               return items;
           },
           set:function(val){
-              return val;
+            return val;
           }
 
-      },
+      }
+    },
+    watch:{
+      computdefaultData: {
+            handler(val, old) {
+              console.log(JSON.stringify(val) ===JSON.stringify(old))
+              if(JSON.stringify(val) ===JSON.stringify(old)){
+                this.FormItemComponent = '';
+                setTimeout(() =>{
+                  this.FormItemComponent = Vue.extend(FormItemComponent);
+                },0);
+              }
+
+
+            },
+            deep: true
+          }
+
+    },
+    updated(){
 
     },
     methods: {
@@ -366,25 +389,18 @@
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          return `${item.valuedata} 00:00:00` || ''
+          return `${item.defval || item.valuedata } 00:00:00` || ''
         }
         if (item.display === 'OBJ_TIME') {
-          // const timeRange = [
-          //   `${new Date()
-          //     .minusDays(Number(item.daterange))
-          //     .toIsoDateString()} 00:00:00`,
-          //   `${new Date().toIsoDateString()} 23:59:59`
-          // ];
-          // return timeRange;
-          return item.valuedata || '';
+          return item.defval || item.valuedata ||   '';
         }
         // 设置表单的默认值
-        if (item.valuedata === 'N') {
+        if (item.valuedata === 'N' || item.defval === 'N') {
           return false;
         } else if (item.valuedata === 'Y') {
           return true;
         }
-        if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
+        if (item.display === 'OBJ_SELECT' && item.defval) { // 处理select的默认值
           const arr = [];
           arr.push(item.valuedata);
           return arr;
@@ -398,7 +414,7 @@
           });
           return arr;
         } else {
-          return item.valuedata || '';
+          return item.defval || item.valuedata || '';
         }
         //
       },
@@ -592,11 +608,9 @@
             item[index].item.value = errorValue.toUpperCase();
       }
     },
-    mounted() {
-
-    },
     created() {
-
+      this.computdefaulForm = this.computdefaultData;
+      console.log('created');
     },
   };
 </script>
