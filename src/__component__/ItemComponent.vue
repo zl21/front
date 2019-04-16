@@ -56,6 +56,7 @@
         :label-in-value="_items.props['label-in-value']"
         :placement="_items.props.placement"
         :transfer="_items.props.transfer"
+        :options-visible="_items.props.optionsVisible"
         @on-change="selectChange"
         @on-clear="selectClear"
         @on-open-change="selectOpenChange"
