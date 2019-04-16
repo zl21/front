@@ -98,10 +98,10 @@
       return {
         newdefaultData:[],  // 初始化form
         formData:{},  // 监听form变化
-        VerificationForm:{},  // 校验form
-        watchComputFormList:[],
-        FormItemComponent:Vue.extend(FormItemComponent),
+        VerificationForm:[],  // 校验form
         defaultFormData:{},    // form 默认值
+        verifyMessItem:{},   // 空form        watchComputFormList:[],
+        FormItemComponent:Vue.extend(FormItemComponent),
         childForm:{
           childs:[]
         },
@@ -112,7 +112,7 @@
     computed: {
       computdefaultData: {
             get:function(){
-              console.log('computdefaultData');
+              //console.log('computdefaultData');
               let items = [];
               // 存放单个form child
               this.childForm.childs = [];
@@ -167,7 +167,7 @@
     watch:{
       computdefaultData: {
             handler(val, old) {
-              console.log(JSON.stringify(val) ===JSON.stringify(old))
+              //console.log(JSON.stringify(val) ===JSON.stringify(old))
               if(JSON.stringify(val) ===JSON.stringify(old)){
                 this.FormItemComponent = '';
                 setTimeout(() =>{
@@ -199,18 +199,51 @@
         } else {
           delete this.formData[key +':NAME'];
         }
+
+        let VerificationMessage = {
+          eq:'',
+          index:'',
+          messageTip:[],
+          onfocus:''
+        };
+        
+
+        this.VerificationForm.forEach((item) =>{
+          Object.keys(this.formData).forEach((option) =>{
+        //console.log(this.formData[option]);
+              if(item.key === option.split(':')[0] && !this.formData[option]){
+                let label = `请输入${item.label}`;
+                if(VerificationMessage.eq === '' || VerificationMessage.eq >item.eq ){
+                    VerificationMessage.eq = item.eq;
+                    if(VerificationMessage.index === '' || VerificationMessage.index >item.index ){
+                       VerificationMessage.index = item.index;
+                       VerificationMessage.onfocus = item.onfousInput;
+                       //console.log(item);
+                   }
+                }
+                VerificationMessage.messageTip.push(label);
+                if(VerificationMessage.messageTip.length<2){
+                       VerificationMessage.onfocus = item.onfousInput;
+                }
+
+              }
+           });
+
+        });
+
+
+        //console.log(VerificationMessage);
+        // 校验
+       this.$emit('VerifyMessage', VerificationMessage);
+        // 字段修
         this.$emit('formChange',this.formData);
 
       },
       VerifyMessageForm(value){
         // 获取需要校验的表单
-        this.VerificationForm = value;
-        let arr =Object.keys(this.VerificationForm).reduce((item,current,index) => {
-           item.push(`请输入${this.VerificationForm[current]}`)
-            return item;
-        },[]);
-        this.$emit('VerifyMessage', arr);
-
+        this.VerificationForm = this.VerificationForm.concat(value);
+        //console.log(this.VerificationForm);
+       
       },
       mountdataForm(value){
             // 获取表单默认值
@@ -610,7 +643,6 @@
     },
     created() {
       this.computdefaulForm = this.computdefaultData;
-      console.log('created');
     },
   };
 </script>
