@@ -16,6 +16,7 @@
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
+      @VerifyMessage="verifyFormPanelMain"
     />
     <TabPanels
       v-if="tabPanels.length > 0"
@@ -61,13 +62,13 @@
       }
     },
     components: {
-      compositeForm
     },
     mounted() {
 
     },
     created() {
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+      Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });
@@ -84,11 +85,15 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === -1) {
+        if (itemId === '-1') {
           this.updateAddData({ tableName, value: obj });
         } else {
           this.updateModifyData({ tableName, value: obj });
         }
+      },
+      verifyFormPanelMain(data) {
+        const { tableName } = this.$route.params;
+        this.updateCheckedInfoData({ tableName, value: data });
       },
       tabClick(index) {
         // tab点击

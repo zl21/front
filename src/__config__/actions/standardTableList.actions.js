@@ -4,7 +4,7 @@ import network, { urlSearchParams } from '../../__utils__/network';
 
 export default {
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, multiple = [] 
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -13,7 +13,6 @@ export default {
         range: range || 10,
         fixedcolumns,
         column_include_uicontroller,
-        multiple
       }
     })).then((res) => {
       const updateTableData = res.data.data;

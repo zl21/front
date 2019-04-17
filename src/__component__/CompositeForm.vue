@@ -16,7 +16,9 @@
         >
           {{ item.parentdesc }}
           <div slot="content">
-            <FormItemComponent
+              <component v-if="FormItemComponent"
+              :is="FormItemComponent"
+              :form-item-lists="item.childs"
               :ref="'FormComponent_'+index"
               :key="index"
               :form-item-lists="item.childs"
@@ -48,12 +50,12 @@
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
-  import regExp from '../constants/regExp';
+  import regExp  from '../constants/regExp';
+  import Vue  from 'vue';
 
   export default {
     name: 'CompositeForm',
     components: {
-      FormItemComponent
     },
     props: {
       defaultData: {
@@ -96,56 +98,54 @@
     },
     data() {
       return {
-        newdefaultData: [], // 初始化form
-        formData: {}, // 监听form变化
-        VerificationForm: {}, // 校验form
-        defaultFormData: {}, // form 默认值
-        childForm: {
-          childs: []
+        newdefaultData:[],  // 初始化form
+        formData:{},  // 监听form变化
+        VerificationForm:[],  // 校验form
+        defaultFormData:{},    // form 默认值
+        verifyMessItem:{},   // 空form        watchComputFormList:[],
+        FormItemComponent:Vue.extend(FormItemComponent),
+        childForm:{
+          childs:[]
         },
-        expand: 'expand' // 面板是否展开
+        tip:'new',
+        expand: 'expand'    // 面板是否展开
       };
     },
     computed: {
       computdefaultData: {
-        get() {
-          let items = [];
-          // 存放单个form child
-
-          this.childForm.childs = [];
-          // 有面板的数据
-          if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
-            items = this.defaultData.addcolums.reduce((array, current, index) => {
-              let tem = [];
-              if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
-                tem = current.childs.reduce((array2, current2, itemIndex2) => {
-                  current2.formIndex = index;
-                  const option = this.reduceForm(array2, current2, itemIndex2);
-                  array2.push(option);
-                  return array2;
-                }, []);
-                array.push({
-                  childs: tem,
-                  hrdisplay: current.hrdisplay,
-                  parentdesc: current.parentdesc,
-                  parentname: current.parentname
-                });
-              } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
-                const option = this.reduceForm([], current.child, index);
-                if (option.item) {
-                  this.childForm.childs.push(option);
+            get:function(){
+              //console.log('computdefaultData');
+              let items = [];
+              // 存放单个form child
+              this.childForm.childs = [];
+            // 有面板的数据
+            if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
+              items = this.defaultData.addcolums.reduce((array, current,index) => {
+                let tem = [];
+                if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
+                  tem = current.childs.reduce((array2, current2, itemIndex2) => {
+                    current2.formIndex = index;
+                    const option = this.reduceForm(array2, current2, itemIndex2);
+                    array2.push(option);
+                    return array2;
+                  }, []);
+                  array.push({
+                    childs: tem.concat([]),
+                    hrdisplay: current.hrdisplay,
+                    parentdesc: current.parentdesc,
+                    parentname: current.parentname
+                  });
+                }else if(Object.prototype.hasOwnProperty.call(current, 'child')){
+                  const option = this.reduceForm([], current.child,index);
+                  if( option.item ) {
+                    this.childForm.childs.push(option);
+                  }
                 }
               }
-              return array;
-            }, []);
-          } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
-            // 表单的数据
-            items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
-              current.formIndex = 'inpubobj';
-              const option = this.reduceForm(array, current, itemIndex);
-              array.push(option);
-              return array;
-            }, []);
+              return items;
+          },
+          set:function(val){
+            return val;
           }
           // 数据重组  默认展开
           if (this.childForm.childs[0]) {
@@ -158,7 +158,26 @@
           return val;
         }
 
-      },
+      }
+    },
+    watch:{
+      computdefaultData: {
+            handler(val, old) {
+              //console.log(JSON.stringify(val) ===JSON.stringify(old))
+              if(JSON.stringify(val) ===JSON.stringify(old)){
+                this.FormItemComponent = '';
+                setTimeout(() =>{
+                  this.FormItemComponent = Vue.extend(FormItemComponent);
+                },0);
+              }
+
+
+            },
+            deep: true
+          }
+
+    },
+    updated(){
 
     },
     methods: {
@@ -176,16 +195,51 @@
         } else {
           delete this.formData[`${key}:NAME`];
         }
-        this.$emit('formChange', this.formData);
+
+        let VerificationMessage = {
+          eq:'',
+          index:'',
+          messageTip:[],
+          onfocus:''
+        };
+        
+
+        this.VerificationForm.forEach((item) =>{
+          Object.keys(this.formData).forEach((option) =>{
+        //console.log(this.formData[option]);
+              if(item.key === option.split(':')[0] && !this.formData[option]){
+                let label = `请输入${item.label}`;
+                if(VerificationMessage.eq === '' || VerificationMessage.eq >item.eq ){
+                    VerificationMessage.eq = item.eq;
+                    if(VerificationMessage.index === '' || VerificationMessage.index >item.index ){
+                       VerificationMessage.index = item.index;
+                       VerificationMessage.onfocus = item.onfousInput;
+                       //console.log(item);
+                   }
+                }
+                VerificationMessage.messageTip.push(label);
+                if(VerificationMessage.messageTip.length<2){
+                       VerificationMessage.onfocus = item.onfousInput;
+                }
+
+              }
+           });
+
+        });
+
+
+        //console.log(VerificationMessage);
+        // 校验
+       this.$emit('VerifyMessage', VerificationMessage);
+        // 字段修
+        this.$emit('formChange',this.formData);
+
       },
       VerifyMessageForm(value) {
         // 获取需要校验的表单
-        this.VerificationForm = value;
-        const arr = Object.keys(this.VerificationForm).reduce((item, current, index) => {
-          item.push(`请输入${this.VerificationForm[current]}`);
-          return item;
-        }, []);
-        this.$emit('VerifyMessage', arr);
+        this.VerificationForm = this.VerificationForm.concat(value);
+        //console.log(this.VerificationForm);
+       
       },
       mountdataForm(value) {
         // 获取表单默认值
@@ -363,25 +417,18 @@
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          return `${item.valuedata} 00:00:00` || '';
+          return `${item.defval || item.valuedata } 00:00:00` || ''
         }
         if (item.display === 'OBJ_TIME') {
-          // const timeRange = [
-          //   `${new Date()
-          //     .minusDays(Number(item.daterange))
-          //     .toIsoDateString()} 00:00:00`,
-          //   `${new Date().toIsoDateString()} 23:59:59`
-          // ];
-          // return timeRange;
-          return item.valuedata || '';
+          return item.defval || item.valuedata ||   '';
         }
         // 设置表单的默认值
-        if (item.valuedata === 'N') {
+        if (item.valuedata === 'N' || item.defval === 'N') {
           return false;
         } if (item.valuedata === 'Y') {
           return true;
         }
-        if (item.display === 'OBJ_SELECT' && item.default) { // 处理select的默认值
+        if (item.display === 'OBJ_SELECT' && item.defval) { // 处理select的默认值
           const arr = [];
           arr.push(item.valuedata);
           return arr;
@@ -394,9 +441,9 @@
             Label: item.valuedata || ''
           });
           return arr;
-        } 
-        return item.valuedata || '';
-        
+        } else {
+          return item.defval || item.valuedata || '';
+        }
         //
       },
       propsType(current, item) {
@@ -585,11 +632,8 @@
         item[index].item.value = errorValue.toUpperCase();
       }
     },
-    mounted() {
-
-    },
     created() {
-
+      this.computdefaulForm = this.computdefaultData;
     },
   };
 </script>
@@ -608,7 +652,7 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
   }
-  .burgeon-collapse{
+  .burgeon-collapse{                                                                     
     margin-bottom: 10px;
   }
 </style>

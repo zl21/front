@@ -6,9 +6,9 @@ export default {
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
-    state.mainFormInfo.formData.data = data || [];
+    state.mainFormInfo.formData.data = Object.assign({}, data);
     state.updateData[tableName] = {
-      add: Object.assign({}, { [tableName]: {} }), modify: Object.assign({}, { [tableName]: {} }), delete: Object.assign({}, { [tableName]: {} }), default: {}, checkedInfo: []
+      add: Object.assign({}, { [tableName]: {} }), modify: Object.assign({}, { [tableName]: {} }), delete: Object.assign({}, { [tableName]: {} }), default: {}, checkedInfo: {}
     };
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
@@ -35,7 +35,7 @@ export default {
         }
       };
       state.updateData[item.tablename] = {
-        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: []
+        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: {}
       };
       arr.push(obj);
     });

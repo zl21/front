@@ -56,6 +56,7 @@
         :label-in-value="_items.props['label-in-value']"
         :placement="_items.props.placement"
         :transfer="_items.props.transfer"
+        :options-visible="_items.props.optionsVisible"
         @on-change="selectChange"
         @on-clear="selectClear"
         @on-open-change="selectOpenChange"
@@ -492,12 +493,9 @@
         console.log(item, index);
       },
       uploadFileChangeSuccess(result) {
-        console.log('result', typeof result, result.length, '55');
         const self = this;
-        if (result.length < 1) {
-          return false;
-        }
-        const resultData = JSON.parse(result);
+  
+        const resultData = result;
 
         fkQueuploadProgressry({
           searchObject: {
@@ -531,10 +529,15 @@
               return false;
             }
             const data = fixedData[0];
+            if(typeof this._items.props.itemdata.valuedata !== 'object'){
+              this._items.props.itemdata.valuedata = [];
+            }
+            
             this._items.props.itemdata.valuedata.push({
-              NAME: data.NAME,
-              URL: data.URL
-            });
+                NAME: data.NAME,
+                URL: data.URL
+              });
+            
           }
         });
       },

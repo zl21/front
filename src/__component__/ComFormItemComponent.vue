@@ -45,9 +45,6 @@
       },
       // 计算属性的 getter
       dataColRol() {
-        console.log('newFormItemLists');
-
-        console.log(this.newFormItemLists);
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           temp.push(list[current]);
@@ -56,12 +53,16 @@
       },
       VerificationForm() {
         let obj = {}; // 当前form 需要校验的key
-        obj = this.newFormItemLists.reduce((option, items) => {
+        obj = this.newFormItemLists.reduce((option, items,index) => {
           if (Array.isArray(items.item.value)) {
-            if (Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+            if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
               if (items.item.required === true) {
                 // 赋值 需要校验的 值
+                 // 判断必须输入的值是否为空
                 option.push({
+                  index:index,
+                  type:items.item.props.display,
+                  eq:this.formIndex,
                   value: items.item.value[0].ID,
                   key: items.item.field,
                   label: items.item.title
@@ -71,6 +72,9 @@
           } else if (items.item.required === true) {
             // 赋值 需要校验的 值
             option.push({
+              index:index,
+              eq:this.formIndex,
+              type:items.item.props.display,
               value: items.item.value,
               key: items.item.field,
               label: items.item.title
@@ -86,7 +90,7 @@
         let obj = {};
         obj = this.newFormItemLists.reduce((option, items) => {
           if (Array.isArray(items.item.value)) {
-            if (Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+            if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
               option[items.item.field] = [items.item.value[0].ID];
             }
           } else {
@@ -162,6 +166,25 @@
     },
     mounted() {
       // 传值默认data
+      let VerificationForm = this.VerificationForm.reduce((item,current) =>{
+                // 判断必须输入的值是否为空
+                let elDiv = this.$refs[`component_${current.index}`][0].$el;
+                let onfousInput = {};
+                if( current.type === 'textarea'){
+                    onfousInput = elDiv.querySelector('input');
+                } else {
+                    onfousInput = elDiv.querySelector('input');
+                }
+                 item.push({
+                   ...current,
+                   onfousInput:onfousInput
+                 });
+              return item;
+      },[]);
+        if (this.verifymessageform) {
+          this.verifymessageform(VerificationForm);
+        }
+
       this.mountdataForm(this.formDataObject);
     },
     created() {
@@ -193,28 +216,6 @@
           });
         },
         deep: true
-      },
-      VerificationForm: {
-        handler(val, old) {
-          if (JSON.stringify(val) !== JSON.stringify(old)) {
-            if (Object.keys(val).length < 1) {
-              return false;
-            }
-            let arr = [];
-            arr = val.reduce((item, current) => {
-              if (current.value === '' || current.value === undefined) {
-                // 判断必须输入的值是否为空
-                item[current.key] = current.label;
-              }
-              return item;
-            }, {});
-            if (this.verifymessageform) {
-              this.verifymessageform(arr);
-            }
-          }
-          return [];
-        },
-        deep: true
       }
     },
     methods: {
@@ -224,6 +225,7 @@
       },
       dataProcessing(current) {
         // change 后台传值
+       // console.log(current,'DropDownSelectFilter');
         let obj = {};
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
