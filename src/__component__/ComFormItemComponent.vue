@@ -92,15 +92,12 @@
         obj = this.newFormItemLists.reduce((option, items) => {
           if (Array.isArray(items.item.value)) {
             if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
-              if( items.item.value[0].ID){
+              if (items.item.value[0].ID) {
                 option[items.item.field] = items.item.value[0].ID;
               }
             }
-          } else {
-            if(items.item.value){
-              option[items.item.field] = items.item.value;
-            }
-            
+          } else if (items.item.value) {
+            option[items.item.field] = items.item.value;
           }
 
           return option;
@@ -208,7 +205,7 @@
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
               } else {
-              // this.formDataChange();
+                // this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
@@ -217,7 +214,7 @@
                 this.hidecolumn(item, i);
               }
             } else {
-              // this.formDataChange();
+            // this.formDataChange();
             }
             return items;
           });
@@ -227,8 +224,8 @@
     },
     methods: {
       formDataChange() {
-        // console.log(this.changeFormData,'formDataChange');
-        // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
+      // console.log(this.changeFormData,'formDataChange');
+      // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
       dataProcessing(current) {
         // change 后台传值
@@ -272,7 +269,7 @@
 
             return objData;
           }, {}));
-          console.log(obj,'obj');
+          console.log(obj, 'obj');
         }
         this.changeFormData = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段

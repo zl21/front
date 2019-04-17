@@ -18,36 +18,32 @@
           <div slot="content">
             <template v-if="FormItemComponent!==''">
               <component
-              :is="FormItemComponent"   
-              :ref="'FormComponent_'+index"
-              :key="index"
-              :form-item-lists="item.childs"
-              :verifymessageform="VerifyMessageForm"
-              :mountdata-form="mountdataForm"
-              :type="type"
-              :default-column="defaultData.objviewcol"
-              @formDataChange="formDataChange"
-            />
-
-
+                :is="FormItemComponent"   
+                :ref="'FormComponent_'+index"
+                :key="index"
+                :form-item-lists="item.childs"
+                :verifymessageform="VerifyMessageForm"
+                :mountdata-form="mountdataForm"
+                :type="type"
+                :default-column="defaultData.objviewcol"
+                @formDataChange="formDataChange"
+              />
             </template>
-            
           </div>
         </Panel>
       </Collapse>
     </template>
     <template v-if="type === ''">
-       <template v-if="FormItemComponent!==''">
-              <component
-              :is="FormItemComponent"   
-               ref="FormComponent_0"
-              :verifymessageform="VerifyMessageForm"
-              :mountdata-form="mountdataForm"
-              :form-item-lists="computdefaultData"
-              @formDataChange="formDataChange"
-            />
-            </template>
-     
+      <template v-if="FormItemComponent!==''">
+        <component
+          :is="FormItemComponent"   
+          ref="FormComponent_0"
+          :verifymessageform="VerifyMessageForm"
+          :mountdata-form="mountdataForm"
+          :form-item-lists="computdefaultData"
+          @formDataChange="formDataChange"
+        />
+      </template>
     </template>
   </div>
 </template>
@@ -205,12 +201,12 @@
       Comparison() {},
       formDataChange(data) {
         // 表单数据修改  判断vuex 里面是否有input name
-        if (!this.mountChecked ) { 
+        if (!this.mountChecked) { 
           return false;
         }
-        if ( Array.isArray(data) ){
+        if (Array.isArray(data)) {
           data = data[0];
-        };
+        }
         this.formData = Object.assign(this.formData, data);
         const key = Object.keys(data)[0];
         if (key.split(':').length > 1) {
@@ -229,12 +225,9 @@
 
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
-         
           this.$emit('VerifyMessage', message);
         }
         this.$emit('formChange', this.formData);
-       
-        
       },
       VerifyMessageForm(value) {
         // 获取需要校验的表单
@@ -242,7 +235,6 @@
         this.VerificationForm = this.VerificationForm.concat(value);
 
         const data = this.setVerifiy();
-
         if (data.messageTip.length > 0) {
           this.$emit('VerifyMessage', data);
         }
@@ -252,9 +244,9 @@
       },
       mountdataForm(value) {
         // 获取表单默认值
-         setTimeout(()=>{
+        setTimeout(() => {
           this.mountChecked = true;
-        },300)
+        }, 300);
         this.defaultFormData = Object.assign(this.defaultFormData, value);
         this.$emit('InitializationForm', this.defaultFormData);
       },
@@ -370,7 +362,7 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          obj.item.props.regx = regExp.Capital;
+          //obj.item.props.regx = regExp.Capital;
           obj.item.event.regxCheck = (value, $this, errorValue) => {
             this.lowercaseToUppercase(errorValue, index, current);
           };
@@ -441,11 +433,10 @@
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          if( item.defval || item.valuedata){
+          if (item.defval || item.valuedata) {
             return `${item.defval || item.valuedata} 00:00:00` || '';
-          }else{
-            return ''
           }
+          return '';
         }
         if (item.display === 'OBJ_TIME') {
           return item.defval || item.valuedata || '';
@@ -681,9 +672,9 @@
           onfocus: ''
         };
         this.VerificationForm.forEach((item) => {
-          // console.log(item.value);
-          if (item.value.length < 1) {
+          if ( item.value===undefined || item.value.length < 1) {
             const label = `请输入${item.label}`;
+            VerificationMessage.messageTip.push(label);
             if (
               VerificationMessage.eq === ''
               || VerificationMessage.eq > item.eq
@@ -697,17 +688,16 @@
                 VerificationMessage.onfocus = item.onfousInput;
               }
             }
-            VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
               VerificationMessage.onfocus = item.onfousInput;
             }
           }
         });
+
         return VerificationMessage;
       }
     },
     mounted() {
-      this.VerificationForm = [];
     },
     created() {
       this.computdefaulForm = this.computdefaultData;
