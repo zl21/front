@@ -130,13 +130,10 @@ export default {
     });
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
-    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
     const { type } = parame;
-
-    // modify[tableName].ID = -1;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;

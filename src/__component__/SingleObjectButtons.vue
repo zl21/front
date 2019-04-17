@@ -145,7 +145,6 @@
       },
       objectTabAction(obj) {
         // clearTimeout(window.timer);
-        console.log('🐘', obj);
         // window.timer = setTimeout(() => {
         switch (obj.eName) {
         case 'actionADD': // 新增
@@ -304,7 +303,6 @@
         this.buttonShowType = 'add';
       },
       objectSave(obj) { // 按钮保存操作
-        console.log('📖', obj);
         switch (this.objectType) { // 判断是横向布局还是纵向布局
         case 'horizontal': // 横向布局
           this.horizontal(obj);
@@ -327,8 +325,7 @@
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         this.saveParameters();// 调用获取参数方法
         if (this.itemId === '-1') { // 主表新增保存和编辑新增保存
-          console.log('主表新增保存和编辑新增保存');
-          console.log('🍓',);
+          // console.log('主表新增保存和编辑新增保存');
 
           // if (this.dynamic.editTheNewId === '-1') { // 编辑新增保存
           //   console.log('新增保存');
@@ -377,17 +374,17 @@
             }
           }
         } else if (this.itemId !== '-1') { // 主表编辑保存
-          console.log('主表编辑保存');
+          // console.log('主表编辑保存');
           if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
-            console.log('没有子表',);
+            // console.log('没有子表',);
 
             const path = obj.requestUrlPath;
             const type = 'modify';
             if (obj.requestUrlPath) { // 配置path
-              console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
+              // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
               this.savaNewTable(type, path, this.itemId,);
             } else { // 没有配置path
-              console.log('主表编辑保存,没有配置path的逻辑');
+              // console.log('主表编辑保存,没有配置path的逻辑');
 
               const objId = this.itemId;
               this.savaNewTable(type, path, objId);
@@ -438,7 +435,7 @@
           const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
           this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        }, 2000);
+        }, 3000);
         // }
       
      
