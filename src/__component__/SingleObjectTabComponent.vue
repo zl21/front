@@ -133,8 +133,12 @@
       },
       initForm(val) {
         const { tableName } = this;
+        const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        if (itemId === '-1') {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        }
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
       verifyForm(data) {
@@ -160,6 +164,10 @@
         const { tableName } = this;
         const obj = {};
         obj[tableName] = val;
+        const { itemId } = this.$route.params;
+        if (itemId === '-1') {
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        }
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
       tableBeforeData(data) {

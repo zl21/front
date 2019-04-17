@@ -75,8 +75,8 @@
         />
       </div>
       <div
-              v-if="isHorizontal"
-              class="queryCondition"
+        v-if="isHorizontal"
+        class="queryCondition"
       >
         查询条件:{{ dataSource.queryDesc }}
       </div>
@@ -1082,18 +1082,18 @@
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
             if (cellData.refcolval.maintable) {
               // 需要从主表取
-              const mainTablePanelData = this.$store.state[this.moduleComponentName][this.mainFormInfo.tablename];
+              const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
               const defaultValue = mainTablePanelData.default;
               const modifyValue = mainTablePanelData.modify;
               // 先从修改里找 如果修改的里面没有 就从默认值里取
               if (modifyValue[cellData.refcolval.srccol] && modifyValue[cellData.refcolval.srccol].length > 0) {
-                const colname = modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0];
+                const colname = modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
                 }
               } else {
                 // 默认值取
-                const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol][0];
+                const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
                 }
@@ -1110,7 +1110,7 @@
         return fixedcolumns;
       },
       verifyMessage() {
-        // 表达验证
+        // 表单验证
         const verifyData = [];
         const data = this.afterSendData[this.tableName];
         data.map((ele) => {
