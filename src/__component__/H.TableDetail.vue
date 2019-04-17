@@ -11,7 +11,7 @@
 
 <script>
   /* eslint-disable no-lonely-if */
-  import { mapActions, mapState } from 'vuex';
+  import { mapState } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
 
@@ -22,7 +22,6 @@
     },
     computed: {
       ...mapState('global', {
-        favorite: ({ favorite }) => favorite,
         activeTab: ({ activeTab }) => activeTab
       }),
       tabPanels() {
@@ -45,7 +44,6 @@
       }
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory']),
       tabClick(index) {
         this.updateTabCurrentIndex(index);
         if (index === 0) {
