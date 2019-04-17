@@ -31,13 +31,17 @@ export default {
   }, data) {
     buttons.tabcmd = data;
   },
-  updateButtonWaListButtons({ buttons }) {
-    const currentModuleName = this.state.global.activeTab.keepAliveModuleName;
-    let favorite = this.state.global.favorite;
-    favorite = favorite.map(item => `${STANDARD_TABLE_COMPONENT_PREFIX}.${item.value}.${item.id}`);
-    if (favorite.filter(d => d === currentModuleName).length > 0) {
-      buttons.dataArray.collectiImg = true;
-    }
+  updateButtonWaListButtons({ buttons }, data) { // 获取静默类型的按钮数据
+    buttons.dataArray.waListButtonsConfig.waListButtons = data;
+  },
+  collectTablelist({ buttons }) { // 判断页面加载时收藏按钮状态
+    const tableName = this.state.global.activeTab.tableName;
+    const favorite = this.state.global.favorite;
+    favorite.forEach((element) => {
+      if (element.value === tableName) {
+        buttons.dataArray.collectiImg = true;
+      }
+    }); 
   },
   updateDefaultButtonsdatas({
     buttons
@@ -62,13 +66,12 @@ export default {
   updateButtonGetActionData({ buttons }, data) {
     buttons.ExeActionData = data;
   },
-  updateButtonSetFavoriteData({ buttons }, data) {
+  updateButtonSetFavoriteData({ buttons }, data) { // 收藏
     if (data.code === 0) {
       buttons.dataArray.collectiImg = !buttons.dataArray.collectiImg;
-      this.state.favorite = data.data;
+      this.state.global.favorite = data.data;
     }
   },
-  
   updateDefaultButtonGroupData({ buttons }, data) {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },

@@ -528,6 +528,7 @@
             }
           });
           this.updateDefaultButtonGroupData(buttonGroupShow);
+          this.collectTablelist();
         }
       },
       onSelectionChanged(rowIdArray, rowArray) {
@@ -538,11 +539,33 @@
         if (type === 'fix') {
           this.AddDetailClick(obj);
         } else if (type === 'custom') {
-          this.webactionClick(type, obj);
+          this.webaction(type, obj);
+          // this.webactionClick(type, obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
         } else {
           this.searchClickData();
+        }
+      },
+      webaction(type, obj) {
+        if (obj.vuedisplay === 'slient') { // 静默
+          if (obj.confirm) { // 有提示信息
+            console.log();
+            if (this.selectIdArr && this.selectIdArr.length === 0) { // 判断没有选中任何信息的情况
+              const data = {
+                content: JSON.parse(obj.confirm).nodesc
+              };
+              const errorDialogTitle = this.ChineseDictionary.WARNING;
+              const errorDialogvalue = true;
+              const errorDialogBack = true;
+              this.setErrorModalValue({
+                data,
+                errorDialogTitle,
+                errorDialogvalue,
+                errorDialogBack
+              });
+            }
+          }
         }
       },
       webactionClick(type, obj) {
@@ -561,8 +584,8 @@
             if (obj.confirm) {
               // 有提示
               if (obj.confirm.indexOf('{') >= 0) {
-                if (!obj.confirm || JSON.parse(obj.confirm).isselect) {
-                  if (this.selectIdArr.length === 0) {
+                if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+                  if (this.selectIdArr && this.selectIdArr.length === 0) {
                     const data = {
                       content: JSON.parse(obj.confirm).nodesc
                     };
@@ -1202,11 +1225,10 @@
           this.getQueryListForAg(this.searchData);
         }
       },
-      clickButtonsCollect() {
-        // 收藏
+      clickButtonsCollect() { // 收藏
         const params = {
           id: this.buttons.tableId,
-          type: this.buttons.tableName
+          type: 'table'
         };
         if (this.buttons.dataArray.collectiImg) {
           // 取消收藏
@@ -1455,7 +1477,6 @@
       window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
-
       // 临时处理方案
       setTimeout(() => {
         this.searchClickData();

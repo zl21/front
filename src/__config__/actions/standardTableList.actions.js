@@ -70,7 +70,7 @@ export default {
       commit('updateButtonGetActionData', res.data);
     });
   },
-  getToFavoriteDataForButtons({ commit }, { id, type }) {
+  getToFavoriteDataForButtons({ commit }, { id, type }) { // 收藏
     network.post('/p/cs/addToFavorite', urlSearchParams({
       id,
       type
@@ -79,7 +79,7 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  getRemoveFavoriteDataForButtons({ commit }, { id, type }) {
+  getRemoveFavoriteDataForButtons({ commit }, { id, type }) { // 取消收藏
     network.post('/p/cs/removeFromFavorite', urlSearchParams({
       id,
       type

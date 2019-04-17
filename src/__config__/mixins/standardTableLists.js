@@ -36,7 +36,6 @@ export default () => ({
         'updateDefaultButtonGroupData',
         'deleteTableData',
         'onSelectionChangedAssignment',
-        'setActiveTabActionValue',
         'updateButtonExeActionData',
         'collectTablelist',
         'updateButtonSetFavoriteData',
