@@ -47,22 +47,23 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
+          // console.log(list[current].item.value, 'item');
           temp.push(list[current]);
           return temp;
         }, []);
       },
       VerificationForm() {
         let obj = {}; // 当前form 需要校验的key
-        obj = this.newFormItemLists.reduce((option, items,index) => {
+        obj = this.newFormItemLists.reduce((option, items, index) => {
           if (Array.isArray(items.item.value)) {
             if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
               if (items.item.required === true) {
                 // 赋值 需要校验的 值
-                 // 判断必须输入的值是否为空
+                // 判断必须输入的值是否为空
                 option.push({
-                  index:index,
-                  type:items.item.props.display,
-                  eq:this.formIndex,
+                  index,
+                  type: items.item.props.display,
+                  eq: this.formIndex,
                   value: items.item.value[0].ID,
                   key: items.item.field,
                   label: items.item.title
@@ -72,9 +73,9 @@
           } else if (items.item.required === true) {
             // 赋值 需要校验的 值
             option.push({
-              index:index,
-              eq:this.formIndex,
-              type:items.item.props.display,
+              index,
+              eq: this.formIndex,
+              type: items.item.props.display,
               value: items.item.value,
               key: items.item.field,
               label: items.item.title
@@ -91,10 +92,15 @@
         obj = this.newFormItemLists.reduce((option, items) => {
           if (Array.isArray(items.item.value)) {
             if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
-              option[items.item.field] = [items.item.value[0].ID];
+              if( items.item.value[0].ID){
+                option[items.item.field] = items.item.value[0].ID;
+              }
             }
           } else {
-            option[items.item.field] = items.item.value;
+            if(items.item.value){
+              option[items.item.field] = items.item.value;
+            }
+            
           }
 
           return option;
@@ -166,24 +172,25 @@
     },
     mounted() {
       // 传值默认data
-      let VerificationForm = this.VerificationForm.reduce((item,current) =>{
-                // 判断必须输入的值是否为空
-                let elDiv = this.$refs[`component_${current.index}`][0].$el;
-                let onfousInput = {};
-                if( current.type === 'textarea'){
-                    onfousInput = elDiv.querySelector('input');
-                } else {
-                    onfousInput = elDiv.querySelector('input');
-                }
-                 item.push({
-                   ...current,
-                   onfousInput:onfousInput
-                 });
-              return item;
-      },[]);
-        if (this.verifymessageform) {
-          this.verifymessageform(VerificationForm);
+      const VerificationForm = this.VerificationForm.reduce((item, current) => {
+        // 判断必须输入的值是否为空
+        const elDiv = this.$refs[`component_${current.index}`][0].$el;
+        let onfousInput = {};
+        if (current.type === 'textarea') {
+          onfousInput = elDiv.querySelector('input');
+        } else {
+          onfousInput = elDiv.querySelector('input');
         }
+        item.push({
+          ...current,
+          onfousInput
+        });
+        return item;
+      }, []);
+
+      if (this.verifymessageform) {
+        this.verifymessageform(VerificationForm);
+      }
 
       this.mountdataForm(this.formDataObject);
     },
@@ -225,7 +232,7 @@
       },
       dataProcessing(current) {
         // change 后台传值
-       // console.log(current,'DropDownSelectFilter');
+        // console.log(current,'DropDownSelectFilter');
         let obj = {};
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
@@ -265,6 +272,7 @@
 
             return objData;
           }, {}));
+          console.log(obj,'obj');
         }
         this.changeFormData = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
