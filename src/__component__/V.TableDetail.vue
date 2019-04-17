@@ -71,9 +71,12 @@
     },
     methods: {
       InitializationForm(val) {
-        const { tableName } = this.$route.params;
+        const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        if (itemId === '-1') {
+          this.updateAddData({ tableName, value: obj });
+        }
         this.updateDefaultData({ tableName, value: obj });
       },
       formChange(val) {

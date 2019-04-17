@@ -68,7 +68,7 @@ export default {
     state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
-    state.updateData[data.tableName].add = data.value;
+    state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
   },
   updateModifyData(state, data) {
     state.updateData[data.tableName].modify = data.value;
