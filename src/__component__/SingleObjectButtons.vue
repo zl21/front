@@ -18,9 +18,10 @@
 
 <script>
   // import { mapState } from 'vuex';
+  import { mapActions, mapMutations } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
-  // import moduleName from '../__utils__/getModuleName';
+  import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
   
@@ -54,13 +55,17 @@
             return self.buttonClick(type, item);
           }
         },
-        dynamicRequestUrl: {}, // 用于记录某个按钮点击后，如果将会产生请求，维护请求路径path
         tableName: '', // 主表表名
         tableId: '', // 主表ID
         itemId: '', // 子表ID
         currentParameter: {},
         buttonShowType: '', // 判断按钮显示条件
-        dynamicUrl: ''// 保存url
+        dynamic: {
+          name: '保存',
+          icon: '',
+          defbutton: 'N',
+          action: '',
+        }// 保存url
       };
     },
     name: 'SingleObjectButtons',
@@ -71,14 +76,20 @@
     watch: {
       tabcmd: {
         handler(val) {
-          if (this.buttonShowType !== 'add') {
-            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-            this.getbuttonGroupData(val);
-          } else { // 编辑新增时处理按钮数据，只显示保存和返回
-            // this.modifyButtonData();
-            this.dataArray.refresh = false;
-            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-            this.addButtonShow(val);
+          this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+          if (this.objectType === 'horizontal') { // 横向布局
+           
+          } else if (this.objectType === 'vertical') {
+            // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
+            //   this.addButtonShow(val);
+            // } else //暂未处理带子表的逻辑
+            if (this.itemId === '-1') { // 编辑按钮渲染逻辑
+              this.addButtonShow(val);
+            } else if (this.buttonShowType === 'add') { // 编辑新增
+              this.addButtonShow(val);
+            } else { // 新增按钮渲染逻辑
+              this.getbuttonGroupData(val);
+            }
           }
         },
         deep: true
@@ -111,13 +122,8 @@
       },
     },
     methods: {
-      getdynamicRequestUrl(buttonData) { // 获取接口返回路径
-        buttonData.forEach((d) => {
-          if (d.eName === 'actionMODIFY') {
-            this.dynamicUrl = d.requestUrlPath;
-          }
-        });
-      },
+      ...mapActions(moduleName(), ['getQueryListForAg']),
+      ...mapMutations('global', ['tabHref']),
       buttonClick(type, obj) {
         if (type === 'fix') {
           this.objectTabAction(obj);
@@ -141,10 +147,10 @@
         // window.timer = setTimeout(() => {
         switch (obj.eName) {
         case 'actionADD': // 新增
-          this.objectAdd();
+          this.objectAdd(obj);
           break;
         case 'actionMODIFY': // 保存
-          this.objectSave();
+          this.objectSave(obj);
           break;
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
@@ -153,7 +159,7 @@
           this.objectGROUPSUBMIT();
           break;
         case 'actionDELETE': // 删除
-          this.objectTryDelete();
+          this.objectTryDelete(obj);
           break;
         case 'actionSUBMIT': // 提交
           this.objectTrySubmit();
@@ -178,85 +184,95 @@
       },
     
       clickButtonsBack() {
-        const { tableId, tableName } = this.$route.params;
+        const { tableId, tableName, itemId } = this.$route.params;
         const param = {
           tableId,
           tableName,
           back: true,
         };
-       
+        
         this.$store.commit('global/tabHref', param);
+        this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+        this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       },
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
-        if (this.itemId !== '-1') {
-          if (tabcmdData.cmds) {
-            tabcmdData.cmds.forEach((item, index) => {
-              if (tabcmdData.prem[index]) {
-                const type = item.split('action');
-                const str = `CMD_${type[1].toUpperCase()}`;
-                if (str === 'CMD_PRINT') {
-                  this.dataArray.printValue = true;
-                } else {
-                  const buttonConfigInfo = this.buttonMap[str];
-                  this.buttonMap[str].eName = item;
-                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-                  this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
-                }
+        // if (this.itemId === '-1') { // 新增
+        //   this.addButtonShow(tabcmd);
+        // } else { // 双击
+        if (tabcmdData.cmds) {
+          tabcmdData.cmds.forEach((item, index) => {
+            if (tabcmdData.prem[index]) {
+              const type = item.split('action');
+              const str = `CMD_${type[1].toUpperCase()}`;
+              if (str === 'CMD_PRINT') {
+                this.dataArray.printValue = true;
+              } else {
+                const buttonConfigInfo = this.buttonMap[str];
+                this.buttonMap[str].eName = item;
+                buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
               }
-            });
-          }
-        } else if (tabcmdData.cmds) { // 判断新增编辑按钮显示条件
-          this.addButtonShow(tabcmd);
+            }
+          });
         }
+        // }
       },
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
         tabcmd.cmds.forEach((item, index) => {
-          if (item === 'actionMODIFY') {
+          if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
-              const type = item.split('action');
-              const str = `CMD_${type[1].toUpperCase()}`;
-              const buttonConfigInfo = this.buttonMap[str];
-              this.buttonMap[str].eName = item;
-              buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-              this.buttonMap[str].editTheNewId = '-1';// 编辑新增标识
-              this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-              this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+              if (item === 'actionADD') {
+                this.dynamic.editTheNewId = '-1';// 编辑新增标识
+                this.dynamic.eName = 'actionMODIFY';
+                this.dataArray.refresh = false;
+                this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+                this.dynamic.requestUrlPath = this.tabcmd.paths[index];
+                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
+              }
+            
+              console.log('🍃', this.dynamic);
             }
           }
         });
-        const name = 'actionMODIFY';
-        const type = name.split('action');
-        const str = `CMD_${type[1].toUpperCase()}`;
-        const buttonConfigInfo = this.buttonMap[str];
+        // const name = 'actionADD';
+        // const type = name.split('action');
+        // const str = `CMD_${type[1].toUpperCase()}`;
+        // const buttonConfigInfo = this.buttonMap[str];
 
-        this.buttonMap[str].eName = name;
-        this.dataArray.refresh = false;
-        this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-        this.buttonMap[str].editTheNewId = '-1';// 编辑新增标识
+        // this.buttonMap[str].eName = name;
+        // this.dataArray.refresh = false;
+        // this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+        // this.buttonMap[str].editTheNewId = '-1';// 编辑新增标识
 
-        // buttonConfigInfo.requestUrlPath = this.tabcmd.paths[index];
-        this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+        // // buttonConfigInfo.requestUrlPath = this.tabcmd.paths[index];
+        // this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
       },
-      objectTryDelete() { // 删除
-        if (this.itemName) { // 存在子表
+      objectTryDelete(obj) { // 删除
+        if (this.hasTabPanels !== 0) { // 存在子表
           if (this.dynamicUrl) { // 有path
                 
           } else { // 没有path
           }
-        } else if (this.dynamicUrl) { // 有path，没有子表
-          console.log('有path');
-        
+        } else if (obj.requestUrlPath) { // 有path，没有子表
+          console.log('有path', obj.requestUrlPath);
           this.$refs.dialogRef.open();
           this.dialogConfig = {
-            contentText: '确认执行删除?',
+            contentText: '确认执行有path的删除?',
             confirm: () => {
-              this.performMainTableDeleteAction({ path: this.dynamicUrl, table: this.tableName, objId: this.itemId });
+              this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
               this.$Message.success('删除成功');
               this.clickButtonsBack();
+              const searchData = {
+                table: this.tableName,
+                startIndex: 0,
+                range: 10
+              };
+              this.getQueryListForAg(searchData);
             }
           };
-        } else { // 没有path
+        } else {
+          // 没有path
           this.$refs.dialogRef.open();
           this.dialogConfig = {
             contentText: '确认执行删除?',
@@ -264,13 +280,40 @@
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               this.$Message.success('删除成功');
               this.clickButtonsBack();
+              const searchData = {
+                table: this.tableName,
+                startIndex: 0,
+                range: 10
+              };
+              this.getQueryListForAg(searchData);
+              alert(1);
             }
           };
         }
       },
-      // 
 
-      objectAdd() { // 新增
+      objectAdd(obj) { // 新增
+        const id = -1;
+        const label = `${obj.name}编辑`;
+        if (this.objectType === 'horizontal') {
+          const type = 'tableDetailHorizontal';
+          this.tabHref({
+            type,
+            tableName: this.tableName,
+            tableId: this.tableId,
+            label,
+            id
+          });
+        } else if (this.objectType === 'vertical') {
+          const type = 'tableDetailVertical';
+          this.tabHref({
+            type,
+            tableName: this.tableName,
+            tableId: this.tableId,
+            label,
+            id
+          });
+        }
         this.getObjectTabForMainTable({ table: this.tableName, objid: -1 });
         this.getObjectForMainTableForm({ table: this.tableName, objid: -1 });
         this.buttonShowType = 'add';
@@ -293,48 +336,49 @@
       vertical() {
         this.determineSaveType();
       }, // 纵向布局
-      determineSaveType() {
-        this.getdynamicRequestUrl(this.dataArray.buttonGroupShowConfig.buttonGroupShow);
+      determineSaveType(obj) {
+        // this.getdynamicRequestUrl(this.dataArray.buttonGroupShowConfig.buttonGroupShow);
         this.saveParameters();// 调用获取参数方法
         if (this.itemId === '-1') { // 主表新增保存
           // console.log('主表新增保存');
           if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
             // console.log('没有子表');
-            if (this.dynamicUrl) { // 配置path
-              console.log(' 主表新增保存,配置path的', this.dynamicUrl);
+            const path = this.dynamic.requestUrlPath;
+            if (this.dynamic.requestUrlPath) { // 配置path
+              console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
               // const objId = -1;
-              const path = this.dynamicUrl;
               this.savaNewTable(path);
             } else { // 没有配置path
               const objId = -1;
-              this.savaNewTable(objId);
+              this.savaNewTable(path, objId);
             }
           }
           if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
-            if (this.dynamicUrl) { // 配置path
+            if (obj.requestUrlPath) { // 配置path
               // console.log('配置path的逻辑暂无添加');
             } else { // 没有配置path
 
             }
           }
         } else if (this.itemId !== '-1') { // 主表编辑保存
-          if (this.dataArray.buttonGroupShowConfig.buttonGroupShow[0].editTheNewId === '-1') { // 编辑新增保存
+          if (this.dynamic.editTheNewId === '-1') { // 编辑新增保存
             // console.log('编辑新增保存');
             if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
-              // console.log('没有子表', this.dynamicUrl);
-              if (this.dynamicUrl) { // 配置path
+              console.log('没有子表', this.dynamic.requestUrlPath);
+              const path = this.dynamic.requestUrlPath;
+
+              if (this.dynamic.requestUrlPath) { // 配置path
                 console.log('编辑新增保存,配置path的逻辑');
-                const path = this.dynamicUrl;
                 this.savaNewTable(path);
               } else { // 没有配置path
                 const objId = -1;
-                this.savaNewTable(objId);
+                this.savaNewTable(path, objId);
               }
             }
             if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
               // console.log('有子表');
-              if (this.dynamicRequestUrl) { // 配置path
+              if (obj.requestUrlPath) { // 配置path
                      
               } else { // 没有配置path
               
@@ -344,18 +388,19 @@
             // console.log('主表编辑保存');
             if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
               // console.log('没有子表', this.dynamicUrl);
-              if (this.dynamicUrl) { // 配置path
+              const path = this.dynamicUrl;
+
+              if (obj.requestUrlPath) { // 配置path
                 console.log('主表编辑保存,配置path的逻辑');
-                const path = this.dynamicUrl;
                 this.savaNewTable(path);
               } else { // 没有配置path
                 const objId = this.itemId;
-                this.savaNewTable(objId);
+                this.savaNewTable(path, objId);
               }
             }
             if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
               // console.log('有子表');
-              if (this.dynamicUrl) { // 配置path
+              if (obj.requestUrlPath) { // 配置path
                 // console.log('配置path的逻辑暂无添加');
               } else { // 没有配置path
 
@@ -375,22 +420,20 @@
         this.performMainTableSaveAction(parame);
         // if (this.info) {
         // clearTimeout(window.timer);
-        if (this.objectType === 'horizontal') { // 横向布局
-          if (this.newMainTableSaveData.code === 0) {
-            // console.log('暂无添加横向布局有path的逻辑');// 有path
-            // const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
-            // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-            // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-          }
-        } else {
-          setTimeout(() => {
-            if (this.mainFormInfo.buttonsData.newMainTableSaveData.code === 0) {
-              const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
-              this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-              this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-            }
-          }, 5000);
-        }
+        // if (this.objectType === 'horizontal') { // 横向布局
+        //   if (this.newMainTableSaveData.code === 0) {
+        // console.log('暂无添加横向布局有path的逻辑');// 有path
+        // const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+        // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+        // }
+        // } else {
+        setTimeout(() => {
+          const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+          this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+          this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+        }, 1000);
+        // }
       
      
         // }

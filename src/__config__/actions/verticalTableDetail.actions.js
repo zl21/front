@@ -131,28 +131,47 @@ export default {
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
     const { tableName } = parame;
-    const { modify } = parame;
+    const { add } = parame;
     const { objId } = parame;
-
-    network.post('/p/cs/objectSave', {
-      table: tableName, // 主表表名
-      objId, // 固定传值-1 表示新增
-      fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        ...modify
-      }
-    }).then((res) => {
+    const { path } = parame;
+    add[tableName].ID = -1;
+    let parames = {};
+    if (path) { // 有path的参数
+      parames = {
+        ...add[tableName]
+      };
+    } else {
+      parames = {
+        table: tableName, // 主表表名
+        objId, // 固定传值-1 表示新增
+        fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+          ...add
+        }
+      };
+    }
+    network.post(path || '/p/cs/objectSave', parames).then((res) => {
       // if (res.data.code === 0) {
-      const data = res.data;
+      const data = res.data.data;
       commit('updateNewMainTableSaveData', data);
       // }
     });
   },
-  performMainTableDeleteAction({ commit }, { table, objId }) { // 主表删除
-    network.post('/p/cs/objectDelete', {
-      table, // 主表表名
-      objId,
-      delMTable: true
-    }).then((res) => {
+  performMainTableDeleteAction({ commit }, { path, table, objId }) { // 主表保存
+    let parames = {};
+    if (path) {
+      parames = {
+        // table, // 主表表名
+        ID: objId,
+        isdelmtable: true
+      };
+    } else {
+      parames = {
+        table, // 主表表名
+        objId,
+        delMTable: true
+      };
+    }
+    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       // if (res.data.code === 0) {
       const data = res.data;
       commit('updateNewMainTableDeleteData', data);

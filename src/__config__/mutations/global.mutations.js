@@ -141,6 +141,12 @@ export default {
     let path = '';
     let routePrefix = '';
     let keepAliveModuleName = '';
+    if (type === 'mainEditorAdd') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      routePrefix = HORIZONTAL_TABLE_DETAIL_PREFIX;
+      keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${id}`;
+      router.push({ path });
+    }
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       routePrefix = HORIZONTAL_TABLE_DETAIL_PREFIX;
