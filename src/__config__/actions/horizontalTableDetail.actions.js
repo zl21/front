@@ -91,16 +91,17 @@ export default {
     });
   },
   // 按钮
-  // performMainTableDeleteAction
   performMainTableSaveAction({ commit }, parame) { // 主表保存
+    debugger;
     const { tableName } = parame;
     const { modify } = parame;
     const { objId } = parame;
     const { path } = parame;
+    modify[tableName].ID = -1;
     let parames = {};
     if (path) { // 有path的参数
       parames = {
-        ...modify
+        ...modify[tableName]
       };
     } else {
       parames = {
@@ -121,10 +122,10 @@ export default {
   performMainTableDeleteAction({ commit }, { path, table, objId }) { // 主表保存
     let parames = {};
     if (path) {
-      parames[table] = {
-        table, // 主表表名
-        objId,
-        delMTable: true
+      parames = {
+        // table, // 主表表名
+        ID: objId,
+        isdelmtable: true
       };
     } else {
       parames = {
@@ -133,11 +134,12 @@ export default {
         delMTable: true
       };
     }
-    network.post('/p/cs/objectDelete', parames).then((res) => {
+    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       // if (res.data.code === 0) {
       const data = res.data;
       commit('updateNewMainTableDeleteData', data);
       // }
     });
   },
+  
 };
