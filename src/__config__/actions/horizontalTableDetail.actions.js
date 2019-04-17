@@ -92,7 +92,6 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, parame) { // 主表保存
-    debugger;
     const { tableName } = parame;
     const { modify } = parame;
     const { objId } = parame;
@@ -136,8 +135,8 @@ export default {
     }
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       // if (res.data.code === 0) {
-      const data = res.data;
-      commit('updateNewMainTableDeleteData', data);
+      // const data = res.data;
+      // commit('updateNewMainTableDeleteData', data);
       // }
     });
   },
