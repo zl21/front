@@ -16,9 +16,9 @@
         >
           {{ item.parentdesc }}
           <div slot="content">
-              <component v-if="FormItemComponent"
+            <component
               :is="FormItemComponent"
-              :form-item-lists="item.childs"
+              v-if="FormItemComponent"
               :ref="'FormComponent_'+index"
               :key="index"
               :form-item-lists="item.childs"
@@ -45,13 +45,13 @@
 </template>
 
 <script>
+  import Vue from 'vue';
   import FormItemComponent from './ComFormItemComponent';
   import ItemComponent from './ItemComponent';
   import {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
-  import regExp  from '../constants/regExp';
-  import Vue  from 'vue';
+  import regExp from '../constants/regExp';
 
   export default {
     name: 'CompositeForm',
@@ -98,54 +98,59 @@
     },
     data() {
       return {
-        newdefaultData:[],  // 初始化form
-        formData:{},  // 监听form变化
-        VerificationForm:[],  // 校验form
-        defaultFormData:{},    // form 默认值
-        verifyMessItem:{},   // 空form        watchComputFormList:[],
-        FormItemComponent:Vue.extend(FormItemComponent),
-        childForm:{
-          childs:[]
+        newdefaultData: [], // 初始化form
+        formData: {}, // 监听form变化
+        VerificationForm: [], // 校验form
+        defaultFormData: {}, // form 默认值
+        verifyMessItem: {}, // 空form        watchComputFormList:[],
+        FormItemComponent: Vue.extend(FormItemComponent),
+        childForm: {
+          childs: []
         },
-        tip:'new',
-        expand: 'expand'    // 面板是否展开
+        tip: 'new',
+        expand: 'expand' // 面板是否展开
       };
     },
     computed: {
       computdefaultData: {
-            get:function(){
-              //console.log('computdefaultData');
-              let items = [];
-              // 存放单个form child
-              this.childForm.childs = [];
-            // 有面板的数据
-            if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
-              items = this.defaultData.addcolums.reduce((array, current,index) => {
-                let tem = [];
-                if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
-                  tem = current.childs.reduce((array2, current2, itemIndex2) => {
-                    current2.formIndex = index;
-                    const option = this.reduceForm(array2, current2, itemIndex2);
-                    array2.push(option);
-                    return array2;
-                  }, []);
-                  array.push({
-                    childs: tem.concat([]),
-                    hrdisplay: current.hrdisplay,
-                    parentdesc: current.parentdesc,
-                    parentname: current.parentname
-                  });
-                }else if(Object.prototype.hasOwnProperty.call(current, 'child')){
-                  const option = this.reduceForm([], current.child,index);
-                  if( option.item ) {
-                    this.childForm.childs.push(option);
-                  }
+        get() {
+          // console.log('computdefaultData');
+          let items = [];
+          // 存放单个form child
+          this.childForm.childs = [];
+          // 有面板的数据
+          if (this.type && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')) {
+            items = this.defaultData.addcolums.reduce((array, current, index) => {
+              let tem = [];
+              if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
+                tem = current.childs.reduce((array2, current2, itemIndex2) => {
+                  current2.formIndex = index;
+                  const option = this.reduceForm(array2, current2, itemIndex2);
+                  array2.push(option);
+                  return array2;
+                }, []);
+                array.push({
+                  childs: tem.concat([]),
+                  hrdisplay: current.hrdisplay,
+                  parentdesc: current.parentdesc,
+                  parentname: current.parentname
+                });
+              } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
+                const option = this.reduceForm([], current.child, index);
+                if (option.item) {
+                  this.childForm.childs.push(option);
                 }
               }
-              return items;
-          },
-          set:function(val){
-            return val;
+              return array;
+            }, []);
+          } else if (Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')) {
+            // 表单的数据
+            items = this.defaultData.inpubobj.reduce((array, current, itemIndex) => {
+              current.formIndex = 'inpubobj';
+              const option = this.reduceForm(array, current, itemIndex);
+              array.push(option);
+              return array;
+            }, []);
           }
           // 数据重组  默认展开
           if (this.childForm.childs[0]) {
@@ -160,24 +165,22 @@
 
       }
     },
-    watch:{
+    watch: {
       computdefaultData: {
-            handler(val, old) {
-              //console.log(JSON.stringify(val) ===JSON.stringify(old))
-              if(JSON.stringify(val) ===JSON.stringify(old)){
-                this.FormItemComponent = '';
-                setTimeout(() =>{
-                  this.FormItemComponent = Vue.extend(FormItemComponent);
-                },0);
-              }
-
-
-            },
-            deep: true
+        handler(val, old) {
+          // console.log(JSON.stringify(val) ===JSON.stringify(old))
+          if (JSON.stringify(val) === JSON.stringify(old)) {
+            this.FormItemComponent = '';
+            setTimeout(() => {
+              this.FormItemComponent = Vue.extend(FormItemComponent);
+            }, 0);
           }
+        },
+        deep: true
+      }
 
     },
-    updated(){
+    updated() {
 
     },
     methods: {
@@ -196,50 +199,34 @@
           delete this.formData[`${key}:NAME`];
         }
 
-        let VerificationMessage = {
-          eq:'',
-          index:'',
-          messageTip:[],
-          onfocus:''
-        };
-        
-
-        this.VerificationForm.forEach((item) =>{
-          Object.keys(this.formData).forEach((option) =>{
-        //console.log(this.formData[option]);
-              if(item.key === option.split(':')[0] && !this.formData[option]){
-                let label = `请输入${item.label}`;
-                if(VerificationMessage.eq === '' || VerificationMessage.eq >item.eq ){
-                    VerificationMessage.eq = item.eq;
-                    if(VerificationMessage.index === '' || VerificationMessage.index >item.index ){
-                       VerificationMessage.index = item.index;
-                       VerificationMessage.onfocus = item.onfousInput;
-                       //console.log(item);
-                   }
-                }
-                VerificationMessage.messageTip.push(label);
-                if(VerificationMessage.messageTip.length<2){
-                       VerificationMessage.onfocus = item.onfousInput;
-                }
-
-              }
-           });
-
+        this.VerificationForm.forEach((item) => {
+          Object.keys(this.formData).forEach((option) => {
+            if (item.key === option.split(':')[0]) {
+              item.value = this.formData[option];
+            }
+          });
         });
 
-
-        //console.log(VerificationMessage);
-        // 校验
-       this.$emit('VerifyMessage', VerificationMessage);
-        // 字段修
-        this.$emit('formChange',this.formData);
-
+        const message = this.setVerifiy();
+        if (message.messageTip.length > 0) {
+          this.$emit('VerifyMessage', message);
+        }
+        this.$emit('formChange', this.formData);
       },
       VerifyMessageForm(value) {
         // 获取需要校验的表单
+        // 初始化form 校验
         this.VerificationForm = this.VerificationForm.concat(value);
-        //console.log(this.VerificationForm);
-       
+        console.log(this.VerificationForm);
+
+        const data = this.setVerifiy();
+
+        if (data.messageTip.length > 0) {
+          this.$emit('VerifyMessage', data);
+        }
+
+        // console.log(value,this.VerificationForm,'VerificationForm');
+        // console.log(this.VerificationForm);
       },
       mountdataForm(value) {
         // 获取表单默认值
@@ -417,10 +404,10 @@
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          return `${item.defval || item.valuedata } 00:00:00` || ''
+          return `${item.defval || item.valuedata} 00:00:00` || '';
         }
         if (item.display === 'OBJ_TIME') {
-          return item.defval || item.valuedata ||   '';
+          return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
         if (item.valuedata === 'N' || item.defval === 'N') {
@@ -441,9 +428,9 @@
             Label: item.valuedata || ''
           });
           return arr;
-        } else {
-          return item.defval || item.valuedata || '';
-        }
+        } 
+        return item.defval || item.valuedata || '';
+        
         //
       },
       propsType(current, item) {
@@ -572,7 +559,6 @@
             readonly: current.readonly,
             masterName: this.masterName,
             objId: this.masterId,
-            name: '你好',
             sendData: {
               path: `${this.masterName}/${this.masterId}/`
             },
@@ -630,7 +616,36 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.value = errorValue.toUpperCase();
+      },
+      setVerifiy() {
+        const VerificationMessage = {
+          eq: '',
+          index: '',
+          messageTip: [],
+          onfocus: ''
+        };
+        this.VerificationForm.forEach((item) => {
+          console.log(item.value);
+          if (item.value.length < 1) {
+            const label = `请输入${item.label}`;
+            if (VerificationMessage.eq === '' || VerificationMessage.eq > item.eq) {
+              VerificationMessage.eq = item.eq;
+              if (VerificationMessage.index === '' || VerificationMessage.index > item.index) {
+                VerificationMessage.index = item.index;
+                VerificationMessage.onfocus = item.onfousInput;
+              }
+            }
+            VerificationMessage.messageTip.push(label);
+            if (VerificationMessage.messageTip.length < 2) {
+              VerificationMessage.onfocus = item.onfousInput;
+            }
+          }
+        });
+        return VerificationMessage;
       }
+    },
+    mounted() {
+      this.VerificationForm = [];
     },
     created() {
       this.computdefaulForm = this.computdefaultData;
@@ -652,7 +667,7 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
   }
-  .burgeon-collapse{                                                                     
+  .burgeon-collapse{
     margin-bottom: 10px;
   }
 </style>

@@ -130,24 +130,22 @@ export default {
     });
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
-    debugger;
-
     const { tableName } = parame;
-    const { modify } = parame;
+    const { add } = parame;
     const { objId } = parame;
     const { path } = parame;
-    modify[tableName].ID = -1;
+    add[tableName].ID = -1;
     let parames = {};
     if (path) { // 有path的参数
       parames = {
-        ...modify[tableName]
+        ...add[tableName]
       };
     } else {
       parames = {
         table: tableName, // 主表表名
         objId, // 固定传值-1 表示新增
         fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-          ...modify
+          ...add
         }
       };
     }
