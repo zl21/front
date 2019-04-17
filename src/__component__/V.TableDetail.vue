@@ -34,7 +34,6 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
@@ -44,9 +43,6 @@
 
   export default {
     computed: {
-      ...mapState('global', {
-        favorite: ({ favorite }) => favorite
-      }),
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item, index) => {
@@ -62,19 +58,18 @@
       }
     },
     components: {
+      compositeForm
     },
     mounted() {
 
     },
     created() {
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
-      Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId });
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory']),
       InitializationForm(val) {
         const { tableName } = this.$route.params;
         const obj = {};
