@@ -35,7 +35,7 @@ export default () => ({
       },
 
       tabcmd: {},
-      waListButtons: [],
+      // waListButtons: [],
       query: {// 页面跳转参数
         id: '',
         name: ''

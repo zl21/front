@@ -6,7 +6,7 @@
       v-if="dataColRol.length >0"
       :title="title"
       :set-height="setHeight"
-      :rowAll = "rowAll"
+      :row-all="rowAll"
       :search-foldnum="searchFoldnum"
     >
       <div
@@ -75,7 +75,6 @@
           return temp;
         });
         // 兼容 tab 切换
-        this.newFormItemLists = arr;
         return arr;
       },
       // 计算属性的 getter
@@ -83,7 +82,7 @@
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           // 计算显示行数
-          this.rowAll = list[current].row+list[current].y-1;
+          this.rowAll = list[current].row + list[current].y - 1;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -136,7 +135,7 @@
       return {
         newFormItemLists: [],
         indexItem: -1,
-        rowAll:0,
+        rowAll: 0,
         setHeight: 34
       };
     },

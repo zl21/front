@@ -95,7 +95,7 @@ export default {
   setErrorModalValue({ buttons }, {
     data, errorDialogTitle, errorDialogvalue, errorDialogBack 
   }) { // 设置error弹窗提示信息
-    buttons.errorData = data;
+    buttons.errorData.message = data;
     buttons.errorDialog = errorDialogvalue;
     buttons.errorDialogClass = 'fcWarning';
     buttons.errorDialogTitle = errorDialogTitle;

@@ -25,11 +25,10 @@ export default (router) => {
     };
     const labelSuffix = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
-      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: Number(itemId) === -1 ? '新增' : '编辑',
-      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: Number(itemId) === -1 ? '新增' : '编辑',
+      [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
+      [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
-
-    const paramItemId = Number(itemId) === -1 ? 'New' : `${itemId}`;
+    const paramItemId = itemId === -1 ? 'New' : `${itemId}`;
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
     const originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;

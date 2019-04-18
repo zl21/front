@@ -7,11 +7,11 @@
       @on-ok="confirmDialog()"
       @on-cancel="closeDialog()"
     >
-      <p
+      <!-- <p
         v-for="(item, index) in errorMessage"
         :key="index"
         v-html="item.content"
-      />
+      /> -->
       <p
         v-if="!errorFlag"
         v-html="errorMessage.content"

@@ -177,9 +177,8 @@ export default {
       if (res.data.code === 0) {
         const data = res.data;
         if (data.message === '新增成功') {
-          console.log('新增成功', data.data);
           commit('updateNewMainTableAddSaveData', data.data);
-        } else if (data.message === '更新成功') { console.log('更新成功', data.data); commit('updateNewMainTableModifySaveData', data.data); }
+        } else if (data.message === '更新成功') { commit('updateNewMainTableModifySaveData', data.data); }
       }
     });
   },

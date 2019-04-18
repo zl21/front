@@ -134,6 +134,7 @@
       },
       routeTo(data) {
         const { type, value, id } = data;
+        console.log('🌹', type);
         routeTo({ type, info: { tableName: value, tableId: id } });
       },
     },
