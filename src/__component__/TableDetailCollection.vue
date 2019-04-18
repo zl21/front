@@ -192,7 +192,7 @@
         return this.filterData(this.dataSource.row); // 每列的数据
       },
       copyDataSource() {
-        return this.deepClone(this.dataSource);
+        return JSON.parse(JSON.stringify(this.dataSource));
       },
       columns() {
         return this.filterColumns(this.dataSource.tabth); // 每列的属性
@@ -326,6 +326,7 @@
           },
           {
             title: '序号',
+            width: 60,
             key: COLLECTION_INDEX
           }
         ];
@@ -626,7 +627,7 @@
         return (h, params) => h('div', [
           h(tag, {
             style: {
-              width: '100px'
+              width: '130px'
             },
             props: {
               value: this.copyDataSource.row[params.index][cellData.colname].val,
@@ -694,13 +695,14 @@
                     this.freshDropDownPopFilterData(res, cellData);
                   }
                 });
+                this.copyDataSource.row[params.index][cellData.colname].inputComponent = item;
               },
               'on-ok': ($this) => {
-                // debugger;
                 if ($this._data.IN.length > 0) {
                   const value = `已经选中${$this._data.IN.length}条数据`;
                   this.copyDataSource.row[params.index][cellData.colname].val = value;
                   this.copyDataSource.row[params.index][cellData.colname].Selected = $this._data.IN;
+                  this.copyDataSource.row[params.index][cellData.colname].inputComponent.InputVale = value;
                 } else {
                   this.copyDataSource.row[params.index][cellData.colname].val = '';
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
