@@ -90,12 +90,14 @@
         }
       },
       masterName: {
+        // 表单名称
         type: String,
         default() {
           return '';
         }
       },
       masterId: {
+        // 表单id
         type: String,
         default() {
           return '';
@@ -267,7 +269,17 @@
               // 输入框的keydown event, $this
               if (event.keyCode === 13) {
                 // enter回车查询
+                if (this.type === 'PanelForm') {
+                  // 是否是面板
+                  //  组建是否获取光标
+                  this.focusItem(index, current);
+                }
                 this.searchClickData();
+              }
+            },
+            keyup: () => {
+              if (current.isuppercase) {
+                this.lowercaseToUppercase(index, current);
               }
             },
             'on-delete': ($this, item, key) => {
@@ -362,10 +374,7 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          obj.item.props.regx = regExp.Capital;
-          obj.item.event.regxCheck = (value, $this, errorValue) => {
-            this.lowercaseToUppercase(errorValue, index, current);
-          };
+          obj.item.props.regx = regExp.Letter;
         }
 
         this.propsType(current, obj.item);
@@ -656,7 +665,7 @@
         item[index].item.props.hidecolumns = ['id', 'value'];
         item[index].item.props.AutoData = res.data.data;
       },
-      lowercaseToUppercase(errorValue, index, current) {
+      lowercaseToUppercase(index, current) {
         // 将字符串转化为大写
         let item = [];
         if (current.formIndex !== 'inpubobj') {
@@ -665,9 +674,10 @@
         } else {
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
-        item[index].item.value = errorValue.toUpperCase();
+        item[index].item.value = item[index].item.value.toUpperCase();
       },
       setVerifiy() {
+        // 校验提示
         const VerificationMessage = {
           eq: '',
           index: '',
@@ -692,13 +702,27 @@
                 || VerificationMessage.index > item.index
               ) {
                 VerificationMessage.index = item.index;
-                VerificationMessage.validateForm= item.onfousInput;
+                VerificationMessage.validateForm = item.onfousInput;
               }
             }
           }
         });
 
         return VerificationMessage;
+      },
+      focusItem(index, current) {
+        // 下一个组件获取光标
+        const item = this.$refs[`FormComponent_${current.formIndex}`][0]
+          .$children;
+      
+        if (item[index + 1]) {
+          const type = item[index + 1].items.type;
+          //if (type === 'input') {}
+            if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
+              item[index + 1].$el.querySelector('input').focus();
+            }
+          
+        }  
       }
     },
     mounted() {

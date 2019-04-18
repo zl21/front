@@ -5,6 +5,8 @@ const regExp = {
 };
 // 大写字母
 regExp.Capital = /^[A-Z]+$/;
+// 字母
+regExp.Letter = /^[a-zA-Z]+$/;
 // 数字
 regExp.Digital = /^[0-9]*$/;
 // 正整数
