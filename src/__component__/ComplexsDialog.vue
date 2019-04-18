@@ -458,7 +458,9 @@
             }
           },
           success: (res) => {
-            this.treeRestructure(res.data);
+            if (res.data.code === 0) {
+              this.treeRestructure(res.data);
+            }
           }
         });
       },
