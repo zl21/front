@@ -362,7 +362,7 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          //obj.item.props.regx = regExp.Capital;
+          obj.item.props.regx = regExp.Capital;
           obj.item.event.regxCheck = (value, $this, errorValue) => {
             this.lowercaseToUppercase(errorValue, index, current);
           };
@@ -442,12 +442,15 @@
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
-        if (item.valuedata === 'N' || item.defval === 'N') {
-          return false;
+        if (item.display === 'check') {
+          if (item.valuedata === 'N' || item.defval === 'N') {
+            return false;
+          }
+          if (item.valuedata === 'Y') {
+            return true;
+          }
         }
-        if (item.valuedata === 'Y') {
-          return true;
-        }
+       
         if (item.display === 'OBJ_SELECT' && item.defval) {
           // 处理select的默认值
           const arr = [];
@@ -669,13 +672,17 @@
           eq: '',
           index: '',
           messageTip: [],
-          onfocus: ''
+          validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if ( item.value===undefined || item.value.length < 1) {
+          if (item.value === undefined || item.value.length < 1) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
-            if (
+            if (VerificationMessage.messageTip.length < 2) {
+              VerificationMessage.validateForm = item.onfousInput;
+              VerificationMessage.index = item.index;
+              VerificationMessage.eq = item.eq;
+            } else if (
               VerificationMessage.eq === ''
               || VerificationMessage.eq > item.eq
             ) {
@@ -685,11 +692,8 @@
                 || VerificationMessage.index > item.index
               ) {
                 VerificationMessage.index = item.index;
-                VerificationMessage.onfocus = item.onfousInput;
+                VerificationMessage.validateForm= item.onfousInput;
               }
-            }
-            if (VerificationMessage.messageTip.length < 2) {
-              VerificationMessage.onfocus = item.onfousInput;
             }
           }
         });
