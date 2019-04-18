@@ -467,7 +467,7 @@
           return arr;
         }
 
-        if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop') {
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
           arr.push({
@@ -582,7 +582,8 @@
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
-              reftableid: current.reftableid
+              reftableid: current.reftableid,
+              url:'/p/cs/menuimport'
             };
             item.props.datalist = [];
             item.props.Selected = [
@@ -716,12 +717,10 @@
           .$children;
       
         if (item[index + 1]) {
-          const type = item[index + 1].items.type;
-          //if (type === 'input') {}
-            if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
-              item[index + 1].$el.querySelector('input').focus();
-            }
-          
+          // if (type === 'input') {}
+          if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
+            item[index + 1].$el.querySelector('input').focus();
+          }
         }  
       }
     },

@@ -117,6 +117,7 @@
         :total-row-count="_items.props.totalRowCount"
         :page-size="_items.props.pageSize"
         :auto-data="_items.props.AutoData"
+        :disabled="_items.props.disabled"
         :hidecolumns="_items.props.hidecolumns"
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"
@@ -153,6 +154,7 @@
         @on-ok="attachFilterOk"
         @on-popclick="attachFilterPopclick"
         @on-clear="attachFilterClear"
+        @on-uploadFile="attachFile"
       >
         <div
           v-if="_items.componentType"
@@ -236,6 +238,14 @@
           // 大弹窗卡槽页面
           item.componentType = Dialog;
           item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
+          item.props.datalist.forEach((option, i) => {
+            if (option.value === '导入') {
+              item.props.datalist[i].url = item.props.fkobj.url;
+              item.props.datalist[i].sendData = {
+                table: item.props.fkobj.reftable
+              };
+            }
+          });
         }
         item.event = Object.assign({}, this.items.event);
 
@@ -451,10 +461,8 @@
       attachFilterPopclick(event, row, targName, $this) {
         if (targName !== 'I' && event !== 1) {
           // 打开弹窗
-
           $this.showModal = true;
           if (event !== 0) {
-            console.log(row.label);
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
@@ -472,6 +480,13 @@
           this._items.event['popper-show']($this, this._items, this.index);
         }
       },
+      attachFile(index, result, $this) {
+        // 导入功能
+        console.log(index, result);
+        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-file') && typeof this._items.event['popper-file'] === 'function') {
+          this._items.event['popper-file']($this, result, this._items, this.index);
+        }
+      },
       attachFilterOk($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
           if ($this._data.IN.length > 0) {
@@ -487,7 +502,7 @@
         }
       },
       uploadFileChange(e) {
-        console.log(e);
+        // console.log(e);
       },
       deleteImg(item, index) {
         console.log(item, index);
@@ -529,20 +544,19 @@
               return false;
             }
             const data = fixedData[0];
-            if(typeof this._items.props.itemdata.valuedata !== 'object'){
+            if (typeof this._items.props.itemdata.valuedata !== 'object') {
               this._items.props.itemdata.valuedata = [];
             }
             
             this._items.props.itemdata.valuedata.push({
-                NAME: data.NAME,
-                URL: data.URL
-              });
-            
+              NAME: data.NAME,
+              URL: data.URL
+            });
           }
         });
       },
       uploadFileChangeOnerror(result) {
-        console.log('err', result);
+        // console.log('err', result);
       }
     },
     created() {

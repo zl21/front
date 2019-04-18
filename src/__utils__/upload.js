@@ -26,6 +26,7 @@ class Upload {
     // file转dataUrl是个异步函数，要将代码写在回调里
     const self = this;
     reader.onload = function (e) {
+      console.log(self.event);
       if (Object.prototype.hasOwnProperty.call(self.event, 'onload') && typeof self.event.onload === 'function') {
         self.event.onload(e);
       }
@@ -38,8 +39,8 @@ class Upload {
     reader.onloadend = function (e) {
       if (Object.prototype.hasOwnProperty.call(self.event, 'onloadend') && typeof self.event.onloadend === 'function') {
         self.event.onloadend(e);
-        self.transformFileToFormData(file);
       }
+      self.transformFileToFormData(file);
     };
     reader.onerror = function (e) {
       if (Object.prototype.hasOwnProperty.call(this.event, 'onerror') && typeof this.event.onerror === 'function') {
@@ -77,15 +78,18 @@ class Upload {
     }, false);
     const that = this;
     xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        const result = JSON.parse(xhr.responseText);
-        if (xhr.status === 200) {
-          // 上传成功
-          if (Object.prototype.hasOwnProperty.call(that.event, 'success') && typeof that.event.success === 'function') {
-            that.event.success(result);
-          }
-        } else if (Object.prototype.hasOwnProperty.call(that.event, 'onerror') && typeof that.event.onerror === 'function') {
+      const result = xhr.responseText;
+      console.log();
+      if (xhr.status === 200 && xhr.readyState === 4) {
+        // 上传成功
+        if (Object.prototype.hasOwnProperty.call(that.event, 'success') && typeof that.event.success === 'function') {
+          that.event.success(JSON.parse(result));
+          return false;
+        }
+      } else if (Object.prototype.hasOwnProperty.call(that.event, 'onerror') && typeof that.event.onerror === 'function') {
+        if (xhr.readyState === 4) {
           that.event.onerror(result);
+          return false;
         }
       }
     };
