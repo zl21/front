@@ -209,7 +209,8 @@
               if (str === 'CMD_PRINT') {
                 this.dataArray.printValue = true;
               } else {
-                const buttonConfigInfo = this.buttonMap[str];
+                const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                const buttonConfigInfo = JSON.parse(buttonConfig);
                 this.buttonMap[str].eName = item;
                 buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
@@ -406,7 +407,7 @@
         const messageTip = checkedInfo.messageTip;
         if (messageTip.length > 0) {
           this.$Message.warning(messageTip[0]);
-          checkedInfo.onfocus.focus();
+          checkedInfo.validateForm.focus();
           return false;
         }
         return true;

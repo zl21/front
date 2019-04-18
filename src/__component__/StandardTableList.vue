@@ -522,7 +522,7 @@
                 this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                // buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
                 buttonGroupShow.push(buttonConfigInfo);
               }
             }
@@ -970,21 +970,22 @@
                 label,
                 id
               });
-            } else {
-              // 单对象上下结构
-              const type = 'tableDetailVertical';
-              this.tabHref({
-                type,
-                tableName,
-                tableId,
-                label,
-                id
-              });
-            }
+              return;
+            } 
+            // 单对象上下结构
+            const type = 'tableDetailVertical';
+            this.tabHref({
+              type,
+              tableName,
+              tableId,
+              label,
+              id
+            });
+            
             if (objTableUrl) {
               // 跳转的是单对象
               const query = urlParse(objTableUrl);
-              alert('暂未增加自定义跳转逻辑');
+              // alert('暂未增加自定义跳转逻辑');
             } else if (objdistype === 'tabpanle') {
               const type = 'tableDetailHorizontal'; // 左右结构的单对项页面
               this.tabHref({
