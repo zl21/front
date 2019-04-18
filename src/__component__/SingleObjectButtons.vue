@@ -17,7 +17,6 @@
 </template>
 
 <script>
-  // import { mapState } from 'vuex';
   import { mapActions, mapMutations } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
@@ -97,10 +96,7 @@
         deep: true
       },
     },
-    computed: {
-    
-      
-    },
+  
     props: {
       tabcmd: {
         type: Object,
@@ -203,17 +199,19 @@
         // } else { // 双击
         if (tabcmdData.cmds) {
           tabcmdData.cmds.forEach((item, index) => {
-            if (tabcmdData.prem[index]) {
-              const type = item.split('action');
-              const str = `CMD_${type[1].toUpperCase()}`;
-              if (str === 'CMD_PRINT') {
-                this.dataArray.printValue = true;
-              } else {
-                const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
-                const buttonConfigInfo = JSON.parse(buttonConfig);
-                this.buttonMap[str].eName = item;
-                buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+            if (item !== 'actionEXPORT') {
+              if (tabcmdData.prem[index]) {
+                const type = item.split('action');
+                const str = `CMD_${type[1].toUpperCase()}`;
+                if (str === 'CMD_PRINT') {
+                  this.dataArray.printValue = true;
+                } else {
+                  this.buttonMap[str].eName = item;
+                  const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                  const buttonConfigInfo = JSON.parse(buttonConfig);
+                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                }
               }
             }
           });
@@ -359,8 +357,8 @@
             const type = 'add';
             if (this.dynamic.requestUrlPath) { // 配置path
               // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
-              // const objId = -1;
-              this.savaNewTable(type, path);
+              const objId = -1;
+              this.savaNewTable(type, path, objId);
             } else { // 没有配置path
               const objId = -1;
               this.savaNewTable(type, path, objId);
@@ -383,7 +381,7 @@
             const type = 'modify';
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
-              this.savaNewTable(type, path, this.itemId,);
+              this.savaNewTable(type, path, this.itemId);
             } else { // 没有配置path
               // console.log('主表编辑保存,没有配置path的逻辑');
 
@@ -434,6 +432,7 @@
         // } else {
         setTimeout(() => {
           const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+          // console.log(' 保存接口返回的明细id', itemId);
           this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         }, 3000);
@@ -461,7 +460,9 @@
       }
     },
     mounted() {
-      this.getbuttonGroupData(this.tabcmd);
+      // setTimeout(() => {
+      //   this.getbuttonGroupData(this.tabcmd);
+      // }, 1000);
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;

@@ -84,8 +84,22 @@ export default {
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   },
-  updateNewMainTableSaveData(state, data) { // 主表新增保存返回信息
+ 
+  // updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
+  //   console.log('🍅', data);
+  //   state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
+  // },
+  // updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
+  //   state.mainFormInfo.buttonsData.newMainTableSaveData = data;
+  // },
+  updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
+    console.log('🍅', data);
     state.mainFormInfo.buttonsData.newMainTableSaveData = data;
   },
+  updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
+    alert(1);
+    console.log('🍅主表修改保存返回信息', data);
 
+    state.mainFormInfo.buttonsData.newMainTableSaveData = data;
+  },
 };

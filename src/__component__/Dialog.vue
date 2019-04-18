@@ -22,7 +22,7 @@
 
 <script>
   export default {
-    name: 'JordanDialog',
+    name: 'Dialog',
     props: {
       // showModal: {
       //   type: Boolean,

@@ -134,11 +134,14 @@ export default {
     const { objId } = parame;
     const { path } = parame;
     const { type } = parame;
+
+    // modify[tableName].ID = -1;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-
       if (path) { // 有path的参数
+        add[tableName].ID = objId;
+
         parames = {
           ...add[tableName]
         };
@@ -153,15 +156,16 @@ export default {
       }
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-
       if (path) { // 有path的参数
+        modify[tableName].ID = objId;// 主表id
+
         parames = {
           ...modify[tableName]
         };
       } else {
         parames = {
           table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
+          objId, // 明细id
           fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
             ...modify
           }
@@ -170,10 +174,13 @@ export default {
     }
     
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
-      // if (res.data.code === 0) {
-      const data = res.data.data;
-      commit('updateNewMainTableSaveData', data);
-      // }
+      if (res.data.code === 0) {
+        const data = res.data;
+        if (data.message === '新增成功') {
+          console.log('新增成功', data.data);
+          commit('updateNewMainTableAddSaveData', data.data);
+        } else if (data.message === '更新成功') { console.log('更新成功', data.data); commit('updateNewMainTableModifySaveData', data.data); }
+      }
     });
   },
   performMainTableDeleteAction({ commit }, { path, table, objId }) { // 主表保存
