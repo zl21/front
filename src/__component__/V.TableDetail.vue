@@ -3,8 +3,8 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
+      :itemNameGroup="childTableNames"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
-      :has-tab-panels="tabPanels.length"
       :item-name="$route.params.tableName"
     />
     <composite-form
@@ -44,11 +44,18 @@
 
   export default {
     computed: {
+      childTableNames: ({ tabPanels }) => {
+        return tabPanels.reduce((acc, cur, idx) => {
+          acc.push({ tableName: cur.tablename });
+          return acc;
+        }, []);
+      },
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
           obj.componentAttribute.tableName = item.tablename;
+          obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
           obj.component = `${item.tablename}_TapComponent`;
