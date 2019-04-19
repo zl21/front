@@ -5,7 +5,7 @@
       class="buttonGroup"
       @buttonClick="buttonClick"
     />
-    <Dialog 
+    <Dialog
       ref="dialogRef"
       :title="dialogConfig.title"
       :mask="dialogConfig.mask"
@@ -77,25 +77,8 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           setTimeout(() => {
-            if (Object.values(val).length > 0) {
-              if (this.objectType === 'horizontal') { // 横向布局
-                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                  this.addButtonShow(val);
-                } else { // 新增按钮渲染逻辑
-                  this.getbuttonGroupData(val);
-                }
-              } else if (this.objectType === 'vertical') {
-                // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
-                //   this.addButtonShow(val);
-                // } else //暂未处理带子表的逻辑
-                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                  this.addButtonShow(val);
-                } else { // 新增按钮渲染逻辑
-                  this.getbuttonGroupData(val);
-                }
-              }
-            }
-          }, 500);
+            this.buttonsReorganization(val);
+          }, 1000);
         },
         deep: true
       },
@@ -147,6 +130,26 @@
     methods: {
       ...mapActions(moduleName(), ['getQueryListForAg']),
       ...mapMutations('global', ['tabHref']),
+      buttonsReorganization(buttonData) {
+        if (Object.values(buttonData).length > 0) {
+          if (this.objectType === 'horizontal') { // 横向布局
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+              this.addButtonShow(buttonData);
+            } else { // 新增按钮渲染逻辑
+              this.getbuttonGroupData(buttonData);
+            }
+          } else if (this.objectType === 'vertical') {
+            // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
+            //   this.addButtonShow(val);
+            // } else //暂未处理带子表的逻辑
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+              this.addButtonShow(buttonData);
+            } else { // 新增按钮渲染逻辑
+              this.getbuttonGroupData(buttonData);
+            }
+          }
+        }
+      },
       buttonClick(type, obj) {
         if (type === 'fix') {
           this.objectTabAction(obj);
@@ -478,6 +481,7 @@
       }
     },
     mounted() {
+      this.buttonsReorganization(this.tabcmd);
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;
