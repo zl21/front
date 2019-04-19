@@ -587,9 +587,14 @@
                 }
               }
             }
+          } else { // 没有提示信息
+            this.webActionSlient(type, obj);
           }
         }
       },
+      // webActionSlientres(obj) {
+        
+      // },
       webactionClick(type, obj) {
         // 点击自定义按钮 创建table
         clearTimeout(window.timer);
