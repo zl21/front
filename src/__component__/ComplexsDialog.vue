@@ -103,6 +103,10 @@
           result: [
 
           ]
+        },
+        tdData: {
+          id: '',
+          list: []
         }
       };
     },
@@ -265,32 +269,54 @@
       },
       rowclick(row) {
         if (this.index === 0) {
-          this.clickChoose(row);
+          this.clickChoose(row, 'click');
         }
       },
-      clickChoose(row) {
+      clickChoose(row, type) {
         // 单击或者双击的选中id
         if (this.checkbox) {
           const checkd = this.verify(this.NOTIN, row.ID);
           if (checkd) {
-            this.NOTIN.push(row.ID);
-            this.text.result.push({
-              exclude: false,
-              id_list: row.ID,
-              screen: row.ID,
-              screen_string: this.toStringName(row, this.akname)
-            });
+            if (type === 'click') {
+              this.tdData.id = row.ID;
+              this.tdData.list[0] = {
+                exclude: false,
+                id_list: row.ID,
+                screen: row.ID,
+                screen_string: this.toStringName(row, this.akname)
+
+              };
+            } else {
+              this.NOTIN.push(row.ID);
+              this.text.result.push({
+                exclude: false,
+                id_list: row.ID,
+                screen: row.ID,
+                screen_string: this.toStringName(row, this.akname)
+              });
+            }
           }
         } else {
           const checkdIN = this.verify(this.IN, row.ID);
           if (checkdIN) {
-            this.IN.push(row.ID);
-            this.text.result.push({
-              exclude: true,
-              id_list: row.ID,
-              screen: row.ID,
-              screen_string: this.toStringName(row, this.akname)
-            });
+            if (type === 'click') {
+              this.tdData.id = row.ID;
+              this.tdData.list[0] = {
+                exclude: true,
+                id_list: row.ID,
+                screen: row.ID,
+                screen_string: this.toStringName(row, this.akname)
+
+              };
+            } else {
+              this.IN.push(row.ID);
+              this.text.result.push({
+                exclude: true,
+                id_list: row.ID,
+                screen: row.ID,
+                screen_string: this.toStringName(row, this.akname)
+              });
+            }
           }
         }
       },
@@ -330,7 +356,6 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         if (this.HRORG_ID.length > 0) {
-          console.log(!this.checkbox);
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
             this.EXCLUDE = '';
@@ -371,6 +396,14 @@
         }
       },
       transfer() {
+        if (this.checkbox) {
+          if (this.verify(this.NOTIN, this.tdData.id)) {
+            this.NOTIN.push(this.tdData.id);
+          }
+        } else if (this.verify(this.IN, this.tdData.id)) {
+          this.IN.push(this.tdData.id);
+        }
+        this.text.result.push(this.tdData.list[0]);
         this.multipleScreenResultCheck(this.sendMessage, 1);
       },
       deleteLi(index, row, type) {
