@@ -26,10 +26,11 @@ export default {
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, { maintable, table, objid }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       maintable,
       table,
-      objid,
+      objid: id,
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
@@ -65,9 +66,10 @@ export default {
   }, // 获取子表表单信息
   getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
       table,
-      objid,
+      objid: id,
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
@@ -80,9 +82,10 @@ export default {
     table, objid, refcolid, searchdata
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id,searchdata查询条件
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
-      objid,
+      objid: id,
       refcolid,
       searchdata
     })).then((res) => {
@@ -136,7 +139,7 @@ export default {
         };
       }
     }
-    
+
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
@@ -169,5 +172,5 @@ export default {
       // }
     });
   },
-  
+
 };
