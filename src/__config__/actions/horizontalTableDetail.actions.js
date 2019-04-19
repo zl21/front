@@ -4,9 +4,10 @@ import getComponentName from '../../__utils__/getModuleName';
 export default {
   getObjectTabForMainTable({ commit }, { table, objid }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
-      objid,
+      objid: id,
       ismaintable: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
@@ -39,9 +40,10 @@ export default {
   }, // 获取子表按钮
   getObjectForMainTableForm({ commit }, { table, objid }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
       table,
-      objid
+      objid: id
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;

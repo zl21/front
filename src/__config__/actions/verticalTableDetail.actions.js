@@ -3,9 +3,10 @@ import getComponentName from '../../__utils__/getModuleName';
 
 export default {
   getObjectForMainTableForm({ commit }, { table, objid }) { // 获取主表面板数据
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
       table,
-      objid
+      objid: id,
     })).then((res) => {
       const resData = res.data.data;
       commit('updateObjectForMainTableForm', resData);
@@ -14,9 +15,10 @@ export default {
   getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
     table, objid
   }) {
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
-      objid,
+      objid: id,
       ismaintable: 'y'
     })).then((res) => {
       if (res.data.code === 0) {

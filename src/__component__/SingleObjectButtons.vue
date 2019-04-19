@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import { mapActions, mapMutations } from 'vuex';
+  import { mapActions, mapMutations, mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
   import moduleName from '../__utils__/getModuleName';
@@ -96,7 +96,11 @@
         deep: true
       },
     },
-  
+    computed: {
+      ...mapState('global', {
+        activeTab: ({ activeTab }) => activeTab
+      }),
+    },
     props: {
       tabcmd: {
         type: Object,
@@ -140,8 +144,6 @@
         // }, 300);
       },
       objectTabAction(obj) {
-        // clearTimeout(window.timer);
-        // window.timer = setTimeout(() => {
         switch (obj.eName) {
         case 'actionADD': // 新增
           this.objectAdd(obj);
@@ -276,8 +278,8 @@
       },
 
       objectAdd(obj) { // 新增
-        const id = -1;
-        const label = `${obj.name}编辑`;
+        const id = 'New';
+        const label = `${this.activeTab.label}新增`;
         if (this.objectType === 'horizontal') {
           const type = 'tableDetailHorizontal';
           this.tabHref({
@@ -297,8 +299,8 @@
             id
           });
         }
-        this.getObjectTabForMainTable({ table: this.tableName, objid: -1 });
-        this.getObjectForMainTableForm({ table: this.tableName, objid: -1 });
+        this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
+        this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });
         this.buttonShowType = 'add';
       },
       objectSave(obj) { // 按钮保存操作
