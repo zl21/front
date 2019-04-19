@@ -76,30 +76,31 @@
       tabcmd: {
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-          if (Object.values(val).length > 0) {
-            if (this.objectType === 'horizontal') { // 横向布局
-              if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                this.addButtonShow(val);
-              } else { // 新增按钮渲染逻辑
-                this.getbuttonGroupData(val);
-              }
-            } else if (this.objectType === 'vertical') {
-              // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
-              //   this.addButtonShow(val);
-              // } else //暂未处理带子表的逻辑
-              if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                this.addButtonShow(val);
-              } else { // 新增按钮渲染逻辑
-                this.getbuttonGroupData(val);
+          setTimeout(() => {
+            if (Object.values(val).length > 0) {
+              if (this.objectType === 'horizontal') { // 横向布局
+                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+                  this.addButtonShow(val);
+                } else { // 新增按钮渲染逻辑
+                  this.getbuttonGroupData(val);
+                }
+              } else if (this.objectType === 'vertical') {
+                // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
+                //   this.addButtonShow(val);
+                // } else //暂未处理带子表的逻辑
+                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+                  this.addButtonShow(val);
+                } else { // 新增按钮渲染逻辑
+                  this.getbuttonGroupData(val);
+                }
               }
             }
-          }
+          }, 500);
         },
         deep: true
       },
       tabwebact: {
         handler(val) {
-          console.log(0, val);
           this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemId === 'New') { // 新增按钮渲染逻辑 
