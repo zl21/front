@@ -24,6 +24,7 @@
           <component
             :is="item.component"
             :ref="'component_'+index"
+            :class="'form_'+item.item.props.require"
             :index="index"
             :items="item.item"
             @inputChange="inputChange"
