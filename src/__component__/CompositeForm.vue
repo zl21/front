@@ -484,6 +484,7 @@
         const obj = item;
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
+        item.props.comment = item.props.comment;
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
           

@@ -44,12 +44,6 @@
 
   export default {
     computed: {
-      childTableNames: ({ tabPanels }) => {
-        return tabPanels.reduce((acc, cur, idx) => {
-          acc.push({ tableName: cur.tablename });
-          return acc;
-        }, []);
-      },
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item, index) => {
