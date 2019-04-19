@@ -78,7 +78,7 @@
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           setTimeout(() => {
             this.buttonsReorganization(val);
-          }, 1000);
+          }, 300);
         },
         deep: true
       },
@@ -252,9 +252,11 @@
         // }
       },
       waListButtons(tabwebact) {
-        tabwebact.objbutton.forEach((item) => {
-          this.dataArray.waListButtonsConfig.waListButtons.push(item);
-        });
+        if (tabwebact.objbutton.length > 0) {
+          tabwebact.objbutton.forEach((item) => {
+            this.dataArray.waListButtonsConfig.waListButtons.push(item);
+          });
+        }
       },
         
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
