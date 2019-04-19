@@ -484,6 +484,7 @@
         const obj = item;
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
+        item.props.comment = item.props.comment;
         if (current.type === 'NUMBER') {
           item.props.regx = regExp.Digital;
         }
@@ -583,7 +584,7 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              url:'/p/cs/menuimport'
+              url: '/p/cs/menuimport'
             };
             item.props.datalist = [];
             item.props.Selected = [

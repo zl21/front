@@ -1,6 +1,20 @@
 <template>
   <div class="ItemComponentRoot">
-    <span class="itemLabel">
+    <span
+      class="itemLabel"
+      :style="labelStyle"
+      :title="_items.title"
+    >
+      <Poptip
+        v-if="_items.props.comment"
+        word-wrap
+        trigger="hover"
+        transfer
+        width="200"
+        :content="_items.props.comment"
+      >
+        <i class="iconfont icon-tishi1" />
+      </Poptip>
       <span
         v-if="_items.required"
         class="label-tip"
@@ -195,6 +209,10 @@
     components: {
     },
     props: {
+      labelWidth: {
+        type: Number,
+        default: 120
+      },
       items: {
         type: Object,
         default() {
@@ -228,6 +246,11 @@
       };
     },
     computed: {
+      labelStyle() {
+        let style = '';
+        style = `width:${this.labelWidth}px`;
+        return style;
+      },
       _items() {
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
@@ -576,12 +599,18 @@
     padding-top:8px;
 
     .itemLabel{
-      width: 120px;
       margin-right: 4px;
       text-align: right;
       text-overflow: ellipsis;
       white-space: nowrap;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      i{
+        font-size: 12px;
+        color: red;
+      }
     }
 
     .itemComponent{
@@ -593,7 +622,7 @@
       font-size: 16px;
       vertical-align: middle;
       position: relative;
-      top: -1px;
+      top: 3px;
       right: 3px;
     }
   }
