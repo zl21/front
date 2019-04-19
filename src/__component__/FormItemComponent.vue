@@ -205,6 +205,12 @@
             } else {
               obj[current.item.field] = current.item.value;
             }
+          } else if (current.item.props.type === 'checkbox') {
+            if (current.item.value === true) {
+              obj[current.item.field] = 'Y';
+            } else {
+              obj[current.item.field] = 'N';
+            }
           } else if (current.item.value) { // 处理多个select合并
             obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
               if (item !== 'bSelect-all') {
@@ -218,7 +224,7 @@
 
               return objData;
             }, {}));
-          }
+          } 
           return obj;
         }, {});
       },
