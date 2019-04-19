@@ -277,9 +277,9 @@
         }
       },
 
-      objectAdd(obj) { // 新增
+      objectAdd() { // 新增
         const id = 'New';
-        const label = `${this.activeTab.label}新增`;
+        const label = `${this.activeTab.label.replace('编辑', '新增')}`;
         if (this.objectType === 'horizontal') {
           const type = 'tableDetailHorizontal';
           this.tabHref({
