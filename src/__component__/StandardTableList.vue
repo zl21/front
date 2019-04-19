@@ -100,7 +100,9 @@
           startIndex: 0,
           range: 10
         },
-        formItemsLists: []
+        formItemsLists: [],
+
+        defaultValueCmplete: false // 监听第一次默认值是否设置完成，完成后执行一次查询
       };
     },
     computed: {
@@ -127,6 +129,9 @@
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
+      },
+      defaultValueCmplete() {  
+        this.searchClickData();
       }
     },
     methods: {
@@ -408,6 +413,7 @@
           },
           []
         );
+        
 
         if (Object.keys(this.formItems.data).length === 0) {
           this.formDataChange(
@@ -470,7 +476,7 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
-
+          this.defaultValueCmplete = true;
           this.updateFormData(data);
         }
       },
@@ -1455,15 +1461,10 @@
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       this.getTableQuery();
-      this.getQueryListForAg(this.searchData);
       clearTimeout(window.timer);
       window.timer = setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
-      // 临时处理方案
-      setTimeout(() => {
-        this.searchClickData();
-      }, 500);
     },
     activated() {
       const { tableId } = this.$route.params;

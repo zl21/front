@@ -125,7 +125,7 @@
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {
           this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
@@ -136,7 +136,7 @@
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         }
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
@@ -154,7 +154,7 @@
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {
           this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
@@ -165,7 +165,7 @@
         const obj = {};
         obj[tableName] = val;
         const { itemId } = this.$route.params;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         }
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
@@ -177,7 +177,7 @@
       tableDataChange(data) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
-        if (itemId === -1) {
+        if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: data });
         } else {
           this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
