@@ -455,7 +455,7 @@
           if (item.valuedata === 'N' || item.defval === 'N') {
             return false;
           }
-          if (item.valuedata === 'Y') {
+          if (item.valuedata === 'Y' || item.defval === 'Y') {
             return true;
           }
         }
@@ -583,7 +583,7 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              url:'/p/cs/menuimport'
+              url: '/p/cs/menuimport'
             };
             item.props.datalist = [];
             item.props.Selected = [
