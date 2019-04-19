@@ -5,7 +5,7 @@
       class="buttonGroup"
       @buttonClick="buttonClick"
     />
-    <Dialog 
+    <Dialog
       ref="dialogRef"
       :title="dialogConfig.title"
       :mask="dialogConfig.mask"
@@ -77,25 +77,8 @@
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
           setTimeout(() => {
-            if (Object.values(val).length > 0) {
-              if (this.objectType === 'horizontal') { // 横向布局
-                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                  this.addButtonShow(val);
-                } else { // 新增按钮渲染逻辑
-                  this.getbuttonGroupData(val);
-                }
-              } else if (this.objectType === 'vertical') {
-                // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
-                //   this.addButtonShow(val);
-                // } else //暂未处理带子表的逻辑
-                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-                  this.addButtonShow(val);
-                } else { // 新增按钮渲染逻辑
-                  this.getbuttonGroupData(val);
-                }
-              }
-            }
-          }, 500);
+            this.buttonsReorganization(val);
+          }, 300);
         },
         deep: true
       },
@@ -119,7 +102,7 @@
     },
     computed: {
       ...mapState('global', {
-        activeTab: ({ activeTab }) => activeTab
+        activeTab: ({ activeTab }) => activeTab,
       }),
     },
     props: {
@@ -139,14 +122,34 @@
         type: String,
         default: ''
       },
-      hasTabPanels: {// 用来判断是否有子表
-        type: Number,
-        default: 0
+      itemNameGroup: {
+        type: Array,
+        default: () => ([])
       },
     },
     methods: {
       ...mapActions(moduleName(), ['getQueryListForAg']),
       ...mapMutations('global', ['tabHref']),
+      buttonsReorganization(buttonData) {
+        if (Object.values(buttonData).length > 0) {
+          if (this.objectType === 'horizontal') { // 横向布局
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+              this.addButtonShow(buttonData);
+            } else { // 新增按钮渲染逻辑
+              this.getbuttonGroupData(buttonData);
+            }
+          } else if (this.objectType === 'vertical') {
+            // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
+            //   this.addButtonShow(val);
+            // } else //暂未处理带子表的逻辑
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+              this.addButtonShow(buttonData);
+            } else { // 新增按钮渲染逻辑
+              this.getbuttonGroupData(buttonData);
+            }
+          }
+        }
+      },
       buttonClick(type, obj) {
         if (type === 'fix') {
           this.objectTabAction(obj);
@@ -161,19 +164,15 @@
         } else {
           this.searchClickData();
         }
-     
-        // }, 300);
       },
       clickButtonsRefresh() {
         this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
         this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-        if (this.hasTabPanels !== 0) { // 有子表
+        if (this.itemNameGroup.length > 0) { // 有子表
           this.getInputForitemForChildTableForm({ table: this.itemName });
         }
         this.$Message.success('刷新成功');
       },
-
-      
       objectTabAction(obj) {
         switch (obj.eName) {
         case 'actionADD': // 新增
@@ -253,9 +252,11 @@
         // }
       },
       waListButtons(tabwebact) {
-        tabwebact.objbutton.forEach((item) => {
-          this.dataArray.waListButtonsConfig.waListButtons.push(item);
-        });
+        if (tabwebact.objbutton.length > 0) {
+          tabwebact.objbutton.forEach((item) => {
+            this.dataArray.waListButtonsConfig.waListButtons.push(item);
+          });
+        }
       },
         
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
@@ -279,7 +280,7 @@
           startIndex: 0,
           range: 10
         };
-        if (this.hasTabPanels !== 0) { // 存在子表
+        if (this.itemNameGroup.length > 0) { // 存在子表
           if (this.dynamicUrl) { // 有path
                 
           } else { // 没有path
@@ -359,63 +360,50 @@
         this.determineSaveType(obj);
       }, // 纵向布局
       determineSaveType(obj) {
-        // this.getdynamicRequestUrl(this.dataArray.buttonGroupShowConfig.buttonGroupShow);
+        console.log('🍇', this.itemNameGroup);// 不能拿这个判断是否存在子表，左右结构的时候是不对的，上下结构是对的
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         this.saveParameters();// 调用获取参数方法
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           // console.log('主表新增保存和编辑新增保存');
-
-          // if (this.dynamic.editTheNewId === '-1') { // 编辑新增保存
-          //   console.log('新增保存');
-          //   if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
-          //     console.log('没有子表', this.dynamic.requestUrlPath);
-          //     const path = this.dynamic.requestUrlPath;
-          //     const type = 'modify';
-
-          //     if (this.dynamic.requestUrlPath) { // 配置path
-          //       // console.log('编辑新增保存,配置path的逻辑');
-          //       this.savaNewTable(type, path);
-          //     } else { // 没有配置path
-          //       const objId = -1;
-          //       this.savaNewTable(type, path, objId);
-          //     }
-          //   }
-          //   if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
-          //     // console.log('有子表');
-          //     if (obj.requestUrlPath) { // 配置path
-                     
-          //     } else { // 没有配置path
-              
-          //     }
-          //   }
-          // } else 
+          const type = 'add';
+          const path = this.dynamic.requestUrlPath;
+          const objId = -1;
           
-          if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
+          if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
             // console.log('没有子表');
-            const path = this.dynamic.requestUrlPath;
-            const type = 'add';
             if (this.dynamic.requestUrlPath) { // 配置path
               // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
-              const objId = -1;
               this.savaNewTable(type, path, objId);
             } else { // 没有配置path
-              const objId = -1;
               this.savaNewTable(type, path, objId);
             }
           }
-          if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
+          if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
-            if (obj.requestUrlPath) { // 配置path
-              // console.log('配置path的逻辑暂无添加');
-            } else { // 没有配置path
+            const objectType = this.objectType; 
+            if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
+              if (this.dynamic.requestUrlPath) { // 配置path
+                const itemName = this.itemName;// 子表表名
+                console.log('配置path', itemName);
+               
+                this.savaNewTable(type, path, objId, itemName, objectType);
+              } else { // 没有配置path
 
+              }
+            } else if (this.objectType === 'vertical') { // 上下结构
+              if (this.dynamic.requestUrlPath) { // 配置path
+                console.log('配置path');
+                const itemName = this.itemName;// 子表表名
+                this.savaNewTable(type, path, objId, itemName, objectType);
+              } else { // 没有配置path
+
+              }
             }
           }
         } else if (this.itemId !== '-1') { // 主表编辑保存
           // console.log('主表编辑保存');
-          if (this.hasTabPanels === 0) { // 为0的情况下是没有子表
+          if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
             // console.log('没有子表',);
-
             const path = obj.requestUrlPath;
             const type = 'modify';
             if (obj.requestUrlPath) { // 配置path
@@ -423,12 +411,11 @@
               this.savaNewTable(type, path, this.itemId);
             } else { // 没有配置path
               // console.log('主表编辑保存,没有配置path的逻辑');
-
               const objId = this.itemId;
               this.savaNewTable(type, path, objId);
             }
           }
-          if (this.hasTabPanels > 0) { // 大于0 的情况下是存在子表
+          if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
             if (obj.requestUrlPath) { // 配置path
               // console.log('配置path的逻辑暂无添加');
@@ -449,36 +436,33 @@
         }
         return true;
       },
-      savaNewTable(type, path, objId) { // 主表新增保存方法
+      /**
+       * 主表保存参数说明
+       * {
+       *    type: 保存类型：新增保存/编辑保存/编辑新增保存
+       *    path:有新接口
+       *    objId: 明细ID
+       *    itemName: 子表表名
+       *    objectType:判断是上下结构还是左右结构
+       * }
+       */
+      savaNewTable(type, path, objId, itemName, objectType) { // 主表新增保存方法
         const tableName = this.tableName;
         const parame = {
           ...this.currentParameter,
           type,
           tableName,
           objId,
-          path
+          path,
+          itemName,
+          objectType
         };
         this.performMainTableSaveAction(parame);
-        // if (this.info) {
-        // clearTimeout(window.timer);
-        // if (this.objectType === 'horizontal') { // 横向布局
-        //   if (this.newMainTableSaveData.code === 0) {
-        // console.log('暂无添加横向布局有path的逻辑');// 有path
-        // const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
-        // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        // }
-        // } else {
         setTimeout(() => {
-          // if( this.mainFormInfo.buttonsData.newMainTableSaveData)
           const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
           this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         }, 3000);
-        // }
-      
-     
-        // }
       },
       saveParameters() {
         if (this.itemName) { // 有子表
@@ -499,9 +483,7 @@
       }
     },
     mounted() {
-      // setTimeout(() => {
-      //   this.getbuttonGroupData(this.tabcmd);
-      // }, 1000);
+      this.buttonsReorganization(this.tabcmd);
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;

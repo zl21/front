@@ -64,7 +64,6 @@ export default {
     state.tabCurrentIndex = index;
   },
   updateDefaultData(state, data) {
-    // console.trace(data.tableName);
     state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
