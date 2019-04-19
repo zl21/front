@@ -5,6 +5,7 @@
       v-if="buttonsData.isShow"
       :object-type="type"
       class="objectButtons"
+      :itemNameGroup="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
@@ -95,6 +96,10 @@
       panelData: {
         type: Object,
         default: () => ({})
+      }, // 面板数据
+      childTableNames: {
+        type: Array,
+        default: () => []
       } // 面板数据
     },
     watch: {},

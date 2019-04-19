@@ -24,6 +24,14 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab
       }),
+      childTableNames: ({ tabPanels }) => {
+        return tabPanels.reduce((acc, cur, idx) => {
+          if (idx > 0) {
+            acc.push({ tableName: cur.tablename });
+          }
+          return acc;
+        }, []);
+      },
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
@@ -33,6 +41,7 @@
               obj.label = this.activeTab.label;
             }
             obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.type = 'horizontal';
             Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
             obj.component = `${item.tablename}_TapComponent`;

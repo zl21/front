@@ -505,7 +505,6 @@
       },
       attachFile(index, result, $this) {
         // 导入功能
-        console.log(index, result);
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-file') && typeof this._items.event['popper-file'] === 'function') {
           this._items.event['popper-file']($this, result, this._items, this.index);
         }
@@ -520,11 +519,11 @@
           } else {
             this._items.value = '';
             this._items.Selected = [];
-            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
+            this._items.event['popper-value']($this, '', $this._data.IN, this.index);
           }
         }
       },
-      uploadFileChange(e) {
+      uploadFileChange() {
         // console.log(e);
       },
       deleteImg(item, index) {
@@ -539,6 +538,7 @@
           searchObject: {
             uploadId: resultData.data.UploadId
           },
+          // eslint-disable-next-line consistent-return
           success: (res) => {
             if (res.data.code !== 0) {
               return false;
@@ -562,6 +562,7 @@
           searchObject: {
             ...obj
           },
+          // eslint-disable-next-line consistent-return
           success: (res) => {
             if (res.data.code !== 0) {
               return false;
@@ -578,7 +579,7 @@
           }
         });
       },
-      uploadFileChangeOnerror(result) {
+      uploadFileChangeOnerror() {
         // console.log('err', result);
       }
     },

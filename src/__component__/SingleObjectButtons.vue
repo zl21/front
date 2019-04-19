@@ -38,7 +38,7 @@
         },
         
         dataArray: {
-          refresh: true, // 显示刷新
+          refresh: false, // 显示刷新
           back: true, // 显示刷新
           printValue: false, // 是否显示打印
           actionCollection: false,
@@ -76,20 +76,41 @@
       tabcmd: {
         handler(val) {
           this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+          setTimeout(() => {
+            if (Object.values(val).length > 0) {
+              if (this.objectType === 'horizontal') { // 横向布局
+                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+                  this.addButtonShow(val);
+                } else { // 新增按钮渲染逻辑
+                  this.getbuttonGroupData(val);
+                }
+              } else if (this.objectType === 'vertical') {
+                // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
+                //   this.addButtonShow(val);
+                // } else //暂未处理带子表的逻辑
+                if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+                  this.addButtonShow(val);
+                } else { // 新增按钮渲染逻辑
+                  this.getbuttonGroupData(val);
+                }
+              }
+            }
+          }, 500);
+        },
+        deep: true
+      },
+      tabwebact: {
+        handler(val) {
+          this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === '-1') { // 编辑按钮渲染逻辑
-              this.addButtonShow(val);
-            } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(val);
+            if (this.itemId === 'New') { // 新增按钮渲染逻辑 
+            } else { // 编辑按钮渲染逻辑
+              this.waListButtons(val);
             }
           } else if (this.objectType === 'vertical') {
-            // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
-            //   this.addButtonShow(val);
-            // } else //暂未处理带子表的逻辑
-            if (this.itemId === '-1') { // 编辑按钮渲染逻辑
-              this.addButtonShow(val);
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
             } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(val);
+              this.waListButtons(val);
             }
           }
         },
@@ -143,6 +164,16 @@
      
         // }, 300);
       },
+      clickButtonsRefresh() {
+        this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+        this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+        if (this.hasTabPanels !== 0) { // 有子表
+          this.getInputForitemForChildTableForm({ table: this.itemName });
+        }
+        this.$Message.success('刷新成功');
+      },
+
+      
       objectTabAction(obj) {
         switch (obj.eName) {
         case 'actionADD': // 新增
@@ -212,6 +243,7 @@
                   const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
                   const buttonConfigInfo = JSON.parse(buttonConfig);
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  this.dataArray.refresh = true;
                   this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                 }
               }
@@ -220,6 +252,12 @@
         }
         // }
       },
+      waListButtons(tabwebact) {
+        tabwebact.objbutton.forEach((item) => {
+          this.dataArray.waListButtonsConfig.waListButtons.push(item);
+        });
+      },
+        
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
@@ -227,7 +265,6 @@
               if (item === 'actionADD') {
                 this.dynamic.editTheNewId = '-1';// 编辑新增标识
                 this.dynamic.eName = 'actionMODIFY';
-                this.dataArray.refresh = false;
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
                 this.dynamic.requestUrlPath = this.tabcmd.paths[index];
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
@@ -325,7 +362,7 @@
         // this.getdynamicRequestUrl(this.dataArray.buttonGroupShowConfig.buttonGroupShow);
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         this.saveParameters();// 调用获取参数方法
-        if (this.itemId === '-1') { // 主表新增保存和编辑新增保存
+        if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           // console.log('主表新增保存和编辑新增保存');
 
           // if (this.dynamic.editTheNewId === '-1') { // 编辑新增保存

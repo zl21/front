@@ -78,9 +78,10 @@ export default {
   getObjectTabForRefTable({ commit }, { // 获取子表按钮
     table, objid
   }) {
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
-      objid,
+      objid: id,
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
@@ -105,9 +106,10 @@ export default {
   getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
     table, objid, refcolid, searchdata // fixedcolumns - objectIds
   }) {
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
       table,
-      objid, // -1 代表新增
+      objid: id, // -1 代表新增
       refcolid,
       searchdata
     })).then((res) => {
@@ -120,9 +122,10 @@ export default {
   // 按钮
   getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
+    const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
       table,
-      objid,
+      objid: id,
       refcolid
     })).then((res) => {
       if (res.data.code === 0) {
@@ -174,7 +177,7 @@ export default {
         };
       }
     }
-    
+
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
@@ -206,6 +209,6 @@ export default {
       // }
     });
   },
-  
+
 
 };
