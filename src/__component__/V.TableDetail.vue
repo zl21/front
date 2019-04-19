@@ -74,7 +74,7 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.updateAddData({ tableName, value: obj });
         }
         this.updateDefaultData({ tableName, value: obj });
@@ -83,7 +83,7 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === '-1') {
+        if (itemId === 'New') {
           this.updateAddData({ tableName, value: obj });
         } else {
           this.updateModifyData({ tableName, value: obj });
