@@ -24,14 +24,6 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab
       }),
-      childTableNames: ({ tabPanels }) => {
-        return tabPanels.reduce((acc, cur, idx) => {
-          if (idx > 0) {
-            acc.push({ tableName: cur.tablename });
-          }
-          return acc;
-        }, []);
-      },
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {

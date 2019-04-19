@@ -11,6 +11,14 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
+      childTableNames: ({ tabPanels }) => {
+        return tabPanels.reduce((acc, cur, idx) => {
+          if (idx > 0) {
+            acc.push({ tableName: cur.tablename });
+          }
+          return acc;
+        }, []);
+      },
     })
   },
   methods: {
