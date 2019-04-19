@@ -130,7 +130,7 @@
           this.formItemsLists = arr;
         }
       },
-      defaultValueCmplete() {
+      defaultValueCmplete() { 
         this.searchClickData();
       }
     },
