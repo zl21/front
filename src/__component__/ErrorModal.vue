@@ -14,7 +14,7 @@
       /> -->
       <p
         v-if="!errorFlag"
-        v-html="errorMessage.content"
+        v-html="errorMessage.message"
       />
       <!-- <div
         v-if="!hiddenButton"

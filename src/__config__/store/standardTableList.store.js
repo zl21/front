@@ -43,7 +43,7 @@ export default () => ({
       tableName: '',
       tableId: '',
       // formObj_tableid: this.$route.params.tableId,
-      errorData: [], // 弹框内容
+      errorData: {}, // 弹框内容
       excludedComponents: [], // 针对性缓存相应的组件
       selectIdArr: [], // 保存选中的数据id
       selectArr: [], // 保存选中数据全部信息

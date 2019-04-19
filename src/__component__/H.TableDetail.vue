@@ -45,6 +45,10 @@
     },
     methods: {
       tabClick(index) {
+        console.log('☕️', index);
+
+        console.log('☕️', this.tabPanel);
+
         this.updateTabCurrentIndex(index);
         if (index === 0) {
           this.getMainTable();
