@@ -27,6 +27,7 @@
             :class="'form_'+item.item.props.require"
             :index="index"
             :items="item.item"
+            :label-width="item.labelWidth"
             @inputChange="inputChange"
           />
         </div>
@@ -156,7 +157,7 @@
           if (this.indexItem < 0) {
             return;
           }
-
+          
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
@@ -195,8 +196,6 @@
                 delete obj[current.item.field];
                 obj[current.item.inputname] = current.item.value;
               }
-            } else if (current.item.value && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0) { // 当为全选时，将对应的字段改为undefined
-              obj[current.item.field] = undefined;
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
               if (current.item.props.Selected[0] !== undefined) {
                 obj[current.item.field] = current.item.props.Selected;

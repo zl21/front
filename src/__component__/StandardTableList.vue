@@ -102,7 +102,7 @@
         },
         formItemsLists: [],
 
-        defaultValueCmplete: false // 监听第一次默认值是否设置完成，完成后执行一次查询
+        defaultValueCmplete: null // 监听第一次默认值是否设置完成，完成后执行一次查询
       };
     },
     computed: {
@@ -124,6 +124,7 @@
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;
           temp.item.props = this.formLists[index].item.props;
+          temp.labelWidth = 90;
           return temp;
         });
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
@@ -140,7 +141,7 @@
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
-        this.searchClickData();
+        this.getQueryListForAg(this.searchData);
       },
       onPageChange(page) {
         const { range } = this.searchData;
@@ -476,9 +477,11 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
-          this.defaultValueCmplete = true;
           this.updateFormData(data);
         }
+        setTimeout(() => {
+          this.defaultValueCmplete = true;
+        }, 100);
       },
       freshDropDownPopFilterData(res, index) {
         // 外键下拉时，更新下拉数据
@@ -897,8 +900,9 @@
       },
 
       dataProcessing() { // 查询数据处理
+        
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-          if (this.formItems.data[item]) {
+          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
             obj[item] = this.formItems.data[item];
           }
           return obj;
@@ -906,7 +910,8 @@
 
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
-          this.formItemsLists.every((temp) => {
+          const arr = this.formItemsLists.concat([]);
+          arr.every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
                 if ((jsonData[item][0] && jsonData[item][1])) {
@@ -926,13 +931,18 @@
                 value = jsonData[item].join('~');
                 return false;
               }
+              
               if (temp.item.type === 'select') {
+                if (jsonData[item].length > 0) {
+                  value = jsonData[item].map(option => `=${option}`);
+                } else {
+                  value = '';
+                }
+  
                 // 处理select，分为单个字段select和合并型select
-                value = jsonData[item].map(option => `=${option}`);
                 return false;
               }
 
-              value = jsonData[item];
               return false;
             }
 
@@ -945,19 +955,11 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
-
-            if (
-              !temp.item.field
-              && temp.item.type === 'select'
-              && item.indexOf(':ENAME') < 0
-            ) {
-              // 处理合并型select
-              value = jsonData[item].map(option => `=${option}`);
-              return false;
-            } // 外键查询输入情况
             value = jsonData[item];
+
             return true;
           });
+          
           if (value) {
             obj[item] = value;
           }
@@ -966,7 +968,8 @@
         }, {});
       },
       searchClickData() {
-        // 按钮查找
+        // 按钮查找 查询第一页数据
+        this.searchData.startIndex = 0;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },

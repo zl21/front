@@ -587,7 +587,7 @@
 
   };
 </script>
-<style lang="less">
+<style lang="less" scoped>
   .burgeon-select-item{
     position: relative;
 
