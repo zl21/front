@@ -259,6 +259,13 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
+        if( current.readonly === true ){
+          current.type = "text";
+          current.text = "text";
+          current.fkdisplay = "text";
+                  console.log(current)
+
+        }
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
