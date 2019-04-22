@@ -587,6 +587,16 @@
 
   };
 </script>
+<style lang="less">
+.burgeon--dialog {
+    .dialog_center .dialog_p10{
+      padding:0px 0 6px 0px
+    }
+    .burgeon-tabs-bar{
+      margin-bottom: 10px
+    }
+}
+</style>
 <style lang="less" scoped>
   .burgeon-select-item{
     position: relative;
@@ -601,7 +611,14 @@
     text-align: center;
   }
 
+
   .burgeon--dialog {
+    .dialog_center .dialog_p10{
+      padding:0px 0 6px 0px
+    }
+    .burgeon-tabs-bar{
+      margin-bottom: 0px
+    }
     .right_center {
       ul li{
         position: relative;

@@ -407,7 +407,7 @@
         if (item.display === 'image') {
           str = 'ImageUpload';
         }
-        if (item.display === 'text') {
+        if (item.display === 'text' || item.display === 'xml') {
           switch (item.fkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -441,6 +441,7 @@
         //   item.valuedata = '';
         //   return '';
         // }
+
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
@@ -573,7 +574,7 @@
           item.props.type = 'time';
         }
 
-        if (current.display === 'text') {
+        if (current.display === 'text' ||  current.display === 'xml') {
           switch (current.fkdisplay) {
           case 'drp':
             item.props.single = true;
