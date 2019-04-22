@@ -97,7 +97,11 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.value.replace('00:00:00','');
+            if(typeof items.item.value === 'string'){
+               option[items.item.field] = items.item.value.replace('00:00:00','');
+            } else {
+               option[items.item.field] = items.item.value;
+            }
           }
 
           return option;
@@ -252,7 +256,11 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value.length > 0) {
-            obj[current.item.field] = current.item.value.replace('00:00:00','');
+             if(typeof items.item.value === 'string'){
+               option[items.item.field] = current.item.value.replace('00:00:00','');
+            } else {
+               option[items.item.field] = current.item.value;
+            }
           } else {
             obj[current.item.field] = current.item.empty;
           }
