@@ -255,8 +255,6 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
-                console.log(item.title,item.type);
-
         item.props = Object.assign({}, item.type ? dataProp[item.type].props :{}, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
