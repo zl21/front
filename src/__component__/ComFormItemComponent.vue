@@ -97,7 +97,7 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.value;
+            option[items.item.field] = items.item.value.replace('00:00:00','');
           }
 
           return option;
@@ -252,7 +252,7 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value.length > 0) {
-            obj[current.item.field] = current.item.value;
+            obj[current.item.field] = current.item.value.replace('00:00:00','');
           } else {
             obj[current.item.field] = current.item.empty;
           }
