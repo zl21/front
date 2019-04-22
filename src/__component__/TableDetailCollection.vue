@@ -1257,8 +1257,8 @@
           }
           .burgeon-input-group-prepend {
             .burgeon-btn {
-              height: 25px;
-              line-height: 2px;
+              display: flex;
+              align-items: center;
               span {
                 bottom: 2px;
                 position: relative;

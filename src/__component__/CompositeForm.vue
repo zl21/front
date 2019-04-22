@@ -485,6 +485,10 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
+        if(current.type === 'OBJ_SELECT' || current.display === 'select'){
+          // 下拉是单选
+          item.props.multiple = false;
+        }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
           
@@ -527,6 +531,7 @@
         }
         // 多状态合并的select
         if (current.conds && current.conds.length > 0) {
+          
           let sumArray = [];
           current.conds.map((option) => {
             sumArray = sumArray.concat(
