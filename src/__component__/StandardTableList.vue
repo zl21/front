@@ -912,11 +912,11 @@
           }
           return obj;
         }, {});
-
+  
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
-          const arr = this.formItemsLists.concat([]);
-          arr.every((temp) => {
+
+          this.formItemsLists.concat([]).every((temp) => {
             if (temp.item.field === item) { // 等于当前节点，判断节点类型
               if (temp.item.type === 'DatePicker' && (temp.item.props.type === 'datetimerange' || temp.item.props.type === 'daterange')) { // 当为日期控件时，数据处理
                 if ((jsonData[item][0] && jsonData[item][1])) {
@@ -947,7 +947,7 @@
                 // 处理select，分为单个字段select和合并型select
                 return false;
               }
-
+              value = jsonData[item];
               return false;
             }
 
@@ -960,7 +960,7 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
-            value = jsonData[item];
+            
 
             return true;
           });
