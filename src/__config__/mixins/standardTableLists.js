@@ -56,7 +56,7 @@ export default () => ({
       colPosition: ({ colPosition }) => colPosition,
       fixedColumn: ({ fixedColumn }) => fixedColumn,
       pageAttribute: ({ ag }) => ({
-        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 0,
+        current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 1,
         total: ag.datas.totalRowCount || 0,
         'page-size-opts': ag.datas.selectrange || [10, 25, 50, 100],
         'show-elevator': true,

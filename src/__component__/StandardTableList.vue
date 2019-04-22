@@ -1,3 +1,4 @@
+
 <!--suppress ALL -->
 <template>
   <div class="StandardTableListRootDiv">
@@ -7,6 +8,7 @@
     />
     <FormItemComponent
       ref="FormItemComponent"
+      :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
       :default-column="4"
       :search-foldnum="formItems.searchFoldnum"
@@ -70,7 +72,6 @@
   import ItemComponent from './ItemComponent';
   import buttonmap from '../assets/js/buttonmap';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import urlParse from '../__utils__/urlParse';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
 
@@ -78,9 +79,9 @@
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   } from '../constants/fkHttpRequest';
   import regExp from '../constants/regExp';
-  import { routeTo } from '../__config__/event.config';
   // import ModuleName from '../__utils__/getModuleName.js';
 
+  // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
   // const importCustom = file => ` import  ${file.split('/')[1]}  from  ../__component__/${file} `;
   export default {
@@ -423,7 +424,11 @@
               return obj;
             }, {})
           );
+          setTimeout(() => {
+            this.defaultValueCmplete = true;
+          }, 200);
         }
+        
 
         return items;
       },
@@ -479,9 +484,6 @@
           }
           this.updateFormData(data);
         }
-        setTimeout(() => {
-          this.defaultValueCmplete = true;
-        }, 100);
       },
       freshDropDownPopFilterData(res, index) {
         // 外键下拉时，更新下拉数据
@@ -605,6 +607,7 @@
           // this.setActiveTabActionValue(obj);
           if (obj.vuedisplay === 'native') {
             // 接口返回有url地址
+            // eslint-disable-next-line no-restricted-globals
             location.href = obj.action;
             return;
           }
@@ -905,7 +908,6 @@
       },
 
       dataProcessing() { // 查询数据处理
-        
         const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
           if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
             obj[item] = this.formItems.data[item];
