@@ -360,7 +360,7 @@
         this.determineSaveType(obj);
       }, // 纵向布局
       determineSaveType(obj) {
-        console.log('🍇', this.itemNameGroup);// 不能拿这个判断是否存在子表，左右结构的时候是不对的，上下结构是对的
+        console.log('🍇', this.itemNameGroup, this.itemName);
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         this.saveParameters();// 调用获取参数方法
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -381,24 +381,25 @@
           if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
             const objectType = this.objectType; 
-            if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
-              if (this.dynamic.requestUrlPath) { // 配置path
-                const itemName = this.itemName;// 子表表名
-                console.log('配置path', itemName);
+            // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
+            if (this.dynamic.requestUrlPath) { // 配置path
+              const itemName = this.itemName;// 子表表名
+              const itemNameGroup = this.itemNameGroup;
+              console.log('配置path', itemName);
                
-                this.savaNewTable(type, path, objId, itemName, objectType);
-              } else { // 没有配置path
+              this.savaNewTable(type, path, objId, itemName, itemNameGroup);
+            } else { // 没有配置path
 
-              }
-            } else if (this.objectType === 'vertical') { // 上下结构
-              if (this.dynamic.requestUrlPath) { // 配置path
-                console.log('配置path');
-                const itemName = this.itemName;// 子表表名
-                this.savaNewTable(type, path, objId, itemName, objectType);
-              } else { // 没有配置path
-
-              }
             }
+            // } else if (this.objectType === 'vertical') { // 上下结构
+            // if (this.dynamic.requestUrlPath) { // 配置path
+            //   console.log('配置path');
+            //   const itemName = this.itemName;// 子表表名
+            //   this.savaNewTable(type, path, objId, itemName, objectType);
+            // } else { // 没有配置path
+
+            // }
+            // }
           }
         } else if (this.itemId !== '-1') { // 主表编辑保存
           // console.log('主表编辑保存');
