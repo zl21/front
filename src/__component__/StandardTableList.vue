@@ -424,8 +424,11 @@
               return obj;
             }, {})
           );
+
           setTimeout(() => {
-            this.defaultValueCmplete = true;
+            if (Object.keys(this.formItems.data).length !== 0) {
+              this.defaultValueCmplete = true;
+            }
           }, 200);
         }
         
