@@ -228,6 +228,8 @@
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.$emit('VerifyMessage', message);
+        }else {
+          this.$emit('VerifyMessage', {});
         }
         this.$emit('formChange', this.formData);
       },

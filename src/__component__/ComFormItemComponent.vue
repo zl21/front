@@ -256,10 +256,10 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value.length > 0) {
-             if(typeof items.item.value === 'string'){
-               option[items.item.field] = current.item.value.replace('00:00:00','');
+             if(typeof current.item.value === 'string'){
+                obj[current.item.field] = current.item.value.replace('00:00:00','');
             } else {
-               option[items.item.field] = current.item.value;
+                obj[current.item.field] = current.item.value;
             }
           } else {
             obj[current.item.field] = current.item.empty;
