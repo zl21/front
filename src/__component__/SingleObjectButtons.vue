@@ -23,7 +23,7 @@
   import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
-  
+
 
   export default {
     data() {
@@ -36,7 +36,7 @@
           confirm: () => {
           }
         },
-        
+
         dataArray: {
           refresh: false, // 显示刷新
           back: true, // 显示刷新
@@ -86,7 +86,7 @@
         handler(val) {
           this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 新增按钮渲染逻辑 
+            if (this.itemId === 'New') { // 新增按钮渲染逻辑
             } else { // 编辑按钮渲染逻辑
               this.waListButtons(val);
             }
@@ -211,7 +211,7 @@
           break;
         }
       },
-    
+
       clickButtonsBack() {
         const { tableId, tableName } = this.$route.params;
         const param = {
@@ -219,7 +219,7 @@
           tableName,
           back: true,
         };
-        
+
         this.$store.commit('global/tabHref', param);
         // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
@@ -258,7 +258,7 @@
           });
         }
       },
-        
+
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
@@ -282,7 +282,7 @@
         };
         if (this.itemNameGroup.length > 0) { // 存在子表
           if (this.dynamicUrl) { // 有path
-                
+
           } else { // 没有path
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
@@ -368,7 +368,7 @@
           const type = 'add';
           const path = this.dynamic.requestUrlPath;
           const objId = -1;
-          
+
           if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
             // console.log('没有子表');
             if (this.dynamic.requestUrlPath) { // 配置path
@@ -380,12 +380,12 @@
           }
           if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
-            const objectType = this.objectType; 
+            const objectType = this.objectType;
             if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
               if (this.dynamic.requestUrlPath) { // 配置path
                 const itemName = this.itemName;// 子表表名
                 console.log('配置path', itemName);
-               
+
                 this.savaNewTable(type, path, objId, itemName, objectType);
               } else { // 没有配置path
 
@@ -423,7 +423,7 @@
 
             }
           }
-        } 
+        }
         // }
       },
       verifyRequiredInformation() { // 验证表单必填项
@@ -498,7 +498,7 @@
 <style lang="less">
 .singleObjectButton {
   .buttonGroup {
-    padding: 10px 20px 5px 20px;
+    padding: 10px 16px 5px 16px;
   }
 }
 </style>

@@ -1222,14 +1222,14 @@
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  margin: 10px 5px 5px 5px;
+  margin: 10px 5px 10px 5px;
   .detail-collection {
     display: flex;
     flex: 1;
     flex-direction: column;
     overflow-y: hidden;
     .detail-top {
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       .page-buttons {

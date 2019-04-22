@@ -87,7 +87,7 @@
 
 <style lang="less">
   .horizontalTableDetail {
-    padding: 0 20px;
+    padding: 0 16px;
     flex: 1;
     height: 100%;
     overflow: hidden;
