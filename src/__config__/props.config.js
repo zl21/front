@@ -28,7 +28,7 @@ const input = {
     // 原生的自动完成功能，可选值为 off 和 on
     autocomplete: 'off',
     // 占位文本
-    placeholder: '请输入商品名称',
+    placeholder: '请输入',
     // 输入框尺寸，可选值为large、small、default或者不设置
     size: 'default',
     // 最大输入长度
