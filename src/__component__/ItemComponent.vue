@@ -603,9 +603,10 @@
       text-align: right;
       text-overflow: ellipsis;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
+      overflow:hidden;
+      // display: flex;
+      // align-items: center;
+      // justify-content: flex-end;
 
       i{
         font-size: 12px;
