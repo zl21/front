@@ -5,7 +5,7 @@
       object-type="vertical"
       :itemNameGroup="childTableNames"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
-      :item-name="$route.params.tableName"
+      :item-name="tabPanel[tabCurrentIndex].tablename"
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
