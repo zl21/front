@@ -78,7 +78,7 @@ export default {
         .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
       state.activeTab = currentTabInfo;
     }
-    console.trace(' -- ', 'not exist = ', notExist);
+    // console.trace(' -- ', 'not exist = ', notExist);
   },
   updateActiveMenu({
     openedMenuLists

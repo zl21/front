@@ -114,6 +114,12 @@
         type: Number,
         default: 4
       },
+      formItemsData: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
       formItemLists: {
         type: Array,
         default() {
@@ -148,7 +154,7 @@
     watch: {
       FormItemLists: {
         handler(val) {
-          this.newFormItemLists = val;
+          this.newFormItemLists = val.concat([]);
         },
         deep: true
       },
@@ -157,14 +163,14 @@
           if (this.indexItem < 0) {
             return;
           }
-          
+
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
               } else {
-                this.formDataChange();
+                // this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
@@ -173,10 +179,14 @@
                 this.hidecolumn(item, i);
               }
             } else {
-              this.formDataChange();
+              // this.formDataChange();
             }
             return items;
           });
+
+          if (JSON.stringify(this.formItemsData) !== this.dataProcessing()) {
+            this.formDataChange();
+          }
         },
         deep: true
       }

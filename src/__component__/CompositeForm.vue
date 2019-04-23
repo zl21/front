@@ -228,6 +228,8 @@
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.$emit('VerifyMessage', message);
+        }else {
+          this.$emit('VerifyMessage', {});
         }
         this.$emit('formChange', this.formData);
       },
@@ -387,6 +389,12 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
+        if( item.readonly === true && item.fkdisplay ){
+            //  不可编辑 变成 input
+              str = 'input';
+
+             return str;
+        }
         if (
           !item.display
           || item.display === 'text'
@@ -405,7 +413,7 @@
         if (item.display === 'image') {
           str = 'ImageUpload';
         }
-        if (item.display === 'text') {
+        if (item.display === 'text' || item.display === 'xml') {
           switch (item.fkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -439,6 +447,11 @@
         //   item.valuedata = '';
         //   return '';
         // }
+         if( item.readonly === true && item.fkdisplay ){
+            //  不可编辑 变成 input
+            return item.defval || item.valuedata || '';
+
+        }
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
@@ -485,6 +498,10 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
+        if(current.type === 'OBJ_SELECT' || current.display === 'select'){
+          // 下拉是单选
+          item.props.multiple = false;
+        }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
           
@@ -527,6 +544,7 @@
         }
         // 多状态合并的select
         if (current.conds && current.conds.length > 0) {
+          
           let sumArray = [];
           current.conds.map((option) => {
             sumArray = sumArray.concat(
@@ -566,7 +584,7 @@
           item.props.type = 'time';
         }
 
-        if (current.display === 'text') {
+        if (current.display === 'text' ||  current.display === 'xml') {
           switch (current.fkdisplay) {
           case 'drp':
             item.props.single = true;

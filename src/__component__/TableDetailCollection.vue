@@ -858,7 +858,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer" >&#xe625;</i>${params.row[cellData.colname]}`
+            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`
           },
           on: {
             click: (event) => {
@@ -1222,14 +1222,14 @@
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  margin: 10px 5px 5px 5px;
+  margin: 10px 5px 10px 5px;
   .detail-collection {
     display: flex;
     flex: 1;
     flex-direction: column;
     overflow-y: hidden;
     .detail-top {
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       .page-buttons {
@@ -1257,8 +1257,8 @@
           }
           .burgeon-input-group-prepend {
             .burgeon-btn {
-              height: 25px;
-              line-height: 2px;
+              display: flex;
+              align-items: center;
               span {
                 bottom: 2px;
                 position: relative;
