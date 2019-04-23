@@ -96,7 +96,10 @@
               }
             }
           } else if (items.item.value) {
-            if (typeof items.item.value === 'string') {
+            console.log(items.item.type);
+            if (items.item.type === 'checkbox') {
+              option[items.item.field] = items.item.props.valuedata;
+            } else if (typeof items.item.value === 'string') {
               option[items.item.field] = items.item.value.replace('00:00:00', '');
             } else {
               option[items.item.field] = items.item.value;
@@ -256,6 +259,9 @@
             } else {
               obj[current.item.inputname] = current.item.value;
             }
+          } else if (current.item.type === 'checkbox') {
+            // 对应的key
+            obj[current.item.field] = current.item.props.valuedata;
           } else if (current.item.value.length > 0) {
             if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value.replace('00:00:00', '');
@@ -299,7 +305,7 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      dynamicforcompute(items, json, index) {
+      dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
         const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
           temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
