@@ -96,7 +96,6 @@
               }
             }
           } else if (items.item.value) {
-            console.log(items.item.type);
             if (items.item.type === 'checkbox') {
               option[items.item.field] = items.item.props.valuedata;
             } else if (typeof items.item.value === 'string') {
@@ -209,7 +208,6 @@
             const item = items.item;
 
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              console.log(val[item.validate.dynamicforcompute.computecolumn], old[item.validate.dynamicforcompute.computecolumn]);
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
               } else {
