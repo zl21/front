@@ -133,10 +133,10 @@
     flex: 1;
     overflow-y: auto;
     .panelForm {
-      margin: 0 20px;
+      margin: 0 16px;
     }
     .tabPanel {
-      margin: 10px 20px;
+      margin: 10px 16px;
     }
   }
 </style>
