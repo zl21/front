@@ -259,13 +259,6 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
-        if( current.readonly === true ){
-          current.type = "text";
-          current.text = "text";
-          current.fkdisplay = "text";
-                  console.log(current)
-
-        }
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -396,6 +389,12 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
+        if( item.readonly === true && item.fkdisplay ){
+            //  不可编辑 变成 input
+              str = 'input';
+
+             return str;
+        }
         if (
           !item.display
           || item.display === 'text'
@@ -448,7 +447,11 @@
         //   item.valuedata = '';
         //   return '';
         // }
+         if( item.readonly === true && item.fkdisplay ){
+            //  不可编辑 变成 input
+            return item.defval || item.valuedata || '';
 
+        }
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
