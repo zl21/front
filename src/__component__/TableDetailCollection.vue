@@ -547,11 +547,11 @@
               AutoData: this.fkAutoData,
               hidecolumns: ['id', 'value']
             },
-            nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
-            },
+            // nativeOn: {
+            //   click: (e) => {
+            //     e.stopPropagation();
+            //   }
+            // },
             on: {
               'on-popper-show': () => {
                 this.fkDropPageInfo.currentPageIndex = 1;
