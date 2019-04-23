@@ -155,7 +155,7 @@ export default {
     const { path } = parame;
     const { type } = parame;
     const { itemName } = parame;
-    const { objectType } = parame;
+    const { itemNameGroup } = parame;
     let parames = {};
     // if (itemName !== '') { // 带子表
     //   if (type === 'add') { // 新增带子表保存
@@ -196,21 +196,43 @@ export default {
 
     //   }
     // } else if (itemName === '') { // 不带子表
+    debugge;
     if (type === 'add') { // 新增保存参数
-      const { add } = parame;
-      if (path) { // 有path的参数
-        add[tableName].ID = objId;
-        parames = {
-          ...add[tableName]
-        };
-      } else {
-        parames = {
-          table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...add
-          }
-        };
+      if (itemNameGroup.length > 0) { // 存在子表
+        const currentlyEdited = itemNameGroup.filter(d => d === itemName);
+        console.log('🍊', currentlyEdited);
+        const { add } = parame;
+        if (path) { // 有path的参数
+          add[tableName].ID = objId;
+          parames = {
+            ...add[tableName],
+
+          };
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objId, // 固定传值-1 表示新增
+            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...add
+            }
+          };
+        }
+      } else { // 没有子表
+        const { add } = parame;
+        if (path) { // 有path的参数
+          add[tableName].ID = objId;
+          parames = {
+            ...add[tableName]
+          };
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objId, // 固定传值-1 表示新增
+            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...add
+            }
+          };
+        }
       }
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;

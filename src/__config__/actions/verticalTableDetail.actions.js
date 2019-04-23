@@ -140,50 +140,49 @@ export default {
     const { path } = parame;
     const { type } = parame;
     const { itemName } = parame;
-    const { objectType } = parame;
+    const { itemNameGroup } = parame;
+    const { itemCurrentParameter } = parame;
     let parames = {};
-    // if (itemName !== '') { // 带子表
-    //   if (type === 'add') { // 新增带子表保存
-    //     if (objectType === 'horizontal') { // 新增带子表保存左右结构
-    //       const { add } = parame;
-    //       if (path) { // 有path的参数
-    //         add[tableName].ID = objId;
-    //         parames = {
-    //           ...add[tableName]
-    //         };
-    //       } else {
-    //         parames = {
-    //           table: tableName, // 主表表名
-    //           objId, // 固定传值-1 表示新增
-    //           fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-    //             ...add
-    //           }
-    //         };
-    //       }
-    //     } else if (objectType === 'vertical') { // 新增带子表保存上下结构
-    //       const { add } = parame;
-    //       if (path) { // 有path的参数
-    //         add[tableName].ID = objId;
-    //         parames = {
-    //           ...add[tableName]
-    //         };
-    //       } else {
-    //         parames = {
-    //           table: tableName, // 主表表名
-    //           objId, // 固定传值-1 表示新增
-    //           fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-    //             ...add
-    //           }
-    //         };
-    //       }
-    //     }
-    //   } else if (type === 'modify') { // 修改带子表的保存
-
-    //   }
-    // } else if (itemName === '') { // 不带子表
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-      if (path) { // 有path的参数
+      if (itemNameGroup && itemNameGroup.length > 0) { // 存在子表
+        if (path) { // 有path的参数
+          let itemParameterAdd = '';                    
+          itemCurrentParameter.forEach((item) => {
+            if (Object.values(item.add).length > 0) {
+              itemNameGroup.forEach((el) => {
+                console.log('🐘', itemName);
+                console.log('🍌', item.add, item.add[el.tableName]);
+                if (item.add[el.tableName]) {
+                  if (item.add[el.tableName]) {
+                    itemParameterAdd = item.add;
+                    itemParameterAdd.ID = objId;
+                    console.log('🍓', itemParameterAdd);
+                  }
+                }
+              });
+              // if (itemNameGroup.includes(Object.keys(item))) {
+             
+              // }
+            }
+          });
+          add[tableName].ID = objId;
+          // const itemParameterAdd = itemCurrentParameter.add;
+          parames = {
+            ...add,
+            ...itemParameterAdd
+
+          };
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objId, // 固定传值-1 表示新增
+            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...add
+            }
+          };
+        }
+      } else if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
           ...add[tableName]

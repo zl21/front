@@ -58,6 +58,7 @@
         tableId: '', // 主表ID
         itemId: '', // 子表ID
         currentParameter: {},
+        itemCurrentParameter: [],
         buttonShowType: '', // 判断按钮显示条件
         dynamic: {
           name: '保存',
@@ -360,7 +361,6 @@
         this.determineSaveType(obj);
       }, // 纵向布局
       determineSaveType(obj) {
-        console.log('🍇', this.itemNameGroup, this.itemName);
         // if (this.verifyRequiredInformation()) { // 验证表单必填项
         this.saveParameters();// 调用获取参数方法
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -380,13 +380,11 @@
           }
           if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
-            const objectType = this.objectType; 
             // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
             if (this.dynamic.requestUrlPath) { // 配置path
               const itemName = this.itemName;// 子表表名
               const itemNameGroup = this.itemNameGroup;
               console.log('配置path', itemName);
-               
               this.savaNewTable(type, path, objId, itemName, itemNameGroup);
             } else { // 没有配置path
 
@@ -447,16 +445,18 @@
        *    objectType:判断是上下结构还是左右结构
        * }
        */
-      savaNewTable(type, path, objId, itemName, objectType) { // 主表新增保存方法
+      savaNewTable(type, path, objId, itemName, itemNameGroup) { // 主表新增保存方法
         const tableName = this.tableName;
+        const itemCurrentParameter = this.itemCurrentParameter;
         const parame = {
-          ...this.currentParameter,
+          ...this.currentParameter, // 主表信息
+          itemCurrentParameter, // 子表信息
           type,
           tableName,
           objId,
           path,
           itemName,
-          objectType
+          itemNameGroup
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
@@ -466,22 +466,24 @@
         }, 3000);
       },
       saveParameters() {
-        if (this.itemName) { // 有子表
-          Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
-            if (current === this.itemName) {
-              this.currentParameter = this.updateData[current];
-            }
-            return obj;
-          }, {});
-        } else { // 没有子表
-          Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
-            if (current === this.tableName) {
-              this.currentParameter = this.updateData[current];
-            }
-            return obj;
-          }, {});
-        }
+        if (this.itemNameGroup.length > 0) { // 有子表
+          this.itemNameGroup.forEach((d) => {
+            Object.keys(this.updateData).forEach((item) => { // 获取store储存的新增修改保存需要的参数信息
+              if (item === d.tableName) { // 储存子表信息
+                this.itemCurrentParameter.push(this.updateData[item]);
+                console.log('🥛', this.itemCurrentParameter);
+              }
+            });
+          });
+        } 
+        Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+          if (current === this.tableName) {
+            this.currentParameter = this.updateData[current];
+          }
+          return obj;
+        }, {});
       }
+      
     },
     mounted() {
       this.buttonsReorganization(this.tabcmd);
