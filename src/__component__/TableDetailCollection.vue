@@ -6,6 +6,7 @@
           <Page
             :total="dataSource.totalRowCount"
             :page-size-opts="dataSource.selectrange"
+            class="table-page"
             size="small"
             show-elevator
             show-sizer
@@ -1234,6 +1235,10 @@
       justify-content: space-between;
       .page-buttons {
         display: flex;
+        flex-wrap: wrap;
+      }
+      .table-page {
+        white-space: nowrap;
       }
       .detail-buttons {
         margin-left: 10px;
