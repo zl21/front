@@ -179,7 +179,7 @@
         const elDiv = this.$refs[`component_${current.index}`][0].$el;
         let onfousInput = {};
         if (current.type === 'textarea') {
-          onfousInput = elDiv.querySelector('input');
+          onfousInput = elDiv.querySelector('textarea');
         } else {
           onfousInput = elDiv.querySelector('input');
         }

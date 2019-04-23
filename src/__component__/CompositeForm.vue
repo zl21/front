@@ -233,10 +233,13 @@
 
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
+          this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
         } else {
+          this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
+        
         this.$emit('formChange', this.formData);
       },
       VerifyMessageForm(value) {
@@ -246,8 +249,9 @@
 
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
+          this.verifyMessItem = data;
           this.$emit('VerifyMessage', data);
-        }
+        } 
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
