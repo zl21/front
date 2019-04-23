@@ -211,7 +211,7 @@
       }
     }
     .form {
-      padding: 0 10px 8px 10px;
+      padding: 0 10px 8px 0;
       background-color: #F8F8F8;
     }
     .formPanel {

@@ -52,7 +52,7 @@
     "ag-grid-enterprise": "^17.1.1",
     "axios": "^0.18.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
-    "burgeon-ui": "^0.1.48",
+    "burgeon-ui": "^0.1.49",
     "vue": "^2.6.8",
     "vue-router": "^3.0.2",
     "vuex": "^3.1.0"

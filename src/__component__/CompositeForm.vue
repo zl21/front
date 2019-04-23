@@ -228,6 +228,8 @@
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.$emit('VerifyMessage', message);
+        }else {
+          this.$emit('VerifyMessage', {});
         }
         this.$emit('formChange', this.formData);
       },
@@ -257,6 +259,13 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
+        if( current.readonly === true ){
+          current.type = "text";
+          current.text = "text";
+          current.fkdisplay = "text";
+                  console.log(current)
+
+        }
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -405,7 +414,7 @@
         if (item.display === 'image') {
           str = 'ImageUpload';
         }
-        if (item.display === 'text') {
+        if (item.display === 'text' || item.display === 'xml') {
           switch (item.fkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -439,6 +448,7 @@
         //   item.valuedata = '';
         //   return '';
         // }
+
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
@@ -571,7 +581,7 @@
           item.props.type = 'time';
         }
 
-        if (current.display === 'text') {
+        if (current.display === 'text' ||  current.display === 'xml') {
           switch (current.fkdisplay) {
           case 'drp':
             item.props.single = true;
