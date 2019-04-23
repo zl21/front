@@ -377,7 +377,7 @@
               });
             }
           },
-          validate: {}
+          validate: this.validateList(current)
         };
         // 属性赋值
         // 属性isuppercase控制
@@ -387,6 +387,20 @@
 
         this.propsType(current, obj.item);
         return obj;
+      },
+      validateList(current) {
+        // 联动校验
+        if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+          return {
+            dynamicforcompute: current.dynamicforcompute
+          };
+        } 
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          return {
+            hidecolumn: current.hidecolumn
+          };
+        }
+        return {};
       },
       searchClickData() {
         // 按钮查找

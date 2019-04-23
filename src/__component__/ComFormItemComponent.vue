@@ -29,7 +29,6 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
 
-
   export default {
     name: 'FormItemComponent',
     computed: {
@@ -97,10 +96,10 @@
               }
             }
           } else if (items.item.value) {
-            if(typeof items.item.value === 'string'){
-               option[items.item.field] = items.item.value.replace('00:00:00','');
+            if (typeof items.item.value === 'string') {
+              option[items.item.field] = items.item.value.replace('00:00:00', '');
             } else {
-               option[items.item.field] = items.item.value;
+              option[items.item.field] = items.item.value;
             }
           }
 
@@ -205,7 +204,9 @@
           }
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+              console.log(val[item.validate.dynamicforcompute.computecolumn], old[item.validate.dynamicforcompute.computecolumn]);
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
               } else {
@@ -256,10 +257,10 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.value.length > 0) {
-             if(typeof current.item.value === 'string'){
-                obj[current.item.field] = current.item.value.replace('00:00:00','');
+            if (typeof current.item.value === 'string') {
+              obj[current.item.field] = current.item.value.replace('00:00:00', '');
             } else {
-                obj[current.item.field] = current.item.value;
+              obj[current.item.field] = current.item.value;
             }
           } else {
             obj[current.item.field] = current.item.empty;
@@ -304,7 +305,8 @@
           temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
           return temp;
         }, items.validate.dynamicforcompute.express);
-        this.newFormItemLists[index].item.value = eval(str);
+        const _index = this.newFormItemLists.findIndex(option => option.item.field === items.validate.dynamicforcompute.computecolumn);
+        this.newFormItemLists[_index].item.value = eval(str);
       },
       hidecolumn(items, index) {
         // 隐藏
