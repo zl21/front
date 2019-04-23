@@ -5,7 +5,7 @@
       object-type="vertical"
       :itemNameGroup="childTableNames"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
-      :item-name="$route.params.tableName"
+      :item-name="getItemName"
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
@@ -57,6 +57,11 @@
           arr.push(obj);
         });
         return arr;
+      },
+      getItemName() {
+        if (this.tabPanel.length >0) {
+          return this.tabPanel[this.tabCurrentIndex].tablename;
+        }
       }
     },
     components: {
