@@ -96,13 +96,7 @@
               }
             }
           } else if (items.item.value) {
-            if (items.item.type === 'checkbox') {
-              option[items.item.field] = items.item.props.valuedata;
-            } else if (typeof items.item.value === 'string') {
-              option[items.item.field] = items.item.value.replace('00:00:00', '');
-            } else {
-              option[items.item.field] = items.item.value;
-            }
+            option[items.item.field] = items.item.props.valuedata;
           }
 
           return option;
@@ -261,10 +255,13 @@
             // 对应的key
             obj[current.item.field] = current.item.props.valuedata;
           } else if (current.item.value.length > 0) {
-            if (typeof current.item.value === 'string') {
+            if (current.item.props.number) {
+              const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
+              obj[current.item.field] = Number(value);
+            } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value.replace('00:00:00', '');
             } else {
-              obj[current.item.field] = current.item.value;
+              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }
           } else {
             obj[current.item.field] = current.item.empty;
@@ -282,7 +279,6 @@
 
             return objData;
           }, {}));
-          console.log(obj, 'obj');
         }
         this.changeFormData = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段

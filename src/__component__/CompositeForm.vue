@@ -527,7 +527,8 @@
         }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
-          
+          item.props.number = true;
+
           const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${current.scale}})?$`;
           const typeRegExp = new RegExp(string);
           if (current.scale > 0) {
