@@ -281,9 +281,48 @@
           range: 10
         };
         if (this.itemNameGroup.length > 0) { // 存在子表
-          if (this.dynamicUrl) { // 有path
-
+          if (obj.requestUrlPath) { // 有path
+            this.$refs.dialogRef.open();
+            this.saveParameters();// 调用获取参数方法
+            this.dialogConfig = {
+              contentText: '确认执行删除?',
+              confirm: () => {
+                this.performMainTableDeleteAction({
+                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, itemNameGroup: this.itemNameGroup
+                });
+                setTimeout(() => {
+                  let deleteMessage = '';
+                  if (this.objectType === 'horizontal') {
+                    deleteMessage = this.deleteData;
+                  } else {
+                    deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                  }
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.getQueryListForAg(searchData);
+                }, 1000);
+              }
+            };
           } else { // 没有path
+            // 没有path
+            this.$refs.dialogRef.open();
+            this.dialogConfig = {
+              contentText: '确认执行删除?',
+              confirm: () => {
+                this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                setTimeout(() => {
+                  let deleteMessage = '';
+                  if (this.objectType === 'horizontal') {
+                    deleteMessage = this.deleteData;
+                  } else {
+                    deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                  }
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.getQueryListForAg(searchData);
+                }, 1000);
+              }
+            };
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
           this.$refs.dialogRef.open();
@@ -292,7 +331,12 @@
             confirm: () => {
               this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
               setTimeout(() => {
-                const deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                let deleteMessage = '';
+                if (this.objectType === 'horizontal') {
+                  deleteMessage = this.deleteData;
+                } else {
+                  deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                }
                 this.$Message.success(`${deleteMessage}`);
                 this.clickButtonsBack();
                 this.getQueryListForAg(searchData);
@@ -307,7 +351,12 @@
             confirm: () => {
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               setTimeout(() => {
-                const deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                let deleteMessage = '';
+                if (this.objectType === 'horizontal') {
+                  deleteMessage = this.deleteData;
+                } else {
+                  deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                }
                 this.$Message.success(`${deleteMessage}`);
                 this.clickButtonsBack();
                 this.getQueryListForAg(searchData);

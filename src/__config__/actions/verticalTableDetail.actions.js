@@ -210,9 +210,26 @@ export default {
       }
     });
   },
-  performMainTableDeleteAction({ commit }, { path, table, objId }) { // 主表保存
+  performMainTableDeleteAction({ commit }, {
+    path, table, objId, currentParameter, itemName, itemNameGroup
+  }) { // 主表删除
     let parames = {};
-    if (path) {
+    const mainTable = currentParameter.delete;
+    mainTable[table].ID = objId;
+    mainTable[table].isdelmtable = true;
+    if (itemNameGroup && itemNameGroup.length > 0) {
+      if (path) {
+        parames = {
+          ...mainTable
+        };
+      } else {
+        parames = {
+          table, // 主表表名
+          objId,
+          delMTable: true
+        };
+      }
+    } else if (path) {
       parames = {
         // table, // 主表表名
         ID: objId,
@@ -225,6 +242,7 @@ export default {
         delMTable: true
       };
     }
+   
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

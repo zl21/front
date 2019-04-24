@@ -109,6 +109,6 @@ export default {
     state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
-    state.mainFormInfo.buttonsData.deleteData = data.message;
+    state.deleteData = data.message;
   },
 };
