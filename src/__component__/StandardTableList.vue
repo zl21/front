@@ -51,14 +51,13 @@
       @confirmImport="searchData('fresh')"
     />
     <ErrorModal
-      v-if="buttons.errorDialog"
-      :error-message="buttons.errorData"
-      :dialog-class="buttons.errorDialogClass"
-      :error-dialog="buttons.errorDialog"
-      :dialog-back="buttons.errorDialogBack"
-      :title="buttons.errorDialogTitle"
-      @closeDialog="errorDialogClose()"
-      @confirmDialog="errorconfirmDialog(false)"
+      ref="dialogRef"
+      :mask="buttons.dialogConfig.mask"
+      :title="buttons.dialogConfig.title"
+      :content-text="buttons.dialogConfig.contentText"
+      :footer-hide="buttons.dialogConfig.footerHide"
+      :confirm="buttons.dialogConfig.confirm"
+      @confirmDialog="errorconfirmDialog()"
     />
   </div>
 </template>
@@ -101,7 +100,9 @@
           startIndex: 0,
           range: 10
         },
-        formItemsLists: []
+        formItemsLists: [],
+
+        formDefaultComplete: false
       };
     },
     computed: {
@@ -412,7 +413,8 @@
         );
 
         // 处理默认数据，然后进行查询
-        if (defaultFormItemsLists.length === 0) {
+        if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
+          this.formDefaultComplete = true;
           this.searchClickData();
         }
         if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
@@ -594,9 +596,7 @@
           }
         }
       },
-      // webActionSlientres(obj) {
-        
-      // },
+     
       webactionClick(type, obj) {
         // 点击自定义按钮 创建table
         clearTimeout(window.timer);
@@ -616,65 +616,29 @@
               if (obj.confirm.indexOf('{') >= 0) {
                 if (obj.confirm || JSON.parse(obj.confirm).isselect) {
                   if (this.selectIdArr && this.selectIdArr.length === 0) {
-                    const data = {
-                      content: JSON.parse(obj.confirm).nodesc
-                    };
-                    const errorDialogTitle = this.ChineseDictionary.WARNING;
-                    const errorDialogvalue = true;
-                    const errorDialogBack = true;
-                    this.setErrorModalValue({
-                      data,
-                      errorDialogTitle,
-                      errorDialogvalue,
-                      errorDialogBack
-                    });
+                    const title = this.ChineseDictionary.WARNING;
+                    const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                    this.dialogMessage(title, contentText);
                   } else if (
                     JSON.parse(obj.confirm).isradio
                     && this.selectIdArr.length !== 1
                   ) {
-                    const data = {
-                      content: JSON.parse(obj.confirm).radiodesc
-                    };
-                    const errorDialogTitle = this.ChineseDictionary.WARNING;
-                    const errorDialogvalue = true;
-                    const errorDialogBack = true;
-                    this.setErrorModalValue({
-                      data,
-                      errorDialogTitle,
-                      errorDialogvalue,
-                      errorDialogBack
-                    });
+                    const title = this.ChineseDictionary.WARNING;
+                    const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                    this.dialogMessage(title, contentText);
                   } else if (JSON.parse(obj.confirm).desc) {
-                    const data = {
-                      message: JSON.parse(obj.confirm).desc
-                    };
-                    const errorDialogTitle = this.ChineseDictionary.WARNING;
-                    const errorDialogvalue = true;
-                    const errorDialogBack = true;
-                    this.setErrorModalValue({
-                      data,
-                      errorDialogTitle,
-                      errorDialogvalue,
-                      errorDialogBack
-                    });
+                    const title = this.ChineseDictionary.WARNING;
+                    const contentText = `${JSON.parse(obj.confirm).desc}`;
+                    this.dialogMessage(title, contentText);
                   } else {
                     // 参数都不存在,直接执行
                     this.webActionSlient(obj);
                   }
                 }
               } else {
-                const data = {
-                  content: obj.confirm
-                };
-                const errorDialogTitle = this.ChineseDictionary.WARNING;
-                const errorDialogvalue = true;
-                const errorDialogBack = true;
-                this.setErrorModalValue({
-                  data,
-                  errorDialogTitle,
-                  errorDialogvalue,
-                  errorDialogBack
-                });
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${obj.confirm}`;
+                this.dialogMessage(title, contentText);
               }
             } else {
               this.webActionSlient(obj);
@@ -688,51 +652,20 @@
               const confirm = JSON.parse(obj.confirm);
               if (this.selectIdArr.length > 0) {
                 if (confirm.isradio && this.selectIdArr.length !== 1) {
-                  const data = {
-                    content: confirm.radiodesc
-                  };
-                  const errorDialogTitle = this.ChineseDictionary.WARNING;
-                  const errorDialogvalue = true;
-                  const errorDialogBack = true;
-                  this.setErrorModalValue({
-                    data,
-                    errorDialogTitle,
-                    errorDialogvalue,
-                    errorDialogBack
-                  });
+                  const title = this.ChineseDictionary.WARNING;
+                  const contentText = `${confirm.radiodesc}`;
+                  this.dialogMessage(title, contentText);
                 } else if (confirm.desc) {
-                  const data = {
-                    content: confirm.desc.replace(
-                      '{isselect}',
-                      this.selectIdArr.length
-                    )
-                  };
-                  const errorDialogTitle = this.ChineseDictionary.WARNING;
-                  const errorDialogvalue = true;
-                  const errorDialogBack = true;
-                  this.setErrorModalValue({
-                    data,
-                    errorDialogTitle,
-                    errorDialogvalue,
-                    errorDialogBack
-                  });
+                  const title = this.ChineseDictionary.WARNING;
+                  const contentText = `${confirm.desc}`;
+                  this.dialogMessage(title, contentText);
                 } else {
                   this.objTabActionNavbar(obj); // 新标签跳转
                 }
               } else if (confirm.nodesc) {
-                const data = {
-                  content: confirm.nodesc
-                };
-
-                const errorDialogTitle = this.ChineseDictionary.WARNING;
-                const errorDialogvalue = true;
-                const errorDialogBack = true;
-                this.setErrorModalValue({
-                  data,
-                  errorDialogTitle,
-                  errorDialogvalue,
-                  errorDialogBack
-                });
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${confirm.nodesc}`;
+                this.dialogMessage(title, contentText);
               } else {
                 this.objTabActionNavbar(obj); // 新标签跳转
               }
@@ -749,41 +682,17 @@
             const confirm = JSON.parse(obj.confirm);
             if (this.buttons.selectIdArr.length > 0) {
               if (confirm.isradio && this.selectIdArr.length !== 1) {
-                const data = {
-                  content: confirm.radiodesc
-                };
-                const errorDialogTitle = this.ChineseDictionary.WARNING;
-                const errorDialogvalue = true;
-                const errorDialogBack = true;
-                this.setErrorModalValue({
-                  data,
-                  errorDialogTitle,
-                  errorDialogvalue,
-                  errorDialogBack
-                });
-              } else if (confirm.desc) {
-                const data = {
-                  content: confirm.desc.replace(
-                    '{isselect}',
-                    this.selectIdArr.length
-                  )
-                };
-                const errorDialogTitle = this.ChineseDictionary.WARNING;
-                const errorDialogvalue = true;
-                const errorDialogBack = true;
-                this.setErrorModalValue({
-                  data,
-                  errorDialogTitle,
-                  errorDialogvalue,
-                  errorDialogBack
-                });
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${confirm.desc.replace(
+                  '{isselect}',
+                  this.selectIdArr.length
+                )}`;
+                this.dialogMessage(title, contentText);
               } else {
                 this.setActionDialog(obj);
-
                 const componentName = obj.action
                   .split('?')[0]
                   .replace(/\//g, '_');
-
                 Vue.component(
                   componentName,
                   Vue.extend(importCustom(obj.action.split('?')[0]))
@@ -791,20 +700,9 @@
                 this.dialogComponent = componentName;
               }
             } else if (confirm.nodesc) {
-              const data = {
-                content: confirm.nodesc
-              };
-              //  0000
-              const errorDialogTitle = this.ChineseDictionary.WARNING;
-              const errorDialogvalue = true;
-              const errorDialogBack = true;
-              this.setErrorModalValue({
-                data,
-                errorDialogTitle,
-                errorDialogvalue,
-                errorDialogBack
-              });
-              this.errorconfirmDialog(false);
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${confirm.nodesc}`;
+              this.dialogMessage(title, contentText);
             } else {
               this.setActionDialog(obj);
 
@@ -820,18 +718,9 @@
             const message = obj.confirm.indexOf('{') >= 0
               ? JSON.parse(obj.confirm).nodesc
               : obj.confirm;
-            const data = {
-              content: message
-            };
-            const errorDialogTitle = this.ChineseDictionary.WARNING;
-            const errorDialogvalue = true;
-            const errorDialogBack = true;
-            this.setErrorModalValue({
-              data,
-              errorDialogTitle,
-              errorDialogvalue,
-              errorDialogBack
-            });
+            const title = this.ChineseDictionary.WARNING;
+            const contentText = `${message}`;
+            this.dialogMessage(title, contentText);
           }
         }, 300);
       },
@@ -977,6 +866,13 @@
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },
+      dialogMessage(title, contentText) {
+        this.$refs.dialogRef.open();
+        this.setErrorModalValue({
+          title,
+          contentText,
+        });
+      },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
         // 双击条状判断
@@ -1016,19 +912,9 @@
         if (obj.name === this.buttonMap.CMD_DELETE.name) {
           // 删除动作  对用网络请求
           if (this.buttons.selectIdArr.length > 0) {
-            const data = {
-              content: `确认执行${obj.name}?`
-            };
-            const errorDialogTitle = this.ChineseDictionary.WARNING;
-            const errorDialogvalue = true;
-            const errorDialogBack = true;
-
-            this.setErrorModalValue({
-              data,
-              errorDialogTitle,
-              errorDialogvalue,
-              errorDialogBack
-            });
+            const title = '警告';
+            const contentText = `确认执行${obj.name}?`;
+            this.dialogMessage(title, contentText);
           } else {
             const data = {
               title: '警告',
@@ -1043,16 +929,9 @@
           this.buttons.dynamicRequestUrl.submit = obj.requestUrlPath;
           this.batchSubmit();
           if (this.buttons.selectIdArr.length > 0) {
-            const data = {
-              content: `确认执行${obj.name}?`
-            };
-            const errorDialogTitle = this.ChineseDictionary.WARNING;
-            const errorDialogvalue = true;
-            this.setErrorModalValue({
-              data,
-              errorDialogTitle,
-              errorDialogvalue
-            });
+            const title = '警告';
+            const contentText = `确认执行${obj.name}?`;
+            this.dialogMessage(title, contentText);
           } else {
             const data = {
               title: '警告',
@@ -1065,17 +944,9 @@
         if (obj.name === this.buttonMap.CMD_VOID.name) {
           // 批量作废
           if (this.buttons.selectIdArr.length > 0) {
-            const data = {
-              title: '警告',
-              content: `确认执行${obj.name}?`
-            };
-            const errorDialogTitle = this.ChineseDictionary.WARNING;
-            const errorDialogvalue = true;
-            this.setErrorModalValue({
-              data,
-              errorDialogTitle,
-              errorDialogvalue
-            });
+            const title = '警告';
+            const contentText = `确认执行${obj.name}?`;
+            this.dialogMessage(title, contentText);
           } else {
             const data = {
               title: '警告',
@@ -1249,7 +1120,7 @@
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.dialogConfig.contentText.indexOf(
               this.buttonMap.CMD_UNSUBMIT.name
             ) >= 0
           ) {
@@ -1259,7 +1130,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.dialogConfig.contentText.indexOf(
               this.buttonMap.CMD_SUBMIT.name
             ) >= 0
           ) {
@@ -1269,7 +1140,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.dialogConfig.contentText.indexOf(
               this.buttonMap.CMD_DELETE.name
             ) >= 0
           ) {
@@ -1277,7 +1148,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.dialogConfig.contentText.indexOf(
               this.buttonMap.CMD_VOID.name
             ) >= 0
           ) {
@@ -1407,7 +1278,7 @@
             }
           }
         }
-        if (this.buttons.errorData.content.indexOf('批量更新') >= 0) {
+        if (this.buttons.dialogConfig.contentText.indexOf('批量更新') >= 0) {
           this.dataConShow.dataConShow = true;
           this.dataConShow.title = this.$store.state.activeTab.label;
           this.dataConShow.tabConfig = {
@@ -1420,7 +1291,7 @@
           this.dataConShow.fixedcolumns = this.getJson();
           this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
         } else if (
-          this.buttons.errorData.content.indexOf('操作会执行全量导出') >= 0
+          this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
         ) {
           this.batchExport();
         } else if (this.buttons.selectSysment.length > 0) {
