@@ -1252,7 +1252,7 @@
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.errorData.message.indexOf(
               this.buttonMap.CMD_UNSUBMIT.name
             ) >= 0
           ) {
@@ -1262,7 +1262,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.errorData.message.indexOf(
               this.buttonMap.CMD_SUBMIT.name
             ) >= 0
           ) {
@@ -1272,7 +1272,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.errorData.message.indexOf(
               this.buttonMap.CMD_DELETE.name
             ) >= 0
           ) {
@@ -1280,7 +1280,7 @@
             return;
           }
           if (
-            this.buttons.errorData.content.indexOf(
+            this.buttons.errorData.message.indexOf(
               this.buttonMap.CMD_VOID.name
             ) >= 0
           ) {
@@ -1410,7 +1410,7 @@
             }
           }
         }
-        if (this.buttons.errorData.content.indexOf('批量更新') >= 0) {
+        if (this.buttons.errorData.message.indexOf('批量更新') >= 0) {
           this.dataConShow.dataConShow = true;
           this.dataConShow.title = this.$store.state.activeTab.label;
           this.dataConShow.tabConfig = {
@@ -1423,7 +1423,7 @@
           this.dataConShow.fixedcolumns = this.getJson();
           this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
         } else if (
-          this.buttons.errorData.content.indexOf('操作会执行全量导出') >= 0
+          this.buttons.errorData.message.indexOf('操作会执行全量导出') >= 0
         ) {
           this.batchExport();
         } else if (this.buttons.selectSysment.length > 0) {
