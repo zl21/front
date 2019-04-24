@@ -12,9 +12,9 @@ export default () => ({
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
-          acc.push({ tableName: cur.tablename });
-          return acc;
-        }, []),
+        acc.push({ tableName: cur.tablename });
+        return acc;
+      }, []),
     }),
 
   },
@@ -39,7 +39,6 @@ export default () => ({
         'updateDeleteData',
         'updateCheckedInfoData',
         'updatePanelData',
-        'performMainTableDeleteAction'
       ]),
   },
   // beforeDestroy() {

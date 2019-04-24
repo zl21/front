@@ -169,10 +169,10 @@ export default {
     path, table, objId, currentParameter, itemName, itemNameGroup
   }) { // 主表删除
     let parames = {};
-    const mainTable = currentParameter.delete;
-    mainTable[table].ID = objId;
-    mainTable[table].isdelmtable = true;
     if (itemNameGroup && itemNameGroup.length > 0) {
+      const mainTable = currentParameter.delete;
+      mainTable[table].ID = objId;
+      mainTable[table].isdelmtable = true;
       if (path) {
         parames = {
           ...mainTable
