@@ -592,7 +592,7 @@
               }
             }
           } else { // 没有提示信息
-            this.webActionSlient(type, obj);
+            this.webActionSlient(obj);
           }
         }
       },
@@ -725,6 +725,7 @@
         }, 300);
       },
       webActionSlient(item) {
+        console.log('🐦', item);
         // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
