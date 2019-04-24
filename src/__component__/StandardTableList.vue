@@ -101,7 +101,9 @@
           startIndex: 0,
           range: 10
         },
-        formItemsLists: []
+        formItemsLists: [],
+
+        formDefaultComplete: false
       };
     },
     computed: {
@@ -412,7 +414,8 @@
         );
 
         // 处理默认数据，然后进行查询
-        if (defaultFormItemsLists.length === 0) {
+        if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
+          this.formDefaultComplete = true;
           this.searchClickData();
         }
         if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
