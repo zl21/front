@@ -496,10 +496,10 @@
           }
         }
        
-        if (item.display === 'OBJ_SELECT' && item.defval) {
+        if (item.display === 'OBJ_SELECT') {
           // 处理select的默认值
           const arr = [];
-          arr.push(item.valuedata);
+          arr.push(item.valuedata || item.defval);
           return arr;
         }
 
@@ -562,6 +562,10 @@
             });
             return sum;
           }, []);
+          arr.unshift({
+            label: '请选择',
+            value: ''
+          });
           item.options = arr;
           return item;
         }
@@ -578,6 +582,10 @@
                 return sum;
               }, [])
             );
+            item.unshift({
+              label: '请选择',
+              value: ''
+            });
             return item;
           });
 
