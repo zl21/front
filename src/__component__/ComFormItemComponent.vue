@@ -320,9 +320,9 @@
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item.value === refval) {
-              this.newFormItemLists[index].show = false;
-            } else {
               this.newFormItemLists[index].show = true;
+            } else {
+              this.newFormItemLists[index].show = false;
             }
           }
           return option;
