@@ -509,7 +509,12 @@
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
-          const itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+          let itemId = '';
+          if (itemId) {
+            itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+          } else {
+            itemId = this.itemId;
+          }
           this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         }, 3000);
