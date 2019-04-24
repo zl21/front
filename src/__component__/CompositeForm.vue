@@ -11,6 +11,7 @@
       >
         <Panel
           :key="index"
+          :is-title-show="item.isTitleShow"
           title-type="center"
           :name="item.hrdisplay ==='expand' ? 'expand' :'false'"
         >
@@ -113,9 +114,7 @@
         mountChecked: false,
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent: Vue.extend(FormItemComponent),
-        childForm: {
-          childs: []
-        },
+        childFormData: [],
         tip: 'new',
         expand: 'expand' // 面板是否展开
       };
@@ -126,9 +125,9 @@
           // console.log('computdefaultData');
           let items = [];
           // 存放单个form child
-          const childForm = {
-            childs: []
-          };
+          // const childForm = {
+          //   childs: []
+          // };
           // 有面板的数据
           if (
             this.type
@@ -152,7 +151,7 @@
               } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
                 const option = this.reduceForm([], current.child, index);
                 if (option.item) {
-                  childForm.childs.push(option);
+                  this.childForm(option);
                 }
               }
               return array;
@@ -171,10 +170,14 @@
               []
             );
           }
+
           // 数据重组  默认展开
-          if (this.childForm.childs[0]) {
-            childForm.hrdisplay = 'expand';
-            items.push(childForm);
+          if (this.childFormData[0]) {
+            items.push({
+              hrdisplay: 'expand',
+              isTitleShow: false,
+              childs: this.childFormData
+            });
           }
           return items;
         },
@@ -201,6 +204,9 @@
     methods: {
       CollapseClose() {},
       Comparison() {},
+      childForm(option) {
+        return this.childFormData.push(option);
+      },
       formDataChange(data) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (!this.mountChecked) { 
@@ -227,10 +233,13 @@
 
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
+          this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
-        }else {
+        } else {
+          this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
+        
         this.$emit('formChange', this.formData);
       },
       VerifyMessageForm(value) {
@@ -240,8 +249,9 @@
 
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
+          this.verifyMessItem = data;
           this.$emit('VerifyMessage', data);
-        }
+        } 
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
@@ -274,7 +284,7 @@
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
-                  this.focusItem(index, current);
+                  this.focusItem(index, current, array);
                 }
                 this.searchClickData();
               }
@@ -371,7 +381,7 @@
               });
             }
           },
-          validate: {}
+          validate: this.validateList(current)
         };
         // 属性赋值
         // 属性isuppercase控制
@@ -382,6 +392,20 @@
         this.propsType(current, obj.item);
         return obj;
       },
+      validateList(current) {
+        // 联动校验
+        if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+          return {
+            dynamicforcompute: current.dynamicforcompute
+          };
+        } 
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          return {
+            hidecolumn: current.hidecolumn
+          };
+        }
+        return {};
+      },
       searchClickData() {
         // 按钮查找
         this.$emit('on-formEnter');
@@ -389,11 +413,11 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
-        if( item.readonly === true && item.fkdisplay ){
-            //  不可编辑 变成 input
-              str = 'input';
+        if (item.readonly === true && item.fkdisplay) {
+          //  不可编辑 变成 input
+          str = 'input';
 
-             return str;
+          return str;
         }
         if (
           !item.display
@@ -447,10 +471,9 @@
         //   item.valuedata = '';
         //   return '';
         // }
-         if( item.readonly === true && item.fkdisplay ){
-            //  不可编辑 变成 input
-            return item.defval || item.valuedata || '';
-
+        if (item.readonly === true && item.fkdisplay) {
+          //  不可编辑 变成 input
+          return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
         if (item.display === 'OBJ_DATENUMBER') {
@@ -465,10 +488,10 @@
         }
         // 设置表单的默认值
         if (item.display === 'check') {
-          if (item.valuedata === 'N' || item.defval === 'N') {
+          if (item.valuedata === 'N' || item.defval === 'N' || item.defval === '0' || item.valuedata === '0') {
             return false;
           }
-          if (item.valuedata === 'Y' || item.defval === 'Y') {
+          if (item.valuedata === 'Y' || item.defval === 'Y' || item.defval === '1' || item.valuedata === '1') {
             return true;
           }
         }
@@ -498,7 +521,7 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        if(current.type === 'OBJ_SELECT' || current.display === 'select'){
+        if (current.type === 'OBJ_SELECT' || current.display === 'select') {
           // 下拉是单选
           item.props.multiple = false;
         }
@@ -544,7 +567,6 @@
         }
         // 多状态合并的select
         if (current.conds && current.conds.length > 0) {
-          
           let sumArray = [];
           current.conds.map((option) => {
             sumArray = sumArray.concat(
@@ -584,7 +606,7 @@
           item.props.type = 'time';
         }
 
-        if (current.display === 'text' ||  current.display === 'xml') {
+        if (current.display === 'text' || current.display === 'xml') {
           switch (current.fkdisplay) {
           case 'drp':
             item.props.single = true;
@@ -739,17 +761,37 @@
 
         return VerificationMessage;
       },
-      focusItem(index, current) {
+      focusItem(index, current, arry) {
         // 下一个组件获取光标
         const item = this.$refs[`FormComponent_${current.formIndex}`][0]
           .$children;
-      
-        if (item[index + 1]) {
-          // if (type === 'input') {}
-          if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
-            item[index + 1].$el.querySelector('input').focus();
+        let _index = index;  
+        // const input_arry = item.reduce((option, name, index) => {
+        //   if (name.$el.querySelector('input') && name.items.type !== 'checkbox') {
+        //     option.push(name.$el.querySelector('input'));
+        //   }
+        //   return option;
+        // }, []);
+        if (arry[_index + 1] && arry[_index + 1].item.props.readonly) {
+          _index = index + 1;
+        }
+        item.some((option, i) => {
+          if (i > _index) {
+            if (option.$el.querySelector('input') && option.items.type !== 'checkbox') {
+              option.$el.querySelector('input').focus();
+              return i > index;
+            }
           }
-        }  
+        //
+        });
+        
+        
+        // if (item[index + 1] || item[index + 2]) {
+        //   // if (type === 'input') {}
+        //   if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
+        //     item[index + 1].$el.querySelector('input').focus();
+        //   }
+        // }  
       }
     },
     mounted() {

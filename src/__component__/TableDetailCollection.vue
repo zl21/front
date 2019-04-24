@@ -6,6 +6,7 @@
           <Page
             :total="dataSource.totalRowCount"
             :page-size-opts="dataSource.selectrange"
+            class="table-page"
             size="small"
             show-elevator
             show-sizer
@@ -558,6 +559,7 @@
                 this.getFKList(params, cellData);
               },
               'on-page-change': (value) => {
+                // debugger;
                 this.fkDropPageInfo.currentPageIndex = value;
                 this.getFKList(params, cellData);
               },
@@ -1054,9 +1056,9 @@
         this.searchInfo = '';
       },
       getFKList(params, cellData) {
-        // 获取外键关联的数据
-        this.fkData.totalRowCount = 0;
-        this.fkData = ({});
+        // 获取外键关联的数据  TODO 2019/4/23 发现点击分页弹框自动消失，必须要注释初始化数据的代码才不会关闭弹框
+        // this.fkData.totalRowCount = 0;
+        // this.fkData = ({});
         const searchdata = {
           isdroplistsearch: true,
           refcolid: this.dataSource.row[params.index][cellData.colname].colid, // TODO
@@ -1234,6 +1236,10 @@
       justify-content: space-between;
       .page-buttons {
         display: flex;
+        flex-wrap: wrap;
+      }
+      .table-page {
+        white-space: nowrap;
       }
       .detail-buttons {
         margin-left: 10px;

@@ -29,7 +29,6 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
 
-
   export default {
     name: 'FormItemComponent',
     computed: {
@@ -97,10 +96,12 @@
               }
             }
           } else if (items.item.value) {
-            if(typeof items.item.value === 'string'){
-               option[items.item.field] = items.item.value.replace('00:00:00','');
+            if (items.item.type === 'checkbox') {
+              option[items.item.field] = items.item.props.valuedata;
+            } else if (typeof items.item.value === 'string') {
+              option[items.item.field] = items.item.value.replace('00:00:00', '');
             } else {
-               option[items.item.field] = items.item.value;
+              option[items.item.field] = items.item.value;
             }
           }
 
@@ -178,7 +179,7 @@
         const elDiv = this.$refs[`component_${current.index}`][0].$el;
         let onfousInput = {};
         if (current.type === 'textarea') {
-          onfousInput = elDiv.querySelector('input');
+          onfousInput = elDiv.querySelector('textarea');
         } else {
           onfousInput = elDiv.querySelector('input');
         }
@@ -205,6 +206,7 @@
           }
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
@@ -255,11 +257,14 @@
             } else {
               obj[current.item.inputname] = current.item.value;
             }
+          } else if (current.item.type === 'checkbox') {
+            // 对应的key
+            obj[current.item.field] = current.item.props.valuedata;
           } else if (current.item.value.length > 0) {
-             if(typeof current.item.value === 'string'){
-                obj[current.item.field] = current.item.value.replace('00:00:00','');
+            if (typeof current.item.value === 'string') {
+              obj[current.item.field] = current.item.value.replace('00:00:00', '');
             } else {
-                obj[current.item.field] = current.item.value;
+              obj[current.item.field] = current.item.value;
             }
           } else {
             obj[current.item.field] = current.item.empty;
@@ -298,13 +303,14 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      dynamicforcompute(items, json, index) {
+      dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
         const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
           temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
           return temp;
         }, items.validate.dynamicforcompute.express);
-        this.newFormItemLists[index].item.value = eval(str);
+        const _index = this.newFormItemLists.findIndex(option => option.item.field === items.validate.dynamicforcompute.computecolumn);
+        this.newFormItemLists[_index].item.value = eval(str);
       },
       hidecolumn(items, index) {
         // 隐藏
