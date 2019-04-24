@@ -108,4 +108,7 @@ export default {
   updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
     state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
   },
+  updateNewMainTableDeleteData(state, data) { // 删除返回信息
+    state.mainFormInfo.buttonsData.deleteData = data.message;
+  },
 };

@@ -57,7 +57,7 @@
         tableId: '', // 主表ID
         itemId: '', // 子表ID
         currentParameter: {},
-        itemCurrentParameter: [],
+        itemCurrentParameter: {},
         buttonShowType: '', // 判断按钮显示条件
         dynamic: {
           name: '保存',
@@ -288,12 +288,13 @@
         } else if (obj.requestUrlPath) { // 有path，没有子表
           this.$refs.dialogRef.open();
           this.dialogConfig = {
-            contentText: '确认执行有path的删除?',
+            contentText: '确认执行删除?',
             confirm: () => {
               this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
-              this.$Message.success('删除成功');
-              this.clickButtonsBack();
               setTimeout(() => {
+                const deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                this.$Message.success(`${deleteMessage}`);
+                this.clickButtonsBack();
                 this.getQueryListForAg(searchData);
               }, 1000);
             }
@@ -305,9 +306,10 @@
             contentText: '确认执行删除?',
             confirm: () => {
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-              this.$Message.success('删除成功');
-              this.clickButtonsBack();
               setTimeout(() => {
+                const deleteMessage = this.mainFormInfo.buttonsData.deleteData;
+                this.$Message.success(`${deleteMessage}`);
+                this.clickButtonsBack();
                 this.getQueryListForAg(searchData);
               }, 1000);
             }
@@ -382,9 +384,9 @@
             // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
             if (this.dynamic.requestUrlPath) { // 配置path
               const itemName = this.itemName;// 子表表名
-              const itemNameGroup = this.itemNameGroup;
+              const itemCurrentParameter = this.itemCurrentParameter;
               console.log('配置path', itemName);
-              this.savaNewTable(type, path, objId, itemName, itemNameGroup);
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             } else { // 没有配置path
 
             }
@@ -444,9 +446,8 @@
        *    objectType:判断是上下结构还是左右结构
        * }
        */
-      savaNewTable(type, path, objId, itemName, itemNameGroup) { // 主表新增保存方法
+      savaNewTable(type, path, objId, itemName, itemCurrentParameter) { // 主表新增保存方法
         const tableName = this.tableName;
-        const itemCurrentParameter = this.itemCurrentParameter;
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -455,7 +456,6 @@
           objId,
           path,
           itemName,
-          itemNameGroup
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
@@ -466,14 +466,12 @@
       },
       saveParameters() {
         if (this.itemNameGroup.length > 0) { // 有子表
-          this.itemNameGroup.forEach((d) => {
-            Object.keys(this.updateData).forEach((item) => { // 获取store储存的新增修改保存需要的参数信息
-              if (item === d.tableName) { // 储存子表信息
-                this.itemCurrentParameter.push(this.updateData[item]);
-                console.log('🥛', this.itemCurrentParameter);
-              }
-            });
-          });
+          Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+            if (current === this.itemName) {
+              this.itemCurrentParameter = this.updateData[current];
+            }
+            return obj;
+          }, {});
         } 
         Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           if (current === this.tableName) {

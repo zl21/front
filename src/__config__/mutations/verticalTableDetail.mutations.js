@@ -84,17 +84,16 @@ export default {
     componentAttribute.panelData.data = data;
   },
  
-  // updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
-  //   console.log('🍅', data);
-  //   state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
-  // },
-  // updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
-  //   state.mainFormInfo.buttonsData.newMainTableSaveData = data;
-  // },
   updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
     state.mainFormInfo.buttonsData.newMainTableSaveData = data;
   },
   updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
     state.mainFormInfo.buttonsData.newMainTableSaveData = data;
+  },
+  updateNewItemTableAddSaveData(state, data) { // 带子表的新增保存
+    state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
+  },
+  updateNewMainTableDeleteData(state, data) { // 删除返回信息
+    state.mainFormInfo.buttonsData.deleteData = data.message;
   },
 };

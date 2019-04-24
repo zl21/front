@@ -140,32 +140,18 @@ export default {
     const { path } = parame;
     const { type } = parame;
     const { itemName } = parame;
-    const { itemNameGroup } = parame;
     const { itemCurrentParameter } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-      if (itemNameGroup && itemNameGroup.length > 0) { // 存在子表
+      if (itemName) { // 存在子表
         if (path) { // 有path的参数
-          let itemParameterAdd = '';                    
-          itemCurrentParameter.forEach((item) => {
-            if (Object.values(item.add).length > 0) {
-              // itemNameGroup.forEach((el) => {
-              // if (item.add[el.tableName]) {
-              // if (item.add[el.tableName]) {
-              itemParameterAdd = item.add[itemName];
-              itemParameterAdd.ID = objId;
-              // }
-              // }
-              // });
-            }
-          });
+          const itemAdd = itemCurrentParameter.add;
+          itemAdd[itemName].ID = objId;
           add[tableName].ID = objId;
-          // const itemParameterAdd = itemCurrentParameter.add;
           parames = {
             ...add,
-            ...itemParameterAdd
-
+            ...itemAdd
           };
         } else {
           parames = {
@@ -216,7 +202,11 @@ export default {
         const data = res.data;
         if (data.message === '新增成功') {
           commit('updateNewMainTableAddSaveData', data.data);
-        } else if (data.message === '更新成功') { commit('updateNewMainTableModifySaveData', data.data); }
+        } else if (data.message === '更新成功') {
+          commit('updateNewMainTableModifySaveData', data.data);
+        } else if (itemName) {
+          commit('updateNewItemTableAddSaveData', data.data);
+        } 
       }
     });
   },
@@ -236,10 +226,10 @@ export default {
       };
     }
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
-      // if (res.data.code === 0) {
-      // const data = res.data;
-      // commit('updateNewMainTableDeleteData', data);
-      // }
+      if (res.data.code === 0) {
+        const data = res.data;
+        commit('updateNewMainTableDeleteData', data);
+      }
     });
   },
 
