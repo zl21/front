@@ -24,7 +24,6 @@
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
 
-
   export default {
     data() {
       return {
@@ -380,7 +379,6 @@
           }
           if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
             // console.log('有子表');
-<<<<<<< HEAD
             // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
             if (this.dynamic.requestUrlPath) { // 配置path
               const itemName = this.itemName;// 子表表名
@@ -388,24 +386,6 @@
               console.log('配置path', itemName);
               this.savaNewTable(type, path, objId, itemName, itemNameGroup);
             } else { // 没有配置path
-=======
-            const objectType = this.objectType;
-            if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
-              if (this.dynamic.requestUrlPath) { // 配置path
-                const itemName = this.itemName;// 子表表名
-                console.log('配置path', itemName);
-
-                this.savaNewTable(type, path, objId, itemName, objectType);
-              } else { // 没有配置path
-
-              }
-            } else if (this.objectType === 'vertical') { // 上下结构
-              if (this.dynamic.requestUrlPath) { // 配置path
-                console.log('配置path');
-                const itemName = this.itemName;// 子表表名
-                this.savaNewTable(type, path, objId, itemName, objectType);
-              } else { // 没有配置path
->>>>>>> e48f138fb64fdfe126b7e0368d8f805d1a5d615e
 
             }
             // } else if (this.objectType === 'vertical') { // 上下结构

@@ -150,20 +150,14 @@ export default {
           let itemParameterAdd = '';                    
           itemCurrentParameter.forEach((item) => {
             if (Object.values(item.add).length > 0) {
-              itemNameGroup.forEach((el) => {
-                console.log('🐘', itemName);
-                console.log('🍌', item.add, item.add[el.tableName]);
-                if (item.add[el.tableName]) {
-                  if (item.add[el.tableName]) {
-                    itemParameterAdd = item.add;
-                    itemParameterAdd.ID = objId;
-                    console.log('🍓', itemParameterAdd);
-                  }
-                }
-              });
-              // if (itemNameGroup.includes(Object.keys(item))) {
-             
+              // itemNameGroup.forEach((el) => {
+              // if (item.add[el.tableName]) {
+              // if (item.add[el.tableName]) {
+              itemParameterAdd = item.add[itemName];
+              itemParameterAdd.ID = objId;
               // }
+              // }
+              // });
             }
           });
           add[tableName].ID = objId;
