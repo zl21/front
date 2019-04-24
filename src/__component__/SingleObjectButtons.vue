@@ -24,6 +24,7 @@
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
 
+
   export default {
     data() {
       return {
@@ -252,7 +253,7 @@
         // }
       },
       waListButtons(tabwebact) {
-        if (tabwebact.objbutton.length > 0) {
+        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
           tabwebact.objbutton.forEach((item) => {
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
           });

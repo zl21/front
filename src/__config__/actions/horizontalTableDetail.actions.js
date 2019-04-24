@@ -161,13 +161,7 @@ export default {
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
-        if (data.message === '新增成功') {
-          commit('updateNewMainTableAddSaveData', data.data);
-        } else if (data.message === '更新成功') {
-          commit('updateNewMainTableModifySaveData', data.data);
-        } else if (itemName) {
-          commit('updateNewItemTableAddSaveData', data.data);
-        } 
+        commit('updateNewMainTableAddSaveData', { data, itemName });
       }
     });
   },

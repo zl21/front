@@ -65,10 +65,17 @@ export default () => ({
       },
       importParameters: {},
       importTemplate: {},
-      errorDialogBack: false, // 是否有返回按钮
-      errorDialogClass: '', // 弹框类型
-      errorDialog: false,
-      errorDialogTitle: '',
+      mask: true,
+      dialogConfig: {
+        title: '提示',
+        mask: true,
+        footerHide: false,
+        contentText: '',
+      },
+      // errorDialogBack: false, // 是否有返回按钮
+      // errorDialogClass: '', // 弹框类型
+      // errorDialog: false,
+      // errorDialogTitle: '',
       detailState: true, // 是否可以双击查看或点击序号查看
       actionLoading: true,
       batchSubmitData: {}, // 批量提交返回数据

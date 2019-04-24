@@ -95,18 +95,19 @@ export default {
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
-  // updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
-  //   console.log('🍅', data);
-  //   state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
-  // },
-  // updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
-  //   state.mainFormInfo.buttonsData.newMainTableSaveData = data;
-  // },
-  updateNewMainTableAddSaveData(state, data) { // 主表新增保存返回信息
-    state.mainFormInfo.buttonsData.newMainTableSaveData = data;
-  },
-  updateNewMainTableModifySaveData(state, data) { // 主表修改保存返回信息
-    state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
+  updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
+    state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
+    if (data.message === '新增成功') {
+      state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
+    } else if (data.message === '更新成功') {
+      state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
+    } else if (itemName) {
+      if (data.message === '保存成功') {
+        state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
+      } else {
+        state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
+      }
+    }
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.deleteData = data.message;

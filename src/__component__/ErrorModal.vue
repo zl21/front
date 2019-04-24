@@ -1,110 +1,99 @@
   
 <template>
-  <div class="errorMessage">
-    <Modal
-      v-model="showFlag"
-      :title="title"
-      @on-ok="confirmDialog()"
-      @on-cancel="closeDialog()"
-    >
-      <!-- <p
-        v-for="(item, index) in errorMessage"
-        :key="index"
-        v-html="item.content"
-      /> -->
-      <p
-        v-if="!errorFlag"
-        v-html="errorMessage.message"
-      />
-      <!-- <div
-        v-if="!hiddenButton"
-        slot="footer"
-      >
-        <Button
-          @click.stop="closeDialog(true)"
-          @keyup.13.stop="confirmDialog()"
-        >
-          {{ ChineseDictionary.ENSURE }}
-        </Button>
-        <Button
-          v-if="dialogBack"
-          @click.stop="closeDialog()"
-        >
-          {{ ChineseDictionary.CANCEL }}
-        </Button>
-      </div>
-
-      <div
-        v-if="hiddenButton"
-        class="bottom"
-      >
-        <Button
-          v-if="dialogBack"
-          @click.stop="closeDialog()"
-        >
-          {{ ChineseDictionary.ENSURE }}
-        </Button>
-      </div> -->
-    </Modal>
-  </div>
+  <Modal
+    v-model="showModal"
+    :title="title"
+    :title-align="titleAlign"
+    :scrollable="scrollable"
+    :closable="closable"
+    :draggable="draggable"
+    :mask="mask"
+    :mask-closable="maskClosable"
+    :transfer="transfer"
+    :footer-hide="footerHide"
+    :ok-text="okText"
+    :cancel-text="cancelText"
+    @on-ok="confirmDialog()"
+    @on-cancel="closeDialog()"
+  >
+    <p>{{ contentText }}</p>
+  </Modal>
 </template>
 
 <script>
-  import ChineseDictionary from '../assets/js/ChineseDictionary';
-
   export default {
     props: {
-      errorDialog: {
-        type: Boolean,
-        default: false
-      },
-      
-      errorMessage: {
-        type: [Object, Array],        
-        default() {
-        
-        }
-      },
-      dialogClass: {
-        type: String,
-        default: ''
-      }, // 定义用哪个弹框
+      // showModal: {
+      //   type: Boolean,
+      //   default: () => false
+      // }, // 是否可以滚动
       title: {
         type: String,
-        default: ''
-      },
-      dialogBack: {
+        default: () => '标题'
+      }, // 设置标题title
+      titleAlign: {
+        type: String,
+        default: () => 'left'
+      }, // 设置标题是否居中 // center left
+      scrollable: {
         type: Boolean,
-      },
-      hiddenButton: {
+        default: () => false
+      }, // 是否可以滚动
+      closable: {
         type: Boolean,
-      },
-      // errorDialogBack: {
-      //   type: Boolean,
-      //   default: false
-      // },
- 
+        default: () => true
+      }, // 是否可以按esc关闭
+      draggable: {
+        type: Boolean,
+        default: () => true
+      }, // 是否可以拖动
+      mask: {
+        type: Boolean,
+        default: () => false
+      }, // 是否显示遮罩层
 
+      maskClosable: {
+        type: Boolean,
+        default: () => true
+      }, // 是否可以点击叉号关闭
+      transfer: {
+        type: Boolean,
+        default: () => true
+      }, // 是否将弹层放在body内
+      footerHide: {
+        type: Boolean,
+        default: () => false
+      }, // 是否显示底部
+      okText: {
+        type: String,
+        default: () => '确定'
+      },
+      cancelText: {
+        type: String,
+        default: () => '取消'
+      },
+      cancelFun: {
+        type: Function,
+        default: () => {}
+      },
+      confirm: {
+        type: Function,
+        default: () => {}
+      },
+      contentText: {
+        type: String,
+        default: () => '暂无提示'
+      },
     },
     data() {
       return {
-        errorFlag: false,
-        showFlag: false,
+        showModal: false,
       };
     },
-    created() {
-      this.ChineseDictionary = ChineseDictionary;
-    },
-    mounted() {
-      if (this.errorDialog) this.showFlag = true;
-      else this.showFlag = false;
-      if (this.errorMessage instanceof Array) {
-        this.errorFlag = true;
-      } else {
-        this.errorFlag = false;
-      }
-    },
     methods: {
+      open() {
+        this.showModal = true;
+      },
       closeDialog() {
         this.$emit('closeDialog');
       },
