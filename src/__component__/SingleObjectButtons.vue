@@ -412,72 +412,73 @@
         this.determineSaveType(obj);
       }, // 纵向布局
       determineSaveType(obj) {
-        // if (this.verifyRequiredInformation()) { // 验证表单必填项
-        this.saveParameters();// 调用获取参数方法
-        if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
-          // console.log('主表新增保存和编辑新增保存');
-          const type = 'add';
-          const path = this.dynamic.requestUrlPath;
-          const objId = -1;
+        if (this.verifyRequiredInformation()) { // 验证表单必填项
+          this.saveParameters();// 调用获取参数方法
+          if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
+            // console.log('主表新增保存和编辑新增保存');
+            const type = 'add';
+            const path = this.dynamic.requestUrlPath;
+            const objId = -1;
 
-          if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
-            // console.log('没有子表');
-            if (this.dynamic.requestUrlPath) { // 配置path
-              // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
-              this.savaNewTable(type, path, objId);
-            } else { // 没有配置path
-              this.savaNewTable(type, path, objId);
+            if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
+              // console.log('没有子表');
+              if (this.dynamic.requestUrlPath) { // 配置path
+                // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
+                this.savaNewTable(type, path, objId);
+              } else { // 没有配置path
+                this.savaNewTable(type, path, objId);
+              }
             }
-          }
-          if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
-            // console.log('有子表');
-            // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
-            if (this.dynamic.requestUrlPath) { // 配置path
-              const itemName = this.itemName;// 子表表名
-              const itemCurrentParameter = this.itemCurrentParameter;
-              console.log('配置path', itemName);
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path
+            if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
+              // console.log('有子表');
+              // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
+              if (this.dynamic.requestUrlPath) { // 配置path
+                const itemName = this.itemName;// 子表表名
+                const itemCurrentParameter = this.itemCurrentParameter;
+                console.log('配置path', itemName);
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              } else { // 没有配置path
 
+              }
+              // } else if (this.objectType === 'vertical') { // 上下结构
+              // if (this.dynamic.requestUrlPath) { // 配置path
+              //   console.log('配置path');
+              //   const itemName = this.itemName;// 子表表名
+              //   this.savaNewTable(type, path, objId, itemName, objectType);
+              // } else { // 没有配置path
+
+              // }
+              // }
             }
-            // } else if (this.objectType === 'vertical') { // 上下结构
-            // if (this.dynamic.requestUrlPath) { // 配置path
-            //   console.log('配置path');
-            //   const itemName = this.itemName;// 子表表名
-            //   this.savaNewTable(type, path, objId, itemName, objectType);
-            // } else { // 没有配置path
-
-            // }
-            // }
-          }
-        } else if (this.itemId !== '-1') { // 主表编辑保存
-          // console.log('主表编辑保存');
-          if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
-            // console.log('没有子表',);
-            const path = obj.requestUrlPath;
-            const type = 'modify';
-            if (obj.requestUrlPath) { // 配置path
-              // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
-              this.savaNewTable(type, path, this.itemId);
-            } else { // 没有配置path
-              // console.log('主表编辑保存,没有配置path的逻辑');
-              const objId = this.itemId;
-              this.savaNewTable(type, path, objId);
+          } else if (this.itemId !== '-1') { // 主表编辑保存
+            // console.log('主表编辑保存');
+            if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
+              // console.log('没有子表',);
+              const path = obj.requestUrlPath;
+              const type = 'modify';
+              if (obj.requestUrlPath) { // 配置path
+                // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
+                this.savaNewTable(type, path, this.itemId);
+              } else { // 没有配置path
+                // console.log('主表编辑保存,没有配置path的逻辑');
+                const objId = this.itemId;
+                this.savaNewTable(type, path, objId);
+              }
             }
-          }
-          if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
-            // console.log('有子表');
-            if (obj.requestUrlPath) { // 配置path
-              // console.log('配置path的逻辑暂无添加');
-            } else { // 没有配置path
+            if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
+              // console.log('有子表');
+              if (obj.requestUrlPath) { // 配置path
+                // console.log('配置path的逻辑暂无添加');
+              } else { // 没有配置path
 
+              }
             }
           }
         }
-        // }
       },
       verifyRequiredInformation() { // 验证表单必填项
         const checkedInfo = this.updateData[this.tableName].checkedInfo;
+        // if(checkedInfo)
         const messageTip = checkedInfo.messageTip;
         if (messageTip.length > 0) {
           this.$Message.warning(messageTip[0]);
@@ -493,7 +494,6 @@
        *    path:有新接口
        *    objId: 明细ID
        *    itemName: 子表表名
-       *    objectType:判断是上下结构还是左右结构
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter) { // 主表新增保存方法
