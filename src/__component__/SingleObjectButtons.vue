@@ -23,7 +23,7 @@
   import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
-
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
 
   export default {
     data() {
@@ -38,7 +38,7 @@
         },
 
         dataArray: {
-          refresh: false, // 显示刷新
+          refresh: true, // 显示刷新
           back: true, // 显示刷新
           printValue: false, // 是否显示打印
           actionCollection: false,
@@ -127,6 +127,10 @@
         type: Array,
         default: () => ([])
       },
+      itemInfo: {// 当前子表信息
+        type: Object,
+        default: () => ({})
+      },
     },
     methods: {
       ...mapActions(moduleName(), ['getQueryListForAg']),
@@ -167,6 +171,44 @@
         }
       },
       clickButtonsRefresh() {
+        if (this.itemId === 'New') { // 新增刷新
+          if (this.objectType === 'horizontal') { // 横向布局
+            // getObjectTabForChildTableButtons({ commit }, { maintable, table, objid }) {
+            if (this.tabCurrentIndex === 0) { // 主表
+              this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+              this.getObjectForMainTableForm({ table: this.itemName, objid: this.itemId });
+            } else { // 子表
+              // if (this.itemInfo.tabrelation === '1:m') {
+              //   if (this.itemInfo.refcolid !== -1) {
+              //     this.getInputForitemForChildTableForm({ table: this.itemInfo.tablename });
+              //   }
+              //   const { tableName, itemId } = this.$route.params;
+              //   const { tablename, refcolid } = this.itemInfo;
+              //   this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
+              //   this.getObjectTableItemForTableData({
+              //     table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              //   });
+              // } else if (this.itemInfo.tabrelation === '1:1') {
+              //   const { tableName, itemId } = this.$route.params;
+              //   const { tablename, refcolid } = this.itemInfo;
+              //   this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
+              //   this.getItemObjForChildTableForm({ table: tablename, objid: itemId, refcolid });
+              // }
+            }
+          } else { // 纵向布局
+            
+          }
+        } else { // 编辑刷新
+          const ID = this.itemId;
+          if (this.objectType === 'horizontal') { // 横向布局
+            this.getObjectTabForMainTable({ table: this.itemName, objid: ID });
+            this.getObjectForMainTableForm({ table: this.itemName, objid: ID });
+          } else {
+
+          }
+        }
+       
+
         this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
         this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
         if (this.itemNameGroup.length > 0) { // 有子表
@@ -435,10 +477,11 @@
               if (this.dynamic.requestUrlPath) { // 配置path
                 const itemName = this.itemName;// 子表表名
                 const itemCurrentParameter = this.itemCurrentParameter;
-                console.log('配置path', itemName);
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
-
+                const itemName = this.itemName;// 子表表名
+                const itemCurrentParameter = this.itemCurrentParameter;
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
               // } else if (this.objectType === 'vertical') { // 上下结构
               // if (this.dynamic.requestUrlPath) { // 配置path
@@ -477,13 +520,35 @@
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
-        const checkedInfo = this.updateData[this.tableName].checkedInfo;
-        // if(checkedInfo)
+        this.saveParameters();
+        const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         const messageTip = checkedInfo.messageTip;
-        if (messageTip.length > 0) {
-          this.$Message.warning(messageTip[0]);
-          checkedInfo.validateForm.focus();
-          return false;
+        const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
+        const itemMessageTip = itemCheckedInfo.messageTip;
+        if (messageTip) {
+          if (messageTip.length > 0) {
+            this.$Message.warning(messageTip[0]);
+            checkedInfo.validateForm.focus();
+            return false;
+          }
+        } else if (itemMessageTip) {
+          if (itemMessageTip.length > 0) {
+            this.$Message.warning(itemMessageTip[0]);
+            itemCheckedInfo.validateForm.focus();
+            return false;
+          }
+        }
+        if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+          this.saveParameters();
+          if (this.objectType === 'vertical') {
+            if (this.itemId === 'New') {
+              const addInfo = this.itemCurrentParameter.add[this.itemName];
+              if (Object.values(addInfo).length < 1) {
+                this.$Message.warning('个人信息不能为空!');
+                return false;
+              }
+            }
+          }
         }
         return true;
       },
@@ -510,14 +575,14 @@
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
           let itemId = '';
-          if (itemId) {
+          if (this.itemId === 'New') {
             itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
           } else {
             itemId = this.itemId;
           }
           this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        }, 3000);
+        }, 1000);
       },
       saveParameters() {
         if (this.itemNameGroup.length > 0) { // 有子表

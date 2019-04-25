@@ -165,7 +165,7 @@ export default {
       } else if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
-          ...add[tableName]
+          ...add
         };
       } else {
         parames = {

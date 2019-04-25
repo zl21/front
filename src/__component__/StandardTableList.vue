@@ -1044,7 +1044,7 @@
         // }
         this.getExportQueryForButtons(OBJ);
       },
-      deleteTableList() {
+      deleteTableList() { // 删除方法
         const objQuery = {
           tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
@@ -1059,8 +1059,15 @@
             };
             this.$Modal.fcSuccess(data);
             this.getQueryListForAg(this.searchData);
+          } else {
+            // const message = this.buttons.batchDeleteData.message;
+            // const data = {
+            //   title: '失败',
+            //   content: `${message}`
+            // };
+            // this.$Modal.fcError(data);
           }
-        }, 1000);
+        }, 2000);
       },
       batchVoid() {
         const searchdata = {
