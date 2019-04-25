@@ -178,6 +178,7 @@
               this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
               this.getObjectForMainTableForm({ table: this.itemName, objid: this.itemId });
             } else { // 子表
+            
               // if (this.itemInfo.tabrelation === '1:m') {
               //   if (this.itemInfo.refcolid !== -1) {
               //     this.getInputForitemForChildTableForm({ table: this.itemInfo.tablename });
