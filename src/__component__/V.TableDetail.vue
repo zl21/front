@@ -48,6 +48,7 @@
         const arr = [];
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
+          obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';

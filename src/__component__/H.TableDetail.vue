@@ -33,6 +33,7 @@
               obj.label = this.activeTab.label;
             }
             obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.type = 'horizontal';
             Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
