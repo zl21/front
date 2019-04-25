@@ -51,7 +51,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="getTabelList"
