@@ -230,11 +230,13 @@
             }
           });
         });
-
         const message = this.setVerifiy();
+        //console.log(message,this.VerificationForm);
         if (message.messageTip.length > 0) {
+          this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
         } else {
+          this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
         this.$emit('formChange', this.formData);
@@ -246,8 +248,9 @@
 
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
+          this.verifyMessItem = data;
           this.$emit('VerifyMessage', data);
-        }
+        } 
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
@@ -377,7 +380,7 @@
               });
             }
           },
-          validate: {}
+          validate: this.validateList(current)
         };
         // 属性赋值
         // 属性isuppercase控制
@@ -387,6 +390,20 @@
 
         this.propsType(current, obj.item);
         return obj;
+      },
+      validateList(current) {
+        // 联动校验
+        if (Object.hasOwnProperty.call(current, 'dynamicforcompute')) {
+          return {
+            dynamicforcompute: current.dynamicforcompute
+          };
+        } 
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          return {
+            hidecolumn: current.hidecolumn
+          };
+        }
+        return {};
       },
       searchClickData() {
         // 按钮查找
@@ -478,10 +495,10 @@
           }
         }
        
-        if (item.display === 'OBJ_SELECT' && item.defval) {
+        if (item.display === 'OBJ_SELECT') {
           // 处理select的默认值
           const arr = [];
-          arr.push(item.valuedata);
+          arr.push(item.valuedata || item.defval);
           return arr;
         }
 
@@ -509,7 +526,8 @@
         }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
-          
+          item.props.number = true;
+
           const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${current.scale}})?$`;
           const typeRegExp = new RegExp(string);
           if (current.scale > 0) {
@@ -526,8 +544,8 @@
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
           }
-          if (item.type === 'NUMBER') {
-            item.props.type = 'number';
+          if (item.props.number) {
+           // item.props.type = 'number';
             item.props.empty = 0;
           }
           if (current.isnotnull === true) {
@@ -544,6 +562,10 @@
             });
             return sum;
           }, []);
+          arr.unshift({
+            label: '请选择',
+            value: ''
+          });
           item.options = arr;
           return item;
         }
@@ -560,6 +582,10 @@
                 return sum;
               }, [])
             );
+            item.unshift({
+              label: '请选择',
+              value: ''
+            });
             return item;
           });
 
@@ -718,7 +744,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value.length < 1) {
+          if (item.value === undefined || item.value === 0 || item.value === '') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -740,7 +766,6 @@
             }
           }
         });
-
         return VerificationMessage;
       },
       focusItem(index, current, arry) {

@@ -93,13 +93,13 @@ export default {
     buttons.batchDeleteData = data;
   },
   setErrorModalValue({ buttons }, {
-    data, errorDialogTitle, errorDialogvalue, errorDialogBack 
+    title, contentText, footerHide 
   }) { // 设置error弹窗提示信息
-    buttons.errorData.message = data.content;
-    buttons.errorDialog = errorDialogvalue;
-    buttons.errorDialogClass = 'fcWarning';
-    buttons.errorDialogTitle = errorDialogTitle;
-    buttons.errorDialogBack = errorDialogBack;
+    buttons.dialogConfig = {
+      title,
+      footerHide,
+      contentText,
+    };
   },
   setActionDialog({ buttons }, obj) {
     // buttons.actionDialog.queryString = obj.action.split('/')[1];

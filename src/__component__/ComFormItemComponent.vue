@@ -29,7 +29,6 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
 
-
   export default {
     name: 'FormItemComponent',
     computed: {
@@ -97,11 +96,7 @@
               }
             }
           } else if (items.item.value) {
-            if(typeof items.item.value === 'string'){
-               option[items.item.field] = items.item.value.replace('00:00:00','');
-            } else {
-               option[items.item.field] = items.item.value;
-            }
+            option[items.item.field] = items.item.props.valuedata;
           }
 
           return option;
@@ -178,7 +173,7 @@
         const elDiv = this.$refs[`component_${current.index}`][0].$el;
         let onfousInput = {};
         if (current.type === 'textarea') {
-          onfousInput = elDiv.querySelector('input');
+          onfousInput = elDiv.querySelector('textarea');
         } else {
           onfousInput = elDiv.querySelector('input');
         }
@@ -205,6 +200,7 @@
           }
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
@@ -255,14 +251,26 @@
             } else {
               obj[current.item.inputname] = current.item.value;
             }
-          } else if (current.item.value.length > 0) {
-             if(typeof current.item.value === 'string'){
-                obj[current.item.field] = current.item.value.replace('00:00:00','');
-            } else {
+          } else if (current.item.type === 'checkbox') {
+            // 对应的key
+            obj[current.item.field] = current.item.props.valuedata;
+          } else if (current.item.value.toString().length > 0) {
+
+            if (current.item.props.number) {
+              if( current.item.type === 'input'){
                 obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
+                obj[current.item.field] = Number(value);
+              }
+              
+            } else if (typeof current.item.value === 'string') {
+              obj[current.item.field] = current.item.value.replace('00:00:00', '');
+            } else {
+              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }
           } else {
-            obj[current.item.field] = current.item.empty;
+            obj[current.item.field] = current.item.props.empty;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
@@ -277,7 +285,6 @@
 
             return objData;
           }, {}));
-          console.log(obj, 'obj');
         }
         this.changeFormData = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
@@ -298,13 +305,14 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      dynamicforcompute(items, json, index) {
+      dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
         const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
           temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
           return temp;
         }, items.validate.dynamicforcompute.express);
-        this.newFormItemLists[index].item.value = eval(str);
+        const _index = this.newFormItemLists.findIndex(option => option.item.field === items.validate.dynamicforcompute.computecolumn);
+        this.newFormItemLists[_index].item.value = eval(str);
       },
       hidecolumn(items, index) {
         // 隐藏
@@ -314,9 +322,9 @@
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item.value === refval) {
-              this.newFormItemLists[index].show = false;
-            } else {
               this.newFormItemLists[index].show = true;
+            } else {
+              this.newFormItemLists[index].show = false;
             }
           }
           return option;
