@@ -239,8 +239,6 @@
         };
 
         this.$store.commit('global/tabHref', param);
-        // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       },
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
@@ -310,11 +308,7 @@
                 });
                 setTimeout(() => {
                   let deleteMessage = '';
-                  if (this.objectType === 'horizontal') {
-                    deleteMessage = this.deleteData;
-                  } else {
-                    deleteMessage = this.mainFormInfo.buttonsData.deleteData;
-                  }
+                  deleteMessage = this.deleteData;
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
                   this.getQueryListForAg(searchData);
@@ -551,7 +545,7 @@
         setTimeout(() => {
           let itemId = '';
           if (this.itemId === 'New') {
-            itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+            itemId = this.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
           } else {
             itemId = this.itemId;
           }
