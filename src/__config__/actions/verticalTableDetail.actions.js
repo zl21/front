@@ -119,6 +119,7 @@ export default {
       }
     });
   },
+  
   // 按钮
   getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id

@@ -171,49 +171,24 @@
         }
       },
       clickButtonsRefresh() {
-        if (this.itemId === 'New') { // 新增刷新
-          const { tablename, refcolid } = this.itemInfo;
-
-          if (this.objectType === 'horizontal') { // 横向布局
-            // getObjectTabForChildTableButtons({ commit }, { maintable, table, objid }) {
-            if (this.tabCurrentIndex === 0) { // 主表
-              this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-              // this.getObjectForMainTableForm({ table: this.itemName, objid: this.itemId });
-            } else if (this.itemInfo.tabrelation === '1:m') { // 子表
-              this.getInputForitemForChildTableForm({ table: this.itemInfo.tablename });
-              this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
-              this.getObjectTableItemForTableData({
-                table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
-              });
-            } else if (this.itemInfo.tabrelation === '1:1') {
-              this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
-              this.getItemObjForChildTableForm({ table: tablename, objid: this.itemId, refcolid });
-            }
-          } else { // 纵向布局
-            this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+        const { tablename, refcolid, tabrelation } = this.itemInfo;
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.tabCurrentIndex === 0) { // 主表
             this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-            this.getInputForitemForChildTableForm({ table: this.itemInfo.tablename });
+          } else if (tabrelation === '1:m') { // 子表
+            this.getInputForitemForChildTableForm({ table: tablename });
             this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
             this.getObjectTableItemForTableData({
               table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
             });
+          } else if (tabrelation === '1:1') {
+            this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
+            this.getItemObjForChildTableForm({ table: tablename, objid: this.itemId, refcolid });
           }
-        } else { // 编辑刷新
-          const ID = this.itemId;
-          if (this.objectType === 'horizontal') { // 横向布局
-            this.getObjectTabForMainTable({ table: this.itemName, objid: ID });
-            // this.getObjectForMainTableForm({ table: this.itemName, objid: ID });
-          } else {
-             
-          }
+        } else { // 纵向布局
+          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
         }
-       
-
-        // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-        // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-        // if (this.itemNameGroup.length > 0) { // 有子表
-        //   this.getInputForitemForChildTableForm({ table: this.itemName });
-        // }
         this.$Message.success('刷新成功');
       },
       objectTabAction(obj) {
