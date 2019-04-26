@@ -97,7 +97,7 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.props.valuedata;
+            option[items.item.field] = items.item.props.valuedata || items.item.props.defval;
           }
 
           return option;
