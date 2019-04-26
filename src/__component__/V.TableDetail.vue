@@ -4,6 +4,7 @@
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
       :itemNameGroup="childTableNames"
+      :itemInfo="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
     />
