@@ -53,6 +53,8 @@
         v-if="_items.type === 'checkbox'"
         v-model="_items.value"
         :disabled="_items.props.disabled"
+        :true-value="_items.props.trueValue"
+        :false-value="_items.props.falseValue"
         :size="_items.props.size"
         :circle="_items.props.circle"
         @on-change="checkBoxChange"
@@ -255,7 +257,7 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
-        item.props = Object.assign({}, item.type ? dataProp[item.type].props :{}, this.items.props);
+        item.props = Object.assign({}, item.type ? dataProp[item.type].props : {}, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           item.componentType = Dialog;
