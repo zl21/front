@@ -159,6 +159,8 @@ const checkbox = {
     size: 'default',
     // 是否禁用当前项
     disabled: false,
+    trueValue: [String, Number, Boolean],
+    falseValue: [String, Number, Boolean],
     // 支持checkout样式为radio样式
     circle: false
   },

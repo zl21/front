@@ -28,6 +28,7 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
+  import { Version, VersionName } from '../constants/global.js';
 
   export default {
     name: 'FormItemComponent',
@@ -156,6 +157,14 @@
 
           };
         }
+      },
+      mappStatus: {
+        type: Function,
+        default() {
+          return function () {
+
+          };
+        }
       }
     },
     data() {
@@ -163,10 +172,22 @@
         indexItem: -1,
         newFormItemLists: this.formItemLists, // 当前form list
         changeFormData: {}, // 当前form 被改动的key
+        Mapping: {}, // 设置映射关系
+        mapData: {}, // 全部联动关系
         setHeight: 34
       };
     },
     mounted() {
+      this.newFormItemLists.map((item) => {
+        if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
+          this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
+        }
+      });
+      this.mapData = this.setMapping(this.Mapping);
+      // 映射回调
+      this.mappStatus(this.Mapping, this.mapData);
+
+
       // 传值默认data
       const VerificationForm = this.VerificationForm.reduce((item, current) => {
         // 判断必须输入的值是否为空
@@ -213,7 +234,8 @@
               if (val[_refcolumn] !== old[_refcolumn]) {
                 this.hidecolumn(item, i);
               }
-            } else {
+            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+              this.refcolval(item, i);
             // this.formDataChange();
             }
             return items;
@@ -223,6 +245,18 @@
       }
     },
     methods: {
+      setMapping(data) {
+        //  获取映射关系
+        const temp = Object.keys(data).reduce((a, c) => {
+          const f = (key) => {
+            if (!data[key]) { return []; }
+            return [data[key]].concat(f(data[key]));
+          };
+          a[c] = f(c);
+          return a;
+        }, {});
+        return temp;
+      },
       formDataChange() {
       // console.log(this.changeFormData,'formDataChange');
       // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
@@ -252,18 +286,15 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.type === 'checkbox') {
-            // 对应的key
-            obj[current.item.field] = current.item.props.valuedata;
+            obj[current.item.field] = current.item.value;
           } else if (current.item.value.toString().length > 0) {
-
             if (current.item.props.number) {
-              if( current.item.type === 'input'){
+              if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
                 const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
                 obj[current.item.field] = Number(value);
               }
-              
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value.replace('00:00:00', '');
             } else {
@@ -304,6 +335,9 @@
         this.newFormItemLists[index].item.value = value;
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
+      },
+      refcolval(items, json) {
+        console.log(items, 'items');
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
