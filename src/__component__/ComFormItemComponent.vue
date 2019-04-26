@@ -97,7 +97,7 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.props.valuedata || items.item.props.defval;
+            option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval;
           }
 
           return option;
@@ -230,12 +230,11 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-
               if (val[_refcolumn] !== old[_refcolumn]) {
                 this.hidecolumn(item, i);
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
-              this.refcolval(item, i);
+              this.refcolval(item, val, i);
             // this.formDataChange();
             }
             return items;
@@ -263,7 +262,6 @@
       },
       dataProcessing(current) {
         // change 后台传值
-        // console.log(current,'DropDownSelectFilter');
         let obj = {};
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
@@ -313,11 +311,15 @@
               }
               objData[key].push(value);
             }
-
+         
             return objData;
           }, {}));
         }
-        this.changeFormData = obj;
+        if (current.item.props.number) {    
+          this.changeFormData = Number(obj[Object.keys(obj)[0]]);
+        } else {
+          this.changeFormData = obj;
+        }
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, current);
       },
@@ -336,8 +338,8 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      refcolval(items, json) {
-        console.log(items, 'items');
+      refcolval(items, json, index) {
+        console.log(items, 'items', VersionName, this.mapData);
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
@@ -350,9 +352,9 @@
       },
       hidecolumn(items, index) {
         // 隐藏
+        console.log('index');
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
-
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item.value === refval) {

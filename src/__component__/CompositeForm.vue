@@ -562,16 +562,6 @@
             const index = checkName.findIndex(x => x === item.props.trueValue);
             item.props.falseValue = falseName[index];
           }
-          // if () {
-          //   item.props.falseValue	= current.valuedata || current.defval;
-          // } else {
-          //   item.props.trueValue = '';
-          // }
-          // if (['Y', '1', false].some(x => x === current.valuedata || x === current.defval)) {
-          //   item.props.trueValue	= current.valuedata || current.defval;
-          // } else {
-          //   item.props.falseValue = '';
-          // }
         }
          
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
