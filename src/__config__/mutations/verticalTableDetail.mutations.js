@@ -85,7 +85,6 @@ export default {
   },
  
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
-    debugger;
     state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
     if (data.message === '新增成功') {
       state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
@@ -100,7 +99,7 @@ export default {
     }
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
-    state.mainFormInfo.buttonsData.deleteData = data;
+    state.mainFormInfo.buttonsData.deleteData = data.message;
   },
   
 };

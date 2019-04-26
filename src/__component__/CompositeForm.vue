@@ -230,8 +230,8 @@
             }
           });
         });
-
         const message = this.setVerifiy();
+        //console.log(message,this.VerificationForm);
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
@@ -239,7 +239,6 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        
         this.$emit('formChange', this.formData);
       },
       VerifyMessageForm(value) {
@@ -545,8 +544,8 @@
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
           }
-          if (item.type === 'NUMBER') {
-            item.props.type = 'number';
+          if (item.props.number) {
+           // item.props.type = 'number';
             item.props.empty = 0;
           }
           if (current.isnotnull === true) {
@@ -745,7 +744,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value.length < 1) {
+          if (item.value === undefined || item.value === 0 || item.value === '') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -767,7 +766,6 @@
             }
           }
         });
-
         return VerificationMessage;
       },
       focusItem(index, current, arry) {

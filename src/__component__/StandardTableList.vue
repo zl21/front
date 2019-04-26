@@ -592,7 +592,7 @@
               }
             }
           } else { // 没有提示信息
-            this.webActionSlient(type, obj);
+            this.webActionSlient(obj);
           }
         }
       },
@@ -725,6 +725,7 @@
         }, 300);
       },
       webActionSlient(item) {
+        console.log('🐦', item);
         // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
@@ -1043,7 +1044,7 @@
         // }
         this.getExportQueryForButtons(OBJ);
       },
-      deleteTableList() {
+      deleteTableList() { // 删除方法
         const objQuery = {
           tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
@@ -1058,8 +1059,15 @@
             };
             this.$Modal.fcSuccess(data);
             this.getQueryListForAg(this.searchData);
+          } else {
+            // const message = this.buttons.batchDeleteData.message;
+            // const data = {
+            //   title: '失败',
+            //   content: `${message}`
+            // };
+            // this.$Modal.fcError(data);
           }
-        }, 1000);
+        }, 2000);
       },
       batchVoid() {
         const searchdata = {

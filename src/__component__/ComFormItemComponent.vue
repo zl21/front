@@ -254,17 +254,23 @@
           } else if (current.item.type === 'checkbox') {
             // 对应的key
             obj[current.item.field] = current.item.props.valuedata;
-          } else if (current.item.value.length > 0) {
+          } else if (current.item.value.toString().length > 0) {
+
             if (current.item.props.number) {
-              const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
-              obj[current.item.field] = Number(value);
+              if( current.item.type === 'input'){
+                obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
+                obj[current.item.field] = Number(value);
+              }
+              
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value.replace('00:00:00', '');
             } else {
               obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }
           } else {
-            obj[current.item.field] = current.item.empty;
+            obj[current.item.field] = current.item.props.empty;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
