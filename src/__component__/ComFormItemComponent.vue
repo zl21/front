@@ -290,11 +290,11 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
+                const value = current.item.value.replace(/^\s+|\s+$/g, '');
                 obj[current.item.field] = Number(value);
               }
             } else if (typeof current.item.value === 'string') {
-              obj[current.item.field] = current.item.value.replace('00:00:00', '');
+              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             } else {
               obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }

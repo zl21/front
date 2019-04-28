@@ -509,7 +509,7 @@
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
           if (item.defval || item.valuedata) {
-            return `${item.defval || item.valuedata} 00:00:00` || '';
+            return `${item.defval || item.valuedata} ` || '';
           }
           return '';
         }
@@ -646,16 +646,13 @@
           item.props.type = 'textarea';
         }
         if (current.display === 'OBJ_DATENUMBER') {
-          item.props.type = 'datetime';
+          item.props.type = 'date';
         }
         if (current.display === 'OBJ_TIME') {
           item.props.type = 'time';
         }
         if (current.display === 'OBJ_DATE') {
           item.props.type = 'datetime';
-        }
-        if (current.display === 'OBJ_TIME') {
-          item.props.type = 'time';
         }
 
         if (current.display === 'text' || current.display === 'xml') {
