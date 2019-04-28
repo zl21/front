@@ -290,7 +290,7 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                const value = current.item.value.replace(/^\s+|\s+$/g, '');
+                const value = current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
                 obj[current.item.field] = Number(value);
               }
             } else if (typeof current.item.value === 'string') {
@@ -298,8 +298,10 @@
             } else {
               obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }
-          } else {
+          } else if (Version === '1.4') {
             obj[current.item.field] = current.item.props.empty;
+          } else {
+            obj[current.item.field] = current.item.value;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
@@ -339,7 +341,9 @@
         this.dataProcessing(this.newFormItemLists[index], index);
       },
       refcolval(items, json, index) {
-        console.log(items, 'items', VersionName, this.mapData);
+        if (VersionName === 'qiaodan') {
+          console.log(items, 'items', VersionName, this.mapData, json, index);
+        }
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除

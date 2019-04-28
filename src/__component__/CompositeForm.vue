@@ -240,6 +240,7 @@
             }
           });
         });
+        // console.log(this.VerificationForm);
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
@@ -534,7 +535,7 @@
           const arr = [];
           arr.push({
             ID: item.refobjid || '',
-            Label: item.valuedata || ''
+            Label: item.valuedata || item.defval || ''
           });
           return arr;
         }
@@ -636,7 +637,6 @@
           obj.item.options = sumArray;
           return item;
         }
-
         // check
         if (current.display === 'check') {
           item.props.type = 'checkbox';
@@ -644,6 +644,36 @@
         // textarea
         if (current.display === 'textarea') {
           item.props.type = 'textarea';
+        }
+        if (current.datelimit === 'before') {
+          item.props.options = {
+            disabledDate(date) {
+              // 之前 含今天
+              return date && date.valueOf() < new Date().valueOf();
+            }
+          };
+        } else if (current.datelimit === 'after') {
+          // 之后 含今天
+          item.props.options = {
+            disabledDate(date) {
+              return date && date.valueOf() > new Date().valueOf();
+            }
+          };
+        } else if (current.datelimit === 'beforetoday') {
+          // 之前 不含今天
+          item.props.options = {
+            disabledDate(date) {
+              return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
+            }
+          };
+        } else if (current.datelimit === 'aftertoday') {
+          // 之后 不含今天
+          item.props.options = {
+
+            disabledDate(date) {
+              return date && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
+            }
+          };
         }
         if (current.display === 'OBJ_DATENUMBER') {
           item.props.type = 'date';
