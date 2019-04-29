@@ -4,6 +4,7 @@
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
       :itemNameGroup="childTableNames"
+      :itemInfo="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
     />
@@ -48,6 +49,7 @@
         const arr = [];
         this.tabPanel.forEach((item, index) => {
           const obj = { ...item };
+          obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';

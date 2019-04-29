@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 <!--suppress ALL:form-item-lists="FormLists(item.childs)" -->
 <template>
   <div>
@@ -23,6 +24,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :form-item-lists="item.childs"
+                :mapp-status="setMapping"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :type="type"
@@ -40,6 +42,7 @@
           :is="FormItemComponent"   
           ref="FormComponent_0"
           :verifymessageform="VerifyMessageForm"
+          :mapp-status="setMapping"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -111,6 +114,8 @@
         formData: {}, // 监听form变化
         VerificationForm: [], // 校验form
         defaultFormData: {}, // form 默认值
+        Mapping: {}, // 设置映射关系
+        mapData: {}, // 全部联动关系
         mountChecked: false,
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent: Vue.extend(FormItemComponent),
@@ -207,6 +212,11 @@
       childForm(option) {
         return this.childFormData.push(option);
       },
+      setMapping(Mapping, mapData) {
+        this.mapData = Object.assign(this.mapData, mapData);
+        this.Mapping = Object.assign(this.Mapping, Mapping);
+      },
+      // eslint-disable-next-line consistent-return
       formDataChange(data) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (!this.mountChecked) { 
@@ -230,7 +240,7 @@
             }
           });
         });
-
+        // console.log(this.VerificationForm);
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
@@ -239,7 +249,6 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        
         this.$emit('formChange', this.formData);
       },
       VerifyMessageForm(value) {
@@ -341,13 +350,30 @@
             },
             'on-show': ($this) => {
               // 当外键下拉站开始去请求数据
-              fkQueryList({
-                searchObject: {
+              let searchObject = {};
+              if (Object.hasOwnProperty.call(current, 'refcolval')) {
+                const query = current.refcolval.expre === 'equal' ? `=${this.formData[current.refcolval.srccol]}` : '';
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  fixedcolumns: {
+                    [current.refcolval.fixcolumn]: query,
+                  },
+                  startindex: 0,
+                  range: $this.pageSize
+                };
+              } else {
+                searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
                   startindex: 0,
                   range: $this.pageSize
-                },
+                };
+              }
+              console.log(current.colname);
+             
+              fkQueryList({
+                searchObject,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
@@ -402,6 +428,11 @@
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
           return {
             hidecolumn: current.hidecolumn
+          };
+        }
+        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+          return {
+            refcolval: current.refcolval
           };
         }
         return {};
@@ -479,7 +510,7 @@
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
           if (item.defval || item.valuedata) {
-            return `${item.defval || item.valuedata} 00:00:00` || '';
+            return `${item.defval || item.valuedata} ` || '';
           }
           return '';
         }
@@ -487,13 +518,9 @@
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
+
         if (item.display === 'check') {
-          if (item.valuedata === 'N' || item.defval === 'N' || item.defval === '0' || item.valuedata === '0') {
-            return false;
-          }
-          if (item.valuedata === 'Y' || item.defval === 'Y' || item.defval === '1' || item.valuedata === '1') {
-            return true;
-          }
+          return item.valuedata || item.defval;
         }
        
         if (item.display === 'OBJ_SELECT') {
@@ -508,7 +535,7 @@
           const arr = [];
           arr.push({
             ID: item.refobjid || '',
-            Label: item.valuedata || ''
+            Label: item.valuedata || item.defval || ''
           });
           return arr;
         }
@@ -521,6 +548,23 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
+        if (item.type === 'checkbox') {
+          const checkName = ['Y', '1', true];
+          const falseName = ['N', '0', false];
+          const check = falseName.some((x, i) => x === current.valuedata || x === current.defval);
+          if (check) {
+            // eslint-disable-next-line no-tabs
+            item.props.falseValue	= current.valuedata || current.defval;
+            const index = falseName.findIndex(x => x === item.props.falseValue);
+            item.props.trueValue = checkName[index];
+          } else {
+            // eslint-disable-next-line no-tabs
+            item.props.trueValue	= current.valuedata || current.defval;
+            const index = checkName.findIndex(x => x === item.props.trueValue);
+            item.props.falseValue = falseName[index];
+          }
+        }
+         
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
           // 下拉是单选
           item.props.multiple = false;
@@ -545,8 +589,8 @@
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
           }
-          if (item.type === 'NUMBER') {
-            item.props.type = 'number';
+          if (item.props.number) {
+            // item.props.type = 'number';
             item.props.empty = 0;
           }
           if (current.isnotnull === true) {
@@ -593,7 +637,6 @@
           obj.item.options = sumArray;
           return item;
         }
-
         // check
         if (current.display === 'check') {
           item.props.type = 'checkbox';
@@ -602,17 +645,44 @@
         if (current.display === 'textarea') {
           item.props.type = 'textarea';
         }
+        if (current.datelimit === 'before') {
+          item.props.options = {
+            disabledDate(date) {
+              // 之前 含今天
+              return date && date.valueOf() < new Date().valueOf();
+            }
+          };
+        } else if (current.datelimit === 'after') {
+          // 之后 含今天
+          item.props.options = {
+            disabledDate(date) {
+              return date && date.valueOf() > new Date().valueOf();
+            }
+          };
+        } else if (current.datelimit === 'beforetoday') {
+          // 之前 不含今天
+          item.props.options = {
+            disabledDate(date) {
+              return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
+            }
+          };
+        } else if (current.datelimit === 'aftertoday') {
+          // 之后 不含今天
+          item.props.options = {
+
+            disabledDate(date) {
+              return date && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
+            }
+          };
+        }
         if (current.display === 'OBJ_DATENUMBER') {
-          item.props.type = 'datetime';
+          item.props.type = 'date';
         }
         if (current.display === 'OBJ_TIME') {
           item.props.type = 'time';
         }
         if (current.display === 'OBJ_DATE') {
           item.props.type = 'datetime';
-        }
-        if (current.display === 'OBJ_TIME') {
-          item.props.type = 'time';
         }
 
         if (current.display === 'text' || current.display === 'xml') {
@@ -745,7 +815,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value.length < 1) {
+          if (item.value === undefined || item.value === 0 || item.value === '') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -767,7 +837,6 @@
             }
           }
         });
-
         return VerificationMessage;
       },
       focusItem(index, current, arry) {
@@ -784,6 +853,8 @@
         if (arry[_index + 1] && arry[_index + 1].item.props.readonly) {
           _index = index + 1;
         }
+        // eslint-disable-next-line array-callback-return
+        // eslint-disable-next-line consistent-return
         item.some((option, i) => {
           if (i > _index) {
             if (option.$el.querySelector('input') && option.items.type !== 'checkbox') {
@@ -804,6 +875,7 @@
       }
     },
     mounted() {
+       
     },
     created() {
       this.computdefaulForm = this.computdefaultData;

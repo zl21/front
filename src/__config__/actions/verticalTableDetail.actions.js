@@ -119,6 +119,7 @@ export default {
       }
     });
   },
+  
   // 按钮
   getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
@@ -145,27 +146,35 @@ export default {
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (itemName) { // 存在子表
+        const itemAdd = itemCurrentParameter.add;
+        itemAdd[itemName].ID = objId;
+        // 
         if (path) { // 有path的参数
-          const itemAdd = itemCurrentParameter.add;
-          itemAdd[itemName].ID = objId;
           add[tableName].ID = objId;
           parames = {
             ...add,
             ...itemAdd
           };
         } else {
+          itemAdd[itemName] = [
+            itemAdd[itemName]
+          ];
+         
+          console.log('🥣', itemAdd);
+
           parames = {
             table: tableName, // 主表表名
             objId, // 固定传值-1 表示新增
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...add
+              ...add,
+              ...itemAdd,
             }
           };
         }
       } else if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
-          ...add[tableName]
+          ...add
         };
       } else {
         parames = {
