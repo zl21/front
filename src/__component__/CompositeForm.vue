@@ -369,9 +369,7 @@
                   startindex: 0,
                   range: $this.pageSize
                 };
-              }
-              console.log(current.colname);
-             
+              }             
               fkQueryList({
                 searchObject,
                 success: (res) => {

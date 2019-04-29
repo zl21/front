@@ -28,7 +28,7 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import { Version, VersionName } from '../constants/global.js';
+  import { Version, VersionName } from '../constants/global';
 
   export default {
     name: 'FormItemComponent',
@@ -285,7 +285,7 @@
             }
           } else if (current.item.type === 'checkbox') {
             obj[current.item.field] = current.item.value;
-          } else if (current.item.value.toString().length > 0) {
+          } else if (current.item.value) {
             if (current.item.props.number) {
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
@@ -342,7 +342,17 @@
       },
       refcolval(items, json, index) {
         if (VersionName === 'qiaodan') {
-          console.log(items, 'items', VersionName, this.mapData, json, index);
+          const srccol = items.validate.refcolval.srccol;
+
+          if (json[srccol] === undefined) {
+            if (items.type === 'DropDownSelectFilter') {
+              // console.log(items.props.defaultSelected, index, items);
+              // this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.props.defaultSelected = [];
+            } else {
+              // this.newFormItemLists[index].item.value = '';
+            }
+          }
         }
       },
       dynamicforcompute(items, json) {
@@ -356,7 +366,6 @@
       },
       hidecolumn(items, index) {
         // 隐藏
-        console.log('index');
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         this.newFormItemLists = this.newFormItemLists.map((option) => {
