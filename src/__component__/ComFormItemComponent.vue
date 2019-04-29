@@ -100,6 +100,13 @@
             option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval;
           }
 
+          if (items.item.props.number) {
+            // console.log(option[items.item.field], '666');
+            if (option[items.item.field]) {
+              option[items.item.field] = Number(option[items.item.field]);
+            }
+          }
+
           return option;
         }, {});
         return obj;
