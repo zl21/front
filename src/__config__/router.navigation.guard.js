@@ -18,6 +18,7 @@ export default (router) => {
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const { tableName, tableId, itemId } = to.params;
     const { routePrefix } = to.meta;
+    const { isBack } = to.query;
     const moduleGenerator = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: verticalTableDetailModule,
@@ -28,7 +29,7 @@ export default (router) => {
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
-    const paramItemId = itemId === -1 ? 'New' : `${itemId}`;
+    const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
     const originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
@@ -56,7 +57,7 @@ export default (router) => {
         break;
     }
 
-    // 处理 keepAliveModuleName
+    // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
       commit('global/increaseKeepAliveLists', keepAliveModuleName);
     }
@@ -77,24 +78,48 @@ export default (router) => {
       return false;
     })[0];
 
-
-    // 跳转到菜单默认配置的路由信息时的判断逻辑
-    // 1、保留模块状态,模式为[启用],   且
-    // 2、目标路由为[列表]界面,   且
-    // 3、当前已经打开的菜单模块中含有同tableName的界面
-    // 则 此时应该唤起已有的功能界面。
-    if (KEEP_MODULE_STATE_WHEN_CLICK_MENU && routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule) {
-      const isBackToTableList = existModule !== STANDARD_TABLE_LIST_PREFIX && from.fullPath === existModule.routeFullPath; // 表示从明细界面跳转到列表界面。
-      const isArouseTableList = to.fullPath === existModule.routeFullPath; // 当前打开的模块中，已经存在相同的路由模块。
-      if (!isArouseTableList && !isBackToTableList) {
-        // 判断：当前路由是通过按钮菜单触发，并且页面中已经存在改菜单按钮对应的模块。
-        commit('global/toggleActiveMenu', existModuleIndex);
+    // 处理openedMenuList的存储逻辑
+    // console.log(`
+    //     routerPrefix = \t\t\t${routePrefix}
+    //     existModuleFullPath =\t${existModule ? existModule.routeFullPath : ''}
+    //     from.fullPath =\t\t\t${from.fullPath}
+    //     to.fullPath =\t\t\t${to.fullPath}
+    //     to.path = \t\t\t${to.path}
+    // `);
+    if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
+      // Condition One:
+      // 如果目标路由界面所对应的[表]已经存在与已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
+      // 则都应该显示其当前对应的状态页。
+      if (routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule.routePrefix !== STANDARD_TABLE_LIST_PREFIX && !isBack) {
+        // Step One: 处理菜单Tab页签的显示逻辑。
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
         next({ path: existModule.routeFullPath });
-        return;
+      } else {
+        // Step One: 处理菜单Tab页签的显示逻辑。
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: {
+            isActive: true,
+            label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            keepAliveModuleName,
+            tableName,
+            routeFullPath: to.path,
+            routePrefix
+          },
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
+        next();
       }
+      // Step Three: 结束本次路由守卫。
+      return;
     }
 
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
+      // 目标路由所对应的[功能模块]没有存在与openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
@@ -110,11 +135,11 @@ export default (router) => {
         }
       }, 25);
     } else {
+      // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
       commit('global/againClickOpenedMenuLists', {
         label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
         keepAliveModuleName
       });
-      commit('global/updateActiveMenu', keepAliveModuleName);
     }
 
     next();
