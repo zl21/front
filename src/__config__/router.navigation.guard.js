@@ -18,6 +18,7 @@ export default (router) => {
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const { tableName, tableId, itemId } = to.params;
     const { routePrefix } = to.meta;
+    const { isBack } = to.query;
     const moduleGenerator = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: verticalTableDetailModule,
@@ -78,19 +79,42 @@ export default (router) => {
     })[0];
 
     // 处理openedMenuList的存储逻辑
+    // console.log(`
+    //     routerPrefix = \t\t\t${routePrefix}
+    //     existModuleFullPath =\t${existModule ? existModule.routeFullPath : ''}
+    //     from.fullPath =\t\t\t${from.fullPath}
+    //     to.fullPath =\t\t\t${to.fullPath}
+    //     to.path = \t\t\t${to.path}
+    // `);
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
-      commit('global/forceUpdateOpenedMenuLists', {
-        openedMenuInfo: {
-          isActive: true,
-          label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-          keepAliveModuleName,
-          tableName,
-          routeFullPath: to.path,
-          routePrefix
-        },
-        index: existModuleIndex
-      });
-      next();
+      // Condition One:
+      // 如果目标路由界面所对应的[表]已经存在与已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
+      // 则都应该显示其当前对应的状态页。
+      if (routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule.routePrefix !== STANDARD_TABLE_LIST_PREFIX && !isBack) {
+        // Step One: 处理菜单Tab页签的显示逻辑。
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
+        next({ path: existModule.routeFullPath });
+      } else {
+        // Step One: 处理菜单Tab页签的显示逻辑。
+        commit('global/forceUpdateOpenedMenuLists', {
+          openedMenuInfo: {
+            isActive: true,
+            label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            keepAliveModuleName,
+            tableName,
+            routeFullPath: to.path,
+            routePrefix
+          },
+          index: existModuleIndex
+        });
+        // Step Two: 按照用户所点击的路由原意进行跳转。
+        next();
+      }
+      // Step Three: 结束本次路由守卫。
       return;
     }
 
@@ -116,7 +140,6 @@ export default (router) => {
         label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
         keepAliveModuleName
       });
-      // commit('global/updateActiveMenu', keepAliveModuleName);
     }
 
     next();
