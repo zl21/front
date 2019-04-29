@@ -354,10 +354,10 @@
           if (json[srccol] === undefined) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
-              // this.newFormItemLists[index].item.value = '';
-              // this.newFormItemLists[index].item.props.defaultSelected = [];
+              this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
-              // this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.value = '';
             }
           }
         }
