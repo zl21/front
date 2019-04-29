@@ -410,7 +410,7 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          obj.item.props.regx = regExp.Letter;
+          // obj.item.props.regx = regExp.Letter;
         }
 
         this.propsType(current, obj.item);
