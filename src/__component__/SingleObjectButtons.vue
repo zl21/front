@@ -572,11 +572,15 @@
               id: this.buttonsData.newMainTableSaveData.objId ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
             this.tabHref(tab);
-          }
-          setTimeout(() => {
             const message = this.buttonsData.message;
-            this.upData(`${message}`);
-          }, 1000);
+            this.$Message.success(message);
+          } else {
+            setTimeout(() => {
+              const message = this.buttonsData.message;
+              this.upData(`${message}`);
+            }, 1000);
+          }
+         
           // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           // if (this.objectType === 'vertical') {
           //   this.getObjectForMainTableForm({ table: tableName, objid: itemId });

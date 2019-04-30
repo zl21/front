@@ -145,6 +145,7 @@ export default {
     const { itemCurrentParameter } = parame;
     const { itemNameGroup } = parame;
     let parames = {};
+    debugger;
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (itemNameGroup.length > 0) { // 存在子表
@@ -233,9 +234,12 @@ export default {
           };
         }
       } else {
-        modify[tableName].ID = objId;
         parames = {
-          ...modify[tableName]
+          table: tableName, // 主表表名
+          objId, // 明细id
+          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            ...modify
+          }
         };
       }
     }
