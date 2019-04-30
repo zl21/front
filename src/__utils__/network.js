@@ -39,6 +39,9 @@ axios.interceptors.response.use((response) => {
     const { status } = error.response;
     if (status === 403) {
       router.push('/login');
+    } else if (status === 500) {
+      // 如果http状态码正常，则直接返回数据
+      alert(error.response.data.message);
     }
   }
  

@@ -78,7 +78,6 @@ export default {
         .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
       state.activeTab = currentTabInfo;
     }
-    // console.trace(' -- ', 'not exist = ', notExist);
   },
   updateActiveMenu({
     openedMenuLists
@@ -184,6 +183,7 @@ export default {
     });
   },
   tabOpen(state, // 打开新的tab页
+
     tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {
