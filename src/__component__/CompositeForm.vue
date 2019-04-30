@@ -410,7 +410,7 @@
         // 属性赋值
         // 属性isuppercase控制
         if (current.isuppercase) {
-          obj.item.props.regx = regExp.Letter;
+          // obj.item.props.regx = regExp.Letter;
         }
 
         this.propsType(current, obj.item);
@@ -569,14 +569,17 @@
         }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
+          
           item.props.number = true;
-
-          const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${current.scale}})?$`;
-          const typeRegExp = new RegExp(string);
-          if (current.scale > 0) {
-            item.props.regx = typeRegExp;
-          } else {
-            item.props.regx = regExp.Digital;
+          // console.log(current.display);
+          if (current.display === 'text' && !current.fkdisplay) {
+            const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${current.scale}})?$`;
+            const typeRegExp = new RegExp(string);
+            if (current.scale > 0) {
+              item.props.regx = typeRegExp;
+            } else {
+              item.props.regx = regExp.Digital;
+            }
           }
         }
         

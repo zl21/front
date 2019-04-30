@@ -100,6 +100,13 @@
             option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval;
           }
 
+          if (items.item.props.number) {
+            // console.log(option[items.item.field], '666');
+            if (option[items.item.field]) {
+              option[items.item.field] = Number(option[items.item.field]);
+            }
+          }
+
           return option;
         }, {});
         return obj;
@@ -347,10 +354,10 @@
           if (json[srccol] === undefined) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
-              // this.newFormItemLists[index].item.value = '';
-              // this.newFormItemLists[index].item.props.defaultSelected = [];
+              this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
-              // this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.value = '';
             }
           }
         }
