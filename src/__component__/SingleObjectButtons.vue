@@ -463,13 +463,12 @@
             if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
               const objId = this.itemId;
               const sataType = 'itemSave';
-              console.log('有子表');
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
-              if (this.objectType === 'vertical') { console.log('执行第二次保存'); this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType); }
+              if (this.objectType === 'vertical') { this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType); }
             }
           }
         }

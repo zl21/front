@@ -1,6 +1,5 @@
 import network, { urlSearchParams } from '../../__utils__/network';
 import getComponentName from '../../__utils__/getModuleName';
-import { routeTo } from '../event.config';
 
 export default {
   getObjectForMainTableForm({ commit }, { table, objid }) { // 获取主表面板数据
@@ -145,7 +144,6 @@ export default {
     const { itemCurrentParameter } = parame;
     const { itemNameGroup } = parame;
     let parames = {};
-    debugger;
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (itemNameGroup.length > 0) { // 存在子表
@@ -197,7 +195,7 @@ export default {
               itmValues.ID = objId;
             }
             parames = {
-              ...modify,
+              // ...modify,
               ...itemModify
             };
           } else {

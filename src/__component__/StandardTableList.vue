@@ -725,7 +725,6 @@
         }, 300);
       },
       webActionSlient(item) {
-        console.log('🐦', item);
         // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
