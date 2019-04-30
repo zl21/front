@@ -1,5 +1,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
+import store from '../store.config';
 
 export default () => ({
   mounted() {
@@ -43,7 +44,13 @@ export default () => ({
         'updatePanelData',
       ]),
   },
-  // beforeDestroy() {
-  //   store.unregisterModule(this.moduleComponentName);
-  // }
+  beforeDestroy() {
+    try {
+      if (this.$options.isKeepAliveModel) {
+        store.unregisterModule(this.moduleComponentName);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 });
