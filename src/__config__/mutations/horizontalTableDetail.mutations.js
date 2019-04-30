@@ -96,20 +96,24 @@ export default {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
-    state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
-    if (data.message === '新增成功') {
-      state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
-    } else if (data.message === '更新成功') {
-      state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
-    } else if (itemName) {
-      if (data.message === '保存成功') {
-        state.mainFormInfo.buttonsData.newMainTableSaveData = data.data;
-      } else {
-        state.mainFormInfo.buttonsData.newMainTableSaveData = JSON.parse(data);
-      }
-    }
+    state.buttonsData.newMainTableSaveData = data.data;
+    state.buttonsData.message = data.message;
+    // if (data.message.indexOf('新增成功!') === 0) {
+    //   state.buttonsData.newMainTableSaveData = data.data;
+    //   state.buttonsData.message = data.message;
+    // } else if (data.message.indexOf('更新成功') === 0) {
+    //   state.buttonsData.newMainTableSaveData = data.data;
+    // } else if (itemName) {
+    //   if (data.message.indexOf('修改成功') === 0) {
+    //     state.buttonsData.newMainTableSaveData = data.data;
+    //   } else if (data.message.indexOf('保存成功') === 0) {
+    //     state.buttonsData.newMainTableSaveData = data.data;
+    //   } else {
+    //     state.buttonsData.newMainTableSaveData = JSON.parse(data);
+    //   }
+    // }
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
-    state.deleteData = data.message;
+    state.buttonsData.deleteData = data.message;
   },
 };

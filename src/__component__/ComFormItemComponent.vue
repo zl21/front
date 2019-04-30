@@ -28,6 +28,7 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
+  import { Version, VersionName } from '../constants/global';
 
   export default {
     name: 'FormItemComponent',
@@ -96,7 +97,17 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.props.valuedata;
+            option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval;
+          }
+                          
+
+          if (items.item.props.number) {
+            // console.log(option[items.item.field], '666');
+            if (option[items.item.field]) {
+              option[items.item.field] = Number(option[items.item.field]);
+            }
+          } else if (typeof option[items.item.field] === 'string') {
+            option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
           }
 
           return option;
@@ -156,6 +167,14 @@
 
           };
         }
+      },
+      mappStatus: {
+        type: Function,
+        default() {
+          return function () {
+
+          };
+        }
       }
     },
     data() {
@@ -163,10 +182,22 @@
         indexItem: -1,
         newFormItemLists: this.formItemLists, // 当前form list
         changeFormData: {}, // 当前form 被改动的key
+        Mapping: {}, // 设置映射关系
+        mapData: {}, // 全部联动关系
         setHeight: 34
       };
     },
     mounted() {
+      this.newFormItemLists.map((item) => {
+        if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
+          this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
+        }
+      });
+      this.mapData = this.setMapping(this.Mapping);
+      // 映射回调
+      this.mappStatus(this.Mapping, this.mapData);
+
+
       // 传值默认data
       const VerificationForm = this.VerificationForm.reduce((item, current) => {
         // 判断必须输入的值是否为空
@@ -209,11 +240,11 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-
               if (val[_refcolumn] !== old[_refcolumn]) {
                 this.hidecolumn(item, i);
               }
-            } else {
+            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+              this.refcolval(item, val, i);
             // this.formDataChange();
             }
             return items;
@@ -223,13 +254,24 @@
       }
     },
     methods: {
+      setMapping(data) {
+        //  获取映射关系
+        const temp = Object.keys(data).reduce((a, c) => {
+          const f = (key) => {
+            if (!data[key]) { return []; }
+            return [data[key]].concat(f(data[key]));
+          };
+          a[c] = f(c);
+          return a;
+        }, {});
+        return temp;
+      },
       formDataChange() {
       // console.log(this.changeFormData,'formDataChange');
       // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
       dataProcessing(current) {
         // change 后台传值
-        // console.log(current,'DropDownSelectFilter');
         let obj = {};
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
@@ -252,25 +294,24 @@
               obj[current.item.inputname] = current.item.value;
             }
           } else if (current.item.type === 'checkbox') {
-            // 对应的key
-            obj[current.item.field] = current.item.props.valuedata;
-          } else if (current.item.value.toString().length > 0) {
-
+            obj[current.item.field] = current.item.value;
+          } else if (current.item.value) {
             if (current.item.props.number) {
-              if( current.item.type === 'input'){
+              if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                const value = current.item.value.replace(/-|00:00:00/g, '').replace(/^\s+|\s+$/g, '');
+                const value = current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
                 obj[current.item.field] = Number(value);
               }
-              
             } else if (typeof current.item.value === 'string') {
-              obj[current.item.field] = current.item.value.replace('00:00:00', '');
+              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             } else {
               obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
             }
-          } else {
+          } else if (Version === '1.4') {
             obj[current.item.field] = current.item.props.empty;
+          } else {
+            obj[current.item.field] = current.item.value;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
@@ -282,11 +323,15 @@
               }
               objData[key].push(value);
             }
-
+         
             return objData;
           }, {}));
         }
-        this.changeFormData = obj;
+        if (current.item.props.number) {    
+          this.changeFormData = Number(obj[Object.keys(obj)[0]]);
+        } else {
+          this.changeFormData = obj;
+        }
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, current);
       },
@@ -305,6 +350,21 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
+      refcolval(items, json, index) {
+        if (VersionName === 'qiaodan') {
+          const srccol = items.validate.refcolval.srccol;
+
+          if (json[srccol] === undefined) {
+            if (items.type === 'DropDownSelectFilter') {
+              // console.log(items.props.defaultSelected, index, items);
+              this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.props.defaultSelected = [];
+            } else {
+              this.newFormItemLists[index].item.value = '';
+            }
+          }
+        }
+      },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
         const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
@@ -318,7 +378,6 @@
         // 隐藏
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
-
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item.value === refval) {

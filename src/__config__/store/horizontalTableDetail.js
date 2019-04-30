@@ -6,7 +6,9 @@ export default () => ({
   state: {
     tabPanels: [], // tab数据
     tabCurrentIndex: 0, // 当前tab的index
-    updateData: {} // 更新的数据
+    updateData: {}, // 更新的数据
+    buttonsData: {
+    }
   },
   actions,
   mutations

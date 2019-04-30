@@ -75,11 +75,13 @@
     },
     watch: {
       tabcmd: {
-        handler(val) {
-          this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-          setTimeout(() => {
-            this.buttonsReorganization(val);
-          }, 300);
+        handler(val, oldval) {
+          if (JSON.stringify(val) !== JSON.stringify(oldval)) {
+            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+            setTimeout(() => {
+              this.buttonsReorganization(val);
+            }, 300);
+          }
         },
         deep: true
       },
@@ -144,9 +146,6 @@
               this.getbuttonGroupData(buttonData);
             }
           } else if (this.objectType === 'vertical') {
-            // if (this.buttonShowType === 'add') { // 编辑新增按钮渲染逻辑
-            //   this.addButtonShow(val);
-            // } else //暂未处理带子表的逻辑
             if (this.itemId === 'New') { // 编辑按钮渲染逻辑
               this.addButtonShow(buttonData);
             } else { // 新增按钮渲染逻辑
@@ -171,6 +170,10 @@
         }
       },
       clickButtonsRefresh() {
+        const message = '刷新成功';
+        this.upData(`${message}`);
+      },
+      upData(message) {
         const { tablename, refcolid, tabrelation } = this.itemInfo;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
@@ -189,7 +192,7 @@
           this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
         }
-        this.$Message.success('刷新成功');
+        this.$Message.success(message);
       },
       objectTabAction(obj) {
         switch (obj.eName) {
@@ -239,14 +242,9 @@
         };
 
         this.$store.commit('global/tabHref', param);
-        // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-        // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       },
       getbuttonGroupData(tabcmd) {
         const tabcmdData = tabcmd;
-        // if (this.itemId === '-1') { // 新增
-        //   this.addButtonShow(tabcmd);
-        // } else { // 双击
         if (tabcmdData.cmds) {
           tabcmdData.cmds.forEach((item, index) => {
             if (item !== 'actionEXPORT') {
@@ -309,12 +307,7 @@
                   path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, itemNameGroup: this.itemNameGroup
                 });
                 setTimeout(() => {
-                  let deleteMessage = '';
-                  if (this.objectType === 'horizontal') {
-                    deleteMessage = this.deleteData;
-                  } else {
-                    deleteMessage = this.mainFormInfo.buttonsData.deleteData;
-                  }
+                  const deleteMessage = this.buttonsData.deleteData;
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
                   this.getQueryListForAg(searchData);
@@ -329,12 +322,7 @@
               confirm: () => {
                 this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
                 setTimeout(() => {
-                  let deleteMessage = '';
-                  if (this.objectType === 'horizontal') {
-                    deleteMessage = this.deleteData;
-                  } else {
-                    deleteMessage = this.mainFormInfo.buttonsData.deleteData;
-                  }
+                  const deleteMessage = this.buttonsData.deleteData;
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
                   this.getQueryListForAg(searchData);
@@ -349,12 +337,7 @@
             confirm: () => {
               this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
               setTimeout(() => {
-                let deleteMessage = '';
-                if (this.objectType === 'horizontal') {
-                  deleteMessage = this.deleteData;
-                } else {
-                  deleteMessage = this.mainFormInfo.buttonsData.deleteData;
-                }
+                const deleteMessage = this.buttonsData.deleteData;
                 this.$Message.success(`${deleteMessage}`);
                 this.clickButtonsBack();
                 this.getQueryListForAg(searchData);
@@ -369,12 +352,7 @@
             confirm: () => {
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               setTimeout(() => {
-                let deleteMessage = '';
-                if (this.objectType === 'horizontal') {
-                  deleteMessage = this.deleteData;
-                } else {
-                  deleteMessage = this.mainFormInfo.buttonsData.deleteData;
-                }
+                const deleteMessage = this.buttonsData.deleteData;
                 this.$Message.success(`${deleteMessage}`);
                 this.clickButtonsBack();
                 this.getQueryListForAg(searchData);
@@ -431,6 +409,8 @@
       determineSaveType(obj) {
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
+          const itemName = this.itemName;// 子表表名
+          const itemCurrentParameter = this.itemCurrentParameter;
           if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
             // console.log('主表新增保存和编辑新增保存');
             const type = 'add';
@@ -450,12 +430,8 @@
               // console.log('有子表');
               // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
               if (this.dynamic.requestUrlPath) { // 配置path
-                const itemName = this.itemName;// 子表表名
-                const itemCurrentParameter = this.itemCurrentParameter;
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
-                const itemName = this.itemName;// 子表表名
-                const itemCurrentParameter = this.itemCurrentParameter;
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
               // } else if (this.objectType === 'vertical') { // 上下结构
@@ -470,10 +446,11 @@
             }
           } else if (this.itemId !== '-1') { // 主表编辑保存
             // console.log('主表编辑保存');
+            const path = obj.requestUrlPath;
+            const type = 'modify';
             if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
               // console.log('没有子表',);
-              const path = obj.requestUrlPath;
-              const type = 'modify';
+             
               if (obj.requestUrlPath) { // 配置path
                 // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
                 this.savaNewTable(type, path, this.itemId);
@@ -484,12 +461,14 @@
               }
             }
             if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
-              // console.log('有子表');
+              const objId = this.itemId;
+              const sataType = 'itemSave';
               if (obj.requestUrlPath) { // 配置path
-                // console.log('配置path的逻辑暂无添加');
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
-
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
+              if (this.objectType === 'vertical') { this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType); }
             }
           }
         }
@@ -498,33 +477,37 @@
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
         const messageTip = checkedInfo.messageTip;
-        const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-        const itemMessageTip = itemCheckedInfo.messageTip;
         if (messageTip) {
           if (messageTip.length > 0) {
             this.$Message.warning(messageTip[0]);
             checkedInfo.validateForm.focus();
             return false;
           }
-        } else if (itemMessageTip) {
-          if (itemMessageTip.length > 0) {
-            this.$Message.warning(itemMessageTip[0]);
-            itemCheckedInfo.validateForm.focus();
-            return false;
-          }
-        }
-        if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
-          this.saveParameters();
-          if (this.objectType === 'vertical') {
-            if (this.itemId === 'New') {
-              const addInfo = this.itemCurrentParameter.add[this.itemName];
-              if (Object.values(addInfo).length < 1) {
-                this.$Message.warning('个人信息不能为空!');
-                return false;
+        } 
+        // if (this.objectType === 'vertical') { // 纵向结构
+        if (this.itemNameGroup.length > 0) { // 存在子表时
+          const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
+          const itemMessageTip = itemCheckedInfo.messageTip;
+          if (itemMessageTip) {
+            if (itemMessageTip.length > 0) {
+              this.$Message.warning(itemMessageTip[0]);
+              itemCheckedInfo.validateForm.focus();
+              return false;
+            }
+          } else if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+            this.saveParameters();
+            if (this.objectType === 'vertical') {
+              if (this.itemId === 'New') {
+                const addInfo = this.itemCurrentParameter.add[this.itemName];
+                if (Object.values(addInfo).length < 1) {
+                  this.$Message.warning('个人信息不能为空!');
+                  return false;
+                }
               }
             }
           }
         }
+        // }
         return true;
       },
       /**
@@ -536,8 +519,10 @@
        *    itemName: 子表表名
        * }
        */
-      savaNewTable(type, path, objId, itemName, itemCurrentParameter) { // 主表新增保存方法
+      savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
+        const objectType = this.objectType;
+        const itemNameGroup = this.itemNameGroup;
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -546,18 +531,60 @@
           objId,
           path,
           itemName,
+          objectType,
+          itemNameGroup,
+          sataType
         };
         this.performMainTableSaveAction(parame);
+        // if (itemName && itemName !== tableName) { // 子表保存
+        //   if (type === 'modify') { // 编辑保存主子表分开单独保存
+        //     this.performMainTableSaveAction(parame);
+        //     parame.sataType = 'itemSave';
+        //     setTimeout(() => {
+        //       this.performMainTableSaveAction(parame);
+        //     }, 2000);
+        //   } else if (type === 'add') {
+        //     this.performMainTableSaveAction(parame);
+        //   }
+        // } else {
+        //   this.performMainTableSaveAction(parame);
+        //   if (type === 'modify' && this.itemNameGroup.length > 0) { // 编辑保存主子表分开单独保存
+        //     parame.sataType = 'itemSave';
+        //     this.performMainTableSaveAction(parame);
+        //   } 
+        // }
+       
         setTimeout(() => {
-          let itemId = '';
-          if (this.itemId === 'New') {
-            itemId = this.mainFormInfo.buttonsData.newMainTableSaveData.objId;// 保存接口返回的明细id
+          if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
+            let types = '';
+            if (this.objectType === 'horizontal') {
+              types = 'tableDetailHorizontal';
+            } else {
+              types = 'tableDetailVertical';
+            }
+            const label = `${this.activeTab.label.replace('新增', '编辑')}`;
+            const tab = {
+              type: types,
+              tableName,
+              tableId: this.tableId,
+              label,
+              id: this.buttonsData.newMainTableSaveData.objId ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+            };
+            this.tabHref(tab);
+            const message = this.buttonsData.message;
+            this.$Message.success(message);
           } else {
-            itemId = this.itemId;
+            setTimeout(() => {
+              const message = this.buttonsData.message;
+              this.upData(`${message}`);
+            }, 1000);
           }
-          this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-          this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        }, 1000);
+         
+          // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+          // if (this.objectType === 'vertical') {
+          //   this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+          // }
+        }, 2000);
       },
       saveParameters() {
         if (this.itemNameGroup.length > 0) { // 有子表

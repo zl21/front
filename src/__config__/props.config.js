@@ -159,6 +159,8 @@ const checkbox = {
     size: 'default',
     // 是否禁用当前项
     disabled: false,
+    trueValue: [String, Number, Boolean],
+    falseValue: [String, Number, Boolean],
     // 支持checkout样式为radio样式
     circle: false
   },
@@ -199,7 +201,7 @@ const DatePicker = {
     // 文本框是否可以输入
     editable: false,
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
-    transfer: true
+    transfer: true,
   }
 };
 
