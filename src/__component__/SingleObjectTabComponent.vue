@@ -19,6 +19,7 @@
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
+      @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
@@ -130,6 +131,9 @@
           Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
         }
       },
+      formEnter() {
+
+      }, // 表单回车触发
       formChange(val) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
