@@ -102,9 +102,7 @@ export default {
     const { type } = parame;
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
-    const { objectType } = parame;
     const { itemNameGroup } = parame;
-
     
     let parames = {};
 
@@ -125,7 +123,7 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
-      const { sataType } = parame;
+      // const { sataType } = parame;
       if (itemNameGroup.length > 0) {
         const itemModify = itemCurrentParameter.modify;
         
@@ -133,24 +131,45 @@ export default {
           const { modify } = parame;
           modify[tableName].ID = objId;// 主表id
           const itmValues = itemModify[itemName];
-          if (itmValues) { itmValues.ID = -1; } else {
-            itmValues.ID = objId;
-          }
+          // if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+          //   itmValues.ID = objId;
+          // } else {
+          //   itmValues.ID = -1;
+          // }
           // itemModify[itemName] = [
           //   itmValues
           // ];
+          itemModify[itemName].ID = objId;
           parames = {
             ...modify,
-            ...itemModify
+            // ...itemModify
           };
+          if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
+            if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+              itmValues.ID = objId;
+            } else {
+              itmValues.ID = -1;
+              itemModify[itemName] = [
+                itmValues
+              ];
+            }
+           
+            parames = {
+              ...modify,
+              ...itemModify
+            };
+          }
         } else {
           const itmValues = itemModify[itemName];
-          if (itmValues) { itmValues.ID = -1; } else {
+          if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
             itmValues.ID = objId;
+          } else {
+            itmValues.ID = -1;
           }
           itemModify[itemName] = [
             itmValues
           ];
+          itemModify[itemName].ID = objId;
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
