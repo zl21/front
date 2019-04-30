@@ -124,7 +124,6 @@ export default {
     const tabRouteFullPath = tab.routeFullPath;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
-    console.log(JSON.parse(JSON.stringify(state.keepAliveLists)));
     openedMenuLists.forEach((item, index) => {
       if (item.routeFullPath === tab.routeFullPath) {
         openedMenuLists.splice(index, 1);
