@@ -40,8 +40,9 @@ export default () => ({
   },
   beforeDestroy() {
     try {
-      console.log(`${this.moduleComponentName} will destroy`);
-      store.unregisterModule(this.moduleComponentName);
+      if (this.$options.isKeepAliveModel) {
+        store.unregisterModule(this.moduleComponentName);
+      }
     } catch (e) {
       console.log(e);
     }
