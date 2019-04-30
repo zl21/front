@@ -1,6 +1,7 @@
 
 import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
+import store from '../store.config';
 
 export default () => ({
   mounted() {
@@ -37,4 +38,13 @@ export default () => ({
         'updateTabCurrentIndex',
       ]),
   },
+  beforeDestroy() {
+    try {
+      if (this.$options.isKeepAliveModel) {
+        store.unregisterModule(this.moduleComponentName);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 });

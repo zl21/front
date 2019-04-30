@@ -129,9 +129,6 @@
         }
       },
     },
-    // beforeDestroy() {
-    //   // this.$store.unregisterModule(this.moduleComponentName);
-    // }
   };
 </script>
 

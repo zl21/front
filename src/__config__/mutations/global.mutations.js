@@ -120,17 +120,19 @@ export default {
     });
   }, 
   tabCloseAppoint(state, tab) {
-    const selectTabs = state.openedMenuLists;
+    const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;
-    state.keepAliveLists.splice(state.keepAliveLists.indexOf(tab.keepAliveModuleName), 1);
-    selectTabs.forEach((item, index) => {
+    // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
+    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    console.log(JSON.parse(JSON.stringify(state.keepAliveLists)));
+    openedMenuLists.forEach((item, index) => {
       if (item.routeFullPath === tab.routeFullPath) {
-        selectTabs.splice(index, 1);
+        openedMenuLists.splice(index, 1);
       }
       if (tabRouteFullPath) {
-        if (selectTabs.length > 0) {
-          const lastLength = selectTabs.length - 1;
-          state.activeTab = selectTabs[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
+        if (openedMenuLists.length > 0) {
+          const lastLength = openedMenuLists.length - 1;
+          state.activeTab = openedMenuLists[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
           router.push({
             path: state.activeTab.routeFullPath,
           });

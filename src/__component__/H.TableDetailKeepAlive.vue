@@ -33,7 +33,7 @@
         const componentName = moduleName();
 
         if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, HorizontalTableDetail)));
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()], isKeepAliveModel: true }, HorizontalTableDetail)));
         }
         this.currentTable = componentName;
       }
