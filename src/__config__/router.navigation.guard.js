@@ -136,10 +136,12 @@ export default (router) => {
       }, 25);
     } else {
       // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
-      commit('global/againClickOpenedMenuLists', {
-        label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
-        keepAliveModuleName
-      });
+      if (to.path !== '/') {
+        commit('global/againClickOpenedMenuLists', {
+          label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+          keepAliveModuleName
+        });
+      }
     }
 
     next();

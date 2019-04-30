@@ -1,6 +1,7 @@
 
 import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
+import store from '../store.config';
 
 export default () => ({
   mounted() {
@@ -12,11 +13,11 @@ export default () => ({
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
-          if (idx > 0) {
-            acc.push({ tableName: cur.tablename });
-          }
-          return acc;
-        }, []),
+        if (idx > 0) {
+          acc.push({ tableName: cur.tablename });
+        }
+        return acc;
+      }, []),
     })
   },
   methods: {
@@ -36,4 +37,12 @@ export default () => ({
         'updateTabCurrentIndex',
       ]),
   },
+  beforeDestroy() {
+    try {
+      console.log(`${this.moduleComponentName} will destroy`);
+      store.unregisterModule(this.moduleComponentName);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 });
