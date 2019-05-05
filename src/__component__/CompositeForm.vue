@@ -74,6 +74,12 @@
           return {};
         }
       },
+      defaultValue: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
       type: {
         // 判断是否需要 面板 =PanelForm
         type: String,
@@ -112,6 +118,7 @@
       return {
         newdefaultData: [], // 初始化form
         formData: {}, // 监听form变化
+        formDataDef: {}, // 监听form 变化有value 和 文字
         VerificationForm: [], // 校验form
         defaultFormData: {}, // form 默认值
         Mapping: {}, // 设置映射关系
@@ -217,8 +224,9 @@
         this.Mapping = Object.assign(this.Mapping, Mapping);
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data) {
+      formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
+        console.log(setdefval);
         if (!this.mountChecked) { 
           return false;
         }
@@ -226,6 +234,8 @@
           data = data[0];
         }
         this.formData = Object.assign(this.formData, data);
+        this.formDataDef = Object.assign(this.formDataDef, setdefval);
+
         const key = Object.keys(data)[0];
         if (key.split(':').length > 1) {
           delete this.formData[key.split(':')[0]];
@@ -249,7 +259,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        this.$emit('formChange', this.formData);
+        this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {
         // 获取需要校验的表单
@@ -309,11 +319,13 @@
                   tableid: item.props.fkobj.reftableid,
                   modelname: key
                 },
+                serviceId: current.serviceId,
                 success: () => {
                   fkGetMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
+                    serviceId: current.serviceId,
                     success: (res) => {
                       this.freshDropDownPopFilterData(res, index, current);
                     }
@@ -343,6 +355,7 @@
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownPopFilterData(res, index, current);
                 }
@@ -372,6 +385,7 @@
               }             
               fkQueryList({
                 searchObject,
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
@@ -385,6 +399,7 @@
                   colid: current.colid,
                   fixedcolumns: {}
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterAutoData(res, index, current);
                 }
@@ -399,6 +414,7 @@
                   startindex: 10 * ($this.currentPage - 1),
                   range: $this.pageSize
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
