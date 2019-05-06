@@ -134,11 +134,12 @@
       formEnter() {
 
       }, // 表单回车触发
-      formChange(val) {
+      formChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {
@@ -163,11 +164,12 @@
         const { tableName } = this;
         this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       },
-      formPanelChange(val) {
+      formPanelChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {

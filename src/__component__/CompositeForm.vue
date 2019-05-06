@@ -20,7 +20,7 @@
           <div slot="content">
             <template v-if="FormItemComponent!==''">
               <component
-                :is="FormItemComponent"   
+                :is="FormItemComponent"
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :form-item-lists="item.childs"
@@ -39,7 +39,7 @@
     <template v-if="type === ''">
       <template v-if="FormItemComponent!==''">
         <component
-          :is="FormItemComponent"   
+          :is="FormItemComponent"
           ref="FormComponent_0"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -74,7 +74,7 @@
           return {};
         }
       },
-      defaultValue: {
+      defaultSetValue: {
         type: Object,
         default() {
           return {};
@@ -227,7 +227,7 @@
       formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
         console.log(setdefval);
-        if (!this.mountChecked) { 
+        if (!this.mountChecked) {
           return false;
         }
         if (Array.isArray(data)) {
@@ -270,7 +270,7 @@
         if (data.messageTip.length > 0) {
           this.verifyMessItem = data;
           this.$emit('VerifyMessage', data);
-        } 
+        }
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
@@ -382,7 +382,7 @@
                   startindex: 0,
                   range: $this.pageSize
                 };
-              }             
+              }
               fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
@@ -438,7 +438,7 @@
           return {
             dynamicforcompute: current.dynamicforcompute
           };
-        } 
+        }
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
           return {
             hidecolumn: current.hidecolumn
@@ -536,7 +536,7 @@
         if (item.display === 'check') {
           return item.valuedata || item.defval;
         }
-       
+
         if (item.display === 'OBJ_SELECT') {
           // 处理select的默认值
           const arr = [];
@@ -578,14 +578,14 @@
             item.props.falseValue = falseName[index];
           }
         }
-         
+
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
           // 下拉是单选
           item.props.multiple = false;
         }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
-          
+
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
@@ -598,7 +598,7 @@
             }
           }
         }
-        
+
 
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
@@ -860,7 +860,7 @@
         // 下一个组件获取光标
         const item = this.$refs[`FormComponent_${current.formIndex}`][0]
           .$children;
-        let _index = index;  
+        let _index = index;
         // const input_arry = item.reduce((option, name, index) => {
         //   if (name.$el.querySelector('input') && name.items.type !== 'checkbox') {
         //     option.push(name.$el.querySelector('input'));
@@ -881,18 +881,18 @@
           }
         //
         });
-        
-        
+
+
         // if (item[index + 1] || item[index + 2]) {
         //   // if (type === 'input') {}
         //   if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
         //     item[index + 1].$el.querySelector('input').focus();
         //   }
-        // }  
+        // }
       }
     },
     mounted() {
-       
+
     },
     created() {
       this.computdefaulForm = this.computdefaultData;
