@@ -14,6 +14,7 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :defaultValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -27,6 +28,7 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :defaultValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -82,6 +84,10 @@
       tableId: {
         type: String,
         default: ''
+      },
+      changeData: {
+        type: Object,
+        default: () => ({})
       },
       tableData: {
         type: Object,

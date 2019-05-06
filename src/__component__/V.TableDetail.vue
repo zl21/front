@@ -52,6 +52,7 @@
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
+          obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
