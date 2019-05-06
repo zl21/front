@@ -74,7 +74,7 @@
           return {};
         }
       },
-      defaultValue: {
+      defaultSetValue: {
         type: Object,
         default() {
           return {};
