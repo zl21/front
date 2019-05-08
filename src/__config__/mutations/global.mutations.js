@@ -3,8 +3,7 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
-  // HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
-  // VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
+  CUSTOMIZED_MODULE_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
 
@@ -37,6 +36,9 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
+        if (c.type === 'action') {
+          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        }
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }

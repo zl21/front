@@ -1,9 +1,11 @@
 import store from './store.config';
 import {
+  CUSTOMIZED_MODULE_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   VERTICAL_TABLE_DETAIL_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
+  CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
@@ -16,7 +18,9 @@ export default (router) => {
   router.beforeEach((to, from, next) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
-    const { tableName, tableId, itemId } = to.params;
+    const {
+      tableName, tableId, itemId, customizedModuleName, customizedModuleId 
+    } = to.params;
     const { routePrefix } = to.meta;
     const { isBack } = to.query;
     const moduleGenerator = {
@@ -25,6 +29,7 @@ export default (router) => {
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: horizontalTableDetailModule,
     };
     const labelSuffix = {
+      [CUSTOMIZED_MODULE_COMPONENT_PREFIX]: '',
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
@@ -32,7 +37,9 @@ export default (router) => {
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
-    const originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+    const originModuleName = routePrefix === CUSTOMIZED_MODULE_PREFIX
+      ? `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`
+      : `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 
     switch (routePrefix) {
       // Condition One: 路由到标准列表界面名称
@@ -53,6 +60,11 @@ export default (router) => {
         dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
         break;
 
+      case CUSTOMIZED_MODULE_PREFIX:
+        keepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
+        dynamicModuleTag = CUSTOMIZED_MODULE_COMPONENT_PREFIX;
+        break;
+
       default:
         break;
     }
@@ -62,8 +74,8 @@ export default (router) => {
       commit('global/increaseKeepAliveLists', keepAliveModuleName);
     }
 
-    // 判断是否状态中已经存在某个模块，不存在则创建
-    if (dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
+    // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
+    if (routePrefix !== CUSTOMIZED_MODULE_PREFIX && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
 
@@ -78,14 +90,6 @@ export default (router) => {
       return false;
     })[0];
 
-    // 处理openedMenuList的存储逻辑
-    // console.log(`
-    //     routerPrefix = \t\t\t${routePrefix}
-    //     existModuleFullPath =\t${existModule ? existModule.routeFullPath : ''}
-    //     from.fullPath =\t\t\t${from.fullPath}
-    //     to.fullPath =\t\t\t${to.fullPath}
-    //     to.path = \t\t\t${to.path}
-    // `);
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在与已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -128,7 +132,7 @@ export default (router) => {
           commit('global/increaseOpenedMenuLists', {
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName,
+            tableName: tableName || customizedModuleName,
             routeFullPath: to.path,
             routePrefix
           });
