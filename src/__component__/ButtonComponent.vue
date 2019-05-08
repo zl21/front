@@ -176,7 +176,7 @@
 
 <style lang="less">
 .buttonList {
-  padding: 17px;
+  padding: 17px 0 17px;
   > div {
     display: inline-block;
   }

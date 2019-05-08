@@ -2,9 +2,11 @@
   <div class="dispalyArea" :data-keep-alive="keepAliveContainer">
     <!-- 模块页签组件 -->
     <TabLists />
-    <keep-alive :include="keepAliveContainer">
-      <router-view />
-    </keep-alive>
+    <div style="height: 100%; padding: 0 15px 0;overflow: hidden">
+      <keep-alive :include="keepAliveContainer">
+        <router-view />
+      </keep-alive>
+    </div>
   </div>
 </template>
 

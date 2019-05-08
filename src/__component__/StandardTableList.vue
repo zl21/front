@@ -1372,6 +1372,6 @@
   @import url('../assets/css/custom-ext.less');
 .StandardTableListRootDiv {
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 </style>

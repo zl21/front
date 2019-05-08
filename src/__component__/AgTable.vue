@@ -288,7 +288,7 @@
 
 <style lang="less">
  .standardTable {
-   padding: 20px 20px 0 20px;
+   padding: 20px 0 0 0;
  }
   .detailTable {
     border: 1px solid #d8d8d8;
