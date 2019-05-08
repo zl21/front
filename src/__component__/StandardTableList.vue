@@ -255,11 +255,13 @@
                       tableid: item.props.fkobj.reftableid,
                       modelname: key
                     },
-                    success: (res) => {
+                    serviceId: current.fkobj.serviceId,
+                    success: () => {
                       fkGetMultiQuery({
                         searchObject: {
                           tableid: item.props.fkobj.reftableid
                         },
+                        serviceId: current.fkobj.serviceId,
                         success: (res) => {
                           this.freshDropDownPopFilterData(res, index);
                         }
@@ -281,6 +283,7 @@
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
+                    serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownPopFilterData(res, index);
                     }
@@ -295,6 +298,7 @@
                       startindex: 0,
                       range: $this.pageSize
                     },
+                    serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
                     }
@@ -308,6 +312,7 @@
                       colid: current.colid,
                       fixedcolumns: {}
                     },
+                    serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterAutoData(res, itemIndex);
                     }
@@ -322,6 +327,7 @@
                       startindex: 10 * ($this.currentPage - 1),
                       range: $this.pageSize
                     },
+                    serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
                     }

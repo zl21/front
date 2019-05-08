@@ -332,8 +332,11 @@
         } else {
           this.changeFormData = obj;
         }
+        const valueItem = {
+          [Object.keys(obj)[0]]: current.item.value
+        };
         // 向父组件抛出整个数据对象以及当前修改的字段
-        this.$emit('formDataChange', obj, current);
+        this.$emit('formDataChange', obj, valueItem, current);
       },
       resetForm() { // 重置表单
         const arr = JSON.parse(JSON.stringify(this.formItemLists));

@@ -11,6 +11,13 @@ axios.interceptors.request.use((config) => {
   if (!enableGateWay) {
     return config;
   }
+ 
+  if (config.serviceId) {
+    // 外键 配置网关
+
+    config.url = config.serviceId ? `/${config.serviceId}${url}` : url;
+    return config;
+  } 
   if (ignoreGateWay.includes(url)) { 
     return config;
   }
@@ -18,6 +25,7 @@ axios.interceptors.request.use((config) => {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
+  
   if (tableName) {
     if (serviceId[tableName] !== 'undefined') {
       const serviceIdMapApi = serviceId[tableName];
@@ -84,4 +92,10 @@ export const urlSearchParams = (data) => {
   return params;
 };
 
+// class API extends axios {
+//   constructor(Object) {
+//     super(Object);
+//     this.BASE_URL = 'http://cs.mclon.com';
+//   }
+// }
 export default axios;
