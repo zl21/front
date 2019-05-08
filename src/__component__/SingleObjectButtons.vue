@@ -450,7 +450,7 @@
             const type = 'modify';
             if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
               // console.log('没有子表',);
-             
+
               if (obj.requestUrlPath) { // 配置path
                 // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
                 this.savaNewTable(type, path, this.itemId);
@@ -483,7 +483,7 @@
             checkedInfo.validateForm.focus();
             return false;
           }
-        } 
+        }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.itemNameGroup.length > 0) { // 存在子表时
           const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
@@ -551,9 +551,9 @@
         //   if (type === 'modify' && this.itemNameGroup.length > 0) { // 编辑保存主子表分开单独保存
         //     parame.sataType = 'itemSave';
         //     this.performMainTableSaveAction(parame);
-        //   } 
+        //   }
         // }
-       
+
         setTimeout(() => {
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
@@ -579,7 +579,7 @@
               this.upData(`${message}`);
             }, 1000);
           }
-         
+
           // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
           // if (this.objectType === 'vertical') {
           //   this.getObjectForMainTableForm({ table: tableName, objid: itemId });
@@ -594,7 +594,7 @@
             }
             return obj;
           }, {});
-        } 
+        }
         Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           if (current === this.tableName) {
             this.currentParameter = this.updateData[current];
@@ -602,7 +602,7 @@
           return obj;
         }, {});
       }
-      
+
     },
     mounted() {
       this.buttonsReorganization(this.tabcmd);
@@ -620,7 +620,7 @@
 <style lang="less">
 .singleObjectButton {
   .buttonGroup {
-    padding: 10px 16px 5px 16px;
+    padding: 10px 0 5px 0;
   }
 }
 </style>

@@ -13,7 +13,6 @@
       :defaultValue="updateData[$route.params.tableName].changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
-      class="panelForm"
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
       type="PanelForm"
@@ -139,11 +138,8 @@
   .verticalTableDetail {
     flex: 1;
     overflow-y: auto;
-    .panelForm {
-      margin: 0 16px;
-    }
     .tabPanel {
-      margin: 10px 16px;
+      margin: 10px 0;
     }
   }
 </style>
