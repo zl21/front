@@ -14,6 +14,7 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :defaultValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -27,6 +28,7 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :defaultValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -83,6 +85,10 @@
         type: String,
         default: ''
       },
+      changeData: {
+        type: Object,
+        default: () => ({})
+      },
       tableData: {
         type: Object,
         default: () => ({})
@@ -134,11 +140,12 @@
       formEnter() {
 
       }, // 表单回车触发
-      formChange(val) {
+      formChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {
@@ -163,11 +170,12 @@
         const { tableName } = this;
         this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       },
-      formPanelChange(val) {
+      formPanelChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {

@@ -20,7 +20,7 @@
           <div slot="content">
             <template v-if="FormItemComponent!==''">
               <component
-                :is="FormItemComponent"   
+                :is="FormItemComponent"
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :form-item-lists="item.childs"
@@ -39,7 +39,7 @@
     <template v-if="type === ''">
       <template v-if="FormItemComponent!==''">
         <component
-          :is="FormItemComponent"   
+          :is="FormItemComponent"
           ref="FormComponent_0"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -69,6 +69,12 @@
     components: {},
     props: {
       defaultData: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      defaultSetValue: {
         type: Object,
         default() {
           return {};
@@ -112,6 +118,7 @@
       return {
         newdefaultData: [], // 初始化form
         formData: {}, // 监听form变化
+        formDataDef: {}, // 监听form 变化有value 和 文字
         VerificationForm: [], // 校验form
         defaultFormData: {}, // form 默认值
         Mapping: {}, // 设置映射关系
@@ -217,15 +224,18 @@
         this.Mapping = Object.assign(this.Mapping, Mapping);
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data) {
+      formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
-        if (!this.mountChecked) { 
+        console.log(setdefval);
+        if (!this.mountChecked) {
           return false;
         }
         if (Array.isArray(data)) {
           data = data[0];
         }
         this.formData = Object.assign(this.formData, data);
+        this.formDataDef = Object.assign(this.formDataDef, setdefval);
+
         const key = Object.keys(data)[0];
         if (key.split(':').length > 1) {
           delete this.formData[key.split(':')[0]];
@@ -249,7 +259,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        this.$emit('formChange', this.formData);
+        this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {
         // 获取需要校验的表单
@@ -260,7 +270,7 @@
         if (data.messageTip.length > 0) {
           this.verifyMessItem = data;
           this.$emit('VerifyMessage', data);
-        } 
+        }
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
@@ -309,11 +319,13 @@
                   tableid: item.props.fkobj.reftableid,
                   modelname: key
                 },
+                serviceId: current.serviceId,
                 success: () => {
                   fkGetMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
+                    serviceId: current.serviceId,
                     success: (res) => {
                       this.freshDropDownPopFilterData(res, index, current);
                     }
@@ -343,6 +355,7 @@
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownPopFilterData(res, index, current);
                 }
@@ -369,9 +382,10 @@
                   startindex: 0,
                   range: $this.pageSize
                 };
-              }             
+              }
               fkQueryList({
                 searchObject,
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
@@ -385,6 +399,7 @@
                   colid: current.colid,
                   fixedcolumns: {}
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterAutoData(res, index, current);
                 }
@@ -399,6 +414,7 @@
                   startindex: 10 * ($this.currentPage - 1),
                   range: $this.pageSize
                 },
+                serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
@@ -422,7 +438,7 @@
           return {
             dynamicforcompute: current.dynamicforcompute
           };
-        } 
+        }
         if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
           return {
             hidecolumn: current.hidecolumn
@@ -520,7 +536,7 @@
         if (item.display === 'check') {
           return item.valuedata || item.defval;
         }
-       
+
         if (item.display === 'OBJ_SELECT') {
           // 处理select的默认值
           const arr = [];
@@ -562,14 +578,14 @@
             item.props.falseValue = falseName[index];
           }
         }
-         
+
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
           // 下拉是单选
           item.props.multiple = false;
         }
         if (current.type === 'NUMBER') {
           //  数字校验  '^\\d{0,8}(\\.[0-9]{0,2})?$'
-          
+
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
@@ -582,7 +598,7 @@
             }
           }
         }
-        
+
 
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
@@ -844,7 +860,7 @@
         // 下一个组件获取光标
         const item = this.$refs[`FormComponent_${current.formIndex}`][0]
           .$children;
-        let _index = index;  
+        let _index = index;
         // const input_arry = item.reduce((option, name, index) => {
         //   if (name.$el.querySelector('input') && name.items.type !== 'checkbox') {
         //     option.push(name.$el.querySelector('input'));
@@ -865,18 +881,18 @@
           }
         //
         });
-        
-        
+
+
         // if (item[index + 1] || item[index + 2]) {
         //   // if (type === 'input') {}
         //   if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
         //     item[index + 1].$el.querySelector('input').focus();
         //   }
-        // }  
+        // }
       }
     },
     mounted() {
-       
+
     },
     created() {
       this.computdefaulForm = this.computdefaultData;

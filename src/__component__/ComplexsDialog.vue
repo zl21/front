@@ -353,6 +353,7 @@
       checkboxChange(value) {
         this.checkbox = value;
       },
+      // eslint-disable-next-line consistent-return
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         if (this.HRORG_ID.length > 0) {
@@ -476,6 +477,7 @@
       multipleSetMultiQuery(obj) {
         multipleComple.multipleSetMultiQuery({
           searchObject: obj,
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               this.$Message.info('模板保存成功');
@@ -490,6 +492,7 @@
               TABLENAME: obj.reftable
             }
           },
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               this.treeRestructure(res.data);
@@ -508,6 +511,7 @@
               PAGESIZE: obj.PAGESIZE
             }
           },
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.dateRestructure(res.data.data, index, name);
           }
@@ -530,6 +534,7 @@
               NOTIN: this.NOTIN
             }
           },
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.dateRestructure(res.data.data, index, type);
           }
@@ -551,6 +556,7 @@
               NOTIN: obj.NOTIN
             }
           },
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.dateRestructure(res.data.data, index, type);
           }
@@ -577,7 +583,6 @@
       console.log('激活');
     },
     mounted() {
-      console.log('mounted');
       /**/
     },
     created() {

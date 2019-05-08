@@ -10,6 +10,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      :defaultValue="updateData[$route.params.tableName].changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       class="panelForm"
@@ -51,6 +52,7 @@
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
+          obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
@@ -88,10 +90,11 @@
         }
         this.updateDefaultData({ tableName, value: obj });
       },
-      formChange(val) {
+      formChange(val, changeVal) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.updateDeleteData({ tableName, value: changeVal });
         if (itemId === 'New') {
           this.updateAddData({ tableName, value: obj });
         } else {
