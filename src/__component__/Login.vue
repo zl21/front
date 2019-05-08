@@ -1,11 +1,13 @@
 <template>
   <div>
     <input
+      ref="username"
       type="text"
       value="root"
     >
     <br>
     <input
+      ref="password"
       type="password"
       value="123"
     >
@@ -28,8 +30,8 @@
       login() {
         network.post('/p/c/getCaptcha').then((res) => {
           network.post('/p/c/login', urlSearchParams({
-            username: 'root',
-            password: '123',
+            username: this.$refs.username.value,
+            password: this.$refs.password.value,
             captcha: res.data.captcha,
             rememberMe: false,
             lang: 'zh_CN',

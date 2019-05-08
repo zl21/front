@@ -26,7 +26,9 @@ export const globalGateWay = [
   '/p/cs/addToFavorite',
   '/p/cs/getUserConfig',
   '/p/cs/setColPosition',
-  '/p/c/getCaptcha'
+  '/p/cs/recHistory',
+  '/p/cs/setHideColumn',
+  '/p/cs/changechruserpwd',
 ];
 
 // 不走网关的接口
