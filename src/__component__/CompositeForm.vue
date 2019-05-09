@@ -203,10 +203,10 @@
         handler(val, old) {
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           if (JSON.stringify(val) === JSON.stringify(old)) {
-            this.FormItemComponent = '';
-            setTimeout(() => {
-              this.FormItemComponent = Vue.extend(FormItemComponent);
-            }, 0);
+            // this.FormItemComponent = '';
+            // setTimeout(() => {
+            //   this.FormItemComponent = Vue.extend(FormItemComponent);
+            // }, 0);
           }
         },
         deep: true
@@ -226,7 +226,6 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
-        console.log(setdefval);
         if (!this.mountChecked) {
           return false;
         }
@@ -521,36 +520,68 @@
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
+        if (item.display === 'textarea' && !item.fkdisplay || item.display === 'text' && !item.fkdisplay) {
+          if (this.defaultSetValue[item.colname]) {
+            return this.defaultSetValue[item.colname];
+          }
+        }
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
+          // 保存change 之前的默认值
+          if (this.defaultSetValue[item.colname]) {
+            return this.defaultSetValue[item.colname];
+          }
           if (item.defval || item.valuedata) {
             return `${item.defval || item.valuedata} ` || '';
           }
           return '';
         }
         if (item.display === 'OBJ_TIME') {
+          // 保存change 之前的默认值
+          if (this.defaultSetValue[item.colname]) {
+            return this.defaultSetValue[item.colname];
+          }
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
 
         if (item.display === 'check') {
+          // 保存change 之前的默认值
+          if (this.defaultSetValue[item.colname]) {
+            return this.defaultSetValue[item.colname];
+          }
           return item.valuedata || item.defval;
         }
+        // console.log(item, this.defaultSetValue);
 
-        if (item.display === 'OBJ_SELECT') {
+        if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
+
           const arr = [];
-          arr.push(item.valuedata || item.defval);
+          if (this.defaultSetValue[item.colname]) {
+            arr.push(this.defaultSetValue[item.colname]);
+          } else {
+            arr.push(item.valuedata || item.defval);
+          }
+          
           return arr;
         }
 
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
-          arr.push({
-            ID: item.refobjid || '',
-            Label: item.valuedata || item.defval || ''
-          });
+          if (this.defaultSetValue[item.colname]) {
+            arr.push({
+              ID: this.defaultSetValue[item.colname][0].ID || '',
+              Label: this.defaultSetValue[item.colname][0].Label || ''
+            });
+          } else {
+            arr.push({
+              ID: item.refobjid || '',
+              Label: item.valuedata || item.defval || ''
+            });
+          }
+          
           return arr;
         }
         return item.defval || item.valuedata || '';
