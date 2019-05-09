@@ -439,8 +439,15 @@
       },
       defaultValue(item) {
         // 设置表单的默认值
+
+
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
+          if ( item.default === '-1') {
+            return '';
+          } else if( item.default !== '-1' ) {
+            return Date().minusDays(item.default).toIsoDateString();
+          }
           const timeRange = [
             new Date().toIsoDateString(),
             new Date().minusDays(Number(item.daterange)).toIsoDateString()
