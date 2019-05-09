@@ -13,7 +13,7 @@ export default {
       delete: Object.assign({}, { [tableName]: {} }),
       default: {},
       checkedInfo: {},
-      changeData: {} // 表单修改的值，第二次回显用
+      changeData: Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
@@ -45,7 +45,7 @@ export default {
         delete: Object.assign({}, { [item.tablename]: {} }),
         default: {},
         checkedInfo: {},
-        changeData: {} // 表单修改的值，第二次回显用
+        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
       arr.push(obj);
     });

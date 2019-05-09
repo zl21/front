@@ -56,7 +56,7 @@ export default {
         delete: Object.assign({}, { [item.tablename]: {} }),
         default: {},
         checkedInfo: {},
-        changeData: {} // 表单修改的值，第二次回显用
+        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
