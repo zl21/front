@@ -30,7 +30,6 @@
       
       login() {
         const globalServiceId = window.sessionStorage.getItem('serviceId');
-        console.log('globalServiceId = ', globalServiceId);
         network.post(enableGateWay ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
           network.post(enableGateWay ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
             username: this.$refs.username.value,
