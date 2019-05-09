@@ -51,7 +51,12 @@ export default {
     });
     arr.forEach((item) => {
       state.updateData[item.tablename] = {
-        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: {}, changeData: {} // 表单修改的值，第二次回显用
+        add: Object.assign({}, { [item.tablename]: {} }),
+        modify: Object.assign({}, { [item.tablename]: {} }),
+        delete: Object.assign({}, { [item.tablename]: {} }),
+        default: {},
+        checkedInfo: {},
+        changeData: {} // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;

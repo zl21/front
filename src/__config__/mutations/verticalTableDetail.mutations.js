@@ -8,7 +8,12 @@ export default {
     state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
     state.updateData[tableName] = {
-      add: Object.assign({}, { [tableName]: {} }), modify: Object.assign({}, { [tableName]: {} }), delete: Object.assign({}, { [tableName]: {} }), default: {}, checkedInfo: {}
+      add: Object.assign({}, { [tableName]: {} }),
+      modify: Object.assign({}, { [tableName]: {} }),
+      delete: Object.assign({}, { [tableName]: {} }),
+      default: {},
+      checkedInfo: {},
+      changeData: {} // 表单修改的值，第二次回显用
     };
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
@@ -35,7 +40,12 @@ export default {
         }
       };
       state.updateData[item.tablename] = {
-        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: {}
+        add: Object.assign({}, { [item.tablename]: {} }),
+        modify: Object.assign({}, { [item.tablename]: {} }),
+        delete: Object.assign({}, { [item.tablename]: {} }),
+        default: {},
+        checkedInfo: {},
+        changeData: {} // 表单修改的值，第二次回显用
       };
       arr.push(obj);
     });
@@ -75,6 +85,9 @@ export default {
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
   },
+  updateChangeData(state, data) {
+    state.updateData[data.tableName].changeData = data.value;
+  },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
@@ -83,7 +96,7 @@ export default {
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   },
- 
+
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
     state.buttonsData.newMainTableSaveData = data.data;
     state.buttonsData.message = data.message;
@@ -98,7 +111,7 @@ export default {
     //     } else {
     //       state.buttonsData.newMainTableSaveData = JSON.parse(data);
     //     }
-    //   } 
+    //   }
     // } else {
     //   state.buttonsData.newMainTableSaveData = data.data;
     // }
@@ -106,5 +119,5 @@ export default {
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
   },
-  
+
 };
