@@ -10,7 +10,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
-      :defaultValue="updateData[$route.params.tableName].changeData"
+      :defaultSetValue="getFormDefaultValue"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       module-form-type="vertical"
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
@@ -47,11 +48,11 @@
     computed: {
       tabPanels() {
         const arr = [];
-        this.tabPanel.forEach((item, index) => {
+        this.tabPanel.forEach((item) => {
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
-          obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+          // obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
@@ -62,9 +63,16 @@
         return arr;
       },
       getItemName() {
-        if (this.tabPanel.length >0) {
+        if (this.tabPanel.length > 0) {
           return this.tabPanel[this.tabCurrentIndex].tablename;
         }
+        return '';
+      },
+      getFormDefaultValue() {
+        if (this.updateData[this.$route.params.tableName]) {
+          return this.updateData[this.$route.params.tableName].changeData;
+        }
+        return {};
       }
     },
     components: {
@@ -93,7 +101,7 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.updateDeleteData({ tableName, value: changeVal });
+        this.updateChangeData({ tableName, value: changeVal });
         if (itemId === 'New') {
           this.updateAddData({ tableName, value: obj });
         } else {

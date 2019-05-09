@@ -14,7 +14,7 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
-      :defaultValue="changeData"
+      :defaultSetValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -28,7 +28,7 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
-      :defaultValue="changeData"
+      :defaultSetValue="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
@@ -145,7 +145,7 @@
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
+        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {
@@ -175,7 +175,7 @@
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: changeVal });
+        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
         } else {

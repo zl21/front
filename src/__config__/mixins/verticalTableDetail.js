@@ -40,6 +40,7 @@ export default () => ({
         'updateAddData',
         'updateModifyData',
         'updateDeleteData',
+        'updateChangeData',
         'updateCheckedInfoData',
         'updatePanelData',
       ]),
