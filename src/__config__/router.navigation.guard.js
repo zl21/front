@@ -92,9 +92,10 @@ export default (router) => {
 
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
-      // 如果目标路由界面所对应的[表]已经存在与已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
+      // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
       if (routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule.routePrefix !== STANDARD_TABLE_LIST_PREFIX && !isBack) {
+        // 非返回逻辑
         // Step One: 处理菜单Tab页签的显示逻辑。
         commit('global/forceUpdateOpenedMenuLists', {
           openedMenuInfo: Object.assign({}, existModule, { isActive: true }),
@@ -103,6 +104,7 @@ export default (router) => {
         // Step Two: 按照用户所点击的路由原意进行跳转。
         next({ path: existModule.routeFullPath });
       } else {
+        // 返回逻辑
         // Step One: 处理菜单Tab页签的显示逻辑。
         commit('global/forceUpdateOpenedMenuLists', {
           openedMenuInfo: {

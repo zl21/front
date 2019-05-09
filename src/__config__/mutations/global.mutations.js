@@ -164,9 +164,7 @@ export default {
       router.push(routeInfo);
     }
   },
-  tabOpen(state, // 打开新的tab页
-
-    tab) {
+  tabOpen(state, tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
