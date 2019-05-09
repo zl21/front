@@ -59,6 +59,9 @@ export default {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
+  decreasekeepAliveLists(state, name) {
+    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+  },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index].isActive = true;
