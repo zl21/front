@@ -10,7 +10,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
-      :defaultValue="getFormDefaultValue"
+      :defaultSetValue="getFormDefaultValue"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       module-form-type="vertical"
