@@ -21,7 +21,13 @@ export default (router) => {
     const {
       tableName, tableId, itemId, customizedModuleName, customizedModuleId 
     } = to.params;
+    const fromTableName = from.params.tableName;
+    const fromTableId = from.params.tableId;
+    const fromItemId = from.params.itemId;
+    const fromCustomizedModuleName = from.params.customizedModuleName;
+    const fromCustomizedModuleId = from.params.customizedModuleId;
     const { routePrefix } = to.meta;
+    const fromRoutePrefix = from.meta.routePrefix;
     const { isBack } = to.query;
     const moduleGenerator = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
@@ -34,12 +40,39 @@ export default (router) => {
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
+    const fromParamItemId = String(fromItemId) === '-1' ? 'New' : `${fromItemId}`;
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
+    let fromKeepAliveModuleName = '';
     const originModuleName = routePrefix === CUSTOMIZED_MODULE_PREFIX
       ? `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`
       : `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+
+    switch (fromRoutePrefix) {
+      // Condition One: 来自标准列表界面
+      case STANDARD_TABLE_LIST_PREFIX:
+        fromKeepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}`;
+        break;
+
+      // Condition Three: 来自列表明细界面
+      case VERTICAL_TABLE_DETAIL_PREFIX:
+        fromKeepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}.${fromParamItemId}`;
+        break;
+
+      // Condition Three: 来自列表明细界面
+      case HORIZONTAL_TABLE_DETAIL_PREFIX:
+        fromKeepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}.${fromParamItemId}`;
+        break;
+
+      // Condition Four: 来自用户自定义界面
+      case CUSTOMIZED_MODULE_PREFIX:
+        fromKeepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${fromCustomizedModuleName}.${fromCustomizedModuleId}`;
+        break;
+
+      default:
+        break;
+    }
 
     switch (routePrefix) {
       // Condition One: 路由到标准列表界面名称
@@ -48,18 +81,19 @@ export default (router) => {
         dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
         break;
 
-      // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面名称
+      // Condition Three: 路由到左右Tab页签切换（纵向布局）的列表明细界面
       case VERTICAL_TABLE_DETAIL_PREFIX:
         keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
         dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
         break;
 
-      // Condition Three: 路由到table类型的列表明细界面名称
+      // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面
       case HORIZONTAL_TABLE_DETAIL_PREFIX:
         keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
         dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
         break;
 
+      // Condition Four: 路由到用户自定义界面
       case CUSTOMIZED_MODULE_PREFIX:
         keepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         dynamicModuleTag = CUSTOMIZED_MODULE_COMPONENT_PREFIX;
@@ -105,6 +139,10 @@ export default (router) => {
         next({ path: existModule.routeFullPath });
       } else {
         // 返回逻辑
+        // 返回清除当前模块的keepAlive
+        if (isBack) {
+          commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
+        }
         // Step One: 处理菜单Tab页签的显示逻辑。
         commit('global/forceUpdateOpenedMenuLists', {
           openedMenuInfo: {
