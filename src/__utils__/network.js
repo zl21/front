@@ -49,7 +49,23 @@ axios.interceptors.response.use((response) => {
       router.push('/login');
     } else if (status === 500) {
       // 如果http状态码正常，则直接返回数据
-      alert(error.response.data.message);
+      let emg = error.response.data.message;
+      try {
+        emg = JSON.stringify(emg, null, 4);
+      } catch (e) { console.info(e); }
+      window.vm.$Modal.info({
+        title: '错误',
+        render: createElement => createElement('textarea', {
+          domProps: {
+            value: emg,
+            rows: 8,
+            style: 'width: 100%;margin-bottom: -15px;box-sizing: border-box; padding: 2px;'
+          },
+          attrs: {
+            readonly: 'readonly',
+          }
+        })
+      });
     }
   }
  
@@ -92,10 +108,4 @@ export const urlSearchParams = (data) => {
   return params;
 };
 
-// class API extends axios {
-//   constructor(Object) {
-//     super(Object);
-//     this.BASE_URL = 'http://cs.mclon.com';
-//   }
-// }
 export default axios;
