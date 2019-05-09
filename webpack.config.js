@@ -9,9 +9,9 @@ const proxyLists = ['/p/c'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 
-// const target = 'http://47.99.229.124:10001'; // 框架研发网关开启环境
-// const target = 'http://120.55.107.235:8090'; // 正式环境
-const target = 'http://dev.burgeononline.com:8099'; // 掌云测试环境(启用网关)
+// const target = 'http://47.99.229.124:1024';  // 框架研发网关关闭环境
+const target = 'http://47.99.229.124:10001'; // 框架研发网关开启环境
+// const target = 'http://dev.burgeononline.com:8099'; // 掌云测试环境(启用网关)
 
 
 module.exports = env => ({

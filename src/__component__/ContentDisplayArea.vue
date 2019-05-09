@@ -2,7 +2,7 @@
   <div class="dispalyArea" :data-keep-alive="keepAliveContainer">
     <!-- 模块页签组件 -->
     <TabLists />
-    <div style="height: 100%; padding: 0 15px 0;overflow: hidden">
+    <div style="height: 100%; padding: 0 15px 0;overflow: auto">
       <keep-alive :include="keepAliveContainer">
         <router-view />
       </keep-alive>
