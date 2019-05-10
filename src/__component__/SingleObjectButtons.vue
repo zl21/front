@@ -428,21 +428,11 @@
             }
             if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
               // console.log('有子表');
-              // if (this.objectType === 'horizontal') { // 判断是上下结构还是左右结构     //左右结构
               if (this.dynamic.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
-              // } else if (this.objectType === 'vertical') { // 上下结构
-              // if (this.dynamic.requestUrlPath) { // 配置path
-              //   console.log('配置path');
-              //   const itemName = this.itemName;// 子表表名
-              //   this.savaNewTable(type, path, objId, itemName, objectType);
-              // } else { // 没有配置path
-
-              // }
-              // }
             }
           } else if (this.itemId !== '-1') { // 主表编辑保存
             // console.log('主表编辑保存');
@@ -536,24 +526,6 @@
           sataType
         };
         this.performMainTableSaveAction(parame);
-        // if (itemName && itemName !== tableName) { // 子表保存
-        //   if (type === 'modify') { // 编辑保存主子表分开单独保存
-        //     this.performMainTableSaveAction(parame);
-        //     parame.sataType = 'itemSave';
-        //     setTimeout(() => {
-        //       this.performMainTableSaveAction(parame);
-        //     }, 2000);
-        //   } else if (type === 'add') {
-        //     this.performMainTableSaveAction(parame);
-        //   }
-        // } else {
-        //   this.performMainTableSaveAction(parame);
-        //   if (type === 'modify' && this.itemNameGroup.length > 0) { // 编辑保存主子表分开单独保存
-        //     parame.sataType = 'itemSave';
-        //     this.performMainTableSaveAction(parame);
-        //   } 
-        // }
-       
         setTimeout(() => {
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
@@ -579,11 +551,6 @@
               this.upData(`${message}`);
             }, 1000);
           }
-         
-          // this.getObjectTabForMainTable({ table: tableName, objid: itemId });
-          // if (this.objectType === 'vertical') {
-          //   this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-          // }
         }, 2000);
       },
       saveParameters() {

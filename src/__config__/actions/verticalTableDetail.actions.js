@@ -136,6 +136,7 @@ export default {
     });
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
+    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
@@ -143,6 +144,9 @@ export default {
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
     const { itemNameGroup } = parame;
+    const { enter } = parame;
+
+    
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
@@ -194,8 +198,11 @@ export default {
             if (itmValues) { itmValues.ID = -1; } else {
               itmValues.ID = objId;
             }
+            if (enter) {
+              modify[tableName].ID = objId;
+            }
             parames = {
-              // ...modify,
+              ...modify,
               ...itemModify
             };
           } else {

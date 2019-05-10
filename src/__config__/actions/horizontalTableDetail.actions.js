@@ -105,7 +105,6 @@ export default {
     const { itemNameGroup } = parame;
     
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (path) { // 没有子表    有path的参数
