@@ -384,9 +384,11 @@
             id
           });
         }
-        this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
-        this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });
-        this.buttonShowType = 'add';
+        // setTimeout(() => {
+        //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
+        //   this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });
+        //   this.buttonShowType = 'add';
+        // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
         switch (this.objectType) { // 判断是横向布局还是纵向布局
