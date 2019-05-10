@@ -51,7 +51,12 @@ export default {
     });
     arr.forEach((item) => {
       state.updateData[item.tablename] = {
-        add: Object.assign({}, { [item.tablename]: {} }), modify: Object.assign({}, { [item.tablename]: {} }), delete: Object.assign({}, { [item.tablename]: {} }), default: {}, checkedInfo: {}
+        add: Object.assign({}, { [item.tablename]: {} }),
+        modify: Object.assign({}, { [item.tablename]: {} }),
+        delete: Object.assign({}, { [item.tablename]: {} }),
+        default: {},
+        checkedInfo: {},
+        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
@@ -91,6 +96,9 @@ export default {
   },
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
+  },
+  updateChangeData(state, data) {
+    state.updateData[data.tableName].changeData = data.value;
   },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;

@@ -3,8 +3,7 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
-  // HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
-  // VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
+  CUSTOMIZED_MODULE_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
 
@@ -37,6 +36,9 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
+        if (c.type === 'action') {
+          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        }
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
@@ -56,6 +58,9 @@ export default {
     if (!state.keepAliveLists.includes(name)) {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
+  },
+  decreasekeepAliveLists(state, name) {
+    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
   },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
@@ -124,7 +129,6 @@ export default {
     const tabRouteFullPath = tab.routeFullPath;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
-    console.log(JSON.parse(JSON.stringify(state.keepAliveLists)));
     openedMenuLists.forEach((item, index) => {
       if (item.routeFullPath === tab.routeFullPath) {
         openedMenuLists.splice(index, 1);
@@ -163,9 +167,7 @@ export default {
       router.push(routeInfo);
     }
   },
-  tabOpen(state, // 打开新的tab页
-
-    tab) {
+  tabOpen(state, tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;

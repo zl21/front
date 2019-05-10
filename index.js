@@ -23,7 +23,7 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
-  new Vue({
+  window.vm = new Vue({
     router,
     store,
     render: createElement => createElement(App)

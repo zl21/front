@@ -11,6 +11,13 @@ axios.interceptors.request.use((config) => {
   if (!enableGateWay) {
     return config;
   }
+ 
+  if (config.serviceId) {
+    // 外键 配置网关
+
+    config.url = config.serviceId ? `/${config.serviceId}${url}` : url;
+    return config;
+  } 
   if (ignoreGateWay.includes(url)) { 
     return config;
   }
@@ -18,6 +25,7 @@ axios.interceptors.request.use((config) => {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
+  
   if (tableName) {
     if (serviceId[tableName] !== 'undefined') {
       const serviceIdMapApi = serviceId[tableName];
@@ -41,7 +49,23 @@ axios.interceptors.response.use((response) => {
       router.push('/login');
     } else if (status === 500) {
       // 如果http状态码正常，则直接返回数据
-      alert(error.response.data.message);
+      let emg = error.response.data.message;
+      try {
+        emg = JSON.stringify(emg, null, 4);
+      } catch (e) { console.info(e); }
+      window.vm.$Modal.info({
+        title: '错误',
+        render: createElement => createElement('textarea', {
+          domProps: {
+            value: emg,
+            rows: 8,
+            style: 'width: 100%;margin-bottom: -15px;box-sizing: border-box; padding: 2px;'
+          },
+          attrs: {
+            readonly: 'readonly',
+          }
+        })
+      });
     }
   }
  

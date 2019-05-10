@@ -1,10 +1,12 @@
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
 export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
+export const CUSTOMIZED_MODULE_PREFIX = '/CUSTOMIZED';
 
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'S';
 export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'H';
 export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'V';
+export const CUSTOMIZED_MODULE_COMPONENT_PREFIX = 'C';
 
 export const enableGateWay = true;
 
@@ -26,7 +28,9 @@ export const globalGateWay = [
   '/p/cs/addToFavorite',
   '/p/cs/getUserConfig',
   '/p/cs/setColPosition',
-  '/p/c/getCaptcha'
+  '/p/cs/recHistory',
+  '/p/cs/setHideColumn',
+  '/p/cs/changechruserpwd',
 ];
 
 // 不走网关的接口

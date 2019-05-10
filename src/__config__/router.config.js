@@ -6,7 +6,8 @@ import Dashboard from '../__component__/Dashboard';
 import {
   STANDARD_TABLE_LIST_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX
+  VERTICAL_TABLE_DETAIL_PREFIX,
+  CUSTOMIZED_MODULE_PREFIX
 } from '../constants/global';
 import navigationGuard from './router.navigation.guard';
 
@@ -32,6 +33,10 @@ const routes = [
         path: `${VERTICAL_TABLE_DETAIL_PREFIX}/:tableName/:tableId/:itemId`,
         component: () => import('../__component__/V.TableDetailKeepAlive'),
         meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX }
+      },{
+        path: `${CUSTOMIZED_MODULE_PREFIX}/:customizedModuleName/:customizedModuleId`,
+        component: () => import('../__component__/C.TableKeepAlive'),
+        meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
       }]
   },
   {

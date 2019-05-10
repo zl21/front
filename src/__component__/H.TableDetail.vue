@@ -33,6 +33,7 @@
               obj.label = this.activeTab.label;
             }
             obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.type = 'horizontal';
@@ -88,7 +89,6 @@
 
 <style lang="less">
   .horizontalTableDetail {
-    padding: 0 16px;
     flex: 1;
     height: 100%;
     overflow: hidden;
