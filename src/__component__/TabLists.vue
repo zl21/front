@@ -205,7 +205,7 @@
       position: relative;
       cursor: pointer;
       color: #000;
-
+    
       .openedMenuListsItem{
         height: 31px;
         width: 81px;
@@ -251,8 +251,15 @@
               background-color: #d4d4d4;
               color: #000000;
             }
-        } 
+      } 
     }
+     .tabBox:hover{
+          .close{
+              opacity: 1;
+              color: #000000;
+            }
+       }
+      
     
   } 
   >a{
@@ -264,14 +271,18 @@
     line-height: 44px;
     text-decoration: none;
     .emptying{
-    width: 35px;
-    height: 33px;
-    display: inline-block;
-    img{
-      width: 17px;
-       height: 20px;
-    }
-  }
+      width: 35px;
+      height: 33px;
+      display: inline-block;
+      
+      img{
+        width: 17px;
+        height: 20px;
+      }
+   }
+   .emptying:hover{
+     opacity: 0.6;
+   }
   }
 }
 </style>

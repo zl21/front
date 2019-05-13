@@ -88,14 +88,14 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  // importGetUploadParametersForButtons({ commit }) {
-  //   network.post('/p/cs/settings', urlSearchParams({
-  //     configNames: JSON.stringify(['upload.import.max-file-size'])
-  //   })).then((res) => {
-  //     const data = res.data;
-  //     commit('updateButtonImportGetUploadParameters', data);
-  //   });
-  // },
+  importGetUploadParametersForButtons({ commit }) {
+    network.post('/p/cs/settings', urlSearchParams({
+      configNames: JSON.stringify(['upload.import.max-file-size'])
+    })).then((res) => {
+      const data = res.data;
+      commit('updateButtonImportGetUploadParameters', data);
+    });
+  },
   downloadImportTemplateForButtons({ commit }, tableName) {
     network.post('/p/cs/downloadImportTemplate', urlSearchParams({
       searchdata: {

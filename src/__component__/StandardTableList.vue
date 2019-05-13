@@ -43,12 +43,13 @@
     <ImportDialog
       v-if="buttons.importData.importDialog"
       :name="buttons.importData.importDialog"
+      :visible="buttons.importData.importDialog"
       :show-close="true"
       :title="buttons.importData.importDialogTitle"
       :tablename="buttons.tableName"
       :main-table="buttons.tabledesc"
       :main-id="buttons.importData.mainId"
-      @confirmImport="searchData('fresh')"
+      @closeDialog="closeDialog"
     />
     <ErrorModal
       ref="dialogRef"
@@ -135,6 +136,9 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapMutations('global', ['tabHref', 'TabOpen']),
+      closeDialog() {
+        this.closeImportDialog();
+      },
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
@@ -443,9 +447,9 @@
 
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          if ( item.default === '-1') {
+          if (item.default === '-1') {
             return '';
-          } else if( item.default !== '-1' ) {
+          } if (item.default !== '-1') {
             return Date().minusDays(item.default).toIsoDateString();
           }
           const timeRange = [

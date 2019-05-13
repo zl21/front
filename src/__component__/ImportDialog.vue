@@ -3,6 +3,7 @@
     <Modal
       v-model="visible"
       :title="completeTitle"
+      :mask="true"
     >
       <div>
         <div>
@@ -34,7 +35,7 @@
             <label for="选择文件上传" />
             <div
               slot="tip"
->
+            >
               {{ ChineseDictionary.FILEMAX }}{{ fileSize }}
             </div>
           </div>
@@ -91,6 +92,7 @@
 <script>
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../__utils__/network';
+  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     props: {
@@ -132,7 +134,7 @@
     },
     data() {
       return {
-        showFlag: true,
+        showFlag: false,
         loading: false, // 是否加载
         ChineseDictionary: {},
         fileSize: '', // 文件尺寸
@@ -146,14 +148,13 @@
        
       };
     },
-    created() {
+    mounted() {
       this.ChineseDictionary = ChineseDictionary;
-      if (this.visible) this.showFlag = true;
+      if (this.visibles) this.showFlag = true;
       else this.showFlag = false;
       this.axiosSetting();
     },
     computed: {
-      // 标题
       completeTitle() {
         if (this.mode === 'export') {
           return `${this.title}导出`;
@@ -301,7 +302,12 @@
       },
       closeDialog(option) {
         this.showFlag = option || false;
-        this.$emit('update:visible', option);
+        // const close = this.$store.state[getModuleName()].buttons.importData.importDialog;
+        // this.$store.state.commit('setImportDialogTitle', // 弹框报错
+        //                          this.$store.state[getModuleName()].buttons.importData.importDialog = false);
+        // this.visible = option || false;
+        // this.$emit('update:visible', close);
+        this.$emit('closeDialog');
       },
     },
 
