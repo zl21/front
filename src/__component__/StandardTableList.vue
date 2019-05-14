@@ -31,6 +31,7 @@
     <Modal
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
+      :mask="true"
       :title="buttons.actionDialog.title"
     >
       <keep-alive
@@ -43,12 +44,13 @@
     <ImportDialog
       v-if="buttons.importData.importDialog"
       :name="buttons.importData.importDialog"
+      :visible="buttons.importData.importDialog"
       :show-close="true"
       :title="buttons.importData.importDialogTitle"
       :tablename="buttons.tableName"
       :main-table="buttons.tabledesc"
       :main-id="buttons.importData.mainId"
-      @confirmImport="searchData('fresh')"
+      @closeDialog="closeDialog"
     />
     <ErrorModal
       ref="dialogRef"
@@ -82,7 +84,6 @@
 
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
-  // const importCustom = file => ` import  ${file.split('/')[1]}  from  ../__component__/${file} `;
   export default {
     components: {
       ButtonGroup,
@@ -135,6 +136,9 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapMutations('global', ['tabHref', 'TabOpen']),
+      closeDialog() {
+        this.closeImportDialog();
+      },
       getQueryList() {
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
@@ -448,9 +452,9 @@
 
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
-          if ( item.default === '-1') {
+          if (item.default === '-1') {
             return '';
-          } if( item.default !== '-1' ) {
+          } if (item.default !== '-1') {
             return Date().minusDays(item.default).toIsoDateString();
           }
           const timeRange = [

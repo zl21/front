@@ -1,5 +1,5 @@
-import network, { urlSearchParams } from '../../__utils__/network';
-import getComponentName from '../../__utils__/getModuleName';
+import network, { urlSearchParams } from '../../../__utils__/network';
+import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   getObjectTabForMainTable({ commit }, { table, objid }) {

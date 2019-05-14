@@ -83,6 +83,9 @@ export default {
     buttons.importData.importDialog = true;
     buttons.importData.importDialogTitle = this.state.global.activeTab.label;
   },
+  closeImportDialog({ buttons }) { // 导出操作
+    buttons.importData.importDialog = false;
+  },
   updateButtonImportGetUploadParameters({ buttons }, data) { // 获取导入上传参数
     buttons.importParameters = data;
   },

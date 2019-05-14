@@ -1,5 +1,8 @@
-import actions from '../actions/verticalTableDetail.actions';
+// import actions from '../actions/verticalTableDetail.actions';
 import mutations from '../mutations/verticalTableDetail.mutations';
+import { Version } from '../../constants/global';
+
+const actions = require(`../actions/version_${Version}/verticalTableDetail.actions`).default;
 
 export default () => ({
   namespaced: true,

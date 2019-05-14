@@ -1,5 +1,9 @@
-import actions from '../actions/horizontalTableDetail.actions';
+// import actions from '../actions/horizontalTableDetail.actions';
 import mutations from '../mutations/horizontalTableDetail.mutations';
+import { Version } from '../../constants/global';
+
+const actions = require(`../actions/version_${Version}/horizontalTableDetail.actions`).default;
+
 
 export default () => ({
   namespaced: true,

@@ -1,5 +1,5 @@
-import network, { urlSearchParams } from '../../__utils__/network';
-import getComponentName from '../../__utils__/getModuleName';
+import network, { urlSearchParams } from '../../../__utils__/network';
+import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   getObjectForMainTableForm({ commit }, { table, objid }) { // 获取主表面板数据
@@ -136,7 +136,6 @@ export default {
     });
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
-    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;

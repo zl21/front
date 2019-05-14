@@ -1,4 +1,4 @@
-import network, { urlSearchParams } from '../../__utils__/network';
+import network, { urlSearchParams } from '../../../__utils__/network';
 
 export default {
   getHistoryAndFavorite({ commit }) {

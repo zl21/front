@@ -124,4 +124,5 @@ export default {
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
   },
+  
 };
