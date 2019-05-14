@@ -270,7 +270,7 @@
               };
             }
           });
-        }
+        } 
         item.event = Object.assign({}, this.items.event);
 
         return item;
@@ -529,6 +529,33 @@
       },
       deleteImg(item, index) {
         console.log(item, index);
+        const that = this;
+        this.$Modal.info({
+          mask: true,
+          showCancel: true,
+          title: '提示',
+          content: '此操作将永久删除该图片, 是否继续?',
+          onOk: () => {
+            let HEADIMG = this._items.props.itemdata.valuedata.length >1 ? JSON.stringify([item]) :'';
+            that.deleteImgData({
+              HEADIMG,
+              objId: that._items.props.itemdata.objId
+            }, index);
+            console.log('dd', this._items.props.itemdata.valuedata);
+          }
+        });
+      },
+      deleteImgData(obj, index) {
+        fkObjectSave({
+          searchObject: {
+            ...obj
+          },
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            console.log(res,this._items);
+
+          }
+        });
       },
       uploadFileChangeSuccess(result) {
         const self = this;
