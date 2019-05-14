@@ -37,7 +37,7 @@ const getCategory = () => {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .filter(d => d.type === 'table' || d.type === 'action')
-        .reduce((a, c) => { a[c.value] = c.serviceId; return a; }, {});
+        .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
       window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
     }
   });
@@ -45,7 +45,7 @@ const getCategory = () => {
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-    
+
     getCategory();
     setTimeout(() => {
       init();

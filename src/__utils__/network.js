@@ -4,28 +4,28 @@ import store from '../__config__/store/global.store';
 import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
 
 axios.interceptors.request.use((config) => {
-  const { tableName } = router.currentRoute.params;
+  const { tableName, customizedModuleName } = router.currentRoute.params;
   const url = config.url;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   if (!enableGateWay) {
     return config;
   }
- 
+
   if (config.serviceId) {
     // 外键 配置网关
 
     config.url = config.serviceId ? `/${config.serviceId}${url}` : url;
     return config;
-  } 
-  if (ignoreGateWay.includes(url)) { 
+  }
+  if (ignoreGateWay.includes(url)) {
     return config;
   }
-  if (globalGateWay.includes(url)) { 
+  if (globalGateWay.includes(url)) {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
-  
+
   if (tableName) {
     if (serviceId[tableName] !== 'undefined') {
       const serviceIdMapApi = serviceId[tableName];
@@ -33,7 +33,14 @@ axios.interceptors.request.use((config) => {
       return config;
     }
   }
- 
+
+  if (customizedModuleName) {
+    if (serviceId[customizedModuleName] !== 'undefined') {
+      const serviceIdMapApi = serviceId[customizedModuleName];
+      config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+      return config;
+    }
+  }
   return config;
 });
 
@@ -68,8 +75,8 @@ axios.interceptors.response.use((response) => {
       });
     }
   }
- 
- 
+
+
   Promise.reject(error);
 });
 
@@ -80,10 +87,10 @@ export const getGateway = (url) => {
   if (!enableGateWay) {
     return url;
   }
-  if (ignoreGateWay.includes(url)) { 
+  if (ignoreGateWay.includes(url)) {
     return url;
   }
-  if (globalGateWay.includes(url)) { 
+  if (globalGateWay.includes(url)) {
     url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return url;
   }
