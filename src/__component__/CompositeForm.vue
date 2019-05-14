@@ -56,13 +56,13 @@
   import Vue from 'vue';
   import FormItemComponent from './ComFormItemComponent';
   import ItemComponent from './ItemComponent';
-  import {
-    fkQueryList,
-    fkFuzzyquerybyak,
-    fkGetMultiQuery,
-    fkDelMultiQuery
-  } from '../constants/fkHttpRequest';
+  import { Version } from '../constants/global';
+
   import regExp from '../constants/regExp';
+
+  const {
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
 
   export default {
     name: 'CompositeForm',

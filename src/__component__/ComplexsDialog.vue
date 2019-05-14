@@ -23,8 +23,9 @@
 </template>
 
 <script>
-  import multipleComple from '../constants/compleHttpRequest';
+  import { Version } from '../constants/global';
 
+  const multipleComple = require(`../constants/formHttpRequest/version_${Version}/compleHttpRequest.js`).default;
 
   export default {
     name: 'ComplexSelect',
