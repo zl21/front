@@ -202,9 +202,13 @@
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
   // 上传图片
-  import {
+
+  import { Version } from '../constants/global';
+
+
+  const {
     fkQueuploadProgressry, fkObjectSave
-  } from '../constants/fkHttpRequest';
+  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
 
   export default {
     name: 'ItemComponent',
@@ -536,7 +540,7 @@
           title: '提示',
           content: '此操作将永久删除该图片, 是否继续?',
           onOk: () => {
-            let HEADIMG = this._items.props.itemdata.valuedata.length >1 ? JSON.stringify([item]) :'';
+            const HEADIMG = this._items.props.itemdata.valuedata.length > 1 ? JSON.stringify([item]) : '';
             that.deleteImgData({
               HEADIMG,
               objId: that._items.props.itemdata.objId
@@ -552,8 +556,7 @@
           },
           // eslint-disable-next-line consistent-return
           success: (res) => {
-            console.log(res,this._items);
-
+            console.log(res, this._items);
           }
         });
       },

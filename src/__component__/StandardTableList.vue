@@ -76,10 +76,12 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
 
-  import {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
-  } from '../constants/fkHttpRequest';
   import regExp from '../constants/regExp';
+  import { Version } from '../constants/global';
+
+  const {
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
   // import ModuleName from '../__utils__/getModuleName.js';
 
   // eslint-disable-next-line import/no-dynamic-require

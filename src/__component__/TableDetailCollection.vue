@@ -51,7 +51,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -88,11 +88,13 @@
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
   import regExp from '../constants/regExp';
-  import {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
-  } from '../constants/fkHttpRequest';
+  import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import Dialog from './ComplexsDialog';
+
+  const {
+    fkQueuploadProgressry, fkObjectSave
+  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
