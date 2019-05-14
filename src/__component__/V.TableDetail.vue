@@ -15,6 +15,7 @@
       :master-id="$route.params.itemId"
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
+      :paths="mainFormInfo.buttonsData.data? mainFormInfo.buttonsData.data.tabcmd.paths: []"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"

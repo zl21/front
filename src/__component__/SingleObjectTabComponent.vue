@@ -20,6 +20,7 @@
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
+      :paths="buttonsData.data? buttonsData.data.tabcmd.paths: []"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -35,6 +36,7 @@
       class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"
+      :paths="buttonsData.data? buttonsData.data.tabcmd.paths: []"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -132,7 +134,7 @@
     },
     methods: {
 
-        
+
       // ...mapActions(getModuleName(), ['performMainTableSaveAction']),
       generateComponent() {
         if (this.type === 'vertical') {
@@ -186,7 +188,7 @@
             const type = 'modify';
             if (this.childTableNames.length < 1) { // 为0的情况下是没有子表
               // console.log('没有子表',);
-             
+
               if (savePath) { // 配置path
                 // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
                 this.savaNewTable(type, path, this.itemId);
@@ -246,7 +248,7 @@
             checkedInfo.validateForm.focus();
             return false;
           }
-        } 
+        }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.childTableNames.length > 0) { // 存在子表时
           const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
@@ -281,7 +283,7 @@
             }
             return obj;
           }, {});
-        } 
+        }
         Object.keys(this.$store.state[getModuleName()].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           const { tableName } = router.currentRoute.params;
 
