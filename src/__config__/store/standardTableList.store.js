@@ -1,6 +1,8 @@
-import actions from '../actions/standardTableList.actions';
+// import actions from '../actions/standardTableList.actions';
 import mutations from '../mutations/standardTableList.mutations';
+import { Version } from '../../constants/global';
 
+const actions = require(`../actions/version_${Version}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
   state: {

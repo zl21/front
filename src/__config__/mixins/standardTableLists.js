@@ -7,6 +7,7 @@ const getComponentName = () => {
   const { tableName, tableId } = router.currentRoute.params;
   return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 };
+console.log(store);
 
 export default () => ({
   mounted() {

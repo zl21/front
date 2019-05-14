@@ -206,7 +206,7 @@
       margin-right: 8px;
       margin-left: 0px;
       padding: 0 8px;
-      // margin-bottom: 4px;
+      margin-bottom: 4px;
     }
     > button:last-child {
       margin-right: 0px;
@@ -220,7 +220,7 @@
     .iconfont{
       font-size: 12px;
     }
-    .collection{
+    .collection,.burgeon-btn-fcdefault{
       min-width: auto !important;
     }
   }

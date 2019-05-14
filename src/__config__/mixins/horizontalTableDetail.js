@@ -3,6 +3,7 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 
+console.log(store);
 export default () => ({
   mounted() {
     this.moduleComponentName = getComponentName();

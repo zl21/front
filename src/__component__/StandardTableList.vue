@@ -31,6 +31,7 @@
     <Modal
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
+      :mask="true"
       :title="buttons.actionDialog.title"
     >
       <keep-alive
@@ -83,7 +84,6 @@
 
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
-  // const importCustom = file => ` import  ${file.split('/')[1]}  from  ../__component__/${file} `;
   export default {
     components: {
       ButtonGroup,
