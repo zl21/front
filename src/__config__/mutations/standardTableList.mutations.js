@@ -30,6 +30,7 @@ export default {
     buttons
   }, data) {
     buttons.tabcmd = data;
+    console.log('🍓', buttons.tabcmd);
   },
   updateButtonWaListButtons({ buttons }, data) { // 获取静默类型的按钮数据
     buttons.dataArray.waListButtonsConfig.waListButtons = data;
@@ -73,6 +74,7 @@ export default {
     }
   },
   updateDefaultButtonGroupData({ buttons }, data) {
+    console.log('🦋', data);
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
   onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {

@@ -15,7 +15,8 @@ export default {
         column_include_uicontroller,
       }
     })).then((res) => {
-      const updateTableData = res.data.data;
+      console.log(1, res.data.datas);
+      const updateTableData = res.data.datas;
       commit('updateTableData', updateTableData);
     });
   },
@@ -25,8 +26,9 @@ export default {
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const queryData = res.data.data;
+        const queryData = res.data;
         commit('updateButtonsTabcmd', queryData.tabcmd);
+        console.log('🐘', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
@@ -42,6 +44,8 @@ export default {
       searchdata, filename, filetype, showColumnName, menu
     })).then((res) => {
       if (res.data.code === 0) {
+        console.log(3, res.data.data);
+
         const path = `/p/cs/download?filename=${res.data.data}`;
         network.get(path);
       }
@@ -49,6 +53,8 @@ export default {
   },
   getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
     network.post('/p/cs/batchDelete', objQuery).then((res) => {
+      console.log(5, res.data);
+
       const deleteTableData = res.data;
       commit('updateButtonDeleteData', deleteTableData);
     }); 
@@ -59,6 +65,8 @@ export default {
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
+      console.log(6, res.data);
+
       commit('updateButtonExeActionData', res.data);
     });
   },
@@ -67,6 +75,8 @@ export default {
       actionid: 0,
       webaction: successAction,
     })).then((res) => {
+      console.log(7, res.data);
+
       commit('updateButtonGetActionData', res.data);
     });
   },
@@ -75,6 +85,8 @@ export default {
       id,
       type
     })).then((res) => {
+      console.log(8, res.data);
+
       const data = res.data;
       commit('updateButtonSetFavoriteData', data);
     });
@@ -84,6 +96,8 @@ export default {
       id,
       type
     })).then((res) => {
+      console.log(9, res.data);
+
       const data = res.data;
       commit('updateButtonSetFavoriteData', data);
     });
@@ -92,6 +106,8 @@ export default {
     network.post('/p/cs/settings', urlSearchParams({
       configNames: JSON.stringify(['upload.import.max-file-size'])
     })).then((res) => {
+      console.log(10, res.data);
+
       const data = res.data;
       commit('updateButtonImportGetUploadParameters', data);
     });
@@ -102,6 +118,8 @@ export default {
         table: tableName,
       },
     })).then((res) => {
+      console.log(11, res.data);
+
       const data = res.data;
       commit('updateButtonDownloadImportTemplate', data);
     });
@@ -110,6 +128,8 @@ export default {
     network.post('/p/cs/batchVoid', urlSearchParams({
       searchdata
     })).then((res) => {
+      console.log(12, res.data);
+
       const messageData = res.data.message;
       commit('batchVoidForButtonsData', messageData);
     });
@@ -119,6 +139,8 @@ export default {
       tableName, 
       ids
     }).then((res) => {
+      console.log(13, res.data);
+
       commit('updateButtonbatchSubmitData', res.data);
     });
   },
@@ -126,11 +148,15 @@ export default {
     network.post('/p/cs/batchUnSubmit', {
       obj
     }).then((res) => {
+      console.log(14, res.data);
+
       commit('updateButtonbatchUnSubmitData', res.data);
     });
   },
   updateUserConfig({ commit }, { type, id }) {
     network.post('/p/cs/getUserConfig', urlSearchParams({ type, id })).then((res) => {
+      console.log(15, res.data.data);
+
       commit('updateUserConfig', { userConfig: res.data.data });
     });
   }
