@@ -50,7 +50,7 @@ export default {
       .reduce((a, c) => a.concat(c))
       .filter(d => d.type === 'table' || d.type === 'action')
       .reduce((a, c) => {
-        a[c.value] = c.serviceId;
+        a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
   },
@@ -123,7 +123,7 @@ export default {
         d.isActive = true;
       }
     });
-  }, 
+  },
   tabCloseAppoint(state, tab) {
     const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;

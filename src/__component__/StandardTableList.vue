@@ -253,6 +253,11 @@
                     this.searchClickData();
                   }
                 },
+                keyup: () => {
+                  if (current.isuppercase) {
+                    this.lowercaseToUppercase(itemIndex);
+                  }
+                },
                 'on-delete': ($this, item, key, index) => {
                   fkDelMultiQuery({
                     searchObject: {
@@ -383,10 +388,10 @@
 
             // 属性isuppercase控制
             if (current.isuppercase) {
-              obj.item.props.regx = regExp.Capital;
-              obj.item.event.regxCheck = (value, $this, errorValue) => {
-                this.lowercaseToUppercase(errorValue, itemIndex);
-              };
+              // obj.item.props.regx = regExp.Capital;
+              // obj.item.event.regxCheck = (value, $this, errorValue) => {
+              //   this.lowercaseToUppercase(errorValue, itemIndex);
+              // };
             }
 
             // 外键的单选多选判断
@@ -527,9 +532,10 @@
         this.formItemsLists[index].item.props.AutoData = res.data.data;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
-      lowercaseToUppercase(errorValue, index) {
+      lowercaseToUppercase(index) {
         // 将字符串转化为大写
-        this.formItemsLists[index].item.value = errorValue.toUpperCase();
+        const UppercaseValue = this.formItemsLists[index].item.value ? this.formItemsLists[index].item.value.toUpperCase() : '';
+        this.formItemsLists[index].item.value = UppercaseValue;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
 
