@@ -170,6 +170,7 @@
         }
       },
       clickButtonsRefresh() {
+        this.updateChangeData({ tableName: this.tableName, value: {} });
         const message = '刷新成功';
         this.upData(`${message}`);
       },
