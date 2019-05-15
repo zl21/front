@@ -260,7 +260,9 @@
                 if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                   buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                 }
-                buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                if (tabcmd.paths) {
+                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                }
                 buttonGroupShow.push(
                   buttonConfigInfo
                 );
