@@ -115,7 +115,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.datas;
-        console.log('🍓', resData);
         commit('updateTableListForRefTable', resData);
       }
     });

@@ -3,19 +3,19 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
-      :itemNameGroup="childTableNames"
-      :itemInfo="tabPanel[tabCurrentIndex]"
+      :item-name-group="childTableNames"
+      :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
-      :defaultSetValue="getFormDefaultValue"
+      :default-set-value="getFormDefaultValue"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       module-form-type="vertical"
       :default-data="mainFormInfo.formData.data"
-      :paths="mainFormInfo.buttonsData.data? mainFormInfo.buttonsData.data.tabcmd.paths: []"
+      :paths="formPaths"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
@@ -62,6 +62,12 @@
           arr.push(obj);
         });
         return arr;
+      },
+      formPaths() {
+        if (this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+          return this.mainFormInfo.buttonsData.data.tabcmd.paths;
+        }
+        return [];
       },
       getItemName() {
         if (this.tabPanel.length > 0) {

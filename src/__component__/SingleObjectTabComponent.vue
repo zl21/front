@@ -20,7 +20,7 @@
       :module-form-type="type"
       class="form"
       :default-data="formData.data"
-      :paths="buttonsData.data? buttonsData.data.tabcmd.paths: []"
+      :paths="formPaths"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -36,7 +36,7 @@
       class="formPanel"
       type="PanelForm"
       :default-data="panelData.data"
-      :paths="buttonsData.data? buttonsData.data.tabcmd.paths: []"
+      :paths="formPaths"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -122,6 +122,12 @@
     },
     watch: {},
     computed: {
+      formPaths() {
+        if (this.buttonsData.data && this.buttonsData.data.tabcmd.paths) {
+          return this.buttonsData.data.tabcmd.paths;
+        }
+        return [];
+      },
       // ...mapState(moduleName(), {
       //   activeTab: ({ updateData }) => updateData,
       // }),
