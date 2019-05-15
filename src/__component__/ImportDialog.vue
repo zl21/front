@@ -1,10 +1,12 @@
 <template>
-  <div class="importDialog">
+  <div>
     <Modal
-      v-model="visible"
+      v-model="modalVisible"
       :title="completeTitle"
       :mask="true"
-:closable="true" :width="width"
+      :closable="true"
+      :width="width"
+      class="importDialog"
     >
       <div>
         <div class="importICon">
@@ -134,6 +136,7 @@
     },
     data() {
       return {
+        modalVisible: false,
         showFlag: false,
         loading: false, // 是否加载
         ChineseDictionary: {},
@@ -151,9 +154,20 @@
     },
     mounted() {
       this.ChineseDictionary = ChineseDictionary;
-      if (this.visibles) this.visible = true;
-      else this.visible = false;
+      if (this.visible) this.modalVisible = true;
+      else this.modalVisible = false;
       this.axiosSetting();
+    }, 
+    watch: {
+      visible: {
+        handler(val, oldval) {
+          if (this.visible) this.modalVisible = true;
+          else this.modalVisible = false;
+          console.log('🐘', this.visible);
+          console.log('🐘', val, oldval);
+        },
+        deep: true
+      },
     },
     computed: {
       completeTitle() {
@@ -327,30 +341,30 @@
     margin-left: -61px;
     color: #b8b8b8;
   }
-  .burgeon-modal-header {
-    height: 30px !important;
-    line-height: 30px !important;
-    background: #f8f8f8 !important;
-    border-top-right-radius: 10px !important;
-    border-top-left-radius: 10px !important;
-    .modal-header-inner {
-      padding: 0;
-      height: 30px !important;
-      line-height: 30px !important;
-      text-align: center !important;
-      background: #f8f8f8 !important;
-      border-bottom: solid 1px #ddd !important;
-      border-top-right-radius: 10px !important;
-      border-top-left-radius: 10px !important;
-      cursor: move !important;
-    }
-    .burgeon-modal-header-inner {
-      line-height: 31px !important;
-      font-size: 13px !important;
-      color: #303133 !important;
-      font-weight: normal;
-    }
-  }
+  // .burgeon-modal-header {
+  //   height: 30px !important;
+  //   line-height: 30px !important;
+  //   background: #f8f8f8 !important;
+  //   border-top-right-radius: 10px !important;
+  //   border-top-left-radius: 10px !important;
+  //   .modal-header-inner {
+  //     padding: 0;
+  //     height: 30px !important;
+  //     line-height: 30px !important;
+  //     text-align: center !important;
+  //     background: #f8f8f8 !important;
+  //     border-bottom: solid 1px #ddd !important;
+  //     border-top-right-radius: 10px !important;
+  //     border-top-left-radius: 10px !important;
+  //     cursor: move !important;
+  //   }
+  //   .burgeon-modal-header-inner {
+  //     line-height: 31px !important;
+  //     font-size: 13px !important;
+  //     color: #303133 !important;
+  //     font-weight: normal;
+  //   }
+  // }
   .burgeon-modal-body {
     padding: 20px !important;
   }

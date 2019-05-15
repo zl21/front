@@ -257,7 +257,9 @@
                   this.buttonMap[str].eName = item;
                   const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
                   const buttonConfigInfo = JSON.parse(buttonConfig);
-                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  if (tabcmd.paths) {
+                    buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  }
                   this.dataArray.refresh = true;
                   this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                 }
@@ -283,7 +285,9 @@
                 this.dynamic.editTheNewId = '-1';// 编辑新增标识
                 this.dynamic.eName = 'actionMODIFY';
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-                this.dynamic.requestUrlPath = this.tabcmd.paths[index];
+                if (this.tabcmd.paths) {
+                  this.dynamic.requestUrlPath = this.tabcmd.paths[index];
+                }
                 this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
               }
             }
