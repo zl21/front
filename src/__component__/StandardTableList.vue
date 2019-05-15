@@ -256,7 +256,7 @@
                     this.searchClickData();
                   }
                 },
-                keyup: () => {
+                change: () => {
                   if (current.isuppercase) {
                     this.lowercaseToUppercase(itemIndex);
                   }

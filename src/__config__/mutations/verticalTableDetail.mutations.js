@@ -65,6 +65,9 @@ export default {
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
     componentAttribute.formData.data = data || [];
   },
+  updateFormDataForRefshow(state) { // 去除子表缓存
+    state.mainFormInfo.formData.isShow = false;
+  },
   updateTableListForRefTable(state, data) { // 更新子表列表数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.tableData.isShow = data.tabth && data.tabth.length > 0;
