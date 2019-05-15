@@ -175,7 +175,7 @@
       }
     },
 
-    methods: {˜
+    methods: {
       fileChange(e) {
         this.files = e.target.files;
       },
