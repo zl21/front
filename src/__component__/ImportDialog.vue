@@ -163,8 +163,8 @@
         handler(val, oldval) {
           if (this.visible) this.modalVisible = true;
           else this.modalVisible = false;
-          console.log('🐘', this.visible);
-          console.log('🐘', val, oldval);
+          // console.log('🐘', this.visible);
+          // console.log('🐘', val, oldval);
         },
         deep: true
       },
@@ -175,7 +175,7 @@
       }
     },
 
-    methods: {
+    methods: {˜
       fileChange(e) {
         this.files = e.target.files;
       },
