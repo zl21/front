@@ -557,7 +557,9 @@
                 this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
-                buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                if (tabcmdData.paths) {
+                  buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
+                }
                 buttonGroupShow.push(buttonConfigInfo);
               }
             }
@@ -1069,11 +1071,17 @@
         this.getExportQueryForButtons(OBJ);
       },
       deleteTableList() { // 删除方法
-        const objQuery = {
-          tableName: this.buttons.tableName,
-          ids: this.buttons.selectIdArr.map(d => parseInt(d))
-        };
-        this.getBatchDeleteForButtons(objQuery);
+        // let objQuery = {
+        //   tableName: this.buttons.tableName,
+        //   ids: this.buttons.selectIdArr.map(d => parseInt(d))
+        // };
+        const tableName = this.buttons.tableName;
+        const selectIdArr = this.buttons.selectIdArr;
+        // let objQuery = {
+        //   table: this.buttons.tableName,
+        //   objids: this.buttons.selectIdArr.join(',')
+        // };
+        this.getBatchDeleteForButtons({ tableName, selectIdArr });
         setTimeout(() => {
           if (this.buttons.batchDeleteData.code === 0) {
             const message = this.buttons.batchDeleteData.message;

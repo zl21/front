@@ -47,8 +47,13 @@ export default {
       }
     });
   },
-  getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
-    network.post('/p/cs/batchDelete', objQuery).then((res) => {
+  getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
+    const ids = selectIdArr.map(d => parseInt(d));
+    network.post('/p/cs/batchDelete',
+      urlSearchParams({
+        tableName,
+        ids
+      })).then((res) => {
       const deleteTableData = res.data;
       commit('updateButtonDeleteData', deleteTableData);
     }); 

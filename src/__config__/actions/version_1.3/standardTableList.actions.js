@@ -15,7 +15,6 @@ export default {
         column_include_uicontroller,
       }
     })).then((res) => {
-      console.log(1, res.data.datas);
       const updateTableData = res.data.datas;
       commit('updateTableData', updateTableData);
     });
@@ -28,7 +27,6 @@ export default {
       if (res.data.code === 0) {
         const queryData = res.data;
         commit('updateButtonsTabcmd', queryData.tabcmd);
-        console.log('🐘', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
@@ -51,10 +49,13 @@ export default {
       }
     });
   },
-  getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
-    network.post('/p/cs/batchDelete', objQuery).then((res) => {
-      console.log(5, res.data);
-
+  getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
+    const objids = selectIdArr.join(',');
+    network.post('/p/cs/batchDelete', 
+      urlSearchParams({
+        table: tableName,
+        objids
+      })).then((res) => {
       const deleteTableData = res.data;
       commit('updateButtonDeleteData', deleteTableData);
     }); 
@@ -75,8 +76,6 @@ export default {
       actionid: 0,
       webaction: successAction,
     })).then((res) => {
-      console.log(7, res.data);
-
       commit('updateButtonGetActionData', res.data);
     });
   },
@@ -85,8 +84,6 @@ export default {
       id,
       type
     })).then((res) => {
-      console.log(8, res.data);
-
       const data = res.data;
       commit('updateButtonSetFavoriteData', data);
     });
@@ -96,8 +93,6 @@ export default {
       id,
       type
     })).then((res) => {
-      console.log(9, res.data);
-
       const data = res.data;
       commit('updateButtonSetFavoriteData', data);
     });
@@ -107,7 +102,6 @@ export default {
       configNames: JSON.stringify(['upload.import.max-file-size'])
     })).then((res) => {
       console.log(10, res.data);
-
       const data = res.data;
       commit('updateButtonImportGetUploadParameters', data);
     });
@@ -119,7 +113,6 @@ export default {
       },
     })).then((res) => {
       console.log(11, res.data);
-
       const data = res.data;
       commit('updateButtonDownloadImportTemplate', data);
     });
@@ -144,7 +137,7 @@ export default {
       commit('updateButtonbatchSubmitData', res.data);
     });
   },
-  batchUnSubmitForButtons({ commit }, obj) { // 调用调接口
+  batchUnSubmitForButtons({ commit }, obj) { // 调用提交接口
     network.post('/p/cs/batchUnSubmit', {
       obj
     }).then((res) => {
