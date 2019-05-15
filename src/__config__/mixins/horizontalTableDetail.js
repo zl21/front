@@ -37,6 +37,7 @@ export default () => ({
     ...mapMutations(getComponentName(),
       [
         'updateTabCurrentIndex',
+        'updateChangeData'
       ]),
   },
   beforeDestroy() {
