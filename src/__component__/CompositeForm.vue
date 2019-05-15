@@ -132,7 +132,7 @@
         mapData: {}, // 全部联动关系
         mountChecked: false,
         verifyMessItem: {}, // 空form        watchComputFormList:[],
-        FormItemComponent: Vue.extend(FormItemComponent),
+        FormItemComponent,
         childFormData: [],
         defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
@@ -210,12 +210,12 @@
       computdefaultData: {
         handler(val, old) {
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
-          if (JSON.stringify(val) === JSON.stringify(old)) {
-            // this.FormItemComponent = '';
-            // setTimeout(() => {
-            //   this.FormItemComponent = Vue.extend(FormItemComponent);
-            // }, 0);
-          }
+          // if (JSON.stringify(val) === JSON.stringify(old)) {
+          //   this.FormItemComponent = '';
+          //   setTimeout(() => {
+          //     this.FormItemComponent = FormItemComponent;
+          //   }, 0);
+          // }
         },
         deep: true
       }
@@ -316,7 +316,7 @@
                 this.searchClickData();
               }
             },
-            keyup: () => {
+            change: () => {
               if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
@@ -941,7 +941,7 @@
     },
     mounted() {
       this.VerificationForm = [];
-      console.log(this.defaultSetValue);
+      
       if (this.$el) {
         this.setdefaultColumnCol();
       }

@@ -2,15 +2,21 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
-  getObjectForMainTableForm({ commit }, { table, objid }) { // 获取主表面板数据
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid }) { // 获取主表面板数据
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
       table,
       objid: id,
     })).then((res) => {
       const resData = res.data.data;
-      commit('updateObjectForMainTableForm', resData);
+      dispatch('updateObjectForMainTableForm').then(() => {
+        commit('updateObjectForMainTableForm', resData);
+      });
     });
+  },
+  updateObjectForMainTableForm({ commit }) {
+    // 更新form
+    commit('updateFormDataForRefshow');
   },
   getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
     table, objid

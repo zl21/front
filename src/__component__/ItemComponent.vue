@@ -636,6 +636,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow:hidden;
+      line-height: 16px;
       // display: flex;
       // align-items: center;
       // justify-content: flex-end;
