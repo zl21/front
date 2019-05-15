@@ -64,7 +64,7 @@
         return arr;
       },
       formPaths() {
-        if (this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+        if (this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd && this.mainFormInfo.buttonsData.data.tabcmd.paths) {
           return this.mainFormInfo.buttonsData.data.tabcmd.paths;
         }
         return [];

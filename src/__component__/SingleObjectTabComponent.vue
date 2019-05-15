@@ -123,7 +123,7 @@
     watch: {},
     computed: {
       formPaths() {
-        if (this.buttonsData.data && this.buttonsData.data.tabcmd.paths) {
+        if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
           return this.buttonsData.data.tabcmd.paths;
         }
         return [];
