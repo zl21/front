@@ -29,7 +29,7 @@
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled"
         :readonly="_items.props.readonly"
-        :rows="_items.props.rows"
+        :rows="_items.props.row"
         :autosize="_items.props.autosize"
         :number="_items.props.number"
         :autofocus="_items.props.autofocus"

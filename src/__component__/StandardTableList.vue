@@ -72,6 +72,7 @@
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
   import buttonmap from '../assets/js/buttonmap';
+
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
@@ -456,7 +457,7 @@
           // 日期控件
           if (item.default === '-1') {
             return '';
-          } if (item.default !== '-1') {
+          } if (item.default !== '-1' && item.default) {
             return Date().minusDays(item.default).toIsoDateString();
           }
           const timeRange = [
