@@ -28,7 +28,7 @@
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :type="type"
-                :default-column="defaultData.objviewcol"
+                :default-column="defaultColumnCol"
                 @formDataChange="formDataChange"
               />
             </template>
@@ -43,6 +43,7 @@
           ref="FormComponent_0"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
+          :default-column="defaultColumnCol"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -127,6 +128,7 @@
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent: Vue.extend(FormItemComponent),
         childFormData: [],
+        defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
         expand: 'expand' // 面板是否展开
       };
@@ -923,7 +925,19 @@
       }
     },
     mounted() {
-
+      window.addEventListener('resize', (e) => {
+        if (this.$el) {
+          const width = this.$el.offsetWidth;
+          if (width < 620) {
+            this.defaultColumnCol = 1;
+          } else {
+            this.defaultColumnCol = this.defaultData.objviewcol;
+          }
+        }
+      });
+      if (!this.$el) {
+        window.removeaddEventListener('resize');
+      }
     },
     created() {
       this.computdefaulForm = this.computdefaultData;
