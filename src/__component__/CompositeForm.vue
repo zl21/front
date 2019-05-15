@@ -271,8 +271,8 @@
       VerifyMessageForm(value) {
         // 获取需要校验的表单
         // 初始化form 校验
-        console.log(value);
         this.VerificationForm = this.VerificationForm.concat(value);
+
 
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
@@ -940,6 +940,8 @@
       }
     },
     mounted() {
+      this.VerificationForm = [];
+      console.log(this.defaultSetValue);
       if (this.$el) {
         this.setdefaultColumnCol();
       }

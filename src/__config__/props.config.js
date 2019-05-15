@@ -18,7 +18,7 @@ const input = {
     // 设置输入框为只读
     readonly: false,
     // 文本域默认行数，仅在 textarea 类型下有效
-    rows: 4,
+    row: 4,
     // 自适应内容高度，仅在 textarea 类型下有效，可传入对象，如 { minRows: 2, maxRows: 6 }
     autosize: false,
     // 将用户的输入转换为 Number 类型。在有正则的时候：1）该输入框为空的时候，值为空字符串。2）input方法不可用。
