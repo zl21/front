@@ -81,6 +81,12 @@
           return {};
         }
       },
+      paths: {
+        type: Array,
+        default() {
+          return [];
+        }
+      },
       type: {
         // 判断是否需要 面板 =PanelForm
         type: String,
@@ -265,6 +271,7 @@
       VerifyMessageForm(value) {
         // 获取需要校验的表单
         // 初始化form 校验
+        console.log(value);
         this.VerificationForm = this.VerificationForm.concat(value);
 
         const data = this.setVerifiy();
@@ -922,17 +929,23 @@
         //     item[index + 1].$el.querySelector('input').focus();
         //   }
         // }
+      },
+      setdefaultColumnCol() {
+        const width = this.$el.offsetWidth;
+        if (width < 620) {
+          this.defaultColumnCol = 1;
+        } else {
+          this.defaultColumnCol = this.defaultData.objviewcol;
+        }
       }
     },
     mounted() {
+      if (this.$el) {
+        this.setdefaultColumnCol();
+      }
       window.addEventListener('resize', (e) => {
         if (this.$el) {
-          const width = this.$el.offsetWidth;
-          if (width < 620) {
-            this.defaultColumnCol = 1;
-          } else {
-            this.defaultColumnCol = this.defaultData.objviewcol;
-          }
+          this.setdefaultColumnCol();
         }
       });
       if (!this.$el) {
