@@ -156,10 +156,21 @@
         }
       },
       formEnter() {
-        const savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+        let savePath = '';
+        if (this.type === 'horizontal') {
+          this.$store.state[getModuleName()].tabPanels.forEach((item) => {
+            if (item.tablename === this.tableName) {
+              savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+            } 
+          });
+        } else {
+          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+        }
         this.determineSaveType(savePath);
       }, // 表单回车触发
       determineSaveType(savePath) { // 回车保存
+        debugger;
+
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
@@ -209,8 +220,8 @@
               const sataType = 'itemSave';
               const enter = 'enterSave';
               if (savePath) { // 配置path
-                if (this.type === 'vertical') { this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter); }
-
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter); 
+               
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);

@@ -555,7 +555,9 @@
           } else {
             setTimeout(() => {
               const message = this.buttonsData.message;
-              this.upData(`${message}`);
+              if (message !== 'undefined') {
+                this.upData(`${message}`);
+              }
             }, 1000);
           }
         }, 2000);
