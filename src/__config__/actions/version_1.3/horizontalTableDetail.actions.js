@@ -128,6 +128,10 @@ export default {
           itmValues
         ];
         itemModify[itemName].ID = objId;
+        const { itemModify } = parame;
+        if (Object.values(itemModify[tableName]).length < 1) {
+          defaults[tableName] = {};
+        }
         parames = {
           table: tableName, // 主表表名
           objid: objId, // 明细id

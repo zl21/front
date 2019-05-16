@@ -111,10 +111,9 @@ export default {
       commit('updateButtonDownloadImportTemplate', data);
     });
   },
-  batchVoidForButtons({ commit }, searchdata) { // 调用作废接口
-    network.post('/p/cs/batchVoid', urlSearchParams({
-      searchdata
-    })).then((res) => {
+  batchVoidForButtons({ commit }, { tableName, ids }) { // 调用作废接口
+    network.post('/p/cs/batchVoid', 
+      { tableName, ids }).then((res) => {
       const messageData = res.data.message;
       commit('batchVoidForButtonsData', messageData);
     });

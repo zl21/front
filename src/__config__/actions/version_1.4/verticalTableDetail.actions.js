@@ -149,8 +149,6 @@ export default {
     const { itemCurrentParameter } = parame;
     const { itemNameGroup } = parame;
     const { enter } = parame;
-
-    
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
@@ -243,12 +241,15 @@ export default {
           };
         }
       } else {
+        const modifys = modify[tableName];
+        modifys.ID = objId;
         parames = {
-          table: tableName, // 主表表名
-          objId, // 明细id
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...modify
-          }
+          // table: tableName, // 主表表名
+          // objId, // 明细id
+          // fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+          //   ...modify
+          // }
+          ...modifys
         };
       }
     }
