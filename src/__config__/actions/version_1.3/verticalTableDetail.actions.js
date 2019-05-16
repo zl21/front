@@ -168,8 +168,8 @@ export default {
       } else {
         parames = {
           table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+          objid: objId, // 固定传值-1 表示新增
+          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
             ...add
           }
         };
@@ -207,17 +207,22 @@ export default {
           };
         }
       } else {
+        const defaults = parame.default;
+        if (Object.values(modify[tableName]).length < 1) {
+          defaults[tableName] = {};
+        }
         parames = {
-          table: tableName, // 主表表名
-          objId, // 明细id
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...modify
-          }
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modify },
+          before: { ...defaults }
         };
       }
     }
 
-    network.post('/p/cs/objectSave', parames).then((res) => {
+    network.post('/p/cs/objectAdd', 
+      urlSearchParams(parames)).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         commit('updateNewMainTableAddSaveData', { data, itemName });
