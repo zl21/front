@@ -557,11 +557,13 @@
             };
             this.tabHref(tab);
             const message = this.buttonsData.message;
-            this.$Message.success(message);
+            if (message) {
+              this.$Message.success(message);
+            }
           } else {
             setTimeout(() => {
               const message = this.buttonsData.message;
-              if (message !== 'undefined') {
+              if (message) {
                 this.upData(`${message}`);
               }
             }, 1000);

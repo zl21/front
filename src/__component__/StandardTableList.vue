@@ -1102,11 +1102,10 @@
         }, 2000);
       },
       batchVoid() {
-        const searchdata = {
-          table: this.buttons.tableName,
-          ids: this.buttons.selectIdArr.map(d => parseInt(d))
-        };
-        this.batchVoidForButtons(searchdata);
+        const tableName = this.buttons.tableName;
+        const ids = this.buttons.selectIdArr.map(d => parseInt(d));
+       
+        this.batchVoidForButtons({ tableName, ids });
       },
       batchSubmit() {
         // 批量提交
