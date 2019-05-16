@@ -575,18 +575,35 @@
               return false;
             }
             const fixedData = [{ NAME: resultData.data.Name, URL: resultData.data.Url }];
-            const parms = {
-              fixedData: {
-                [this._items.props.itemdata.masterName]: {
-                  [this._items.props.itemdata.colname]: JSON.stringify(fixedData)
-                }
-              },
+            
+            let parms = {
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
             };
+            //  判断parms 是否 需要保存
+            parms = this.pathsCheckout(parms, fixedData);
             self.upSaveImg(parms, fixedData);
           }
         });
+      },
+      pathsCheckout(parms, data) {
+        //  校验 是否 有 path
+        if (!this._items.props.path) {
+          const fixedData = {
+            fixedData: {
+              [this._items.props.itemdata.masterName]: {
+                [this._items.props.itemdata.colname]: JSON.stringify(data)
+              }
+            }
+          };
+          return Object.assign(parms, fixedData);
+        }
+        const parmsdata = {
+          HEADIMG: JSON.stringify(data),
+          ID: parms.objId,
+          ...parms
+        };
+        return Object.assign({}, parmsdata);
       },
       upSaveImg(obj, fixedData) {
         fkObjectSave({

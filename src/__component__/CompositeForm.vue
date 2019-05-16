@@ -602,6 +602,7 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
+        item.props.path = this.paths.length > 0;
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
@@ -788,7 +789,7 @@
           item.props.type = 'ImageUpload';
           const valuedata = current.valuedata
             ? JSON.parse(current.valuedata)
-            : '';
+            : [];
           item.props.itemdata = {
             colname: current.colname,
             width: 200,
