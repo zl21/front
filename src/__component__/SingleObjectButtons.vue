@@ -312,10 +312,11 @@
                 });
                 setTimeout(() => {
                   const deleteMessage = this.buttonsData.deleteData;
-                  this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
-
-                  this.getQueryListForAg(searchData);
+                  if (deleteMessage) {
+                    this.$Message.success(`${deleteMessage}`);
+                    this.clickButtonsBack();
+                    this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  }
                 }, 1000);
               }
             };
@@ -343,9 +344,11 @@
               this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
               setTimeout(() => {
                 const deleteMessage = this.buttonsData.deleteData;
-                this.$Message.success(`${deleteMessage}`);
-                this.clickButtonsBack();
-                this.getQueryListForAg(searchData);
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                }
               }, 1000);
             }
           };
@@ -358,9 +361,11 @@
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               setTimeout(() => {
                 const deleteMessage = this.buttonsData.deleteData;
-                this.$Message.success(`${deleteMessage}`);
-                this.clickButtonsBack();
-                this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                }
               }, 1000);
             }
           };
