@@ -123,7 +123,6 @@
     watch: {
       formLists() {
         const arr = JSON.parse(JSON.stringify(this.formLists));
-
         arr.map((temp, index) => {
           temp.component = this.formLists[index].component;
           temp.item.event = this.formLists[index].item.event;

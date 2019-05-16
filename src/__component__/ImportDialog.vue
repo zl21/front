@@ -103,7 +103,7 @@
       visible: {
         // 显示
         type: Boolean,
-        default: true
+        default: false
       },
       title: {
         // 标题
@@ -152,27 +152,32 @@
         buttonSize: 'small'
       };
     },
+    watch: {
+      visible: {
+        handler(val) {
+          console.log('🍓', val);
+        },
+      },
+      modalVisible: {
+        handler(val) {
+          if (!val) {
+            this.$emit('closeDialog');
+          }
+        },
+      },
+    },
     mounted() {
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
       else this.modalVisible = false;
       this.axiosSetting();
     }, 
-    watch: {
-      visible: {
-        handler(val, oldval) {
-          if (this.visible) this.modalVisible = true;
-          else this.modalVisible = false;
-          // console.log('🐘', this.visible);
-          // console.log('🐘', val, oldval);
-        },
-        deep: true
-      },
-    },
+   
     computed: {
       completeTitle() {
         return `${this.title}导入`;
-      }
+      },
+     
     },
 
     methods: {
@@ -296,7 +301,8 @@
         //                          this.$store.state[getModuleName()].buttons.importData.importDialog = false);
         // this.visible = option || false;
         // this.$emit('update:visible', close);
-        this.$emit('closeDialog');
+        // this.$emit('closeDialog');
+        this.modalVisible = false;
       }
     }
   };

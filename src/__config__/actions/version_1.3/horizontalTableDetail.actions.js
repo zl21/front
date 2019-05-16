@@ -98,147 +98,61 @@ export default {
   performMainTableSaveAction({ commit }, parame) { // 主表保存
     const { tableName } = parame;
     const { objId } = parame;
-    const { path } = parame;
     const { type } = parame;
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
     const { itemNameGroup } = parame;
-    
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-      if (path) { // 没有子表    有path的参数
-        add[tableName].ID = objId;
-        parames = {
+      parames = {
+        table: tableName, // 主表表名
+        objid: objId, // 固定传值-1 表示新增
+        data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
           ...add
-        };
-      } else {
-        parames = {
-          table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...add
-          }
-        };
-      }
+        }
+      };
     } else if (type === 'modify') { // 编辑保存参数
-      // const { sataType } = parame;
+      const defaults = parame.default;
       if (itemNameGroup.length > 0) {
         const itemModify = itemCurrentParameter.modify;
         
-        if (path) { // 有path的参数
-          const { modify } = parame;
-          modify[tableName].ID = objId;// 主表id
-          const itmValues = itemModify[itemName];
-          // if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-          //   itmValues.ID = objId;
-          // } else {
-          //   itmValues.ID = -1;
-          // }
-          // itemModify[itemName] = [
-          //   itmValues
-          // ];
-          itemModify[itemName].ID = objId;
-          parames = {
-            ...modify,
-            // ...itemModify
-          };
-          if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
-            if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-              itmValues.ID = objId;
-            } else {
-              itmValues.ID = -1;
-              itemModify[itemName] = [
-                itmValues
-              ];
-            }
-           
-            parames = {
-              ...modify,
-              ...itemModify
-            };
-          }
+      
+        const itmValues = itemModify[itemName];
+        if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+          itmValues.ID = objId;
         } else {
-          const itmValues = itemModify[itemName];
-          if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-            itmValues.ID = objId;
-          } else {
-            itmValues.ID = -1;
-          }
-          itemModify[itemName] = [
-            itmValues
-          ];
-          itemModify[itemName].ID = objId;
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
-            }
-          };
-        } 
-
-
-        // if (sataType === 'itemSave') { // 子表保存
-        //   if (path) { // 有path的参数
-        //     const { modify } = parame;
-        //     modify[tableName].ID = objId;// 主表id
-        //     const itmValues = itemModify[itemName];
-        //     if (itmValues) { itmValues.ID = -1; } else {
-        //       itmValues.ID = objId;
-        //     }
-        //     itemModify[itemName] = [
-        //       itmValues
-        //     ];
-        //     parames = {
-        //       ...modify,
-        //       ...itemModify
-        //     };
-        //   } else {
-        //     const itmValues = itemModify[itemName];
-        //     if (itmValues) { itmValues.ID = -1; } else {
-        //       itmValues.ID = objId;
-        //     }
-        //     itemModify[itemName] = [
-        //       itmValues
-        //     ];
-        //     parames = {
-        //       table: tableName, // 主表表名
-        //       objId, // 明细id
-        //       fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        //         ...itemModify
-        //       }
-        //     };
-        //   } 
-        // } else if (path) { // 主表保存有path的参数
-        //   const { modify } = parame;
-
-        //   modify[tableName].ID = objId;// 主表id
-        //   parames = {
-        //     ...modify
-        //   };
-        // } else { // 带子表的没有path的主表保存
-        //   parames = {
-        //     table: tableName, // 主表表名
-        //     objId, // 明细id
-        //     fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        //       ...modify
-        //     }
-        //   };
-        // }
-      } else { // 没有子表
-        const { modify } = parame;
+          itmValues.ID = -1;
+        }
+        itemModify[itemName] = [
+          itmValues
+        ];
+        itemModify[itemName].ID = objId;
         parames = {
           table: tableName, // 主表表名
           objId, // 明细id
           fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...modify
+            ...itemModify
           }
+        };
+      } else { // 没有子表
+        const { modify } = parame;
+        if (Object.values(modify[tableName]).length < 1) {
+          defaults[tableName] = {};
+        }
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modify },
+          before: { ...defaults }
         };
       }
     }
 
-    network.post(path || '/p/cs/objectSave', parames).then((res) => {
+    network.post('/p/cs/objectSave', urlSearchParams(
+      parames
+    )).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         commit('updateNewMainTableAddSaveData', { data, itemName });
