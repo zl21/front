@@ -116,8 +116,6 @@ export default {
       const defaults = parame.default;
       if (itemNameGroup.length > 0) {
         const itemModify = itemCurrentParameter.modify;
-        
-      
         const itmValues = itemModify[itemName];
         if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
           itmValues.ID = objId;
@@ -128,7 +126,7 @@ export default {
           itmValues
         ];
         itemModify[itemName].ID = objId;
-        const { itemModify } = parame;
+
         if (Object.values(itemModify[tableName]).length < 1) {
           defaults[tableName] = {};
         }
