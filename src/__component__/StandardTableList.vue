@@ -258,7 +258,9 @@
                 },
                 change: () => {
                   if (current.isuppercase) {
-                    this.lowercaseToUppercase(itemIndex);
+                    setTimeout(() => {
+                      this.lowercaseToUppercase(itemIndex);
+                    }, 50);
                   }
                 },
                 'on-delete': ($this, item, key, index) => {
@@ -1028,20 +1030,18 @@
           if (this.buttons.selectIdArr.length > 0) {
             console.log('6666');
             this.$Modal.confirm({
-              render: (h) => {
-                return h('Input', {
-                  props: {
-                    value: this.value,
-                    autofocus: true,
-                    placeholder: 'Please enter your name...'
-                  },
-                  on: {
-                    input: (val) => {
-                      this.value = val;
-                    }
+              render: h => h('Input', {
+                props: {
+                  value: this.value,
+                  autofocus: true,
+                  placeholder: 'Please enter your name...'
+                },
+                on: {
+                  input: (val) => {
+                    this.value = val;
                   }
-                })
-              }
+                }
+              })
             });
             // this.dataConShow.dataConShow = true;
             // this.dataConShow.title = this.buttons.tabledesc;
