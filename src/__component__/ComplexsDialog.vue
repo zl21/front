@@ -2,6 +2,9 @@
   <div class="dialog">
     <Complexs-dialog
       :treedata="Tree"
+      :loading="loading"
+      :tree-loading="tree_loading"   
+      :table-loading="tableLoading"
       :component-data="componentData"
       :result-data="resultData"
       @on-change-tree="changeTtree"
@@ -57,7 +60,11 @@
     data() {
       return {
         treedata: [], // 左边shu
+        treedataInt: [],
         treeSelectData: [],
+        loading: false, // z最大loading
+        tree_loading: false, // 左边的 的loading
+        tableLoading: false, // 中间的 的loading
         componentData: [
           {
             tab: '筛选结果',
@@ -126,6 +133,21 @@
           });
           return option;
         });
+        this.treeLoading = false;
+        this.loading = false;
+        this.treedataInt = JSON.parse(JSON.stringify(this.treedata));
+      },
+      clearTree() {
+        const treedata = this.treedataInt.reduce((arr, item) => {
+          item.expand = true;
+          arr.push(item);
+          return arr;
+        }, []);
+        this.treedata = JSON.parse(JSON.stringify(treedata));
+        this.treeSelectData = [];
+        this.tree_loading = false;
+        this.loading = false;
+        this.changeTtree([]);
       },
       treeChecked() {
         // tree_lists 树形结构重新组合
@@ -214,6 +236,7 @@
       },
       treeId(data) {
         // 获取组织树的选中id
+        this.HRORG_STRING = [];
         this.HRORG_ID = Object.keys(data).reduce((item, option) => {
           if (data[option].ID) {
             item.push(data[option].ID);
@@ -231,6 +254,7 @@
         return items.join('');
       },
       changeTtree(obj) {
+        
         this.treeId(obj);
         this.treeSelectData = obj;
         if (this.HRORG_ID.length > 0) {
@@ -239,6 +263,8 @@
         } else {
           this.sendMessage.CONDITION = '';
         }
+        this.tableLoading = true;
+       
         this.multipleSelectionTable(this.sendMessage, 0);
       },
       clickTab(index) {
@@ -358,6 +384,9 @@
       // eslint-disable-next-line consistent-return
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
+        this.loading = true;
+        
+        
         if (this.HRORG_ID.length > 0) {
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
@@ -374,6 +403,7 @@
               screen_string: this.HRORG_STRING.join(',')
             });
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+            this.clearTree();
           } else {
             this.EXCLUDE = [];
             this.sendMessage.CONDITION = '';
@@ -388,8 +418,9 @@
               screen: this.EXCLUDE,
               screen_string: this.HRORG_STRING.join(',')
             });
-
+           
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
+            this.clearTree();
           }
         } else {
           this.sendMessage.CONDITION = '';
@@ -515,7 +546,10 @@
           },
           serviceId: this.fkobj.serviceId,
           success: (res) => {
-            this.dateRestructure(res.data.data, index, name);
+            if (obj.clear !== '1') {
+              this.dateRestructure(res.data.data, index, name);
+            }
+            this.tableLoading = false;
           }
         });
       },
@@ -523,6 +557,7 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
+        
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
@@ -538,6 +573,7 @@
           },
           serviceId: this.fkobj.serviceId,
           success: (res) => {
+            this.tableLoading = false;
             this.dateRestructure(res.data.data, index, type);
           }
         });
@@ -576,6 +612,7 @@
           }
           //  有默认值
           this.sendMessage = this.filter.value;
+          
           this.multipleScreenResultCheckFiter(this.filter.value, 1);
         }
       }
@@ -588,6 +625,7 @@
       /**/
     },
     created() {
+      this.loading = true;
       this.init();
     }
 

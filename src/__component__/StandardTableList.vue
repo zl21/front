@@ -1026,6 +1026,23 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
+            console.log('6666');
+            this.$Modal.confirm({
+              render: (h) => {
+                return h('Input', {
+                  props: {
+                    value: this.value,
+                    autofocus: true,
+                    placeholder: 'Please enter your name...'
+                  },
+                  on: {
+                    input: (val) => {
+                      this.value = val;
+                    }
+                  }
+                })
+              }
+            });
             // this.dataConShow.dataConShow = true;
             // this.dataConShow.title = this.buttons.tabledesc;
             // this.dataConShow.tabConfig = {

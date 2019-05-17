@@ -44,3 +44,11 @@ export const fkObjectSave = function fkObjectSave(params) {
     }
   });
 };
+
+export const fkModify = function fkModify(params) {
+  network.post('/p/cs/getObjectForUpTmp', params.searchObject).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
