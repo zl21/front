@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 <template>
   <div class="ItemComponentRoot">
     <span
@@ -208,7 +209,8 @@
 
   const {
     fkQueuploadProgressry, fkObjectSave
-  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ItemComponent',

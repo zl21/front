@@ -82,7 +82,8 @@
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
-  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
   // import ModuleName from '../__utils__/getModuleName.js';
 
   // eslint-disable-next-line import/no-dynamic-require

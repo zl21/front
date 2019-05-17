@@ -1,5 +1,5 @@
 
-import network, { urlSearchParams } from '../../../__utils__/network';
+import network, { urlSearchParams } from '../../../../__utils__/network';
 
 export const fkQueryList = function fkQueryList(params) {
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {

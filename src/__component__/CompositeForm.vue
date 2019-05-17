@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable array-callback-return */
 <!--suppress ALL:form-item-lists="FormLists(item.childs)" -->
 <template>
@@ -63,7 +65,8 @@
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
-  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'CompositeForm',
@@ -855,7 +858,6 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
-        console.log(res.data.data, item[index].item.props.AutoData);
         item[index].item.props.AutoData = res.data.data;
       },
       lowercaseToUppercase(index, current) {
