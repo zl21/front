@@ -91,8 +91,10 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import network, { urlSearchParams } from '../__utils__/network';
+  import network, { urlSearchParams, getGateway } from '../__utils__/network';
+
 
   export default {
     props: {
@@ -204,22 +206,21 @@
           });
       },
       // 发送请求, 下载模板
-      downloadTemplate() {
-        network
-          .get(
-            '/p/cs/downloadImportTemplate',
-            urlSearchParams({
-              searchdata: {
-                table: this.tablename
-              }
-            })
-          )
-          .then((res) => {
-            if (res.data.code === 0) {
-              const url = `/p/cs/download?filename=${res.data.data}`;
-              window.location = url;
-            }
-          });
+      downloadTemplate() { // 下载模版
+        axios({
+          url: '/p/cs/downloadImportTemplate',
+          method: 'get',
+          params: {
+            searchdata: {
+              table: this.tablename
+            },
+          },
+        }).then((res) => {
+          if (res.data.code === 0) {
+            const url = `${getGateway('/p/cs/download')}?filename=${res.data.data}`;
+            window.location = url;
+          }
+        });
       },
       // 提交上传文件请求
       submitUpload() {
@@ -228,15 +229,9 @@
             title: '警告',
             content: '请先选择要导入的文件！'
           });
+        } else {
+          this.downloadTemplate();
         }
-        if (this.mainId === -1) {
-          // 如果主表未新增
-          this.$emit('objectSave');
-        }
-        network.post(`${this.action}`).then((res) => {
-          if (res.data.code === 0) {
-          }
-        });
       },
       // 清除用户选择文件列表
       clearFile() {

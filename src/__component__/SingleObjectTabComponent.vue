@@ -160,11 +160,17 @@
         if (this.type === 'horizontal') {
           this.$store.state[getModuleName()].tabPanels.forEach((item) => {
             if (item.tablename === this.tableName) {
-              savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+              if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
+                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+              } else {
+                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[1];
+              }
             } 
           });
-        } else {
+        } else if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+        } else {
+          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[1];
         }
         this.determineSaveType(savePath);
       }, // 表单回车触发
