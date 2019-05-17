@@ -1024,23 +1024,21 @@
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
-          this.dataConShow.fixedcolumns = this.getJson();
-          this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
           if (this.buttons.selectIdArr.length > 0) {
-            this.dataConShow.dataConShow = true;
-            this.dataConShow.title = this.buttons.tabledesc;
-            this.dataConShow.tabConfig = {
-              tabledesc: this.buttons.tabledesc,
-              tablename: this.buttons.tableName,
-              tableid: this.buttons.tableId,
-              tabrelation: '1:1',
-              objid: this.buttons.selectIdArr
-            };
+            // this.dataConShow.dataConShow = true;
+            // this.dataConShow.title = this.buttons.tabledesc;
+            // this.dataConShow.tabConfig = {
+            //   tabledesc: this.buttons.tabledesc,
+            //   tablename: this.buttons.tableName,
+            //   tableid: this.buttons.tableId,
+            //   tabrelation: '1:1',
+            //   objid: this.buttons.selectIdArr
+            // };
           } else {
             const data = {
               title: '警告',
               content: `未勾选记录,将批量更新所有查询结果(共计${
-                this.totalRowCount
+                this.ag.datas.totalRowCount
               }行),是否确定继续操作?`
             };
             this.$Modal.fcWarning(data);
@@ -1327,8 +1325,6 @@
             tabrelation: '1:1',
             objid: this.selectIdArr
           };
-          this.dataConShow.fixedcolumns = this.getJson();
-          this.dataConShow.reffixedcolumns = this.treeObj.fixedcolumns;
         } else if (
           this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
         ) {
