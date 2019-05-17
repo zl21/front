@@ -1,5 +1,5 @@
 
-import network, { urlSearchParams } from '../../../__utils__/network';
+import network, { urlSearchParams } from '../../../../__utils__/network';
 
 const multipleSelectionTree = (params) => {
   // 获取弹窗多面板 组织树

@@ -84,7 +84,8 @@
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
-  } = require(`../constants/formHttpRequest/version_${Version}/fkHttpRequest.js`);
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
   // import ModuleName from '../__utils__/getModuleName.js';
 
   // eslint-disable-next-line import/no-dynamic-require
@@ -261,7 +262,9 @@
                 },
                 change: () => {
                   if (current.isuppercase) {
-                    this.lowercaseToUppercase(itemIndex);
+                    setTimeout(() => {
+                      this.lowercaseToUppercase(itemIndex);
+                    }, 50);
                   }
                 },
                 'on-delete': ($this, item, key, index) => {
@@ -1034,6 +1037,21 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
+            console.log('6666');
+            this.$Modal.confirm({
+              render: h => h('Input', {
+                props: {
+                  value: this.value,
+                  autofocus: true,
+                  placeholder: 'Please enter your name...'
+                },
+                on: {
+                  input: (val) => {
+                    this.value = val;
+                  }
+                }
+              })
+            });
             // this.dataConShow.dataConShow = true;
             // this.dataConShow.title = this.buttons.tabledesc;
             // this.dataConShow.tabConfig = {

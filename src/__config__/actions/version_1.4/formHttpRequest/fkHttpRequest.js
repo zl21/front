@@ -1,5 +1,5 @@
 
-import network, { urlSearchParams } from '../../../__utils__/network';
+import network, { urlSearchParams } from '../../../../__utils__/network';
 
 export const fkQueryList = function fkQueryList(params) {
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
@@ -39,6 +39,14 @@ export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
 };
 export const fkObjectSave = function fkObjectSave(params) {
   network.post('/p/cs/objectSave', params.searchObject, { serviceId: params.serviceId }).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
+
+export const fkModify = function fkModify(params) {
+  network.post('/p/cs/getObjectForUpTmp', params.searchObject).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
