@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 
 // const actions = file => require(`../__component__/${file}.vue`).default;
 import { Version } from '../../constants/global';

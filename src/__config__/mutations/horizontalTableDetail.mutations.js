@@ -26,6 +26,7 @@ export default {
         }
       }
     }];
+    data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
       const obj = { ...item };
       obj.label = item.tabledesc;
@@ -124,5 +125,5 @@ export default {
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
   },
-  
+
 };

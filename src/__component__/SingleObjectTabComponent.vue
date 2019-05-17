@@ -169,8 +169,6 @@
         this.determineSaveType(savePath);
       }, // 表单回车触发
       determineSaveType(savePath) { // 回车保存
-        debugger;
-
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法

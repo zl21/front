@@ -337,6 +337,7 @@
             return objData;
           }, {}));
         }
+        this.changeFormData = obj;
         if (current.item.props.number) {    
           this.changeFormData = Number(obj[Object.keys(obj)[0]]);
         } else {

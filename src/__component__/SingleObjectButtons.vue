@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import { mapActions, mapMutations, mapState } from 'vuex';
+  import { mapMutations, mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
   import moduleName from '../__utils__/getModuleName';
@@ -135,9 +135,8 @@
       },
     },
     methods: {
-      ...mapActions(moduleName(), ['getQueryListForAg']),
       ...mapMutations('global', ['tabHref']),
-      buttonsReorganization(buttonData) {
+      buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemId === 'New') { // 编辑按钮渲染逻辑
@@ -154,7 +153,7 @@
           }
         }
       },
-      buttonClick(type, obj) {
+      buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
         if (type === 'fix') {
           this.objectTabAction(obj);
         } else if (type === 'custom') {
@@ -169,12 +168,12 @@
           this.searchClickData();
         }
       },
-      clickButtonsRefresh() {
+      clickButtonsRefresh() { // 按钮刷新事件
         this.updateChangeData({ tableName: this.tableName, value: {} });
         const message = '刷新成功';
         this.upData(`${message}`);
       },
-      upData(message) {
+      upData(message) { // 页面刷新判断逻辑
         const { tablename, refcolid, tabrelation } = this.itemInfo;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
@@ -195,7 +194,7 @@
         }
         this.$Message.success(message);
       },
-      objectTabAction(obj) {
+      objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
         case 'actionADD': // 新增
           this.objectAdd(obj);
@@ -234,7 +233,7 @@
         }
       },
 
-      clickButtonsBack() {
+      clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
         const param = {
           tableId,
@@ -244,7 +243,7 @@
 
         this.$store.commit('global/tabHref', param);
       },
-      getbuttonGroupData(tabcmd) {
+      getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
           tabcmdData.cmds.forEach((item, index) => {
@@ -270,7 +269,7 @@
         }
         // }
       },
-      waListButtons(tabwebact) {
+      waListButtons(tabwebact) { // 自定义按钮渲染逻辑
         if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
           tabwebact.objbutton.forEach((item) => {
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
@@ -313,9 +312,11 @@
                 });
                 setTimeout(() => {
                   const deleteMessage = this.buttonsData.deleteData;
-                  this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
-                  this.getQueryListForAg(searchData);
+                  if (deleteMessage) {
+                    this.$Message.success(`${deleteMessage}`);
+                    this.clickButtonsBack();
+                    this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  }
                 }, 1000);
               }
             };
@@ -343,9 +344,11 @@
               this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
               setTimeout(() => {
                 const deleteMessage = this.buttonsData.deleteData;
-                this.$Message.success(`${deleteMessage}`);
-                this.clickButtonsBack();
-                this.getQueryListForAg(searchData);
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                }
               }, 1000);
             }
           };
@@ -358,9 +361,11 @@
               this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
               setTimeout(() => {
                 const deleteMessage = this.buttonsData.deleteData;
-                this.$Message.success(`${deleteMessage}`);
-                this.clickButtonsBack();
-                this.getQueryListForAg(searchData);
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                  this.clickButtonsBack();
+                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                }
               }, 1000);
             }
           };
@@ -396,24 +401,25 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        switch (this.objectType) { // 判断是横向布局还是纵向布局
-        case 'horizontal': // 横向布局
-          this.horizontal(obj);
-          break;
-        case 'vertical': // 纵向布局
-          this.vertical(obj);
-          break;
-        default:
-          break;
-        }
+        // switch (this.objectType) { // 判断是横向布局还是纵向布局
+        // case 'horizontal': // 横向布局
+        //   this.horizontal(obj);
+        //   break;
+        // case 'vertical': // 纵向布局
+        //   this.vertical(obj);
+        //   break;
+        // default:
+        //   break;
+        // }
+        this.determineSaveType(obj);
       },
-      horizontal(obj) {
-        this.determineSaveType(obj);
-      }, // 横向布局，用来区分获取的参数
-      vertical(obj) {
-        this.determineSaveType(obj);
-      }, // 纵向布局
-      determineSaveType(obj) {
+      // horizontal(obj) {
+      //   this.determineSaveType(obj);
+      // }, // 横向布局，用来区分获取的参数
+      // vertical(obj) {
+      //   this.determineSaveType(obj);
+      // }, // 纵向布局
+      determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
           const itemName = this.itemName;// 子表表名
@@ -551,18 +557,20 @@
             };
             this.tabHref(tab);
             const message = this.buttonsData.message;
-            this.$Message.success(message);
+            if (message) {
+              this.$Message.success(message);
+            }
           } else {
             setTimeout(() => {
               const message = this.buttonsData.message;
-              if (message !== 'undefined') {
+              if (message) {
                 this.upData(`${message}`);
               }
             }, 1000);
           }
         }, 2000);
       },
-      saveParameters() {
+      saveParameters() { // 筛选按钮保存参数逻辑
         if (this.itemNameGroup.length > 0) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.itemName) {
