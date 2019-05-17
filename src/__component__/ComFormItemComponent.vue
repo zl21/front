@@ -28,7 +28,7 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import { Version, VersionName } from '../constants/global';
+  import { Version, interlocks } from '../constants/global';
 
   export default {
     name: 'FormItemComponent',
@@ -365,7 +365,7 @@
         this.dataProcessing(this.newFormItemLists[index], index);
       },
       refcolval(items, json, index) {
-        if (VersionName === 'qiaodan') {
+        if (interlocks === 'qiaodan') {
           const srccol = items.validate.refcolval.srccol;
 
           if (json[srccol] === undefined) {

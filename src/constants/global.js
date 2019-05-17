@@ -13,7 +13,8 @@ export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜�
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = true; // 控制当子表没有必填项点击保存时是否必须填写子表信息
 // export const Version = '1.4'; // 当前版本是1.4
 export const Version = '1.4'; 
-export const VersionName = 'qiaodan'; // 当前版本是否是乔丹版本
+export const interlocks = true; // 当前版本是否打开三级联动装置
+
 // export const enableGateWay = Version === '1.4';
 export const enableGateWay = true;
 
