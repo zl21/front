@@ -19,6 +19,7 @@ export default () => ({
     colPosition: '',
     fixedColumn: '',
     buttons: {
+      exportdata: '', // 导出返回值
       dataArray: {
         printValue: false, // 是否显示打印
         actionCollection: true, // 是否显示收藏

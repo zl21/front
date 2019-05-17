@@ -33,6 +33,7 @@
               name
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               @change="fileChange($event)"
+              @click="clearFile"
             >
             <!-- <label for="选择文件上传" /> -->
             <div
@@ -41,8 +42,10 @@
             >
               {{ ChineseDictionary.FILEMAX }}{{ fileSize }}
             </div>
+            <div class="fileName">
+              {{ fileName }}
+            </div>
           </div>
-
           <transition name="fade">
             <span v-if="loading">数据正在导入中，请稍候</span>
           </transition>
@@ -94,6 +97,7 @@
   import axios from 'axios';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
+  import Upload from '../__utils__/upload';
 
 
   export default {
@@ -134,7 +138,6 @@
       }
     },
     components: {
-    //   MyDialog,
     },
     data() {
       return {
@@ -151,15 +154,11 @@
           errorList: []
         },
         files: [],
-        buttonSize: 'small'
+        buttonSize: 'small',
+        fileName: ''
       };
     },
     watch: {
-      visible: {
-        handler(val) {
-          console.log('🍓', val);
-        },
-      },
       modalVisible: {
         handler(val) {
           if (!val) {
@@ -183,8 +182,14 @@
     },
 
     methods: {
+      clearFile() {
+        this.fileName = '';
+        this.loading = false;
+      },
       fileChange(e) {
-        this.files = e.target.files;
+        this.files = e.target.files[0];
+        this.fileName = e.target.files[0].name;
+        this.fileSize = e.target.files[0].size;
       },
       // 发送请求, 获取上传参数
       axiosSetting() {
@@ -230,73 +235,66 @@
             content: '请先选择要导入的文件！'
           });
         } else {
-          this.downloadTemplate();
+          this.uploadFileChange();
         }
       },
-      // 清除用户选择文件列表
-      clearFile() {
-        this.$refs.upload.clearFiles();
-        this.loading = false;
-      },
-      // 上传文件前判断文件大小
-      handleBefore(file) {
-        const sizes = ['B', 'K', 'M', 'G', 'T'];
-        let p;
-        const unit = this.fileSize.substr(this.fileSize.length - 1);
-        const number = this.fileSize.substr(0, this.fileSize.length - 1);
-        for (let i = 0; i < sizes.length; i++) {
-          if (unit === sizes[i]) {
-            p = i;
-            break;
-          }
-        }
-        if (file.size > parseInt(number) * Math.pow(1024, p)) {
-          this.$message(`文件最大${this.fileSize}`);
-          this.clearFile();
-          return false;
-        }
+      uploadFileChange() {
         this.loading = true;
+        // 上传文件
+        const fileInformationUploaded = this.files;
+        const url = `${getGateway('/p/cs/import')}`;
+        const sendData = {
+          table: this.tablename,
+          mainTable: this.mainTable,
+          mainId: this.mainId,
+          menu: this.title,
+        };
+        const aUploadParame = Object.assign(
+          {},
+          {
+            target: fileInformationUploaded,
+            url,
+            sendData,
+            imgSize: this.fileSiz,
+            success: this.handleSuccess,
+            onerror: this.handleError,
+            onloadstart: this.onloadstart,
+            
+          }
+        );
+        const article = new Upload(aUploadParame);
       },
+     
       // 上传成功
-      handleSuccess(response, file, fileList) {
-        const _self = this;
+      handleSuccess(response) {
         this.loading = false;
         if (response.code === 0) {
-          //          _self.$message({message: response.message, type: 'success'});
-          _self.$store.dispatch('timingCalcAsyncTask', { id: response.data });
-          _self.closeDialog();
+          this.closeDialog();
         } else {
-          if (undefined === response.path) _self.errorMsg.errorUrl = '';
-          else { _self.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
-          _self.errorMsg.errorList = response.data || [
+          if (undefined === response.path) this.errorMsg.errorUrl = '';
+          else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
+          this.errorMsg.errorList = response.data || [
             { rowIndex: 0, message: '' }
           ];
-          _self.errorMsg.message = response.message;
-          _self.clearFile();
+          this.errorMsg.message = response.message;
+          this.clearFile();
         }
         this.$emit('confirmImport', event);
       },
       // 上传失败
-      handleError(err, file, fileList) {
-        if (err.status === 403) {
+      handleError(e) {
+        if (e.status === 403) {
           this.$store.commit('beforeSignout');
           this.closeDialog();
         } else {
           this.$store.commit('errorDialog', {
             // 弹框报错
-            message: err
+            message: e
           });
           this.clearFile();
         }
       },
-      closeDialog(option) {
-        // this.showFlag = option || false;
-        // const close = this.$store.state[getModuleName()].buttons.importData.importDialog;
-        // this.$store.state.commit('setImportDialogTitle', // 弹框报错
-        //                          this.$store.state[getModuleName()].buttons.importData.importDialog = false);
-        // this.visible = option || false;
-        // this.$emit('update:visible', close);
-        // this.$emit('closeDialog');
+      closeDialog() {
         this.modalVisible = false;
       }
     }
@@ -328,6 +326,11 @@
     .upload-panel {
       height: 50px;
       margin-top: 10px;
+    }
+    .fileName{
+      height: 21px;
+    line-height: 21px;
+    color: #606266;
     }
   }
   .fileInput {

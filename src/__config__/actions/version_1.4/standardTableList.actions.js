@@ -35,15 +35,17 @@ export default {
       }
     });
   },
-  getExportQueryForButtons({
-    searchdata, filename, filetype, showColumnName, menu
-  }) {
-    network.post('/p/cs/export', urlSearchParams({
-      searchdata, filename, filetype, showColumnName, menu
-    })).then((res) => {
+  getExportQueryForButtons({ commit }, 
+    { OBJ, resolve, reject }) {
+    network.post('/p/cs/export', urlSearchParams(
+      OBJ
+    )).then((res) => {
       if (res.data.code === 0) {
-        const path = `/p/cs/download?filename=${res.data.data}`;
-        network.get(path);
+        resolve();
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+      } else {
+        reject();
       }
     });
   },

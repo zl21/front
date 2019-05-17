@@ -120,4 +120,7 @@ export default {
     state.colPosition = userConfig.colPosition;
     state.fixedColumn = userConfig.fixedColumn;
   },
+  updateButtonsExport({ buttons }, data) { // 导出
+    buttons.exportdata = data;
+  }
 };

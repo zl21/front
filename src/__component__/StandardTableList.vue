@@ -48,8 +48,9 @@
       :show-close="true"
       :title="buttons.importData.importDialogTitle"
       :tablename="buttons.tableName"
-      :main-table="buttons.tabledesc"
-      :main-id="buttons.importData.mainId"
+      :main-table="buttons.tableName"
+      :main-id="buttons.tableId"
+      @confirmImport="searchClickData"
       @closeDialog="closeDialog"
     />
     <ErrorModal
@@ -79,6 +80,7 @@
 
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
+  import { getGateway } from '../__utils__/network';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
@@ -112,7 +114,9 @@
     computed: {
       ...mapState('global', {
         favorite: ({ favorite }) => favorite,
-        activeTab: ({ activeTab }) => activeTab
+        activeTab: ({ activeTab }) => activeTab,
+        serviceIdMap: ({ serviceIdMap }) => serviceIdMap
+
       }),
       formLists() {
         return this.refactoringData(
@@ -987,11 +991,14 @@
           // 批量反提交
           if (this.buttons.selectIdArr.length > 0) {
             // this.errorTable = {}
-            const data = {
-              title: '警告',
-              content: `确认执行${obj.name}?`
-            };
-            this.$Modal.fcWarning(data);
+            // const data = {
+            //   title: '警告',
+            //   content: `确认执行${obj.name}?`
+            // };
+            // this.$Modal.fcWarning(data);
+            const title = '警告';
+            const contentText = `确认执行${obj.name}?`;
+            this.dialogMessage(title, contentText);  
           } else {
             const data = {
               title: '警告',
@@ -1005,13 +1012,15 @@
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
             //  searchdata.fixedcolumns = {}
-            const data = {
-              title: '警告',
-              content:
-                '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？'
-            };
-            this.$Modal.fcWarning(data);
-            this.batchExport();
+            // const data = {
+            //   title: '警告',
+            //   content:
+            //     '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？'
+            // };
+            // this.$Modal.fcWarning(data);
+            const title = '警告';
+            const contentText = '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？';
+            this.dialogMessage(title, contentText);
             return;
           }
           this.batchExport();
@@ -1062,11 +1071,26 @@
           showColumnName: true,
           menu: tableName
         };
+        
         // if (this.buttons.selectIdArr.length === 0) {
         //   delete this.formObj.fixedcolumns.ID;
         //   searchData.reffixedcolumns = this.treeObj.fixedcolumns;
         // }
-        this.getExportQueryForButtons(OBJ);
+        
+        const promise = new Promise((resolve, reject) => {
+          this.getExportQueryForButtons({ OBJ, resolve, reject });
+        });
+        promise.then(() => {
+          if (this.buttons.exportdata) {
+            const eleLink = document.createElement('a');
+            const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
+            eleLink.setAttribute('href', path);
+            eleLink.style.display = 'none';
+            document.body.appendChild(eleLink);
+            eleLink.click();
+            document.body.removeChild(eleLink);
+          }
+        });
       },
       deleteTableList() { // 删除方法
         // let objQuery = {
@@ -1154,11 +1178,10 @@
         }
       },
       errorconfirmDialog() {
-        debugger;
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
-            this.buttons.dialogConfig.contentText.indexOf(
+            this.buttons.dialogConfig.contentText.indexOf(// 按钮批量反提交动作
               this.buttonMap.CMD_UNSUBMIT.name
             ) >= 0
           ) {
