@@ -208,7 +208,7 @@
     },
     watch: {
       computdefaultData: {
-        handler(val, old) {
+        handler() {
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';

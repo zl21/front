@@ -97,21 +97,19 @@
               }
             }
           } else if (items.item.value) {
-            option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval;
+            option[items.item.field] = items.item.props.defval || items.item.value || items.item.props.valuedata;
           }
-                          
-
           if (items.item.props.number) {
-            // console.log(option[items.item.field], '666');
             if (option[items.item.field]) {
               option[items.item.field] = Number(option[items.item.field]);
             }
           } else if (typeof option[items.item.field] === 'string') {
             option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
           }
-
+         
           return option;
         }, {});
+
         return obj;
       },
       // 计算属性的 div 的坐标起始点
@@ -184,6 +182,7 @@
         changeFormData: {}, // 当前form 被改动的key
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
+        formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
     },
@@ -196,7 +195,7 @@
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
-
+     
 
       // 传值默认data
       const VerificationForm = this.VerificationForm.reduce((item, current) => {
@@ -218,8 +217,10 @@
       if (this.verifymessageform) {
         this.verifymessageform(VerificationForm);
       }
-
-      this.mountdataForm(this.formDataObject);
+      setTimeout(() => {
+        //  传form 默认值
+        this.mountdataForm(this.formDataObject);
+      }, 10);
     },
     created() {
     },
@@ -229,6 +230,7 @@
           if (this.indexItem < 0) {
             return;
           }
+          // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
 
@@ -308,13 +310,13 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                const value = current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+                const value = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '') : '';
                 obj[current.item.field] = Number(value);
               }
             } else if (typeof current.item.value === 'string') {
-              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
+              obj[current.item.field] = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '') : current.item.value;
             } else {
-              obj[current.item.field] = current.item.value.replace(/^\s+|\s+$/g, '');
+              obj[current.item.field] = current.item.value;
             }
           } else if (Version === '1.4') {
             obj[current.item.field] = current.item.props.empty;
