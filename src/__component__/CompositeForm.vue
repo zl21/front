@@ -208,7 +208,7 @@
     },
     watch: {
       computdefaultData: {
-        handler(val, old) {
+        handler() {
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';
@@ -749,23 +749,27 @@
             item.props.single = true;
             item.props.data = {};
             item.props.empty = 0;
+            item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
             item.props.empty = 0;
+            item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             item.props.single = false;
             item.props.data = {};
             item.props.empty = 0;
+            item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
             item.props.empty = 0;
+            item.props.AutoData = [];
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
@@ -851,6 +855,7 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
+        console.log(res.data.data, item[index].item.props.AutoData);
         item[index].item.props.AutoData = res.data.data;
       },
       lowercaseToUppercase(index, current) {
