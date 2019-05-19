@@ -129,11 +129,16 @@ export default {
       commit('updateButtonbatchSubmitData', res.data);
     });
   },
-  batchUnSubmitForButtons({ commit }, obj) { // 调用提交接口
-    network.post('/p/cs/batchUnSubmit', {
-      obj
-    }).then((res) => {
-      commit('updateButtonbatchUnSubmitData', res.data);
+  batchUnSubmitForButtons({ commit }, 
+    { obj, resolve, reject }) {
+    network.post('/p/cs/batchUnSubmit',
+      obj).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
+      } else {
+        reject();
+      }
     });
   },
   updateUserConfig({ commit }, { type, id }) {

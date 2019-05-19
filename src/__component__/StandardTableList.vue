@@ -1089,12 +1089,6 @@
           showColumnName: true,
           menu: tableName
         };
-        
-        // if (this.buttons.selectIdArr.length === 0) {
-        //   delete this.formObj.fixedcolumns.ID;
-        //   searchData.reffixedcolumns = this.treeObj.fixedcolumns;
-        // }
-        
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
@@ -1171,16 +1165,21 @@
           tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))
         };
-        this.batchUnSubmitForButtons(obj);
-        if (this.buttons.batchUnSubmitData.code === 0) {
+        const promise = new Promise((resolve, reject) => {
+          this.batchUnSubmitForButtons({ obj, resolve, reject });
+        });
+        console.log('promise', promise);
+        promise.then(() => {
           const message = this.buttons.batchUnSubmitData.message;
-          const data = {
-            title: '成功',
-            content: `${message}`
-          };
-          this.$Modal.fcSuccess(data);
-          this.getQueryListForAg(this.searchData);
-        }
+          if (message) {
+            const data = {
+              title: '成功',
+              content: `${message}`
+            };
+            this.$Modal.fcSuccess(data);
+            this.getQueryListForAg(this.searchData);
+          }
+        });
       },
       clickButtonsCollect() { // 收藏
         const params = {
