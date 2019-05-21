@@ -85,7 +85,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
-  import modifyDialog from './modifyDialog';
+  import modifyDialog from './ModifyDialog';
 
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
