@@ -24,7 +24,8 @@ export default () => ({
     updateData: {}, // 更新的数据
     buttonsData: {
     },
-    copy: false
+    copy: false,
+    defaultDataForCopy: {}
   },
   actions,
   mutations

@@ -121,14 +121,18 @@
         type: String,
         default: ''
       },
+      isreftabs: {
+        type: Boolean,
+        default: false
+      }, // 是否存在子表
       itemName: {
         type: String,
         default: ''
       },
-      itemNameGroup: {
-        type: Array,
-        default: () => ([])
-      },
+      // itemNameGroup: {
+      //   type: Array,
+      //   default: () => ([])
+      // },
       itemInfo: {// 当前子表信息
         type: Object,
         default: () => ({})
@@ -152,11 +156,13 @@
             }
           }
 
-          if (this.copy === 'true') {
+          if (this.copy === true) { 
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
-          this.changeCopy('false');
+          setTimeout(() => {
+            this.changeCopy(false);
+          }, 5000);
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
@@ -239,22 +245,20 @@
         }
       },
       objectCopy() { // 按钮复制功能
-        const modifyData = this.updateData[this.tableName].modify[this.tableName];
-        const tableName = this.tableName;// 只修改主表信息
+        const copyData = { ...this.mainFormInfo.formData };
+        this.savaCopyData(copyData);
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
-            this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-            // this.changeUpdateDataForForm({ modifyData, tableName });
+            this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+            this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+            // this.copyDefaultData({ modifyData, tableName });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
-          // this.changeUpdateDataForForm({ modifyData, tableName });
+          this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+          this.copyDefaultData(this.defaultDataForCopy);
         }
-        console.log('🐘', modifyData);
-       
-        this.changeCopy('true');
+        this.changeCopy(true);
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -323,7 +327,7 @@
           startIndex: 0,
           range: 10
         };
-        if (this.itemNameGroup.length > 0) { // 存在子表
+        if (this.isreftabs) { // 存在子表
           if (obj.requestUrlPath) { // 有path
             this.$refs.dialogRef.open();
             this.saveParameters();// 调用获取参数方法
@@ -331,7 +335,7 @@
               contentText: '确认执行删除?',
               confirm: () => {
                 this.performMainTableDeleteAction({
-                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, itemNameGroup: this.itemNameGroup
+                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, itemNameGroup: this.isreftabs
                 });
                 setTimeout(() => {
                   const deleteMessage = this.buttonsData.deleteData;
@@ -424,16 +428,6 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        // switch (this.objectType) { // 判断是横向布局还是纵向布局
-        // case 'horizontal': // 横向布局
-        //   this.horizontal(obj);
-        //   break;
-        // case 'vertical': // 纵向布局
-        //   this.vertical(obj);
-        //   break;
-        // default:
-        //   break;
-        // }
         this.determineSaveType(obj);
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
@@ -447,7 +441,7 @@
             const path = this.dynamic.requestUrlPath;
             const objId = -1;
 
-            if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
+            if (this.isreftabs) { // 为0的情况下是没有子表
               // console.log('没有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -456,7 +450,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
+            if (this.isreftabs) { // 大于0 的情况下是存在子表
               // console.log('有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -468,7 +462,7 @@
             // console.log('主表编辑保存');
             const path = obj.requestUrlPath;
             const type = 'modify';
-            if (this.itemNameGroup.length < 1) { // 为0的情况下是没有子表
+            if (this.isreftabs) { // 为0的情况下是没有子表
               // console.log('没有子表',);
 
               if (obj.requestUrlPath) { // 配置path
@@ -480,7 +474,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.itemNameGroup.length > 0) { // 大于0 的情况下是存在子表
+            if (this.isreftabs) { // 大于0 的情况下是存在子表
               const objId = this.itemId;
               const sataType = 'itemSave';
               if (obj.requestUrlPath) { // 配置path
@@ -508,7 +502,7 @@
           }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
-        if (this.itemNameGroup.length > 0) { // 存在子表时
+        if (this.isreftabs) { // 存在子表时
           const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
           const itemMessageTip = itemCheckedInfo.messageTip;
           if (itemMessageTip) {
@@ -545,7 +539,7 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        const itemNameGroup = this.itemNameGroup;
+        const itemNameGroup = this.isreftabs;
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -591,7 +585,7 @@
         }, 2000);
       },
       saveParameters() { // 筛选按钮保存参数逻辑
-        if (this.itemNameGroup.length > 0) { // 有子表
+        if (this.isreftabs) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.itemName) {
               this.itemCurrentParameter = this.updateData[current];

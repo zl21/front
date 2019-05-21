@@ -14,7 +14,7 @@
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       module-form-type="vertical"
-      :default-data="mainFormInfo.formData.data"
+      :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       :paths="formPaths"
       type="PanelForm"
       @formChange="formChange"
