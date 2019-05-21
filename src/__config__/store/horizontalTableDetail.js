@@ -13,7 +13,8 @@ export default () => ({
     updateData: {}, // 更新的数据
     buttonsData: {
     },
-    copy: false
+    copy: false,
+    defaultDataForCopy: {}// 复制 按钮操作保存修改前的数据
   },
   actions,
   mutations

@@ -123,16 +123,16 @@
       },
       isreftabs: {
         type: Boolean,
-        default: false
+        // default: false
       }, // 是否存在子表
       itemName: {
         type: String,
         default: ''
       },
-      // itemNameGroup: {
-      //   type: Array,
-      //   default: () => ([])
-      // },
+      itemNameGroup: {
+        type: Array,
+        default: () => ([])
+      },
       itemInfo: {// 当前子表信息
         type: Object,
         default: () => ({})
@@ -247,7 +247,8 @@
       objectCopy() { // 按钮复制功能
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            const copyData = { ...this.tabPanels[this.tableName].componentAttribute.formData };
+            const formData = this.tabPanel.map(item => item[this.tableName].componentAttribute.formData);
+            const copyData = { ...formData };
             this.savaCopyData(copyData);
             this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
             this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
@@ -337,7 +338,7 @@
               contentText: '确认执行删除?',
               confirm: () => {
                 this.performMainTableDeleteAction({
-                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, itemNameGroup: this.isreftabs
+                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup
                 });
                 setTimeout(() => {
                   const deleteMessage = this.buttonsData.deleteData;
@@ -443,7 +444,7 @@
             const path = this.dynamic.requestUrlPath;
             const objId = -1;
 
-            if (this.isreftabs) { // 为0的情况下是没有子表
+            if (this.isreftabs === false) { // 为false的情况下是没有子表
               // console.log('没有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -452,7 +453,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.isreftabs) { // 存在子表
               // console.log('有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -464,7 +465,7 @@
             // console.log('主表编辑保存');
             const path = obj.requestUrlPath;
             const type = 'modify';
-            if (this.isreftabs) { // 为0的情况下是没有子表
+            if (this.isreftabs === false) { // 为false的情况下是没有子表
               // console.log('没有子表',);
 
               if (obj.requestUrlPath) { // 配置path
@@ -476,7 +477,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.isreftabs) { // 为true的情况下是存在子表
               const objId = this.itemId;
               const sataType = 'itemSave';
               if (obj.requestUrlPath) { // 配置path
@@ -541,7 +542,8 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        const itemNameGroup = this.isreftabs;
+        const isreftabs = this.isreftabs;
+        const itemNameGroup = this.itemNameGroup;
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -551,8 +553,9 @@
           path,
           itemName,
           objectType,
-          itemNameGroup,
-          sataType
+          isreftabs,
+          sataType,
+          itemNameGroup
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {

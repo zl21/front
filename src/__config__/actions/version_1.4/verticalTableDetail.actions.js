@@ -149,12 +149,12 @@ export default {
     const { type } = parame;
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
-    const { itemNameGroup } = parame;
+    const { isreftabs } = parame;
     const { enter } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-      if (itemNameGroup.length > 0) { // 存在子表
+      if (isreftabs) { // 存在子表
         const itemAdd = itemCurrentParameter.add;
         itemAdd[itemName].ID = objId;
         if (path) { // 有path的参数
@@ -194,7 +194,7 @@ export default {
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
       const { sataType } = parame;
-      if (itemNameGroup.length > 0) {
+      if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;
         if (sataType === 'itemSave') { // 子表保存
           if (path) { // 有path的参数
@@ -264,11 +264,11 @@ export default {
     });
   },
   performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup
+    path, table, objId, currentParameter, itemName, isreftabs
   }) { // 主表删除
     let parames = {};
    
-    if (itemNameGroup && itemNameGroup.length > 0) {
+    if (isreftabs) {
       if (path) {
         const mainTable = currentParameter.delete;
         mainTable[table].ID = objId;
