@@ -198,6 +198,8 @@
 </template>
 
 <script>
+  import Vue from 'vue';
+
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
@@ -212,6 +214,7 @@
     fkQueuploadProgressry, fkObjectSave
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+  Vue.component('PopDialog', Vue.extend(PopDialog));
 
   export default {
     name: 'ItemComponent',

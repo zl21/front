@@ -258,7 +258,6 @@
             }
           });
         });
-        // console.log(this.VerificationForm);
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;

@@ -3,11 +3,24 @@
   <div
     ref="modify"
   >
-    <composite-form></composite-form>
+         <Spin fix v-if ="loading">
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+    </Spin>
+        <div class="modify-tip">
+          已选中批量修改记录数：{{ ids.length }}行
+        </div>
+        <component 
+          :is="'CompositeFormPanel'"
+          :default-data="newformList"
+          :default-column-col="formList.objviewcol"
+          class="formPanel"
+          type="PanelForm"
+          @formChange="formChange"
+        />
   </div>
 </template>
 <script>
-  import CompositeForm from './CompositeForm.vue';
+  import CompositeFormPanel from './CompositeForm.vue';
   import { Version } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
 
@@ -18,9 +31,9 @@
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
-    name: 'PopDialog',
+    name: 'ModifyDialog',
     components: {
-      CompositeForm
+      CompositeFormPanel, ModalConfirm
     },
     data() {
       return {

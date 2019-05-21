@@ -214,13 +214,14 @@
         return item;
       }, []);
 
-      if (this.verifymessageform) {
-        this.verifymessageform(VerificationForm);
-      }
+     
       setTimeout(() => {
         //  传form 默认值
+        if (this.verifymessageform) {
+          this.verifymessageform(VerificationForm);
+        }
         this.mountdataForm(this.formDataObject);
-      }, 10);
+      }, 50);
     },
     created() {
     },
