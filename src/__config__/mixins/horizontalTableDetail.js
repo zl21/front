@@ -13,6 +13,7 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
+      copy: ({ copy }) => copy,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -36,7 +37,9 @@ export default () => ({
     ...mapMutations(getComponentName(),
       [
         'updateTabCurrentIndex',
-        'updateChangeData'
+        'updateChangeData',
+        'changeCopy',
+        'changeUpdateDataForForm'
       ]),
   },
   beforeDestroy() {

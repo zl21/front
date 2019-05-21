@@ -12,7 +12,8 @@ export default () => ({
     tabCurrentIndex: 0, // 当前tab的index
     updateData: {}, // 更新的数据
     buttonsData: {
-    }
+    },
+    copy: false
   },
   actions,
   mutations

@@ -511,11 +511,7 @@
               },
               props: {
                 transfer: true,
-                value: params.row[cellData.colname]
-                  ? cellData.combobox.filter(
-                    ele => ele.limitdesc === params.row[cellData.colname]
-                  )[0].limitval
-                  : null
+                value: this.getSelectValue(params, cellData)
               },
               nativeOn: {
                 click: (e) => {
@@ -528,14 +524,10 @@
                 }
               }
             },
-            cellData.combobox.map(item => h('Option', {
-              props: {
-                value: item.limitval,
-                label: item.limitdesc
-              }
-            })))
+            this.getSelectValueCombobox(h, cellData))
         ]);
       },
+
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
         return (h, params) => h('div', [
           h(tag, {
@@ -1216,7 +1208,29 @@
           }
         }
         return targetObj;
+      },
+      getSelectValueCombobox(h, cellData) { // 做SelectValueCombobox 判空处理
+        if (cellData.combobox) {
+          return cellData.combobox.map(item => h('Option', {
+            props: {
+              value: item.limitval,
+              label: item.limitdesc
+            }
+          }));
+        }
+        return [];
+      },
+      getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
+        if (cellData.combobox) {
+          return params.row[cellData.colname]
+            ? cellData.combobox.filter(
+              ele => ele.limitdesc === params.row[cellData.colname]
+            )[0].limitval
+            : null;
+        } 
+        return null;
       }
+       
     },
     mounted() {
     },

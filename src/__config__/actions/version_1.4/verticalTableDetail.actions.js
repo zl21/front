@@ -18,7 +18,7 @@ export default {
     commit('updateFormDataForRefshow');
   },
   getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
-    table, objid
+    table, objid, type
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -33,46 +33,48 @@ export default {
         if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
-          if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
-            const param = {
-              table: firstReftab.tablename,
-              objid
-            };
-            this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
-          }
-          if (resData.reftabs[0].refcolid !== -1) {
+          if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
+            if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+              const param = {
+                table: firstReftab.tablename,
+                objid
+              };
+              this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+            }
+            if (resData.reftabs[0].refcolid !== -1) {
             // commit('updateActiveRefFormInfo', resData.reftabs[0]);
             // 获取第一个tab的子表表单
-            if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
-              const formParam = {
-                table: firstReftab.tablename,
-                inlinemode: firstReftab.tabinlinemode
-              };
-              this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
-            }
-            // 获取第一个tab的子表列表数据
-            if (resData.reftabs[0].tabrelation === '1:m') {
-              if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                const tableParam = {
+              if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                const formParam = {
                   table: firstReftab.tablename,
-                  objid,
-                  refcolid: firstReftab.refcolid,
-                  searchdata: {
-                    column_include_uicontroller: true
-                  }
-
+                  inlinemode: firstReftab.tabinlinemode
                 };
-                this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
-            } else if (resData.reftabs[0].tabrelation === '1:1') {
+              // 获取第一个tab的子表列表数据
+              if (resData.reftabs[0].tabrelation === '1:m') {
+                if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                  const tableParam = {
+                    table: firstReftab.tablename,
+                    objid,
+                    refcolid: firstReftab.refcolid,
+                    searchdata: {
+                      column_include_uicontroller: true
+                    }
+
+                  };
+                  this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                }
+              } else if (resData.reftabs[0].tabrelation === '1:1') {
               // 获取子表面板数据
-              if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
-                const tableParam = {
-                  table: firstReftab.tablename,
-                  objid,
-                  refcolid: firstReftab.refcolid,
-                };
-                this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+                if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
+                  const tableParam = {
+                    table: firstReftab.tablename,
+                    objid,
+                    refcolid: firstReftab.refcolid,
+                  };
+                  this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+                }
               }
             }
           }
