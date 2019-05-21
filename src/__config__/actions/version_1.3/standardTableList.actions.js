@@ -52,10 +52,10 @@ export default {
   getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
     const objids = selectIdArr.join(',');
     network.post('/p/cs/batchDelete', 
-      urlSearchParams({
+      {
         table: tableName,
         objids
-      })).then((res) => {
+      }).then((res) => {
       const deleteTableData = res.data;
       commit('updateButtonDeleteData', deleteTableData);
     }); 

@@ -31,6 +31,7 @@
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
+              obj.componentAttribute.isreftabs = item.componentAttribute.buttonsData.data.isreftabs;
             }
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;

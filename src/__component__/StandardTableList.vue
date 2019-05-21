@@ -1180,7 +1180,6 @@
         const promise = new Promise((resolve, reject) => {
           this.batchUnSubmitForButtons({ obj, resolve, reject });
         });
-        console.log('promise', promise);
         promise.then(() => {
           const message = this.buttons.batchUnSubmitData.message;
           if (message) {

@@ -106,6 +106,7 @@
     computed: {
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
+        keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
       }),
     },
     props: {
@@ -139,7 +140,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['tabHref']),
+      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
           if (this.objectType === 'horizontal') { // 横向布局
@@ -159,10 +160,10 @@
           if (this.copy === true) { 
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
+            setTimeout(() => {
+              this.changeCopy(false);
+            }, 5000);
           }
-          setTimeout(() => {
-            this.changeCopy(false);
-          }, 5000);
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
@@ -424,6 +425,8 @@
             id
           });
         }
+
+        // this.decreasekeepAliveLists(this.activeTab.keepAliveModuleName);
         // setTimeout(() => {
         //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
         //   this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });
@@ -587,6 +590,13 @@
               }
             }, 1000);
           }
+          // this.deleteCurrentKeepAlive();// 移除当前keepAlive
+          const { path } = router.currentRoute;
+          const keepalive = path.split('/')[1];
+
+
+          console.log(keepalive);
+          this.decreasekeepAliveLists(this.activeTab.keepAliveModuleName);
         }, 2000);
       },
       saveParameters() { // 筛选按钮保存参数逻辑

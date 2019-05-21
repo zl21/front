@@ -10,7 +10,7 @@
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
-      :isreftabs="buttonsData.data.isreftabs"
+      :isreftabs="isreftabs"
     />
     <component
       :is="'CompositeForm'"
@@ -87,6 +87,9 @@
       tableName: {
         type: String,
         default: ''
+      },
+      isreftabs: {
+        type: Boolean,
       },
       tableId: {
         type: String,
@@ -187,7 +190,7 @@
             const path = this.dynamic.requestUrlPath;
             const objId = -1;
 
-            if (this.childTableNames.length < 1) { // 为0的情况下是没有子表
+            if (!this.verifyForm) { // 为0的情况下是没有子表
               // console.log('没有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -196,7 +199,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.childTableNames.length > 0) { // 大于0 的情况下是存在子表
+            if (this.verifyForm) { // 大于0 的情况下是存在子表
               // console.log('有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -208,7 +211,7 @@
             // console.log('主表编辑保存');
             const path = savePath;
             const type = 'modify';
-            if (this.childTableNames.length < 1) { // 为0的情况下是没有子表
+            if (!this.verifyForm) { // 为0的情况下是没有子表
               // console.log('没有子表',);
 
               if (savePath) { // 配置path
@@ -220,7 +223,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.childTableNames.length > 0) { // 大于0 的情况下是存在子表
+            if (this.verifyForm) { // 大于0 的情况下是存在子表
               const objId = itemId;
               const sataType = 'itemSave';
               const enter = 'enterSave';
@@ -250,7 +253,8 @@
           objectType,
           itemNameGroup: childTableNames,
           sataType,
-          enter
+          enter,
+          isreftabs: this.verifyForm
         };
         this.$store.dispatch(`${getModuleName()}/performMainTableSaveAction`, parame);
         // this.performMainTableSaveAction(parame);
@@ -298,7 +302,7 @@
         return true;
       },
       saveParameters() {
-        if (this.childTableNames.length > 0) { // 有子表
+        if (this.verifyForm) { // 有子表
           Object.keys(this.$store.state[getModuleName()].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.tableName) {
               this.itemCurrentParameter = this.$store.state[getModuleName()].updateData[current];
@@ -308,7 +312,6 @@
         }
         Object.keys(this.$store.state[getModuleName()].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           const { tableName } = router.currentRoute.params;
-
           if (current === tableName) {
             this.currentParameter = this.$store.state[getModuleName()].updateData[current];
           }
