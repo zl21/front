@@ -62,6 +62,8 @@
       :confirm="buttons.dialogConfig.confirm"
       @confirmDialog="errorconfirmDialog()"
     />
+    <!-- 批量 -->
+    <modifyDialog ref="dialogmodify" />
   </div>
 </template>
 
@@ -77,6 +79,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
+  import modifyDialog from './modifyDialog';
 
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
@@ -97,6 +100,7 @@
       FormItemComponent,
       ImportDialog,
       ErrorModal,
+      modifyDialog
     },
     data() {
       return {
@@ -1039,21 +1043,10 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
-            console.log('6666');
-            this.$Modal.confirm({
-              render: h => h('Input', {
-                props: {
-                  value: this.value,
-                  autofocus: true,
-                  placeholder: 'Please enter your name...'
-                },
-                on: {
-                  input: (val) => {
-                    this.value = val;
-                  }
-                }
-              })
-            });
+            console.log(this, this.$route);
+            this.$refs.dialogmodify.open(
+              this.$route.params, this.buttons.selectIdArr
+            );
             // this.dataConShow.dataConShow = true;
             // this.dataConShow.title = this.buttons.tabledesc;
             // this.dataConShow.tabConfig = {

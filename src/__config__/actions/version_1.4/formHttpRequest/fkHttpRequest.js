@@ -46,7 +46,14 @@ export const fkObjectSave = function fkObjectSave(params) {
 };
 
 export const fkModify = function fkModify(params) {
-  network.post('/p/cs/getObjectForUpTmp', params.searchObject).then((res) => {
+  network.post('/p/cs/getObjectForUpTmp', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
+export const fksaveModify = function fksaveModify(params) {
+  network.post('/p/cs/batchSave', urlSearchParams(params.searchObject)).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
