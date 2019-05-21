@@ -201,14 +201,5 @@ export default {
     });
     // 添加到新的列表中
   },
-  deleteCurrentKeepAlive(state) { // 移除当前keepAlive
-    console.log(1, state.keepAliveLists);
-    debugger;
-    state.keepAliveLists.forEach((item, index) => {
-      if (item === state.activeTab.keepAliveModuleName) {
-        state.keepAliveLists.splice(1, index);
-      }
-    });
-    console.log(2, state.keepAliveLists);
-  }
+  
 };

@@ -40,7 +40,7 @@ export default () => ({
         'updateChangeData',
         'changeCopy',
         'copyDefaultData',
-        'savaCopyData'
+        'savaCopyData',
       ]),
   },
   beforeDestroy() {

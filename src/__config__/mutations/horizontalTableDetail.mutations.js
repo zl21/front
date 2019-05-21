@@ -125,6 +125,9 @@ export default {
       }
       return state.defaultDataForCopy; 
     });
+  },
+  emptyChangeData(state, tableName) {
+    state.updateData[tableName].changeData = {};
   }
 
 };

@@ -425,8 +425,9 @@
             id
           });
         }
-
-        // this.decreasekeepAliveLists(this.activeTab.keepAliveModuleName);
+        // setTimeout(() => {
+        this.$store.commit(`${moduleName()}/emptyChangeData`, this.tableName);
+        // }, 5000);
         // setTimeout(() => {
         //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
         //   this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });
@@ -590,13 +591,7 @@
               }
             }, 1000);
           }
-          // this.deleteCurrentKeepAlive();// 移除当前keepAlive
-          const { path } = router.currentRoute;
-          const keepalive = path.split('/')[1];
-
-
-          console.log(keepalive);
-          this.decreasekeepAliveLists(this.activeTab.keepAliveModuleName);
+          this.decreasekeepAliveLists(moduleName());
         }, 2000);
       },
       saveParameters() { // 筛选按钮保存参数逻辑

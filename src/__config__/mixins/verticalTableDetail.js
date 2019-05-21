@@ -49,7 +49,7 @@ export default () => ({
         'changeCopy',
         'changeUpdateDataForForm',
         'savaCopyData',
-        'copyDefaultData'
+        'copyDefaultData',
 
       ]),
   },
