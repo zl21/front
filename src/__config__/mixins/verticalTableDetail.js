@@ -13,6 +13,7 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
+      copy: ({ copy }) => copy,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -43,6 +44,9 @@ export default () => ({
         'updateChangeData',
         'updateCheckedInfoData',
         'updatePanelData',
+        'changeCopy',
+        'changeUpdateDataForForm'
+
       ]),
   },
   beforeDestroy() {

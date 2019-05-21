@@ -10,7 +10,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
-      :default-set-value="getFormDefaultValue"
+      :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       module-form-type="vertical"
@@ -75,12 +75,6 @@
         }
         return '';
       },
-      getFormDefaultValue() {
-        if (this.updateData[this.$route.params.tableName]) {
-          return this.updateData[this.$route.params.tableName].changeData;
-        }
-        return {};
-      }
     },
     components: {
       compositeForm

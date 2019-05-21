@@ -103,24 +103,15 @@ export default {
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
     state.buttonsData.newMainTableSaveData = data.data;
     state.buttonsData.message = data.message;
-    // if (data.data.message) {
-    //   if (data.message.indexOf('新增成功!')) {
-    //     state.buttonsData.newMainTableSaveData = data.data;
-    //   } else if (data.message.indexOf('更新成功')) {
-    //     state.buttonsData.newMainTableSaveData = data.data;
-    //   } else if (itemName) {
-    //     if (data.message.indexOf('保存成功')) {
-    //       state.buttonsData.newMainTableSaveData = data.data;
-    //     } else {
-    //       state.buttonsData.newMainTableSaveData = JSON.parse(data);
-    //     }
-    //   }
-    // } else {
-    //   state.buttonsData.newMainTableSaveData = data.data;
-    // }
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
   },
-
+  changeCopy(state, data) {
+    state.copy = data;
+  },
+  changeUpdateDataForForm(state, { modifyData, tableName }) {
+    Object.assign(state.updateData[tableName].changeData, modifyData);
+    Object.assign(state.updateData[tableName].modify[tableName], modifyData);
+  }
 };

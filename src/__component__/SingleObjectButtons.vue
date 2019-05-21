@@ -39,7 +39,7 @@
 
         dataArray: {
           refresh: true, // 显示刷新
-          back: true, // 显示刷新
+          back: true, // 显示返回
           printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
@@ -65,7 +65,7 @@
           icon: '',
           defbutton: 'N',
           action: '',
-        }// 保存url
+        }, // 保存url
       };
     },
     name: 'SingleObjectButtons',
@@ -139,7 +139,7 @@
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
           if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
               this.addButtonShow(buttonData);
             } else { // 新增按钮渲染逻辑
               this.getbuttonGroupData(buttonData);
@@ -151,6 +151,12 @@
               this.getbuttonGroupData(buttonData);
             }
           }
+
+          if (this.copy === 'true') {
+            this.dataArray.refresh = false;
+            this.addButtonShow(buttonData);
+          }
+          this.changeCopy('false');
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
@@ -232,7 +238,24 @@
           break;
         }
       },
-
+      objectCopy() { // 按钮复制功能
+        const modifyData = this.updateData[this.tableName].modify[this.tableName];
+        const tableName = this.tableName;// 只修改主表信息
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.tabCurrentIndex === 0) { // 主表
+            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
+            this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+            // this.changeUpdateDataForForm({ modifyData, tableName });
+          }
+        } else { // 纵向布局
+          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
+          // this.changeUpdateDataForForm({ modifyData, tableName });
+        }
+        console.log('🐘', modifyData);
+       
+        this.changeCopy('true');
+      },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
         const param = {
@@ -413,12 +436,6 @@
         // }
         this.determineSaveType(obj);
       },
-      // horizontal(obj) {
-      //   this.determineSaveType(obj);
-      // }, // 横向布局，用来区分获取的参数
-      // vertical(obj) {
-      //   this.determineSaveType(obj);
-      // }, // 纵向布局
       determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
@@ -479,12 +496,15 @@
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-        const messageTip = checkedInfo.messageTip;
-        if (messageTip) {
-          if (messageTip.length > 0) {
-            this.$Message.warning(messageTip[0]);
-            checkedInfo.validateForm.focus();
-            return false;
+
+        if (checkedInfo) {
+          const messageTip = checkedInfo.messageTip;
+          if (messageTip) {
+            if (messageTip.length > 0) {
+              this.$Message.warning(messageTip[0]);
+              checkedInfo.validateForm.focus();
+              return false;
+            }
           }
         }
         // if (this.objectType === 'vertical') { // 纵向结构

@@ -601,8 +601,8 @@
         if (type === 'fix') {
           this.AddDetailClick(obj);
         } else if (type === 'custom') {
-          this.webaction(type, obj);
-          // this.webactionClick(type, obj);
+          // this.webaction(type, obj);
+          this.webactionClick(type, obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
         } else {
@@ -653,21 +653,21 @@
         // 点击自定义按钮 创建table
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
-          // this.setActiveTabActionValue(obj);
+          this.setActiveTabActionValue(obj);
           if (obj.vuedisplay === 'native') {
             // 接口返回有url地址
             // eslint-disable-next-line no-restricted-globals
             location.href = obj.action;
             return;
           }
-
+          debugger;
           if (obj.vuedisplay === 'slient') {
             // 静默程序            if(obj.confirm){  //有提示
             if (obj.confirm) {
               // 有提示
               if (obj.confirm.indexOf('{') >= 0) {
                 if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-                  if (this.selectIdArr && this.selectIdArr.length === 0) {
+                  if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
                     const title = this.ChineseDictionary.WARNING;
                     const contentText = `${JSON.parse(obj.confirm).nodesc}`;
                     this.dialogMessage(title, contentText);
@@ -778,6 +778,8 @@
       },
       webActionSlient(item) {
         // this.actionLoading = true;
+        debugger;
+
         const obj = {
           tableid: this.buttons.tableId,
           ids: this.buttons.selectIdArr,
@@ -1249,6 +1251,8 @@
         if (this.buttons.activeTabAction) {
           if (this.buttons.activeTabAction.vuedisplay === 'slient') {
             // slient静默跳转页面类型按钮
+            debugger;
+            
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
                 if (
