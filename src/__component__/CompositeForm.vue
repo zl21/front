@@ -172,10 +172,17 @@
                   parentname: current.parentname
                 });
               } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
+                console.log(index, 'ddd');
+                current.child.formIndex = index;
                 const option = this.reduceForm([], current.child, index);
                 if (option.item) {
                   this.childForm(option);
                 }
+                array.push({
+                  childs: [option],
+                  hrdisplay: 'expand',
+                  isTitleShow: false
+                });
               }
               return array;
             }, []);
@@ -194,14 +201,6 @@
             );
           }
 
-          // 数据重组  默认展开
-          if (this.childFormData[0]) {
-            items.push({
-              hrdisplay: 'expand',
-              isTitleShow: false,
-              childs: this.childFormData
-            });
-          }
           return items;
         },
         set(val) {
@@ -763,6 +762,7 @@
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
+            console.log('pop', item);
             item.props.single = false;
             item.props.data = {};
             item.props.empty = 0;

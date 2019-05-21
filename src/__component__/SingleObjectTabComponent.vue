@@ -10,6 +10,7 @@
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
+      :isreftabs="buttonsData.data.isreftabs"
     />
     <component
       :is="'CompositeForm'"
@@ -165,7 +166,7 @@
               } else {
                 savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[1];
               }
-            } 
+            }
           });
         } else if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
@@ -224,8 +225,8 @@
               const sataType = 'itemSave';
               const enter = 'enterSave';
               if (savePath) { // 配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter); 
-               
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
+
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
