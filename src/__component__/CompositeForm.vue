@@ -940,7 +940,7 @@
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;
-        if (width < 620) {
+        if (width < 580 && width !== 0) {
           this.defaultColumnCol = 1;
         } else {
           this.defaultColumnCol = this.defaultData.objviewcol;

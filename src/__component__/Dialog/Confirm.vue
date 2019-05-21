@@ -4,6 +4,7 @@
     v-model="showModal"
     :title="title"
     :width="width"
+    :loading="loading"
     :title-align="titleAlign"
     :scrollable="scrollable"
     :closable="closable"
@@ -17,7 +18,10 @@
     @on-cancel="onCancel"
     @on-ok="onOk"
   >
-    <slot name="Modalsolt" />
+  <div class="show-dialog">
+       <slot name="Modalsolt" />
+  </div>
+   
   </Modal>
 </template>
 
@@ -53,6 +57,10 @@
         type: Boolean,
         default: () => false
       }, // 是否显示遮罩层
+      loading: {
+        type: Boolean,
+        default: () => false
+      }, // 是否显示loading
       maskClosable: {
         type: Boolean,
         default: () => true
@@ -114,6 +122,7 @@
         if (typeof this.cancelFun === 'function') {
           this.cancelFun();
         }
+        this.$emit('on-cancle');
       },
     
     }
@@ -134,5 +143,8 @@
   border-radius: 2px;
   height: 26px;
   line-height: 0px;
+}
+.show-dialog{
+  position: relative;
 }
 </style>

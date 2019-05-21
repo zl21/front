@@ -1,17 +1,23 @@
 <template>
   <!-- v-if="newformList.addcolums" -->
   <div
-    
     ref="modify"
   >
+ 
     <ModalConfirm
       ref="Modal"
       :title="title"
       :width="width"
+      :loading="loading"
       :title-align="titleAlign"
       @on-ok="confirm"
-    >
+      @on-cancle="oncancle"
+    > 
+     
       <div slot="Modalsolt">
+        <Spin fix v-if ="loading">
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+    </Spin>
         <div class="modify-tip">
           已选中批量修改记录数：{{ ids.length }}行
         </div>
@@ -48,21 +54,21 @@
         formList: {},
         newformList: {},
         formChangeData: {},
+        loading: false,
+        router: {},
         ids: []
       };
     },
     props: {
-      router: {
-        type: Object,
-        default() {
-          return {};
-        }
-      },
       title: {
         type: String,
         default() {
           return '标题';
         }
+      },
+      reffixedcolumns: {
+        type: Object,
+        default: () => {}
       },
       titleAlign: {
         type: String,
@@ -91,7 +97,7 @@
             this.newformList = {
               addcolums: [{
                 hrdisplay: 'expand',
-                parentdesc: '采购单',
+                parentdesc: '批量修改',
                 parentname: val.addcolums[0].parentname,
                 childs
               }],
@@ -109,33 +115,62 @@
           searchObject,
           success: (res) => {
             if (res.data.code === 0) {
+              this.loading = false;
               this.formList = res.data.data;
             }
           }
         });
       },
+      oncancle() {
+        this.$emit('on-oncancle-success', this);
+      },
       saveData() {
-        fksaveModify({
+        this.loading = true;
+        const localdata = {
 
+          table: this.router.tableName, // 表名
+          column_include_uicontroller: true, //
+          reffixedcolumns: this.reffixedcolumns, // 左边树
+        };
+        if (this.ids.length > 0) {
+          localdata.objids = this.ids;
+        } else {
+          localdata.reffixedcolumns = this.reffixedcolumns;// 左边树
+        }
+        const searchObject = {
+          fixedData: this.formChangeData,
+          searchdata: localdata
+        };
+        fksaveModify({
+          searchObject,
+          success: (res) => {
+            this.loading = false;
+            this.$emit('on-save-success', res);
+          }
         });
       },
       open(router, ids) {
+        //  打开弹窗
         this.ids = ids;
+        this.router = router;
         this.$refs.Modal.open();
+        this.loading = true;
         const searchObject = {
           table: router.tableName
         };
         this.getData(searchObject);
       },
       formChange(data) {
+        // form 修改的数据
+
         this.formChangeData = Object.assign(this.formChangeData, data);
       },
       confirm() {
-        console.log(this, 'confirmconfirmconfirm');
+        // b保存提交
+        this.saveData();
       }
     },
     mounted() {
-      console.log(this.$refs);
     }
   };
 </script>

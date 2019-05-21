@@ -63,7 +63,13 @@
       @confirmDialog="errorconfirmDialog()"
     />
     <!-- 批量 -->
-    <modifyDialog ref="dialogmodify" />
+    <modifyDialog
+      v-if="modifyDialogshow"
+      ref="dialogmodify"
+      :title="activeTab.label"
+      @on-oncancle-success="onCancleSuccess"
+      @on-save-success="onSaveSuccess"
+    />
   </div>
 </template>
 
@@ -112,7 +118,7 @@
           range: 10
         },
         formItemsLists: [],
-
+        modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false
       };
     },
@@ -149,6 +155,14 @@
       ...mapMutations('global', ['tabHref', 'TabOpen']),
       closeDialog() {
         this.closeImportDialog();
+      },
+      onCancleSuccess() {
+        this.modifyDialogshow = false;
+      },
+      onSaveSuccess() {
+        // 重新请求
+        this.modifyDialogshow = false;
+        this.getQueryList();
       },
       getQueryList() {
         const { agTableElement } = this.$refs;
@@ -1041,10 +1055,13 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
-            console.log(this, this.$route);
-            this.$refs.dialogmodify.open(
-              this.$route.params, this.buttons.selectIdArr
-            );
+            this.modifyDialogshow = true;
+            setTimeout(() => {
+              this.$refs.dialogmodify.open(
+                this.$route.params, this.buttons.selectIdArr
+              );
+            }, 200);
+            
             // this.dataConShow.dataConShow = true;
             // this.dataConShow.title = this.buttons.tabledesc;
             // this.dataConShow.tabConfig = {

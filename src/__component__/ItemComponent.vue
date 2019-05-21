@@ -32,7 +32,6 @@
         :readonly="_items.props.readonly"
         :rows="_items.props.row"
         :autosize="_items.props.autosize"
-        :number="_items.props.number"
         :autofocus="_items.props.autofocus"
         :placeholder="_items.props.placeholder"
         :size="_items.props.size"
