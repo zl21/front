@@ -156,7 +156,7 @@
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
-          this.changeCopy('false');
+          this.changeCopy(false);
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
@@ -239,22 +239,22 @@
         }
       },
       objectCopy() { // 按钮复制功能
-        const modifyData = this.updateData[this.tableName].modify[this.tableName];
-        const tableName = this.tableName;// 只修改主表信息
+        this.savaCopyData();
+        // console.log('🐘', this.defaultDataForCopy);
+
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
-            this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-            // this.changeUpdateDataForForm({ modifyData, tableName });
+            this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+            this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+            // this.copyDefaultData({ modifyData, tableName });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, type: 'copy' });
-          // this.changeUpdateDataForForm({ modifyData, tableName });
+          this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+          this.copyDefaultData(this.defaultDataForCopy);
         }
-        console.log('🐘', modifyData);
        
-        this.changeCopy('true');
+        this.changeCopy(true);
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;

@@ -14,6 +14,8 @@ export default () => ({
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
       copy: ({ copy }) => copy,
+      defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -45,7 +47,9 @@ export default () => ({
         'updateCheckedInfoData',
         'updatePanelData',
         'changeCopy',
-        'changeUpdateDataForForm'
+        'changeUpdateDataForForm',
+        'savaCopyData',
+        'copyDefaultData'
 
       ]),
   },

@@ -110,8 +110,11 @@ export default {
   changeCopy(state, data) {
     state.copy = data;
   },
-  changeUpdateDataForForm(state, { modifyData, tableName }) {
-    Object.assign(state.updateData[tableName].changeData, modifyData);
-    Object.assign(state.updateData[tableName].modify[tableName], modifyData);
+  copyDefaultData(state, copyDefaultData) {
+    Object.assign(state.mainFormInfo.formData, copyDefaultData);
+    // Object.assign(state.updateData[tableName].modify[tableName], modifyData);
+  },
+  savaCopyData(state) {
+    state.defaultDataForCopy = state.mainFormInfo.formData;
   }
 };
