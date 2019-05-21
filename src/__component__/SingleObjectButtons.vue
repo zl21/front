@@ -245,15 +245,17 @@
         }
       },
       objectCopy() { // 按钮复制功能
-        const copyData = { ...this.mainFormInfo.formData };
-        this.savaCopyData(copyData);
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
+            const copyData = { ...this.tabPanels[this.tableName].componentAttribute.formData };
+            this.savaCopyData(copyData);
             this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
             this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
-            // this.copyDefaultData({ modifyData, tableName });
+            this.copyDefaultData(this.defaultDataForCopy);
           }
         } else { // 纵向布局
+          const copyData = { ...this.mainFormInfo.formData };
+          this.savaCopyData(copyData);
           this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
           this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
           this.copyDefaultData(this.defaultDataForCopy);

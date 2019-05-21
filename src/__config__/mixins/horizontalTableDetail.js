@@ -39,7 +39,8 @@ export default () => ({
         'updateTabCurrentIndex',
         'updateChangeData',
         'changeCopy',
-        'changeUpdateDataForForm'
+        'copyDefaultData',
+        'savaCopyData'
       ]),
   },
   beforeDestroy() {

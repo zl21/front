@@ -114,15 +114,17 @@ export default {
   changeCopy(state, data) {
     state.copy = data;
   },
-  changeUpdateDataForForm(state, { modifyData, tableName }) {
-    console.log('🍓', tableName);
-
-    Object.assign(state.updateData[tableName].changeData, modifyData);
-    Object.assign(state.updateData[tableName].modify[tableName], modifyData);
-    console.log('🍓', state.updateData[tableName]);
-
-
-    // this.updateData.changeData = modifyData;
+  copyDefaultData(state, copyDefaultData) { // 执行按钮复制操作重新给form赋值
+    Object.assign(state.tabPanels[this.tableName].componentAttribute.formData, copyDefaultData);
+  },
+  savaCopyData(state, copyData) { // 执行按钮复制操作存储form默认值数据
+    state.defaultDataForCopy = copyData;
+    state.defaultDataForCopy.data.addcolums.map((item, index) => {
+      if (item.parentdesc === '日志') {
+        return state.defaultDataForCopy.data.addcolums.splice(index, 1);
+      }
+      return state.defaultDataForCopy; 
+    });
   }
 
 };
