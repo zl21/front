@@ -172,7 +172,6 @@
                   parentname: current.parentname
                 });
               } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
-                console.log(index, 'ddd');
                 current.child.formIndex = index;
                 const option = this.reduceForm([], current.child, index);
                 if (option.item) {
@@ -501,7 +500,7 @@
             str = 'DropDownSelectFilter';
             break;
           case 'pop':
-            str = 'DropDownSelectFilter';
+            str = 'AttachFilter';
             break;
           case 'mop':
             str = 'AttachFilter';
@@ -578,7 +577,7 @@
           return arr;
         }
 
-        if (item.fkdisplay === 'drp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mrp') {
+        if (item.fkdisplay === 'drp'  || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
           if (this.defaultSetValue[item.colname]) {
@@ -762,12 +761,23 @@
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
-            console.log('pop', item);
-            item.props.single = false;
-            item.props.data = {};
+            item.props.type = 'AttachFilter';
             item.props.empty = 0;
+            item.props.optionTip = false;
             item.props.AutoData = [];
-            item.props.defaultSelected = this.defaultValue(current);
+            item.props.fkobj = {
+              refobjid: current.refobjid,
+              reftable: current.reftable,
+              reftableid: current.reftableid,
+              url: '/p/cs/menuimport'
+            };
+            item.props.datalist = [];
+            item.props.Selected = [
+              {
+                label: current.refobjid,
+                value: current.valuedata
+              }
+            ];
             break;
           case 'mop':
             item.props.type = 'AttachFilter';

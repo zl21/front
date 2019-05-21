@@ -201,7 +201,9 @@
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
-  // 上传图片
+  // 弹窗单选
+
+  import PopDialog from './PopDialog';
 
   import { Version } from '../constants/global';
 
@@ -265,16 +267,22 @@
         item.props = Object.assign({}, item.type ? dataProp[item.type].props : {}, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
-          item.componentType = Dialog;
-          item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
-          item.props.datalist.forEach((option, i) => {
-            if (option.value === '导入') {
-              item.props.datalist[i].url = item.props.fkobj.url;
-              item.props.datalist[i].sendData = {
-                table: item.props.fkobj.reftable
-              };
-            }
-          });
+          if (item.props.fkdisplay === 'pop') {
+            item.componentType = PopDialog;
+            item.props.dialog.model.title = '弹窗单选';
+          } else {
+            item.props.dialog.model.title = '弹窗多选';
+            item.componentType = Dialog;
+            item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
+            item.props.datalist.forEach((option, i) => {
+              if (option.value === '导入') {
+                item.props.datalist[i].url = item.props.fkobj.url;
+                item.props.datalist[i].sendData = {
+                  table: item.props.fkobj.reftable
+                };
+              }
+            });
+          }
         } 
         item.event = Object.assign({}, this.items.event);
 
