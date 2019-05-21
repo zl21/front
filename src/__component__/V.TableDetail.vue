@@ -3,6 +3,7 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :item-name-group="childTableNames"
       :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
