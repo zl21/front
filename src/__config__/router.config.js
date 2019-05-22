@@ -33,7 +33,7 @@ const routes = [
         path: `${VERTICAL_TABLE_DETAIL_PREFIX}/:tableName/:tableId/:itemId`,
         component: () => import('../__component__/V.TableDetailKeepAlive'),
         meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX }
-      },{
+      }, {
         path: `${CUSTOMIZED_MODULE_PREFIX}/:customizedModuleName/:customizedModuleId`,
         component: () => import('../__component__/C.TableKeepAlive'),
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
