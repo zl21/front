@@ -607,7 +607,6 @@
         }, 2000);
       },
       saveParameters() { // 筛选按钮保存参数逻辑
-        debugger;
         if (this.isreftabs) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.itemName) {
