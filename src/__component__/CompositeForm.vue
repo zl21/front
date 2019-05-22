@@ -199,7 +199,6 @@
               []
             );
           }
-
           return items;
         },
         set(val) {
@@ -210,6 +209,7 @@
     watch: {
       computdefaultData: {
         handler() {
+          //console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';
@@ -602,7 +602,8 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        item.props.path = this.paths.length > 0;
+        const paths = this.paths.some((x)=>{ return x === '/p/cs/objectSave'});
+        item.props.path = paths;
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
@@ -957,6 +958,7 @@
       }
     },
     mounted() {
+      
       this.VerificationForm = [];
       
       if (this.$el) {
