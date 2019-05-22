@@ -497,7 +497,11 @@
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
-              if (this.objectType === 'vertical') { this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType); }
+              if (this.objectType === 'vertical') { 
+                if (Object.keys(this.updateData[itemName].modify).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType);
+                }
+              }
             }
           }
         }

@@ -122,7 +122,6 @@ export default {
     // state.tabPanels.forEach((item) => {
     //   if (item.tablename === tableName) {
     state.tabPanels[0].componentAttribute.panelData = Object.assign(state.tabPanels[0].componentAttribute.panelData, defaultDataForCopy);
-    console.log(1, state.tabPanels[0].componentAttribute.panelData);
     //   }
     // });
   },
