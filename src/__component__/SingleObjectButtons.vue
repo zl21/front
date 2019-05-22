@@ -498,7 +498,7 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
               if (this.objectType === 'vertical') { 
-                if (Object.keys(this.updateData[itemName].modify).length > 0) {
+                if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType);
                 }
               }
