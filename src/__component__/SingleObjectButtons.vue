@@ -259,6 +259,7 @@
             this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
             this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
             setTimeout(() => {
+              this.updateFormDataForRefshow();
               this.copyDefaultData({ defaultDataForCopy: this.defaultDataForCopy, tableName: this.tableName });
             }, 2000);
           }
@@ -518,21 +519,25 @@
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.isreftabs) { // 存在子表时
           const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-          const itemMessageTip = itemCheckedInfo.messageTip;
-          if (itemMessageTip) {
-            if (itemMessageTip.length > 0) {
-              this.$Message.warning(itemMessageTip[0]);
-              itemCheckedInfo.validateForm.focus();
-              return false;
+          if (itemCheckedInfo) {
+            const itemMessageTip = itemCheckedInfo.messageTip;
+            if (itemMessageTip) {
+              if (itemMessageTip.length > 0) {
+                this.$Message.warning(itemMessageTip[0]);
+                itemCheckedInfo.validateForm.focus();
+                return false;
+              }
             }
           } else if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
             this.saveParameters();
             if (this.objectType === 'vertical') {
               if (this.itemId === 'New') {
-                const addInfo = this.itemCurrentParameter.add[this.itemName];
-                if (Object.values(addInfo).length < 1) {
-                  this.$Message.warning('个人信息不能为空!');
-                  return false;
+                if (this.itemNameGroup.length > 0) {
+                  const addInfo = this.itemCurrentParameter.add[this.itemName];
+                  if (Object.values(addInfo).length < 1) {
+                    this.$Message.warning('个人信息不能为空!');
+                    return false;
+                  }
                 }
               }
             }
@@ -602,6 +607,7 @@
         }, 2000);
       },
       saveParameters() { // 筛选按钮保存参数逻辑
+        debugger;
         if (this.isreftabs) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.itemName) {

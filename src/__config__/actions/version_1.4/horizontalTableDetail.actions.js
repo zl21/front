@@ -38,7 +38,7 @@ export default {
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ commit }, { table, objid }) {
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -47,10 +47,15 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
-        commit('updatePanelData', formData);
+        dispatch('updateObjectForMainTableForm').then(() => {
+          commit('updatePanelData', formData);
+        });
       }
     });
   }, // 获取主表面板信息
+  updateObjectForMainTableForm({ commit }) {
+    commit('updateFormDataForRefshow');
+  },
   getInputForitemForChildTableForm({ commit }, { table }) {
     // 参数说明 table 子表表名
     network.post('/p/cs/inputForitem', urlSearchParams({

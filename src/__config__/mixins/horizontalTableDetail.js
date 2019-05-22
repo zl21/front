@@ -44,6 +44,7 @@ export default () => ({
         'changeCopy',
         'copyDefaultData',
         'savaCopyData',
+        'updateFormDataForRefshow'
       ]),
   },
   beforeDestroy() {

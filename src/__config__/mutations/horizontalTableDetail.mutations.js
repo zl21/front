@@ -111,6 +111,11 @@ export default {
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
   },
+  updateFormDataForRefshow(state) { // 去除子表缓存
+    debugger;
+    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    componentAttribute.formData.isShow = false;
+  },
   changeCopy(state, data) {
     state.copy = data;
   },
@@ -118,6 +123,7 @@ export default {
     // state.tabPanels.forEach((item) => {
     //   if (item.tablename === tableName) {
     state.tabPanels[0].componentAttribute.panelData = Object.assign(state.tabPanels[0].componentAttribute.panelData, defaultDataForCopy);
+    console.log(1, state.tabPanels[0].componentAttribute.panelData);
     //   }
     // });
   },
