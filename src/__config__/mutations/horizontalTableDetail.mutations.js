@@ -114,17 +114,21 @@ export default {
   changeCopy(state, data) {
     state.copy = data;
   },
-  copyDefaultData(state, copyDefaultData) { // 执行按钮复制操作重新给form赋值
-    Object.assign(state.tabPanels[this.tableName].componentAttribute.formData, copyDefaultData);
+  copyDefaultData(state, { defaultDataForCopy, tableName }) { // 执行按钮复制操作重新给form赋值
+    // state.tabPanels.forEach((item) => {
+    //   if (item.tablename === tableName) {
+    state.tabPanels[0].componentAttribute.panelData = Object.assign(state.tabPanels[0].componentAttribute.panelData, defaultDataForCopy);
+    //   }
+    // });
   },
   savaCopyData(state, copyData) { // 执行按钮复制操作存储form默认值数据
     state.defaultDataForCopy = copyData;
-    state.defaultDataForCopy.data.addcolums.map((item, index) => {
-      if (item.parentdesc === '日志') {
-        return state.defaultDataForCopy.data.addcolums.splice(index, 1);
-      }
-      return state.defaultDataForCopy; 
-    });
+    // state.defaultDataForCopy.data.addcolums.map((item, index) => {
+    //   if (item.parentdesc === '日志') {
+    //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
+    //   }
+    //   return state.defaultDataForCopy; 
+    // });
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};

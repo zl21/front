@@ -248,12 +248,19 @@
       objectCopy() { // 按钮复制功能
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            const formData = this.tabPanel.map(item => item[this.tableName].componentAttribute.formData);
+            let formData = {};
+            this.tabPanel.forEach((item) => {
+              if (item.tablename === this.tableName) {
+                formData = item.componentAttribute.panelData;
+              }
+            });
             const copyData = { ...formData };
             this.savaCopyData(copyData);
             this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
             this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
-            this.copyDefaultData(this.defaultDataForCopy);
+            setTimeout(() => {
+              this.copyDefaultData({ defaultDataForCopy: this.defaultDataForCopy, tableName: this.tableName });
+            }, 2000);
           }
         } else { // 纵向布局
           const copyData = { ...this.mainFormInfo.formData };
@@ -623,7 +630,7 @@
       this.buttonMap = buttonmap;
     }
   };
-</script>
+</script>                                              
 
 <style lang="less">
 .singleObjectButton {

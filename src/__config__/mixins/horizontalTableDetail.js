@@ -10,10 +10,13 @@ export default () => ({
   computed: {
     ...mapState(getComponentName(), {
       buttonsData: ({ buttonsData }) => buttonsData,
-      tabPanel: ({ tabPanels }) => tabPanels,
+      tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
       copy: ({ copy }) => copy,
+      defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+
+      
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });

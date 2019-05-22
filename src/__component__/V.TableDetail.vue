@@ -57,7 +57,6 @@
           // obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
-          obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
           obj.component = `${item.tablename}_TapComponent`;
           obj.cilckCallback = this.tabClick;
@@ -84,11 +83,7 @@
     mounted() {
 
     },
-    activated() {
-      console.log('activated');
-    },
     created() {
-      console.log('created');
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
