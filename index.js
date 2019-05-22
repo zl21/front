@@ -12,7 +12,9 @@ import './src/constants/dateApi';
 
 import network from './src/__utils__/network';
 import { enableGateWay } from './src/constants/global';
+import CompositeForm from './src/__component__/CompositeForm';
 
+Vue.component('CompositeForm', CompositeForm);
 Vue.use(BurgeonUi);
 const createDOM = () => {
   const div = document.createElement('div');
@@ -23,6 +25,8 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
+ 
+
   window.vm = new Vue({
     router,
     store,

@@ -205,7 +205,7 @@
   import Dialog from './ComplexsDialog';
   // 弹窗单选
 
-  import PopDialog from './PopDialog';
+  import myPopDialog from './PopDialog';
 
   import { Version } from '../constants/global';
 
@@ -270,7 +270,7 @@
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
-            item.componentType = PopDialog;
+            item.componentType = myPopDialog;
             item.props.dialog.model.title = '弹窗单选';
           } else {
             item.props.dialog.model.title = '弹窗多选';
@@ -558,7 +558,6 @@
               ID: that._items.props.itemdata.objId
             }; 
             const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [...item]);
-            console.log(parms);
             that.deleteImgData({
               parms
             }, index);

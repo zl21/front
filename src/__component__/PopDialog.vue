@@ -3,30 +3,31 @@
   <div
     ref="modify"
   >
-    <Spin fix v-if ="loading">
-      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+    <Spin v-if="loading"
+fix>
+      <Icon
+type="ios-loading"
+            size="18"
+class="demo-spin-icon-load" 
+/>
     </Spin>
-        <component 
-          :is="'CompositeFormPanel'"
-          :default-data="newformList"
-          :default-column-col="formList.objviewcol"
-          class="formPanel"
-          type="PanelForm"
-          @formChange="formChange"
-        />
+    <component 
+      :is="'CompositeForm'"
+      :default-data="newformList"
+      :default-column-col="formList.objviewcol"
+      class="formPanel"
+      @formChange="formChange"
+    /> 
   </div>
 </template>
 <script>
-  import CompositeForm from './CompositeForm.vue';
   import { Version } from '../constants/global';
-  import Vue from 'vue';
 
   // eslint-disable-next-line import/no-dynamic-require
   const {
-    getTableQuery, fkQueryList
+    getTableQuery
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
-  Vue.component('CompositeForm', Vue.extend(CompositeForm));
 
   export default {
     name: 'PopDialog',
@@ -53,7 +54,7 @@
     },
     watch: {
       formList: {
-        handler(val) {
+        handler() {
           
         },
         deep: true
@@ -62,6 +63,7 @@
     },
     methods: {
       getData(searchObject) {
+        console.log(searchObject);
         getTableQuery({
           searchObject,
           success: (res) => {
@@ -86,7 +88,13 @@
       }
     },
     mounted() {
-      console.log(this.$route.params);
+      const router = this.$route.params;
+      const params = {
+        tableid: router.tableId,
+        getcmd: 'n',
+        table: router.tableName
+      };
+      this.getData(params);
     }
   };
 </script>
