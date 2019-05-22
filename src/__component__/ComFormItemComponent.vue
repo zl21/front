@@ -178,7 +178,7 @@
     data() {
       return {
         indexItem: -1,
-        newFormItemLists: this.formItemLists, // 当前form list
+        newFormItemLists: [], // 当前form list
         changeFormData: {}, // 当前form 被改动的key
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
@@ -224,6 +224,7 @@
       }, 50);
     },
     created() {
+      this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
       formDataObject: {
@@ -252,6 +253,12 @@
             }
             return items;
           });
+        },
+        deep: true
+      },
+      FormItemLists: {
+        handler(val) {
+          this.newFormItemLists = this.formItemLists;
         },
         deep: true
       }

@@ -214,7 +214,6 @@
     fkQueuploadProgressry, fkObjectSave
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
-  Vue.component('PopDialog', Vue.extend(PopDialog));
 
   export default {
     name: 'ItemComponent',
@@ -553,11 +552,16 @@
           content: '此操作将永久删除该图片, 是否继续?',
           onOk: () => {
             const HEADIMG = this._items.props.itemdata.valuedata.length > 1 ? JSON.stringify([item]) : '';
-            that.deleteImgData({
+            //  判断parms 是否 需要保存
+            const data = {
               HEADIMG,
-              objId: that._items.props.itemdata.objId
+              ID: that._items.props.itemdata.objId
+            }; 
+            const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [...item]);
+            console.log(parms);
+            that.deleteImgData({
+              parms
             }, index);
-            console.log('dd', this._items.props.itemdata.valuedata);
           }
         });
       },
@@ -594,7 +598,10 @@
             };
             //  判断parms 是否 需要保存
             parms = this.pathsCheckout(parms, fixedData);
-            self.upSaveImg(parms, fixedData);
+            if (this.$route.params && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+              //  判断是否需要调用保存
+              self.upSaveImg(parms, fixedData);
+            }
           }
         });
       },
@@ -604,7 +611,7 @@
           const fixedData = {
             fixedData: {
               [this._items.props.itemdata.masterName]: {
-                [this._items.props.itemdata.colname]: JSON.stringify(data)
+                [this._items.props.itemdata.colname]: data === '' ? '' : JSON.stringify(data)
               }
             }
           };

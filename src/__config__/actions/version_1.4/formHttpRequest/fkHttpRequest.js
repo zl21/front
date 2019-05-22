@@ -59,3 +59,10 @@ export const fksaveModify = function fksaveModify(params) {
     }
   });
 };
+export const getTableQuery = function getTableQuery(params) {
+  network.get('/p/cs/getTableQuery', params.searchObject).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};

@@ -3,12 +3,9 @@
   <div
     ref="modify"
   >
-         <Spin fix v-if ="loading">
+    <Spin fix v-if ="loading">
       <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
     </Spin>
-        <div class="modify-tip">
-          已选中批量修改记录数：{{ ids.length }}行
-        </div>
         <component 
           :is="'CompositeFormPanel'"
           :default-data="newformList"
@@ -20,20 +17,20 @@
   </div>
 </template>
 <script>
-  import CompositeFormPanel from './CompositeForm.vue';
+  import CompositeForm from './CompositeForm.vue';
   import { Version } from '../constants/global';
-  import ModalConfirm from './Dialog/Confirm.vue';
+  import Vue from 'vue';
 
   // eslint-disable-next-line import/no-dynamic-require
   const {
-    fkModify, fksaveModify
+    getTableQuery, fkQueryList
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+  Vue.component('CompositeForm', Vue.extend(CompositeForm));
 
   export default {
-    name: 'ModifyDialog',
+    name: 'PopDialog',
     components: {
-      CompositeFormPanel, ModalConfirm
     },
     data() {
       return {
@@ -46,24 +43,7 @@
       };
     },
     props: {
-      title: {
-        type: String,
-        default() {
-          return '标题';
-        }
-      },
-      reffixedcolumns: {
-        type: Object,
-        default: () => {}
-      },
-      titleAlign: {
-        type: String,
-        default: () => 'center'
-      }, // 设置标题是否居中 // center left
-      width: {
-        type: Number,
-        default: () => 900
-      }, // 设置标题是否居中 // center left
+      
     },
     created() {
       // const searchObject = {
@@ -74,22 +54,7 @@
     watch: {
       formList: {
         handler(val) {
-          if (Object.hasOwnProperty.call(val, 'addcolums')) {
-            let childs = val.addcolums.reduce((arr, item) => {
-              arr.push(item.childs);
-              return arr;
-            }, []);
-            childs = childs.flat();
-            this.newformList = {
-              addcolums: [{
-                hrdisplay: 'expand',
-                parentdesc: '批量修改',
-                parentname: val.addcolums[0].parentname,
-                childs
-              }],
-              objviewcol: val.objviewcol
-            };
-          }
+          
         },
         deep: true
 
@@ -97,7 +62,7 @@
     },
     methods: {
       getData(searchObject) {
-        fkModify({
+        getTableQuery({
           searchObject,
           success: (res) => {
             if (res.data.code === 0) {
@@ -107,44 +72,8 @@
           }
         });
       },
-      oncancle() {
-        this.$emit('on-oncancle-success', this);
-      },
       saveData() {
-        this.loading = true;
-        const localdata = {
-
-          table: this.router.tableName, // 表名
-          column_include_uicontroller: true, //
-          reffixedcolumns: this.reffixedcolumns, // 左边树
-        };
-        if (this.ids.length > 0) {
-          localdata.objids = this.ids;
-        } else {
-          localdata.reffixedcolumns = this.reffixedcolumns;// 左边树
-        }
-        const searchObject = {
-          fixedData: this.formChangeData,
-          searchdata: localdata
-        };
-        fksaveModify({
-          searchObject,
-          success: (res) => {
-            this.loading = false;
-            this.$emit('on-save-success', res);
-          }
-        });
-      },
-      open(router, ids) {
-        //  打开弹窗
-        this.ids = ids;
-        this.router = router;
-        this.$refs.Modal.open();
-        this.loading = true;
-        const searchObject = {
-          table: router.tableName
-        };
-        this.getData(searchObject);
+        
       },
       formChange(data) {
         // form 修改的数据
@@ -157,6 +86,7 @@
       }
     },
     mounted() {
+      console.log(this.$route.params);
     }
   };
 </script>
