@@ -154,8 +154,6 @@ export default {
     const { itemNameGroup } = parame;
 
     let parames = {};
-    debugger;
-
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (isreftabs) { // 存在子表

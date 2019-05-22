@@ -112,7 +112,6 @@ export default {
     state.buttonsData.deleteData = data.message;
   },
   updateFormDataForRefshow(state) { // 去除子表缓存
-    debugger;
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = false;
   },

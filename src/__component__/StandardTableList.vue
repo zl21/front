@@ -660,7 +660,6 @@
             location.href = obj.action;
             return;
           }
-          debugger;
           if (obj.vuedisplay === 'slient') {
             // 静默程序            if(obj.confirm){  //有提示
             if (obj.confirm) {
@@ -778,8 +777,6 @@
       },
       webActionSlient(item) {
         // this.actionLoading = true;
-        debugger;
-
         const obj = {
           tableid: this.buttons.tableId,
           ids: this.buttons.selectIdArr,
@@ -1250,8 +1247,6 @@
         if (this.buttons.activeTabAction) {
           if (this.buttons.activeTabAction.vuedisplay === 'slient') {
             // slient静默跳转页面类型按钮
-            debugger;
-            
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
                 if (
