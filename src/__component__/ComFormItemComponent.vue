@@ -193,37 +193,10 @@
           this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
       });
-
+      //this.VerificationFormInt();
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
-     
-
-      // 传值默认data
-      const VerificationForm = this.VerificationForm.reduce((item, current) => {
-        // 判断必须输入的值是否为空
-        const elDiv = this.$refs[`component_${current.index}`][0].$el;
-        let onfousInput = {};
-        if (current.type === 'textarea') {
-          onfousInput = elDiv.querySelector('textarea');
-        } else {
-          onfousInput = elDiv.querySelector('input');
-        }
-        item.push({
-          ...current,
-          onfousInput
-        });
-        return item;
-      }, []);
-
-     
-      setTimeout(() => {
-        //  传form 默认值
-        if (this.verifymessageform) {
-          this.verifymessageform(VerificationForm);
-        }
-        this.mountdataForm(this.formDataObject);
-      }, 50);
     },
     created() {
       this.newFormItemLists = this.formItemLists.concat([]);
@@ -266,6 +239,34 @@
       }
     },
     methods: {
+      VerificationFormInt() {
+        //  form 计算 校验
+        // 传值默认data
+        const VerificationForm = this.VerificationForm.reduce((item, current) => {
+          // 判断必须输入的值是否为空
+          const elDiv = this.$refs[`component_${current.index}`][0].$el;
+          let onfousInput = {};
+          if (current.type === 'textarea') {
+            onfousInput = elDiv.querySelector('textarea');
+          } else {
+            onfousInput = elDiv.querySelector('input');
+          }
+          item.push({
+            ...current,
+            onfousInput
+          });
+          return item;
+        }, []);
+
+     
+        setTimeout(() => {
+          //  传form 默认值
+          if (this.verifymessageform) {
+            this.verifymessageform(VerificationForm);
+          }
+          this.mountdataForm(this.formDataObject);
+        }, 50);
+      },
       setMapping(data) {
         //  获取映射关系
         const temp = Object.keys(data).reduce((a, c) => {
