@@ -3,7 +3,7 @@
 /* eslint-disable array-callback-return */
 <!--suppress ALL:form-item-lists="FormLists(item.childs)" -->
 <template>
-  <div>
+  <div v-if="show">
     <template v-if="type === 'PanelForm'">
       <Collapse
         v-for="(item,index) in computdefaultData"
@@ -137,6 +137,7 @@
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         childFormData: [],
+        show:true,
         defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
         expand: 'expand' // 面板是否展开
@@ -165,6 +166,8 @@
                   array2.push(option);
                   return array2;
                 }, []);
+                        
+
                 array.push({
                   childs: tem.concat([]),
                   hrdisplay: current.hrdisplay,
@@ -209,7 +212,9 @@
     watch: {
       computdefaultData: {
         handler() {
-          //console.log(val[0].childs[0].item.props.valuedata);
+           this.VerificationForm = [];
+
+          // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';
@@ -490,8 +495,9 @@
         if (item.display === 'image') {
           str = 'ImageUpload';
         }
-        if (item.display === 'text' || item.display === 'xml') {
-          switch (item.fkdisplay) {
+        if (item.display === 'text' || item.display === 'xml' || item.display === 'OBJ_FK') {
+          const casefkdisplay = item.fkdisplay || item.fkobj && item.fkobj.searchmodel;
+          switch (casefkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
             break;
@@ -559,24 +565,22 @@
           if (this.defaultSetValue[item.colname]) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval;
+          return item.valuedata || item.defval ;
         }
         // console.log(item, this.defaultSetValue);
 
         if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
-
           const arr = [];
           if (this.defaultSetValue[item.colname]) {
             arr.push(this.defaultSetValue[item.colname]);
           } else {
-            arr.push(item.valuedata || item.defval);
+            arr.push(item.valuedata || item.defval );
           }
-          
           return arr;
         }
 
-        if (item.fkdisplay === 'drp'  || item.fkdisplay === 'mrp') {
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
           if (this.defaultSetValue[item.colname]) {
@@ -593,7 +597,7 @@
           
           return arr;
         }
-        return item.defval || item.valuedata || '';
+        return item.defval || item.valuedata || item.default  || '';
       // wewe
       },
       propsType(current, item) {
@@ -602,7 +606,7 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        const paths = this.paths.some((x)=>{ return x === '/p/cs/objectSave'});
+        const paths = this.paths.some((x) => x === '/p/cs/objectSave');
         item.props.path = paths;
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -958,7 +962,6 @@
       }
     },
     mounted() {
-      
       this.VerificationForm = [];
       
       if (this.$el) {

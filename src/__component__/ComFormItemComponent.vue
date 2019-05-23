@@ -95,6 +95,8 @@
               if (items.item.value[0].ID) {
                 option[items.item.field] = items.item.value[0].ID;
               }
+            } else {
+              option[items.item.field] = items.item.value[0];
             }
           } else if (items.item.value) {
             option[items.item.field] = items.item.props.defval || items.item.value || items.item.props.valuedata;
@@ -106,10 +108,8 @@
           } else if (typeof option[items.item.field] === 'string') {
             option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
           }
-         
           return option;
         }, {});
-
         return obj;
       },
       // 计算属性的 div 的坐标起始点
@@ -182,6 +182,7 @@
         changeFormData: {}, // 当前form 被改动的key
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
+        formValueItem: {},
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
@@ -192,6 +193,7 @@
           this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
       });
+
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
@@ -341,7 +343,6 @@
               }
               objData[key].push(value);
             }
-         
             return objData;
           }, {}));
         }
