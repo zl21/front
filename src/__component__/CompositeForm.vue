@@ -216,10 +216,13 @@
           setTimeout(() => {
             Object.keys(this.$refs).forEach((item) => {
               if (this.$refs[item]) {
-                this.$refs[item][0].VerificationFormInt();
+                if (this.$refs[item][0].VerificationFormInt) {
+                  this.$refs[item][0].VerificationFormInt();
+                }
+                
               }
             });
-          }, 50);
+          }, 100);
           
 
           // console.log(val[0].childs[0].item.props.valuedata);
@@ -589,6 +592,7 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
+         
           if (this.defaultSetValue[item.colname]) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
@@ -596,7 +600,7 @@
             });
           } else {
             arr.push({
-              ID: item.refobjid || '',
+              ID: '',
               Label: item.valuedata || item.defval || ''
             });
           }
