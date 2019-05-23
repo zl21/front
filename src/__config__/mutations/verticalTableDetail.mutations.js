@@ -53,6 +53,7 @@ export default {
   },
   updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
+    console.log(data);
     mainFormInfo.buttonsData.data = data;
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
@@ -115,14 +116,16 @@ export default {
   },
   savaCopyData(state, copyData) { // 执行按钮复制操作存储form默认值数据
     state.defaultDataForCopy = copyData;
-    state.defaultDataForCopy.data.addcolums.map((item, index) => {
-      if (item.parentdesc === '日志') {
-        return state.defaultDataForCopy.data.addcolums.splice(index, 1);
-      }
-      return state.defaultDataForCopy; 
-    });
+    // state.defaultDataForCopy.data.addcolums.map((item, index) => {
+    //   if (item.parentdesc === '日志') {
+    //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
+    //   }
+    //   return state.defaultDataForCopy; 
+    // });
   },
   emptyChangeData(state, tableName) {
-    state.updateData[tableName].changeData = {};
+    if (state.updateData[tableName].changeData) {
+      state.updateData[tableName].changeData = {};
+    }
   }
 };

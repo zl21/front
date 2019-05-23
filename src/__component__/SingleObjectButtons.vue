@@ -23,7 +23,7 @@
   import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
 
   export default {
     data() {
@@ -36,7 +36,6 @@
           confirm: () => {
           }
         },
-
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
@@ -66,6 +65,7 @@
           defbutton: 'N',
           action: '',
         }, // 保存url
+        defaultForCopyData: {}// 保存复制操作时所需要的当前页面的数据
       };
     },
     name: 'SingleObjectButtons',
@@ -156,13 +156,12 @@
               this.getbuttonGroupData(buttonData);
             }
           }
-
           if (this.copy === true) { 
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
-            setTimeout(() => {
-              this.changeCopy(false);
-            }, 5000);
+            // setTimeout(() => {
+            //   this.changeCopy(false);
+            // }, 5000);
           }
         }
       },
@@ -246,29 +245,56 @@
         }
       },
       objectCopy() { // 按钮复制功能
+        const id = 'New';// 修改路由,复制操作时路由为新增
+        const label = `${this.activeTab.label.replace('编辑', '新增')}`;
+       
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
+            this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
+            const defaultCopyValue = this.updateData[this.tableName].default;
+            const changeDataCopyValue = this.updateData[this.tableName].changeData;
+            this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
             let formData = {};
             this.tabPanel.forEach((item) => {
               if (item.tablename === this.tableName) {
                 formData = item.componentAttribute.panelData;
               }
             });
-            const copyData = { ...formData };
-            this.savaCopyData(copyData);
-            this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
-            this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+            this.defaultForCopyData = { ...formData };
+            // this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+            // this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', type: 'copy' });
+            this.updateFormDataForRefshow();
+            const type = 'tableDetailHorizontal';
+            this.tabHref({
+              type,
+              tableName: this.tableName,
+              tableId: this.tableId,
+              label,
+              id
+            });
+            // this.changeFormDataForCopy({ defaultForCopyData: this.defaultForCopyData, tableName: this.tableName });
             setTimeout(() => {
-              this.updateFormDataForRefshow();
-              this.copyDefaultData({ defaultDataForCopy: this.defaultDataForCopy, tableName: this.tableName });
+              this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
+              this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
+              const copyData = { ...formData };
+              this.$store.commit(`${moduleName()}/savaCopyData`, copyData);
+              this.$store.commit(`${moduleName()}/updateCopyData`);
             }, 2000);
           }
         } else { // 纵向布局
-          const copyData = { ...this.mainFormInfo.formData };
-          this.savaCopyData(copyData);
-          this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
-          this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
-          this.copyDefaultData(this.defaultDataForCopy);
+          // const copyData = { ...this.mainFormInfo.formData };
+          // this.savaCopyData(copyData);
+          // this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
+          // this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
+          const type = 'tableDetailVertical';
+          this.tabHref({
+            type,
+            tableName: this.tableName,
+            tableId: this.tableId,
+            label,
+            id
+          });
+          // this.copyDefaultData(this.defaultDataForCopy);
         }
         this.changeCopy(true);
       },
@@ -281,6 +307,7 @@
         };
 
         this.$store.commit('global/tabHref', param);
+        // const a = `${STANDARD_TABLE_COMPONENT_PREFIX}.${this.tableName}.${this.tableId}`;
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
@@ -433,9 +460,9 @@
             id
           });
         }
-        // setTimeout(() => {
-        this.$store.commit(`${moduleName()}/emptyChangeData`, this.tableName);
-        // }, 5000);
+        setTimeout(() => {
+          this.$store.commit(`${moduleName()}/emptyChangeData`, this.tableName);
+        }, 2000);
         // setTimeout(() => {
         //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
         //   this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });

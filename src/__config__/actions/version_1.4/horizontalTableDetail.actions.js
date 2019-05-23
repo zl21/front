@@ -2,7 +2,7 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
-  getObjectTabForMainTable({ commit }, { table, objid }) {
+  getObjectTabForMainTable({ commit }, { table, objid, type }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -12,7 +12,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-        commit('updateTabPanelsData', resData);
+
+        if (type === 'copy') {
+          resData.type = 'copy';
+          commit('updateTabPanelsData', resData);
+        } else {
+          commit('updateTabPanelsData', resData);
+        }
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
@@ -38,7 +44,7 @@ export default {
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ dispatch, commit }, { table, objid }) {
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid, type }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -47,6 +53,9 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        // if (type === 'copy') {
+        commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
+        // }
         dispatch('updateObjectForMainTableForm').then(() => {
           commit('updatePanelData', formData);
         });

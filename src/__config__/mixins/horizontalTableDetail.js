@@ -12,11 +12,10 @@ export default () => ({
       buttonsData: ({ buttonsData }) => buttonsData,
       tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
-      updateData: ({ updateData }) => updateData,
+      updateData: ({ ...updateData }) => updateData.updateData,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
-
-      
+      copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -44,7 +43,9 @@ export default () => ({
         'changeCopy',
         'copyDefaultData',
         'savaCopyData',
-        'updateFormDataForRefshow'
+        'updateFormDataForRefshow',
+        'updateCopyData',
+        'changeFormDataForCopy'
       ]),
   },
   beforeDestroy() {

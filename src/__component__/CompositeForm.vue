@@ -209,7 +209,8 @@
     watch: {
       computdefaultData: {
         handler() {
-          //console.log(val[0].childs[0].item.props.valuedata);
+          console.log(1);
+          // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';
@@ -576,7 +577,7 @@
           return arr;
         }
 
-        if (item.fkdisplay === 'drp'  || item.fkdisplay === 'mrp') {
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
           if (this.defaultSetValue[item.colname]) {
@@ -602,7 +603,7 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        const paths = this.paths.some((x)=>{ return x === '/p/cs/objectSave'});
+        const paths = this.paths.some(x => x === '/p/cs/objectSave');
         item.props.path = paths;
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -958,7 +959,6 @@
       }
     },
     mounted() {
-      
       this.VerificationForm = [];
       
       if (this.$el) {
