@@ -160,9 +160,6 @@ export default {
         });
       });        
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
-      
-
-      // state.tabPanels[0].componentAttribute.panelData.isShow = true;
     }
   }
 

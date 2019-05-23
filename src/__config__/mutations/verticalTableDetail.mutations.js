@@ -53,7 +53,6 @@ export default {
   },
   updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    console.log(data);
     mainFormInfo.buttonsData.data = data;
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
@@ -122,6 +121,31 @@ export default {
     //   }
     //   return state.defaultDataForCopy; 
     // });
+  },
+  changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
+    state.updateData[tableName].add = defaultForCopyDatas;
+  },
+  updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
+    state.copyDataForReadOnly = data;
+  },
+  updateCopyData(state) { // form的配置信息按照新增接口返回值
+    if (Object.keys(state.defaultDataForCopy).length > 0) {
+      state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
+        state.defaultDataForCopy.data.addcolums.forEach((item) => {
+          d.childs.forEach((c) => {
+            item.childs.forEach((b) => {
+              if (b.name === c.name) {
+                b.readonly = c.readonly;
+                if (c.readonly === true) {
+                  b.valuedata = '';// 将配置为不可编辑的值置空
+                }
+              }
+            });
+          });
+        });
+      });        
+      state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
+    }
   },
   emptyChangeData(state, tableName) {
     if (state.updateData[tableName].changeData) {
