@@ -56,7 +56,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
   import FormItemComponent from './ComFormItemComponent';
   import ItemComponent from './ItemComponent';
   import { Version } from '../constants/global';
@@ -137,7 +136,7 @@
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         childFormData: [],
-        show:true,
+        show: true,
         defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
         expand: 'expand' // 面板是否展开
@@ -212,7 +211,7 @@
     watch: {
       computdefaultData: {
         handler() {
-           this.VerificationForm = [];
+          this.VerificationForm = [];
 
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
@@ -565,7 +564,7 @@
           if (this.defaultSetValue[item.colname]) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval ;
+          return item.valuedata || item.defval;
         }
         // console.log(item, this.defaultSetValue);
 
@@ -575,7 +574,7 @@
           if (this.defaultSetValue[item.colname]) {
             arr.push(this.defaultSetValue[item.colname]);
           } else {
-            arr.push(item.valuedata || item.defval );
+            arr.push(item.valuedata || item.defval);
           }
           return arr;
         }
@@ -597,7 +596,7 @@
           
           return arr;
         }
-        return item.defval || item.valuedata || item.default  || '';
+        return item.defval || item.valuedata || item.default || '';
       // wewe
       },
       propsType(current, item) {
@@ -606,7 +605,7 @@
         item.props.disabled = item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        const paths = this.paths.some((x) => x === '/p/cs/objectSave');
+        const paths = this.paths.some(x => x === '/p/cs/objectSave');
         item.props.path = paths;
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];

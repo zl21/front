@@ -1,5 +1,7 @@
 <template>
-  <keep-alive :include="keepAliveLists">
+  <keep-alive
+    :include="keepAliveLists"
+  >
     <component :is="currentTable" />
   </keep-alive>
 </template>

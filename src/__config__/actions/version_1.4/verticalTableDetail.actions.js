@@ -28,8 +28,15 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-        commit('updateMainButtonsData', resData);
-        commit('updateMainTabPanelsData', resData);
+        if (type === 'copy') {
+          resData.type = 'copy';
+          commit('updateMainButtonsData', resData,);
+          commit('updateMainTabPanelsData', resData);
+        } else {
+          commit('updateMainButtonsData', resData);
+          commit('updateMainTabPanelsData', resData);
+        }
+        
         if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮

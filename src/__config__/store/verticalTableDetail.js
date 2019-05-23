@@ -25,7 +25,8 @@ export default () => ({
     buttonsData: {
     },
     copy: false,
-    defaultDataForCopy: {}
+    defaultDataForCopy: {},
+    copyDataForReadOnly: {}// 复制按钮操作用作判断是否是只读类型
   },
   actions,
   mutations

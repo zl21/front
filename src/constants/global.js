@@ -35,6 +35,7 @@ export const globalGateWay = [
   '/p/cs/recHistory',
   '/p/cs/setHideColumn',
   '/p/cs/changechruserpwd',
+  '/p/cs/SearchWords'
 ];
 
 // 不走网关的接口
