@@ -3,7 +3,7 @@
 /* eslint-disable array-callback-return */
 <!--suppress ALL:form-item-lists="FormLists(item.childs)" -->
 <template>
-  <div v-if="show">
+  <div>
     <template v-if="type === 'PanelForm'">
       <Collapse
         v-for="(item,index) in computdefaultData"
@@ -212,14 +212,21 @@
       computdefaultData: {
         handler() {
           this.VerificationForm = [];
+          this.verifyMessItem = [];
+          setTimeout(() => {
+            Object.keys(this.$refs).forEach((item) => {
+              if (this.$refs[item]) {
+                this.$refs[item][0].VerificationFormInt();
+              }
+            });
+          }, 50);
+          
 
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
           //   this.FormItemComponent = '';
-          //   setTimeout(() => {
-          //     this.FormItemComponent = FormItemComponent;
-          //   }, 0);
+          
           // }
         },
         deep: true
