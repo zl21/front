@@ -3,7 +3,7 @@
 /* eslint-disable array-callback-return */
 <!--suppress ALL:form-item-lists="FormLists(item.childs)" -->
 <template>
-  <div>
+  <div v-if="show">
     <template v-if="type === 'PanelForm'">
       <Collapse
         v-for="(item,index) in computdefaultData"
@@ -56,7 +56,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
   import FormItemComponent from './ComFormItemComponent';
   import ItemComponent from './ItemComponent';
   import { Version } from '../constants/global';
@@ -137,6 +136,7 @@
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         childFormData: [],
+        show: true,
         defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
         expand: 'expand' // 面板是否展开
@@ -165,6 +165,8 @@
                   array2.push(option);
                   return array2;
                 }, []);
+                        
+
                 array.push({
                   childs: tem.concat([]),
                   hrdisplay: current.hrdisplay,
@@ -209,7 +211,8 @@
     watch: {
       computdefaultData: {
         handler() {
-          console.log(1);
+          this.VerificationForm = [];
+
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
@@ -491,8 +494,9 @@
         if (item.display === 'image') {
           str = 'ImageUpload';
         }
-        if (item.display === 'text' || item.display === 'xml') {
-          switch (item.fkdisplay) {
+        if (item.display === 'text' || item.display === 'xml' || item.display === 'OBJ_FK') {
+          const casefkdisplay = item.fkdisplay || item.fkobj && item.fkobj.searchmodel;
+          switch (casefkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
             break;
@@ -566,14 +570,12 @@
 
         if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
-
           const arr = [];
           if (this.defaultSetValue[item.colname]) {
             arr.push(this.defaultSetValue[item.colname]);
           } else {
             arr.push(item.valuedata || item.defval);
           }
-          
           return arr;
         }
 
@@ -594,7 +596,7 @@
           
           return arr;
         }
-        return item.defval || item.valuedata || '';
+        return item.defval || item.valuedata || item.default || '';
       // wewe
       },
       propsType(current, item) {

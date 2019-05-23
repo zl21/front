@@ -60,7 +60,14 @@ export const fksaveModify = function fksaveModify(params) {
   });
 };
 export const getTableQuery = function getTableQuery(params) {
-  network.get('/p/cs/getTableQuery', params.searchObject).then((res) => {
+  network.post('/p/cs/getTableQuery', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
+export const fkQueryListPop = function fkQueryListPop(params) {
+  network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
