@@ -86,6 +86,7 @@ export default () => ({
       selectSysment: [], // 选中的系统数据，
       batchUnSubmitData: {}, // 批量反提交返回数据
       batchDeleteData: {}, // 删除返回数据
+      batchVoidForButtonsData: {}, // 作废接口返回数据
       dialogComponent: null, // 静默按钮需要渲染的组件
       actionDialog: { // 自定义动作弹框
         show: false,

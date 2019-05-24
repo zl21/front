@@ -47,18 +47,30 @@ export default {
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
-  getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
+  getBatchDeleteForButtons({ commit }, {
+    tableName, selectIdArr, resolve, reject 
+  }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
     network.post('/p/cs/batchDelete',
       {
         tableName,
         ids
       }).then((res) => {
-      const deleteTableData = res.data;
-      commit('updateButtonDeleteData', deleteTableData);
-    }); 
+      if (res.data.code === 0) {
+        resolve();
+        const deleteTableData = res.data;
+        commit('updateButtonDeleteData', deleteTableData);
+        commit('updateButtonsExport', data,);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
@@ -113,19 +125,37 @@ export default {
       commit('updateButtonDownloadImportTemplate', data);
     });
   },
-  batchVoidForButtons({ commit }, { tableName, ids }) { // 调用作废接口
+  batchVoidForButtons({ commit }, {
+    tableName, ids, resolve, reject 
+  }) { // 调用作废接口
     network.post('/p/cs/batchVoid', 
       { tableName, ids }).then((res) => {
-      const messageData = res.data.message;
-      commit('batchVoidForButtonsData', messageData);
+      const data = res.data.data;
+      if (res.data.code === 0) {
+        resolve();
+        commit('batchVoidForButtonsData', data);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
     });
   },
-  batchSubmitForButtons({ commit }, { url, tableName, ids }) { // 调用调接口
+  batchSubmitForButtons({ commit }, {
+    url, tableName, ids, resolve, reject 
+  }) { // 调用提交接口
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
       ids
     }).then((res) => {
-      commit('updateButtonbatchSubmitData', res.data);
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonbatchSubmitData', res.data);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
     });
   },
  

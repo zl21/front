@@ -492,7 +492,7 @@
             const path = this.dynamic.requestUrlPath;
             const objId = -1;
 
-            if (this.isreftabs === false) { // 为false的情况下是没有子表
+            if (!this.isreftabs) { // 为false的情况下是没有子表
               // console.log('没有子表');
               if (this.dynamic.requestUrlPath) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -513,7 +513,7 @@
             // console.log('主表编辑保存');
             const path = obj.requestUrlPath;
             const type = 'modify';
-            if (this.isreftabs === false) { // 为false的情况下是没有子表
+            if (!this.isreftabs) { // 为false的情况下是没有子表
               // console.log('没有子表',);
 
               if (obj.requestUrlPath) { // 配置path
@@ -630,6 +630,8 @@
               label,
               id: this.buttonsData.newMainTableSaveData.objId ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
+            this.updateChangeData({ tableName: this.tableName, value: {} });
+
             this.tabHref(tab);
             const message = this.buttonsData.message;
             if (message) {
@@ -640,6 +642,7 @@
               const message = this.buttonsData.message;
               if (message) {
                 this.upData(`${message}`);
+                // this.updateChangeData({ tableName: this.tableName, value: {} });
               }
             }, 1000);
           }

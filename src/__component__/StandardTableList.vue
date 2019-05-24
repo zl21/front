@@ -86,7 +86,6 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
-
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -148,7 +147,12 @@
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
-      }
+      },
+      $route() {
+        if (this.$route.query.isBack) {
+          this.searchClickData();
+        }
+      },
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
@@ -978,7 +982,6 @@
         if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
           // 批量提交
           this.buttons.dynamicRequestUrl.submit = obj.requestUrlPath;
-          this.batchSubmit();
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
@@ -1010,12 +1013,6 @@
         if (obj.name === this.buttonMap.CMD_UNSUBMIT.name) {
           // 批量反提交
           if (this.buttons.selectIdArr.length > 0) {
-            // this.errorTable = {}
-            // const data = {
-            //   title: '警告',
-            //   content: `确认执行${obj.name}?`
-            // };
-            // this.$Modal.fcWarning(data);
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
             this.dialogMessage(title, contentText);  
@@ -1031,13 +1028,6 @@
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
           // 导出
           if (this.buttons.selectIdArr.length === 0) {
-            //  searchdata.fixedcolumns = {}
-            // const data = {
-            //   title: '警告',
-            //   content:
-            //     '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？'
-            // };
-            // this.$Modal.fcWarning(data);
             const title = '警告';
             const contentText = '当前的操作会执行全量导出，导出时间可能会比较慢！是否继续导出？';
             this.dialogMessage(title, contentText);
@@ -1114,50 +1104,53 @@
         });
       },
       deleteTableList() { // 删除方法
-        // let objQuery = {
-        //   tableName: this.buttons.tableName,
-        //   ids: this.buttons.selectIdArr.map(d => parseInt(d))
-        // };
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
-        // let objQuery = {
-        //   table: this.buttons.tableName,
-        //   objids: this.buttons.selectIdArr.join(',')
-        // };
-        this.getBatchDeleteForButtons({ tableName, selectIdArr });
-        setTimeout(() => {
-          if (this.buttons.batchDeleteData.code === 0) {
-            const message = this.buttons.batchDeleteData.message;
-            const data = {
-              title: '成功',
-              content: `${message}`
-            };
-            this.$Modal.fcSuccess(data);
-            this.getQueryListForAg(this.searchData);
-          } else {
-            // const message = this.buttons.batchDeleteData.message;
-            // const data = {
-            //   title: '失败',
-            //   content: `${message}`
-            // };
-            // this.$Modal.fcError(data);
-          }
-        }, 2000);
+        const promise = new Promise((resolve, reject) => {
+          this.getBatchDeleteForButtons({
+            tableName, selectIdArr, resolve, reject 
+          });
+        });
+        promise.then(() => {
+          const message = this.buttons.batchDeleteData.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
+          this.getQueryListForAg(this.searchData);
+        });
       },
       batchVoid() {
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
        
-        this.batchVoidForButtons({ tableName, ids });
+        const promise = new Promise((resolve, reject) => {
+          this.batchVoidForButtons({
+            tableName, ids, resolve, reject 
+          });
+        });
+        promise.then(() => {
+          const message = this.buttons.batchVoidForButtonsData.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
+          this.getQueryListForAg(this.searchData);
+        });
       },
       batchSubmit() {
         // 批量提交
-        // constthis = this;
         const url = this.buttons.dynamicRequestUrl.submit;
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
-        this.batchSubmitForButtons({ url, tableName, ids });
-        if (this.buttons.batchSubmitData.code === 0) {
+        const promise = new Promise((resolve, reject) => {
+          this.batchSubmitForButtons({
+            url, tableName, ids, resolve, reject 
+          });
+        });
+        promise.then(() => {
           const message = this.buttons.batchSubmitData.message;
           const data = {
             title: '成功',
@@ -1165,7 +1158,7 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        }
+        });
       },
       batchUnSubmit() {
         // 批量反提交
@@ -1223,6 +1216,7 @@
             this.batchSubmit();
             this.selectIdArr = [];
             this.selectArr = [];
+            this.searchClickData();
             return;
           }
           if (
@@ -1423,8 +1417,7 @@
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       this.getTableQuery();
-      clearTimeout(window.timer);
-      window.timer = setTimeout(() => {
+      setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
     },

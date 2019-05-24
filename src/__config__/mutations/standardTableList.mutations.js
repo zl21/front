@@ -115,6 +115,9 @@ export default {
   updateButtonbatchUnSubmitData({ buttons }, data) { // 批量反提交
     buttons.batchUnSubmitData = data;
   },
+  batchVoidForButtonsData({ buttons }, data) { // 批量反提交
+    buttons.batchVoidForButtonsData = data;
+  },
   updateUserConfig(state, { userConfig }) {
     state.hideColumn = userConfig.hideColumn;
     state.colPosition = userConfig.colPosition;
