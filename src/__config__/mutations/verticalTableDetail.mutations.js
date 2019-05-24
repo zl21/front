@@ -140,6 +140,8 @@ export default {
                 b.readonly = c.readonly;
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
+                } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp') {
+                  copySaveDataForParam[b.colname] = b.refobjid;
                 } else {
                   copySaveDataForParam[b.colname] = b.valuedata;
                 }

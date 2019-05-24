@@ -273,7 +273,6 @@ export default {
         modifys.ID = objId;
         parames = {
           ...modifys
-
         };
       } else {
         parames = {
