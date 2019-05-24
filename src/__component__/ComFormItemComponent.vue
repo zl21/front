@@ -260,6 +260,7 @@
      
         setTimeout(() => {
           //  传form 默认值
+          console.log(VerificationForm,'VerificationForm');
           if (this.verifymessageform) {
             this.verifymessageform(VerificationForm);
           }

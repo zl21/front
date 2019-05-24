@@ -295,8 +295,8 @@
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
           this.verifyMessItem = data;
-          this.$emit('VerifyMessage', data);
         }
+        this.$emit('VerifyMessage', data);
 
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
