@@ -211,20 +211,8 @@
     watch: {
       computdefaultData: {
         handler() {
-          this.VerificationForm = [];
-          this.verifyMessItem = [];
-
-          setTimeout(() => {
-            Object.keys(this.$refs).forEach((item) => {
-              if (this.$refs[item] && this.$refs[item][0]) {
-                if (this.$refs[item][0].VerificationFormInt) {
-                  this.$refs[item][0].VerificationFormInt();
-                }
-              }
-            });
-            this.mountChecked = true;
-          }, 200);
-          
+          const that = this;
+          this.Comparison();
 
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
@@ -239,7 +227,22 @@
     updated() {},
     methods: {
       CollapseClose() {},
-      Comparison() {},
+      Comparison() {
+        //  重新初始化校验
+        const that = this;
+        this.VerificationForm = [];
+        this.verifyMessItem = [];
+        setTimeout(() => {
+          Object.keys(this.$refs).forEach((item) => {
+            that.mountChecked = true;
+            if (this.$refs[item] && this.$refs[item][0]) {
+              if (this.$refs[item][0].VerificationFormInt) {
+                this.$refs[item][0].VerificationFormInt();
+              }
+            }
+          });
+        }, 500);
+      },
       childForm(option) {
         return this.childFormData.push(option);
       },
@@ -250,7 +253,6 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
-        console.log(!this.mountChecked);
         if (!this.mountChecked) {
           return false;
         }
@@ -389,8 +391,9 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
-                if (!this.formData[current.refcolval.srccol]) {
+                console.log(this.formDataDef);
+                const refcolval = this.formDataDef[current.refcolval.srccol][0] ? this.formDataDef[current.refcolval.srccol][0].ID :'';
+                if (!refcolval) {
                   this.$Message.info('请选择关联表字段');
                   return false;
                 }
@@ -981,8 +984,7 @@
       }
     },
     mounted() {
-      this.VerificationForm = [];
-      
+      this.Comparison();
       if (this.$el) {
         this.setdefaultColumnCol();
       }
