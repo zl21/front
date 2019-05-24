@@ -89,6 +89,7 @@ export default {
     state.updateData[data.tableName].delete = data.value;
   },
   updateChangeData(state, data) {
+    console.log(333, data);
     state.updateData[data.tableName].changeData = data.value;
   },
   updateCheckedInfoData(state, data) {
@@ -130,7 +131,6 @@ export default {
   },
   updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
     const copySaveDataForParam = {};
-
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -156,6 +156,7 @@ export default {
   },
   emptyChangeData(state, tableName) {
     if (state.updateData[tableName].changeData) {
+      state.updateData[tableName].add = {};
       state.updateData[tableName].changeData = {};
     }
   }

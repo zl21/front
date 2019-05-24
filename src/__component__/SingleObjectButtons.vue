@@ -630,6 +630,8 @@
               label,
               id: this.buttonsData.newMainTableSaveData.objId ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
+            this.updateChangeData({ tableName: this.tableName, value: {} });
+
             this.tabHref(tab);
             const message = this.buttonsData.message;
             if (message) {
@@ -640,6 +642,7 @@
               const message = this.buttonsData.message;
               if (message) {
                 this.upData(`${message}`);
+                // this.updateChangeData({ tableName: this.tableName, value: {} });
               }
             }, 1000);
           }
