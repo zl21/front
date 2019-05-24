@@ -213,15 +213,17 @@
         handler() {
           this.VerificationForm = [];
           this.verifyMessItem = [];
+
           setTimeout(() => {
             Object.keys(this.$refs).forEach((item) => {
-              if (this.$refs[item]) {
+              if (this.$refs[item] && this.$refs[item][0]) {
                 if (this.$refs[item][0].VerificationFormInt) {
                   this.$refs[item][0].VerificationFormInt();
                 }
               }
             });
-          }, 100);
+            this.mountChecked = true;
+          }, 200);
           
 
           // console.log(val[0].childs[0].item.props.valuedata);
@@ -248,6 +250,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval) {
         // 表单数据修改  判断vuex 里面是否有input name
+        console.log(!this.mountChecked);
         if (!this.mountChecked) {
           return false;
         }
@@ -386,7 +389,12 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                const query = current.refcolval.expre === 'equal' ? `=${this.formData[current.refcolval.srccol]}` : '';
+                const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                if (!this.formData[current.refcolval.srccol]) {
+                  this.$Message.info('请选择关联表字段');
+                  return false;
+                }
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
