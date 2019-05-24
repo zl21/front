@@ -148,7 +148,7 @@ export default {
           });
         });
       }); 
-      state.updateData[tableName].add = copySaveDataForParam;
+      state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
   },

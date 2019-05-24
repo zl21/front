@@ -219,7 +219,6 @@
                 if (this.$refs[item][0].VerificationFormInt) {
                   this.$refs[item][0].VerificationFormInt();
                 }
-                
               }
             });
           }, 100);

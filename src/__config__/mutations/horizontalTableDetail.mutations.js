@@ -155,15 +155,15 @@ export default {
                 b.readonly = c.readonly;
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
-                } else {
+                } else if (b.valuedata) {
                   copySaveDataForParam[b.colname] = b.valuedata;
                 }
               }
             });
           });
         });
-      });        
-      state.updateData[tableName].add = copySaveDataForParam;
+      });     
+      state.updateData[tableName].add[tableName] = copySaveDataForParam;
 
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
