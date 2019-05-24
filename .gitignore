@@ -3,6 +3,7 @@ node_modules
 .idea
 .history
 .vscode
+project.config.js
 # files
 package-lock.json
 __test_script__/
