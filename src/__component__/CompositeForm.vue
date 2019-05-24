@@ -219,7 +219,6 @@
                 if (this.$refs[item][0].VerificationFormInt) {
                   this.$refs[item][0].VerificationFormInt();
                 }
-                
               }
             });
           }, 100);
@@ -592,7 +591,6 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
-         
           if (this.defaultSetValue[item.colname]) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
@@ -600,7 +598,7 @@
             });
           } else {
             arr.push({
-              ID: '',
+              ID: item.refobjid === '-1' ? '' : item.refobjid,
               Label: item.valuedata || item.defval || ''
             });
           }
@@ -775,23 +773,26 @@
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
-            item.props.type = 'AttachFilter';
-            item.props.empty = 0;
-            item.props.optionTip = false;
-            item.props.AutoData = [];
-            item.props.fkobj = {
-              refobjid: current.refobjid,
-              reftable: current.reftable,
-              reftableid: current.reftableid,
-              url: '/p/cs/menuimport'
-            };
-            item.props.datalist = [];
-            item.props.Selected = [
-              {
-                label: current.refobjid,
-                value: current.valuedata
-              }
-            ];
+            if (!item.props.disabled) {
+              item.props.type = 'AttachFilter';
+              item.props.empty = 0;
+              item.props.optionTip = false;
+              item.props.AutoData = [];
+              item.props.fkobj = {
+                refobjid: current.refobjid,
+                reftable: current.reftable,
+                reftableid: current.reftableid,
+                url: '/p/cs/menuimport'
+              };
+              item.props.datalist = [];
+              item.props.Selected = [
+                {
+                  label: current.refobjid,
+                  value: current.valuedata
+                }
+              ];
+            }
+           
             break;
           case 'mop':
             item.props.type = 'AttachFilter';

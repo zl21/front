@@ -193,7 +193,6 @@
           this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
       });
-      //this.VerificationFormInt();
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
