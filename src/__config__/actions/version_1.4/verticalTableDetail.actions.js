@@ -151,6 +151,7 @@ export default {
     });
   },
   performMainTableSaveAction({ commit }, parame) { // 主表保存
+    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
@@ -267,16 +268,20 @@ export default {
             }
           };
         }
-      } else { // 测试提出bug:单表通用保存服务（无path）传参格式不对（公司修改）
+      } else if (path) { // 测试提出bug:单表通用保存服务（无path）传参格式不对（公司修改）
         const modifys = modify[tableName];
         modifys.ID = objId;
+        parames = {
+          ...modifys
+
+        };
+      } else {
         parames = {
           table: tableName, // 主表表名
           objId, // 明细id
           fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
             ...modify
           }
-          // ...modifys
         };
       }
     }

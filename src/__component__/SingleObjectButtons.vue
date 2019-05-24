@@ -250,10 +250,10 @@
        
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
-            const defaultCopyValue = this.updateData[this.tableName].default;
-            const changeDataCopyValue = this.updateData[this.tableName].changeData;
-            this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
+            // this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
+            // const defaultCopyValue = this.updateData[this.tableName].default;
+            // const changeDataCopyValue = this.updateData[this.tableName].changeData;
+            // this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
             let formData = {};
             this.tabPanel.forEach((item) => {
               if (item.tablename === this.tableName) {
@@ -274,20 +274,20 @@
             });
             // this.changeFormDataForCopy({ defaultForCopyData: this.defaultForCopyData, tableName: this.tableName });
             setTimeout(() => {
-              this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
+              // this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
               this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
               const copyData = { ...formData };
               this.$store.commit(`${moduleName()}/savaCopyData`, copyData);
-              this.$store.commit(`${moduleName()}/updateCopyData`);
+              this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
             }, 2000);
           }
         } else { // 纵向布局
           // this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
           // this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
-          this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
-          const defaultCopyValue = this.updateData[this.tableName].default;
-          const changeDataCopyValue = this.updateData[this.tableName].changeData;
-          this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
+          // this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
+          // const defaultCopyValue = this.updateData[this.tableName].default;
+          // const changeDataCopyValue = this.updateData[this.tableName].changeData;
+          // this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
           const copyData = { ...this.mainFormInfo.formData };
 
           const type = 'tableDetailVertical';
@@ -299,10 +299,10 @@
             id
           });
           setTimeout(() => {
-            this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
+            // this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
             this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
             this.$store.commit(`${moduleName()}/savaCopyData`, copyData);
-            this.$store.commit(`${moduleName()}/updateCopyData`);
+            this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
           }, 2000);
         }
         this.changeCopy(true);

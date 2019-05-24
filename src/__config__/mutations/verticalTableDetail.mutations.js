@@ -128,7 +128,9 @@ export default {
   updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
     state.copyDataForReadOnly = data;
   },
-  updateCopyData(state) { // form的配置信息按照新增接口返回值
+  updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
+    const copySaveDataForParam = {};
+
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -138,12 +140,15 @@ export default {
                 b.readonly = c.readonly;
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
+                } else {
+                  copySaveDataForParam[b.colname] = b.valuedata;
                 }
               }
             });
           });
         });
-      });        
+      }); 
+      state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
   },

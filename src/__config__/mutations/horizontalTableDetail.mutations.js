@@ -125,9 +125,9 @@ export default {
     //   }
     // });
   },
-  changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
-    state.updateData[tableName].add = defaultForCopyDatas;
-  },
+  // changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
+  //   state.updateData[tableName].add = defaultForCopyDatas;
+  // },
   savaCopyData(state, copyData) { // 执行按钮复制操作存储form默认值数据
     state.defaultDataForCopy = copyData;
     // state.defaultDataForCopy.data.addcolums.map((item, index) => {
@@ -143,7 +143,9 @@ export default {
   updateCopyDataForRealdOnly(state, data) {
     state.copyDataForReadOnly = data;
   },
-  updateCopyData(state) { // form的配置信息按照新增接口返回值
+  updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
+    const copySaveDataForParam = {};
+
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -153,12 +155,16 @@ export default {
                 b.readonly = c.readonly;
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
+                } else if (b.valuedata) {
+                  copySaveDataForParam[b.colname] = b.valuedata;
                 }
               }
             });
           });
         });
-      });        
+      });     
+      state.updateData[tableName].add[tableName] = copySaveDataForParam;
+
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
   }
