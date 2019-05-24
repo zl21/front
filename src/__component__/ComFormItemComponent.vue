@@ -215,8 +215,7 @@
     watch: {
       VerificationForm: {
         handler(val, old) {
-          if (JSON.stringify(val) === JSON.stringify(old)) {
-            console.log(JSON.stringify(val) === JSON.stringify(old), val.length, this.VerificationForm);
+          if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
             this.VerificationFormInt();
           }
         },
@@ -278,7 +277,6 @@
           return item;
         }, []);
 
-     
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {

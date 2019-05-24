@@ -211,7 +211,6 @@
     watch: {
       computdefaultData: {
         handler() {
-          const that = this;
           this.Comparison();
 
           // console.log(val[0].childs[0].item.props.valuedata);
@@ -229,14 +228,8 @@
       CollapseClose() {},
       Comparison() {
         //  重新初始化校验
-        const that = this;
         this.VerificationForm = [];
         this.verifyMessItem = [];
-        setTimeout(() => {
-          Object.keys(this.$refs).forEach((item) => {
-            that.mountChecked = true;
-          });
-        }, 300);
       },
       childForm(option) {
         return this.childFormData.push(option);
@@ -271,6 +264,7 @@
             }
           });
         });
+
         const message = this.setVerifiy();
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
@@ -284,6 +278,7 @@
       VerifyMessageForm(value) {
         // 获取需要校验的表单
         // 初始化form 校验
+        this.mountChecked = true;
         this.VerificationForm = this.VerificationForm.concat(value);
 
 
@@ -292,7 +287,6 @@
           this.verifyMessItem = data;
         }
         this.$emit('VerifyMessage', data);
-
       // console.log(value,this.VerificationForm,'VerificationForm');
       // console.log(this.VerificationForm);
       },
