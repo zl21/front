@@ -235,13 +235,8 @@
         setTimeout(() => {
           Object.keys(this.$refs).forEach((item) => {
             that.mountChecked = true;
-            if (this.$refs[item] && this.$refs[item][0]) {
-              if (this.$refs[item][0].VerificationFormInt) {
-                this.$refs[item][0].VerificationFormInt();
-              }
-            }
           });
-        }, 500);
+        }, 300);
       },
       childForm(option) {
         return this.childFormData.push(option);
@@ -391,7 +386,6 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                console.log(this.formData);
                 const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
                 if (!refcolval) {
                   this.$Message.info('请选择关联表字段');

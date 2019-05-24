@@ -69,6 +69,17 @@
                   label: items.item.title
                 });
               }
+            } else if (items.item.required === true) {
+              // 赋值 需要校验的 值
+              // 判断必须输入的值是否为空
+              option.push({
+                index,
+                type: items.item.props.display,
+                eq: this.formIndex,
+                value: items.item.value[0],
+                key: items.item.field,
+                label: items.item.title
+              });
             }
           } else if (items.item.required === true) {
             // 赋值 需要校验的 值
@@ -196,11 +207,21 @@
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
+      this.VerificationFormInt();
     },
     created() {
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
+      VerificationForm: {
+        handler(val, old) {
+          if (JSON.stringify(val) === JSON.stringify(old)) {
+            console.log(JSON.stringify(val) === JSON.stringify(old), val.length, this.VerificationForm);
+            this.VerificationFormInt();
+          }
+        },
+        deep: true
+      },
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {
