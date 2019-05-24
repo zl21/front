@@ -486,6 +486,7 @@
           this.saveParameters();// 调用获取参数方法
           const itemName = this.itemName;// 子表表名
           const itemCurrentParameter = this.itemCurrentParameter;
+          debugger;
           if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
             // console.log('主表新增保存和编辑新增保存');
             const type = 'add';
