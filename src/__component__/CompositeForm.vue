@@ -391,8 +391,8 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                console.log(this.formDataDef);
-                const refcolval = this.formDataDef[current.refcolval.srccol][0] ? this.formDataDef[current.refcolval.srccol][0].ID :'';
+                console.log(this.formData);
+                const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
                 if (!refcolval) {
                   this.$Message.info('请选择关联表字段');
                   return false;

@@ -260,7 +260,6 @@
      
         setTimeout(() => {
           //  传form 默认值
-          console.log(VerificationForm,'VerificationForm');
           if (this.verifymessageform) {
             this.verifymessageform(VerificationForm);
           }
@@ -293,7 +292,6 @@
               obj[current.item.field] = current.item.value.reduce((sum, temp) => {
                 sum.push(temp.ID); return sum;
               }, []).join(',');
-              console.log(obj[current.item.field],Version);
               if (Version === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
