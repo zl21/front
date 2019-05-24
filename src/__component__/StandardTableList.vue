@@ -86,7 +86,6 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
-
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -148,7 +147,12 @@
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
-      }
+      },
+      $route() {
+        if (this.$route.query.isBack) {
+          this.searchClickData();
+        }
+      },
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
@@ -1413,8 +1417,7 @@
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       this.getTableQuery();
-      clearTimeout(window.timer);
-      window.timer = setTimeout(() => {
+      setTimeout(() => {
         this.getbuttonGroupdata();
       }, 1000);
     },
