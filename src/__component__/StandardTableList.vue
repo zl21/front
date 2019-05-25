@@ -1131,7 +1131,7 @@
           });
         });
         promise.then(() => {
-          const message = this.buttons.batchVoidForButtonsData.message;
+          const message = this.buttons.batchVoidForButtonsData;
           const data = {
             title: '成功',
             content: `${message}`
@@ -1171,7 +1171,7 @@
           this.batchUnSubmitForButtons({ obj, resolve, reject });
         });
         promise.then(() => {
-          const message = this.buttons.batchUnSubmitData.message;
+          const message = this.buttons.batchUnSubmitData;
           if (message) {
             const data = {
               title: '成功',

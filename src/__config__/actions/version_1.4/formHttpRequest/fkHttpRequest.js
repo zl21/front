@@ -73,3 +73,11 @@ export const fkQueryListPop = function fkQueryListPop(params) {
     }
   });
 };
+export const itemTableDelete = function itemTableDelete(params) {
+  const { path } = params;
+  network.post(path || '/p/cs/objectDelete', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};

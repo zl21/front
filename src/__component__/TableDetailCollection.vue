@@ -21,6 +21,7 @@
             <a
               v-for="item in buttonGroups"
               :key="item.name"
+              @click="buttonClick(item)"
             >
               【{{ item.name }}】
             </a>
@@ -264,6 +265,7 @@
                 if (tabcmd.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 }
+                buttonConfigInfo.eName = item;
                 buttonGroupShow.push(
                   buttonConfigInfo
                 );
@@ -282,7 +284,8 @@
           }
         }
         return false;
-      }
+      },
+
 
     },
     watch: {
@@ -295,7 +298,18 @@
       //   ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
       //   ...mapActions('global', ['getMenuLists']),
 
-
+      buttonClick(obj) {
+        switch (obj.eName) {
+        case 'actionEXPORT': // 导出
+          this.objectEXPORT();
+          break;
+        case 'actionDELETE': // 删除
+          this.objectTryDelete(obj);
+          break;
+        default:
+          break;
+        }
+      },
       filterColumns(data) {
         if (!data) {
           return [];
