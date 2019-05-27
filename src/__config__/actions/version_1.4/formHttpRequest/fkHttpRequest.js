@@ -73,18 +73,11 @@ export const fkQueryListPop = function fkQueryListPop(params) {
     }
   });
 };
-<<<<<<< HEAD
 export const itemTableDelete = function itemTableDelete({ params, success }) { // 表格删除方法
   const { path } = params;
   network.post(path || '/p/cs/objectDelete', params).then((res) => {
     if (typeof success === 'function') {
       success(res);
-=======
-export const fkUpload = function fkUpload(params) {
-  network.post('/p/cs/upload2', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
-    if (typeof params.success === 'function') {
-      params.success(res);
->>>>>>> 2dd3250f1cb573b0d15a3ebf009fd90b1ba20d0d
     }
   });
 };
