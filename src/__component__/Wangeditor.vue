@@ -1,30 +1,221 @@
 <!--引入曼卡龙的弹框组件-->
 <template>
   <div>
-    <div class="editor">
-      editor测试
-    </div>
+    <div
+      id="editor"
+      ref="editor"
+      class="editor"
+    />
   </div>
 </template>
 
   <script>
   import wangEditor from '../assets/js/wangeditor/wangEditor';
+  import { Version } from '../constants/global';
 
+  const {
+    fkQueuploadProgressry, fkUpload
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
   export default {
     name: 'Wangeditor',
     props: {
-      
+      tabAction: { // 是否可点击菜单
+        type: Boolean,
+        default: false
+      },
+      isActives: { // 是否可点编辑
+        type: Boolean,
+        default: true
+      }, 
+      valuedata: {
+        type: String,
+        default: ''
+      }
+
     },
     data() {
       return {
-        showModal: false,
+        editor: {},
+        ImgArray: [],
+        IMGArray1: [],
+        timertomUploadImg: false,
+        Html: '',
       };
     },
     mounted() {
-
+      this.init();
+      console.log(this.$refs.editor.id);
     },
     methods: {
-     
+      init() {
+        //  富文本初始化
+        const self = this;
+        this.editor = new wangEditor(`#${this.$refs.editor.id}`);
+        // 或者 let editor = new E(document.getElementById('#editor'))
+        this.editor.customConfig.zIndex = 100;
+        // 使用 base64 保存图片
+        this.editor.customConfig.uploadImgShowBase64 = true; 
+        this.editor.customConfig.customUploadImg = function (files, insert) {
+          // files 是 input 中选中的文件列表
+          // insert 是获取图片 url 后，插入到编辑器的方法
+          // $("#editor"+self.itemdata.colid).children("img").css("display","block")
+          const inserts = insert;
+          for (let i = 0; i < files.length; i++) {
+            self.IMGArray1.push({ file: files[i], insert });
+          }
+        };
+        // this.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
+        //   // $(".w-e-text").find("img").css("display","block")
+        //   self.valuedata = html == '<p><br></p>' ? null : html;
+        //   self.$emit('getChangeItem', self.itemdata);
+        // };
+        this.editor.customConfig.menus = [ // 自定义菜单配置
+          'head', // 标题
+          'bold', // 粗体
+          'italic', // 斜体
+          'underline', // 下划线
+          'strikeThrough', // 删除线
+          'foreColor', // 文字颜色
+          'backColor', // 背景颜色
+          'link', // 插入链接
+          'justify', // 对齐方式
+          'quote', // 引用
+          'emoticon', // 表情
+          'image', // 插入图片
+          'table', // 表格
+          'video', // 插入视频
+          'code', // 插入代码
+          'undo', // 撤销
+          'redo', // 重复
+        ];
+
+        this.editor.create(); // 初始化编辑器
+       
+        const editorSelector = this.$refs.editor;
+        this.$nextTick(() => { 
+          // 默认值
+          this.editor.txt.html(this.valuedata);
+          // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
+          this.editor.$textElem.attr('contenteditable', !this.tabAction); 
+          const _block = !this.tabAction ? 'none' : 'block';
+          const _html = `<div id="editor_layer" style="display:${_block}"></div>`;
+
+          const textArea = "<textarea id='textarea' style='display:none;width:100%;height:100%;resize:none;'></textarea>";
+          editorSelector.innerHTML += _html;
+          editorSelector.querySelector('.w-e-text-container').innerHTML += textArea;
+         
+          const wangEditoMenu = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
+                                    <a class="_wangEditor_btn_fullscreen" href="###">全屏</a></div>
+                                    <div class="w-e-menu" id="_wangEditor_btn_html">
+                                    <a class="_wangEditor_btn_html" href="###">html</a></div>`;
+          // 添加全屏 html 按钮
+          editorSelector.querySelector('.w-e-toolbar').innerHTML += wangEditoMenu;
+          editorSelector.querySelector('#_wangEditor_btn_fullscreen').addEventListener('click', () => {
+            self.toggleFullscreen(editorSelector);
+          });
+          editorSelector.querySelector('#_wangEditor_btn_html').addEventListener('click', () => {
+            self.toggleHtml(editorSelector);
+          });
+        });
+      },
+      toggleFullscreen(editorSelector) {
+        console.log(editorSelector.className);
+        if (editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText === '全屏') {
+          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = '退出全屏';
+          editorSelector.className = 'editor fullscreen-editor';
+        } else {
+          editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = '全屏';
+          editorSelector.className = 'editor';
+        }
+      },
+      toggleHtml(editorSelector) {
+        const self = this;
+        // $(editorSelector).toggleClass('html-editor');
+
+        if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
+          editorSelector.querySelector('._wangEditor_btn_html').innerText = '退出';
+          document.getElementById('editor_layer').style.display = 'block';
+          editorSelector.querySelector('#textarea').style.display = 'block';
+          editorSelector.querySelector('.w-e-text').style.display = 'none';
+          editorSelector.querySelector('#textarea').value = editorSelector.querySelector('.w-e-text').innerHTML;
+        } else {
+          editorSelector.querySelector('._wangEditor_btn_html').innerText = 'html';
+          if (!this.tabAction) {
+            document.getElementById('editor_layer').style.display = 'none';
+          }
+          editorSelector.querySelector('.w-e-text').style.display = 'block';
+          editorSelector.querySelector('#textarea').style.display = 'none';
+          const value = editorSelector.querySelector('#textarea').value.replace(/<script/gi, '&lt;script').replace(/(on[a-z$_]+)\s*\=/gi, '$1');
+          editorSelector.querySelector('.w-e-text').innerHTML = value;
+        }
+      },
+      tomUploadImg() { // 上传图片方法
+        if (this.timertomUploadImg == true) {
+          return;
+        }
+        const self = this;
+        const data = this.IMGArray1.shift();
+        if (!data) {
+          setTimeout(() => {
+            this.tomUploadImg();
+          }, 500);
+          return;
+        }
+        const customUploadImg = new FormData();
+        const path = `${self.storageItem.name}/${self.storageItem.id}/`;
+        customUploadImg.append('file', data.file);
+        customUploadImg.append('path', path);
+        fkUpload({
+          searchObject: {
+            customUploadImg
+          },
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.code == 0) {
+              // 上传代码返回结果之后，将图片插入到编辑器中
+              res.data.data.insert = data.insert;
+              self.ImgArray.push(res.data.data);
+              // setTimeout(()=>{self.tomUploadImg()},500);
+            }
+            setTimeout(() => {
+              self.tomUploadImg();
+            }, 500);
+          }
+        });
+      },
+      uploadProgress() {
+        if (this.timertomUploadImg == true) {
+          return;
+        }
+        const upload = this.ImgArray.shift();
+        if (!upload) {
+          setTimeout(() => {
+            this.uploadProgress();
+          }, 500);
+          return;
+        }
+        const self = this;
+        fkQueuploadProgressry({
+          searchObject: {
+            uploadId: upload.UploadId 
+          },
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.data == 100) {
+              upload.insert(upload.Url);
+              self.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
+                self.itemdata.valuedata = html == '<p><br></p>' ? null : html;
+                self.$emit('getChangeItem', self.itemdata);
+              };
+            }
+            setTimeout(() => {
+              self.uploadProgress();
+            }, 50);
+          }
+        });
+      }
+      
     
     }
   };

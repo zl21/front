@@ -196,6 +196,7 @@
       <component
         :is="_items.componentType"
         :key="index"
+        :valuedata="_items.value"
       />
     </div>
   </div>
@@ -299,7 +300,6 @@
         // eslint-disable-next-line no-empty
         if (item.type === 'Wangeditor') {
           item.componentType = WangeditorVue;
-          console.log('WangeditorVue');
         } 
         item.event = Object.assign({}, this.items.event);
 

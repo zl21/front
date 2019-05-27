@@ -73,3 +73,10 @@ export const fkQueryListPop = function fkQueryListPop(params) {
     }
   });
 };
+export const fkUpload = function fkUpload(params) {
+  network.post('/p/cs/upload2', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
