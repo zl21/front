@@ -73,11 +73,11 @@ export const fkQueryListPop = function fkQueryListPop(params) {
     }
   });
 };
-export const itemTableDelete = function itemTableDelete(params) {
+export const itemTableDelete = function itemTableDelete({ params, success }) { // 表格删除方法
   const { path } = params;
-  network.post(path || '/p/cs/objectDelete', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
-    if (typeof params.success === 'function') {
-      params.success(res);
+  network.post(path || '/p/cs/objectDelete', params).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
     }
   });
 };

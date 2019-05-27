@@ -91,10 +91,12 @@
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
-  import Dialog from './ComplexsDialog';
+  import Dialog from './ComplexsDialog'; // emit 选中的行
+
+  import router from '../__config__/router.config';
 
   const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery 
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
@@ -107,8 +109,7 @@
   const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
-  const TABLE_SELECTED_ROW = 'tableSelectedRow'; // emit 选中的行
-
+  const TABLE_SELECTED_ROW = 'tableSelectedRow';
 
   export default {
     name: 'TableDetailCollection',
@@ -117,6 +118,7 @@
     },
     data() {
       return {
+        tableRowSelectedIds: [], // 表格选中的ID
         // columns: [],
         // data: [],
         searchInfo: '', // 输入框搜索内容
@@ -309,6 +311,23 @@
         default:
           break;
         }
+      },
+      objectTryDelete(obj) { // 按钮删除方法
+        const { tableName, itemId } = router.currentRoute.params;
+        const params = {
+          delMTable: false,
+          objId: itemId,
+          tabItem: { DL_B_PUR_ITEM: this.tableRowSelectedIds },
+          table: tableName
+        };
+        
+        itemTableDelete({
+          params,
+          success: (res) => {
+            const deleteMessage = res.data.message;
+            this.$Message.success(`删除${deleteMessage}`);
+          } 
+        });
       },
       filterColumns(data) {
         if (!data) {
@@ -988,8 +1007,9 @@
           acc.push(cur[EXCEPT_COLUMN_NAME]);
           return acc;
         }, []);
-
+        this.tableRowSelectedIds = datas;
         param[this.tableName] = datas;
+
         this.$emit(TABLE_SELECTED_ROW, param);
       },
       inputRegx(cellData) {

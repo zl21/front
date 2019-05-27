@@ -98,6 +98,7 @@
 
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
+  console.log('🍓🐘', importCustom);
   export default {
     components: {
       ButtonGroup,
@@ -727,7 +728,7 @@
             }
           } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
             this.setActionDialog(obj);
-            const componentName = obj.action.split('?')[0].replace(/\//g, '_');
+            const componentName = obj.action.split('?')[0].replace(/\//g, '/');
             Vue.component(
               componentName,
               Vue.extend(importCustom(obj.action.split('?')[0]))

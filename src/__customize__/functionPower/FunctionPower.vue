@@ -2,31 +2,31 @@
   <div class="functionPower">
     <div class="buttonGroup">
       <Button
-              type="fcdefault"
-              class="Button"
-              v-for="(item, index) in buttonsData"
-              :key="index"
-              @click="btnClick(item)"
+        v-for="(item, index) in buttonsData"
+        :key="index"
+        type="fcdefault"
+        class="Button"
+        @click="btnClick(item)"
       >
-        {{item.webdesc}}
+        {{ item.webdesc }}
       </Button>
     </div>
     <div class="content">
       <div class="contentLeft">
         <Input
-                placeholder="请输入用户名"
-                clearable
-                icon="ios-search"
-        >
+          placeholder="请输入用户名"
+          clearable
+          icon="ios-search"
+        />
         <span slot="prepend">检索</span>
         </Input>
         <ul class="menuContainer">
           <li
-                  v-for="(item, index) in menuList"
-                  :key="index"
-                  class="menuList"
-                  :class="index === menuHighlightIndex? 'menuHighlight':''"
-                  @click="menuClick(index, item)"
+            v-for="(item, index) in menuList"
+            :key="index"
+            class="menuList"
+            :class="index === menuHighlightIndex? 'menuHighlight':''"
+            @click="menuClick(index, item)"
           >
             {{ item.NAME }}
           </li>
@@ -35,27 +35,27 @@
       <div class="contentRight">
         <div class="left-tree">
           <Tree
-                  ref="tree"
-                  :data="treeData"
-                  @on-select-change="treeChange"
+            ref="tree"
+            :data="treeData"
+            @on-select-change="treeChange"
           />
         </div>
         <div class="right-list">
           <div class="upper-part">
             <div class="upper-table">
               <Table
-                      class="table"
-                      :columns="columns"
-                      :height="true"
-                      :data="tableData"
+                class="table"
+                :columns="columns"
+                :height="true"
+                :data="tableData"
               />
             </div>
           </div>
           <div class="bottom-part">
             <div class="bottom-table">
               <Table
-                      class="table"
-                      :columns="columnsBottom"
+                class="table"
+                :columns="columnsBottom"
               />
             </div>
           </div>
