@@ -194,6 +194,7 @@
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
         formValueItem: {},
+        changeNumber: 0, // 更改次数
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
@@ -216,7 +217,9 @@
       VerificationForm: {
         handler(val, old) {
           if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
-            this.VerificationFormInt();
+            if (this.changeNumber === 0) {
+              this.VerificationFormInt();
+            }
           }
         },
         deep: true
@@ -226,6 +229,8 @@
           if (this.indexItem < 0) {
             return;
           }
+          this.changeNumber = this.changeNumber + 1;
+
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
