@@ -326,6 +326,17 @@ const ImageUpload = {
   }
 };
 
+// 文本编辑器
+const Wangeditor = {
+  type: 'Wangeditor', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    height: 200
+  }
+};
+
 const dataProp = {
   DropDownSelectFilter,
   TimePicker,
@@ -336,6 +347,7 @@ const dataProp = {
   select,
   input,
   AttachFilter,
-  ImageUpload
+  ImageUpload,
+  Wangeditor
 };
 export default dataProp;

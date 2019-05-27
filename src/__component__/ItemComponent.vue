@@ -193,19 +193,23 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <component
+        :is="_items.componentType"
+        :key="index"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import Vue from 'vue';
 
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
   // 弹窗单选
-
   import myPopDialog from './PopDialog';
+  // 富文本编辑
+  import WangeditorVue from './Wangeditor';
 
   import { Version } from '../constants/global';
 
@@ -225,6 +229,12 @@
         default: 120
       },
       items: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      component: {
         type: Object,
         default() {
           return {};
@@ -285,6 +295,11 @@
               }
             });
           }
+        }
+        // eslint-disable-next-line no-empty
+        if (item.type === 'Wangeditor') {
+          item.componentType = WangeditorVue;
+          console.log('WangeditorVue');
         } 
         item.event = Object.assign({}, this.items.event);
 
