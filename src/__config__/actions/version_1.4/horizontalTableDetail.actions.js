@@ -209,12 +209,11 @@ export default {
       const mainTable = currentParameter.delete;
       mainTable[table].ID = objId;
       mainTable[table].isdelmtable = true;
-      const itemModify = itemCurrentParameter.modify;
-      itemModify[itemName].ID = objId;
+      const itemDelete = itemCurrentParameter.delete;
       if (path) {
         parames = {
           ...mainTable,
-          ...itemModify
+          ...itemDelete
         };
       } else {
         parames = {

@@ -451,18 +451,23 @@
                   setTimeout(() => {
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
-                      const { tablename, refcolid } = this.itemInfo;
                       this.$Message.success(`${deleteMessage}`);
+                      // this.getObjectTableItemForTableData({
+                      //   table: tablename,
+                      //   objid: this.itemId,
+                      //   refcolid, 
+                      //   searchdata: {
+                      //     column_include_uicontroller: true,
+                      //     startindex: 0,
+                      //     range: 10,
+                      //   }
+                      // });
+                      const { tablename, refcolid } = this.itemInfo;
+                      console.log('🍓', this.itemCurrentParameter);
                       this.getObjectTableItemForTableData({
-                        table: tablename,
-                        objid: this.itemId,
-                        refcolid, 
-                        searchdata: {
-                          column_include_uicontroller: true,
-                          startindex: 0,
-                          range: 10,
-                        }
+                        table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                       });
+                      this.getInputForitemForChildTableForm({ table: tablename });
                       // this.clickButtonsBack();
                       // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }

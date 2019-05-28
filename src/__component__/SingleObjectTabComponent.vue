@@ -266,6 +266,7 @@
             const { tablename, refcolid } = this.itemInfo;
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
             
+
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
             });

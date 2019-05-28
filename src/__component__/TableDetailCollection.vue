@@ -1004,7 +1004,7 @@
       tableSelectedChange(data) {
         const param = {};
         const datas = data.reduce((acc, cur) => {
-          acc.push(cur[EXCEPT_COLUMN_NAME]);
+          acc.push({ ID: cur[EXCEPT_COLUMN_NAME] });
           return acc;
         }, []);
         this.tableRowSelectedIds = datas;
