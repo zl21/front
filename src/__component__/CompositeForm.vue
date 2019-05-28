@@ -836,6 +836,9 @@
             valuedata
           };
         }
+        if (current.display === 'clob') {
+          item.props.path = `${this.masterName}/${this.masterId}/`;
+        }
         return item;
       },
       getTableQuery() {

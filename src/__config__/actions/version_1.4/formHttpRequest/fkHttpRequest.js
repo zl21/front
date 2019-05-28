@@ -23,21 +23,21 @@ export const fkGetMultiQuery = function fkGetMultiQuery(params) {
     }
   });
 };
-export const fkDelMultiQuery = function fkDelMultiQuery(params) {
+export const fkDelMultiQuery = function fkDelMultiQuery(params) {  // 弹窗多选 气泡删除请求
   network.post('/p/cs/delMultiQuery', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const fkQueuploadProgressry = function fkQueuploadProgressry(params) {
+export const fkQueuploadProgressry = function fkQueuploadProgressry(params) { // 上传图片
   network.post('/p/cs/uploadProgress', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const fkObjectSave = function fkObjectSave(params) {
+export const fkObjectSave = function fkObjectSave(params) {   // 保存
   network.post('/p/cs/objectSave', params.searchObject, { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
@@ -45,28 +45,28 @@ export const fkObjectSave = function fkObjectSave(params) {
   });
 };
 
-export const fkModify = function fkModify(params) {
+export const fkModify = function fkModify(params) {  // 弹窗批量 请求
   network.post('/p/cs/getObjectForUpTmp', urlSearchParams(params.searchObject)).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const fksaveModify = function fksaveModify(params) {
+export const fksaveModify = function fksaveModify(params) {  // 弹窗批量 保存
   network.post('/p/cs/batchSave', params.searchObject).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const getTableQuery = function getTableQuery(params) {
+export const getTableQuery = function getTableQuery(params) { // 弹窗单选 请求form
   network.post('/p/cs/getTableQuery', urlSearchParams(params.searchObject)).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const fkQueryListPop = function fkQueryListPop(params) {
+export const fkQueryListPop = function fkQueryListPop(params) { // 弹窗单选 请求列表
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
@@ -76,6 +76,18 @@ export const fkQueryListPop = function fkQueryListPop(params) {
 export const itemTableDelete = function itemTableDelete({ params, success }) { // 表格删除方法
   const { path } = params;
   network.post(path || '/p/cs/objectDelete', params).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
+    }
+  });
+};
+export const editorUpload = function editorUpload({ params, success }) { // 上传图片
+  const { path } = params;
+  const customUploadImg = new FormData();
+  customUploadImg.append('file', params.customUploadImg.file);
+  customUploadImg.append('path', params.customUploadImg.path);
+
+  network.post(path || '/p/cs/upload2', customUploadImg).then((res) => {
     if (typeof success === 'function') {
       success(res);
     }

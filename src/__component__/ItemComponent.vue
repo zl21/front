@@ -199,6 +199,7 @@
         :is="_items.componentType"
         :key="index"
         :valuedata="_items.value"
+        :item = "_items.props"
         @getChangeItem="getWangeditorChangeItem"
       />
     </div>

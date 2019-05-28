@@ -14,7 +14,7 @@
   import { Version } from '../constants/global';
 
   const {
-    fkQueuploadProgressry, fkUpload
+    fkQueuploadProgressry, editorUpload
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
   export default {
@@ -31,6 +31,12 @@
       valuedata: {
         type: String,
         default: ''
+      },
+      item: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
 
     },
@@ -48,6 +54,14 @@
       this.init();
       console.log(this.$refs.editor.id);
     },
+    computed: {
+      itemData() {
+        return this.item;
+      },
+      textHtml() {
+        return this.valuedata;
+      }
+    },
     methods: {
       init() {
         //  富文本初始化
@@ -58,6 +72,7 @@
         // 使用 base64 保存图片
         this.editor.customConfig.uploadImgShowBase64 = true; 
         this.editor.customConfig.customUploadImg = function (files, insert) {
+          console.log('ddddd', files);
           // files 是 input 中选中的文件列表
           // insert 是获取图片 url 后，插入到编辑器的方法
           // $("#editor"+self.itemdata.colid).children("img").css("display","block")
@@ -65,6 +80,7 @@
           for (let i = 0; i < files.length; i++) {
             self.IMGArray1.push({ file: files[i], insert });
           }
+          self.tomUploadImg();
         };
        
         this.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
@@ -96,8 +112,8 @@
         const editorSelector = this.$refs.editor;
         this.$nextTick(() => { 
           // 默认值
-          self.value = this.valuedata;
-          this.editor.txt.html(this.valuedata);
+          self.value = this.textHtml;
+          this.editor.txt.html(this.textHtml);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 
           // const _block = !this.tabAction ? 'none' : 'block';
@@ -174,20 +190,26 @@
           }, 500);
           return;
         }
-        const customUploadImg = new FormData();
-        const path = `${self.storageItem.name}/${self.storageItem.id}/`;
-        customUploadImg.append('file', data.file);
-        customUploadImg.append('path', path);
-        fkUpload({
-          searchObject: {
+        const path = this.itemData.path;
+        const customUploadImg = {
+          file: data.file,
+          path
+        };
+        // 
+        // customUploadImg.append('file', data.file);
+        // customUploadImg.append('path', path);
+        console.log(customUploadImg);
+        editorUpload({
+          params: {
             customUploadImg
           },
           // eslint-disable-next-line consistent-return
           success: (res) => {
-            if (res.data.code == 0) {
+            if (res.data.code === 0) {
               // 上传代码返回结果之后，将图片插入到编辑器中
               res.data.data.insert = data.insert;
               self.ImgArray.push(res.data.data);
+              self.uploadProgress();
               // setTimeout(()=>{self.tomUploadImg()},500);
             }
             setTimeout(() => {
