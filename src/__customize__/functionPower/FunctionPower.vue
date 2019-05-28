@@ -2,13 +2,13 @@
   <div class="functionPower">
     <div class="buttonGroup">
       <Button
-              type="fcdefault"
-              class="Button"
               v-for="(item, index) in buttonsData"
               :key="index"
+              type="fcdefault"
+              class="Button"
               @click="btnClick(item)"
       >
-        {{item.webdesc}}
+        {{ item.webdesc }}
       </Button>
     </div>
     <div class="content">
@@ -17,7 +17,7 @@
                 placeholder="请输入用户名"
                 clearable
                 icon="ios-search"
-        >
+        />
         <span slot="prepend">检索</span>
         </Input>
         <ul class="menuContainer">
@@ -46,8 +46,11 @@
               <Table
                       class="table"
                       :columns="columns"
+                      :index="1"
+                      highlight-row
                       :height="true"
                       :data="tableData"
+                      @on-row-click="tableRowClick"
               />
             </div>
           </div>
@@ -55,6 +58,8 @@
             <div class="bottom-table">
               <Table
                       class="table"
+                      highlight-row
+                      :data="extendTableData"
                       :columns="columnsBottom"
               />
             </div>
@@ -62,6 +67,27 @@
         </div>
       </div>
     </div>
+    <Modal
+            v-model="copyPermission"
+            closable
+            footer-hide
+            title="复制权限"
+    >
+      <div class="buttonGroup">
+        <Button
+                type="fcdefault"
+                class="saveButton"
+        >
+          保存
+        </Button>
+        <Button
+                type="fcdefault"
+                class="refreshButton"
+        >
+          刷新
+        </Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -71,6 +97,7 @@
   export default {
     data() {
       return {
+        copyPermission: false, // 复制权限弹框
         buttonsData: [], // 按钮数据
         menuHighlightIndex: 0, // 菜单高亮的index
         menuList: [], // 菜单数据
@@ -78,15 +105,32 @@
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
         tableData: [], // 表格数据
+        extendTableData: [], // 扩展功能表格数据
         columnsBottom: [
           {
             title: '扩展功能',
             key: 'description',
-            width: 200
+            width: 200,
+            render: (h, params) => h('div', [
+              h('Checkbox', params.row.description, {
+                style: {},
+                props: {
+                },
+                on: {}
+              })
+            ]),
           },
           {
             title: '功能',
-            key: 'description'
+            key: '',
+            render: (h, params) => h('div', [
+              h(params.row.children.length > 0 ? 'Checkbox' : '', params.row.children.length > 0 ? params.row.children[0].description : '', {
+                style: {},
+                props: {
+                },
+                on: {}
+              })
+            ]),
           }
         ],
         columns: [
@@ -99,8 +143,13 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
+                props: {
+                  disabled: params.row.seeDisabled,
+                  value: params.row.seeValue,
+                },
+                on: {
+
+                }
 
               })
             ]),
@@ -119,7 +168,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.editDisabled,
+                  value: params.row.editValue,
+                },
                 on: {}
 
               })
@@ -139,7 +191,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.deleteDisabled,
+                  value: params.row.deleteValue,
+                },
                 on: {}
 
               })
@@ -159,7 +214,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.toVoidDisabled,
+                  value: params.row.toVoidValue,
+                },
                 on: {}
 
               })
@@ -179,7 +237,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.commitDisabled,
+                  value: params.row.commitValue,
+                },
                 on: {}
 
               })
@@ -199,7 +260,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.unCommitDisabled,
+                  value: params.row.unCommitValue,
+                },
                 on: {}
 
               })
@@ -219,7 +283,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.exportDisabled,
+                  value: params.row.exportValue,
+                },
                 on: {}
 
               })
@@ -239,7 +306,10 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.printDisabled,
+                  value: params.row.printValue,
+                },
                 on: {}
 
               })
@@ -259,7 +329,9 @@
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
+                props: {
+                  disabled: params.row.actionList.length === 0,
+                },
                 on: {}
 
               })
@@ -296,7 +368,7 @@
         network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
           .then((res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data;
+              this.buttonsData = res.data.data.reverse();
               this.buttonsData.push({
                 webdesc: '刷新'
               });
@@ -314,7 +386,7 @@
         treePromise.then(() => {
           this.getTableData();
         });
-      },
+      }, // 点击左侧的菜单
       getTreeData(resolve, reject) {
         network.post('/p/cs/getMenuTree', urlSearchParams({}))
           .then((res) => {
@@ -377,7 +449,46 @@
         network.post('/p/cs/queryMenuPermission', obj)
           .then((res) => {
             if (res.data.code === 0) {
-              this.tableData = res.data.data;
+              // this.tableData = res.data.data;
+              const resData = res.data.data;
+              this.tableData = resData.reduce((acc, cur) => {
+                const disabledArr = cur.mask.split('');
+                const valueArr = this.toBin(cur.permission).split('');
+                // 查看
+                cur.seeDisabled = disabledArr[0] === '0';
+                cur.seeValue = valueArr[0] === '1';
+
+                // 编辑
+                cur.editDisabled = disabledArr[1] === '0';
+                cur.editValue = valueArr[1] === '1';
+
+                // 删除
+                cur.deleteDisabled = disabledArr[2] === '0';
+                cur.deleteValue = valueArr[2] === '1';
+
+                // 作废
+                cur.toVoidDisabled = disabledArr[3] === '0';
+                cur.toVoidValue = valueArr[3] === '1';
+
+                // 提交
+                cur.commitDisabled = disabledArr[4] === '0';
+                cur.commitValue = valueArr[4] === '1';
+
+                // 反提交
+                cur.unCommitDisabled = disabledArr[5] === '0';
+                cur.unCommitValue = valueArr[5] === '1';
+
+                // 导出
+                cur.exportDisabled = disabledArr[6] === '0';
+                cur.exportValue = valueArr[6] === '1';
+
+                // 打印
+                cur.printDisabled = disabledArr[7] === '0';
+                cur.printValue = valueArr[7] === '1';
+
+                acc.push(cur);
+                return acc;
+              }, []);
             }
           })
           .catch(() => {
@@ -390,8 +501,20 @@
       btnClick(item) {
         if (item.webdesc === '刷新') {
           this.refresh();
+        } else if (item.webdesc === '复制权限') {
+          this.copyPerm();
         }
       }, // 点击按钮触发
+      copyPerm() {
+        this.copyPermission = true;
+      }, // 复制权限
+      tableRowClick(row) {
+        if (row.actionList.length > 0) {
+          this.extendTableData = row.actionList;
+        } else {
+          this.extendTableData = [];
+        }
+      }, // 表格单击某一行
       toBin(intNum) {
         let answer = '';
         if (/\d+/.test(intNum)) {
@@ -405,7 +528,7 @@
           return answer;
         }
         return 0;
-      }
+      }, // 十进制转二进制
     }
   };
 </script>
@@ -444,8 +567,12 @@
         border: solid 1px #B4B4B4;
         border-radius: 6px;
         margin-right: 10px;
+        display: flex;
+        flex-direction: column;
         .menuContainer {
+          flex: 1;
           margin-top: 10px;
+          overflow-y: auto;
           .menuList {
             cursor: pointer;
             font-size: 12px;
