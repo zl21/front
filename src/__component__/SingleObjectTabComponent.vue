@@ -262,8 +262,16 @@
           const { itemId } = this.$route.params;
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
-          this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
-          this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+          if (this.type === 'horizontal') {
+            const { tablename, refcolid } = this.itemInfo;
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+            this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+            });
+          } else {
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+          }
         }, 1000);
       },
       verifyRequiredInformation() { // 验证表单必填项
