@@ -40,6 +40,7 @@
         ImgArray: [],
         IMGArray1: [],
         timertomUploadImg: false,
+        value: '',
         Html: '',
       };
     },
@@ -65,11 +66,11 @@
             self.IMGArray1.push({ file: files[i], insert });
           }
         };
-        // this.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
-        //   // $(".w-e-text").find("img").css("display","block")
-        //   self.valuedata = html == '<p><br></p>' ? null : html;
-        //   self.$emit('getChangeItem', self.itemdata);
-        // };
+       
+        this.editor.customConfig.onchange = function (html) { // html 即变化之后的内容
+          self.value = html == '<p><br></p>' ? null : html;
+          self.$emit('getChangeItem', self.value);
+        };
         this.editor.customConfig.menus = [ // 自定义菜单配置
           'head', // 标题
           'bold', // 粗体
@@ -95,32 +96,39 @@
         const editorSelector = this.$refs.editor;
         this.$nextTick(() => { 
           // 默认值
+          self.value = this.valuedata;
           this.editor.txt.html(this.valuedata);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 
-          const _block = !this.tabAction ? 'none' : 'block';
-          const _html = `<div id="editor_layer" style="display:${_block}"></div>`;
-
-          const textArea = "<textarea id='textarea' style='display:none;width:100%;height:100%;resize:none;'></textarea>";
-          editorSelector.innerHTML += _html;
-          editorSelector.querySelector('.w-e-text-container').innerHTML += textArea;
-         
-          const wangEditoMenu = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
+          // const _block = !this.tabAction ? 'none' : 'block';
+          // const _html = document.createElement('div');
+          // _html.setAttribute('id', 'editor_layer');
+          // _html.style.display = _block;
+          // editorSelector.appendChild(_html);
+          const textArea = document.createElement('textArea');
+          textArea.setAttribute('id', 'textarea');
+          textArea.setAttribute('style', 'display:none;width:100%;height:100%;resize:none;');
+          
+          editorSelector.querySelector('.w-e-text-container').appendChild(textArea);
+          const wangEditoMenu = document.createElement('div');
+          wangEditoMenu.style.display = 'inline-flex';
+          
+          wangEditoMenu.innerHTML = `<div class="w-e-menu" id="_wangEditor_btn_fullscreen">
                                     <a class="_wangEditor_btn_fullscreen" href="###">全屏</a></div>
                                     <div class="w-e-menu" id="_wangEditor_btn_html">
                                     <a class="_wangEditor_btn_html" href="###">html</a></div>`;
-          // 添加全屏 html 按钮
-          editorSelector.querySelector('.w-e-toolbar').innerHTML += wangEditoMenu;
+         
+          // // 添加全屏 html 按钮
+          editorSelector.querySelector('.w-e-toolbar').appendChild(wangEditoMenu);
           editorSelector.querySelector('#_wangEditor_btn_fullscreen').addEventListener('click', () => {
             self.toggleFullscreen(editorSelector);
           });
           editorSelector.querySelector('#_wangEditor_btn_html').addEventListener('click', () => {
             self.toggleHtml(editorSelector);
-          });
+          });    
         });
       },
       toggleFullscreen(editorSelector) {
-        console.log(editorSelector.className);
         if (editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText === '全屏') {
           editorSelector.querySelector('._wangEditor_btn_fullscreen').innerText = '退出全屏';
           editorSelector.className = 'editor fullscreen-editor';
@@ -130,25 +138,29 @@
         }
       },
       toggleHtml(editorSelector) {
-        const self = this;
-        // $(editorSelector).toggleClass('html-editor');
-
         if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
           editorSelector.querySelector('._wangEditor_btn_html').innerText = '退出';
-          document.getElementById('editor_layer').style.display = 'block';
+         
+          // document.getElementById('editor_layer').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'block';
           editorSelector.querySelector('.w-e-text').style.display = 'none';
           editorSelector.querySelector('#textarea').value = editorSelector.querySelector('.w-e-text').innerHTML;
         } else {
           editorSelector.querySelector('._wangEditor_btn_html').innerText = 'html';
-          if (!this.tabAction) {
-            document.getElementById('editor_layer').style.display = 'none';
-          }
           editorSelector.querySelector('.w-e-text').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'none';
           const value = editorSelector.querySelector('#textarea').value.replace(/<script/gi, '&lt;script').replace(/(on[a-z$_]+)\s*\=/gi, '$1');
           editorSelector.querySelector('.w-e-text').innerHTML = value;
         }
+        editorSelector.querySelector('.w-e-toolbar').childNodes.forEach((item) => {
+          if (item.className === 'w-e-menu') {
+            if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
+              item.style.opacity = 1;
+            } else {
+              item.style.opacity = 0;
+            }
+          }
+        });
       },
       tomUploadImg() { // 上传图片方法
         if (this.timertomUploadImg == true) {
@@ -223,9 +235,10 @@
 
   <style lang="less">
     .editor {
-    b {
-    font-weight: bold;
-    }
+      position:relative;
+        b {
+        font-weight: bold;
+        }
     }
 
     #editor_layer {
