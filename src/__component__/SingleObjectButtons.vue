@@ -13,21 +13,46 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
     />
+    <!-- 动作定义弹框定制界面 -->
+    <Modal
+      v-model="actionDialog.show"
+      :mask="true"
+      :title="actionDialog.title"
+    >
+      <keep-alive
+        include
+        exclude
+      >
+        <component :is="dialogComponentName" />
+      </keep-alive>
+    </Modal>
   </div>
 </template>
 
 <script>
+
+  import Vue from 'vue';
   import { mapMutations, mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
   import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
+  import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
 
+  const customizeModules = {};
+  Object.keys(CustomizeModule).forEach((key) => {
+    customizeModules[key.toUpperCase()] = CustomizeModule[key];
+  });
   export default {
     data() {
       return {
+        dialogComponentName: null,
+        actionDialog: {
+          show: false,
+          title: ''
+        }, // 按钮动作定义弹框类型定制界面
         dialogConfig: {
           title: '提示',
           mask: true,
@@ -35,7 +60,7 @@
           contentText: '',
           confirm: () => {
           }
-        },
+        }, // 弹框配置信息
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
@@ -169,7 +194,7 @@
         if (type === 'fix') {
           this.objectTabAction(obj);
         } else if (type === 'custom') {
-          this.webactionClick(type, obj);
+          this.webactionClick(obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
         } else if (type === 'back') {
@@ -243,6 +268,43 @@
         default:
           break;
         }
+      },
+      webactionClick(tab) { // 动作定义执行
+        this.activeTabAction = tab;
+        // console.log('action',tab)
+        switch (tab.vuedisplay) {
+        case 'native': // 跳转url
+          location.href = tab.action;
+          break;
+        case 'slient':
+          this.objTabActionSlient(tab);
+          break;
+        case 'dialog':
+          this.objTabActionDialog(tab);
+          break;
+        case 'navbar':
+          this.objTabActionNavbar(tab);
+          break;
+        default:
+          break;
+        }
+      },
+      objTabActionDialog(tab) { // 动作定义弹出框
+        // debugger;
+        this.actionDialog.show = true;
+        this.actionDialog.title = tab.webdesc;
+        if (tab.action.indexOf('?') >= 0) {
+          this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
+        } else {
+          const url = tab.action;
+          const index = url.lastIndexOf('\/');
+          const filePath = url.substring(index + 1, url.length);
+          Vue.component(filePath, CustomizeModule[filePath].omponentName);
+          this.dialogComponentName = filePath;
+        }
+      },
+      objectEXPORT() { // 导出功能
+
       },
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
@@ -376,40 +438,63 @@
           range: 10
         };
         if (this.isreftabs) { // 存在子表
-          if (obj.requestUrlPath) { // 有path
-            this.$refs.dialogRef.open();
-            this.saveParameters();// 调用获取参数方法
-            this.dialogConfig = {
-              contentText: '确认执行删除?',
-              confirm: () => {
-                this.performMainTableDeleteAction({
-                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup
-                });
-                setTimeout(() => {
-                  const deleteMessage = this.buttonsData.deleteData;
-                  if (deleteMessage) {
+          if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            if (obj.requestUrlPath) { // 有path
+              this.$refs.dialogRef.open();
+              this.saveParameters();// 调用获取参数方法
+              this.dialogConfig = {
+                contentText: '确认执行删除?',
+                confirm: () => {
+                  this.performMainTableDeleteAction({
+                    path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                  });
+                  setTimeout(() => {
+                    const deleteMessage = this.buttonsData.deleteData;
+                    if (deleteMessage) {
+                      this.$Message.success(`${deleteMessage}`);
+                      // this.getObjectTableItemForTableData({
+                      //   table: tablename,
+                      //   objid: this.itemId,
+                      //   refcolid, 
+                      //   searchdata: {
+                      //     column_include_uicontroller: true,
+                      //     startindex: 0,
+                      //     range: 10,
+                      //   }
+                      // });
+                      const { tablename, refcolid } = this.itemInfo;
+                      this.getObjectTableItemForTableData({
+                        table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                      });
+                      this.getInputForitemForChildTableForm({ table: tablename });
+                      // this.clickButtonsBack();
+                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                    }
+                  }, 1000);
+                }
+              };
+            } else { // 没有path
+              // 没有path
+              this.$refs.dialogRef.open();
+              this.dialogConfig = {
+                contentText: '确认执行删除?',
+                confirm: () => {
+                  this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                  setTimeout(() => {
+                    const deleteMessage = this.buttonsData.deleteData;
                     this.$Message.success(`${deleteMessage}`);
                     this.clickButtonsBack();
-                    this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
-                  }
-                }, 1000);
-              }
+                    this.getQueryListForAg(searchData);
+                  }, 1000);
+                }
+              };
+            }
+          } else {
+            const data = {
+              title: '警告',
+              content: `请先选择需要${obj.name}的记录！`
             };
-          } else { // 没有path
-            // 没有path
-            this.$refs.dialogRef.open();
-            this.dialogConfig = {
-              contentText: '确认执行删除?',
-              confirm: () => {
-                this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-                setTimeout(() => {
-                  const deleteMessage = this.buttonsData.deleteData;
-                  this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
-                  this.getQueryListForAg(searchData);
-                }, 1000);
-              }
-            };
+            this.$Modal.fcWarning(data);
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
           this.$refs.dialogRef.open();
@@ -615,6 +700,7 @@
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
+          debugger;
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
             if (this.objectType === 'horizontal') {
@@ -669,6 +755,7 @@
     },
     mounted() {
       this.buttonsReorganization(this.tabcmd);
+      this.waListButtons(this.tabwebact);
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;

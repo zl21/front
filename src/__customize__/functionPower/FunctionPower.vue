@@ -1,94 +1,94 @@
 <template>
-  <div class="functionPower">
-    <div class="buttonGroup">
-      <Button
-              v-for="(item, index) in buttonsData"
-              :key="index"
-              type="fcdefault"
-              class="Button"
-              @click="btnClick(item)"
-      >
-        {{ item.webdesc }}
-      </Button>
-    </div>
-    <div class="content">
-      <div class="contentLeft">
-        <Input
-                placeholder="请输入用户名"
-                clearable
-                icon="ios-search"
-        />
-        <span slot="prepend">检索</span>
-        </Input>
-        <ul class="menuContainer">
-          <li
-                  v-for="(item, index) in menuList"
-                  :key="index"
-                  class="menuList"
-                  :class="index === menuHighlightIndex? 'menuHighlight':''"
-                  @click="menuClick(index, item)"
-          >
-            {{ item.NAME }}
-          </li>
-        </ul>
-      </div>
-      <div class="contentRight">
-        <div class="left-tree">
-          <Tree
-                  ref="tree"
-                  :data="treeData"
-                  @on-select-change="treeChange"
-          />
+    <div class="functionPower">
+        <div class="buttonGroup">
+            <Button
+                    v-for="(item, index) in buttonsData"
+                    :key="index"
+                    type="fcdefault"
+                    class="Button"
+                    @click="btnClick(item)"
+            >
+                {{ item.webdesc }}
+            </Button>
         </div>
-        <div class="right-list">
-          <div class="upper-part">
-            <div class="upper-table">
-              <Table
-                      class="table"
-                      :columns="columns"
-                      :index="1"
-                      highlight-row
-                      :height="true"
-                      :data="tableData"
-                      @on-row-click="tableRowClick"
-              />
+        <div class="content">
+            <div class="contentLeft">
+                <Input
+                        placeholder="请输入用户名"
+                        clearable
+                        icon="ios-search"
+                />
+                <span slot="prepend">检索</span>
+                </Input>
+                <ul class="menuContainer">
+                    <li
+                            v-for="(item, index) in menuList"
+                            :key="index"
+                            class="menuList"
+                            :class="index === menuHighlightIndex? 'menuHighlight':''"
+                            @click="menuClick(index, item)"
+                    >
+                        {{ item.NAME }}
+                    </li>
+                </ul>
             </div>
-          </div>
-          <div class="bottom-part">
-            <div class="bottom-table">
-              <Table
-                      class="table"
-                      highlight-row
-                      :data="extendTableData"
-                      :columns="columnsBottom"
-              />
+            <div class="contentRight">
+                <div class="left-tree">
+                    <Tree
+                            ref="tree"
+                            :data="treeData"
+                            @on-select-change="treeChange"
+                    />
+                </div>
+                <div class="right-list">
+                    <div class="upper-part">
+                        <div class="upper-table">
+                            <Table
+                                    class="table"
+                                    :columns="columns"
+                                    :index="1"
+                                    highlight-row
+                                    :height="true"
+                                    :data="tableData"
+                                    @on-row-click="tableRowClick"
+                            />
+                        </div>
+                    </div>
+                    <div class="bottom-part">
+                        <div class="bottom-table">
+                            <Table
+                                    class="table"
+                                    highlight-row
+                                    :data="extendTableData"
+                                    :columns="columnsBottom"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+        <Modal
+                v-model="copyPermission"
+                closable
+                footer-hide
+                title="复制权限"
+        >
+            <div class="buttonGroup">
+                <Button
+                        type="fcdefault"
+                        class="saveButton"
+                >
+                    保存
+                </Button>
+                <Button
+                        type="fcdefault"
+                        class="refreshButton"
+                >
+                    刷新
+                </Button>
+            </div>
+        </Modal>
     </div>
-    <Modal
-            v-model="copyPermission"
-            closable
-            footer-hide
-            title="复制权限"
-    >
-      <div class="buttonGroup">
-        <Button
-                type="fcdefault"
-                class="saveButton"
-        >
-          保存
-        </Button>
-        <Button
-                type="fcdefault"
-                class="refreshButton"
-        >
-          刷新
-        </Button>
-      </div>
-    </Modal>
-  </div>
 </template>
 
 <script>
@@ -534,97 +534,97 @@
 </script>
 
 <style lang="less">
-  @import "../../../src/assets/theme/custom.less";
+    @import "../../../src/assets/theme/custom.less";
 
-  .functionPower {
-    position: relative;
-    height: 100%;
-    padding: 10px 0;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    .buttonGroup {
-      display: flex;
-      .Button {
-        padding: 6px 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-family:PingFangSC-Regular;
-        font-weight:400;
-        box-sizing: border-box;
-        margin-right: 10px;
-      }
-    }
-    .content {
-      flex: 1;
-      margin-top: 10px;
-      display: flex;
-      overflow-y: hidden;
-      .contentLeft {
-        width: 240px;
+    .functionPower {
+        position: relative;
         height: 100%;
-        padding: 10px;
-        border: solid 1px #B4B4B4;
-        border-radius: 6px;
-        margin-right: 10px;
+        padding: 10px 0;
         display: flex;
         flex-direction: column;
-        .menuContainer {
-          flex: 1;
-          margin-top: 10px;
-          overflow-y: auto;
-          .menuList {
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 26px;
-          }
-          .menuHighlight {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-      }
-      .contentRight {
-        height: 100%;
-        flex: 1;
-        border: solid 1px #B4B4B4;
-        border-radius: 6px;
-        display: flex;
-        width: 100%;
-        .left-tree {
-          width: 200px;
-          padding: 10px;
-          border-right: solid 1px #B4B4B4;
-          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-        .right-list {
-          flex: 1;
-          height: 100%;
-          width: 10px;
-          .upper-part {
-            height: 60%;
-            padding: 10px;
-            border-bottom: solid 1px #B4B4B4;
-            .upper-table {
-              height: 100%;
-              .table {
-                border: 0;
-              }
+        box-sizing: border-box;
+        .buttonGroup {
+            display: flex;
+            .Button {
+                padding: 6px 8px;
+                border-radius:2px;
+                font-size:12px;
+                font-family:PingFangSC-Regular;
+                font-weight:400;
+                box-sizing: border-box;
+                margin-right: 10px;
             }
-          }
-          .bottom-part {
-            height: 40%;
-            padding: 10px;
-            .bottom-table {
-              height: 100%;
-              .table {
-                border: 0;
-              }
-            }
-          }
         }
-      }
+        .content {
+            flex: 1;
+            margin-top: 10px;
+            display: flex;
+            overflow-y: hidden;
+            .contentLeft {
+                width: 240px;
+                height: 100%;
+                padding: 10px;
+                border: solid 1px #B4B4B4;
+                border-radius: 6px;
+                margin-right: 10px;
+                display: flex;
+                flex-direction: column;
+                .menuContainer {
+                    flex: 1;
+                    margin-top: 10px;
+                    overflow-y: auto;
+                    .menuList {
+                        cursor: pointer;
+                        font-size: 12px;
+                        line-height: 26px;
+                    }
+                    .menuHighlight {
+                        background-color: rgb(196, 226, 255);
+                    }
+                }
+            }
+            .contentRight {
+                height: 100%;
+                flex: 1;
+                border: solid 1px #B4B4B4;
+                border-radius: 6px;
+                display: flex;
+                width: 100%;
+                .left-tree {
+                    width: 200px;
+                    padding: 10px;
+                    border-right: solid 1px #B4B4B4;
+                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                        background-color: rgb(196, 226, 255);
+                    }
+                }
+                .right-list {
+                    flex: 1;
+                    height: 100%;
+                    width: 10px;
+                    .upper-part {
+                        height: 60%;
+                        padding: 10px;
+                        border-bottom: solid 1px #B4B4B4;
+                        .upper-table {
+                            height: 100%;
+                            .table {
+                                border: 0;
+                            }
+                        }
+                    }
+                    .bottom-part {
+                        height: 40%;
+                        padding: 10px;
+                        .bottom-table {
+                            height: 100%;
+                            .table {
+                                border: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 </style>

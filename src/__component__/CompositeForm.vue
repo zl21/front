@@ -212,7 +212,6 @@
       computdefaultData: {
         handler() {
           this.Comparison();
-
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
           // if (JSON.stringify(val) === JSON.stringify(old)) {
@@ -521,7 +520,9 @@
             break;
           }
         }
-
+        if (item.display === 'clob') {
+          str = 'Wangeditor';
+        }
         if (item.display === 'OBJ_DATE' || item.display === 'OBJ_DATENUMBER') {
           str = 'DatePicker';
         }
@@ -834,6 +835,9 @@
             url: '/ad-app/p/cs/upload2',
             valuedata
           };
+        }
+        if (current.display === 'clob') {
+          item.props.path = `${this.masterName}/${this.masterId}/`;
         }
         return item;
       },

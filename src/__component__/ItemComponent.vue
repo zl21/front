@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-  <div class="ItemComponentRoot">
+  <div  :class = "_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
       class="itemLabel"
       :style="labelStyle"
@@ -193,19 +193,28 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <component
+      
+        v-if="_items.type  === 'Wangeditor'"
+        :is="_items.componentType"
+        :key="index"
+        :valuedata="_items.value"
+        :item = "_items.props"
+        @getChangeItem="getWangeditorChangeItem"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import Vue from 'vue';
 
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
   // 弹窗单选
-
   import myPopDialog from './PopDialog';
+  // 富文本编辑
+  import WangeditorVue from './Wangeditor';
 
   import { Version } from '../constants/global';
 
@@ -225,6 +234,12 @@
         default: 120
       },
       items: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      component: {
         type: Object,
         default() {
           return {};
@@ -285,6 +300,10 @@
               }
             });
           }
+        }
+        // eslint-disable-next-line no-empty
+        if (item.type === 'Wangeditor') {
+          item.componentType = WangeditorVue;
         } 
         item.event = Object.assign({}, this.items.event);
 
@@ -647,6 +666,11 @@
       },
       uploadFileChangeOnerror() {
         // console.log('err', result);
+      },
+      getWangeditorChangeItem(value) {
+        // 富文本change
+        this._items.value = value;
+        this.valueChange();
       }
     },
     created() {
@@ -693,6 +717,11 @@
       position: relative;
       top: 3px;
       right: 3px;
+    }
+  }
+  .AttachFilter-pop{
+    .icon-bj_tcduo:before{
+        content: "\e6b1";
     }
   }
 </style>

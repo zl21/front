@@ -1,3 +1,4 @@
+import { stringify } from 'querystring';
 import router from '../router.config';
 
 export default {
@@ -89,7 +90,6 @@ export default {
     state.updateData[data.tableName].delete = data.value;
   },
   updateChangeData(state, data) {
-    console.log(333, data);
     state.updateData[data.tableName].changeData = data.value;
   },
   updateCheckedInfoData(state, data) {
@@ -150,6 +150,7 @@ export default {
           });
         });
       }); 
+
       state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }

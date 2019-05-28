@@ -164,9 +164,9 @@ export default {
             });
           });
         });
-      });     
+      });  
       state.updateData[tableName].add[tableName] = copySaveDataForParam;
-
+      state.updateData[tableName].changeData = copySaveDataForParam;
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
   }

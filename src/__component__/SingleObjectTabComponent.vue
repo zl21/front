@@ -167,14 +167,14 @@
               if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
                 savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
               } else {
-                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[1];
+                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
               }
             }
           });
         } else if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
         } else {
-          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
         }
         this.determineSaveType(savePath);
       }, // 表单回车触发
@@ -258,10 +258,28 @@
         };
         this.$store.dispatch(`${getModuleName()}/performMainTableSaveAction`, parame);
         // this.performMainTableSaveAction(parame);
+        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+
+
         setTimeout(() => { // 保存成功后刷新页面数据
-          const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId;
-          this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: objIdSave });
-          this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: objIdSave });
+          const { itemId } = this.$route.params;
+          // console.log(this.$store.state[getModuleName()].buttonsData);
+          // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
+          if (this.type === 'horizontal') {
+            const { tablename, refcolid } = this.itemInfo;
+            this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+            });
+            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
+            // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+
+            // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+            //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+            // });
+          } else {
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+          }
         }, 1000);
       },
       verifyRequiredInformation() { // 验证表单必填项

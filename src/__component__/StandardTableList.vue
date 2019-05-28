@@ -532,6 +532,9 @@
       formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
           if (this.formItemsLists.length > 0) {
+            if (item.item.type === 'DatePicker' && item.item.value.length > 1) {
+              item.item.value[1] = item.item.value[1].replace('00:00:00', '23:59:59');
+            }
             this.formItemsLists[index].item.value = item.item.value;
           }
           this.updateFormData(data);
@@ -727,7 +730,7 @@
             }
           } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
             this.setActionDialog(obj);
-            const componentName = obj.action.split('?')[0].replace(/\//g, '_');
+            const componentName = obj.action.split('?')[0].replace(/\//g, '/');
             Vue.component(
               componentName,
               Vue.extend(importCustom(obj.action.split('?')[0]))
@@ -1131,7 +1134,7 @@
           });
         });
         promise.then(() => {
-          const message = this.buttons.batchVoidForButtonsData.message;
+          const message = this.buttons.batchVoidForButtonsData;
           const data = {
             title: '成功',
             content: `${message}`
@@ -1171,7 +1174,7 @@
           this.batchUnSubmitForButtons({ obj, resolve, reject });
         });
         promise.then(() => {
-          const message = this.buttons.batchUnSubmitData.message;
+          const message = this.buttons.batchUnSubmitData;
           if (message) {
             const data = {
               title: '成功',
