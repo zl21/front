@@ -1,8 +1,6 @@
+// 动作定义按钮自定义弹出框配置信息
 export default {
-  DingTalkModuleConfig: {
+  clonePopUp: {
     component: () => import('../__customize__/palmCloud/PowerConfig.vue')
-  },
-  functionPermission: {
-    component: () => import('../__customize__/functionPower/FunctionPower.vue')
   },
 };
