@@ -116,11 +116,11 @@
           this.editor.txt.html(this.textHtml);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 
-          // const _block = !this.tabAction ? 'none' : 'block';
-          // const _html = document.createElement('div');
-          // _html.setAttribute('id', 'editor_layer');
-          // _html.style.display = _block;
-          // editorSelector.appendChild(_html);
+          const _block = !this.tabAction ? 'none' : 'block';
+          const _html = document.createElement('div');
+          _html.setAttribute('id', 'editor_layer');
+          _html.style.display = _block;
+          editorSelector.appendChild(_html);
           const textArea = document.createElement('textArea');
           textArea.setAttribute('id', 'textarea');
           textArea.setAttribute('style', 'display:none;width:100%;height:100%;resize:none;');
@@ -157,7 +157,7 @@
         if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
           editorSelector.querySelector('._wangEditor_btn_html').innerText = '退出';
          
-          // document.getElementById('editor_layer').style.display = 'block';
+          document.getElementById('editor_layer').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'block';
           editorSelector.querySelector('.w-e-text').style.display = 'none';
           editorSelector.querySelector('#textarea').value = editorSelector.querySelector('.w-e-text').innerHTML;
@@ -165,18 +165,19 @@
           editorSelector.querySelector('._wangEditor_btn_html').innerText = 'html';
           editorSelector.querySelector('.w-e-text').style.display = 'block';
           editorSelector.querySelector('#textarea').style.display = 'none';
+          document.getElementById('editor_layer').style.display = 'none';
           const value = editorSelector.querySelector('#textarea').value.replace(/<script/gi, '&lt;script').replace(/(on[a-z$_]+)\s*\=/gi, '$1');
           editorSelector.querySelector('.w-e-text').innerHTML = value;
         }
-        editorSelector.querySelector('.w-e-toolbar').childNodes.forEach((item) => {
-          if (item.className === 'w-e-menu') {
-            if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
-              item.style.opacity = 1;
-            } else {
-              item.style.opacity = 0;
-            }
-          }
-        });
+        // editorSelector.querySelector('.w-e-toolbar').childNodes.forEach((item) => {
+        //   if (item.className === 'w-e-menu') {
+        //     if (editorSelector.querySelector('._wangEditor_btn_html').innerText === 'html') {
+        //       item.style.opacity = 1;
+        //     } else {
+        //       item.style.opacity = 0;
+        //     }
+        //   }
+        // });
       },
       tomUploadImg() { // 上传图片方法
         if (this.timertomUploadImg == true) {
@@ -196,9 +197,6 @@
           path
         };
         // 
-        // customUploadImg.append('file', data.file);
-        // customUploadImg.append('path', path);
-        console.log(customUploadImg);
         editorUpload({
           params: {
             customUploadImg
