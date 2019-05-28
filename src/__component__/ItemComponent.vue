@@ -194,9 +194,12 @@
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
       <component
+      
+        v-if="_items.type  === 'Wangeditor'"
         :is="_items.componentType"
         :key="index"
         :valuedata="_items.value"
+        @getChangeItem="getWangeditorChangeItem"
       />
     </div>
   </div>
@@ -662,6 +665,11 @@
       },
       uploadFileChangeOnerror() {
         // console.log('err', result);
+      },
+      getWangeditorChangeItem(value) {
+        // 富文本change
+        this._items.value = value;
+        this.valueChange();
       }
     },
     created() {
