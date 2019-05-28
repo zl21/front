@@ -376,40 +376,48 @@
           range: 10
         };
         if (this.isreftabs) { // 存在子表
-          if (obj.requestUrlPath) { // 有path
-            this.$refs.dialogRef.open();
-            this.saveParameters();// 调用获取参数方法
-            this.dialogConfig = {
-              contentText: '确认执行删除?',
-              confirm: () => {
-                this.performMainTableDeleteAction({
-                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup
-                });
-                setTimeout(() => {
-                  const deleteMessage = this.buttonsData.deleteData;
-                  if (deleteMessage) {
+          if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            if (obj.requestUrlPath) { // 有path
+              this.$refs.dialogRef.open();
+              this.saveParameters();// 调用获取参数方法
+              this.dialogConfig = {
+                contentText: '确认执行删除?',
+                confirm: () => {
+                  this.performMainTableDeleteAction({
+                    path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup
+                  });
+                  setTimeout(() => {
+                    const deleteMessage = this.buttonsData.deleteData;
+                    if (deleteMessage) {
+                      this.$Message.success(`${deleteMessage}`);
+                      this.clickButtonsBack();
+                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                    }
+                  }, 1000);
+                }
+              };
+            } else { // 没有path
+              // 没有path
+              this.$refs.dialogRef.open();
+              this.dialogConfig = {
+                contentText: '确认执行删除?',
+                confirm: () => {
+                  this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                  setTimeout(() => {
+                    const deleteMessage = this.buttonsData.deleteData;
                     this.$Message.success(`${deleteMessage}`);
                     this.clickButtonsBack();
-                    this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
-                  }
-                }, 1000);
-              }
+                    this.getQueryListForAg(searchData);
+                  }, 1000);
+                }
+              };
+            }
+          } else {
+            const data = {
+              title: '警告',
+              content: `请先选择需要${obj.name}的记录！`
             };
-          } else { // 没有path
-            // 没有path
-            this.$refs.dialogRef.open();
-            this.dialogConfig = {
-              contentText: '确认执行删除?',
-              confirm: () => {
-                this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-                setTimeout(() => {
-                  const deleteMessage = this.buttonsData.deleteData;
-                  this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
-                  this.getQueryListForAg(searchData);
-                }, 1000);
-              }
-            };
+            this.$Modal.fcWarning(data);
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
           this.$refs.dialogRef.open();

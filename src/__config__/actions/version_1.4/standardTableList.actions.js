@@ -130,7 +130,7 @@ export default {
   }) { // 调用作废接口
     network.post('/p/cs/batchVoid', 
       { tableName, ids }).then((res) => {
-      const data = res.data.data;
+      const data = res.data.message;
       if (res.data.code === 0) {
         resolve();
         commit('batchVoidForButtonsData', data);
@@ -165,7 +165,7 @@ export default {
       obj).then((res) => {
       if (res.data.code === 0) {
         resolve();
-        commit('updateButtonbatchUnSubmitData', res.data.data);
+        commit('updateButtonbatchUnSubmitData', res.data.message);
       } else {
         reject();
       }
