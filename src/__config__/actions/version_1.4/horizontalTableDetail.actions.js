@@ -202,16 +202,19 @@ export default {
     });
   },
   performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup
+    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter
   }) { // 主表删除
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
       const mainTable = currentParameter.delete;
       mainTable[table].ID = objId;
       mainTable[table].isdelmtable = true;
+      const itemModify = itemCurrentParameter.modify;
+      itemModify[itemName].ID = objId;
       if (path) {
         parames = {
-          ...mainTable
+          ...mainTable,
+          ...itemModify
         };
       } else {
         parames = {

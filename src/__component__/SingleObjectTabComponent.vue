@@ -264,10 +264,16 @@
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             const { tablename, refcolid } = this.itemInfo;
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+            // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+            
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
             });
+
+            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
+            // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+            //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+            // });
           } else {
             this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
             this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });

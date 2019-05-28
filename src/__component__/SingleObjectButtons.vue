@@ -446,14 +446,25 @@
                 contentText: '确认执行删除?',
                 confirm: () => {
                   this.performMainTableDeleteAction({
-                    path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup
+                    path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
                   });
                   setTimeout(() => {
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
+                      const { tablename, refcolid } = this.itemInfo;
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
-                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      this.getObjectTableItemForTableData({
+                        table: tablename,
+                        objid: this.itemId,
+                        refcolid, 
+                        searchdata: {
+                          column_include_uicontroller: true,
+                          startindex: 0,
+                          range: 10,
+                        }
+                      });
+                      // this.clickButtonsBack();
+                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }
                   }, 1000);
                 }
