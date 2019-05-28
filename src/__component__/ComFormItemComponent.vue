@@ -220,7 +220,7 @@
             if (this.changeNumber === 0) {
               this.VerificationFormInt();
             }
-          }
+          } 
         },
         deep: true
       },
@@ -257,6 +257,7 @@
       },
       FormItemLists: {
         handler(val) {
+          this.changeNumber = 0;
           this.newFormItemLists = this.formItemLists;
         },
         deep: true
