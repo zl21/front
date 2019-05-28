@@ -258,20 +258,21 @@
         };
         this.$store.dispatch(`${getModuleName()}/performMainTableSaveAction`, parame);
         // this.performMainTableSaveAction(parame);
+        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+
+
         setTimeout(() => { // 保存成功后刷新页面数据
           const { itemId } = this.$route.params;
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             const { tablename, refcolid } = this.itemInfo;
-            // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
-            
-
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
             });
-
             this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
+            // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+
             // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
             //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
             // });

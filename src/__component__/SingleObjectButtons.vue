@@ -463,7 +463,6 @@
                       //   }
                       // });
                       const { tablename, refcolid } = this.itemInfo;
-                      console.log('🍓', this.itemCurrentParameter);
                       this.getObjectTableItemForTableData({
                         table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                       });
@@ -701,6 +700,7 @@
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
+          debugger;
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
             if (this.objectType === 'horizontal') {

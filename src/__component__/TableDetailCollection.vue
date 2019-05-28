@@ -313,21 +313,28 @@
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
-        const { tableName, itemId } = router.currentRoute.params;
-        const params = {
-          delMTable: false,
-          objId: itemId,
-          tabItem: { DL_B_PUR_ITEM: this.tableRowSelectedIds },
-          table: tableName
-        };
+        // console.log('🍓', this.type);
+        if (this.type === 'vertical') {
+          this.mainFormInfo.buttonsData.data.tabcmd.map((item, index) => {
+            // item[index]=
+          });
+        } else {
+          const { tableName, itemId } = router.currentRoute.params;
+          const params = {
+            delMTable: false,
+            objId: itemId,
+            tabItem: { DL_B_PUR_ITEM: this.tableRowSelectedIds },
+            table: tableName
+          };
         
-        itemTableDelete({
-          params,
-          success: (res) => {
-            const deleteMessage = res.data.message;
-            this.$Message.success(`删除${deleteMessage}`);
-          } 
-        });
+          itemTableDelete({
+            params,
+            success: (res) => {
+              const deleteMessage = res.data.message;
+              this.$Message.success(`删除${deleteMessage}`);
+            } 
+          });
+        }
       },
       filterColumns(data) {
         if (!data) {

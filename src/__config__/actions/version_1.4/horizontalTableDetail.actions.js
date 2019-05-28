@@ -208,7 +208,7 @@ export default {
     if (itemNameGroup && itemNameGroup.length > 0) {
       const mainTable = currentParameter.delete;
       mainTable[table].ID = objId;
-      mainTable[table].isdelmtable = true;
+      mainTable[table].isdelmtable = false;
       const itemDelete = itemCurrentParameter.delete;
       if (path) {
         parames = {
