@@ -229,6 +229,8 @@
         //  重新初始化校验
         this.VerificationForm = [];
         this.verifyMessItem = [];
+        this.formData = {};
+        this.formDataDef = {};
       },
       childForm(option) {
         return this.childFormData.push(option);
