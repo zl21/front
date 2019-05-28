@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-  <div class="ItemComponentRoot">
+  <div  :class = "_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
       class="itemLabel"
       :style="labelStyle"
@@ -717,6 +717,11 @@
       position: relative;
       top: 3px;
       right: 3px;
+    }
+  }
+  .AttachFilter-pop{
+    .icon-bj_tcduo:before{
+        content: "\e6b1";
     }
   }
 </style>

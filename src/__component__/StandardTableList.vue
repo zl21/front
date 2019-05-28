@@ -532,6 +532,9 @@
       formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
           if (this.formItemsLists.length > 0) {
+            if (item.item.type === 'DatePicker' && item.item.value.length > 1) {
+              item.item.value[1] = item.item.value[1].replace('00:00:00', '23:59:59');
+            }
             this.formItemsLists[index].item.value = item.item.value;
           }
           this.updateFormData(data);
