@@ -169,7 +169,7 @@
         if (type === 'fix') {
           this.objectTabAction(obj);
         } else if (type === 'custom') {
-          this.webactionClick(type, obj);
+          this.webactionClick(obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
         } else if (type === 'back') {
@@ -239,6 +239,27 @@
           break;
         case 'actionCopyBill':
           this.objectCopyBill();
+          break;
+        default:
+          break;
+        }
+      },
+      webactionClick(tab) { // 动作定义执行
+        const self = this;
+        self.activeTabAction = tab;
+        // console.log('action',tab)
+        switch (tab.vuedisplay) {
+        case 'native': // 跳转url
+          location.href = tab.action;
+          break;
+        case 'slient':
+          self.objTabActionSlient(tab);
+          break;
+        case 'dialog':
+          self.objTabActionDialog(tab);
+          break;
+        case 'navbar':
+          self.objTabActionNavbar(tab);
           break;
         default:
           break;

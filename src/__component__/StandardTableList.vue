@@ -98,7 +98,6 @@
 
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
-  console.log('🍓🐘', importCustom);
   export default {
     components: {
       ButtonGroup,
