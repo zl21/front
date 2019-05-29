@@ -700,7 +700,6 @@
         };
         this.performMainTableSaveAction(parame);
         setTimeout(() => {
-          debugger;
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
             if (this.objectType === 'horizontal') {
