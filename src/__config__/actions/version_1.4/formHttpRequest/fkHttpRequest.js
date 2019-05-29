@@ -23,7 +23,7 @@ export const fkGetMultiQuery = function fkGetMultiQuery(params) {
     }
   });
 };
-export const fkDelMultiQuery = function fkDelMultiQuery(params) {  // 弹窗多选 气泡删除请求
+export const fkDelMultiQuery = function fkDelMultiQuery(params) { // 弹窗多选 气泡删除请求
   network.post('/p/cs/delMultiQuery', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
@@ -37,7 +37,7 @@ export const fkQueuploadProgressry = function fkQueuploadProgressry(params) { //
     }
   });
 };
-export const fkObjectSave = function fkObjectSave(params) {   // 保存
+export const fkObjectSave = function fkObjectSave(params) { // 保存
   network.post('/p/cs/objectSave', params.searchObject, { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
@@ -45,14 +45,14 @@ export const fkObjectSave = function fkObjectSave(params) {   // 保存
   });
 };
 
-export const fkModify = function fkModify(params) {  // 弹窗批量 请求
+export const fkModify = function fkModify(params) { // 弹窗批量 请求
   network.post('/p/cs/getObjectForUpTmp', urlSearchParams(params.searchObject)).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }
   });
 };
-export const fksaveModify = function fksaveModify(params) {  // 弹窗批量 保存
+export const fksaveModify = function fksaveModify(params) { // 弹窗批量 保存
   network.post('/p/cs/batchSave', params.searchObject).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
@@ -73,8 +73,7 @@ export const fkQueryListPop = function fkQueryListPop(params) { // 弹窗单选 
     }
   });
 };
-export const itemTableDelete = function itemTableDelete({ params, success }) { // 表格删除方法
-  const { path } = params;
+export const itemTableDelete = function itemTableDelete({ params, path, success }) { // 表格删除方法
   network.post(path || '/p/cs/objectDelete', params).then((res) => {
     if (typeof success === 'function') {
       success(res);

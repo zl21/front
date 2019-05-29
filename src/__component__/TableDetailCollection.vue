@@ -118,6 +118,7 @@
     },
     data() {
       return {
+        buttonPath: {},
         tableRowSelectedIds: [], // 表格选中的ID
         // columns: [],
         // data: [],
@@ -255,6 +256,13 @@
         }
         const buttonGroupShow = [];
         if (tabcmd.cmds) {
+          // 取主表path用于子表
+          this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
+            this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+              if (index === i) { this.buttonPath[cmd] = path; }
+            });
+          });
           tabcmd.cmds.map((item, index) => {
             if (tabcmd.prem[index]) {
               const type = item.split('action');
@@ -267,6 +275,7 @@
                 if (tabcmd.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 }
+                buttonConfigInfo.path = this.buttonPath[item];
                 buttonConfigInfo.eName = item;
                 buttonGroupShow.push(
                   buttonConfigInfo
@@ -313,28 +322,36 @@
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
-        // console.log('🍓', this.type);
-        if (this.type === 'vertical') {
-          this.mainFormInfo.buttonsData.data.tabcmd.map((item, index) => {
-            // item[index]=
-          });
+        let params = {};
+        const { tableName, itemId } = router.currentRoute.params;
+        const path = obj.path;
+        if (obj.path) {
+          const mainTable = this.updateData[tableName].delete;
+          const itemTable = this.updateData[this.tableName].delete;
+          mainTable[tableName].ID = itemId;
+          mainTable[tableName].isdelmtable = false;
+          
+          params = {
+            ...mainTable,
+            ...itemTable
+          };
         } else {
-          const { tableName, itemId } = router.currentRoute.params;
-          const params = {
+          params = {
             delMTable: false,
             objId: itemId,
             tabItem: { DL_B_PUR_ITEM: this.tableRowSelectedIds },
             table: tableName
           };
-        
-          itemTableDelete({
-            params,
-            success: (res) => {
-              const deleteMessage = res.data.message;
-              this.$Message.success(`删除${deleteMessage}`);
-            } 
-          });
         }
+        
+        itemTableDelete({
+          params, 
+          path,
+          success: (res) => {
+            const deleteMessage = res.data.message;
+            this.$Message.success(`删除${deleteMessage}`);
+          } 
+        });
       },
       filterColumns(data) {
         if (!data) {
