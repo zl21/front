@@ -39,7 +39,7 @@
           return arr;
         },
         set(newValue) {
-          this.newFormItemLists = newValue;
+          this.newFormItemLists = newValue.concat([]);
         }
 
       },
@@ -208,7 +208,7 @@
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
-      this.VerificationFormInt();
+      // this.VerificationFormInt();
     },
     created() {
       this.newFormItemLists = this.formItemLists.concat([]);
@@ -289,7 +289,7 @@
             this.verifymessageform(VerificationForm);
           }
           this.mountdataForm(this.formDataObject);
-        }, 50);
+        }, 100);
       },
       setMapping(data) {
         //  获取映射关系

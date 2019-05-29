@@ -136,81 +136,17 @@
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         childFormData: [],
+        computdefaultData: [], // form
         show: true,
         defaultColumnCol: this.defaultData.objviewcol,
         tip: 'new',
         expand: 'expand' // 面板是否展开
       };
     },
-    computed: {
-      computdefaultData: {
-        get() {
-          // console.log('computdefaultData');
-          let items = [];
-          // 存放单个form child
-          // const childForm = {
-          //   childs: []
-          // };
-          // 有面板的数据
-          if (
-            this.type
-            && Object.prototype.hasOwnProperty.call(this.defaultData, 'addcolums')
-          ) {
-            items = this.defaultData.addcolums.reduce((array, current, index) => {
-              let tem = [];
-              if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
-                tem = current.childs.reduce((array2, current2, itemIndex2) => {
-                  current2.formIndex = index;
-                  const option = this.reduceForm(array2, current2, itemIndex2);
-                  array2.push(option);
-                  return array2;
-                }, []);
-                        
-
-                array.push({
-                  childs: tem.concat([]),
-                  hrdisplay: current.hrdisplay,
-                  parentdesc: current.parentdesc,
-                  parentname: current.parentname
-                });
-              } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
-                current.child.formIndex = index;
-                const option = this.reduceForm([], current.child, index);
-                if (option.item) {
-                  this.childForm(option);
-                }
-                array.push({
-                  childs: [option],
-                  hrdisplay: 'expand',
-                  isTitleShow: false
-                });
-              }
-              return array;
-            }, []);
-          } else if (
-            Object.prototype.hasOwnProperty.call(this.defaultData, 'inpubobj')
-          ) {
-            // 表单的数据
-            items = this.defaultData.inpubobj.reduce(
-              (array, current, itemIndex) => {
-                current.formIndex = 'inpubobj';
-                const option = this.reduceForm(array, current, itemIndex);
-                array.push(option);
-                return array;
-              },
-              []
-            );
-          }
-          return items;
-        },
-        set(val) {
-          return val;
-        }
-      }
-    },
     watch: {
-      computdefaultData: {
+      defaultData: {
         handler() {
+          this.computdefaultData = this.reorganizeForm();
           this.Comparison();
           // console.log(val[0].childs[0].item.props.valuedata);
           // console.log(JSON.stringify(val) ===JSON.stringify(old))
@@ -238,6 +174,65 @@
       setMapping(Mapping, mapData) {
         this.mapData = Object.assign(this.mapData, mapData);
         this.Mapping = Object.assign(this.Mapping, Mapping);
+      },
+      reorganizeForm() {
+        let items = [];
+        // 存放单个form child
+        // const childForm = {
+        //   childs: []
+        // };
+        // 有面板的数据
+        const defaultData = JSON.parse(JSON.stringify(this.defaultData));
+        if (
+          this.type
+          && Object.prototype.hasOwnProperty.call(defaultData, 'addcolums')
+        ) {
+          items = defaultData.addcolums.reduce((array, current, index) => {
+            let tem = [];
+            if (Object.prototype.hasOwnProperty.call(current, 'childs')) {
+              tem = current.childs.reduce((array2, current2, itemIndex2) => {
+                current2.formIndex = index;
+                const option = this.reduceForm(array2, current2, itemIndex2);
+                array2.push(option);
+                return array2;
+              }, []);
+                        
+
+              array.push({
+                childs: tem.concat([]),
+                hrdisplay: current.hrdisplay,
+                parentdesc: current.parentdesc,
+                parentname: current.parentname
+              });
+            } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
+              current.child.formIndex = index;
+              const option = this.reduceForm([], current.child, index);
+              if (option.item) {
+                this.childForm(option);
+              }
+              array.push({
+                childs: [option],
+                hrdisplay: 'expand',
+                isTitleShow: false
+              });
+            }
+            return array;
+          }, []);
+        } else if (
+          Object.prototype.hasOwnProperty.call(defaultData, 'inpubobj')
+        ) {
+          // 表单的数据
+          items = defaultData.inpubobj.reduce(
+            (array, current, itemIndex) => {
+              current.formIndex = 'inpubobj';
+              const option = this.reduceForm(array, current, itemIndex);
+              array.push(option);
+              return array;
+            },
+            []
+          );
+        }
+        return items;
       },
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval) {
@@ -992,7 +987,7 @@
       }
     },
     created() {
-      this.computdefaulForm = this.computdefaultData;
+      this.computdefaultData = this.reorganizeForm();
     }
   };
 </script>
