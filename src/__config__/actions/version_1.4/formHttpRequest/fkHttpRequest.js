@@ -92,3 +92,11 @@ export const editorUpload = function editorUpload({ params, success }) { // 上�
     }
   });
 };
+export const deleteImg = function deleteImg({ params, success }) { // 删除图片保存
+  const { path } = params;
+  network.post(path || '/p/cs/users/save', params).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
+    }
+  });
+};
