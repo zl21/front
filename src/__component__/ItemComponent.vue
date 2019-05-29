@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
-  <div  :class = "_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
+  <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
       class="itemLabel"
       :style="labelStyle"
@@ -195,11 +195,11 @@
       />
       <component
       
-        v-if="_items.type  === 'Wangeditor'"
         :is="_items.componentType"
+        v-if="_items.type === 'Wangeditor'"
         :key="index"
         :valuedata="_items.value"
-        :item = "_items.props"
+        :item="_items.props"
         @getChangeItem="getWangeditorChangeItem"
       />
     </div>
@@ -286,7 +286,11 @@
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
             item.componentType = myPopDialog;
-            item.props.dialog.model.title = '弹窗单选';
+            item.props.fkobj.colid = item.props.colid;
+            item.props.fkobj.colname = item.props.colname;
+            item.props.dialog.model.title = '表';
+            item.props.dialog.model['footer-hide'] = true;
+            item.props.dialog.model.closable = true;
           } else {
             item.props.dialog.model.title = '弹窗多选';
             item.componentType = Dialog;

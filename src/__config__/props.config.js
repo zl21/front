@@ -293,7 +293,9 @@ const AttachFilter = {
         title: '弹窗多选',
         mask: true,
         draggable: true,
-        scrollable: true
+        closable: true,
+        scrollable: true,
+        width: 860
       }
 
     },
