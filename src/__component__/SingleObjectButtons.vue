@@ -18,6 +18,8 @@
       v-model="actionDialog.show"
       :mask="true"
       :title="actionDialog.title"
+      :footer-hide="true"
+      :closable="true"
     >
       <keep-alive
         include
@@ -432,13 +434,125 @@
         });
       },
       objectTryDelete(obj) { // 删除
+        debugger;
         const searchData = {
           table: this.tableName,
           startIndex: 0,
           range: 10
         };
+        
         if (this.isreftabs) { // 存在子表
-          if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          if (this.objectType === 'horizontal') { // 横向布局
+            if (this.itemName === this.tableName) { // 主表删除
+              if (obj.requestUrlPath) { // 有path
+                this.$refs.dialogRef.open();
+                this.saveParameters();// 调用获取参数方法
+                this.dialogConfig = {
+                  contentText: '确认执行删除?',
+                  confirm: () => {
+                    this.performMainTableDeleteAction({
+                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                    });
+                    setTimeout(() => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                        // this.getObjectTableItemForTableData({
+                        //   table: tablename,
+                        //   objid: this.itemId,
+                        //   refcolid, 
+                        //   searchdata: {
+                        //     column_include_uicontroller: true,
+                        //     startindex: 0,
+                        //     range: 10,
+                        //   }
+                        // });
+                        const { tablename, refcolid } = this.itemInfo;
+                        this.getObjectTableItemForTableData({
+                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                        });
+                        this.getInputForitemForChildTableForm({ table: tablename });
+                        // this.clickButtonsBack();
+                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      }
+                    }, 1000);
+                  }
+                };
+              } else { // 没有path
+                // 没有path
+                this.$refs.dialogRef.open();
+                this.dialogConfig = {
+                  contentText: '确认执行删除?',
+                  confirm: () => {
+                    this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                    setTimeout(() => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      this.$Message.success(`${deleteMessage}`);
+                      this.clickButtonsBack();
+                      this.getQueryListForAg(searchData);
+                    }, 1000);
+                  }
+                };
+              }
+            } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+              if (obj.requestUrlPath) { // 有path
+                this.$refs.dialogRef.open();
+                this.saveParameters();// 调用获取参数方法
+                this.dialogConfig = {
+                  contentText: '确认执行删除?',
+                  confirm: () => {
+                    this.performMainTableDeleteAction({
+                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                    });
+                    setTimeout(() => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                        // this.getObjectTableItemForTableData({
+                        //   table: tablename,
+                        //   objid: this.itemId,
+                        //   refcolid, 
+                        //   searchdata: {
+                        //     column_include_uicontroller: true,
+                        //     startindex: 0,
+                        //     range: 10,
+                        //   }
+                        // });
+                        const { tablename, refcolid } = this.itemInfo;
+                        this.getObjectTableItemForTableData({
+                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                        });
+                        this.getInputForitemForChildTableForm({ table: tablename });
+                        // this.clickButtonsBack();
+                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      }
+                    }, 1000);
+                  }
+                };
+              } else { // 没有path
+                // 没有path
+                this.$refs.dialogRef.open();
+                this.dialogConfig = {
+                  contentText: '确认执行删除?',
+                  confirm: () => {
+                    this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                    setTimeout(() => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      this.$Message.success(`${deleteMessage}`);
+                      this.clickButtonsBack();
+                      this.getQueryListForAg(searchData);
+                    }, 1000);
+                  }
+                };
+              }
+            } else {
+              const data = {
+                title: '警告',
+                content: `请先选择需要${obj.name}的记录！`
+              };
+              this.$Modal.fcWarning(data);
+            }
+          } else if (this.objectType === 'vertical') {
             if (obj.requestUrlPath) { // 有path
               this.$refs.dialogRef.open();
               this.saveParameters();// 调用获取参数方法
@@ -489,12 +603,6 @@
                 }
               };
             }
-          } else {
-            const data = {
-              title: '警告',
-              content: `请先选择需要${obj.name}的记录！`
-            };
-            this.$Modal.fcWarning(data);
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
           this.$refs.dialogRef.open();
