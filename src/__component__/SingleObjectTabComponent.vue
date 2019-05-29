@@ -50,6 +50,7 @@
       :table-name="tableName"
       :data-source="tableData.data"
       :type="type"
+      :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
@@ -262,11 +263,12 @@
 
 
         setTimeout(() => { // 保存成功后刷新页面数据
-          const { itemId } = this.$route.params;
+          const { tableId, itemId } = this.$route.params;
+          const { tablename, refcolid } = this.itemInfo;
+
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
-            const { tablename, refcolid } = this.itemInfo;
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
             });
@@ -279,6 +281,19 @@
           } else {
             this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
             this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+            // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
+            // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+            // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+            //   table: this.tableName,
+            //   objid: itemId,
+            //   refcolid, 
+            //   searchdata: {
+            //     column_include_uicontroller: true,
+            //     startindex: 0,
+            //     range: 10,
+            //     fixedcolumns: {}
+            //   }
+            // });
           }
         }, 1000);
       },
