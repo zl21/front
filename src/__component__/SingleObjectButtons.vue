@@ -28,6 +28,19 @@
         <component :is="dialogComponentName" />
       </keep-alive>
     </Modal>
+    <!-- 导入弹框 -->
+    <!-- <ImportDialog
+      v-if="buttons.importData.importDialog"
+      :name="buttons.importData.importDialog"
+      :visible="buttons.importData.importDialog"
+      :show-close="true"
+      :title="buttons.importData.importDialogTitle"
+      :tablename="buttons.tableName"
+      :main-table="buttons.tableName"
+      :main-id="buttons.tableId"
+      @confirmImport="searchClickData"
+      @closeDialog="closeDialog"
+    /> -->
   </div>
 </template>
 
@@ -40,13 +53,11 @@
   import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
+  import ImportDialog from './ImportDialog';
   import CustomizeModule from '../__config__/customizeDialog.config';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, STANDARD_TABLE_COMPONENT_PREFIX } from '../constants/global';
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
+  import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
 
-  const customizeModules = {};
-  Object.keys(CustomizeModule).forEach((key) => {
-    customizeModules[key.toUpperCase()] = CustomizeModule[key];
-  });
   export default {
     data() {
       return {
@@ -98,13 +109,26 @@
     name: 'SingleObjectButtons',
     components: {
       ButtonGroup,
-      Dialog
+      Dialog, // 定制弹框
+      ImportDialog, // 导入弹框
     },
     watch: {
       tabcmd: {
         handler(val, oldval) {
           if (JSON.stringify(val) !== JSON.stringify(oldval)) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+            if (this.objectType === 'horizontal') { // 横向布局
+              if (this.itemName !== this.tableName) {
+                const { tabrelation } = this.itemInfo;
+                if (tabrelation === '1:m') { // 子表
+                  val.cmds.forEach((item, index) => {
+                    if (item === 'actionEXPORT') {
+                      val.prem[index] = true;
+                    }
+                  });
+                }
+              }
+            }
             setTimeout(() => {
               this.buttonsReorganization(val);
             }, 300);
@@ -168,6 +192,9 @@
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
+      closeDialog() { // 关闭导入弹框
+        this.closeImportDialog();
+      },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
           if (this.objectType === 'horizontal') { // 横向布局
@@ -385,26 +412,94 @@
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
         if (tabcmdData.cmds) {
-          tabcmdData.cmds.forEach((item, index) => {
-            if (item !== 'actionEXPORT') {
-              if (tabcmdData.prem[index]) {
-                const type = item.split('action');
-                const str = `CMD_${type[1].toUpperCase()}`;
-                if (str === 'CMD_PRINT') {
-                  this.dataArray.printValue = true;
-                } else {
-                  this.buttonMap[str].eName = item;
-                  const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
-                  const buttonConfigInfo = JSON.parse(buttonConfig);
-                  if (tabcmd.paths) {
-                    buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+          // tabcmdData.cmds.forEach((item, index) => {
+          if (this.objectType === 'horizontal') { // 横向布局
+            if (this.itemName !== this.tableName) { // 子表
+              const { tabrelation } = this.itemInfo;
+              if (tabrelation === '1:m') { // 子表1:m显示导入按钮
+                tabcmdData.cmds.forEach((item, index) => {
+                  if (tabcmdData.prem[index]) {
+                    const type = item.split('action');
+                    const str = `CMD_${type[1].toUpperCase()}`;
+                    if (str === 'CMD_PRINT') {
+                      this.dataArray.printValue = true;
+                    } else {
+                      this.buttonMap[str].eName = item;
+                      const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                      const buttonConfigInfo = JSON.parse(buttonConfig);
+                      if (tabcmd.paths) {
+                        buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                      }
+                      this.dataArray.refresh = true;
+                      this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                    }
                   }
-                  this.dataArray.refresh = true;
-                  this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                });
+              } else { // 纵向结构主表不显示导入  //1:1不显示导入按钮
+                tabcmdData.cmds.forEach((item, index) => {
+                  if (tabcmdData.prem[index]) {
+                    const type = item.split('action');
+                    const str = `CMD_${type[1].toUpperCase()}`;
+                    if (str === 'CMD_PRINT') {
+                      this.dataArray.printValue = true;
+                    } else {
+                      this.buttonMap[str].eName = item;
+                      const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                      const buttonConfigInfo = JSON.parse(buttonConfig);
+                      if (tabcmd.paths) {
+                        buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                      }
+                      this.dataArray.refresh = true;
+                      this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                    }
+                  }
+                });
+              }
+            } else { // 横向布局主表不显示导入
+              tabcmdData.cmds.forEach((item, index) => {
+                if (item !== 'actionEXPORT') {
+                  if (tabcmdData.prem[index]) {
+                    const type = item.split('action');
+                    const str = `CMD_${type[1].toUpperCase()}`;
+                    if (str === 'CMD_PRINT') {
+                      this.dataArray.printValue = true;
+                    } else {
+                      this.buttonMap[str].eName = item;
+                      const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                      const buttonConfigInfo = JSON.parse(buttonConfig);
+                      if (tabcmd.paths) {
+                        buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                      }
+                      this.dataArray.refresh = true;
+                      this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                    }
+                  }
+                }
+              });
+            }
+          } else { // 纵向结构主表不显示导入
+            tabcmdData.cmds.forEach((item, index) => {
+              if (item !== 'actionEXPORT') {
+                if (tabcmdData.prem[index]) {
+                  const type = item.split('action');
+                  const str = `CMD_${type[1].toUpperCase()}`;
+                  if (str === 'CMD_PRINT') {
+                    this.dataArray.printValue = true;
+                  } else {
+                    this.buttonMap[str].eName = item;
+                    const buttonConfig = JSON.stringify(this.buttonMap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                    const buttonConfigInfo = JSON.parse(buttonConfig);
+                    if (tabcmd.paths) {
+                      buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                    }
+                    this.dataArray.refresh = true;
+                    this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
+                  }
                 }
               }
-            }
-          });
+            });
+          }
+          // 
         }
         // }
       },
@@ -434,7 +529,6 @@
         });
       },
       objectTryDelete(obj) { // 删除
-        debugger;
         const searchData = {
           table: this.tableName,
           startIndex: 0,
