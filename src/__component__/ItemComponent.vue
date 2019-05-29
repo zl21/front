@@ -220,7 +220,7 @@
 
 
   const {
-    fkQueuploadProgressry, fkObjectSave
+    fkQueuploadProgressry, fkObjectSave, deleteImg
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
@@ -566,7 +566,7 @@
         // console.log(e);
       },
       deleteImg(item, index) {
-        console.log(item, index);
+        console.log(item, this._items);
         const that = this;
         this.$Modal.info({
           mask: true,
@@ -580,21 +580,24 @@
               HEADIMG,
               ID: that._items.props.itemdata.objId
             }; 
-            const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [...item]);
+            // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             that.deleteImgData({
-              parms
+              data
             }, index);
           }
         });
       },
       deleteImgData(obj, index) {
-        fkObjectSave({
-          searchObject: {
+        deleteImg({
+          params: {
             ...obj
           },
           // eslint-disable-next-line consistent-return
           success: (res) => {
-            console.log(res, this._items);
+            if (res.data.code === 0) {
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              this._items.value = this._items.props.itemdata.valuedata;
+            }
           }
         });
       },
