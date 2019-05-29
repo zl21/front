@@ -117,19 +117,20 @@
         handler(val, oldval) {
           if (JSON.stringify(val) !== JSON.stringify(oldval)) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-            if (this.objectType === 'horizontal') { // 横向布局
-              if (this.itemName !== this.tableName) {
-                const { tabrelation } = this.itemInfo;
-                if (tabrelation === '1:m') { // 子表
-                  val.cmds.forEach((item, index) => {
-                    if (item === 'actionEXPORT') {
-                      val.prem[index] = true;
-                    }
-                  });
+            
+            setTimeout(() => {
+              if (this.objectType === 'horizontal') { // 横向布局
+                if (this.itemName !== this.tableName) {
+                  const { tabrelation } = this.itemInfo;
+                  if (tabrelation === '1:m') { // 子表
+                    val.cmds.forEach((item, index) => {
+                      if (item === 'actionEXPORT') {
+                        val.prem[index] = true;
+                      }
+                    });
+                  }
                 }
               }
-            }
-            setTimeout(() => {
               this.buttonsReorganization(val);
             }, 300);
           }
@@ -257,6 +258,7 @@
         } else { // 纵向布局
           this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+          // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
         }
         this.$Message.success(message);
       },

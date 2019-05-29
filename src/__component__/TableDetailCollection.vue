@@ -184,6 +184,10 @@
         type: String,
         default: pageType.Vertical
       },
+      itemInfo: {// 当前子表信息
+        type: Object,
+        default: () => ({})
+      },
     },
     computed: {
       ...mapState('global', {
@@ -323,11 +327,12 @@
       },
       objectTryDelete(obj) { // 按钮删除方法
         let params = {};
-        const { tableName, itemId } = router.currentRoute.params;
+        const { tableName, tableId, itemId } = router.currentRoute.params;
         const path = obj.path;
+        const itemTable = this.updateData[this.tableName].delete;
         if (obj.path) {
           const mainTable = this.updateData[tableName].delete;
-          const itemTable = this.updateData[this.tableName].delete;
+         
           mainTable[tableName].ID = itemId;
           mainTable[tableName].isdelmtable = false;
           
@@ -338,8 +343,8 @@
         } else {
           params = {
             delMTable: false,
-            objId: itemId,
-            tabItem: { DL_B_PUR_ITEM: this.tableRowSelectedIds },
+            objId: tableId,
+            tabItem: { ...itemTable },
             table: tableName
           };
         }
@@ -350,6 +355,19 @@
           success: (res) => {
             const deleteMessage = res.data.message;
             this.$Message.success(`删除${deleteMessage}`);
+            const { refcolid } = this.itemInfo;
+            this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+            this.getObjectTableItemForTableData({
+              table: this.tableName,
+              objid: itemId,
+              refcolid, 
+              searchdata: {
+                column_include_uicontroller: true,
+                startindex: 0,
+                range: 10,
+                fixedcolumns: {}
+              }
+            });
           } 
         });
       },
