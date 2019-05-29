@@ -150,7 +150,7 @@ export default {
       }
     });
   },
-  performMainTableSaveAction({ commit }, parame) { // 主表保存
+  performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
@@ -160,7 +160,6 @@ export default {
     const { isreftabs } = parame;
     const { enter } = parame;
     const { itemNameGroup } = parame;
-
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
@@ -170,6 +169,9 @@ export default {
           itemAdd[itemName].ID = objId;
           if (path) { // 有path的参数
             add[tableName].ID = objId;
+            // itemAdd[itemName] = [
+            //   itemAdd[itemName]
+            // ];
             parames = {
               ...add,
               ...itemAdd
@@ -291,8 +293,13 @@ export default {
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
+        resolve();
         commit('updateNewMainTableAddSaveData', { data, itemName });
+      } else {
+        reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   performMainTableDeleteAction({ commit }, {
