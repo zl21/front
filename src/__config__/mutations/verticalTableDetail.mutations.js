@@ -102,7 +102,6 @@ export default {
   },
 
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
-    console.log('🍓', data.data);
     state.buttonsData.newMainTableSaveData = data.data;
     state.buttonsData.message = data.message;
   },
