@@ -176,6 +176,10 @@
         type: Number,
         default: 0
       },
+      status: {
+        type: Number,
+        default: 1
+      },
       tableName: {
         type: String,
         default: ''
@@ -267,7 +271,7 @@
               if (index === i) { this.buttonPath[cmd] = path; }
             });
           });
-         
+
           tabcmd.cmds.map((item, index) => {
             if (tabcmd.prem[index]) {
               const type = item.split('action');
@@ -279,8 +283,8 @@
                 } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                   buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                 }
-          
-               
+
+
                 if (tabcmd.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 }
@@ -337,10 +341,10 @@
         const itemTable = this.updateData[this.tableName].delete;
         if (obj.path) {
           const mainTable = this.updateData[tableName].delete;
-         
+
           mainTable[tableName].ID = itemId;
           mainTable[tableName].isdelmtable = false;
-          
+
           params = {
             ...mainTable,
             ...itemTable
@@ -353,9 +357,9 @@
             table: tableName
           };
         }
-        
+
         itemTableDelete({
-          params, 
+          params,
           path,
           success: (res) => {
             const deleteMessage = res.data.message;
@@ -365,7 +369,7 @@
             this.getObjectTableItemForTableData({
               table: this.tableName,
               objid: itemId,
-              refcolid, 
+              refcolid,
               searchdata: {
                 column_include_uicontroller: true,
                 startindex: 0,
@@ -373,7 +377,7 @@
                 fixedcolumns: {}
               }
             });
-          } 
+          }
         });
       },
       filterColumns(data) {
@@ -1308,10 +1312,10 @@
               ele => ele.limitdesc === params.row[cellData.colname]
             )[0].limitval
             : null;
-        } 
+        }
         return null;
       }
-       
+
     },
     mounted() {
     },

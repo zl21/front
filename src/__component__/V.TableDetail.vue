@@ -4,6 +4,8 @@
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+      :isactive="mainFormInfo.buttonsData.data.isactive"
+      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?buttonsData.data.watermarkimg:''"
       :item-name-group="childTableNames"
       :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
@@ -11,6 +13,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -56,6 +59,7 @@
           obj.componentAttribute.tableName = item.tablename;
           // obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
+          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
