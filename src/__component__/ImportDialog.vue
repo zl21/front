@@ -128,7 +128,7 @@
       },
       mainId: {
         // 主表id
-        type: Number,
+        type: [Number, String],
         default: -1
       },
       width: {
@@ -267,6 +267,7 @@
      
       // 上传成功
       handleSuccess(response) {
+        debugger;
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();

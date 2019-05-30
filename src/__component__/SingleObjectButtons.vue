@@ -39,18 +39,19 @@
       </keep-alive>
     </Modal>
     <!-- 导入弹框 -->
-    <!-- <ImportDialog
-      v-if="buttons.importData.importDialog"
-      :name="buttons.importData.importDialog"
-      :visible="buttons.importData.importDialog"
+    <ImportDialog
+      v-if="importData.importDialog"
+      :name="importData.importDialog"
+      :visible="importData.importDialog"
       :show-close="true"
-      :title="buttons.importData.importDialogTitle"
-      :tablename="buttons.tableName"
-      :main-table="buttons.tableName"
-      :main-id="buttons.tableId"
-      @confirmImport="searchClickData"
+      :title="importData.importDialogTitle"
+      :tablename="tableName"
+      :main-table="tableName"
+      :main-id="tableId"
+      @confirmImport="importsuccess"
       @closeDialog="closeDialog"
-    /> -->
+    />
+    <!-- @confirmImport="" -->
   </div>
 </template>
 
@@ -71,6 +72,10 @@
   export default {
     data() {
       return {
+        importData: {
+          importDialog: '',
+          importDialogTitle: ''
+        },
         dialogComponentName: null,
         actionDialog: {
           show: false,
@@ -216,7 +221,7 @@
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
       closeDialog() { // 关闭导入弹框
-        this.closeImportDialog();
+        this.importData.importDialog = false;
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
@@ -294,6 +299,7 @@
         case 'actionMODIFY': // 保存
           this.objectSave(obj);
           break;
+      
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
           break;
@@ -320,9 +326,22 @@
         case 'actionCopyBill':
           this.objectCopyBill();
           break;
+        case 'actionIMPORT':// 导入
+          this.objectIMPORT();
+          break;
         default:
           break;
         }
+      },
+      objectIMPORT() { // 导入
+        this.importData.importDialog = true;
+        this.importData.importDialogTitle = this.activeTab.label;
+      },
+      importsuccess() {
+        const { refcolid } = this.itemInfo;
+        this.getObjectTableItemForTableData({
+          table: this.tableName, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
+        });
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
         this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
