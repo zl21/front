@@ -38,7 +38,7 @@ export const fkQueuploadProgressry = function fkQueuploadProgressry(params) { //
   });
 };
 export const fkObjectSave = function fkObjectSave(params) { // 保存
-  network.post('/p/cs/objectSave', params.searchObject, { serviceId: params.serviceId }).then((res) => {
+  network.post('/p/cs/objectSave', params.searchObject).then((res) => {
     if (typeof params.success === 'function') {
       params.success(res);
     }

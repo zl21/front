@@ -61,12 +61,12 @@
   import { Version } from '../constants/global';
 
   import regExp from '../constants/regExp';
+  import { getGateway } from '../__utils__/network';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
-
   export default {
     name: 'CompositeForm',
     components: {},
@@ -653,7 +653,8 @@
         item.props.disabled = this.objreadonly ? this.objreadonly : item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
-        const paths = this.paths.some(x => x === '/p/cs/objectSave');
+        const paths = this.paths.some(x => x === '/p/cs/users/save');
+       
         item.props.path = paths;
         if (this.objreadonly) {
           // 页面只读标记
@@ -876,7 +877,7 @@
             sendData: {
               path: `${this.masterName}/${this.masterId}/`
             },
-            url: '/ad-app/p/cs/upload2',
+            url: getGateway('/p/cs/upload2'),
             valuedata
           };
         }

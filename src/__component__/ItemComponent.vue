@@ -566,7 +566,6 @@
         // console.log(e);
       },
       deleteImg(item, index) {
-        console.log(item, this._items);
         const that = this;
         this.$Modal.info({
           mask: true,
@@ -581,9 +580,16 @@
               ID: that._items.props.itemdata.objId
             }; 
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
-            that.deleteImgData({
-              data
-            }, index);
+            // 判断是否有path
+            if (this._items.props.path) {
+              that.deleteImgData({
+                data
+              }, index);
+            } else {
+              
+              const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
+              that.upSaveImg(parms, '',index);
+            }
           }
         });
       },
@@ -632,13 +638,16 @@
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
+        console.log(parms);
         if (!this._items.props.path) {
           const fixedData = {
             fixedData: {
               [this._items.props.itemdata.masterName]: {
                 [this._items.props.itemdata.colname]: data === '' ? '' : JSON.stringify(data)
               }
-            }
+            },
+            objId: this._items.props.itemdata.objId,
+            table: this._items.props.itemdata.masterName
           };
           return Object.assign(parms, fixedData);
         }
@@ -649,7 +658,7 @@
         };
         return Object.assign({}, parmsdata);
       },
-      upSaveImg(obj, fixedData) {
+      upSaveImg(obj, fixedData, index) {
         fkObjectSave({
           searchObject: {
             ...obj
@@ -659,15 +668,21 @@
             if (res.data.code !== 0) {
               return false;
             }
-            const data = fixedData[0];
-            if (typeof this._items.props.itemdata.valuedata !== 'object') {
-              this._items.props.itemdata.valuedata = [];
-            }
+            if ( index ) {
+              // 删除
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              this._items.value = this._items.props.itemdata.valuedata;
+            } else {
+              const data = fixedData[0];
+              if (typeof this._items.props.itemdata.valuedata !== 'object') {
+                this._items.props.itemdata.valuedata = [];
+              }
             
-            this._items.props.itemdata.valuedata.push({
-              NAME: data.NAME,
-              URL: data.URL
-            });
+              this._items.props.itemdata.valuedata.push({
+                NAME: data.NAME,
+                URL: data.URL
+              });
+            }
           }
         });
       },
