@@ -270,7 +270,12 @@
         promise.then(() => {
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;
-          const id = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId;
+          let id = '';
+          if (this.$store.state[getModuleName()].buttonsData.newMainTableSaveData) {
+            id = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId;
+          } else {
+            id = itemId;
+          }
           const message = this.$store.state[getModuleName()].buttonsData.message;
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
@@ -306,10 +311,6 @@
           //   }
           // });
         });
-
-        // setTimeout(() => { // 保存成功后刷新页面数据
-        
-        // }, 1000);
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();

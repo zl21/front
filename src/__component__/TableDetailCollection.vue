@@ -267,15 +267,20 @@
               if (index === i) { this.buttonPath[cmd] = path; }
             });
           });
+         
           tabcmd.cmds.map((item, index) => {
             if (tabcmd.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str !== 'CMD_MODIFY') { // 保存不显示
                 let buttonConfigInfo = buttonmap[str];
-                if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                if (this.buttonsData.submitData) {
+                  // this.buttonsData.submitData.oK = true;
+                } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                   buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                 }
+          
+               
                 if (tabcmd.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 }

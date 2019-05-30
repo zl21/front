@@ -34,7 +34,8 @@ export default () => ({
         'getItemObjForChildTableForm',
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
-        'getInputForitemForChildTableForm'
+        'getInputForitemForChildTableForm',
+        'getObjectTrySubmit'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -50,6 +51,7 @@ export default () => ({
         'changeUpdateDataForForm',
         'savaCopyData',
         'copyDefaultData',
+        'resetFormReadOnlyAttribute'
 
       ]),
   },

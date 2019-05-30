@@ -53,9 +53,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
-        // if (type === 'copy') {
         commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
-        // }
         dispatch('updateObjectForMainTableForm').then(() => {
           commit('updatePanelData', formData);
         });
@@ -109,7 +107,7 @@ export default {
     });
   },
   // 按钮
-  performMainTableSaveAction({ commit }, parame) { // 主表保存
+  performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
@@ -197,8 +195,13 @@ export default {
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
+        resolve();
         commit('updateNewMainTableAddSaveData', { data, itemName });
+      } else {
+        reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   performMainTableDeleteAction({ commit }, {
