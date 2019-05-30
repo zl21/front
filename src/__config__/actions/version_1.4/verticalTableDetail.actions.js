@@ -378,6 +378,21 @@ export default {
       reject();
     });
   },
+  getObjectTryInvalid({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取提交数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
 
-  
+        commit('updateiInvalidData', invalidData);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
 };

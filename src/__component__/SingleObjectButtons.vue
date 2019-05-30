@@ -1,3 +1,4 @@
+
 <template>
   <div class="singleObjectButton">
     <div
@@ -113,7 +114,7 @@
           action: '',
         }, // 保存url
         defaultForCopyData: {}, // 保存复制操作时所需要的当前页面的数据
-        commit: false, // 控制提交按钮操作时子表form必填项不进行验证
+        itemTableValidation: false, // 控制提交按钮操作时子表form必填项不进行验证
         saveButtonPath: '', // 类型为保存的按钮path
         saveEventAfter: '', // 保存事件执行完成后的操作
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
@@ -281,7 +282,9 @@
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
           // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
         }
-        this.$Message.success(message);
+        if (message) {
+          this.$Message.success(message);
+        }
       },
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
@@ -307,7 +310,7 @@
           this.objectTryUnSubmit();
           break;
         case 'actionVOID': // 作废
-          this.objectTryVoid();
+          this.objectTryVoid(obj);
           break;
         case 'actionCANCOPY': // 复制
           this.copyFlag = true;
@@ -322,11 +325,11 @@
         }
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
-        this.commit = true;// 提交逻辑不需要验证子表必填项
+        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.$refs.dialogRef.open();
           this.dialogConfig = {
-            contentText: '确认执行删除?',
+            contentText: '确认执行提交?',
             confirm: () => {
               obj.requestUrlPath = this.saveButtonPath;
               this.determineSaveType(obj); 
@@ -355,8 +358,19 @@
    
         };
       },
-      objectTryVoid() {
-
+      objectTryVoid(obj) {
+        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
+        if (this.verifyRequiredInformation()) { // 验证表单必填项
+          this.$refs.dialogRef.open();
+          this.dialogConfig = {
+            contentText: '确认执行作废?',
+            confirm: () => {
+              obj.requestUrlPath = this.saveButtonPath;
+              this.determineSaveType(obj); 
+              this.saveEventAfter = 'invalid';
+            }
+          };
+        }
       },
       webactionClick(tab) { // 动作定义执行
         this.activeTabAction = tab;
@@ -379,7 +393,6 @@
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
-        // debugger;
         this.actionDialog.show = true;
         this.actionDialog.title = tab.webdesc;
         if (tab.action.indexOf('?') >= 0) {
@@ -917,9 +930,7 @@
         }
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.isreftabs) { // 存在子表时
-          if (this.commit) {
-             
-          } else {
+          if (!this.itemTableValidation) {
             const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
             if (itemCheckedInfo) {
               const itemMessageTip = itemCheckedInfo.messageTip;
@@ -1034,13 +1045,30 @@
               objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
             });
           });
-   
+          let message = '';
           promise.then(() => {
-            const message = this.buttonsData.submitData.message;
-            if (message) {
-              this.upData(`${message}`);
-            }
+            message = this.buttonsData.submitData.message;
           });
+          if (message) {
+            this.upData(`${message}`);
+          } else {
+            this.upData();
+          }
+        } else if (this.saveEventAfter === 'invalid') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTryInvalid({
+              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
+            });
+          });
+          let message = '';
+          promise.then(() => {
+            message = this.buttonsData.invalidData.message;
+          });
+          if (message) {
+            this.upData(`${message}`);
+          } else {
+            this.upData();
+          }
         } else { // 保存后的保存成功提示信息
           const message = this.buttonsData.message;
           if (message) {

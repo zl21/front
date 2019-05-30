@@ -60,6 +60,7 @@
           // obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
           obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+          obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));

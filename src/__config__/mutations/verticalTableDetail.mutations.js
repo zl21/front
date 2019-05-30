@@ -161,11 +161,14 @@ export default {
       state.updateData[tableName].changeData = {};
     }
   },
-  updateSubmitData(state, submitData) {
+  updateSubmitData(state, submitData) { // 提交
     state.buttonsData.submitData = submitData;
   },
-  updateUnSubmitData(state, unSubmitData) {
+  updateUnSubmitData(state, unSubmitData) { // 取消提交
     state.buttonsData.unSubmitData = unSubmitData;
+  },
+  updateiInvalidData(state, invalidData) { // 作废
+    state.buttonsData.invalidData = invalidData;
   },
   // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
   //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {

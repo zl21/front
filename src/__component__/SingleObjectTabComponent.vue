@@ -16,6 +16,7 @@
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      v-show="status === 1"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -55,7 +56,7 @@
       :type="type"
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
-      :status="buttonsData.data.status"
+      :status="status"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
@@ -101,6 +102,10 @@
       },
       isactive: {
         type: Boolean,
+      },
+      status: {
+        type: Number,
+        default: 1
       },
       tableId: {
         type: String,

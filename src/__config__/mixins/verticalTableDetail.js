@@ -36,7 +36,8 @@ export default () => ({
         'performMainTableDeleteAction',
         'getInputForitemForChildTableForm',
         'getObjectTrySubmit',
-        'getObjectTryUnSubmit'
+        'getObjectTryUnSubmit',
+        'getObjectTryInvalid'
       ]),
     ...mapMutations(getComponentName(),
       [
