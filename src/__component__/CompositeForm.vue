@@ -77,6 +77,13 @@
           return {};
         }
       },
+      objreadonly: {
+        // 是否可读
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       defaultSetValue: {
         type: Object,
         default() {
@@ -148,14 +155,16 @@
         handler() {
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
-          // console.log(val[0].childs[0].item.props.valuedata);
-          // console.log(JSON.stringify(val) ===JSON.stringify(old))
-          // if (JSON.stringify(val) === JSON.stringify(old)) {
-          //   this.FormItemComponent = '';
-          
-          // }
         },
         deep: true
+      },
+      objreadonly: {
+        handler() {
+          this.computdefaultData = this.reorganizeForm();
+          this.Comparison();
+        },
+        deep: true
+      
       }
     },
     updated() {},
@@ -497,6 +506,12 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
+        if (this.objreadonly) {
+          // 页面只读标记
+          str = 'input';
+
+          return str;
+        }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           str = 'input';
@@ -558,6 +573,10 @@
         //   item.valuedata = '';
         //   return '';
         // }
+        if (this.objreadonly) {
+          // 页面只读标记
+          return item.defval || item.valuedata || '';
+        }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           return item.defval || item.valuedata || '';
@@ -631,11 +650,16 @@
       propsType(current, item) {
         // 表单 props
         const obj = item;
-        item.props.disabled = item.props.readonly;
+        item.props.disabled = this.objreadonly ? this.objreadonly : item.props.readonly;
         item.props.maxlength = item.props.length;
         item.props.comment = item.props.comment;
         const paths = this.paths.some(x => x === '/p/cs/objectSave');
         item.props.path = paths;
+        if (this.objreadonly) {
+          // 页面只读标记
+          item.props.type = 'text';
+          return false;
+        }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
