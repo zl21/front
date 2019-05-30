@@ -230,7 +230,6 @@
             return;
           }
           this.changeNumber = this.changeNumber + 1;
-
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
@@ -426,12 +425,17 @@
         // 隐藏
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
+        // 是否显示 隐藏字段
+        // this.newFormItemLists[index].show = false;
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
-            if (option.item.value === refval) {
-              this.newFormItemLists[index].show = true;
-            } else {
-              this.newFormItemLists[index].show = false;
+            if (option.item) {
+              const value = Array.isArray(option.item.value) ? option.item.value.toString() : option.item.value;
+              if (JSON.stringify(value) === JSON.stringify(refval)) {
+                this.newFormItemLists[index].show = true;
+              } else {
+                this.newFormItemLists[index].show = false;
+              }
             }
           }
           return option;

@@ -440,13 +440,36 @@
           validate: this.validateList(current)
         };
         // 属性赋值
-        // 属性isuppercase控制
-        if (current.isuppercase) {
-          // obj.item.props.regx = regExp.Letter;
+        // 是否显示 隐藏字段
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          if (this.computdefaultData.length > 0) {
+            this.computdefaultData[current.formIndex].childs[index].show = true;
+          } else {
+            obj.show = this.hidecolumn(array, current);
+          }
         }
+
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   console.log(obj, this);
+        //   // obj.item.props.regx = regExp.Letter;
+        // }
 
         this.propsType(current, obj.item);
         return obj;
+      },
+      hidecolumn(array, current) {
+        // 默认值的联动
+        let check = true;
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          const refcolumn = current.hidecolumn.refcolumn;
+          const refval = current.hidecolumn.refval;
+          check = array.some((option) => {
+            const value = option.item.props.defval || option.item.props.valuedata;
+            return option.item.field === refcolumn && JSON.stringify(value) === JSON.stringify(refval);
+          });
+        } 
+
+        return check;
       },
       validateList(current) {
         // 联动校验
