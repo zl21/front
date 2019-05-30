@@ -1,12 +1,12 @@
 <template>
   <div class="singleObjectButton">
     <div
-      v-if="submitImage"
+      v-if="watermarkimg"
       class="submit-img"
     >
       <img
-        :src="submitImage"
-        alt=""
+        src="/assets/image/submit.png"
+        alt="水印图标"
       >
     </div>
     <ButtonGroup
@@ -65,7 +65,7 @@
   import ImportDialog from './ImportDialog';
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
-  import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
+  // import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
 
   export default {
     data() {
@@ -175,6 +175,14 @@
       }),
     },
     props: {
+      watermarkimg: {
+        type: String,
+        default: ''
+      },
+      isactive: {
+        type: Boolean,
+        default: false
+      }, // 是否显示水印图标
       tabcmd: {
         type: Object,
         default: () => ({})
@@ -327,8 +335,25 @@
           };
         }
       },
-      objectTryUnSubmit() {
-
+      objectTryUnSubmit() { // 按钮取消提交操作
+        this.$refs.dialogRef.open();
+        this.dialogConfig = {
+          contentText: '确认执行取消提交?',
+          confirm: () => {
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTryUnSubmit({
+                objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
+              });
+            });
+            promise.then(() => {
+              const message = this.buttonsData.unSubmitData.message;
+              if (message) {
+                this.upData(`${message}`);
+              }
+            });
+          }
+   
+        };
       },
       objectTryVoid() {
 
@@ -1014,11 +1039,6 @@
             const message = this.buttonsData.submitData.message;
             if (message) {
               this.upData(`${message}`);
-              setTimeout(() => {
-                // this.submitImage = this.mainFormInfo.buttonsData.data.watermarkimg;
-                this.submitImage = '/assets/image/submit.png';
-                this.resetFormReadOnlyAttribute();
-              }, 2000);
             }
           });
         } else { // 保存后的保存成功提示信息

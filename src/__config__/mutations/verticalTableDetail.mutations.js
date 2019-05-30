@@ -164,11 +164,14 @@ export default {
   updateSubmitData(state, submitData) {
     state.buttonsData.submitData = submitData;
   },
-  resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
-    state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {
-      addcolums.childs.forEach((expand) => {
-        expand.readonly = true;
-      });
-    });
-  }
+  updateUnSubmitData(state, unSubmitData) {
+    state.buttonsData.unSubmitData = unSubmitData;
+  },
+  // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
+  //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {
+  //     addcolums.childs.forEach((expand) => {
+  //       expand.readonly = true;
+  //     });
+  //   });
+  // }
 };

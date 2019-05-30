@@ -362,4 +362,22 @@ export default {
       reject();
     });
   },
+  getObjectTryUnSubmit({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取提交数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const unSubmitData = res.data;
+        resolve();
+        commit('updateUnSubmitData', unSubmitData);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
+
+  
 };

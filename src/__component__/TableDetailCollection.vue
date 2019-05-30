@@ -87,7 +87,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
+  import { mapState } from 'vuex';
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
@@ -271,9 +271,11 @@
               if (index === i) { this.buttonPath[cmd] = path; }
             });
           });
-
+ 
           tabcmd.cmds.map((item, index) => {
-            if (tabcmd.prem[index]) {
+            if (this.status === 2) {
+              tabcmd.prem[index] = false;
+            } else if (tabcmd.prem[index]) {
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str !== 'CMD_MODIFY') { // 保存不显示
@@ -283,8 +285,6 @@
                 } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                   buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                 }
-
-
                 if (tabcmd.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                 }
@@ -295,9 +295,11 @@
                 );
               }
             }
+          
             return item;
           });
         }
+        
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         return buttonGroupShow;
       },
