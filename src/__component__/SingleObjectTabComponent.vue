@@ -10,11 +10,13 @@
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
       :tabwebact="buttonsData.data.tabwebact"
+      :isactive="isactive"
       :isreftabs="isreftabs"
     />
     <component
       :is="'CompositeForm'"
       v-if="formData.isShow"
+      :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -30,6 +32,7 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -52,6 +55,7 @@
       :type="type"
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
+      :status="buttonsData.data.status"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
@@ -90,6 +94,12 @@
         default: ''
       },
       isreftabs: {
+        type: Boolean,
+      },
+      objreadonly: {
+        type: Boolean,
+      },
+      isactive: {
         type: Boolean,
       },
       tableId: {
@@ -264,7 +274,7 @@
         const promise = new Promise((resolve, reject) => {
           this.$store.dispatch(`${getModuleName()}/performMainTableSaveAction`, { parame, resolve, reject });
         });
-   
+
         // this.performMainTableSaveAction(parame);
         this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
         promise.then(() => {
@@ -281,13 +291,13 @@
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             });
             this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
 
             // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
-            //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true } 
+            //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             // });
           } else if (itemId === 'New') {
             this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id });
@@ -302,7 +312,7 @@
           // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
           //   table: this.tableName,
           //   objid: itemId,
-          //   refcolid, 
+          //   refcolid,
           //   searchdata: {
           //     column_include_uicontroller: true,
           //     startindex: 0,
