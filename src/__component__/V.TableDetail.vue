@@ -5,7 +5,7 @@
       object-type="vertical"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
-      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?buttonsData.data.watermarkimg:''"
+      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:''"
       :item-name-group="childTableNames"
       :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
