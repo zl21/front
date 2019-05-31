@@ -1143,6 +1143,9 @@
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
         });
+        // promise.catch(() => {
+        //   this.forAgTableErrorMessage(this.buttons.batchVoidForButtonsData.data);
+        // });
       },
       batchSubmit() {
         // 批量提交
@@ -1185,6 +1188,9 @@
             this.getQueryListForAg(this.searchData);
           }
         });
+      },
+      forAgTableErrorMessage(errorData) { // 操纵列表数据失败时ag显示错误提示的图标以及message
+        this.setAgTableErrorMessage(errorData);
       },
       clickButtonsCollect() { // 收藏
         const params = {

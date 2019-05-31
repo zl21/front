@@ -100,6 +100,7 @@
         type: Array,
         default: () => []
       }, // 错误信息数组
+
       onCellSingleClick: {
         type: Function,
         default: () => {
@@ -170,6 +171,7 @@
     },
     watch: {
       datas(val) {
+        console.log(val.deleteFailInfo);
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;

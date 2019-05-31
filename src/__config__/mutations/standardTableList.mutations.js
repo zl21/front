@@ -1,4 +1,3 @@
-import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
 
 export default {
   updateTableData({
@@ -10,6 +9,9 @@ export default {
     ag
   }, data) {
     ag.status4css = data;
+  },
+  setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
+    ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);
   },
 
   // 表单
@@ -115,8 +117,9 @@ export default {
   updateButtonbatchUnSubmitData({ buttons }, data) { // 批量反提交
     buttons.batchUnSubmitData = data;
   },
-  batchVoidForButtonsData({ buttons }, data) { // 批量反提交
+  batchVoidForButtonsData({ buttons, ag }, data) { // 批量反提交
     buttons.batchVoidForButtonsData = data;
+    ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, data);
   },
   updateUserConfig(state, { userConfig }) {
     state.hideColumn = userConfig.hideColumn;
@@ -126,4 +129,5 @@ export default {
   updateButtonsExport({ buttons }, data) { // 导出
     buttons.exportdata = data;
   }
+ 
 };

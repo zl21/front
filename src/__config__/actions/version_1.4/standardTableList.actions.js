@@ -141,12 +141,13 @@ export default {
   }) { // 调用作废接口
     network.post('/p/cs/batchVoid', 
       { tableName, ids }).then((res) => {
-      const data = res.data.message;
+      const data = res.data;
       if (res.data.code === 0) {
         resolve();
         commit('batchVoidForButtonsData', data);
       } else {
         reject();
+        commit('batchVoidForButtonsData', data,);
       }
     }).catch(() => {
       reject();
