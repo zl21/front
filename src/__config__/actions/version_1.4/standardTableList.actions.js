@@ -73,6 +73,17 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {
+    // debugger;
+    // let param = {};
+    // if (item.action) {
+    //   param = {};
+    // } else {
+    //   param = {
+    //     actionid: item.webid,
+    //     webaction: null,
+    //     param: JSON.stringify(obj),
+    //   };
+    // }
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,

@@ -34,7 +34,8 @@ export default () => ({
         'getItemObjForChildTableForm',
         'getObjectTableItemForTableData',
         'performMainTableSaveAction',
-        'performMainTableDeleteAction'
+        'performMainTableDeleteAction',
+        'getExportQueryForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [

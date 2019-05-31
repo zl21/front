@@ -86,7 +86,7 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
-  import regExp from '../constants/regExp';
+  // import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
 
@@ -443,7 +443,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = getGateway('/p/cs/menuimport');
+                obj.item.props.fkobj.url = '/p/cs/menuimport';
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;
@@ -654,6 +654,7 @@
       },
      
       webactionClick(type, obj) {
+        debugger;
         // 点击自定义按钮 创建table
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
@@ -780,6 +781,7 @@
         }, 300);
       },
       webActionSlient(item) {
+        debugger;
         // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,

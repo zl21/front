@@ -69,6 +69,7 @@
   import ImportDialog from './ImportDialog';
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
+  import { getGateway } from '../__utils__/network';
   // import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
 
   export default {
@@ -435,7 +436,34 @@
         }
       },
       objectEXPORT() { // 导出功能
-          
+        const searchData = {
+          table: this.tableName,
+          column_include_uicontroller: true,
+          fixedcolumns: { ID: this.updateData[this.itemName].delete[this.itemName] },
+          range: 10,
+          startindex: 0
+        };
+        const OBJ = {
+          searchdata: searchData,
+          filename: this.tableName,
+          filetype: '.xlsx',
+          showColumnName: true,
+          menu: this.tableName
+        };
+        const promise = new Promise((resolve, reject) => {
+          this.getExportQueryForButtons({ OBJ, resolve, reject });
+        });
+        promise.then(() => {
+          if (this.buttonsData.exportdata) {
+            const eleLink = document.createElement('a');
+            const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+            eleLink.setAttribute('href', path);
+            eleLink.style.display = 'none';
+            document.body.appendChild(eleLink);
+            eleLink.click();
+            document.body.removeChild(eleLink);
+          }
+        });
       },
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
