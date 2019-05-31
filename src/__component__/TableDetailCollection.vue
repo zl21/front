@@ -399,7 +399,7 @@
             }
             if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
               this.dataSource.ordids.map((order) => {
-                if (ele.colname === order.colname) {
+                if (ele.colname === order.colname && param.title !== '序号') {
                   param.sortType = order.ordasc ? 'asc' : 'desc';
                 }
                 return order;
