@@ -1049,27 +1049,29 @@
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this.$route.params, this.buttons.selectIdArr
+                this.$route.params, this.buttons.selectIdArr.length
               );
             }, 200);
-            
-            // this.dataConShow.dataConShow = true;
-            // this.dataConShow.title = this.buttons.tabledesc;
-            // this.dataConShow.tabConfig = {
-            //   tabledesc: this.buttons.tabledesc,
-            //   tablename: this.buttons.tableName,
-            //   tableid: this.buttons.tableId,
-            //   tabrelation: '1:1',
-            //   objid: this.buttons.selectIdArr
-            // };
           } else {
-            const data = {
+            this.$Modal.confirm({
               title: '警告',
               content: `未勾选记录,将批量更新所有查询结果(共计${
                 this.ag.datas.totalRowCount
-              }行),是否确定继续操作?`
-            };
-            this.$Modal.fcWarning(data);
+              }行),是否确定继续操作?`,
+              showCancel: true,
+              onOk: () => {
+                this.modifyDialogshow = true;
+                setTimeout(() => {
+                  this.$refs.dialogmodify.open(
+                    this.$route.params, this.ag.datas.totalRowCount
+                  );
+                }, 200);
+              },
+              onCancel: () => {
+
+              }
+
+            });
           }
         }
       },

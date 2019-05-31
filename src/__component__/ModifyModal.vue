@@ -24,7 +24,7 @@
           />
         </Spin>
         <div class="modify-tip">
-          已选中批量修改记录数：{{ ids.length }}行
+          已选中批量修改记录数：{{ ids }}行
         </div>
         <component 
           :is="'CompositeForm'"
@@ -94,6 +94,9 @@
         handler(val) {
           if (Object.hasOwnProperty.call(val, 'addcolums')) {
             let childs = val.addcolums.reduce((arr, item) => {
+              item.childs.forEach((item) => {
+                item.isnotnull = false;
+              });
               arr.push(item.childs);
               return arr;
             }, []);
@@ -120,6 +123,7 @@
           success: (res) => {
             if (res.data.code === 0) {
               this.loading = false;
+
               this.formList = res.data.data;
             }
           }
