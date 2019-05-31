@@ -37,7 +37,8 @@ export default () => ({
         'getInputForitemForChildTableForm',
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
-        'getObjectTryInvalid'
+        'getObjectTryInvalid',
+        'getExportQueryForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [

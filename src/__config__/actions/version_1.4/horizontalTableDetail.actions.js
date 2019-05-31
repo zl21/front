@@ -246,5 +246,20 @@ export default {
       }
     });
   },
-
+  getExportQueryForButtons({ commit }, // 导出
+    { OBJ, resolve, reject }) {
+    network.post('/p/cs/export', urlSearchParams(
+      OBJ
+    )).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+      } else {
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
 };

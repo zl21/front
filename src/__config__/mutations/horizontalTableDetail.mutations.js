@@ -169,6 +169,9 @@ export default {
       state.updateData[tableName].changeData = copySaveDataForParam;
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }
+  },
+  updateButtonsExport(state, data) { // 导出
+    state.buttonsData.exportdata = data;
   }
 
 };
