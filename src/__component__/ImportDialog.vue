@@ -267,7 +267,6 @@
      
       // 上传成功
       handleSuccess(response) {
-        debugger;
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
@@ -280,7 +279,7 @@
           this.errorMsg.message = response.message;
           this.clearFile();
         }
-        this.$emit('confirmImport', event);
+        this.$emit('confirmImport');
       },
       // 上传失败
       handleError(e) {

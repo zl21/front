@@ -1,12 +1,14 @@
 
 <template>
-  <div class="singleObjectButton">
+  <div
+    class="singleObjectButton"
+  >
     <div
-      v-if="watermarkimg"
+      v-if="watermarkImg"
       class="submit-img"
     >
       <img
-        src="/assets/image/submit.png"
+        :src="watermarkImg"
         alt="水印图标"
       >
     </div>
@@ -72,6 +74,7 @@
   export default {
     data() {
       return {
+        loading: true,
         importData: {
           importDialog: '',
           importDialogTitle: ''
@@ -179,6 +182,13 @@
         activeTab: ({ activeTab }) => activeTab,
         keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
       }),
+      watermarkImg() { // 匹配水印图片路径
+        if (this.watermarkimg.includes('/static/img/')) {
+          return this.watermarkimg.replace('/static/img/', '/src/assets/image/');
+        }
+        return this.watermarkimg;
+      }
+  
     },
     props: {
       watermarkimg: {
@@ -425,7 +435,7 @@
         }
       },
       objectEXPORT() { // 导出功能
-
+          
       },
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
