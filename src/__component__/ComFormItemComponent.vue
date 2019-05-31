@@ -229,6 +229,7 @@
           if (this.indexItem < 0) {
             return;
           }
+          console.log(val);
           this.changeNumber = this.changeNumber + 1;
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
