@@ -161,6 +161,7 @@ export default {
     const { enter } = parame;
     const { itemNameGroup } = parame;
     let parames = {};
+
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (isreftabs) { // 存在子表
@@ -169,9 +170,10 @@ export default {
           itemAdd[itemName].ID = objId;
           if (path) { // 有path的参数
             add[tableName].ID = objId;
-            // itemAdd[itemName] = [
-            //   itemAdd[itemName]
-            // ];
+            add[tableName].ISACTIVE = 'Y';
+            itemAdd[itemName] = [
+              itemAdd[itemName]
+            ];
             parames = {
               ...add,
               ...itemAdd

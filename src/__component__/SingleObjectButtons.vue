@@ -1024,7 +1024,7 @@
               tableName,
               tableId: this.tableId,
               label,
-              id: this.buttonsData.newMainTableSaveData.objId ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+              id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
             this.updateChangeData({ tableName: this.tableName, value: {} });
 
