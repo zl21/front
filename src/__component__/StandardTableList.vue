@@ -443,7 +443,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = '/p/cs/menuimport';
+                obj.item.props.fkobj.url = getGateway('/p/cs/menuimport');
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;

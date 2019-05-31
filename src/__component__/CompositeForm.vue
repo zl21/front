@@ -827,7 +827,7 @@
                 refobjid: current.refobjid,
                 reftable: current.reftable,
                 reftableid: current.reftableid,
-                url: '/p/cs/menuimport'
+                url: getGateway('/p/cs/menuimport')
               };
               item.props.datalist = [];
               item.props.Selected = [
@@ -847,7 +847,7 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              url: '/p/cs/menuimport'
+              url: getGateway('/p/cs/menuimport')
             };
             item.props.datalist = [];
             item.props.Selected = [
