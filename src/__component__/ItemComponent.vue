@@ -632,13 +632,14 @@
             if (this.$route.params && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
               //  判断是否需要调用保存
               self.upSaveImg(parms, fixedData);
+            } else {
+              this._items.props.itemdata.valuedata.push(fixedData[0]);
             }
           }
         });
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
-        console.log(parms);
         if (!this._items.props.path) {
           const fixedData = {
             fixedData: {

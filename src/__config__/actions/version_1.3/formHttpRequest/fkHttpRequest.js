@@ -64,3 +64,30 @@ export const fkQueryListPop = function fkQueryListPop(params) {
     }
   });
 };
+export const itemTableDelete = function itemTableDelete({ params, path, success }) { // 表格删除方法
+  network.post(path || '/p/cs/objectDelete', params).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
+    }
+  });
+};
+export const editorUpload = function editorUpload({ params, success }) { // 上传图片
+  const { path } = params;
+  const customUploadImg = new FormData();
+  customUploadImg.append('file', params.customUploadImg.file);
+  customUploadImg.append('path', params.customUploadImg.path);
+
+  network.post(path || '/p/cs/upload2', customUploadImg).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
+    }
+  });
+};
+export const deleteImg = function deleteImg({ params, success }) { // 删除图片保存
+  const { path } = params;
+  network.post(path || '/p/cs/users/save', params).then((res) => {
+    if (typeof success === 'function') {
+      success(res);
+    }
+  });
+};
