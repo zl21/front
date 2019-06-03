@@ -15,6 +15,7 @@ export default () => ({
       updateData: ({ updateData }) => updateData,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+      tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
 
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         acc.push({ tableName: cur.tablename });

@@ -15,6 +15,7 @@ export default () => ({
       updateData: ({ ...updateData }) => updateData.updateData,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+      tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {

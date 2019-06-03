@@ -57,6 +57,7 @@
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
       :status="status"
+      :tooltipForItemTable="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
@@ -138,7 +139,11 @@
       childTableNames: {
         type: Array,
         default: () => []
-      } // 面板数据
+      }, // 面板数据
+      tooltipForItemTable: {
+        type: Array,
+        default: () => []
+      }
     },
     watch: {},
     computed: {
