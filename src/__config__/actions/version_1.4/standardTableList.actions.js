@@ -147,7 +147,7 @@ export default {
         commit('batchVoidForButtonsData', data);
       } else {
         reject();
-        commit('batchVoidForButtonsData', data,);
+        commit('batchVoidForButtonsData', data.data,);
       }
     }).catch(() => {
       reject();

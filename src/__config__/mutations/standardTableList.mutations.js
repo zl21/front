@@ -119,7 +119,10 @@ export default {
   },
   batchVoidForButtonsData({ buttons, ag }, data) { // 批量反提交
     buttons.batchVoidForButtonsData = data;
-    ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, data);
+     
+    // ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, data);
+    ag.datas.deleteFailInfo = data;
+    ag.datas = Object.assign({}, ag.datas);
   },
   updateUserConfig(state, { userConfig }) {
     state.hideColumn = userConfig.hideColumn;

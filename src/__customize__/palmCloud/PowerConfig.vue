@@ -2,16 +2,16 @@
   <div class="powerConfigContainer">
     <div class="buttonGroup">
       <Button
-              type="fcdefault"
-              class="saveButton"
-              @click="saveClick"
+        type="fcdefault"
+        class="saveButton"
+        @click="saveClick"
       >
         保存
       </Button>
       <Button
-              type="fcdefault"
-              class="refreshButton"
-              @click="refreshClick"
+        type="fcdefault"
+        class="refreshButton"
+        @click="refreshClick"
       >
         刷新
       </Button>
@@ -20,27 +20,27 @@
       <div class="menuContainer">
         <div class="menuList">
           <Menu
-                  v-if="menuShow"
-                  width="238"
-                  class="menu"
-                  :open-names="getOpenNames"
-                  :active-name="activeName"
+            v-if="menuShow"
+            width="238"
+            class="menu"
+            :open-names="getOpenNames"
+            :active-name="activeName"
           >
             <Submenu
-                    v-for="(item,index) in menuLists"
-                    :key="index"
-                    :name="index"
-                    :arrowdown="item.childs && item.childs.length > 0"
-                    class="submenu"
+              v-for="(item,index) in menuLists"
+              :key="index"
+              :name="index"
+              :arrowdown="item.childs && item.childs.length > 0"
+              class="submenu"
             >
               <template slot="title">
                 {{ item.name }}
               </template>
               <MenuItem
-                      v-for="(temp,j) in item.childs"
-                      :key="j"
-                      :name="`${index}-${j}`"
-                      @click.native="menuItemClick(temp)"
+                v-for="(temp,j) in item.childs"
+                :key="j"
+                :name="`${index}-${j}`"
+                @click.native="menuItemClick(temp)"
               >
                 {{ temp.name }}
               </MenuItem>
@@ -51,40 +51,47 @@
       <div class="treeContainer">
         <div class="inputClass">
           <Input
-                  v-model="inputValue"
-                  clearable
-                  placeholder="请输入用户名"
-                  @on-change="inputChange"
-                  @on-enter="inputEnter"
-                  @on-clear="inputClear"
-          >
+            v-model="inputValue"
+            clearable
+            placeholder="请输入用户名"
+            @on-change="inputChange"
+            @on-enter="inputEnter"
+            @on-clear="inputClear"
+          />
           <span slot="prepend">检索</span>
           <!--<Icon type="ios-search"></Icon>-->
           <Button
-                  slot="append"
-                  class="inputSearchButton"
-                  icon="ios-search"
-                  @click="inputSearch"
+            slot="append"
+            class="inputSearchButton"
+            icon="ios-search"
+            @click="inputSearch"
           />
           </Input>
         </div>
         <div
-                v-if="treeShow"
-                class="tree"
+          v-if="treeShow"
+          class="tree"
         >
           <Tree
-                  ref="tree"
-                  :data="treeData"
-                  :query="treeQueryText"
-                  :queryStyle="queryStyle"
-                  show-checkbox
-                  @on-check-change="treeCheckChange"
+            ref="tree"
+            :data="treeData"
+            :query="treeQueryText"
+            :query-style="queryStyle"
+            show-checkbox
+            @on-check-change="treeCheckChange"
           />
         </div>
       </div>
     </div>
-    <Spin fix v-show="spinShow">
-      <Icon type="ios-loading" size=48 class="demo-spin-icon-load"></Icon>
+    <Spin
+      v-show="spinShow"
+      fix
+    >
+      <Icon
+        type="ios-loading"
+        size="48"
+        class="demo-spin-icon-load" 
+      />
       <div>Loading</div>
     </Spin>
   </div>
@@ -109,7 +116,7 @@
         spinShow: false, // loading 是否显示
         menuShow: false, // 菜单是否显示
         queryStyle: {
-          'color': '#108EE9'
+          color: '#108EE9'
         },
         saveData: {
           app_type: '',
@@ -318,7 +325,7 @@
             this.getAddData(item);
           });
         } else if (data.children && data.children.length === 0) {
-          return;
+          
         } else {
           const findDelIndex = this.delData.findIndex(item => item === data.id);
           if (findDelIndex > -1) {

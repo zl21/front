@@ -18,7 +18,7 @@
         <input
           ref="username"
           type="text"
-          value="root"
+          value=""
           class="username"
           placeholder="请输入用户名"
         >
@@ -31,7 +31,7 @@
         <input
           ref="password"
           type="password"
-          value="123"
+          value=""
           class="pwd"
           placeholder="请输入密码"
         >
@@ -55,20 +55,35 @@
     methods: {
       
       login() {
-        const globalServiceId = window.sessionStorage.getItem('serviceId');
-        network.post(enableGateWay ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
-          network.post(enableGateWay ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
-            username: this.$refs.username.value,
-            password: this.$refs.password.value,
-            captcha: res.data.captcha,
-            rememberMe: false,
-            lang: 'zh_CN',
-          })).then((r) => {
-            if (r.status === 200 && r.data.code === 0) {
-              window.location.href = window.location.origin;
-            }
+        let message = {};
+        if (this.$refs.username.value === '') {
+          message = {
+            title: '错误',
+            content: '请输入用户名'
+          };
+          this.$Modal.fcError(message);
+        } else if (this.$refs.password.value === '') {
+          message = {
+            title: '错误',
+            content: '请输入密码'
+          };
+          this.$Modal.fcError(message);
+        } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
+          const globalServiceId = window.sessionStorage.getItem('serviceId');
+          network.post(enableGateWay ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
+            network.post(enableGateWay ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
+              username: this.$refs.username.value,
+              password: this.$refs.password.value,
+              captcha: res.data.captcha,
+              rememberMe: false,
+              lang: 'zh_CN',
+            })).then((r) => {
+              if (r.status === 200 && r.data.code === 0) {
+                window.location.href = window.location.origin;
+              }
+            });
           });
-        });
+        }
       }
     }
   };

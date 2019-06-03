@@ -654,7 +654,6 @@
       },
      
       webactionClick(type, obj) {
-        debugger;
         // 点击自定义按钮 创建table
         clearTimeout(window.timer);
         window.timer = setTimeout(() => {
@@ -781,7 +780,6 @@
         }, 300);
       },
       webActionSlient(item) {
-        debugger;
         // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
