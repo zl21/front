@@ -186,12 +186,48 @@
       },
       reorganizeForm() {
         let items = [];
-        // 存放单个form child
-        // const childForm = {
-        //   childs: []
-        // };
         // 有面板的数据
+        // 有面板的数据  child,inpubobj,childs
+        const childs = {
+          list: [],
+          parentdesc: '',
+          hrdisplay: ''
+        };
         const defaultData = JSON.parse(JSON.stringify(this.defaultData));
+        if (defaultData.addcolums) {
+          const data = defaultData.addcolums.reduce((array, current) => {
+            if (current.child) {
+              // hr
+              if (Array.isArray(current.child)) {
+                const index = current.child.findIndex(element => element.display === 'hr');
+                if (index !== -1) {
+                  childs.parentdesc = current.child.name;
+                }
+                current.child.split(index, 1);
+                childs.list.push(current.child);
+              } else if (current.child.display !== 'hr') {
+                childs.list.push(current.child);
+              } else if (current.child.display === 'hr') {
+                childs.parentdesc = current.child.name;
+              }
+            } else if (current.inpubobj) {
+              childs.list.push(current.inpubobj);
+            } else {
+              array.push(current);
+            }
+            return array;
+          }, []);
+          if (childs.list.length > 0) {
+            data.push({
+              childs: childs.list,
+              parentdesc: childs.parentdesc,
+              hrdisplay: 'expand',
+            });
+            defaultData.addcolums = [...data];
+          }
+         
+          console.log(data, childs.parentdesc);
+        } 
         if (
           this.type
           && Object.prototype.hasOwnProperty.call(defaultData, 'addcolums')
@@ -206,26 +242,16 @@
                 return array2;
               }, []);
                         
-
               array.push({
                 childs: tem.concat([]),
                 hrdisplay: current.hrdisplay,
                 parentdesc: current.parentdesc,
-                parentname: current.parentname
+                parentname: current.parentname,
+                isTitleShow: !current.isTitleShow
+
               });
-            } else if (Object.prototype.hasOwnProperty.call(current, 'child')) {
-              current.child.formIndex = index;
-              const option = this.reduceForm([], current.child, index);
-              if (option.item) {
-                this.childForm(option);
-              }
-              array.push({
-                childs: [option],
-                hrdisplay: 'expand',
-                isTitleShow: false
-              });
+              return array;
             }
-            return array;
           }, []);
         } else if (
           Object.prototype.hasOwnProperty.call(defaultData, 'inpubobj')
