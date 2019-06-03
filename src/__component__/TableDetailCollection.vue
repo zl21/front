@@ -26,6 +26,14 @@
               【{{ item.name }}】
             </a>
           </ul>
+          <Dialog
+            ref="dialogRef"
+            :title="dialogConfig.title"
+            :mask="dialogConfig.mask"
+            :content-text="dialogConfig.contentText"
+            :footer-hide="dialogConfig.footerHide"
+            :confirm="dialogConfig.confirm"
+          />
         </div>
         <div
           v-if="filterList.length > 0"
@@ -52,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -87,11 +95,12 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
-  import Dialog from './ComplexsDialog'; // emit 选中的行
+  import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
+  import Dialog from './Dialog.vue';
 
   import router from '../__config__/router.config';
 
@@ -144,7 +153,7 @@
                               lable: 2
                             }],
         currentOrderList: [], // 当前排序的内容
-        DISPLAY_ENUM: {
+        DISPLAY_ENUM: { // 标签映射
           text: { tag: 'Input', event: this.inputRender },
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
@@ -155,9 +164,17 @@
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
           image: { tag: 'Poptip', event: this.imageRender }
-        }, // 标签映射
+        },
         beforeSendData: {}, // 之前的数据
         afterSendData: {}, // 改后的数据
+        dialogConfig: {  // 弹框配置信息
+          title: '提示',
+          mask: true,
+          footerHide: false,
+          contentText: '',
+          confirm: () => {
+          }
+        },
       };
     },
     props: {
@@ -192,6 +209,10 @@
         type: Object,
         default: () => ({})
       },
+      tooltipForItemTable: {
+        type: Array,
+        default: () => ([])
+      }
     },
     computed: {
       ...mapState('global', {
@@ -317,14 +338,17 @@
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
       },
-      tooltipForItemTable(val) {
-
+      tooltipForItemTable: {
+        handler(val, old) {
+          this.reloadErrorTips(val);
+        },
+        deep: true
       }
 
     },
     methods: {
 
-      //   ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
+      ...mapMutations('global', ['tabHref']),
       //   ...mapActions('global', ['getMenuLists']),
 
       buttonClick(obj) {
@@ -340,50 +364,82 @@
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
-        let params = {};
-        const { tableName, tableId, itemId } = router.currentRoute.params;
-        const path = obj.path;
-        const itemTable = this.updateData[this.tableName].delete;
-        if (obj.path) {
-          const mainTable = this.updateData[tableName].delete;
+      // 测试数据
+  //     const a = [
+	// 	{
+  //     "objid":2,
+  //     "message": ['a','b',''][parseInt(Math.random()*3,10)]
+	// 	}
+	// ]
+      
+  //     this.reloadErrorTips(a);
+  //     return;
 
-          mainTable[tableName].ID = itemId;
-          mainTable[tableName].isdelmtable = false;
-
-          params = {
-            ...mainTable,
-            ...itemTable
+        if (this.tableRowSelectedIds.length ===0) {
+          const data = {
+            title: '警告',
+            content: `请先选择需要删除的记录！`
           };
-        } else {
-          params = {
-            delMTable: false,
-            objId: tableId,
-            tabItem: { ...itemTable },
-            table: tableName
-          };
+          this.$Modal.fcWarning(data);
+          return;
         }
+        // this.$refs.dialogRef.showModal = true;
+        this.$refs.dialogRef.open();
+        this.dialogConfig = {
+          contentText: '确认执行提交?',
+          confirm: () => {
+            let params = {};
+            const { tableName, tableId, itemId } = router.currentRoute.params;
+            const path = obj.path;
+            const itemTable = this.updateData[this.tableName].delete;
+            if (obj.path) {
+              const mainTable = this.updateData[tableName].delete;
 
-        itemTableDelete({
-          params,
-          path,
-          success: (res) => {
-            const deleteMessage = res.data.message;
-            this.$Message.success(`删除${deleteMessage}`);
-            const { refcolid } = this.itemInfo;
-            this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-            this.getObjectTableItemForTableData({
-              table: this.tableName,
-              objid: itemId,
-              refcolid,
-              searchdata: {
-                column_include_uicontroller: true,
-                startindex: 0,
-                range: 10,
-                fixedcolumns: {}
+              mainTable[tableName].ID = itemId;
+              mainTable[tableName].isdelmtable = false;
+
+              params = {
+                ...mainTable,
+                ...itemTable
+              };
+            } else {
+              params = {
+                delMTable: false,
+                objId: tableId,
+                tabItem: { ...itemTable },
+                table: tableName
+              };
+            }
+
+            itemTableDelete({
+              params,
+              path,
+              success: (res) => {
+                if (res.data.code === -1) {
+                  // 删除失败
+                  this.reloadErrorTips(res.data.data);
+                } else {
+                  const deleteMessage = res.data.message;
+                  this.$Message.success(`删除${deleteMessage}`);
+                  const { refcolid } = this.itemInfo;
+                  this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+                  this.getObjectTableItemForTableData({
+                    table: this.tableName,
+                    objid: itemId,
+                    refcolid,
+                    searchdata: {
+                      column_include_uicontroller: true,
+                      startindex: 0,
+                      range: 10,
+                      fixedcolumns: {}
+                    }
+                  });
+                }
               }
             });
           }
-        });
+        };
+        
       },
       filterColumns(data) {
         if (!data) {
@@ -422,7 +478,8 @@
           {
             title: '序号',
             width: 60,
-            key: COLLECTION_INDEX
+            key: COLLECTION_INDEX,
+            render: this.collectionIndexRender(columns)
           }
         ];
         return headColumn.concat(renderColumns);
@@ -434,11 +491,15 @@
         // 整合数据源
         const data = rows.map((ele, index) => {
           const item = {
-            COLLECTION_INDEX: Number(this.dataSource.start) + index + 1
+            // COLLECTION_INDEX: Number(this.dataSource.start) + index + 1
           };
           for (const key in ele) {
             if (Object.prototype.hasOwnProperty.call(ele, key)) {
-              item[key] = ele[key].val;
+              if (ele[key].val !== undefined) {
+                item[key] = ele[key].val;
+              } else {
+                item[key] = ele[key];
+              }
             }
           }
           return item;
@@ -750,20 +811,6 @@
                 e.stopPropagation();
               }
             },
-            // scopedSlots: {
-            //   daigo: props => h('div', [
-            //     h(Dialog, {
-            //       props: {
-            //         fkobj: {
-            //           refobjid: cellData.refobjid,
-            //           reftable: cellData.reftable,
-            //           reftableid: cellData.reftableid
-            //         },
-            //         filter: this.popFilterData
-            //       }
-            //     })
-            //   ])
-            // },
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
                 console.log(item);
@@ -872,7 +919,7 @@
                 slot: 'daigo',
               },
               [
-                h(Dialog, {
+                h(ComplexsDialog, {
                   props: {
                     fkobj: {
                       refobjid: cellData.refobjid,
@@ -942,6 +989,50 @@
           })
         ]);
       },
+      collectionIndexRender(cellData) {
+        // 序号的render
+        return (h, params) => {
+          const index = Number(this.dataSource.start) + params.index + 1;
+          if (this.dataSource.row[params.index].errorTips && this.dataSource.row[params.index].errorTips.length > 0) {
+            return h('div', [
+              h('Poptip', {
+                style: {
+                  width: '60px'
+                },
+                props: {
+                  trigger: 'hover',
+                  transfer: true,
+                  content: 'content',
+                },
+                scopedSlots: {
+                  default: () => h('div', {
+                    style: {
+                    },
+                    domProps: {
+                      innerHTML: `<span>${index}</span>
+                            <i class="iconfont icon-jinggao" style="margin-left:5px; color: red" />`
+                    }
+                  }),
+                  content: () => h('div', {
+                    style: {
+                      width: '180px',
+                    },
+                    domProps: {
+                      innerHTML: `<span>${this.dataSource.row[params.index].errorTips}</span>`
+                    }
+                  }),
+                },
+              })
+            ]);
+          } else {
+            return h('div', {
+              domProps: {
+                innerHTML: `<span>${index}</span>`
+              }
+            })
+          }
+        };
+      },
       fkIconRender(cellData) {
         // 外键关联到icon
         return (h, params) => h('div', {
@@ -951,6 +1042,14 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
+              const data = this.dataSource.row[params.index][cellData.colname];
+              this.tabHref({
+                type: 'tableDetailVertical',
+                tableName: data.reftablename,
+                tableId: data.reftableid,
+                label: data.reftabdesc,
+                id: this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
+              });
               event.stopPropagation();
             }
           }
@@ -1067,6 +1166,32 @@
         param[this.tableName] = datas;
 
         this.$emit(TABLE_SELECTED_ROW, param);
+      },
+      reloadErrorTips(data) {
+        
+        const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
+        this.dataSource.row.map(ele => {
+          const exceptFlag = data.every(item => {
+            if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
+              return true;
+            } else {
+              ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
+              return false;
+            }
+          });
+          if (exceptFlag) {
+            ele.errorTips = '';
+          }
+          return ele;
+        });
+        // 因为 要刷新render 就要修改this.dataSource.tabth  直接修改会报不能修改异步结果，所以需要store.commit 修改数据源
+        const assignDataSource = Object.assign({}, this.dataSource);
+        assignDataSource.tabth.timestamp = new Date().getTime(); // 确保会改变并刷新
+        if (this.isHorizontal) {
+          this.updateTableData(assignDataSource);
+        } else {
+          this.updateTableListForRefTable(assignDataSource);
+        }
       },
       inputRegx(cellData) {
         // 输入框正则
@@ -1312,11 +1437,14 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          return params.row[cellData.colname]
-            ? cellData.combobox.filter(
+          if (params.row[cellData.colname]) {
+            const result = cellData.combobox.filter(
               ele => ele.limitdesc === params.row[cellData.colname]
-            )[0].limitval
-            : null;
+            );
+            if (result.length > 0) {
+              return result[0].limitval
+            }
+          }
         }
         return null;
       }

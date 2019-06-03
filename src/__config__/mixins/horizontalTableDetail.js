@@ -47,7 +47,8 @@ export default () => ({
         'savaCopyData',
         'updateFormDataForRefshow',
         'updateCopyData',
-        'changeFormDataForCopy'
+        'changeFormDataForCopy',
+        'updateTableData'
       ]),
   },
   beforeDestroy() {
