@@ -306,6 +306,27 @@ fkComponent.prototype.getGui = function () {
   return this.eGui;
 };
 
+// for mopFkComponent
+const mopFkComponent = function() {};
+
+mopFkComponent.prototype.init = function(params) {
+  const eGui = document.createElement('span');
+  this.eGui = eGui;
+  const { data, columnName } = params;
+  if (data[columnName] && data[columnName].refobjid) {
+    try {
+      const info =  JSON.parse(data[columnName].refobjid);
+      eGui.innerHTML = info.lists.result.map(d => d.screen_string).toString();
+    } catch (e) {
+      eGui.innerHTML = params.value;
+      console.error(e);
+    }
+  }
+};
+
+mopFkComponent.prototype.getGui = function() {
+  return this.eGui;
+};
 
 // for attachment
 const attachmentComponent = function () {
@@ -354,7 +375,7 @@ sequenceComponent.prototype.init = function (params) {
   eGui.innerHTML = template;
 
   // for tooltip icon
-  if (failIds.indexOf(value) > -1) {
+  if (failIds.indexOf(`${value}`) > -1) {
     const toolTipIcon = document.createElement('i');
     toolTipIcon.setAttribute('class', `iconfont ${cssFeatures.hover}`);
     toolTipIcon.style.color = 'red';
@@ -568,7 +589,7 @@ const initializeAgTable = (container, opt) => {
       if (options && options.datas && options.datas.deleteFailInfo && Object.prototype.toString.call(options.datas.deleteFailInfo) === '[object Array]') {
         options.datas.deleteFailInfo.forEach((d) => {
           if (d.objid && d.objid !== '') {
-            failIds.push(d.objid);
+            failIds.push(`${d.objid}`);
           }
         });
         return failIds;
@@ -616,7 +637,12 @@ const initializeAgTable = (container, opt) => {
         return 'customerUrlComponent';
       }
       if (columnItem.isfk) {
-        return 'fkComponent';
+        if (columnItem.fkdisplay === 'mop') {
+
+          return 'mopFkComponent';
+        } else {
+          return 'fkComponent';
+        }
       }
       if (columnItem.display === 'image') {
         return 'imageComponent';
@@ -860,6 +886,7 @@ const initializeAgTable = (container, opt) => {
         components: {
           imageComponent,
           fkComponent,
+          mopFkComponent,
           customerUrlComponent,
           sequenceComponent,
           customHeader,
