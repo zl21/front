@@ -33,7 +33,6 @@
       :footer-hide="true"
       :confirm="dialogConfig.confirm"
       :closable="true"
-      :dialog-component-name="dialogComponentName"
     >
       <!-- <component
         :is="dialogComponentName"
@@ -41,13 +40,23 @@
         @closeActionDialog="closeCustomDialog"
       /> -->
     </Dialog>
-    <!-- <Modal
+    <Modal
       v-model="actionDialog.show"
       :mask="true"
       :title="actionDialog.title"
       :footer-hide="true"
       :closable="true"
-    /> -->
+      :width="auto"
+    >
+      <component
+        :is="dialogComponentName"
+        :dialog-component-name="dialogComponentName"
+      
+        @closeActionDialog="closeActionDialog"
+      >
+        /> 
+      </component>
+    </Modal>
     <!-- 导入弹框 -->
     <ImportDialog
       v-if="importData.importDialog"
@@ -239,7 +248,7 @@
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
-      closeDialog() { // 关闭导入弹框
+      closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
       closeCustomDialog() {
@@ -434,13 +443,13 @@
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
-        this.$refs.dialogRef.open();
-        const title = `${tab.webdesc}`;
-        this.dialogConfig = {
-          title,
-        };
-        // this.actionDialog.show = true;
-        // this.actionDialog.title = tab.webdesc;
+        // this.$refs.dialogRef.open();
+        // const title = `${tab.webdesc}`;
+        // this.dialogConfig = {
+        //   title,
+        // };
+        this.actionDialog.show = true;
+        this.actionDialog.title = tab.webdesc;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
@@ -1031,7 +1040,6 @@
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.isreftabs) { // 存在子表时
           if (!this.itemTableValidation) {
-            console.log(this.itemTableValidation);
             const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
             if (itemCheckedInfo) {
               const itemMessageTip = itemCheckedInfo.messageTip;
@@ -1122,7 +1130,6 @@
           this.decreasekeepAliveLists(moduleName());
         });
       },
-     
       saveParameters() { // 筛选按钮保存参数逻辑
         if (this.isreftabs) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
