@@ -355,7 +355,6 @@ export default {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
-
         commit('updateSubmitData', submitData);
       } else {
         reject();
