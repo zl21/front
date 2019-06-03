@@ -54,7 +54,8 @@ export default () => ({
         'changeUpdateDataForForm',
         'savaCopyData',
         'copyDefaultData',
-        'updateUnSubmitData'
+        'updateUnSubmitData',
+        'updateTableListForRefTable'
         // 'resetFormReadOnlyAttribute'
 
       ]),
