@@ -10,9 +10,10 @@ export default {
   }, data) {
     ag.status4css = data;
   },
-  setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
-    ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);
-  },
+  // setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
+  //   ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);
+  //   console.log( ag.datas.deleteFailInfo )
+  // },
 
   // 表单
   updateDefaultFormItemsLists({ formItems }, data) {

@@ -24,39 +24,40 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
     />
     <!-- 动作定义弹框定制界面 -->
-    <Dialog
+    <!-- <Dialog
       ref="dialogRef"
       :title="dialogConfig.title"
       :mask="true"
-      :footer-hide="true"
+      :footer-hide="dialogConfig.contentText"
       :confirm="dialogConfig.confirm"
       :closable="true"
-    >
-      <!-- <component
+      :dialog-component-name="dialogComponentName"
+      :content-text="dialogConfig.contentText"
+    > -->
+    <!-- <component
         :is="dialogComponentName"
         :dialog-component-name="dialogComponentName"
         @closeActionDialog="closeCustomDialog"
       /> -->
-    </Dialog>
-    <Modal
+    <!-- </Dialog> -->
+    <!-- <Modal
       v-model="actionDialog.show"
       :mask="true"
       :title="actionDialog.title"
       :footer-hide="true"
       :closable="true"
-      :width="auto"
     >
       <component
         :is="dialogComponentName"
         :dialog-component-name="dialogComponentName"
-      
         @closeActionDialog="closeActionDialog"
       >
         /> 
       </component>
-    </Modal>
+    </Modal> -->
     <!-- 导入弹框 -->
     <ImportDialog
       v-if="importData.importDialog"
@@ -443,13 +444,14 @@
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
-        // this.$refs.dialogRef.open();
-        // const title = `${tab.webdesc}`;
-        // this.dialogConfig = {
-        //   title,
-        // };
-        this.actionDialog.show = true;
-        this.actionDialog.title = tab.webdesc;
+        this.$refs.dialogRef.open();
+        const title = `${tab.webdesc}`;
+        this.dialogConfig = {
+          title,
+        };
+        this.dialogConfig.footerHide = true;
+        // this.actionDialog.show = true;
+        // this.actionDialog.title = tab.webdesc;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {

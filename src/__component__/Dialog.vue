@@ -16,13 +16,13 @@
     @on-cancel="onCancel"
     @on-ok="onOk"
   >
-    <p v-show="contentText">
+    <p v-if="contentText">
       {{ contentText }}
     </p>
     <component
       :is="dialogComponentName"
-      v-show="dialogComponentName"
-      @closeActionDialog="closeCustomDialog"
+      v-if="dialogComponentName"
+      @closeActionDialog="closeActionDialog"
     />
   </Modal>
 </template>
@@ -126,7 +126,7 @@
           this.cancelFun();
         }
       },
-      closeCustomDialog() {
+      closeActionDialog() {
         this.onCancel(); 
       }
     
