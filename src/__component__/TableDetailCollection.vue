@@ -311,13 +311,16 @@
         }
         return false;
       },
-
-
+    
     },
     watch: {
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
+      },
+      tooltipForItemTable(val) {
+
       }
+
     },
     methods: {
 

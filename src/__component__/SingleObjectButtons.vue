@@ -1184,6 +1184,8 @@
           if (message) {
             this.upData(`${message}`);
             // this.updateChangeData({ tableName: this.tableName, value: {} });
+          } else {
+            this.upData('保存成功');
           }
         }
       },
