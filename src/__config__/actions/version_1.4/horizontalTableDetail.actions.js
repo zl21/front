@@ -243,6 +243,9 @@ export default {
       if (res.data.code === 0) {
         const data = res.data;
         commit('updateNewMainTableDeleteData', data);
+      } else if (res.data.code === -1) {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
       }
     });
   },
@@ -256,6 +259,63 @@ export default {
         const data = res.data.data;
         commit('updateButtonsExport', data,);
       } else {
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
+  getObjectTrySubmit({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取提交数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const submitData = res.data;
+        resolve();
+        commit('updateSubmitData', submitData);
+      } else {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
+  getObjectTryUnSubmit({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取取消提交数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const unSubmitData = res.data;
+        resolve();
+        commit('updateUnSubmitData', unSubmitData);
+      } else {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
+        reject();
+      }
+    }).catch(() => {
+      reject();
+    });
+  },
+  getObjectTryInvalid({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取作废数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
+
+        commit('updateiInvalidData', invalidData);
+      } else {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
         reject();
       }
     }).catch(() => {
