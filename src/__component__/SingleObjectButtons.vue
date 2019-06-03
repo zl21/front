@@ -24,22 +24,40 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
     />
     <!-- 动作定义弹框定制界面 -->
-    <Modal
+    <!-- <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="true"
+      :footer-hide="dialogConfig.contentText"
+      :confirm="dialogConfig.confirm"
+      :closable="true"
+      :dialog-component-name="dialogComponentName"
+      :content-text="dialogConfig.contentText"
+    > -->
+    <!-- <component
+        :is="dialogComponentName"
+        :dialog-component-name="dialogComponentName"
+        @closeActionDialog="closeCustomDialog"
+      /> -->
+    <!-- </Dialog> -->
+    <!-- <Modal
       v-model="actionDialog.show"
       :mask="true"
       :title="actionDialog.title"
       :footer-hide="true"
       :closable="true"
     >
-      <keep-alive
-        include
-        exclude
+      <component
+        :is="dialogComponentName"
+        :dialog-component-name="dialogComponentName"
+        @closeActionDialog="closeActionDialog"
       >
-        <component :is="dialogComponentName" />
-      </keep-alive>
-    </Modal>
+        /> 
+      </component>
+    </Modal> -->
     <!-- 导入弹框 -->
     <ImportDialog
       v-if="importData.importDialog"
@@ -231,8 +249,11 @@
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
-      closeDialog() { // 关闭导入弹框
+      closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
+      },
+      closeCustomDialog() {
+        this.actionDialog.show = false;
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
@@ -423,8 +444,14 @@
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
-        this.actionDialog.show = true;
-        this.actionDialog.title = tab.webdesc;
+        this.$refs.dialogRef.open();
+        const title = `${tab.webdesc}`;
+        this.dialogConfig = {
+          title,
+        };
+        this.dialogConfig.footerHide = true;
+        // this.actionDialog.show = true;
+        // this.actionDialog.title = tab.webdesc;
         if (tab.action.indexOf('?') >= 0) {
           this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
         } else {
@@ -908,44 +935,54 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        if (this.verifyRequiredInformation()) { // 验证表单必填项
-          this.determineSaveType(obj);
-        }
+        this.determineSaveType(obj);
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
+        if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
+          if (this.verifyRequiredInformation()) {
+            this.mainTableNewSaveAndEditorNewSave();
+          }
+        } else if (this.itemId !== '-1') { // 主表编辑保存
+          this.mainTableEditorSave(obj);
+        }
+      },
+      mainTableNewSaveAndEditorNewSave() { // 主表新增保存和编辑新增保存
         this.saveParameters();// 调用获取参数方法
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
-        if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
-          // console.log('主表新增保存和编辑新增保存');
-          const type = 'add';
-          const path = this.dynamic.requestUrlPath;
-          const objId = -1;
+        // console.log('主表新增保存和编辑新增保存');
+        const type = 'add';
+        const path = this.dynamic.requestUrlPath;
+        const objId = -1;
 
-          if (!this.isreftabs) { // 为false的情况下是没有子表
-            // console.log('没有子表');
-            if (this.dynamic.requestUrlPath) { // 配置path
-              // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
-              this.savaNewTable(type, path, objId);
-            } else { // 没有配置path
-              this.savaNewTable(type, path, objId);
-            }
+        if (!this.isreftabs) { // 为false的情况下是没有子表
+          // console.log('没有子表');
+          if (this.dynamic.requestUrlPath) { // 配置path
+            // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
+            this.savaNewTable(type, path, objId);
+          } else { // 没有配置path
+            this.savaNewTable(type, path, objId);
           }
-          if (this.isreftabs) { // 存在子表
-            // console.log('有子表');
-            if (this.dynamic.requestUrlPath) { // 配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            }
+        }
+        if (this.isreftabs) { // 存在子表
+          // console.log('有子表');
+          if (this.dynamic.requestUrlPath) { // 配置path
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          } else { // 没有配置path
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           }
-        } else if (this.itemId !== '-1') { // 主表编辑保存
-          // console.log('主表编辑保存');
-          const path = obj.requestUrlPath;
-          const type = 'modify';
-          if (!this.isreftabs) { // 为false的情况下是没有子表
-            // console.log('没有子表',);
-
+        }
+      },
+      mainTableEditorSave(obj) { // 主表编辑保存
+        // console.log('主表编辑保存');
+        this.saveParameters();// 调用获取参数方法
+        // const itemName = this.itemName;// 子表表名
+        // const itemCurrentParameter = this.itemCurrentParameter;
+        const path = obj.requestUrlPath;
+        const type = 'modify';
+        if (!this.isreftabs) { // 为false的情况下是没有子表
+          // console.log('没有子表',);
+          if (this.verifyRequiredInformation()) {
             if (obj.requestUrlPath) { // 配置path
               // console.log('主表编辑保存,配置path的逻辑', obj.requestUrlPath);
               this.savaNewTable(type, path, this.itemId);
@@ -955,19 +992,36 @@
               this.savaNewTable(type, path, objId);
             }
           }
-          if (this.isreftabs) { // 为true的情况下是存在子表
-            const objId = this.itemId;
-            const sataType = 'itemSave';
+        }
+        if (this.isreftabs) { // 为true的情况下是存在子表
+          this.mainTableEditorSaveIsreftabs(obj);
+        }
+      },
+      mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
+        const itemName = this.itemName;// 子表表名
+        const itemCurrentParameter = this.itemCurrentParameter;
+        const path = obj.requestUrlPath;
+        const type = 'modify';
+        const objId = this.itemId;
+        const sataType = 'itemSave';
+        if (this.objectType === 'vertical') {
+          this.itemTableValidation = true;
+          if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path
+            } else { // 没有配置path    if (this.verifyRequiredInformation()) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             }
-            if (this.objectType === 'vertical') { 
-              if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType);
-              }
+            
+            if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) {
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType);
             }
+          }
+        } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
+          if (obj.requestUrlPath) { // 配置path
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          } else { // 没有配置path
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           }
         }
       },
@@ -1078,7 +1132,6 @@
           this.decreasekeepAliveLists(moduleName());
         });
       },
-     
       saveParameters() { // 筛选按钮保存参数逻辑
         if (this.isreftabs) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
@@ -1131,6 +1184,8 @@
           if (message) {
             this.upData(`${message}`);
             // this.updateChangeData({ tableName: this.tableName, value: {} });
+          } else {
+            this.upData('保存成功');
           }
         }
       },

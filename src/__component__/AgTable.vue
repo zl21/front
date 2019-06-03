@@ -171,7 +171,7 @@
     },
     watch: {
       datas(val) {
-        console.log(val.deleteFailInfo);
+        console.log(val);
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;
@@ -192,7 +192,7 @@
         }); // 排序
         const datas = self.datas;
         datas.hideColumn = self.hideColumn;
-        datas.deleteFailInfo = self.errorArr;
+        datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
         datas.colPosition = self.colPosition; // 移动列
         datas.pinnedPosition = self.fixedColumn; // 固定列
         // selectIdArr

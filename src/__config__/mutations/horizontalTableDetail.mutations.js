@@ -172,6 +172,18 @@ export default {
   },
   updateButtonsExport(state, data) { // 导出
     state.buttonsData.exportdata = data;
-  }
-
+  },
+  updatetooltipForItemTableData(state, data) { // 表格操作单条明细失败返回值
+    state.tooltipForItemTable = data;
+  },
+  updateSubmitData(state, submitData) { // 提交
+    state.buttonsData.submitData = submitData;
+  },
+  updateUnSubmitData(state, unSubmitData) { // 取消提交
+    state.buttonsData.unSubmitData = unSubmitData;
+  },
+  updateiInvalidData(state, invalidData) { // 作废
+    state.buttonsData.invalidData = invalidData;
+  },
+  
 };

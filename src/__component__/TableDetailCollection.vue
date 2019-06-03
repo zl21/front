@@ -332,8 +332,7 @@
         }
         return false;
       },
-
-
+    
     },
     watch: {
       beforeSendData(val) {
@@ -345,6 +344,7 @@
         },
         deep: true
       }
+
     },
     methods: {
 
