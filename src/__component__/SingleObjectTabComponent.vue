@@ -57,7 +57,7 @@
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
       :status="status"
-      :tooltipForItemTable="tooltipForItemTable"
+      :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"

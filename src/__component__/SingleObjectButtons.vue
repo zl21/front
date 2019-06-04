@@ -1024,7 +1024,6 @@
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-
         if (checkedInfo) {
           const messageTip = checkedInfo.messageTip;
           if (messageTip) {
@@ -1035,20 +1034,12 @@
             }
           }
         }
+
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.isreftabs) { // 存在子表时
           if (!this.itemTableValidation) {
             const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-            if (itemCheckedInfo) {
-              const itemMessageTip = itemCheckedInfo.messageTip;
-              if (itemMessageTip) {
-                if (itemMessageTip.length > 0) {
-                  this.$Message.warning(itemMessageTip[0]);
-                  itemCheckedInfo.validateForm.focus();
-                  return false;
-                }
-              }
-            } else if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+            if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
               this.saveParameters();
               if (this.objectType === 'vertical') {
                 if (this.itemId === 'New') {
@@ -1061,7 +1052,16 @@
                   }
                 }
               }
-            }
+            } else if (itemCheckedInfo) {
+              const itemMessageTip = itemCheckedInfo.messageTip;
+              if (itemMessageTip) {
+                if (itemMessageTip.length > 0) {
+                  this.$Message.warning(itemMessageTip[0]);
+                  itemCheckedInfo.validateForm.focus();
+                  return false;
+                }
+              }
+            } 
           }
         }
         // }
