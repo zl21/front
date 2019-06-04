@@ -2,7 +2,7 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const proxyLists = ['/p/c'];
@@ -15,9 +15,60 @@ const target = projectConfig.target; // 框架研发网关开启环境
 // const target = 'http://r3dev.qiaodan.com:28888'; // 乔丹开发环境
 
 
+const generatePlugins = (env) => {
+  const plugins = [
+    new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
+    new VueLoaderPlugin(),
+  ];
+  if (!env.publish) {
+    plugins.push(new HtmlWebpackPlugin({
+      chunksSortMode: 'none',
+      title: projectConfig.projectsTitle,
+      template: env.production ? './index.html' : './index.dev.html',
+      inject: true,
+      favicon: projectConfig.projectIconPath,
+    }));
+  }
+  return plugins;
+};
+
+const generateDevTools = (env) => {
+  if (env && env.production) { return 'source-map'; }
+  if (env && env.publish) {
+    return false; 
+  }
+  return 'cheap-module-eval-source-map';
+};
+
+const generateOutput = (env) => {
+  if (env.publish) {
+    return {
+      filename: '[name].js',
+      chunkFilename: '[name].js',
+      path: path.join(__dirname, './dist'),
+      publicPath: '/',
+    };
+  } 
+  return {
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[hash].js',
+    path: path.join(__dirname, './dist'),
+    publicPath: '/',
+    library: 'r3-frame',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  };
+};
+
 module.exports = env => ({
   entry: {
     index: './index.js',
+  },
+  externals: {
+    vue: 'Vue',
+    vuex: 'Vuex',
+    'vue-router': 'VueRouter',
+    axios: 'axios',
   },
   devServer: {
     compress: true,
@@ -43,13 +94,8 @@ module.exports = env => ({
    
   },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
-  output: {
-    filename: '[name].[hash].js',
-    chunkFilename: '[name].[hash].js',
-    path: path.join(__dirname, './dist'),
-    publicPath: '/',
-  },
+  devtool: generateDevTools(env),
+  output: generateOutput(env),
   module: {
     rules: [
       {
@@ -96,18 +142,8 @@ module.exports = env => ({
       },
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
-    new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({
-      chunksSortMode: 'none', // 为解决toposort的Cyclic dependency问题
-      title: projectConfig.projectsTitle,
-      template: './index.html',
-      inject: true,
-      favicon: projectConfig.projectIconPath,
-    }),
-  ],
-  mode: env && env.production ? 'production' : 'development',
+  plugins: generatePlugins(env),
+  mode: env && (env.production || env.publish) ? 'production' : 'development',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
   },
