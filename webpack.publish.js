@@ -15,8 +15,8 @@ module.exports = env => ({
   },
   target: 'web',
   output: {
-    filename: '[name].[hash].js',
-    chunkFilename: '[name].[hash].js',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
     path: path.join(__dirname, './publish'),
     publicPath: '/',
     library: 'r3-frame',
