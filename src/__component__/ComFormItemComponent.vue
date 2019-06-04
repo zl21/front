@@ -101,24 +101,30 @@
       formDataObject() {
         let obj = {};
         obj = this.newFormItemLists.reduce((option, items) => {
-          if (Array.isArray(items.item.value)) {
-            if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
-              if (items.item.value[0].ID) {
-                option[items.item.field] = items.item.value[0].ID;
+          if (items.item.props.readonly) {
+            // 外键 不可编辑
+            option[items.item.field] = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
+          } else {
+            if (Array.isArray(items.item.value)) {
+              if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+                if (items.item.value[0].ID) {
+                  option[items.item.field] = items.item.value[0].ID;
+                }
+              } else {
+                option[items.item.field] = items.item.value[0];
               }
-            } else {
-              option[items.item.field] = items.item.value[0];
+            } else if (items.item.value) {
+              option[items.item.field] = items.item.props.defval || items.item.value || items.item.props.valuedata;
             }
-          } else if (items.item.value) {
-            option[items.item.field] = items.item.props.defval || items.item.value || items.item.props.valuedata;
-          }
-          if (items.item.props.number) {
-            if (option[items.item.field]) {
-              option[items.item.field] = Number(option[items.item.field]);
+            if (items.item.props.number) {
+              if (option[items.item.field]) {
+                option[items.item.field] = Number(option[items.item.field]);
+              }
+            } else if (typeof option[items.item.field] === 'string') {
+              option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
             }
-          } else if (typeof option[items.item.field] === 'string') {
-            option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
           }
+          
           return option;
         }, {});
         return obj;

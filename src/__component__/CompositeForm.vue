@@ -225,8 +225,6 @@
             });
             defaultData.addcolums = [...data];
           }
-         
-          console.log(data, childs.parentdesc);
         } 
         if (
           this.type
@@ -411,12 +409,16 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                let refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                if (this.formData[current.refcolval.srccol] === undefined) {
+                  refcolval = this.defaultFormData[current.refcolval.srccol];
+                }
                 if (!refcolval) {
                   this.$Message.info('请选择关联表字段');
                   return false;
                 }
                 const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
@@ -442,14 +444,50 @@
                 }
               });
             },
+            blur: (event, obj, item) => {
+              if (item.props.fkdisplay && item.value[0]) {
+                if (!item.value[0].ID) {
+                  event.target.value = '';
+                }
+              }
+            },
             inputValueChange: (value) => {
               // 外键的模糊搜索
-              fkFuzzyquerybyak({
-                searchObject: {
+              if (!value) {
+                return false;
+              }
+              let sendData = {
+
+              };
+              if (Object.hasOwnProperty.call(current, 'refcolval')) {
+                let refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                if (this.formData[current.refcolval.srccol] === undefined) {
+                  refcolval = this.defaultFormData[current.refcolval.srccol];
+                }
+                if (!refcolval) {
+                  this.$Message.info('请选择关联表字段');
+                  return false;
+                }
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                sendData = {
+                  ak: value,
+                  colid: current.colid,
+                  fixedcolumns: {
+                    whereKeys: {
+                      [current.refcolval.fixcolumn]: query,
+                    }
+                  }
+                };
+              } else {
+                sendData = {
                   ak: value,
                   colid: current.colid,
                   fixedcolumns: {}
-                },
+                };
+              }
+
+              fkFuzzyquerybyak({
+                searchObject: sendData,
                 serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterAutoData(res, index, current);
@@ -957,6 +995,10 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
+        if (res.data.data.length < 1) {
+          delete this.formData[`${current.colname}:NAME`];
+          // console.log(current.colname,this.formData);
+        }
         item[index].item.props.AutoData = res.data.data;
       },
       lowercaseToUppercase(index, current) {

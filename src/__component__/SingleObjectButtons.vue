@@ -88,7 +88,6 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  // import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
 
   export default {
     data() {
@@ -99,10 +98,10 @@
           importDialogTitle: ''
         },
         dialogComponentName: null,
-        actionDialog: {
-          show: false,
-          title: ''
-        }, // 按钮动作定义弹框类型定制界面
+        // actionDialog: {
+        //   show: false,
+        //   title: ''
+        // }, // 按钮动作定义弹框类型定制界面
         dialogConfig: {
           title: '提示',
           mask: true,
@@ -251,9 +250,6 @@
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
-      },
-      closeCustomDialog() {
-        this.actionDialog.show = false;
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {

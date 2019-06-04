@@ -193,13 +193,7 @@
       },
       // 发送请求, 获取上传参数
       axiosSetting() {
-        network
-          .post(
-            '/p/cs/settings',
-            urlSearchParams({
-              configNames: JSON.stringify(['upload.import.max-file-size'])
-            })
-          )
+        network.post('/p/cs/settings', urlSearchParams({ configNames: JSON.stringify(['upload.import.max-file-size']) }))
           .then((res) => {
             if (res.data.code === 0) { this.fileSize = res.data.data['upload.import.max-file-size']; } else this.fileSize = '0M';
           })

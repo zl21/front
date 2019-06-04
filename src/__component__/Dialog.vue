@@ -29,7 +29,7 @@
 
 <script>
   export default {
-    name: 'Dialog',
+    name: 'DialogComponent',
     props: {
       // showModal: {
       //   type: Boolean,

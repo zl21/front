@@ -1,51 +1,34 @@
 <template>
   <div
-    v-if="panel.show"
+  
     class="set-panel"
   >
-    <div
-      class="modal-backdrop"
-      @click="closeMessage"
-    />
     <div class="panel-main">
       <div class="panel-item">
         <p>
-          <!-- <svg
-            class="ffish-icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-yonghu-" />
-          </svg> -->
+          <i class="iconfont icon-yonghu-" />
           <span>欢迎: {{ userInfo.ename }}</span>
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <!-- <svg
-            class="ffish-icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-xiugaimima" />
-          </svg> -->
+          <i
+            class="iconfont icon-xiugaimima"
+          />
           <span>修改密码</span>
         </p>
       </div>
       <div class="panel-item">
         <p>
-          <!-- <svg
-            class="ffish-icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-zhankaichaxuntiaojian" />
-          </svg> -->
+          <i class="iconfont icon-zhankaichaxuntiaojian" />
           <span>折叠查询条件</span>
-          <el-switch
+          <!-- <el-switch
             v-model="value2"
             class="absrit"
             active-color="#13ce66"
             inactive-color="#ff4949"
             @change="switchChange()"
-          />
+          /> -->
         </p>
       </div>
       <div
@@ -53,29 +36,19 @@
         class="panel-item"
       >
         <p>
-          <!-- <svg
-            class="ffish-icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-xiugaimima" />
-          </svg> -->
+          <i class="iconfont icon-xiugaimima" />
           <span>查询条件默认显示行数</span>
-          <el-input-number
+          <!-- <el-input-number
             v-model="num7"
             class="set-panel-number"
             size="mini"
             :min="1"
-          />
+          /> -->
         </p>
       </div>
       <div class="panel-item">
         <p @click="signout">
-          <!-- <svg
-            class="ffish-icon"
-            aria-hidden="true"
-          >
-            <use xlink:href="#icon-tuichu" />
-          </svg> -->
+          <i class="iconfont icon-tuichu" />
           <span>退出</span>
         </p>
       </div>
@@ -86,21 +59,21 @@
 <script>
   // import { fetch } from '../../utils/request';
   // import router from '../__config__/router.config';
+  import { mapState } from 'vuex';
 
   export default {
     props: ['panel'],
     computed: {
-      messagePanel() {
-        return this.panel;
-      },
-      userInfo() {
-        return this.$store.state.userInfo;
-      },
+      ...mapState('global', {
+        userInfo: ({ userInfo }) => userInfo,
+      }),
+    
+    
     },
     watch: {
-      num7(val, oldval) {
-        this.changeNum();
-      },
+      // num7(val, oldval) {
+      //   this.changeNum();
+      // },
     },
     data() {
       return {
@@ -142,11 +115,9 @@
     },
     methods: {
       changePwd() {
-        this.messagePanel.show = false;
         this.$emit('changePwdBox');
       },
       closeMessage() {
-        this.messagePanel.show = false;
       },
       switchChange() {
         this.axios({ // 查询开关
@@ -195,25 +166,8 @@
       width: 100%;
     }
 }
-.modal-backdrop {
-    position: fixed;
-    z-index: 1040;
-    background-color: #000;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    opacity: .5;
-}
+
 .panel-main {
-    background: #fff;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    top: 50px;
-    width: 300px;
-    overflow: auto;
-    z-index: 20000;
     .panel-item {
       height: 49px;
       line-height: 49px;
