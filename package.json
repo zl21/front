@@ -1,6 +1,6 @@
 {
   "name": "r3-frame",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Project for R3 Erp.",
   "main": "index.js",
   "scripts": {
