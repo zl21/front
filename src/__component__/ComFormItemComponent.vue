@@ -100,6 +100,7 @@
       // 计算属性的 后台传值
       formDataObject() {
         let obj = {};
+        // 监听组件的 后台字段的值  默认值及数据联动
         obj = this.newFormItemLists.reduce((option, items) => {
           if (items.item.props.readonly) {
             // 外键 不可编辑
@@ -110,7 +111,7 @@
                 if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
                 }
-              } else {
+              } else if(items.item.value[0]) {
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
