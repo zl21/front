@@ -145,7 +145,6 @@ export default {
   },
   updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
     const copySaveDataForParam = {};
-
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {

@@ -10,46 +10,69 @@
         alt=""
         src="../assets/image/closed@2x.png"
         @click="doCollapseHistoryAndFavorite"
-      />
+      >
       <img
         v-if="collapseHistoryAndFavorite"
         class="trigger"
         alt=""
         src="../assets/image/open@2x.png"
         @click="doCollapseHistoryAndFavorite"
-      />
+      >
       <img
         v-if="!collapseHistoryAndFavorite"
         class="logo"
         alt=""
         src="../assets/image/logo.png"
-      />
+      >
       <img
         v-if="collapseHistoryAndFavorite"
         class="banner"
         alt=""
         src="../assets/image/banner.png"
-      />
+      >
     </div>
     <div class="middle">
       <NavigatorPrimaryMenu
         v-for="(menu, index) in menuLists"
+        :key="`primary-menu-${index}`"
         :data="menu"
         :index="index"
-        :key="`primary-menu-${index}`"
       />
     </div>
+    <Button
+      type="primary"
+      @click="value1 = true"
+    >
+      Open
+    </Button>
+    <Drawer
+      v-model="value1"
+      :closable="false"
+    >
+      <SetPanel :panel="setPanel" />
+    </Drawer>
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
+  import SetPanel from './SetPanel';
   
   export default {
     name: 'Navigator',
     components: {
-      NavigatorPrimaryMenu
+      NavigatorPrimaryMenu,
+      SetPanel
+    },
+    data() {
+      return {
+        value1: false,
+        setPanel: {
+          show: false,
+          list: [],
+        },
+      };
     },
     computed: {
       ...mapState('global', {
@@ -99,5 +122,9 @@
       display: flex;
       flex: 1 1 1px;
     }
+   
   }
+   .burgeon-drawer-content{
+      top:50px !important;
+    }
 </style>

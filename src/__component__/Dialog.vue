@@ -22,7 +22,7 @@
     <component
       :is="dialogComponentName"
       v-if="dialogComponentName"
-      @closeActionDialog="closeActionDialog"
+      @closeActionDialog="onCancel"
     />
   </Modal>
 </template>
