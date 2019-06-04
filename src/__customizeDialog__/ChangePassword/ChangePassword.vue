@@ -73,7 +73,7 @@
           >确认</span>
           <span
             class="cancel-btn"
-            @click="()=>{this.$emit('clonePopUp',false)}"
+            @click="()=>{this.$emit('closeActionDialog')}"
           >取消</span>
         </div>
       </div>
@@ -206,6 +206,8 @@
               content: res.data.message
             };
             this.$Modal.fcSuccess(message);
+            this.newpaswd = '';
+            this.againpaswd = '';
             this.$emit('closeActionDialog', false);
           }
         });

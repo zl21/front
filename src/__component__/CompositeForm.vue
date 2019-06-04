@@ -694,10 +694,15 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
+          // setTimeout(() => {
+          //   console.log(this.defaultSetValue[item.colname],'item.colname',item.colname);
+          // }, 500);
+          // console.log(this.defaultSetValue[item.colname],'000000');
+
           if (this.defaultSetValue[item.colname]) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
-              Label: this.defaultSetValue[item.colname][0].Label || ''
+              Label: item.valuedata || this.defaultSetValue[item.colname][0].Label || ''
             });
           } else {
             arr.push({

@@ -57,9 +57,10 @@
 </template>
 
 <script>
-  // import { fetch } from '../../utils/request';
-  // import router from '../__config__/router.config';
   import { mapState } from 'vuex';
+  import router from '../__config__/router.config';
+  import network from '../__utils__/network';
+
 
   export default {
     props: ['panel'],
@@ -149,11 +150,11 @@
         });
       },
       signout() {
-        // fetch('/p/cs/logout').then(() => {
-        //   router.push({ path: '/login' });
-        // }).catch(() => {
-        //   router.push({ path: '/login' });
-        // });
+        network.get('/p/cs/logout').then((res) => {
+          router.push({ path: '/login' });
+        }).catch(() => {
+          router.push({ path: '/login' });
+        });
       },
     },
   };
