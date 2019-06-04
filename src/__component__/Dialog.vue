@@ -127,7 +127,7 @@
         }
       },
       closeActionDialog() {
-        this.onCancel(); 
+        this.showModal = false;
       }
     
     }
