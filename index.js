@@ -62,3 +62,11 @@ if (enableGateWay) {
 } else {
   init();
 }
+
+const launchApplication = () => {
+  console.log('U will launch Application.');
+};
+
+export default {
+  launchApplication
+}

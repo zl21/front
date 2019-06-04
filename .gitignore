@@ -9,3 +9,4 @@ package-lock.json
 __test_script__/
 dist/
 *.tgz
+publish/

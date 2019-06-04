@@ -1,15 +1,7 @@
+/* eslint-disable */
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const projectConfig = require('./project.config');
-
-const target = projectConfig.target; // 框架研发网关开启环境
-const proxyLists = ['/p/c'];
-const proxyListsForGateway = ['/ad-app/p/c'];
-const proxyListsForPalmCloud = ['/mboscloud-app'];
-
 
 module.exports = env => ({
   entry: {
@@ -21,36 +13,15 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
   },
-  devServer: {
-    compress: true,
-    port: 8190,
-    host: '127.0.0.1',
-    open: false,
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: path.posix.join('/', 'index.html') },
-      ],
-    },
-    publicPath: '/',
-    proxy: [{
-      context: proxyLists,
-      target
-    }, {
-      context: proxyListsForGateway,
-      target
-    }, {
-      context: proxyListsForPalmCloud,
-      target
-    }]
-   
-  },
   target: 'web',
-  devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    path: path.join(__dirname, './dist'),
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[hash].js',
+    path: path.join(__dirname, './publish'),
     publicPath: '/',
+    library: 'r3-frame',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   module: {
     rules: [
@@ -101,15 +72,8 @@ module.exports = env => ({
   plugins: [
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({
-      chunksSortMode: 'none',
-      title: projectConfig.projectsTitle,
-      template: env.production ? './index.html' : './index.dev.html',
-      inject: true,
-      favicon: projectConfig.projectIconPath,
-    })
   ],
-  mode: env && (env.production || env.publish) ? 'production' : 'development',
+  mode: 'production',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
   },
@@ -117,12 +81,5 @@ module.exports = env => ({
     splitChunks: {
       chunks: 'all',
     },
-    // minimizer: [new UglifyJsPlugin({
-    //   uglifyOptions: {
-    //     compress: {
-    //       drop_console: env && env.production
-    //     }
-    //   }
-    // })]
   },
 });
