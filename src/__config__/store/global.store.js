@@ -19,6 +19,7 @@ export default {
     keepAliveLists: [],
     keepAliveLabelMaps: {},
     activeTab: {},
+    userInfo: {}
   },
   mutations,
   actions,

@@ -201,5 +201,8 @@ export default {
     });
     // 添加到新的列表中
   },
+  updataUserInfoMessage(state, { userInfo }) {
+    state.userInfo = userInfo;
+  }
   
 };

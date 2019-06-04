@@ -10,34 +10,34 @@
     <div class="panel-main">
       <div class="panel-item">
         <p>
-          <svg
+          <!-- <svg
             class="ffish-icon"
             aria-hidden="true"
           >
             <use xlink:href="#icon-yonghu-" />
-          </svg>
+          </svg> -->
           <span>欢迎: {{ userInfo.ename }}</span>
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <svg
+          <!-- <svg
             class="ffish-icon"
             aria-hidden="true"
           >
             <use xlink:href="#icon-xiugaimima" />
-          </svg>
+          </svg> -->
           <span>修改密码</span>
         </p>
       </div>
       <div class="panel-item">
         <p>
-          <svg
+          <!-- <svg
             class="ffish-icon"
             aria-hidden="true"
           >
             <use xlink:href="#icon-zhankaichaxuntiaojian" />
-          </svg>
+          </svg> -->
           <span>折叠查询条件</span>
           <el-switch
             v-model="value2"
@@ -53,12 +53,12 @@
         class="panel-item"
       >
         <p>
-          <svg
+          <!-- <svg
             class="ffish-icon"
             aria-hidden="true"
           >
             <use xlink:href="#icon-xiugaimima" />
-          </svg>
+          </svg> -->
           <span>查询条件默认显示行数</span>
           <el-input-number
             v-model="num7"
@@ -70,12 +70,12 @@
       </div>
       <div class="panel-item">
         <p @click="signout">
-          <svg
+          <!-- <svg
             class="ffish-icon"
             aria-hidden="true"
           >
             <use xlink:href="#icon-tuichu" />
-          </svg>
+          </svg> -->
           <span>退出</span>
         </p>
       </div>
@@ -85,7 +85,7 @@
 
 <script>
   // import { fetch } from '../../utils/request';
-  import router from '../__config__/router.config';
+  // import router from '../__config__/router.config';
 
   export default {
     props: ['panel'],

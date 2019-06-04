@@ -49,7 +49,6 @@ const getCategory = () => {
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-
     getCategory();
     setTimeout(() => {
       init();

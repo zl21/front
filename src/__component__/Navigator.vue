@@ -69,7 +69,7 @@
       return {
         value1: false,
         setPanel: {
-          show: false,
+          show: true,
           list: [],
         },
       };
