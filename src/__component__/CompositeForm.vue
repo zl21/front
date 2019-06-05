@@ -946,8 +946,8 @@
             : [];
           item.props.itemdata = {
             colname: current.colname,
-            width: 200,
-            height: 200,
+            width: 140,
+            height: 140,
             readonly: current.readonly,
             masterName: this.masterName,
             objId: this.masterId,
@@ -1062,35 +1062,18 @@
         // 下一个组件获取光标
         const item = this.$refs[`FormComponent_${current.formIndex}`][0]
           .$children;
-        let _index = index;
-        // const input_arry = item.reduce((option, name, index) => {
-        //   if (name.$el.querySelector('input') && name.items.type !== 'checkbox') {
-        //     option.push(name.$el.querySelector('input'));
-        //   }
-        //   return option;
-        // }, []);
-        if (arry[_index + 1] && arry[_index + 1].item.props.readonly) {
-          _index = index + 1;
-        }
-        // eslint-disable-next-line array-callback-return
-        // eslint-disable-next-line consistent-return
-        item.some((option, i) => {
-          if (i > _index) {
-            if (option.$el.querySelector('input') && option.items.type !== 'checkbox') {
-              option.$el.querySelector('input').focus();
-              return i > index;
-            }
+        const focusItemArry = [...arry];
+        focusItemArry.splice(0, index + 1);
+        const _index = index + 1 + focusItemArry.findIndex(item => item.item.props.readonly === false);
+
+        if (item[_index] && arry[_index].item.type !== 'checkbox') {
+          if (item[_index].$el.querySelector('input')) {
+            item[_index].$el.querySelector('input').focus();
+          } else if (item[_index].$el.querySelector('textarea')) {
+            item[_index].$el.querySelector('textarea').focus();
           }
-        //
-        });
-
-
-        // if (item[index + 1] || item[index + 2]) {
-        //   // if (type === 'input') {}
-        //   if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
-        //     item[index + 1].$el.querySelector('input').focus();
-        //   }
-        // }
+        }
+        
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;
