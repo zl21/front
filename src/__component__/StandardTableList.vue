@@ -1086,10 +1086,10 @@
         };
         const OBJ = {
           searchdata: searchData,
-          filename: tableName,
+          filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
-          menu: tableName
+          menu: this.activeTab.label
         };
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
@@ -1109,12 +1109,15 @@
       deleteTableList() { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
+        this.$loading.show();
+
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
             tableName, selectIdArr, resolve, reject 
           });
         });
         promise.then(() => {
+          this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             title: '成功',
@@ -1127,6 +1130,7 @@
       batchVoid() {
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
+        // this.$loading.show();
        
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
@@ -1134,6 +1138,8 @@
           });
         });
         promise.then(() => {
+          // this.$loading.hide();
+
           const message = this.buttons.batchVoidForButtonsData;
           const data = {
             title: '成功',

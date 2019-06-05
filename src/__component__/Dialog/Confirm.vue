@@ -18,10 +18,9 @@
     @on-cancel="onCancel"
     @on-ok="onOk"
   >
-  <div class="show-dialog">
-       <slot name="Modalsolt" />
-  </div>
-   
+    <div class="show-dialog">
+      <slot name="Modalsolt" />
+    </div>
   </Modal>
 </template>
 

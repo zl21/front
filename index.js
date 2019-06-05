@@ -68,4 +68,4 @@ const launchApplication = () => {
 
 export default {
   launchApplication
-}
+};

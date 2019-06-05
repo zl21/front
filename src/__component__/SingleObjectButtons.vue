@@ -468,10 +468,10 @@
         };
         const OBJ = {
           searchdata: searchData,
-          filename: this.tableName,
+          filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
-          menu: this.tableName
+          menu: this.activeTab.label
         };
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
