@@ -99,6 +99,7 @@
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
   export default {
+    name: 'StandardTableList',
     components: {
       ButtonGroup,
       AgTable,

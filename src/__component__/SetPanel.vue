@@ -63,6 +63,7 @@
 
 
   export default {
+    name: 'SetPanel',
     props: ['panel'],
     computed: {
       ...mapState('global', {

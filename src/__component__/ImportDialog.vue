@@ -101,6 +101,7 @@
 
 
   export default {
+    name: 'ImportDialog',
     props: {
       name: {
         type: Boolean,

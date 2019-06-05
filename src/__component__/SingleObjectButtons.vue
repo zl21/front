@@ -1024,6 +1024,7 @@
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
+
         if (checkedInfo) {
           const messageTip = checkedInfo.messageTip;
           if (messageTip) {
@@ -1034,7 +1035,6 @@
             }
           }
         }
-
         // if (this.objectType === 'vertical') { // 纵向结构
         if (this.isreftabs) { // 存在子表时
           if (!this.itemTableValidation) {
@@ -1045,9 +1045,19 @@
                 if (this.itemId === 'New') {
                   if (this.itemNameGroup.length > 0) {
                     const addInfo = this.itemCurrentParameter.add[this.itemName];
-                    if (Object.values(addInfo).length < 1) {
+                    if (Object.values(addInfo).length > 0) {
                       this.$Message.warning('个人信息不能为空!');
                       return false;
+                    }
+                    if (itemCheckedInfo) {
+                      const itemMessageTip = itemCheckedInfo.messageTip;
+                      if (itemMessageTip) {
+                        if (itemMessageTip.length > 0) {
+                          this.$Message.warning(itemMessageTip[0]);
+                          itemCheckedInfo.validateForm.focus();
+                          return false;
+                        }
+                      }
                     }
                   }
                 }
@@ -1061,7 +1071,7 @@
                   return false;
                 }
               }
-            } 
+            }
           }
         }
         // }

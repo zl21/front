@@ -82,7 +82,7 @@
 </template>
 
 <script type="text/javascript">
-  import network, { urlSearchParams } from '../../__utils__/network';
+  import network from '../../__utils__/network';
 
   export default {
     name: 'ChangePassword',

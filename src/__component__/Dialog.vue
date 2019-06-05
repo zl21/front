@@ -41,7 +41,7 @@
       // },
       dialogComponentName: {
         type: String,
-        default: () => '标题'
+        default: () => ''
       }, // 设置组件
       title: {
         type: String,
