@@ -1036,39 +1036,48 @@
           }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
+
         if (this.isreftabs) { // 存在子表时
-          if (!this.itemTableValidation) {
-            const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-            if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
-              this.saveParameters();
-              if (this.objectType === 'vertical') {
-                if (this.itemId === 'New') {
-                  if (this.itemNameGroup.length > 0) {
-                    const addInfo = this.itemCurrentParameter.add[this.itemName];
-                    if (Object.values(addInfo).length > 0) {
-                      this.$Message.warning('个人信息不能为空!');
-                      return false;
-                    }
-                    if (itemCheckedInfo) {
-                      const itemMessageTip = itemCheckedInfo.messageTip;
-                      if (itemMessageTip) {
-                        if (itemMessageTip.length > 0) {
-                          this.$Message.warning(itemMessageTip[0]);
-                          itemCheckedInfo.validateForm.focus();
-                          return false;
+          let tabinlinemode = '';
+          this.tabPanel.forEach((item) => {
+            if (item.tablename === this.itemName) {
+              tabinlinemode = item.tabinlinemode;
+            }
+          });
+          if (tabinlinemode === 'Y') { // 当子表中存在form时
+            if (!this.itemTableValidation) {
+              const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
+              if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+                this.saveParameters();
+                if (this.objectType === 'vertical') {
+                  if (this.itemId === 'New') {
+                    if (this.itemNameGroup.length > 0) {
+                      const addInfo = this.itemCurrentParameter.add[this.itemName];
+                      if (Object.values(addInfo).length > 0) {
+                        this.$Message.warning('个人信息不能为空!');
+                        return false;
+                      }
+                      if (itemCheckedInfo) {
+                        const itemMessageTip = itemCheckedInfo.messageTip;
+                        if (itemMessageTip) {
+                          if (itemMessageTip.length > 0) {
+                            this.$Message.warning(itemMessageTip[0]);
+                            itemCheckedInfo.validateForm.focus();
+                            return false;
+                          }
                         }
                       }
                     }
                   }
                 }
-              }
-            } else if (itemCheckedInfo) {
-              const itemMessageTip = itemCheckedInfo.messageTip;
-              if (itemMessageTip) {
-                if (itemMessageTip.length > 0) {
-                  this.$Message.warning(itemMessageTip[0]);
-                  itemCheckedInfo.validateForm.focus();
-                  return false;
+              } else if (itemCheckedInfo) {
+                const itemMessageTip = itemCheckedInfo.messageTip;
+                if (itemMessageTip) {
+                  if (itemMessageTip.length > 0) {
+                    this.$Message.warning(itemMessageTip[0]);
+                    itemCheckedInfo.validateForm.focus();
+                    return false;
+                  }
                 }
               }
             }
