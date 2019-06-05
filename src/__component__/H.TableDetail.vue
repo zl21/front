@@ -16,6 +16,7 @@
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
+    name: 'HTableDetail',
     data() {
       return {
       };

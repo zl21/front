@@ -1,8 +1,8 @@
 export default {
   clonePopUp: {
-    omponentName: () => import('../__customize__/palmCloud/PowerConfig.vue')
+    component: () => import('../__customizeDialog__/ChangePassword/ChangePassword.vue')
   },
-  functionPermission: {
-    omponentName: () => import('../__customize__/functionPower/FunctionPower.vue')
+  ChangePassword: {
+    component: () => import('../__customizeDialog__/ChangePassword/ChangePassword.vue')
   },
 };

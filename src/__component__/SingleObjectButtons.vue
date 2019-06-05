@@ -88,7 +88,6 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  // import verticalTableDetail from '../__config__/mixins/verticalTableDetail';
 
   export default {
     data() {
@@ -99,10 +98,10 @@
           importDialogTitle: ''
         },
         dialogComponentName: null,
-        actionDialog: {
-          show: false,
-          title: ''
-        }, // 按钮动作定义弹框类型定制界面
+        // actionDialog: {
+        //   show: false,
+        //   title: ''
+        // }, // 按钮动作定义弹框类型定制界面
         dialogConfig: {
           title: '提示',
           mask: true,
@@ -251,9 +250,6 @@
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
-      },
-      closeCustomDialog() {
-        this.actionDialog.show = false;
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
@@ -458,7 +454,7 @@
           const url = tab.action;
           const index = url.lastIndexOf('\/');
           const filePath = url.substring(index + 1, url.length);
-          Vue.component(filePath, CustomizeModule[filePath].omponentName);
+          Vue.component(filePath, CustomizeModule[filePath].component);
           this.dialogComponentName = filePath;
         }
       },
@@ -1043,26 +1039,36 @@
         if (this.isreftabs) { // 存在子表时
           if (!this.itemTableValidation) {
             const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-            if (itemCheckedInfo) {
+            if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+              this.saveParameters();
+              if (this.objectType === 'vertical') {
+                if (this.itemId === 'New') {
+                  if (this.itemNameGroup.length > 0) {
+                    const addInfo = this.itemCurrentParameter.add[this.itemName];
+                    if (Object.values(addInfo).length > 0) {
+                      this.$Message.warning('个人信息不能为空!');
+                      return false;
+                    }
+                    if (itemCheckedInfo) {
+                      const itemMessageTip = itemCheckedInfo.messageTip;
+                      if (itemMessageTip) {
+                        if (itemMessageTip.length > 0) {
+                          this.$Message.warning(itemMessageTip[0]);
+                          itemCheckedInfo.validateForm.focus();
+                          return false;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } else if (itemCheckedInfo) {
               const itemMessageTip = itemCheckedInfo.messageTip;
               if (itemMessageTip) {
                 if (itemMessageTip.length > 0) {
                   this.$Message.warning(itemMessageTip[0]);
                   itemCheckedInfo.validateForm.focus();
                   return false;
-                }
-              }
-            } else if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
-              this.saveParameters();
-              if (this.objectType === 'vertical') {
-                if (this.itemId === 'New') {
-                  if (this.itemNameGroup.length > 0) {
-                    const addInfo = this.itemCurrentParameter.add[this.itemName];
-                    if (Object.values(addInfo).length < 1) {
-                      this.$Message.warning('个人信息不能为空!');
-                      return false;
-                    }
-                  }
                 }
               }
             }

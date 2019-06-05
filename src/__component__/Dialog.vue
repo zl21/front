@@ -29,7 +29,7 @@
 
 <script>
   export default {
-    name: 'Dialog',
+    name: 'DialogComponent',
     props: {
       // showModal: {
       //   type: Boolean,
@@ -41,7 +41,7 @@
       // },
       dialogComponentName: {
         type: String,
-        default: () => '标题'
+        default: () => ''
       }, // 设置组件
       title: {
         type: String,
@@ -127,7 +127,7 @@
         }
       },
       closeActionDialog() {
-        this.onCancel(); 
+        this.showModal = false;
       }
     
     }

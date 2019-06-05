@@ -145,7 +145,6 @@ export default {
   },
   updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
     const copySaveDataForParam = {};
-
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -156,16 +155,18 @@ export default {
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
                 } else if (b.valuedata) {
-                  copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
-                } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp') {
-                  copySaveDataForParam[b.colname] = b.refobjid;
+                  if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                    copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                  } else {
+                    copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                  }
                 } 
               }
             });
           });
         });
       });  
-      state.updateData[tableName].add[tableName] = copySaveDataForParam;
+      state.updateData[tableName].add[tableName] = Object.assign({}, copySaveDataForParam);
       state.updateData[tableName].changeData = copySaveDataForParam;
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
     }

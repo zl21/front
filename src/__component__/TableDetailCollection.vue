@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -123,7 +123,7 @@
   export default {
     name: 'TableDetailCollection',
     components: {
-
+      Dialog
     },
     data() {
       return {
@@ -167,7 +167,7 @@
         },
         beforeSendData: {}, // 之前的数据
         afterSendData: {}, // 改后的数据
-        dialogConfig: {  // 弹框配置信息
+        dialogConfig: { // 弹框配置信息
           title: '提示',
           mask: true,
           footerHide: false,
@@ -364,21 +364,21 @@
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
-      // 测试数据
-  //     const a = [
-	// 	{
-  //     "objid":2,
-  //     "message": ['a','b',''][parseInt(Math.random()*3,10)]
-	// 	}
-	// ]
+        // 测试数据
+        //     const a = [
+        // 	{
+        //     "objid":2,
+        //     "message": ['a','b',''][parseInt(Math.random()*3,10)]
+        // 	}
+        // ]
       
-  //     this.reloadErrorTips(a);
-  //     return;
+        //     this.reloadErrorTips(a);
+        //     return;
 
-        if (this.tableRowSelectedIds.length ===0) {
+        if (this.tableRowSelectedIds.length === 0) {
           const data = {
             title: '警告',
-            content: `请先选择需要删除的记录！`
+            content: '请先选择需要删除的记录！'
           };
           this.$Modal.fcWarning(data);
           return;
@@ -439,7 +439,6 @@
             });
           }
         };
-        
       },
       filterColumns(data) {
         if (!data) {
@@ -1003,6 +1002,8 @@
                   trigger: 'hover',
                   transfer: true,
                   content: 'content',
+                  placement: 'right'
+
                 },
                 scopedSlots: {
                   default: () => h('div', {
@@ -1024,13 +1025,12 @@
                 },
               })
             ]);
-          } else {
-            return h('div', {
-              domProps: {
-                innerHTML: `<span>${index}</span>`
-              }
-            })
-          }
+          } 
+          return h('div', {
+            domProps: {
+              innerHTML: `<span>${index}</span>`
+            }
+          });
         };
       },
       fkIconRender(cellData) {
@@ -1168,16 +1168,14 @@
         this.$emit(TABLE_SELECTED_ROW, param);
       },
       reloadErrorTips(data) {
-        
         const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
-        this.dataSource.row.map(ele => {
-          const exceptFlag = data.every(item => {
+        this.dataSource.row.map((ele) => {
+          const exceptFlag = data.every((item) => {
             if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
               return true;
-            } else {
-              ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
-              return false;
-            }
+            } 
+            ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
+            return false;
           });
           if (exceptFlag) {
             ele.errorTips = '';
@@ -1442,7 +1440,7 @@
               ele => ele.limitdesc === params.row[cellData.colname]
             );
             if (result.length > 0) {
-              return result[0].limitval
+              return result[0].limitval;
             }
           }
         }

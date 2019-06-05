@@ -10,46 +10,94 @@
         alt=""
         src="../assets/image/closed@2x.png"
         @click="doCollapseHistoryAndFavorite"
-      />
+      >
       <img
         v-if="collapseHistoryAndFavorite"
         class="trigger"
         alt=""
         src="../assets/image/open@2x.png"
         @click="doCollapseHistoryAndFavorite"
-      />
+      >
       <img
         v-if="!collapseHistoryAndFavorite"
         class="logo"
         alt=""
         src="../assets/image/logo.png"
-      />
+      >
       <img
         v-if="collapseHistoryAndFavorite"
         class="banner"
         alt=""
         src="../assets/image/banner.png"
-      />
+      >
     </div>
     <div class="middle">
       <NavigatorPrimaryMenu
         v-for="(menu, index) in menuLists"
+        :key="`primary-menu-${index}`"
         :data="menu"
         :index="index"
-        :key="`primary-menu-${index}`"
       />
     </div>
+    <Button
+      type="primary"
+      @click="show = true"
+    >
+      Open
+    </Button>
+    <Drawer
+      v-model="show"
+    >
+      <SetPanel
+        :panel="setPanel"
+        @changePwdBox="changePwdBox"
+      />
+    </Drawer>
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+    />
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations, mapActions } from 'vuex';
+  import Vue from 'vue';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
+  import SetPanel from './SetPanel';
+  import Dialog from './Dialog.vue';
+  import CustomizeModule from '../__config__/customizeDialog.config';
+
   
   export default {
     name: 'Navigator',
     components: {
-      NavigatorPrimaryMenu
+      NavigatorPrimaryMenu,
+      SetPanel,
+      Dialog
+    },
+    data() {
+      return {
+        show: false,
+        setPanel: {
+          show: true,
+          list: [],
+        },
+        dialogConfig: {
+          title: '提示',
+          mask: true,
+          footerHide: false,
+          contentText: '',
+          confirm: () => {
+          }
+        }, // 弹框配置信息
+        dialogComponentName: null
+      };
     },
     computed: {
       ...mapState('global', {
@@ -60,6 +108,14 @@
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
       ...mapActions('global', ['getMenuLists']),
+      changePwdBox() {
+        this.show = false;
+        this.$refs.dialogRef.open();
+        this.dialogConfig.title = '修改密码';
+        this.dialogConfig.footerHide = true;
+        Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
+        this.dialogComponentName = 'ChangePassword';
+      },
     },
     mounted() {
       this.getMenuLists();
@@ -99,5 +155,9 @@
       display: flex;
       flex: 1 1 1px;
     }
+   
   }
+   .burgeon-drawer-content{
+      top:50px !important;
+    }
 </style>

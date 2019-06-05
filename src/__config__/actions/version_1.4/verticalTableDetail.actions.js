@@ -161,24 +161,30 @@ export default {
     const { enter } = parame;
     const { itemNameGroup } = parame;
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
-          itemAdd[itemName].ID = objId;
           if (path) { // 有path的参数
             add[tableName].ID = objId;
             add[tableName].ISACTIVE = 'Y';
-            itemAdd[itemName] = [
-              itemAdd[itemName]
-            ];
-            parames = {
-              ...add,
-              ...itemAdd
-            };
-          } else {
+            if (Object.values(itemAdd[itemName]).length > 0) {
+              itemAdd[itemName].ID = objId;
+              itemAdd[itemName] = [
+                itemAdd[itemName]
+              ];
+              parames = {
+                ...add,
+                ...itemAdd
+              };
+            } else {
+              parames = {
+                ...add,
+              };
+            }
+          } else if (Object.values(itemAdd[itemName]).length > 0) {
+            itemAdd[itemName].ID = objId;
             itemAdd[itemName] = [
               itemAdd[itemName]
             ];
@@ -188,6 +194,14 @@ export default {
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...add,
                 ...itemAdd,
+              }
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 固定传值-1 表示新增
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
               }
             };
           }

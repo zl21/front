@@ -463,7 +463,7 @@
       },
       fkrpSelectedInputBlur(event, $this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this);
+          this._items.event.blur(event, $this,this._items);
         }
       },
       fkrpSelectedInputKeyup(event, $this) {

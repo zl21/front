@@ -153,6 +153,7 @@
     watch: {
       defaultData: {
         handler() {
+          console.log(this.defaultSetValue);
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
         },
@@ -193,11 +194,13 @@
           parentdesc: '',
           hrdisplay: ''
         };
+        const hrdata = [];
         const defaultData = JSON.parse(JSON.stringify(this.defaultData));
         if (defaultData.addcolums) {
           const data = defaultData.addcolums.reduce((array, current) => {
             if (current.child) {
               // hr
+              childs.isTitleShow = true;
               if (Array.isArray(current.child)) {
                 const index = current.child.findIndex(element => element.display === 'hr');
                 if (index !== -1) {
@@ -208,7 +211,11 @@
               } else if (current.child.display !== 'hr') {
                 childs.list.push(current.child);
               } else if (current.child.display === 'hr') {
-                childs.parentdesc = current.child.name;
+                hrdata.push({
+                  childs: [],
+                  parentdesc: current.child.name,
+                  hrdisplay: '',
+                });
               }
             } else if (current.inpubobj) {
               childs.list.push(current.inpubobj);
@@ -217,16 +224,16 @@
             }
             return array;
           }, []);
+          data.push(...hrdata);
           if (childs.list.length > 0) {
             data.push({
               childs: childs.list,
               parentdesc: childs.parentdesc,
+              isTitleShow: childs.isTitleShow, 
               hrdisplay: 'expand',
             });
             defaultData.addcolums = [...data];
           }
-         
-          console.log(data, childs.parentdesc);
         } 
         if (
           this.type
@@ -278,8 +285,10 @@
         if (Array.isArray(data)) {
           data = data[0];
         }
+        const formData = Object.assign(this.defaultSetValue, this.formDataDef);
         this.formData = Object.assign(this.formData, data);
-        this.formDataDef = Object.assign(this.formDataDef, setdefval);
+        
+        this.formDataDef = Object.assign(formData, setdefval);
 
         const key = Object.keys(data)[0];
         if (key.split(':').length > 1) {
@@ -411,12 +420,16 @@
               // 当外键下拉站开始去请求数据
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                const refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                let refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                if (this.formData[current.refcolval.srccol] === undefined) {
+                  refcolval = this.defaultFormData[current.refcolval.srccol];
+                }
                 if (!refcolval) {
                   this.$Message.info('请选择关联表字段');
                   return false;
                 }
                 const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
@@ -442,14 +455,50 @@
                 }
               });
             },
+            blur: (event, obj, item) => {
+              if (item.props.fkdisplay && item.value[0]) {
+                if (!item.value[0].ID) {
+                  event.target.value = '';
+                }
+              }
+            },
             inputValueChange: (value) => {
               // 外键的模糊搜索
-              fkFuzzyquerybyak({
-                searchObject: {
+              if (!value) {
+                return false;
+              }
+              let sendData = {
+
+              };
+              if (Object.hasOwnProperty.call(current, 'refcolval')) {
+                let refcolval = this.formData[current.refcolval.srccol] ? this.formData[current.refcolval.srccol] : '';
+                if (this.formData[current.refcolval.srccol] === undefined) {
+                  refcolval = this.defaultFormData[current.refcolval.srccol];
+                }
+                if (!refcolval) {
+                  this.$Message.info('请选择关联表字段');
+                  return false;
+                }
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                sendData = {
+                  ak: value,
+                  colid: current.colid,
+                  fixedcolumns: {
+                    whereKeys: {
+                      [current.refcolval.fixcolumn]: query,
+                    }
+                  }
+                };
+              } else {
+                sendData = {
                   ak: value,
                   colid: current.colid,
                   fixedcolumns: {}
-                },
+                };
+              }
+
+              fkFuzzyquerybyak({
+                searchObject: sendData,
                 serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterAutoData(res, index, current);
@@ -656,10 +705,15 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
+          // setTimeout(() => {
+          //   console.log(this.defaultSetValue[item.colname],'item.colname',item.colname);
+          // }, 500);
+          // console.log(this.defaultSetValue[item.colname],'000000');
+
           if (this.defaultSetValue[item.colname]) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
-              Label: this.defaultSetValue[item.colname][0].Label || ''
+              Label: item.valuedata || this.defaultSetValue[item.colname][0].Label || ''
             });
           } else {
             arr.push({
@@ -957,6 +1011,10 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
+        if (res.data.data.length < 1) {
+          delete this.formData[`${current.colname}:NAME`];
+          // console.log(current.colname,this.formData);
+        }
         item[index].item.props.AutoData = res.data.data;
       },
       lowercaseToUppercase(index, current) {
