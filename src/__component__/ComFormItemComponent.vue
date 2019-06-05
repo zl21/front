@@ -215,7 +215,9 @@
         handler(val, old) {
           if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
             if (this.indexItem < 0) {
-              this.VerificationFormInt();
+              setTimeout(() => {
+                this.VerificationFormInt();
+              }, 200);
             }
           } 
         },
