@@ -153,7 +153,6 @@
     watch: {
       defaultData: {
         handler() {
-          console.log(this.defaultSetValue);
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
         },
