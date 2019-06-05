@@ -33,16 +33,6 @@
   export default {
     name: 'FormItemComponent',
     computed: {
-      FormItemLists: {
-        get() {
-          const arr = JSON.parse(JSON.stringify(this.formItemLists));
-          return arr;
-        },
-        set(newValue) {
-          this.newFormItemLists = newValue.concat([]);
-        }
-
-      },
       // 计算属性的 getter
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
@@ -111,7 +101,7 @@
                 if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
                 }
-              } else if(items.item.value[0]) {
+              } else if (items.item.value[0]) {
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
@@ -224,8 +214,10 @@
       VerificationForm: {
         handler(val, old) {
           if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
-            if (this.changeNumber === 0) {
-              this.VerificationFormInt();
+            if (this.indexItem < 0) {
+              setTimeout(() => {
+                this.VerificationFormInt();
+              }, 200);
             }
           } 
         },
@@ -261,10 +253,10 @@
         },
         deep: true
       },
-      FormItemLists: {
-        handler(val) {
+      formItemLists: {
+        handler() {
           this.changeNumber = 0;
-          this.newFormItemLists = this.formItemLists;
+          this.newFormItemLists = this.formItemLists.concat();
         },
         deep: true
       }

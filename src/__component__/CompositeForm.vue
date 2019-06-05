@@ -153,7 +153,6 @@
     watch: {
       defaultData: {
         handler() {
-          console.log(this.defaultSetValue);
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
         },
@@ -658,24 +657,22 @@
         }
         // 设置表单的默认值
         if (item.display === 'textarea' && !item.fkdisplay || item.display === 'text' && !item.fkdisplay) {
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
+          return item.defval || item.valuedata || '';
         }
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          if (item.defval || item.valuedata) {
-            return `${item.defval || item.valuedata} ` || '';
-          }
-          return '';
+          return item.defval || item.valuedata || '';
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
           return item.defval || item.valuedata || '';
@@ -684,7 +681,7 @@
 
         if (item.display === 'check') {
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
           return item.valuedata || item.defval;
@@ -694,7 +691,7 @@
         if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
           const arr = [];
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             arr.push(this.defaultSetValue[item.colname]);
           } else {
             arr.push(item.valuedata || item.defval);
@@ -710,7 +707,7 @@
           // }, 500);
           // console.log(this.defaultSetValue[item.colname],'000000');
 
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
               Label: item.valuedata || this.defaultSetValue[item.colname][0].Label || ''
@@ -739,7 +736,12 @@
         if (this.objreadonly) {
           // 页面只读标记
           item.props.type = 'text';
+          item.props.placeholder = '';
           return false;
+        }
+        // 去除请输入 字段
+        if (item.props.readonly  ) {
+          item.props.placeholder = '';
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -949,8 +951,8 @@
             : [];
           item.props.itemdata = {
             colname: current.colname,
-            width: 200,
-            height: 200,
+            width: 140,
+            height: 140,
             readonly: current.readonly,
             masterName: this.masterName,
             objId: this.masterId,
@@ -1065,35 +1067,17 @@
         // 下一个组件获取光标
         const item = this.$refs[`FormComponent_${current.formIndex}`][0]
           .$children;
-        let _index = index;
-        // const input_arry = item.reduce((option, name, index) => {
-        //   if (name.$el.querySelector('input') && name.items.type !== 'checkbox') {
-        //     option.push(name.$el.querySelector('input'));
-        //   }
-        //   return option;
-        // }, []);
-        if (arry[_index + 1] && arry[_index + 1].item.props.readonly) {
-          _index = index + 1;
-        }
-        // eslint-disable-next-line array-callback-return
-        // eslint-disable-next-line consistent-return
-        item.some((option, i) => {
-          if (i > _index) {
-            if (option.$el.querySelector('input') && option.items.type !== 'checkbox') {
-              option.$el.querySelector('input').focus();
-              return i > index;
-            }
+        const focusItemArry = [...arry];
+        focusItemArry.splice(0, index + 1);
+        const _index = index + 1 + focusItemArry.findIndex(item => item.item.props.readonly === false);
+
+        if (item[_index] && arry[_index].item.type !== 'checkbox') {
+          if (item[_index].$el.querySelector('input')) {
+            item[_index].$el.querySelector('input').focus();
+          } else if (item[_index].$el.querySelector('textarea')) {
+            item[_index].$el.querySelector('textarea').focus();
           }
-        //
-        });
-
-
-        // if (item[index + 1] || item[index + 2]) {
-        //   // if (type === 'input') {}
-        //   if (item[index + 1].$el.querySelector('input') && item[index + 1].items.type !== 'checkbox') {
-        //     item[index + 1].$el.querySelector('input').focus();
-        //   }
-        // }
+        }
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;
