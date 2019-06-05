@@ -153,6 +153,7 @@
     watch: {
       defaultData: {
         handler() {
+          console.log(this.defaultSetValue);
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
         },
@@ -193,11 +194,13 @@
           parentdesc: '',
           hrdisplay: ''
         };
+        const hrdata = [];
         const defaultData = JSON.parse(JSON.stringify(this.defaultData));
         if (defaultData.addcolums) {
           const data = defaultData.addcolums.reduce((array, current) => {
             if (current.child) {
               // hr
+              childs.isTitleShow = true;
               if (Array.isArray(current.child)) {
                 const index = current.child.findIndex(element => element.display === 'hr');
                 if (index !== -1) {
@@ -208,7 +211,12 @@
               } else if (current.child.display !== 'hr') {
                 childs.list.push(current.child);
               } else if (current.child.display === 'hr') {
-                childs.parentdesc = current.child.name;
+                hrdata.push({
+                  childs: [],
+                  parentdesc: current.child.name,
+                  hrdisplay: '',
+                });
+                //childs.parentdesc = current.child.name;
               }
             } else if (current.inpubobj) {
               childs.list.push(current.inpubobj);
@@ -217,10 +225,12 @@
             }
             return array;
           }, []);
+          data.push(...hrdata);
           if (childs.list.length > 0) {
             data.push({
               childs: childs.list,
               parentdesc: childs.parentdesc,
+              isTitleShow: childs.isTitleShow, 
               hrdisplay: 'expand',
             });
             defaultData.addcolums = [...data];
