@@ -649,6 +649,12 @@
         // }
         if (this.objreadonly) {
           // 页面只读标记
+          
+          if (item.display === 'select' || item.display === 'OBJ_SELECT') {
+            const value = item.defval || item.valuedata;
+            const index = item.combobox.findIndex((x) => x.limitval === value);
+            return item.combobox[index].limitdesc || '';
+          }
           return item.defval || item.valuedata || '';
         }
         if (item.readonly === true && item.fkdisplay) {
@@ -740,7 +746,7 @@
           return false;
         }
         // 去除请输入 字段
-        if (item.props.readonly  ) {
+        if (item.props.readonly) {
           item.props.placeholder = '';
         }
         if (item.type === 'checkbox') {
