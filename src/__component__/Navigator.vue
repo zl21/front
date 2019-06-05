@@ -126,9 +126,12 @@
 </script>
 
 <style lang="less">
- .burgeon-drawer-content{
+ .burgeon-drawer-content{//重置BurgeonUI样式
     border-top-left-radius: 0px !important; 
     border-top-right-radius: 0px !important; 
+  }
+  .burgeon-drawer-body{//重置BurgeonUI样式
+    padding: 0px !important; 
   }
   .navigator {
     height: 100%;
@@ -161,25 +164,25 @@
       display: flex;
       flex: 1 1 1px;
     }
-      .tag {
-        width: 50px;
-        float: left;
-        font-size: 24px;
-        text-align: center;
-        line-height: 50px;
-        cursor: pointer;
-        color: #fff;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        i{
-          font-size: 22px;
-        }
+    .tag {
+      width: 50px;
+      float: left;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      color: #fff;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      i{
+        font-size: 22px;
       }
-      .tag:hover {
-        background: #2e373c;
-      }
+    }
+    .tag:hover {
+      background: #2e373c;
+    }
    
   }
  

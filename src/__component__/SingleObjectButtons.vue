@@ -1044,7 +1044,9 @@
               tabinlinemode = item.tabinlinemode;
             }
           });
+          console.log(tabinlinemode);
           if (tabinlinemode === 'Y') { // 当子表中存在form时
+            debugger;
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
               if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
@@ -1053,10 +1055,7 @@
                   if (this.itemId === 'New') {
                     if (this.itemNameGroup.length > 0) {
                       const addInfo = this.itemCurrentParameter.add[this.itemName];
-                      if (Object.values(addInfo).length > 0) {
-                        this.$Message.warning('个人信息不能为空!');
-                        return false;
-                      }
+                     
                       if (itemCheckedInfo) {
                         const itemMessageTip = itemCheckedInfo.messageTip;
                         if (itemMessageTip) {
@@ -1066,6 +1065,9 @@
                             return false;
                           }
                         }
+                      } else if (Object.values(addInfo).length < 1) {
+                        this.$Message.warning('个人信息不能为空!');
+                        return false;
                       }
                     }
                   }
