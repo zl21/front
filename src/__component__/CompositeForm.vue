@@ -736,7 +736,12 @@
         if (this.objreadonly) {
           // 页面只读标记
           item.props.type = 'text';
+          item.props.placeholder = '';
           return false;
+        }
+        // 去除请输入 字段
+        if (item.props.readonly  ) {
+          item.props.placeholder = '';
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -1073,7 +1078,6 @@
             item[_index].$el.querySelector('textarea').focus();
           }
         }
-        
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;
