@@ -1,13 +1,14 @@
 /* eslint-disable */
-import { Grid } from 'ag-grid';
-import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
-import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
+import * as agGrid  from 'ag-grid';
+// import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
+// import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
 // import 'ag-grid-enterprise/main';
-import { LicenseManager } from 'ag-grid-enterprise/main';
+// import { LicenseManager } from 'ag-grid-enterprise/main';
 import { agGridEnterpriseLicenseKey } from './constant';
 import loadingSVG from '../image/loading.svg';
 
 // 设置enterprise key
+const { Grid, LicenseManager } = agGrid;
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 const cssFeatures = {
   hover: 'ag-syman-hover',

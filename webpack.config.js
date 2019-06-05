@@ -2,7 +2,6 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -20,6 +19,7 @@ module.exports = env => ({
     vuex: 'Vuex',
     'vue-router': 'VueRouter',
     axios: 'axios',
+    'ag-grid': 'agGrid',
   },
   devServer: {
     compress: true,
@@ -116,13 +116,6 @@ module.exports = env => ({
   optimization: {
     splitChunks: {
       chunks: 'all',
-    },
-    // minimizer: [new UglifyJsPlugin({
-    //   uglifyOptions: {
-    //     compress: {
-    //       drop_console: env && env.production
-    //     }
-    //   }
-    // })]
+    }
   },
 });
