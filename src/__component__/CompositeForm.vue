@@ -216,7 +216,6 @@
                   parentdesc: current.child.name,
                   hrdisplay: '',
                 });
-                //childs.parentdesc = current.child.name;
               }
             } else if (current.inpubobj) {
               childs.list.push(current.inpubobj);
@@ -286,8 +285,10 @@
         if (Array.isArray(data)) {
           data = data[0];
         }
+        const formData = Object.assign(this.defaultSetValue, this.formDataDef);
         this.formData = Object.assign(this.formData, data);
-        this.formDataDef = Object.assign(this.formDataDef, setdefval);
+        
+        this.formDataDef = Object.assign(formData, setdefval);
 
         const key = Object.keys(data)[0];
         if (key.split(':').length > 1) {
