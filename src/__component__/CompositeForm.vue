@@ -657,24 +657,22 @@
         }
         // 设置表单的默认值
         if (item.display === 'textarea' && !item.fkdisplay || item.display === 'text' && !item.fkdisplay) {
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
+          return item.defval || item.valuedata || '';
         }
         if (item.display === 'OBJ_DATENUMBER') {
           // 日期控件
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          if (item.defval || item.valuedata) {
-            return `${item.defval || item.valuedata} ` || '';
-          }
-          return '';
+          return item.defval || item.valuedata || '';
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
           return item.defval || item.valuedata || '';
@@ -683,7 +681,7 @@
 
         if (item.display === 'check') {
           // 保存change 之前的默认值
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
           return item.valuedata || item.defval;
@@ -693,7 +691,7 @@
         if (item.display === 'OBJ_SELECT' || item.display === 'select') {
           // 处理select的默认值
           const arr = [];
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             arr.push(this.defaultSetValue[item.colname]);
           } else {
             arr.push(item.valuedata || item.defval);
@@ -709,7 +707,7 @@
           // }, 500);
           // console.log(this.defaultSetValue[item.colname],'000000');
 
-          if (this.defaultSetValue[item.colname]) {
+          if (this.defaultSetValue[item.colname] !== undefined) {
             arr.push({
               ID: this.defaultSetValue[item.colname][0].ID || '',
               Label: item.valuedata || this.defaultSetValue[item.colname][0].Label || ''
