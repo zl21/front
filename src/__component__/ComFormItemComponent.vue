@@ -92,6 +92,10 @@
         let obj = {};
         // 监听组件的 后台字段的值  默认值及数据联动
         obj = this.newFormItemLists.reduce((option, items) => {
+          const value = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
+          if (value.length < 1) {
+            return option;
+          }
           if (items.item.props.readonly) {
             // 外键 不可编辑
             option[items.item.field] = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
@@ -109,7 +113,7 @@
             }
             if (items.item.props.number) {
               if (option[items.item.field]) {
-                option[items.item.field] = Number(option[items.item.field]);
+                option[items.item.field] = Number(option[items.item.field].replace(/^\s+|\s+$/g, '').replace(/-/g, ''));
               }
             } else if (typeof option[items.item.field] === 'string') {
               option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
@@ -118,6 +122,7 @@
           
           return option;
         }, {});
+        
         return obj;
       },
       // 计算属性的 div 的坐标起始点
