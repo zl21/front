@@ -1048,9 +1048,7 @@
               tabinlinemode = item.tabinlinemode;
             }
           });
-          console.log(tabinlinemode);
           if (tabinlinemode === 'Y') { // 当子表中存在form时
-            debugger;
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
               if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
@@ -1073,6 +1071,15 @@
                         this.$Message.warning('个人信息不能为空!');
                         return false;
                       }
+                    }
+                  }
+                } else if (itemCheckedInfo) {
+                  const itemMessageTip = itemCheckedInfo.messageTip;
+                  if (itemMessageTip) {
+                    if (itemMessageTip.length > 0) {
+                      this.$Message.warning(itemMessageTip[0]);
+                      itemCheckedInfo.validateForm.focus();
+                      return false;
                     }
                   }
                 }
@@ -1147,6 +1154,8 @@
               this.$Message.success(message);
             }
           } else {
+            this.updateChangeData({ tableName: this.itemName, value: {} });
+
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
          
@@ -1204,7 +1213,6 @@
           const message = this.buttonsData.message;
           if (message) {
             this.upData(`${message}`);
-            // this.updateChangeData({ tableName: this.tableName, value: {} });
           } else {
             this.upData('保存成功');
           }

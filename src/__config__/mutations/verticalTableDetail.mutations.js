@@ -1,4 +1,5 @@
 import { stringify } from 'querystring';
+import { cpus } from 'os';
 import router from '../router.config';
 
 export default {
@@ -64,6 +65,7 @@ export default {
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
+    console.log(data, 'formmm');
     componentAttribute.formData.data = data || [];
   },
   updateFormDataForRefshow(state) { // 去除子表缓存
@@ -131,6 +133,8 @@ export default {
   },
   updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
     const copySaveDataForParam = {};
+    const copySaveDataForParamForDate = {};
+
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -143,8 +147,14 @@ export default {
                 } else if (b.valuedata) {
                   if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
                     copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                    copySaveDataForParamForDate[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                   } else {
+                    if (b.display === 'OBJ_DATENUMBER') {
+                      copySaveDataForParamForDate[b.colname] = b.valuedata.replace(/\-/g, '');
+                      // copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                    } 
                     copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                    copySaveDataForParamForDate[b.colname] = b.valuedata;
                   }
                 } 
               }
@@ -153,8 +163,26 @@ export default {
         });
       }); 
 
-      state.updateData[tableName].add[tableName] = copySaveDataForParam;
-      state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
+     
+      Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+      state.mainFormInfo.formData = state.defaultDataForCopy;
+      const param = Object.keys(copySaveDataForParamForDate).reduce((obj, item) => {
+        // if (item[obj] !== 'undefined') {
+        console.log(11, obj[item]);
+        console.log(22, copySaveDataForParam[item]);
+
+
+        // copySaveDataForParam[item] = copySaveDataForParam[item];
+        // }
+        return obj;
+      }, {});
+
+      console.log('🍍', copySaveDataForParamForDate);
+
+      state.updateData[tableName].add[tableName] = copySaveDataForParamForDate;
+      state.updateData[tableName].changeData = copySaveDataForParam;
+      console.log(66, state.updateData[tableName].changeData);
+      console.log(662222, copySaveDataForParam);
     }
   },
   emptyChangeData(state, tableName) {

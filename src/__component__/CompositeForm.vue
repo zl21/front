@@ -152,7 +152,8 @@
     },
     watch: {
       defaultData: {
-        handler() {
+        handler(val) {
+          console.log(val, this.defaultSetValue);
           this.computdefaultData = this.reorganizeForm();
           this.Comparison();
         },
@@ -652,7 +653,7 @@
           
           if (item.display === 'select' || item.display === 'OBJ_SELECT') {
             const value = item.defval || item.valuedata;
-            const index = item.combobox.findIndex((x) => x.limitval === value);
+            const index = item.combobox.findIndex(x => x.limitval === value);
             return item.combobox[index].limitdesc || '';
           }
           return item.defval || item.valuedata || '';
