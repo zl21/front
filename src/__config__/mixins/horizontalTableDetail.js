@@ -13,6 +13,7 @@ export default () => ({
       tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ ...updateData }) => updateData.updateData,
+      tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
@@ -48,7 +49,8 @@ export default () => ({
         'updateFormDataForRefshow',
         'updateCopyData',
         'changeFormDataForCopy',
-        'updateTableData'
+        'updateTableData',
+        'updateTablePageInfo'
       ]),
   },
   beforeDestroy() {

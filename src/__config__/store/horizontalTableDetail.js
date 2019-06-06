@@ -16,8 +16,11 @@ export default () => ({
     copy: false,
     defaultDataForCopy: {}, // 复制 按钮操作保存修改前的数据
     copyDataForReadOnly: {}, // 复制按钮操作用作判断是否是只读类型
-    tooltipForItemTable: []// 子表操作失败提示
-
+    tooltipForItemTable: [],// 子表操作失败提示
+    tablePageInfo: {
+      currentPageIndex: 0,
+      pageSize: 10
+    }
   },
   actions,
   mutations
