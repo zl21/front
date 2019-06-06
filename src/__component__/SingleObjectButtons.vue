@@ -156,23 +156,24 @@
       tabcmd: {
         handler(val, oldval) {
           if (JSON.stringify(val) !== JSON.stringify(oldval)) {
-            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-            
-            setTimeout(() => {
-              if (this.objectType === 'horizontal') { // 横向布局
-                if (this.itemName !== this.tableName) {
-                  const { tabrelation } = this.itemInfo;
-                  if (tabrelation === '1:m') { // 子表
-                    val.cmds.forEach((item, index) => {
-                      if (item === 'actionEXPORT') {
-                        val.prem[index] = true;
-                      }
-                    });
+            if (Object.keys(val).length > 0) {
+              this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+              setTimeout(() => {
+                if (this.objectType === 'horizontal') { // 横向布局
+                  if (this.itemName !== this.tableName) {
+                    const { tabrelation } = this.itemInfo;
+                    if (tabrelation === '1:m') { // 子表
+                      val.cmds.forEach((item, index) => {
+                        if (item === 'actionEXPORT') {
+                          val.prem[index] = true;
+                        }
+                      });
+                    }
                   }
                 }
-              }
-              this.buttonsReorganization(val);
-            }, 300);
+                this.buttonsReorganization(val);
+              }, 300);
+            }
           }
         },
         deep: true
@@ -438,6 +439,9 @@
         default:
           break;
         }
+      },
+      objTabActionSlient(tab) { // 动作定义静默
+
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

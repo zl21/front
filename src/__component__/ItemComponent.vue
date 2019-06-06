@@ -295,6 +295,7 @@
             item.props.dialog.model.title = '弹窗多选';
             item.componentType = Dialog;
             item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
+            item.props.dialog.model['footer-hide'] = false;
             item.props.datalist.forEach((option, i) => {
               if (option.value === '导入') {
                 item.props.datalist[i].url = item.props.fkobj.url;

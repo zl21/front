@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -1433,15 +1433,21 @@
         return targetObj;
       },
       getSelectValueCombobox(h, cellData) { // 做SelectValueCombobox 判空处理
+        const combobox = [];
+        combobox.push({
+          value: '请选择',
+          label: '请选择'
+        }); 
         if (cellData.combobox) {
-          return cellData.combobox.map(item => h('Option', {
+          combobox.push(...cellData.combobox);
+          return combobox.map(item => h('Option', {
             props: {
-              value: item.limitval,
-              label: item.limitdesc
+              value: item.value || item.limitval,
+              label: item.label || item.limitdesc
             }
           }));
         }
-        return [];
+        return combobox;
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
