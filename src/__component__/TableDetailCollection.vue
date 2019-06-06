@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -133,10 +133,10 @@
         // data: [],
         searchInfo: '', // 输入框搜索内容
         searchCondition: null, // 查询条件
-        pageInfo: { // 列表的分页
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
-          pageSize: this.dataSource.defaultrange || 10 // 显示条数
-        },
+        // pageInfo: { // 列表的分页
+        //   currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
+        //   pageSize: this.dataSource.defaultrange || 10 // 显示条数
+        // },
         fkData: ({ totalRowCount: 0 }), // // 外键下拉选择（drp mrp） 的数据
         fkDropPageInfo: { // 外键下拉选择（drp mrp） 的分页
           currentPageIndex: 1, // 当前页码
@@ -332,7 +332,9 @@
         }
         return false;
       },
-    
+      pageInfo() {
+        return this.tablePageInfo;
+      }
     },
     watch: {
       beforeSendData(val) {
@@ -386,7 +388,7 @@
         // this.$refs.dialogRef.showModal = true;
         this.$refs.dialogRef.open();
         this.dialogConfig = {
-          contentText: '确认执行提交?',
+          contentText: '确认执行删除?',
           confirm: () => {
             let params = {};
             const { tableName, tableId, itemId } = router.currentRoute.params;
@@ -1387,7 +1389,11 @@
         if (index === this.pageInfo.currentPageIndex) {
           return;
         }
-        this.pageInfo.currentPageIndex = index;
+        this.updateTablePageInfo({
+          currentPageIndex: index,
+          pageSize: this.pageInfo.pageSize
+        });
+        // this.pageInfo.currentPageIndex = index;
         this.getTabelList();
       },
       pageSizeChangeEvent(index) {
@@ -1395,7 +1401,11 @@
         if (index === this.pageInfo.pageSize) {
           return;
         }
-        this.pageInfo.pageSize = index;
+        this.updateTablePageInfo({
+          currentPageIndex: this.pageInfo.currentPageIndex,
+          pageSize: index
+        });
+        // this.pageInfo.pageSize = index;
         this.getTabelList();
       },
       isJsonString(str) {
@@ -1423,15 +1433,21 @@
         return targetObj;
       },
       getSelectValueCombobox(h, cellData) { // 做SelectValueCombobox 判空处理
+        const combobox = [];
+        combobox.push({
+          value: '请选择',
+          label: '请选择'
+        }); 
         if (cellData.combobox) {
-          return cellData.combobox.map(item => h('Option', {
+          combobox.push(...cellData.combobox);
+          return combobox.map(item => h('Option', {
             props: {
-              value: item.limitval,
-              label: item.limitdesc
+              value: item.value || item.limitval,
+              label: item.label || item.limitdesc
             }
           }));
         }
-        return [];
+        return combobox;
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {

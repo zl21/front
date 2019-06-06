@@ -115,6 +115,9 @@ export default {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = false;
   },
+  updateTablePageInfo(state, data) { //  更改列表分页数据
+    state.tablePageInfo = data;
+  },
   changeCopy(state, data) {
     state.copy = data;
   },

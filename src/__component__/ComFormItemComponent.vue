@@ -344,6 +344,7 @@
                 obj[current.item.field] = current.item.value;
               } else {
                 const value = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '') : '';
+        
                 obj[current.item.field] = Number(value);
               }
             } else if (typeof current.item.value === 'string') {
