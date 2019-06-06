@@ -508,6 +508,11 @@
         return data;
       },
       filterBeforeData() {
+        // 分页数据初始化
+        this.updateTablePageInfo({
+          currentPageIndex: this.dataSource.start + 1,
+          pageSize: this.dataSource.defaultrange
+        })
         // 组装beforeData
         if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tableName]) {
           return;
