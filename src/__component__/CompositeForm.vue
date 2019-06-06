@@ -652,7 +652,7 @@
           
           if (item.display === 'select' || item.display === 'OBJ_SELECT') {
             const value = item.defval || item.valuedata;
-            const index = item.combobox.findIndex((x) => x.limitval === value);
+            const index = item.combobox.findIndex(x => x.limitval === value);
             return item.combobox[index].limitdesc || '';
           }
           return item.defval || item.valuedata || '';
@@ -955,11 +955,13 @@
           const valuedata = current.valuedata
             ? JSON.parse(current.valuedata)
             : [];
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          const readonly = ImageSize ? ImageSize > valuedata.length : current.readonly;
           item.props.itemdata = {
             colname: current.colname,
             width: 140,
             height: 140,
-            readonly: current.readonly,
+            readonly,
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
