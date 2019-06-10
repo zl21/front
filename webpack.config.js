@@ -20,6 +20,7 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
     'ag-grid': 'agGrid',
+    'burgeon-ui': 'burgeon'
   },
   devServer: {
     compress: true,
@@ -28,7 +29,7 @@ module.exports = env => ({
     open: false,
     historyApiFallback: {
       rewrites: [
-        { from: /.*/, to: path.posix.join('/', 'index.html') },
+        { from: /.*/, to: path.posix.join('/', env && env.production ? 'index.html' : 'index.dev.html') },
       ],
     },
     publicPath: '/',

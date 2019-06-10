@@ -3,25 +3,44 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-module.exports = env => ({
+module.exports = () => ({
   entry: {
-    index: './index.js',
+    index: './index.publish.js'
   },
-  externals: {
-    vue: 'Vue',
-    vuex: 'Vuex',
-    'vue-router': 'VueRouter',
-    axios: 'axios',
-  },
-  target: 'web',
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
     path: path.join(__dirname, './publish'),
-    publicPath: '/',
-    library: 'r3-frame',
+    globalObject: 'this',
+    library: 'R3',
     libraryTarget: 'umd',
     umdNamedDefine: true
+  },
+  externals: {
+    vue: {
+      commonjs: 'vue',
+      commonjs2: 'vue',
+      amd: 'vue',
+      root: 'Vue'
+    },
+    vuex: {
+      commonjs: 'vuex',
+      commonjs2: 'vuex',
+      amd: 'vuex',
+      root: 'Vuex'
+    },
+    'vue-router': {
+      commonjs: 'vue-router',
+      commonjs2: 'vue-router',
+      amd: 'vue-router',
+      root: 'VueRouter'
+    },
+    axios: {
+      commonjs: 'axios',
+      commonjs2: 'axios',
+      amd: 'axios',
+      root: 'axios'
+    }
   },
   module: {
     rules: [
@@ -70,7 +89,7 @@ module.exports = env => ({
     ],
   },
   plugins: [
-    new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
+    new CleanWebpackPlugin(['publish']),
     new VueLoaderPlugin(),
   ],
   mode: 'production',
