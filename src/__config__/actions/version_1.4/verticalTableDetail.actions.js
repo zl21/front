@@ -250,11 +250,16 @@ export default {
             // } else {
             //   itemModify[itemName].ID = objId;
             // }
-            if (itemModify[itemName]) { 
-              itemModify[itemName].ID = -1; 
-              itemModify[itemName] = [
-                itemModify[itemName]
-              ];
+            if (itemModify[itemName]) {
+              const itmValues = itemModify[itemName]; 
+              if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+                itemModify[itemName].ID = -1;
+              } else {
+                itemModify[itemName].ID = -1; 
+                itemModify[itemName] = [
+                  itemModify[itemName]
+                ];
+              }
             } else {
               itemModify[itemName].ID = objId;
             }
