@@ -464,7 +464,7 @@
       },
       fkrpSelectedInputBlur(event, $this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this,this._items);
+          this._items.event.blur(event, $this, this._items);
         }
       },
       fkrpSelectedInputKeyup(event, $this) {
@@ -587,9 +587,8 @@
                 data
               }, index);
             } else {
-              
               const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
-              that.upSaveImg(parms, '',index);
+              that.upSaveImg(parms, '', index);
             }
           }
         });
@@ -670,7 +669,7 @@
             if (res.data.code !== 0) {
               return false;
             }
-            if ( index ) {
+            if (index) {
               // 删除
               this._items.props.itemdata.valuedata.splice(index - 1, 1);
               this._items.value = this._items.props.itemdata.valuedata;
