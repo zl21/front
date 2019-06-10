@@ -3,10 +3,10 @@ node_modules
 .idea
 .history
 .vscode
-project.confog.js
 # files
 package-lock.json
 __test_script__/
 dist/
 *.tgz
 publish/
+project.config.js
