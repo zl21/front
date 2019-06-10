@@ -58,7 +58,7 @@
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
-          // obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+          obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
           obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
           obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
