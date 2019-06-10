@@ -488,6 +488,7 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
+        console.log(tab);
         const self = this;
         let params = {};
         const parimaryTableParams = {};
@@ -507,7 +508,9 @@
           }
         }
         const promise = new Promise((resolve, reject) => {
-          this.getObjTabActionSlientConfirm({ params, resolve, reject });
+          this.getObjTabActionSlientConfirm({
+            params, path: tab.action, resolve, reject 
+          });
         });
         promise.then(() => {
 

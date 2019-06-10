@@ -450,9 +450,10 @@ export default {
       reject();
     });
   },
-  getObjTabActionSlientConfirm({ commit }, { params, resolve, reject }) { // 获取作废数据
-    // objId = objId === 'New' ? '-1' : objId;
-    network.post('/p/cs/exeAction', { params }).then((res) => {
+  getObjTabActionSlientConfirm({ commit }, {
+    params, path, resolve, reject 
+  }) { // 获取作废数据
+    network.post(path || '/p/cs/exeAction', { params }).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
