@@ -33,16 +33,6 @@
   export default {
     name: 'FormItemComponent',
     computed: {
-      FormItemLists: {
-        get() {
-          const arr = JSON.parse(JSON.stringify(this.formItemLists));
-          return arr;
-        },
-        set(newValue) {
-          this.newFormItemLists = newValue.concat([]);
-        }
-
-      },
       // 计算属性的 getter
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
@@ -102,6 +92,10 @@
         let obj = {};
         // 监听组件的 后台字段的值  默认值及数据联动
         obj = this.newFormItemLists.reduce((option, items) => {
+          const value = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
+          if (value!== undefined && value.length < 1) {
+            return option;
+          }
           if (items.item.props.readonly) {
             // 外键 不可编辑
             option[items.item.field] = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
@@ -111,7 +105,7 @@
                 if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
                 }
-              } else if(items.item.value[0]) {
+              } else if (items.item.value[0]) {
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
@@ -119,7 +113,7 @@
             }
             if (items.item.props.number) {
               if (option[items.item.field]) {
-                option[items.item.field] = Number(option[items.item.field]);
+                option[items.item.field] = Number(option[items.item.field].replace(/^\s+|\s+$/g, '').replace(/-/g, ''));
               }
             } else if (typeof option[items.item.field] === 'string') {
               option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
@@ -128,6 +122,7 @@
           
           return option;
         }, {});
+        
         return obj;
       },
       // 计算属性的 div 的坐标起始点
@@ -224,8 +219,10 @@
       VerificationForm: {
         handler(val, old) {
           if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
-            if (this.changeNumber === 0) {
-              this.VerificationFormInt();
+            if (this.indexItem < 0) {
+              setTimeout(() => {
+                this.VerificationFormInt();
+              }, 200);
             }
           } 
         },
@@ -261,10 +258,10 @@
         },
         deep: true
       },
-      FormItemLists: {
-        handler(val) {
+      formItemLists: {
+        handler() {
           this.changeNumber = 0;
-          this.newFormItemLists = this.formItemLists;
+          this.newFormItemLists = this.formItemLists.concat();
         },
         deep: true
       }
@@ -352,6 +349,7 @@
                 obj[current.item.field] = current.item.value;
               } else {
                 const value = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '') : '';
+        
                 obj[current.item.field] = Number(value);
               }
             } else if (typeof current.item.value === 'string') {

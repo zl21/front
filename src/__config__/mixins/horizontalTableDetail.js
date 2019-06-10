@@ -13,9 +13,10 @@ export default () => ({
       tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ ...updateData }) => updateData.updateData,
+      tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
-      tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
+      tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
@@ -36,7 +37,8 @@ export default () => ({
         'getObjectTableItemForTableData',
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -48,7 +50,8 @@ export default () => ({
         'updateFormDataForRefshow',
         'updateCopyData',
         'changeFormDataForCopy',
-        'updateTableData'
+        'updateTableData',
+        'updateTablePageInfo'
       ]),
   },
   beforeDestroy() {

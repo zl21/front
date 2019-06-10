@@ -39,12 +39,14 @@
         :index="index"
       />
     </div>
-    <Button
-      type="primary"
-      @click="show = true"
-    >
-      Open
-    </Button>
+    <div class="tag">
+      <i
+        class="iconfont icon-yonghu-"
+        @click="show = true"
+      />
+    </div>
+  
+  
     <Drawer
       v-model="show"
     >
@@ -123,7 +125,14 @@
   };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
+ .burgeon-drawer-content{//重置BurgeonUI样式
+    border-top-left-radius: 0px !important; 
+    border-top-right-radius: 0px !important; 
+  }
+  .burgeon-drawer-body{//重置BurgeonUI样式
+    padding: 0px !important; 
+  }
   .navigator {
     height: 100%;
     display: flex;
@@ -155,9 +164,26 @@
       display: flex;
       flex: 1 1 1px;
     }
+    .tag {
+      width: 50px;
+      float: left;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      color: #fff;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      i{
+        font-size: 22px;
+      }
+    }
+    .tag:hover {
+      background: #2e373c;
+    }
    
   }
-   .burgeon-drawer-content{
-      top:50px !important;
-    }
+ 
 </style>

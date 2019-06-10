@@ -9,6 +9,8 @@ const proxyLists = ['/p/c'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 
+const indexProHtml = path.posix.join('/', 'index.pro.html');
+const indexHtml = path.posix.join('/', 'index.html');
 
 module.exports = env => ({
   entry: {
@@ -20,6 +22,7 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
     'ag-grid': 'agGrid',
+    'burgeon-ui': 'burgeon'
   },
   devServer: {
     compress: true,
@@ -28,7 +31,7 @@ module.exports = env => ({
     open: false,
     historyApiFallback: {
       rewrites: [
-        { from: /.*/, to: path.posix.join('/', 'index.html') },
+        { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
       ],
     },
     publicPath: '/',
@@ -103,13 +106,13 @@ module.exports = env => ({
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       chunksSortMode: 'none',
-      title: projectConfig.projectsTitle,
-      template: env.production ? './index.html' : './index.dev.html',
+      title: env && env.production ? projectConfig.projectsTitle : `Debug:${projectConfig.projectsTitle}`,
+      template: env && env.production ? './index.pro.html' : './index.html',
       inject: true,
       favicon: projectConfig.projectIconPath,
     })
   ],
-  mode: env && (env.production || env.publish) ? 'production' : 'development',
+  mode: env && env.production ? 'production' : 'development',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
   },

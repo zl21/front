@@ -149,4 +149,7 @@
   height: 26px;
   line-height: 0px;
 }
+.burgeon-modal-content-drag{
+  min-width: 520px !important;
+}
 </style>

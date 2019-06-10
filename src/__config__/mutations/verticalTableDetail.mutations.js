@@ -1,4 +1,5 @@
 import { stringify } from 'querystring';
+import { cpus } from 'os';
 import router from '../router.config';
 
 export default {
@@ -64,6 +65,7 @@ export default {
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
+    console.log(data, 'formmm');
     componentAttribute.formData.data = data || [];
   },
   updateFormDataForRefshow(state) { // 去除子表缓存
@@ -84,7 +86,7 @@ export default {
     state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
   },
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    state.updateData[data.tableName].modify[data.tableName] = Object.assign(state.updateData[data.tableName].modify[data.tableName], data.value[data.tableName]);
   },
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
@@ -120,7 +122,7 @@ export default {
     //   if (item.parentdesc === '日志') {
     //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
     //   }
-    //   return state.defaultDataForCopy; 
+    //   return state.defaultDataForCopy;
     // });
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
@@ -131,6 +133,7 @@ export default {
   },
   updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
     const copySaveDataForParam = {};
+
     if (Object.keys(state.defaultDataForCopy).length > 0) {
       state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
         state.defaultDataForCopy.data.addcolums.forEach((item) => {
@@ -140,19 +143,22 @@ export default {
                 b.readonly = c.readonly;
                 if (c.readonly === true) {
                   b.valuedata = '';// 将配置为不可编辑的值置空
-                } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp') {
-                  copySaveDataForParam[b.colname] = b.refobjid;
-                } else {
-                  copySaveDataForParam[b.colname] = b.valuedata;
+                } else if (b.valuedata) {
+                  if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                    copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                  } else {
+                    copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                  }
                 }
               }
             });
           });
         });
-      }); 
-
+      });
       state.updateData[tableName].add[tableName] = copySaveDataForParam;
-      state.mainFormInfo.formData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
+      state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+      Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+      state.mainFormInfo.formData = state.defaultDataForCopy;
     }
   },
   emptyChangeData(state, tableName) {

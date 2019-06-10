@@ -13,9 +13,10 @@ export default () => ({
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
+      tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
-      // tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
+      tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
 
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         acc.push({ tableName: cur.tablename });
@@ -39,7 +40,8 @@ export default () => ({
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -56,7 +58,8 @@ export default () => ({
         'savaCopyData',
         'copyDefaultData',
         'updateUnSubmitData',
-        'updateTableListForRefTable'
+        'updateTableListForRefTable',
+        'updateTablePageInfo'
         // 'resetFormReadOnlyAttribute'
 
       ]),
