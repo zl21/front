@@ -93,7 +93,7 @@
         // 监听组件的 后台字段的值  默认值及数据联动
         obj = this.newFormItemLists.reduce((option, items) => {
           const value = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
-          if (value.length < 1) {
+          if (value!== undefined && value.length < 1) {
             return option;
           }
           if (items.item.props.readonly) {
