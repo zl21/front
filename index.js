@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import BurgeonUi from 'burgeon-ui';
-import 'burgeon-ui/dist/styles/burgeon-ui.css';
 import './src/assets/iconfont-r3/iconfont.css';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
