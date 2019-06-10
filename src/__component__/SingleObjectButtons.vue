@@ -88,6 +88,7 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import store from '../__config__/store/global.store';
 
   export default {
     data() {
@@ -441,7 +442,132 @@
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
-
+        const self = this;
+        if (tab.confirm) {
+          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+            self.activeTabAction = tab;
+            self.confirmAction = 'objTabActionSlientConfirm';
+            self.confirmTips({
+              action: 'confirm',
+              title: tab.webdesc,
+              type: 'warning',
+              list: [],
+              isAction: true,
+              desc: tab.confirm,
+            });
+          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+            self.beforeObjectSubmit(() => {
+              self.objTabActionSlientConfirm();
+            });
+          } else { // 静默直接执行
+            self.objTabActionSlientConfirm();
+          }
+        } else if (tab.confirm) {
+          if (JSON.parse(tab.confirm).isSave) {
+            self.beforeObjectSaveChange(() => {
+              self.objTabActionSlientConfirm();
+            });
+          } else {
+            self.objTabActionSlientConfirm();
+          }
+        } else {
+          self.objTabActionSlientConfirm();
+        }
+      },
+      objTabActionSlientConfirm(tab) { // 动作定义静默执行
+        const self = this;
+        self.actionLoading = true;
+        axios({
+          method: 'post',
+          url: '/p/cs/exeAction',
+          data: {
+            actionid: self.activeTabAction.webid,
+            webaction: null,
+            param: JSON.stringify({
+              objid: self.storageItem.id,
+              table: self.storageItem.name,
+              menu: self.$route.query.ptitle || self.$route.query.tabTitle.replace('编辑', ''),
+            }),
+          },
+        })
+          .then((res) => {
+            self.actionLoading = false;
+            let successAction = null;
+            let errorAction = null;
+            let refParam = null;
+            if (res.data.data) {
+              // 如果返回了id和tablename
+              refParam = res.data.data;
+            }
+            if (self.activeTabAction.cuscomponent) {
+              const nextOperate = JSON.parse(self.activeTabAction.cuscomponent);
+              if (nextOperate.success) successAction = nextOperate.success;
+              else if (nextOperate.failure) errorAction = nextOperate.failure;
+            }
+            if (res.data.code == 0) {
+              if (successAction) {
+                // 如果有静默后需要执行的操作
+                self.actionLoading = true;
+                axios({
+                  method: 'post',
+                  url: '/p/cs/getAction',
+                  data: {
+                    actionid: 0,
+                    webaction: successAction,
+                  },
+                }).then((res) => {
+                  self.actionLoading = false;
+                  if (res.data.code === 0) {
+                    const tab = res.data.data;
+                    if (refParam) {
+                      for (const key of Object.keys(refParam)) {
+                        tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+                      }
+                    }
+                    self.TryObjTabConfigAction(tab, 1);
+                  }
+                });
+              } else {
+                self.$message({
+                  message: res.data.message,
+                  type: 'success',
+                  duration: 1500,
+                });
+                self.actionLoading = false;
+                self.refreshData();
+              }
+            } else if (res.data.code == -1 && !res.data.message && errorAction) {
+              self.actionLoading = true;
+              axios({
+                method: 'post',
+                url: '/p/cs/getAction',
+                data: {
+                  actionid: 0,
+                  webaction: errorAction,
+                },
+              }).then((res) => {
+                self.actionLoading = false;
+                if (res.data.code === 0) {
+                  const tab = res.data.data;
+                  if (refParam) {
+                    for (const key of Object.keys(refParam)) {
+                      tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+                    }
+                  }
+                  self.TryObjTabConfigAction(tab, 1);
+                }
+              });
+            } else if (res.data.ext && res.data.ext.msgtype === 2 && Array.isArray(res.data.data)) {
+              self.actionLoading = false;
+              const data = res.data.data;
+              data.unshift({ message: res.data.message });
+              store.commit('errorDialog', { // 其它报错
+                message: { data },
+              });
+            } else {
+              self.actionLoading = false;
+            }
+          });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

@@ -241,7 +241,7 @@ export default {
         const itemModify = itemCurrentParameter.modify;
         if (sataType === 'itemSave') { // 子表保存
           if (path) { // 有path的参数
-            let itmValues = itemModify[itemName];
+            // let itmValues = itemModify[itemName];
             // if (Object.values(itemModify[itemName]).length > 0) {
             //   itemModify[itemName].ID = objId;
             //   itemModify[itemName] = [
@@ -250,20 +250,20 @@ export default {
             // } else {
             //   itemModify[itemName].ID = objId;
             // }
-            if (itmValues) { 
-              itmValues.ID = -1; 
-              itmValues = [
-                itmValues
+            if (itemModify[itemName]) { 
+              itemModify[itemName].ID = -1; 
+              itemModify[itemName] = [
+                itemModify[itemName]
               ];
             } else {
-              itmValues.ID = objId;
+              itemModify[itemName].ID = objId;
             }
             if (enter) {
               modify[tableName].ID = objId;
             }
             parames = {
               ...modify,
-              itmValues
+              ...itemModify
             };
           } else {
             const itmValues = itemModify[itemName];
