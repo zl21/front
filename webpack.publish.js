@@ -96,9 +96,4 @@ module.exports = () => ({
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
   },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
 });
