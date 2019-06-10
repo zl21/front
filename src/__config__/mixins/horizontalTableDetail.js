@@ -16,7 +16,7 @@ export default () => ({
       tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
-      tooltipForItemTable: ({ tooltipForItemTable }) => tooltipForItemTable,
+      tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
