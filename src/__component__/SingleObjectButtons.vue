@@ -488,7 +488,6 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        console.log('🍓', this.isreftabs);
         // const promise = new Promise((resolve, reject) => {
         //   this.getObjTabActionSlientConfirm({ OBJ, resolve, reject });
         // });
