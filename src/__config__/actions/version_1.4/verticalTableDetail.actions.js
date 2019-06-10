@@ -445,4 +445,17 @@ export default {
       reject();
     });
   },
+  getObjTabActionSlientConfirm({ commit }, {
+    objId, table, path, resolve, reject 
+  }) { // 获取作废数据
+    objId = objId === 'New' ? '-1' : objId;
+    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
+
+        commit('updateiInvalidData', invalidData);
+      }
+    });
+  },
 };
