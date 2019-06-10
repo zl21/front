@@ -329,7 +329,6 @@ export default {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
-
         commit('updateObjTabActionSlientConfirm', invalidData);
       }
     });
