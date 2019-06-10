@@ -1439,19 +1439,24 @@
       },
       getSelectValueCombobox(h, cellData) { // 做SelectValueCombobox 判空处理
         const combobox = [];
-        combobox.push({
-          value: '请选择',
-          label: '请选择'
-        }); 
+        
         if (cellData.combobox) {
+          combobox.push({
+            limitval: '',
+            limitdesc: '请选择'
+          }); 
           combobox.push(...cellData.combobox);
           return combobox.map(item => h('Option', {
             props: {
-              value: item.value || item.limitval,
-              label: item.label || item.limitdesc
+              value: item.limitval,
+              label: item.limitdesc
             }
           }));
         }
+        combobox.push({
+            value: '',
+            label: '请选择'
+        });
         return combobox;
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
