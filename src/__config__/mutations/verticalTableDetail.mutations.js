@@ -86,7 +86,7 @@ export default {
     state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
   },
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    state.updateData[data.tableName].modify[data.tableName] = Object.assign(state.updateData[data.tableName].modify[data.tableName], data.value[data.tableName]);
   },
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
@@ -122,7 +122,7 @@ export default {
     //   if (item.parentdesc === '日志') {
     //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
     //   }
-    //   return state.defaultDataForCopy; 
+    //   return state.defaultDataForCopy;
     // });
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
@@ -149,12 +149,12 @@ export default {
                   } else {
                     copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                   }
-                } 
+                }
               }
             });
           });
         });
-      }); 
+      });
       state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
       Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);

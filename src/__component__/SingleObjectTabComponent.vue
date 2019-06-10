@@ -318,7 +318,7 @@
             };
             // this.updateChangeData({ tableName: this.tableName, value: {} });
             this.$store.commit('global/tabHref', tab);
-          } 
+          }
 
 
           // console.log(this.$store.state[getModuleName()].buttonsData);
@@ -429,6 +429,8 @@
         obj[tableName] = val;
         if (itemId === 'New') {
           this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
         }
         this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
