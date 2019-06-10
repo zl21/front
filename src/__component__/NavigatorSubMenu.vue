@@ -52,7 +52,7 @@
   .navigator-sub-menu {
     z-index: 9999;
     border-bottom: 1px solid #d1dbe5;
-    width: calc(100% - 10px);
+    width: calc(100% - 10px + 50px);
     max-height: calc(100vh - 50px);
     overflow-y: auto;
     display: flex;
