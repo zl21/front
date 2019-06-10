@@ -443,6 +443,9 @@
       },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
+        // tab.confirm = true
+        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
+        if (!tab) tab = self.activeTabAction;
         if (tab.confirm) {
           if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
             self.activeTabAction = tab;
@@ -455,119 +458,168 @@
               isAction: true,
               desc: tab.confirm,
             });
+          } else if (JSON.parse(tab.confirm).desc) {
+            //            确定后执行下一步操作
+            //            判断是否先执行保存
+            if (JSON.parse(tab.confirm).isSave) {
+              self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+            } else {
+              self.confirmAction = 'objTabActionSlientConfirm';
+            }
+            self.confirmTips({
+              action: 'confirm',
+              title: tab.webdesc,
+              type: 'warning',
+              list: [],
+              isAction: true,
+              desc: JSON.parse(tab.confirm).desc,
+            });
+            // 清除提示信息
           } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
             self.beforeObjectSubmit(() => {
-              self.objTabActionSlientConfirm();
+              self.objTabActionSlientConfirm(tab);
             });
           } else { // 静默直接执行
-            self.objTabActionSlientConfirm();
-          }
-        } else if (tab.confirm) {
-          if (JSON.parse(tab.confirm).isSave) {
-            self.beforeObjectSaveChange(() => {
-              self.objTabActionSlientConfirm();
-            });
-          } else {
-            self.objTabActionSlientConfirm();
+            self.objTabActionSlientConfirm(tab);
           }
         } else {
-          self.objTabActionSlientConfirm();
+          self.objTabActionSlientConfirm(tab);
         }
       },
-      objTabActionSlientConfirm(tab) { // 动作定义静默执行
+      // 动作定义静默执行
+      objTabActionSlientConfirm(tab) {
+        // const promise = new Promise((resolve, reject) => {
+        //   this.getObjTabActionSlientConfirm({ OBJ, resolve, reject });
+        // });
+        // promise.then(() => {
+
+        // });
+      
         const self = this;
-        self.actionLoading = true;
-        axios({
-          method: 'post',
-          url: '/p/cs/exeAction',
+        let params = {};
+        const parimaryTableParams = {};
+        const childTableParams = {};
+  
+        if (this.isreftabs) {
+          if (this.itemNameGroup.length > 0) {
+            params.ID = self.storageItem.id;
+          }
+        } else if (self.tableChooseList.length === 0) {
+          // 没有勾选子表
+          parimaryTableParams[self.storageItem.name] = { ID: self.storageItem.id };
+          params = Object.assign({}, parimaryTableParams);
+        } else {
+          parimaryTableParams[self.storageItem.name] = { ID: self.storageItem.id };
+          childTableParams[self.tableTab.selectItem.tablename] = self.tableChooseList.map(d => ({ ID: d }));
+          params = Object.assign({}, parimaryTableParams, childTableParams);
+        }
+  
+        // self.actionLoading = true;
+        // axios({
+        //   method: 'post',
+        //   contentType: 'application/json',
+        //   url: tab.action || '/p/cs/exeAction',
+        //   data: params
+        /*
           data: {
             actionid: self.activeTabAction.webid,
             webaction: null,
-            param: JSON.stringify({
-              objid: self.storageItem.id,
-              table: self.storageItem.name,
-              menu: self.$route.query.ptitle || self.$route.query.tabTitle.replace('编辑', ''),
-            }),
-          },
-        })
-          .then((res) => {
-            self.actionLoading = false;
-            let successAction = null;
-            let errorAction = null;
-            let refParam = null;
-            if (res.data.data) {
-              // 如果返回了id和tablename
-              refParam = res.data.data;
-            }
-            if (self.activeTabAction.cuscomponent) {
-              const nextOperate = JSON.parse(self.activeTabAction.cuscomponent);
-              if (nextOperate.success) successAction = nextOperate.success;
-              else if (nextOperate.failure) errorAction = nextOperate.failure;
-            }
-            if (res.data.code == 0) {
-              if (successAction) {
-                // 如果有静默后需要执行的操作
-                self.actionLoading = true;
-                axios({
-                  method: 'post',
-                  url: '/p/cs/getAction',
-                  data: {
-                    actionid: 0,
-                    webaction: successAction,
-                  },
-                }).then((res) => {
-                  self.actionLoading = false;
-                  if (res.data.code === 0) {
-                    const tab = res.data.data;
-                    if (refParam) {
-                      for (const key of Object.keys(refParam)) {
-                        tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-                      }
-                    }
-                    self.TryObjTabConfigAction(tab, 1);
-                  }
-                });
-              } else {
-                self.$message({
-                  message: res.data.message,
-                  type: 'success',
-                  duration: 1500,
-                });
-                self.actionLoading = false;
-                self.refreshData();
-              }
-            } else if (res.data.code == -1 && !res.data.message && errorAction) {
-              self.actionLoading = true;
-              axios({
-                method: 'post',
-                url: '/p/cs/getAction',
-                data: {
-                  actionid: 0,
-                  webaction: errorAction,
+            param: self.activeTabAction.sourceType == 1
+              ? {
+                objid: self.storageItem.id,
+                table: self.storageItem.name,
+                menu: self.$route.query.ptitle || (self.$route.query.tabTitle && self.$route.query.tabTitle.replace('编辑', '')) || '',
+                subParam: {
+                  idArr: self.tableChooseList,
+                  table: self.tableTab.selectItem ? self.tableTab.selectItem.tablename : '',
                 },
-              }).then((res) => {
-                self.actionLoading = false;
-                if (res.data.code === 0) {
-                  const tab = res.data.data;
-                  if (refParam) {
-                    for (const key of Object.keys(refParam)) {
-                      tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-                    }
-                  }
-                  self.TryObjTabConfigAction(tab, 1);
-                }
-              });
-            } else if (res.data.ext && res.data.ext.msgtype === 2 && Array.isArray(res.data.data)) {
-              self.actionLoading = false;
-              const data = res.data.data;
-              data.unshift({ message: res.data.message });
-              store.commit('errorDialog', { // 其它报错
-                message: { data },
-              });
-            } else {
-              self.actionLoading = false;
-            }
-          });
+              } : {
+                table: self.tableTab.selectItem ? self.tableTab.selectItem.tablename : '',
+                ids: self.tableChooseList,
+                menu: self.$route.query.ptitle || (self.$route.query.tabTitle && self.$route.query.tabTitle.replace('编辑', '')) || '',
+              }
+          },
+          */
+        // }).then((res) => {
+        //   let successAction = null;
+        //   let errorAction = null;
+        //   let refParam = null;
+        //   if (res.data.data) {
+        //     // 如果返回了id和tablename
+        //     refParam = res.data.data;
+        //   }
+        //   if (self.activeTabAction.cuscomponent) {
+        //     const nextOperate = JSON.parse(self.activeTabAction.cuscomponent);
+        //     if (nextOperate.success) successAction = nextOperate.success;
+        //     if (nextOperate.failure) errorAction = nextOperate.failure;
+        //   }
+        //   if (res.data.code == 0) {
+        //     if (successAction) {
+        //       // 如果有静默后需要执行的操作
+        //       axios({
+        //         method: 'post',
+        //         url: '/p/cs/getAction',
+        //         data: {
+        //           actionid: 0,
+        //           webaction: successAction,
+        //         },
+        //       }).then((res) => {
+        //         self.actionLoading = false;
+        //         if (res.data.code === 0) {
+        //           const tab = res.data.data;
+        //           if (refParam) {
+        //             for (const key of Object.keys(refParam)) {
+        //               tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+        //             }
+        //           }
+        //           self.TryObjTabConfigAction(tab, 1);
+        //         }
+        //       });
+        //       if (!res.data.message) {
+        //         self.refreshData();
+        //       }
+        //     } else {
+        //       self.actionLoading = false;
+
+        //       self.$message({
+        //         message: res.data.message,
+        //         type: 'success',
+        //       });
+        //       self.refreshData();
+        //     }
+        //   } else if (res.data.code == -1 && !res.data.message && errorAction) {
+        //     axios({
+        //       method: 'post',
+        //       url: '/p/cs/getAction',
+        //       data: {
+        //         actionid: 0,
+        //         webaction: errorAction,
+        //       },
+        //     }).then((res) => {
+        //       self.actionLoading = false;
+        //       if (res.data.code === 0) {
+        //         const tab = res.data.data;
+        //         if (refParam) {
+        //           for (const key of Object.keys(refParam)) {
+        //             tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
+        //           }
+        //         }
+        //         self.TryObjTabConfigAction(tab, 1);
+        //       }
+        //     });
+        //   } else if (res.data.data && Array.isArray(res.data.data)) {
+        //     self.actionLoading = false;
+        //     store.commit('errorDialog', { // 其它报错
+        //       message: res.data.message,
+        //     });
+        //     self.tableSaveLoading.type = 'error';
+        //     self.tableSaveLoading.list = res.data.data;
+        //     self.tableErrorList = res.data.data;
+        //     self.getObjectTableItem(self.storageItem.id, 'saveLoading');
+        //   } else {
+        //     self.actionLoading = false;
+        //   }
+        // });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
