@@ -37,6 +37,7 @@
             <li
               v-for="(d, i) in favorite"
               :key="`favorite-${i}`"
+              :title="d.label "
               @click="routeTo(d)"
             >
               {{ d.label }}
@@ -77,6 +78,7 @@
             <li
               v-for="(d, i) in history"
               :key="`history-${i}`"
+              :title="d.label "
               @click="routeTo(d)"
             >
               {{ d.label }}
@@ -218,6 +220,9 @@
           line-height: 30px;
           font-size: 13px;
           padding-left: 26px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         
         li:hover {

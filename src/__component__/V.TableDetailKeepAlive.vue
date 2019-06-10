@@ -32,7 +32,7 @@
         if (routePrefix !== VERTICAL_TABLE_DETAIL_PREFIX) { return; }
         const componentName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
         if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, VerticalTableDetail)));
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()], isKeepAliveModel: true }, VerticalTableDetail)));
         }
         this.currentTable = componentName;
       }

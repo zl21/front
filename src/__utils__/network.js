@@ -4,20 +4,28 @@ import store from '../__config__/store/global.store';
 import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
 
 axios.interceptors.request.use((config) => {
-  const { tableName } = router.currentRoute.params;
+  const { tableName, customizedModuleName } = router.currentRoute.params;
   const url = config.url;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   if (!enableGateWay) {
     return config;
   }
-  if (ignoreGateWay.includes(url)) { 
+
+  if (config.serviceId) {
+    // 外键 配置网关
+
+    config.url = config.serviceId ? `/${config.serviceId}${url}` : url;
     return config;
   }
-  if (globalGateWay.includes(url)) { 
+  if (ignoreGateWay.includes(url)) {
+    return config;
+  }
+  if (globalGateWay.includes(url)) {
     config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return config;
   }
+
   if (tableName) {
     if (serviceId[tableName] !== 'undefined') {
       const serviceIdMapApi = serviceId[tableName];
@@ -25,7 +33,14 @@ axios.interceptors.request.use((config) => {
       return config;
     }
   }
- 
+
+  if (customizedModuleName) {
+    if (serviceId[customizedModuleName] !== 'undefined') {
+      const serviceIdMapApi = serviceId[customizedModuleName];
+      config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+      return config;
+    }
+  }
   return config;
 });
 
@@ -39,10 +54,29 @@ axios.interceptors.response.use((response) => {
     const { status } = error.response;
     if (status === 403) {
       router.push('/login');
+    } else if (status === 500) {
+      // 如果http状态码正常，则直接返回数据
+      let emg = error.response.data.message;
+      try {
+        emg = JSON.stringify(emg, null, 4);
+      } catch (e) { console.info(e); }
+      window.vm.$Modal.info({
+        title: '错误',
+        render: createElement => createElement('textarea', {
+          domProps: {
+            value: emg,
+            rows: 8,
+            style: 'width: 100%;margin-bottom: -15px;box-sizing: border-box; padding: 2px;'
+          },
+          attrs: {
+            readonly: 'readonly',
+          }
+        })
+      });
     }
   }
- 
- 
+
+
   Promise.reject(error);
 });
 
@@ -53,10 +87,10 @@ export const getGateway = (url) => {
   if (!enableGateWay) {
     return url;
   }
-  if (ignoreGateWay.includes(url)) { 
+  if (ignoreGateWay.includes(url)) {
     return url;
   }
-  if (globalGateWay.includes(url)) { 
+  if (globalGateWay.includes(url)) {
     url = globalServiceId ? `/${globalServiceId}${url}` : url;
     return url;
   }

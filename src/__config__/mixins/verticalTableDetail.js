@@ -1,5 +1,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
+import store from '../store.config';
 
 export default () => ({
   mounted() {
@@ -7,16 +8,20 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
+      buttonsData: ({ buttonsData }) => buttonsData,
       mainFormInfo: ({ ...mainFormInfo }) => mainFormInfo.mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
-      childTableNames: ({ tabPanels }) => {
-        return tabPanels.reduce((acc, cur, idx) => {
-          acc.push({ tableName: cur.tablename });
-          return acc;
-        }, []);
-      },
+      tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
+      copy: ({ copy }) => copy,
+      defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+      tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
+
+      childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
+        acc.push({ tableName: cur.tablename });
+        return acc;
+      }, []),
     }),
 
   },
@@ -30,7 +35,12 @@ export default () => ({
         'getObjectTabForRefTable',
         'getItemObjForChildTableForm',
         'performMainTableSaveAction',
-        'performMainTableDeleteAction'
+        'performMainTableDeleteAction',
+        'getInputForitemForChildTableForm',
+        'getObjectTrySubmit',
+        'getObjectTryUnSubmit',
+        'getObjectTryInvalid',
+        'getExportQueryForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -39,11 +49,27 @@ export default () => ({
         'updateAddData',
         'updateModifyData',
         'updateDeleteData',
+        'updateChangeData',
         'updateCheckedInfoData',
         'updatePanelData',
+        'changeCopy',
+        'changeUpdateDataForForm',
+        'savaCopyData',
+        'copyDefaultData',
+        'updateUnSubmitData',
+        'updateTableListForRefTable',
+        'updateTablePageInfo'
+        // 'resetFormReadOnlyAttribute'
+
       ]),
   },
-  // beforeDestroy() {
-  //   store.unregisterModule(this.moduleComponentName);
-  // }
+  beforeDestroy() {
+    try {
+      if (this.$options.isKeepAliveModel) {
+        store.unregisterModule(this.moduleComponentName);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 });

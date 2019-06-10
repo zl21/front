@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import network, { urlSearchParams } from '../../__utils__/network';
+import network, { urlSearchParams } from '../../../__utils__/network';
 
 export default {
   getQueryListForAg({ commit }, {
@@ -15,7 +15,7 @@ export default {
         column_include_uicontroller,
       }
     })).then((res) => {
-      const updateTableData = res.data.data;
+      const updateTableData = res.data.datas;
       commit('updateTableData', updateTableData);
     });
   },
@@ -25,7 +25,7 @@ export default {
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
-        const queryData = res.data.data;
+        const queryData = res.data;
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
@@ -35,20 +35,27 @@ export default {
       }
     });
   },
-  getExportQueryForButtons({
-    searchdata, filename, filetype, showColumnName, menu
-  }) {
-    network.post('/p/cs/export', urlSearchParams({
-      searchdata, filename, filetype, showColumnName, menu
-    })).then((res) => {
+  getExportQueryForButtons({ commit }, 
+    { OBJ, resolve, reject }) {
+    network.post('/p/cs/export', urlSearchParams(
+      OBJ
+    )).then((res) => {
       if (res.data.code === 0) {
-        const path = `/p/cs/download?filename=${res.data.data}`;
-        network.get(path);
+        resolve();
+        const data = res.data.data;
+        commit('updateButtonsExport', data,);
+      } else {
+        reject();
       }
     });
   },
-  getBatchDeleteForButtons({ commit }, objQuery) { // 调用删除明细接口
-    network.post('/p/cs/batchDelete', objQuery).then((res) => {
+  getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
+    const objids = selectIdArr.join(',');
+    network.post('/p/cs/batchDelete', 
+      {
+        table: tableName,
+        objids
+      }).then((res) => {
       const deleteTableData = res.data;
       commit('updateButtonDeleteData', deleteTableData);
     }); 
@@ -88,14 +95,14 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  // importGetUploadParametersForButtons({ commit }) {
-  //   network.post('/p/cs/settings', urlSearchParams({
-  //     configNames: JSON.stringify(['upload.import.max-file-size'])
-  //   })).then((res) => {
-  //     const data = res.data;
-  //     commit('updateButtonImportGetUploadParameters', data);
-  //   });
-  // },
+  importGetUploadParametersForButtons({ commit }) {
+    network.post('/p/cs/settings', urlSearchParams({
+      configNames: JSON.stringify(['upload.import.max-file-size'])
+    })).then((res) => {
+      const data = res.data;
+      commit('updateButtonImportGetUploadParameters', data);
+    });
+  },
   downloadImportTemplateForButtons({ commit }, tableName) {
     network.post('/p/cs/downloadImportTemplate', urlSearchParams({
       searchdata: {
@@ -106,14 +113,14 @@ export default {
       commit('updateButtonDownloadImportTemplate', data);
     });
   },
-  batchVoidForButtons({ commit }, searchdata) { // 调用作废接口
-    network.post('/p/cs/batchVoid', urlSearchParams({
-      searchdata
-    })).then((res) => {
+  batchVoidForButtons({ commit }, { tableName, ids }) { // 调用作废接口
+    network.post('/p/cs/batchVoid', 
+      { tableName, ids }).then((res) => {
       const messageData = res.data.message;
       commit('batchVoidForButtonsData', messageData);
     });
   },
+  
   batchSubmitForButtons({ commit }, { url, tableName, ids }) { // 调用调接口
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
@@ -122,11 +129,16 @@ export default {
       commit('updateButtonbatchSubmitData', res.data);
     });
   },
-  batchUnSubmitForButtons({ commit }, obj) { // 调用调接口
-    network.post('/p/cs/batchUnSubmit', {
-      obj
-    }).then((res) => {
-      commit('updateButtonbatchUnSubmitData', res.data);
+  batchUnSubmitForButtons({ commit }, 
+    { obj, resolve, reject }) {
+    network.post('/p/cs/batchUnSubmit',
+      obj).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
+      } else {
+        reject();
+      }
     });
   },
   updateUserConfig({ commit }, { type, id }) {

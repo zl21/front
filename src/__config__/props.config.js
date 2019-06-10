@@ -18,7 +18,7 @@ const input = {
     // 设置输入框为只读
     readonly: false,
     // 文本域默认行数，仅在 textarea 类型下有效
-    rows: 4,
+    row: 4,
     // 自适应内容高度，仅在 textarea 类型下有效，可传入对象，如 { minRows: 2, maxRows: 6 }
     autosize: false,
     // 将用户的输入转换为 Number 类型。在有正则的时候：1）该输入框为空的时候，值为空字符串。2）input方法不可用。
@@ -159,6 +159,8 @@ const checkbox = {
     size: 'default',
     // 是否禁用当前项
     disabled: false,
+    trueValue: [String, Number, Boolean],
+    falseValue: [String, Number, Boolean],
     // 支持checkout样式为radio样式
     circle: false
   },
@@ -199,7 +201,7 @@ const DatePicker = {
     // 文本框是否可以输入
     editable: false,
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
-    transfer: true
+    transfer: true,
   }
 };
 
@@ -291,7 +293,9 @@ const AttachFilter = {
         title: '弹窗多选',
         mask: true,
         draggable: true,
-        scrollable: true
+        closable: true,
+        scrollable: true,
+        width: 860
       }
 
     },
@@ -324,6 +328,17 @@ const ImageUpload = {
   }
 };
 
+// 文本编辑器
+const Wangeditor = {
+  type: 'Wangeditor', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    height: 200
+  }
+};
+
 const dataProp = {
   DropDownSelectFilter,
   TimePicker,
@@ -334,6 +349,7 @@ const dataProp = {
   select,
   input,
   AttachFilter,
-  ImageUpload
+  ImageUpload,
+  Wangeditor
 };
 export default dataProp;

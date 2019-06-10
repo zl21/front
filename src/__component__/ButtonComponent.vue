@@ -54,6 +54,7 @@
       <Button
         v-if="dataArray.actionCollection"
         type="fcdefault"
+        class="collection"
         @click="btnclick('Collection')"
       >
         <span>
@@ -176,7 +177,7 @@
 
 <style lang="less">
 .buttonList {
-  padding: 17px;
+  padding: 8px 0px;
   > div {
     display: inline-block;
   }
@@ -200,7 +201,7 @@
       float: left;
     }
     button {
-      height: 24px;
+      height: 22px;
       line-height: 18px;
       margin-right: 8px;
       margin-left: 0px;
@@ -215,6 +216,12 @@
       button {
         margin-top: -1px;
       }
+    }
+    .iconfont{
+      font-size: 12px;
+    }
+    .collection,.burgeon-btn-fcdefault{
+      min-width: auto !important;
     }
   }
 

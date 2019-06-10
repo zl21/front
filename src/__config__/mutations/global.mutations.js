@@ -3,8 +3,7 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
-  HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
-  VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
+  CUSTOMIZED_MODULE_COMPONENT_PREFIX
 } from '../../constants/global';
 import router from '../router.config';
 
@@ -37,6 +36,9 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
+        if (c.type === 'action') {
+          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        }
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
@@ -48,7 +50,7 @@ export default {
       .reduce((a, c) => a.concat(c))
       .filter(d => d.type === 'table' || d.type === 'action')
       .reduce((a, c) => {
-        a[c.value] = c.serviceId;
+        a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
   },
@@ -57,9 +59,17 @@ export default {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
+  decreasekeepAliveLists(state, name) {
+    state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+  },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index].isActive = true;
+  },
+  forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    state.openedMenuLists.forEach((d) => { d.isActive = false; });
+    state.openedMenuLists[index] = openedMenuInfo;
+    state.openedMenuLists = state.openedMenuLists.concat([]);
   },
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix
@@ -78,7 +88,6 @@ export default {
         .concat([Object.assign({}, currentTabInfo, { isActive: true })]);
       state.activeTab = currentTabInfo;
     }
-    // console.trace(' -- ', 'not exist = ', notExist);
   },
   updateActiveMenu({
     openedMenuLists
@@ -114,19 +123,20 @@ export default {
         d.isActive = true;
       }
     });
-  }, 
+  },
   tabCloseAppoint(state, tab) {
-    const selectTabs = state.openedMenuLists;
+    const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;
-    state.keepAliveLists.splice(state.keepAliveLists.indexOf(tab.keepAliveModuleName), 1);
-    selectTabs.forEach((item, index) => {
+    // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
+    state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
+    openedMenuLists.forEach((item, index) => {
       if (item.routeFullPath === tab.routeFullPath) {
-        selectTabs.splice(index, 1);
+        openedMenuLists.splice(index, 1);
       }
       if (tabRouteFullPath) {
-        if (selectTabs.length > 0) {
-          const lastLength = selectTabs.length - 1;
-          state.activeTab = selectTabs[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
+        if (openedMenuLists.length > 0) {
+          const lastLength = openedMenuLists.length - 1;
+          state.activeTab = openedMenuLists[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
           router.push({
             path: state.activeTab.routeFullPath,
           });
@@ -137,54 +147,27 @@ export default {
     });
   }, // 关闭当前tab
   tabHref(state, {
-    back, label, type, tableName, tableId, id
+    back, type, tableName, tableId, id
   }) {
     let path = '';
-    let routePrefix = '';
-    let keepAliveModuleName = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      routePrefix = HORIZONTAL_TABLE_DETAIL_PREFIX;
-      keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${id}`;
       router.push({ path });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      routePrefix = VERTICAL_TABLE_DETAIL_PREFIX;
-      keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${id}`;
       router.push({ path });
     }
     if (back) {
-      Object.keys(state.keepAliveLabelMaps).forEach((item) => {
-        if (item.indexOf(`${tableName}.${tableId}`) !== -1) {
-          label = state.keepAliveLabelMaps[item];
-        }
-      });
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-      keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-      router.push({ path });
-      state.keepAliveLists.forEach((item, index) => {
-        if (item === state.activeTab.keepAliveModuleName) {
-          state.keepAliveLists.splice(index, 1);
-        }
-      });
+      const routeInfo = {
+        path,
+        query: { isBack: true }
+      };
+      router.push(routeInfo);
     }
-    const afterClickActiveTab = {
-      label,
-      keepAliveModuleName,
-      routeFullPath: path,
-      routePrefix,
-      isActive: true,
-    };
-    state.openedMenuLists.forEach((item) => {
-      if (item.routeFullPath === state.activeTab.routeFullPath) {
-        Object.assign(item, afterClickActiveTab);
-        state.activeTab = afterClickActiveTab;
-      }
-    });
   },
-  tabOpen(state, // 打开新的tab页
-    tab) {
+  tabOpen(state, tab) {
     let path = '';
     if (tab.type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
@@ -218,4 +201,8 @@ export default {
     });
     // 添加到新的列表中
   },
+  updataUserInfoMessage(state, { userInfo }) {
+    state.userInfo = userInfo;
+  }
+  
 };

@@ -104,7 +104,6 @@
         transition: height .5s;
         box-sizing: border-box;
         overflow: hidden;
-        margin:0  17px;
         padding-bottom: 8px;
     }
     .down-right{

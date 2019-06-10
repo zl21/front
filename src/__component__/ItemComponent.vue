@@ -1,5 +1,6 @@
+/* eslint-disable import/no-dynamic-require */
 <template>
-  <div class="ItemComponentRoot">
+  <div :class="_items.props.fkdisplay === 'pop' ? 'ItemComponentRoot AttachFilter-pop':'ItemComponentRoot'">
     <span
       class="itemLabel"
       :style="labelStyle"
@@ -29,9 +30,8 @@
         :clearable="_items.props.clearable"
         :disabled="_items.props.disabled"
         :readonly="_items.props.readonly"
-        :rows="_items.props.rows"
+        :rows="_items.props.row"
         :autosize="_items.props.autosize"
-        :number="_items.props.number"
         :autofocus="_items.props.autofocus"
         :placeholder="_items.props.placeholder"
         :size="_items.props.size"
@@ -53,6 +53,8 @@
         v-if="_items.type === 'checkbox'"
         v-model="_items.value"
         :disabled="_items.props.disabled"
+        :true-value="_items.props.trueValue"
+        :false-value="_items.props.falseValue"
         :size="_items.props.size"
         :circle="_items.props.circle"
         @on-change="checkBoxChange"
@@ -191,18 +193,36 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <component
+      
+        :is="_items.componentType"
+        v-if="_items.type === 'Wangeditor'"
+        :key="index"
+        :valuedata="_items.value"
+        :item="_items.props"
+        @getChangeItem="getWangeditorChangeItem"
+      />
     </div>
   </div>
 </template>
 
 <script>
+
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
-  // 上传图片
-  import {
-    fkQueuploadProgressry, fkObjectSave
-  } from '../constants/fkHttpRequest';
+  // 弹窗单选
+  import myPopDialog from './PopDialog';
+  // 富文本编辑
+  import WangeditorVue from './Wangeditor';
+
+  import { Version } from '../constants/global';
+
+
+  const {
+    fkQueuploadProgressry, fkObjectSave, deleteImg
+  // eslint-disable-next-line import/no-dynamic-require
+  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ItemComponent',
@@ -214,6 +234,12 @@
         default: 120
       },
       items: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      component: {
         type: Object,
         default() {
           return {};
@@ -255,20 +281,35 @@
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
-        item.props = Object.assign({}, item.type ? dataProp[item.type].props :{}, this.items.props);
+        item.props = Object.assign({}, item.type ? dataProp[item.type].props : {}, this.items.props);
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
-          item.componentType = Dialog;
-          item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
-          item.props.datalist.forEach((option, i) => {
-            if (option.value === '导入') {
-              item.props.datalist[i].url = item.props.fkobj.url;
-              item.props.datalist[i].sendData = {
-                table: item.props.fkobj.reftable
-              };
-            }
-          });
+          if (item.props.fkdisplay === 'pop') {
+            item.componentType = myPopDialog;
+            item.props.fkobj.colid = item.props.colid;
+            item.props.fkobj.colname = item.props.colname;
+            item.props.dialog.model.title = '表';
+            item.props.dialog.model['footer-hide'] = true;
+            item.props.dialog.model.closable = true;
+          } else {
+            item.props.dialog.model.title = '弹窗多选';
+            item.componentType = Dialog;
+            item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
+            item.props.dialog.model['footer-hide'] = false;
+            item.props.datalist.forEach((option, i) => {
+              if (option.value === '导入') {
+                item.props.datalist[i].url = item.props.fkobj.url;
+                item.props.datalist[i].sendData = {
+                  table: item.props.fkobj.reftable
+                };
+              }
+            });
+          }
         }
+        // eslint-disable-next-line no-empty
+        if (item.type === 'Wangeditor') {
+          item.componentType = WangeditorVue;
+        } 
         item.event = Object.assign({}, this.items.event);
 
         return item;
@@ -423,7 +464,7 @@
       },
       fkrpSelectedInputBlur(event, $this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this);
+          this._items.event.blur(event, $this,this._items);
         }
       },
       fkrpSelectedInputKeyup(event, $this) {
@@ -526,7 +567,46 @@
         // console.log(e);
       },
       deleteImg(item, index) {
-        console.log(item, index);
+        const that = this;
+        this.$Modal.info({
+          mask: true,
+          showCancel: true,
+          title: '提示',
+          content: '此操作将永久删除该图片, 是否继续?',
+          onOk: () => {
+            const HEADIMG = this._items.props.itemdata.valuedata.length > 1 ? JSON.stringify([item]) : '';
+            //  判断parms 是否 需要保存
+            const data = {
+              HEADIMG,
+              ID: that._items.props.itemdata.objId
+            }; 
+            // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
+            // 判断是否有path
+            if (this._items.props.path) {
+              that.deleteImgData({
+                data
+              }, index);
+            } else {
+              
+              const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
+              that.upSaveImg(parms, '',index);
+            }
+          }
+        });
+      },
+      deleteImgData(obj, index) {
+        deleteImg({
+          params: {
+            ...obj
+          },
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.code === 0) {
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              this._items.value = this._items.props.itemdata.valuedata;
+            }
+          }
+        });
       },
       uploadFileChangeSuccess(result) {
         const self = this;
@@ -543,20 +623,44 @@
               return false;
             }
             const fixedData = [{ NAME: resultData.data.Name, URL: resultData.data.Url }];
-            const parms = {
-              fixedData: {
-                [this._items.props.itemdata.masterName]: {
-                  [this._items.props.itemdata.colname]: JSON.stringify(fixedData)
-                }
-              },
+            
+            let parms = {
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
             };
-            self.upSaveImg(parms, fixedData);
+            //  判断parms 是否 需要保存
+            parms = this.pathsCheckout(parms, fixedData);
+            if (this.$route.params && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+              //  判断是否需要调用保存
+              self.upSaveImg(parms, fixedData);
+            } else {
+              this._items.props.itemdata.valuedata.push(fixedData[0]);
+            }
           }
         });
       },
-      upSaveImg(obj, fixedData) {
+      pathsCheckout(parms, data) {
+        //  校验 是否 有 path
+        if (!this._items.props.path) {
+          const fixedData = {
+            fixedData: {
+              [this._items.props.itemdata.masterName]: {
+                [this._items.props.itemdata.colname]: data === '' ? '' : JSON.stringify(data)
+              }
+            },
+            objId: this._items.props.itemdata.objId,
+            table: this._items.props.itemdata.masterName
+          };
+          return Object.assign(parms, fixedData);
+        }
+        const parmsdata = {
+          HEADIMG: JSON.stringify(data),
+          ID: parms.objId,
+          ...parms
+        };
+        return Object.assign({}, parmsdata);
+      },
+      upSaveImg(obj, fixedData, index) {
         fkObjectSave({
           searchObject: {
             ...obj
@@ -566,20 +670,31 @@
             if (res.data.code !== 0) {
               return false;
             }
-            const data = fixedData[0];
-            if (typeof this._items.props.itemdata.valuedata !== 'object') {
-              this._items.props.itemdata.valuedata = [];
-            }
+            if ( index ) {
+              // 删除
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              this._items.value = this._items.props.itemdata.valuedata;
+            } else {
+              const data = fixedData[0];
+              if (typeof this._items.props.itemdata.valuedata !== 'object') {
+                this._items.props.itemdata.valuedata = [];
+              }
             
-            this._items.props.itemdata.valuedata.push({
-              NAME: data.NAME,
-              URL: data.URL
-            });
+              this._items.props.itemdata.valuedata.push({
+                NAME: data.NAME,
+                URL: data.URL
+              });
+            }
           }
         });
       },
       uploadFileChangeOnerror() {
         // console.log('err', result);
+      },
+      getWangeditorChangeItem(value) {
+        // 富文本change
+        this._items.value = value;
+        this.valueChange();
       }
     },
     created() {
@@ -603,9 +718,11 @@
       text-align: right;
       text-overflow: ellipsis;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
+      overflow:hidden;
+      line-height: 16px;
+      // display: flex;
+      // align-items: center;
+      // justify-content: flex-end;
 
       i{
         font-size: 12px;
@@ -624,6 +741,11 @@
       position: relative;
       top: 3px;
       right: 3px;
+    }
+  }
+  .AttachFilter-pop{
+    .icon-bj_tcduo:before{
+        content: "\e6b1";
     }
   }
 </style>

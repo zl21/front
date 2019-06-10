@@ -3,17 +3,23 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
-      :itemNameGroup="childTableNames"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+      :isactive="mainFormInfo.buttonsData.data.isactive"
+      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:''"
+      :item-name-group="childTableNames"
+      :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
-      :item-name="$route.params.tableName"
+      :item-name="getItemName"
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
+      :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
-      class="panelForm"
       module-form-type="vertical"
-      :default-data="mainFormInfo.formData.data"
+      :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
+      :paths="formPaths"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
@@ -35,6 +41,7 @@
 </template>
 
 <script>
+
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
@@ -43,13 +50,20 @@
 
 
   export default {
+    name: 'VTableDetail',
     computed: {
       tabPanels() {
         const arr = [];
-        this.tabPanel.forEach((item, index) => {
+        this.tabPanel.forEach((item) => {
           const obj = { ...item };
+          obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
+          obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+          obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
+          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+          obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           obj.componentAttribute.childTableNames = this.childTableNames;
+          obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
           Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
           obj.component = `${item.tablename}_TapComponent`;
@@ -57,7 +71,19 @@
           arr.push(obj);
         });
         return arr;
-      }
+      },
+      formPaths() {
+        if (this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd && this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+          return this.mainFormInfo.buttonsData.data.tabcmd.paths;
+        }
+        return [];
+      },
+      getItemName() {
+        if (this.tabPanel.length > 0) {
+          return this.tabPanel[this.tabCurrentIndex].tablename;
+        }
+        return '';
+      },
     },
     components: {
       compositeForm
@@ -81,10 +107,11 @@
         }
         this.updateDefaultData({ tableName, value: obj });
       },
-      formChange(val) {
+      formChange(val, changeVal) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
+        this.updateChangeData({ tableName, value: changeVal });
         if (itemId === 'New') {
           this.updateAddData({ tableName, value: obj });
         } else {
@@ -122,9 +149,6 @@
         }
       },
     },
-    // beforeDestroy() {
-    //   // this.$store.unregisterModule(this.moduleComponentName);
-    // }
   };
 </script>
 
@@ -132,11 +156,8 @@
   .verticalTableDetail {
     flex: 1;
     overflow-y: auto;
-    .panelForm {
-      margin: 0 16px;
-    }
     .tabPanel {
-      margin: 10px 16px;
+      margin: 10px 0;
     }
   }
 </style>

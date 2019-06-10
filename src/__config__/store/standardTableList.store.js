@@ -1,6 +1,8 @@
-import actions from '../actions/standardTableList.actions';
+// import actions from '../actions/standardTableList.actions';
 import mutations from '../mutations/standardTableList.mutations';
+import { Version } from '../../constants/global';
 
+const actions = require(`../actions/version_${Version}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
   state: {
@@ -17,6 +19,7 @@ export default () => ({
     colPosition: '',
     fixedColumn: '',
     buttons: {
+      exportdata: '', // 导出返回值
       dataArray: {
         printValue: false, // 是否显示打印
         actionCollection: true, // 是否显示收藏
@@ -65,10 +68,17 @@ export default () => ({
       },
       importParameters: {},
       importTemplate: {},
-      errorDialogBack: false, // 是否有返回按钮
-      errorDialogClass: '', // 弹框类型
-      errorDialog: false,
-      errorDialogTitle: '',
+      mask: true,
+      dialogConfig: {
+        title: '提示',
+        mask: true,
+        footerHide: false,
+        contentText: '',
+      },
+      // errorDialogBack: false, // 是否有返回按钮
+      // errorDialogClass: '', // 弹框类型
+      // errorDialog: false,
+      // errorDialogTitle: '',
       detailState: true, // 是否可以双击查看或点击序号查看
       actionLoading: true,
       batchSubmitData: {}, // 批量提交返回数据
@@ -76,6 +86,7 @@ export default () => ({
       selectSysment: [], // 选中的系统数据，
       batchUnSubmitData: {}, // 批量反提交返回数据
       batchDeleteData: {}, // 删除返回数据
+      batchVoidForButtonsData: {}, // 作废接口返回数据
       dialogComponent: null, // 静默按钮需要渲染的组件
       actionDialog: { // 自定义动作弹框
         show: false,

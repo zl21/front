@@ -1,5 +1,7 @@
 <template>
-  <keep-alive :include="keepAliveLists">
+  <keep-alive
+    :include="keepAliveLists"
+  >
     <component :is="currentTable" />
   </keep-alive>
 </template>
@@ -29,7 +31,7 @@
         if (routePrefix !== STANDARD_TABLE_LIST_PREFIX) { return; }
         const componentName = moduleName();
         if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, StandardTableList)));
+          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()], isKeepAliveModel: true }, StandardTableList)));
         }
      
         this.currentTable = componentName;

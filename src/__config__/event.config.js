@@ -3,7 +3,9 @@ import router from './router.config';
 
 import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
-  STANDARD_TABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX,
+  STANDARD_TABLE_LIST_PREFIX,
+  VERTICAL_TABLE_DETAIL_PREFIX,
+  CUSTOMIZED_MODULE_PREFIX
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -26,6 +28,11 @@ export const routeTo = ({ type, info }, cb) => {
     case 'tableDetailAction':
       router.push({
         path: `${info.moduleName}/${info.tableName}/${info.tableId}`,
+      });
+      break;
+    case 'action':
+      router.push({
+        path: `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
       });
       break;
     case 'table':

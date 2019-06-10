@@ -28,21 +28,11 @@
 
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-
+  import { Version, interlocks } from '../constants/global';
 
   export default {
     name: 'FormItemComponent',
     computed: {
-      FormItemLists: {
-        get() {
-          const arr = JSON.parse(JSON.stringify(this.formItemLists));
-          return arr;
-        },
-        set(newValue) {
-          this.newFormItemLists = newValue;
-        }
-
-      },
       // 计算属性的 getter
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
@@ -69,6 +59,17 @@
                   label: items.item.title
                 });
               }
+            } else if (items.item.required === true) {
+              // 赋值 需要校验的 值
+              // 判断必须输入的值是否为空
+              option.push({
+                index,
+                type: items.item.props.display,
+                eq: this.formIndex,
+                value: items.item.value[0],
+                key: items.item.field,
+                label: items.item.title
+              });
             }
           } else if (items.item.required === true) {
             // 赋值 需要校验的 值
@@ -89,23 +90,39 @@
       // 计算属性的 后台传值
       formDataObject() {
         let obj = {};
+        // 监听组件的 后台字段的值  默认值及数据联动
         obj = this.newFormItemLists.reduce((option, items) => {
-          if (Array.isArray(items.item.value)) {
-            if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
-              if (items.item.value[0].ID) {
-                option[items.item.field] = items.item.value[0].ID;
+          const value = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
+          if (value.length < 1) {
+            return option;
+          }
+          if (items.item.props.readonly) {
+            // 外键 不可编辑
+            option[items.item.field] = items.item.props.refobjid ? items.item.props.refobjid : items.item.value;
+          } else {
+            if (Array.isArray(items.item.value)) {
+              if (items.item.value[0] && Object.hasOwnProperty.call(items.item.value[0], 'ID')) {
+                if (items.item.value[0].ID) {
+                  option[items.item.field] = items.item.value[0].ID;
+                }
+              } else if (items.item.value[0]) {
+                option[items.item.field] = items.item.value[0];
               }
+            } else if (items.item.value) {
+              option[items.item.field] = items.item.props.defval || items.item.value || items.item.props.valuedata;
             }
-          } else if (items.item.value) {
-            if(typeof items.item.value === 'string'){
-               option[items.item.field] = items.item.value.replace('00:00:00','');
-            } else {
-               option[items.item.field] = items.item.value;
+            if (items.item.props.number) {
+              if (option[items.item.field]) {
+                option[items.item.field] = Number(option[items.item.field].replace(/^\s+|\s+$/g, '').replace(/-/g, ''));
+              }
+            } else if (typeof option[items.item.field] === 'string') {
+              option[items.item.field] = option[items.item.field].replace(/^\s+|\s+$/g, '');
             }
           }
-
+          
           return option;
         }, {});
+        
         return obj;
       },
       // 计算属性的 div 的坐标起始点
@@ -161,50 +178,66 @@
 
           };
         }
+      },
+      mappStatus: {
+        type: Function,
+        default() {
+          return function () {
+
+          };
+        }
       }
     },
     data() {
       return {
         indexItem: -1,
-        newFormItemLists: this.formItemLists, // 当前form list
+        newFormItemLists: [], // 当前form list
         changeFormData: {}, // 当前form 被改动的key
+        Mapping: {}, // 设置映射关系
+        mapData: {}, // 全部联动关系
+        formValueItem: {},
+        changeNumber: 0, // 更改次数
+        formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
     },
     mounted() {
-      // 传值默认data
-      const VerificationForm = this.VerificationForm.reduce((item, current) => {
-        // 判断必须输入的值是否为空
-        const elDiv = this.$refs[`component_${current.index}`][0].$el;
-        let onfousInput = {};
-        if (current.type === 'textarea') {
-          onfousInput = elDiv.querySelector('input');
-        } else {
-          onfousInput = elDiv.querySelector('input');
+      this.newFormItemLists.map((item) => {
+        if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
+          this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
-        item.push({
-          ...current,
-          onfousInput
-        });
-        return item;
-      }, []);
-
-      if (this.verifymessageform) {
-        this.verifymessageform(VerificationForm);
-      }
-
-      this.mountdataForm(this.formDataObject);
+      });
+      this.mapData = this.setMapping(this.Mapping);
+      // 映射回调
+      this.mappStatus(this.Mapping, this.mapData);
+      // this.VerificationFormInt();
     },
     created() {
+      this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
+      VerificationForm: {
+        handler(val, old) {
+          if (val.length > old.length || JSON.stringify(val) !== JSON.stringify(old)) {
+            if (this.indexItem < 0) {
+              setTimeout(() => {
+                this.VerificationFormInt();
+              }, 200);
+            }
+          } 
+        },
+        deep: true
+      },
       formDataObject: {
         handler(val, old) {
           if (this.indexItem < 0) {
             return;
           }
+          this.changeNumber = this.changeNumber + 1;
+          // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if ((val[item.validate.dynamicforcompute.computecolumn] === old[item.validate.dynamicforcompute.computecolumn])) {
                 this.dynamicforcompute(item, val, i);
@@ -213,27 +246,72 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-
               if (val[_refcolumn] !== old[_refcolumn]) {
                 this.hidecolumn(item, i);
               }
-            } else {
+            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+              this.refcolval(item, val, i);
             // this.formDataChange();
             }
             return items;
           });
         },
         deep: true
+      },
+      formItemLists: {
+        handler() {
+          this.changeNumber = 0;
+          this.newFormItemLists = this.formItemLists.concat();
+        },
+        deep: true
       }
     },
     methods: {
+      VerificationFormInt() {
+        //  form 计算 校验
+        // 传值默认data
+        const VerificationForm = this.VerificationForm.reduce((item, current) => {
+          // 判断必须输入的值是否为空
+          const elDiv = this.$refs[`component_${current.index}`][0].$el;
+          let onfousInput = {};
+          if (current.type === 'textarea') {
+            onfousInput = elDiv.querySelector('textarea');
+          } else {
+            onfousInput = elDiv.querySelector('input');
+          }
+          item.push({
+            ...current,
+            onfousInput
+          });
+          return item;
+        }, []);
+
+        setTimeout(() => {
+          //  传form 默认值
+          if (this.verifymessageform) {
+            this.verifymessageform(VerificationForm);
+          }
+          this.mountdataForm(this.formDataObject);
+        }, 100);
+      },
+      setMapping(data) {
+        //  获取映射关系
+        const temp = Object.keys(data).reduce((a, c) => {
+          const f = (key) => {
+            if (!data[key]) { return []; }
+            return [data[key]].concat(f(data[key]));
+          };
+          a[c] = f(c);
+          return a;
+        }, {});
+        return temp;
+      },
       formDataChange() {
       // console.log(this.changeFormData,'formDataChange');
       // this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem]);
       },
       dataProcessing(current) {
         // change 后台传值
-        // console.log(current,'DropDownSelectFilter');
         let obj = {};
         if (current.item.field) { // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
@@ -242,6 +320,10 @@
               obj[current.item.field] = current.item.value.reduce((sum, temp) => {
                 sum.push(temp.ID); return sum;
               }, []).join(',');
+              if (Version === '1.3') {
+                //  id 转number
+                obj[current.item.field] = Number(obj[current.item.field]);
+              }
             } else { // 否则为输入项
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
@@ -252,17 +334,33 @@
           } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
             if (current.item.props.Selected.length > 0) {
               obj[current.item.field] = current.item.props.Selected[0];
+              if (Version === '1.3') {
+                //  id 转number
+                obj[current.item.field] = Number(obj[current.item.field]);
+              }
             } else {
               obj[current.item.inputname] = current.item.value;
             }
-          } else if (current.item.value.length > 0) {
-             if(typeof current.item.value === 'string'){
-                obj[current.item.field] = current.item.value.replace('00:00:00','');
-            } else {
+          } else if (current.item.type === 'checkbox') {
+            obj[current.item.field] = current.item.value;
+          } else if (current.item.value) {
+            if (current.item.props.number) {
+              if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '') : '';
+        
+                obj[current.item.field] = Number(value);
+              }
+            } else if (typeof current.item.value === 'string') {
+              obj[current.item.field] = current.item.value ? current.item.value.replace(/^\s+|\s+$/g, '') : current.item.value;
+            } else {
+              obj[current.item.field] = current.item.value;
             }
+          } else if (Version === '1.4') {
+            obj[current.item.field] = current.item.props.empty;
           } else {
-            obj[current.item.field] = current.item.empty;
+            obj[current.item.field] = current.item.value;
           }
         } else if (current.item.value) { // 处理多个select合并
           obj = Object.assign(obj, current.item.value.reduce((objData, item) => {
@@ -274,14 +372,20 @@
               }
               objData[key].push(value);
             }
-
             return objData;
           }, {}));
-          console.log(obj, 'obj');
         }
         this.changeFormData = obj;
+        if (current.item.props.number) {    
+          this.changeFormData = Number(obj[Object.keys(obj)[0]]);
+        } else {
+          this.changeFormData = obj;
+        }
+        const valueItem = {
+          [Object.keys(obj)[0]]: current.item.value
+        };
         // 向父组件抛出整个数据对象以及当前修改的字段
-        this.$emit('formDataChange', obj, current);
+        this.$emit('formDataChange', obj, valueItem, current);
       },
       resetForm() { // 重置表单
         const arr = JSON.parse(JSON.stringify(this.formItemLists));
@@ -298,25 +402,45 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      dynamicforcompute(items, json, index) {
+      refcolval(items, json, index) {
+        if (interlocks === 'qiaodan') {
+          const srccol = items.validate.refcolval.srccol;
+
+          if (json[srccol] === undefined) {
+            if (items.type === 'DropDownSelectFilter') {
+              // console.log(items.props.defaultSelected, index, items);
+              this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.props.defaultSelected = [];
+            } else {
+              this.newFormItemLists[index].item.value = '';
+            }
+          }
+        }
+      },
+      dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
         const str = items.validate.dynamicforcompute.refcolumns.reduce((temp, current) => {
           temp = temp.replace(new RegExp(current, 'g'), Number(json[current]));
           return temp;
         }, items.validate.dynamicforcompute.express);
-        this.newFormItemLists[index].item.value = eval(str);
+        const _index = this.newFormItemLists.findIndex(option => option.item.field === items.validate.dynamicforcompute.computecolumn);
+        this.newFormItemLists[_index].item.value = eval(str);
       },
       hidecolumn(items, index) {
         // 隐藏
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
-
+        // 是否显示 隐藏字段
+        // this.newFormItemLists[index].show = false;
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
-            if (option.item.value === refval) {
-              this.newFormItemLists[index].show = false;
-            } else {
-              this.newFormItemLists[index].show = true;
+            if (option.item) {
+              const value = Array.isArray(option.item.value) ? option.item.value.toString() : option.item.value;
+              if (JSON.stringify(value) === JSON.stringify(refval)) {
+                this.newFormItemLists[index].show = true;
+              } else {
+                this.newFormItemLists[index].show = false;
+              }
             }
           }
           return option;

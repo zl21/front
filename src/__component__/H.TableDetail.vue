@@ -16,6 +16,7 @@
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
+    name: 'HTableDetail',
     data() {
       return {
       };
@@ -31,9 +32,15 @@
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
+              obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
             }
+            obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
+            obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+            obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
+            obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
             obj.componentAttribute.type = 'horizontal';
             Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
             obj.component = `${item.tablename}_TapComponent`;
@@ -87,7 +94,6 @@
 
 <style lang="less">
   .horizontalTableDetail {
-    padding: 0 16px;
     flex: 1;
     height: 100%;
     overflow: hidden;

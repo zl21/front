@@ -100,6 +100,7 @@
         type: Array,
         default: () => []
       }, // 错误信息数组
+
       onCellSingleClick: {
         type: Function,
         default: () => {
@@ -170,6 +171,7 @@
     },
     watch: {
       datas(val) {
+        console.log(val);
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;
@@ -190,7 +192,7 @@
         }); // 排序
         const datas = self.datas;
         datas.hideColumn = self.hideColumn;
-        datas.deleteFailInfo = self.errorArr;
+        datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
         datas.colPosition = self.colPosition; // 移动列
         datas.pinnedPosition = self.fixedColumn; // 固定列
         // selectIdArr
@@ -288,7 +290,7 @@
 
 <style lang="less">
  .standardTable {
-   padding: 20px 20px 0 20px;
+   padding: 20px 0 0 0;
  }
   .detailTable {
     border: 1px solid #d8d8d8;

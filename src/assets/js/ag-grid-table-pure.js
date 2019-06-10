@@ -1,13 +1,14 @@
 /* eslint-disable */
-import { Grid } from 'ag-grid';
-import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
-import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
+import * as agGrid  from 'ag-grid';
+// import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
+// import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
 // import 'ag-grid-enterprise/main';
-import { LicenseManager } from 'ag-grid-enterprise/main';
+// import { LicenseManager } from 'ag-grid-enterprise/main';
 import { agGridEnterpriseLicenseKey } from './constant';
 import loadingSVG from '../image/loading.svg';
 
 // 设置enterprise key
+const { Grid, LicenseManager } = agGrid;
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 const cssFeatures = {
   hover: 'ag-syman-hover',
@@ -287,7 +288,7 @@ fkComponent.prototype.init = function (params) {
   const { value } = params;
   // 设置fk icon 的样式
   const template = value !== null && value !== ''
-    ? `<i class="iconfont ${cssFeatures.hover}" data-target-tag="fkIcon" style="color: #0f8ee9">&#xe625;</i> ${params.value || ''}`
+    ? `<i class="iconfont ${cssFeatures.hover}" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px">&#xe625;</i> ${params.value || ''}`
     : '';
 
   if (params.data && params.data.ID.val !== '合计' && params.data.ID.val !== '总计') {
@@ -306,6 +307,27 @@ fkComponent.prototype.getGui = function () {
   return this.eGui;
 };
 
+// for mopFkComponent
+const mopFkComponent = function() {};
+
+mopFkComponent.prototype.init = function(params) {
+  const eGui = document.createElement('span');
+  this.eGui = eGui;
+  const { data, columnName } = params;
+  if (data[columnName] && data[columnName].refobjid) {
+    try {
+      const info =  JSON.parse(data[columnName].refobjid);
+      eGui.innerHTML = info.lists.result.map(d => d.screen_string).toString();
+    } catch (e) {
+      eGui.innerHTML = params.value;
+      console.error(e);
+    }
+  }
+};
+
+mopFkComponent.prototype.getGui = function() {
+  return this.eGui;
+};
 
 // for attachment
 const attachmentComponent = function () {
@@ -354,7 +376,7 @@ sequenceComponent.prototype.init = function (params) {
   eGui.innerHTML = template;
 
   // for tooltip icon
-  if (failIds.indexOf(value) > -1) {
+  if (failIds.indexOf(`${value}`) > -1) {
     const toolTipIcon = document.createElement('i');
     toolTipIcon.setAttribute('class', `iconfont ${cssFeatures.hover}`);
     toolTipIcon.style.color = 'red';
@@ -568,7 +590,7 @@ const initializeAgTable = (container, opt) => {
       if (options && options.datas && options.datas.deleteFailInfo && Object.prototype.toString.call(options.datas.deleteFailInfo) === '[object Array]') {
         options.datas.deleteFailInfo.forEach((d) => {
           if (d.objid && d.objid !== '') {
-            failIds.push(d.objid);
+            failIds.push(`${d.objid}`);
           }
         });
         return failIds;
@@ -616,7 +638,12 @@ const initializeAgTable = (container, opt) => {
         return 'customerUrlComponent';
       }
       if (columnItem.isfk) {
-        return 'fkComponent';
+        if (columnItem.fkdisplay === 'mop') {
+
+          return 'mopFkComponent';
+        } else {
+          return 'fkComponent';
+        }
       }
       if (columnItem.display === 'image') {
         return 'imageComponent';
@@ -860,6 +887,7 @@ const initializeAgTable = (container, opt) => {
         components: {
           imageComponent,
           fkComponent,
+          mopFkComponent,
           customerUrlComponent,
           sequenceComponent,
           customHeader,

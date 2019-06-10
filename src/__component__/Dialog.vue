@@ -16,18 +16,33 @@
     @on-cancel="onCancel"
     @on-ok="onOk"
   >
-    <p>{{ contentText }}</p>
+    <p v-if="contentText">
+      {{ contentText }}
+    </p>
+    <component
+      :is="dialogComponentName"
+      v-if="dialogComponentName"
+      @closeActionDialog="closeActionDialog"
+    />
   </Modal>
 </template>
 
 <script>
   export default {
-    name: 'Dialog',
+    name: 'DialogComponent',
     props: {
       // showModal: {
       //   type: Boolean,
       //   default: () => false
       // }, // 是否可以滚动
+      // width: {
+      //   type: String,
+      //   default: () => 'auto'
+      // },
+      dialogComponentName: {
+        type: String,
+        default: () => ''
+      }, // 设置组件
       title: {
         type: String,
         default: () => '标题'
@@ -83,7 +98,7 @@
       },
       contentText: {
         type: String,
-        default: () => '暂无提示'
+        default: () => ''
       },
     },
     data() {
@@ -111,6 +126,9 @@
           this.cancelFun();
         }
       },
+      closeActionDialog() {
+        this.showModal = false;
+      }
     
     }
   };

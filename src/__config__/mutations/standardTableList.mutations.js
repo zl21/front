@@ -1,4 +1,3 @@
-import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
 
 export default {
   updateTableData({
@@ -11,6 +10,10 @@ export default {
   }, data) {
     ag.status4css = data;
   },
+  // setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
+  //   ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);
+  //   console.log( ag.datas.deleteFailInfo )
+  // },
 
   // 表单
   updateDefaultFormItemsLists({ formItems }, data) {
@@ -32,6 +35,7 @@ export default {
     buttons.tabcmd = data;
   },
   updateButtonWaListButtons({ buttons }, data) { // 获取静默类型的按钮数据
+    console.log(data);
     buttons.dataArray.waListButtonsConfig.waListButtons = data;
   },
   collectTablelist({ buttons }) { // 判断页面加载时收藏按钮状态
@@ -83,6 +87,9 @@ export default {
     buttons.importData.importDialog = true;
     buttons.importData.importDialogTitle = this.state.global.activeTab.label;
   },
+  closeImportDialog({ buttons }) { // 导出操作
+    buttons.importData.importDialog = false;
+  },
   updateButtonImportGetUploadParameters({ buttons }, data) { // 获取导入上传参数
     buttons.importParameters = data;
   },
@@ -93,13 +100,13 @@ export default {
     buttons.batchDeleteData = data;
   },
   setErrorModalValue({ buttons }, {
-    data, errorDialogTitle, errorDialogvalue, errorDialogBack 
+    title, contentText, footerHide 
   }) { // 设置error弹窗提示信息
-    buttons.errorData.message = data.content;
-    buttons.errorDialog = errorDialogvalue;
-    buttons.errorDialogClass = 'fcWarning';
-    buttons.errorDialogTitle = errorDialogTitle;
-    buttons.errorDialogBack = errorDialogBack;
+    buttons.dialogConfig = {
+      title,
+      footerHide,
+      contentText,
+    };
   },
   setActionDialog({ buttons }, obj) {
     // buttons.actionDialog.queryString = obj.action.split('/')[1];
@@ -112,9 +119,20 @@ export default {
   updateButtonbatchUnSubmitData({ buttons }, data) { // 批量反提交
     buttons.batchUnSubmitData = data;
   },
+  batchVoidForButtonsData({ buttons, ag }, data) { // 批量反提交
+    buttons.batchVoidForButtonsData = data;
+     
+    // ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, data);
+    ag.datas.deleteFailInfo = data;
+    ag.datas = Object.assign({}, ag.datas);
+  },
   updateUserConfig(state, { userConfig }) {
     state.hideColumn = userConfig.hideColumn;
     state.colPosition = userConfig.colPosition;
     state.fixedColumn = userConfig.fixedColumn;
   },
+  updateButtonsExport({ buttons }, data) { // 导出
+    buttons.exportdata = data;
+  }
+ 
 };

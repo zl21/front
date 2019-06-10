@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import BurgeonUi from 'burgeon-ui';
-import 'burgeon-ui/dist/styles/burgeon-ui.css';
 import './src/assets/iconfont-r3/iconfont.css';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
@@ -12,7 +11,9 @@ import './src/constants/dateApi';
 
 import network from './src/__utils__/network';
 import { enableGateWay } from './src/constants/global';
+import CompositeForm from './src/__component__/CompositeForm';
 
+Vue.component('CompositeForm', CompositeForm);
 Vue.use(BurgeonUi);
 const createDOM = () => {
   const div = document.createElement('div');
@@ -23,7 +24,9 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
-  new Vue({
+ 
+
+  window.vm = new Vue({
     router,
     store,
     render: createElement => createElement(App)
@@ -37,7 +40,7 @@ const getCategory = () => {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .filter(d => d.type === 'table' || d.type === 'action')
-        .reduce((a, c) => { a[c.value] = c.serviceId; return a; }, {});
+        .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
       window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
     }
   });
@@ -45,7 +48,6 @@ const getCategory = () => {
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-    
     getCategory();
     setTimeout(() => {
       init();
@@ -58,3 +60,11 @@ if (enableGateWay) {
 } else {
   init();
 }
+
+const launchApplication = () => {
+  console.log('U will launch Application.');
+};
+
+export default {
+  launchApplication
+};

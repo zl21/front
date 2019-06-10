@@ -8,6 +8,7 @@ const getComponentName = () => {
   return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 };
 
+
 export default () => ({
   mounted() {
     this.moduleComponentName = getComponentName();
@@ -44,7 +45,9 @@ export default () => ({
         'setErrorModalValue',
         'updateButtonbatchSubmitData',
         'updateButtonbatchUnSubmitData',
-        'setActionDialog'
+        'setActionDialog',
+        'closeImportDialog',
+        'setAgTableErrorMessage'
       
         
       ]),
@@ -69,7 +72,9 @@ export default () => ({
   },
   beforeDestroy() {
     try {
-      store.unregisterModule(this.moduleComponentName);
+      if (this.$options.isKeepAliveModel) {
+        store.unregisterModule(this.moduleComponentName);
+      }
     } catch (e) {
       console.log(e);
     }
