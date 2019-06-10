@@ -299,6 +299,28 @@
             id = itemId;
           }
           const message = this.$store.state[getModuleName()].buttonsData.message;
+
+          // 保存成功后路由跳转到编辑界面
+          if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
+            let types = '';
+            if (this.type === 'horizontal') {
+              types = 'tableDetailHorizontal';
+            } else {
+              types = 'tableDetailVertical';
+            }
+            const label = `${this.$store.state.global.activeTab.label.replace('新增', '编辑')}`;
+            const tab = {
+              type: types,
+              tableName,
+              tableId,
+              label,
+              id: this.$store.state[getModuleName()].buttonsData.newMainTableSaveData ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId
+            };
+            // this.updateChangeData({ tableName: this.tableName, value: {} });
+            this.$store.commit('global/tabHref', tab);
+          } 
+
+
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
