@@ -488,31 +488,30 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        // const promise = new Promise((resolve, reject) => {
-        //   this.getObjTabActionSlientConfirm({ OBJ, resolve, reject });
-        // });
-        // promise.then(() => {
-
-        // });
-      
         const self = this;
         let params = {};
         const parimaryTableParams = {};
         const childTableParams = {};
-  
-        if (this.isreftabs) {
-          if (this.itemNameGroup.length > 0) {
-            params.ID = self.storageItem.id;
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.isreftabs) {
+            if (this.itemNameGroup.length > 0) {
+              params.ID = self.storageItem.id;
+            } else if (this.updateData[this.itemName].delete[this.itemName].length === 0) {
+              parimaryTableParams[this.tableName] = { ID: this.tableId };
+              params = Object.assign({}, parimaryTableParams);
+            } else {
+              parimaryTableParams[this.tableName] = { ID: this.tableId };
+              childTableParams[self.tableTab.selectItem.tablename] = this.updateData[this.itemName].delete[this.itemName].map(d => ({ ID: d }));
+              params = Object.assign({}, parimaryTableParams, childTableParams);
+            }
           }
-        } else if (self.tableChooseList.length === 0) {
-          // 没有勾选子表
-          parimaryTableParams[self.storageItem.name] = { ID: self.storageItem.id };
-          params = Object.assign({}, parimaryTableParams);
-        } else {
-          parimaryTableParams[self.storageItem.name] = { ID: self.storageItem.id };
-          childTableParams[self.tableTab.selectItem.tablename] = self.tableChooseList.map(d => ({ ID: d }));
-          params = Object.assign({}, parimaryTableParams, childTableParams);
         }
+        const promise = new Promise((resolve, reject) => {
+          this.getObjTabActionSlientConfirm({ params, resolve, reject });
+        });
+        promise.then(() => {
+
+        });
   
         // self.actionLoading = true;
         // axios({
