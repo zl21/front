@@ -452,7 +452,7 @@
         const { tableName } = this;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+        this.$store.commit(`${getModuleName()}/updateAddDefaultData`, { tableName, value: obj });
       },
       verifyForm(data) {
         const { tableName } = this;
