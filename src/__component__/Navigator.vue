@@ -20,15 +20,15 @@
       >
       <img
         v-if="!collapseHistoryAndFavorite"
-        class="logo"
-        alt=""
-        :src="imgSrc.logoImg"
-      >
-      <img
-        v-if="collapseHistoryAndFavorite"
         class="banner"
         alt=""
         :src="imgSrc.bannerImg"
+      >
+      <img
+        v-if="collapseHistoryAndFavorite"
+        class="logo"
+        alt=""
+        :src="imgSrc.logoImg"
       >
     </div>
     <div class="middle">
@@ -148,13 +148,13 @@
       img.trigger {
         height: 50px;
       }
-      img.banner {
+      img.logo {
         position: absolute;
         width: 30px;
         top: 10px;
         left: 18px;
       }
-      img.logo {
+      img.banner {
         width: 76px;
         height: 30px;
         position: absolute;
