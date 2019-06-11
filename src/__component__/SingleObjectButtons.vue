@@ -885,7 +885,6 @@
           startIndex: 0,
           range: 10
         };
-        
         if (this.isreftabs) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
@@ -1021,13 +1020,13 @@
                       //     range: 10,
                       //   }
                       // });
-                      const { tablename, refcolid } = this.itemInfo;
-                      this.getObjectTableItemForTableData({
-                        table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
-                      });
-                      this.getInputForitemForChildTableForm({ table: tablename });
-                      // this.clickButtonsBack();
-                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // const { tablename, refcolid } = this.itemInfo;
+                      // this.getObjectTableItemForTableData({
+                      //   table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                      // });
+                      // this.getInputForitemForChildTableForm({ table: tablename });
+                      this.clickButtonsBack();
+                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }
                   }, 1000);
                 }
