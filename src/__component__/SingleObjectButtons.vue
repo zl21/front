@@ -293,7 +293,12 @@
         }
       },
       clickButtonsRefresh() { // 按钮刷新事件
-        this.updateChangeData({ tableName: this.tableName, value: {} });
+        if (this.objectType === 'vertical') {
+          this.updateChangeData({ tableName: this.tableName, value: {} });
+          this.updateChangeData({ tableName: this.itemName, value: {} });
+        } else {
+          this.updateChangeData({ tableName: this.itemName, value: {} });
+        }
         const message = '刷新成功';
         this.upData(`${message}`);
       },

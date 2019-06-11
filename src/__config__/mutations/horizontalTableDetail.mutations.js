@@ -103,7 +103,7 @@ export default {
     state.updateData[data.tableName].delete = data.value;
   },
   updateChangeData(state, data) {
-    state.updateData[data.tableName].changeData = data.value;
+    state.updateData[data.tableName].changeData = Object.assign(data.value, {});
   },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
