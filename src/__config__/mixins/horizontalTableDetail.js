@@ -37,7 +37,8 @@ export default () => ({
         'getObjectTableItemForTableData',
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [

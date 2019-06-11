@@ -56,8 +56,15 @@ const getGateWayServiceId = () => {
   });
 };
 
-if (enableGateWay) {
-  getGateWayServiceId();
-} else {
-  init();
-}
+
+export default {
+  launchApplication() {
+    console.log('U will launchApplication');
+    if (enableGateWay) {
+      getGateWayServiceId();
+    } else {
+      init();
+    }
+
+  }
+};

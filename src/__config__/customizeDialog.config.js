@@ -1,8 +1,16 @@
 export default {
   clonePopUp: {
-    component: () => import('../__customizeDialog__/ChangePassword/ChangePassword.vue')
+    component: () => import(
+      /* webpackChunkName: 'ChangePassword' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/ChangePassword/ChangePassword.vue'
+    )
   },
   ChangePassword: {
-    component: () => import('../__customizeDialog__/ChangePassword/ChangePassword.vue')
+    component: () => import(
+      /* webpackChunkName: 'ChangePassword' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/ChangePassword/ChangePassword.vue'
+    )
   },
 };

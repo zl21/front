@@ -39,14 +39,12 @@
         :index="index"
       />
     </div>
-    <div class="tag">
+    <div class="tag right">
       <i
         class="iconfont icon-yonghu-"
         @click="show = true"
       />
     </div>
-  
-  
     <Drawer
       v-model="show"
     >

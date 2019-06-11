@@ -432,11 +432,11 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
-                obj.item.props.defaultSelected = this.defaultValue(current);
+                obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'mrp':
                 obj.item.props.single = false;
-                obj.item.props.defaultSelected = this.defaultValue(current);
+                obj.item.props.defaultSelected = this.defaultValue(current)|| [];
                 break;
               case 'pop':
                 obj.item.props.fkobj = current.fkobj;
