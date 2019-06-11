@@ -30,6 +30,8 @@
     },
     methods: {
       togglePrimaryMenu() {
+        // 由于此处禁用了冒泡，所以需要手动触发body的点击事件以辅助其他控件对body点击事件的监听。
+        document.body.click();
         if (this.index === this.primaryMenuIndex) {
           this.hideMenu();
         } else {

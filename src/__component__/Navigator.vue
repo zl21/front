@@ -8,27 +8,27 @@
         v-if="!collapseHistoryAndFavorite"
         class="trigger"
         alt=""
-        src="../assets/image/closed@2x.png"
+        :src="imgSrc.closedImg"
         @click="doCollapseHistoryAndFavorite"
       >
       <img
         v-if="collapseHistoryAndFavorite"
         class="trigger"
         alt=""
-        src="../assets/image/open@2x.png"
+        :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       >
       <img
         v-if="!collapseHistoryAndFavorite"
-        class="logo"
+        class="banner"
         alt=""
-        src="../assets/image/logo.png"
+        :src="imgSrc.bannerImg"
       >
       <img
         v-if="collapseHistoryAndFavorite"
-        class="banner"
+        class="logo"
         alt=""
-        src="../assets/image/banner.png"
+        :src="imgSrc.logoImg"
       >
     </div>
     <div class="middle">
@@ -72,7 +72,10 @@
   import SetPanel from './SetPanel';
   import Dialog from './Dialog.vue';
   import CustomizeModule from '../__config__/customizeDialog.config';
-
+  import closedImg from '../assets/image/closed@2x.png';
+  import openedImg from '../assets/image/open@2x.png';
+  import logoImg from '../assets/image/logo.png';
+  import bannerImg from '../assets/image/banner.png';
   
   export default {
     name: 'Navigator',
@@ -83,6 +86,12 @@
     },
     data() {
       return {
+        imgSrc: {
+          closedImg,
+          openedImg,
+          logoImg,
+          bannerImg
+        },
         show: false,
         setPanel: {
           show: true,
@@ -116,8 +125,19 @@
         Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
+      loadEnterpriseConfig() {
+        const image = (window.ProjectConfig || {}).image || {
+          enterpriseLogo: undefined,
+          enterpriseBanner: undefined
+        };
+        const enterpriseLogo = image.enterpriseLogo;
+        const enterpriseBanner = image.enterpriseBanner;
+        this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
+        this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
+      }
     },
     mounted() {
+      this.loadEnterpriseConfig();
       this.getMenuLists();
     }
   };
@@ -139,13 +159,13 @@
       img.trigger {
         height: 50px;
       }
-      img.banner {
+      img.logo {
         position: absolute;
         width: 30px;
         top: 10px;
         left: 18px;
       }
-      img.logo {
+      img.banner {
         width: 76px;
         height: 30px;
         position: absolute;

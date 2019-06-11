@@ -88,7 +88,19 @@ module.exports = env => ({
         }],
       },
       {
-        test: /\.(png|jpg|gif|woff|woff2|eot|ttf|otf|svg)$/,
+        test: /\.(png|jpg|gif|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              name: '[path][name].[ext]'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
             loader: 'file-loader',
