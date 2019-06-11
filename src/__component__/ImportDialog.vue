@@ -262,6 +262,7 @@
      
       // 上传成功
       handleSuccess(response) {
+        debugger;
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
@@ -277,7 +278,9 @@
         this.$emit('confirmImport');
       },
       // 上传失败
-      handleError(e) {
+      handleError(result) {
+        console.log(result.onerror());
+
         if (e.status === 403) {
           this.$store.commit('beforeSignout');
           this.closeDialog();
