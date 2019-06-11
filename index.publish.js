@@ -33,7 +33,7 @@ export default {
       return;
     }
     window.ProjectConfig = projectConfig;
-    launchApp();
+    launchApp(projectConfig);
   },
   urlSearchParams,
   network,

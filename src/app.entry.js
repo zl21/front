@@ -53,8 +53,23 @@ const getGateWayServiceId = () => {
   });
 };
 
-export default () => {
-  console.log('router = ', router);
+export default (projectConfig = { globalComponent: undefined, Login: undefined }) => {
+  const globalComponent = projectConfig.globalComponent || {};
+  router.options.routes.forEach((d) => {
+    if (d.children) {
+      d.children.forEach((c) => {
+        if (c.component.name === 'WelcomePage' && globalComponent.WelcomePage) {
+          console.log('replace WelcomePage');
+          c.component = globalComponent.WelcomePage;
+        }
+      });
+    }
+    if (d.component.name === 'Login' && globalComponent.Login) {
+      console.log('replace Login');
+      d.component = globalComponent.Login;
+    }
+  });
+  console.log(router.options.routes);
   if (enableGateWay) {
     getGateWayServiceId();
   } else {
