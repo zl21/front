@@ -2,6 +2,7 @@ import Vue from 'vue';
 import BurgeonUi from 'burgeon-ui';
 import './assets/iconfont-r3/iconfont.css';
 import { getGuid } from './__utils__/random';
+import router from './__config__/router.config';
 import store from './__config__/store.config';
 import App from './App';
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
@@ -23,13 +24,11 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
-  return (router) => {
-    window.vm = new Vue({
-      router,
-      store,
-      render: createElement => createElement(App)
-    }).$mount(rootDom);
-  };
+  window.vm = new Vue({
+    router,
+    store,
+    render: createElement => createElement(App)
+  }).$mount(rootDom);
 };
 const getCategory = () => {
   network.post('/p/cs/getSubSystems').then((res) => {
@@ -55,6 +54,7 @@ const getGateWayServiceId = () => {
 };
 
 export default () => {
+  console.log('router = ', router);
   if (enableGateWay) {
     getGateWayServiceId();
   } else {

@@ -13,13 +13,6 @@ import navigationGuard from './router.navigation.guard';
 
 Vue.use(VueRouter);
 
-const globalComponent = ((window.ProjectConfig || {}).globalComponent) || {
-  Login: undefined,
-  WelcomePage: undefined
-};
-console.log('ProjectConfig = ', window.ProjectConfig);
-console.log('globalComponent = ', globalComponent);
-
 const routes = [
   {
     path: '/',
@@ -64,7 +57,7 @@ const routes = [
   },
   {
     path: '/login',
-    component: globalComponent.Login || Login
+    component: Login
   }
 ];
 
