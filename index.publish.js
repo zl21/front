@@ -25,8 +25,6 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
-
-
   window.vm = new Vue({
     router,
     store,
@@ -56,15 +54,12 @@ const getGateWayServiceId = () => {
   });
 };
 
-
 export default {
   launchApplication() {
-    console.log('U will launchApplication');
     if (enableGateWay) {
       getGateWayServiceId();
     } else {
       init();
     }
-
   }
 };

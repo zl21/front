@@ -8,27 +8,27 @@
         v-if="!collapseHistoryAndFavorite"
         class="trigger"
         alt=""
-        src="../assets/image/closed@2x.png"
+        :src="imgSrc.closedImg"
         @click="doCollapseHistoryAndFavorite"
       >
       <img
         v-if="collapseHistoryAndFavorite"
         class="trigger"
         alt=""
-        src="../assets/image/open@2x.png"
+        :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       >
       <img
         v-if="!collapseHistoryAndFavorite"
         class="logo"
         alt=""
-        src="../assets/image/logo.png"
+        :src="imgSrc.logoImg"
       >
       <img
         v-if="collapseHistoryAndFavorite"
         class="banner"
         alt=""
-        src="../assets/image/banner.png"
+        :src="imgSrc.bannerImg"
       >
     </div>
     <div class="middle">
@@ -72,7 +72,10 @@
   import SetPanel from './SetPanel';
   import Dialog from './Dialog.vue';
   import CustomizeModule from '../__config__/customizeDialog.config';
-
+  import closedImg from '../assets/image/closed@2x.png';
+  import openedImg from '../assets/image/open@2x.png';
+  import logoImg from '../assets/image/logo.png';
+  import bannerImg from '../assets/image/banner.png';
   
   export default {
     name: 'Navigator',
@@ -83,6 +86,12 @@
     },
     data() {
       return {
+        imgSrc: {
+          closedImg,
+          openedImg,
+          logoImg,
+          bannerImg
+        },
         show: false,
         setPanel: {
           show: true,
