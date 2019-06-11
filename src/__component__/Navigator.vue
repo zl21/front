@@ -77,9 +77,6 @@
   import logoImg from '../assets/image/logo.png';
   import bannerImg from '../assets/image/banner.png';
   
-  const { image } = window.ProjectConfig || {};
-  const { enterpriseLogo, enterpriseBanner } = image || {};
-  
   export default {
     name: 'Navigator',
     components: {
@@ -92,8 +89,8 @@
         imgSrc: {
           closedImg,
           openedImg,
-          logoImg: enterpriseLogo || logoImg,
-          bannerImg: enterpriseBanner || bannerImg
+          logoImg,
+          bannerImg
         },
         show: false,
         setPanel: {
@@ -128,8 +125,19 @@
         Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
+      loadEnterpriseConfig() {
+        const image = (window.ProjectConfig || {}).image || {
+          enterpriseLogo: undefined,
+          enterpriseBanner: undefined
+        };
+        const enterpriseLogo = image.enterpriseLogo;
+        const enterpriseBanner = image.enterpriseBanner;
+        this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
+        this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
+      }
     },
     mounted() {
+      this.loadEnterpriseConfig();
       this.getMenuLists();
     }
   };
