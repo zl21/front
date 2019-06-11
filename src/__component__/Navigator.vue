@@ -77,6 +77,9 @@
   import logoImg from '../assets/image/logo.png';
   import bannerImg from '../assets/image/banner.png';
   
+  const { image } = window.ProjectConfig || {};
+  const { enterpriseLogo, enterpriseBanner } = image || {};
+  
   export default {
     name: 'Navigator',
     components: {
@@ -89,8 +92,8 @@
         imgSrc: {
           closedImg,
           openedImg,
-          logoImg,
-          bannerImg
+          logoImg: enterpriseLogo || logoImg,
+          bannerImg: enterpriseBanner || bannerImg
         },
         show: false,
         setPanel: {
