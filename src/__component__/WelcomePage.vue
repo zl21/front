@@ -1,15 +1,15 @@
 <template>
-  <div class="dashboard" />
+  <div class="welcomepage" />
 </template>
 
 <script>
   export default {
-    name: 'Dashboard'
+    name: 'WelcomePage'
   };
 </script>
 
 <style scoped lang="less">
-  .dashboard {
+  .welcomepage {
     width: 100%;
     height: 100%;
     background: url('../assets/image/homepage.png') center / 90% no-repeat;
