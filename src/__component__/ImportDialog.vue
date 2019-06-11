@@ -267,11 +267,11 @@
         if (response.code === 0) {
           this.closeDialog();
         } else {
-          if (undefined === response.path) this.errorMsg.errorUrl = '';
-          else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
-          this.errorMsg.errorList = response.data || [
-            { rowIndex: 0, message: '' }
-          ];
+          // if (undefined === response.path) this.errorMsg.errorUrl = '';
+          // else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
+          // this.errorMsg.errorList = response.data || [
+          //   { rowIndex: 0, message: '' }
+          // ];
           this.errorMsg.message = response.message;
           this.clearFile();
         }
