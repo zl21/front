@@ -304,6 +304,9 @@ export default {
         const elDiv =
           this.$refs[`component_${current.index}`][0] &&
           this.$refs[`component_${current.index}`][0].$el;
+          if(!elDiv){
+              return false;
+          }
         let onfousInput = {};
         if (current.type === "textarea") {
           onfousInput = elDiv.querySelector("textarea");
