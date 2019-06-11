@@ -488,24 +488,21 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        console.log(tab);
         const self = this;
         let params = {};
         const parimaryTableParams = {};
         const childTableParams = {};
-        if (this.objectType === 'horizontal') { // 横向布局
-          if (this.isreftabs) {
-            if (this.itemNameGroup.length > 0) {
-              params.ID = self.storageItem.id;
-            } else if (this.updateData[this.itemName].delete[this.itemName].length === 0) {
-              parimaryTableParams[this.tableName] = { ID: this.tableId };
-              params = Object.assign({}, parimaryTableParams);
-            } else {
-              parimaryTableParams[this.tableName] = { ID: this.tableId };
-              childTableParams[self.tableTab.selectItem.tablename] = this.updateData[this.itemName].delete[this.itemName].map(d => ({ ID: d }));
-              params = Object.assign({}, parimaryTableParams, childTableParams);
-            }
+        if (this.isreftabs) {
+          if (this.itemNameGroup.length > 0) {
+            params.ID = self.storageItem.id;
+          } else {
+            parimaryTableParams[this.tableName] = { ID: this.tableId };
+            childTableParams[self.tableTab.selectItem.tablename] = this.updateData[this.itemName].delete[this.itemName].map(d => ({ ID: d }));
+            params = Object.assign({}, parimaryTableParams, childTableParams);
           }
+        } else if (Object.values(this.updateData[this.tableName].delete[this.tableName]).length === 0) {
+          parimaryTableParams.ID = this.tableId; 
+          params = Object.assign({}, parimaryTableParams);
         }
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
@@ -1177,15 +1174,19 @@
           this.mainTableEditorSaveIsreftabs(obj);
         }
       },
+      
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
-        const sataType = 'itemSave';
         if (this.objectType === 'vertical') {
           this.itemTableValidation = true;
+          // if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 当子表form有值时校验，没有值的时候不进行校验，直接保存
+          //   this.itemTableValidation = true;
+          // } else {
+          // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -1193,20 +1194,32 @@
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             }
             
-            if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType);
+            if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) { //
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+            }
+            const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+            if (Object.keys(add).length > 0) {
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
-          if (obj.requestUrlPath) { // 配置path
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-          } else { // 没有配置path
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          // if (obj.requestUrlPath) { // 配置path
+          //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          // } else { // 没有配置path
+          //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          // }
+          if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) { //
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+          }
+          const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+          if (Object.keys(add).length > 0) {
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
           }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
+
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
 
         if (checkedInfo) {
@@ -1249,6 +1262,15 @@
                         }
                       } else if (Object.values(addInfo).length < 1) {
                         this.$Message.warning('个人信息不能为空!');
+                        return false;
+                      }
+                    }
+                  } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
+                    const itemMessageTip = itemCheckedInfo.messageTip;
+                    if (itemMessageTip) {
+                      if (itemMessageTip.length > 0) {
+                        this.$Message.warning(itemMessageTip[0]);
+                        itemCheckedInfo.validateForm.focus();
                         return false;
                       }
                     }
