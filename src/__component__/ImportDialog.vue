@@ -262,7 +262,7 @@
      
       // 上传成功
       handleSuccess(response) {
-        debugger;
+        // debugger;
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
