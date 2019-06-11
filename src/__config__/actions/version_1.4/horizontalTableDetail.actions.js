@@ -147,7 +147,6 @@ export default {
         
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
             // itemModify[itemName].ID = objId;
-
             const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
             if (sataTypeName === 'add') { // 子表新增
               modify[tableName].ID = objId;// 主表id
@@ -181,6 +180,11 @@ export default {
             //     itmValues
             //   ];
             // }
+          } else {
+            modify[tableName].Id = objId;
+            parames = {
+              ...modify,
+            };
           }
         } else {
           const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
