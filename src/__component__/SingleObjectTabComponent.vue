@@ -415,7 +415,7 @@
         const obj = {};
         obj[tableName] = val;
         this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
       },
       initForm(val) {
         const { tableName } = this;
