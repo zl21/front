@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -512,7 +512,7 @@
         this.updateTablePageInfo({
           currentPageIndex: this.dataSource.start + 1,
           pageSize: this.dataSource.defaultrange
-        })
+        });
         // 组装beforeData
         if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tableName]) {
           return;
@@ -1454,8 +1454,8 @@
           }));
         }
         combobox.push({
-            value: '',
-            label: '请选择'
+          value: '',
+          label: '请选择'
         });
         return combobox;
       },

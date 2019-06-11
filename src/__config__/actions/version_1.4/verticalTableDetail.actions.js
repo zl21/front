@@ -237,9 +237,13 @@ export default {
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
       const { sataType } = parame;
+      const sataTypeName = sataType ? sataType.sataType : '';
       if (isreftabs) {
-        const itemModify = itemCurrentParameter.modify;
-        if (sataType === 'itemSave') { // 子表保存
+        const itemModify = itemCurrentParameter.modify;// 子表修改
+        const itemAdd = itemCurrentParameter.add;// 子表新增
+        const itemDefault = itemCurrentParameter.default;// 子表新增
+
+        if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
             // let itmValues = itemModify[itemName];
             // if (Object.values(itemModify[itemName]).length > 0) {
@@ -250,19 +254,20 @@ export default {
             // } else {
             //   itemModify[itemName].ID = objId;
             // }
-            if (itemModify[itemName]) {
-              const itmValues = itemModify[itemName]; 
-              if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-                itemModify[itemName].ID = -1;
-              } else {
-                itemModify[itemName].ID = -1; 
-                itemModify[itemName] = [
-                  itemModify[itemName]
-                ];
-              }
-            } else {
-              itemModify[itemName].ID = objId;
-            }
+            // if (itemModify[itemName]) {
+            //   const itmValues = itemModify[itemName]; 
+            //   if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+            //     itemModify[itemName].ID = -1;
+            //   } else {
+            //     itemModify[itemName].ID = -1; 
+            //   itemModify[itemName] = [
+            //     itemModify[itemName]
+            //   ];
+            //   }
+            // } else {
+            //   itemModify[itemName].ID = objId;
+            // }
+            // itemModify[itemName].ID = objId;
             if (enter) {
               modify[tableName].ID = objId;
             }
@@ -271,16 +276,20 @@ export default {
               ...itemModify
             };
           } else {
-            const itmValues = itemModify[itemName];
+            // const itmValues = itemModify[itemName];
 
-            if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-              itmValues.ID = objId;
-            } else {
-              itmValues.ID = -1;
-              itemModify[itemName] = [
-                itmValues
-              ]; 
-            }
+            // if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
+            //   itmValues.ID = objId;
+            // } else {
+            //   itmValues.ID = -1;
+            //   itemModify[itemName] = [
+            //     itmValues
+            //   ]; 
+            // }
+            // itmValues.ID = -1;
+            // itemModify[itemName] = [
+            //   itmValues
+            // ]; 
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
@@ -289,6 +298,27 @@ export default {
               }
             };
           } 
+        } else if (sataTypeName === 'add') { // 子表新增保存
+          const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
+          add[itemName].ID = -1;
+          add[itemName] = [
+            add[itemName] 
+          ]; 
+          modify[tableName].ID = objId;
+          if (path) {
+            parames = {
+              ...modify,
+              ...add
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add
+              }
+            };
+          }
         } else if (path) { // 主表保存有path的参数
           modify[tableName].ID = objId;// 主表id
           parames = {
@@ -453,7 +483,7 @@ export default {
   getObjTabActionSlientConfirm({ commit }, {
     params, path, resolve, reject 
   }) { // 获取作废数据
-    network.post(path || '/p/cs/exeAction', { params }).then((res) => {
+    network.post(path || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
