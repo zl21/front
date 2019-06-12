@@ -1,7 +1,5 @@
 # burgeon-r3
 
-### version 0.0.1
-
 > Usage
 ```
 import R3 from 'burgeon-r3';
