@@ -332,6 +332,8 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
+                  this.formItemsLists[itemIndex].item.props.data = {};
+                  // 初始化清空数据
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,

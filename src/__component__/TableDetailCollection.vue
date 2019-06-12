@@ -431,8 +431,8 @@
                     refcolid,
                     searchdata: {
                       column_include_uicontroller: true,
-                      startindex: 0,
-                      range: 10,
+                      startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+                      range: this.pageInfo.pageSize,
                       fixedcolumns: {}
                     }
                   });
@@ -1519,6 +1519,9 @@
         }
         .detail-search-input {
           margin-left: 10px;
+          .burgeon-input-group {
+            top: 0px;
+          }
           .burgeon-input-group-with-prepend {
             width: 190px;
           }
