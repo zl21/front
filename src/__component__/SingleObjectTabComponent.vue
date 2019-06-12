@@ -25,6 +25,8 @@
       class="form"
       :default-data="formData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :item-name-group="childTableNames"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -42,6 +44,8 @@
       type="PanelForm"
       :default-data="panelData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :item-name-group="childTableNames"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -261,7 +265,7 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
@@ -271,18 +275,18 @@
               } else if (savePath) { // 配置path
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
                 if (Object.keys(add).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
                 }
-                
+
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
