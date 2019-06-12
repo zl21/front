@@ -20,6 +20,8 @@
       module-form-type="vertical"
       :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       :paths="formPaths"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+      :item-name-group="childTableNames"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
