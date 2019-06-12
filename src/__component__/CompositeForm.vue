@@ -28,6 +28,8 @@
                 :key="index"
                 :path = "path"
                 :form-item-lists="item.childs"
+                :isreftabs = "isreftabsForm"
+                :itemNameGroup = "itemNameGroupForm"
                 :mapp-status="setMapping"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
@@ -46,6 +48,8 @@
           :is="FormItemComponent"
           ref="FormComponent_0"
           :path = "path"
+          :isreftabs = "isreftabsForm"
+          :childTableName = "childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
@@ -96,6 +100,16 @@ export default {
         return {};
       }
     },
+    isreftabs: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+    }, // 是否存在子表
+    childTableName: {
+        type: Array,
+        default: () => ([]) //子表名称
+    },  
     paths: {
       type: Array,
       default() {
@@ -176,6 +190,12 @@ export default {
   computed: {
     path(){
       return this.paths[1] || '';
+    },
+    isreftabsForm(){
+      return this.isreftabs;
+    },
+    childTableNameForm(){
+      return this.childTableName;
     }
   },
   updated() {},

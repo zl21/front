@@ -213,6 +213,16 @@
           return '';
         }
       },
+       isreftabs: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      }, // 是否存在子表
+      childTableName: {
+          type: Array,
+          default: () => ([]) //子表表明
+      }
     },
     data() {
       return {

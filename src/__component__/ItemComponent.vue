@@ -839,8 +839,42 @@ export default {
     },
     pathsCheckout(parms, data) {
       //  校验 是否 有 path
-      if (this.$parent.pathcheck === '') {
-        const fixedData = {
+      let pathcheck = this.$parent.pathcheck;
+      let isreftabs = this.$parent.isreftabs;
+      // 子表表明
+      let childTableName = this.$parent.childTableName;
+      console.log(pathcheck,isreftabs,childTableName,this._items.props.itemdata.masterName);
+      if(isreftabs && pathcheck !==''){
+        // 主子表 有path  主表明+子表明 // parms.table 主表
+        const parmsdata = {
+              [parms.table]:{
+                [this._items.field]: JSON.stringify(data),
+              },
+              ID: parms.objId,
+              ...parms
+        };
+        // if(childTableName === this._items.props.itemdata.masterName){
+            
+
+        // } else{
+        //      const parmsdata = {
+        //       [parms.table]:{
+        //         [this._items.field]: JSON.stringify(data),
+        //         ID: parms.objId,
+        //       },
+        //       [childTableName]:{
+        //         [this._items.field]: JSON.stringify(data),
+        //       },
+        //       ...parms
+        //       };
+        // }
+        
+        return Object.assign({}, parmsdata);
+
+
+      }else if(isreftabs && pathcheck ===''){
+                // 主子表 无path
+       const fixedData = {
           fixedData: {
             [this._items.props.itemdata.masterName]: {
               [this._items.props.itemdata.colname]:
@@ -850,16 +884,33 @@ export default {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        return Object.assign(parms, fixedData);
+        return Object.assign(parms, fixedData);     
+
+
+      }else if(!isreftabs && pathcheck ===''){
+       // 单主表  无path
+       const fixedData = {
+          fixedData: {
+            [this._items.props.itemdata.masterName]: {
+              [this._items.props.itemdata.colname]:
+                data === "" ? "" : JSON.stringify(data)
+            }
+          },
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        return Object.assign(parms, fixedData);   
+
+
+      }else if(!isreftabs && pathcheck !==''){
+        // 单主表  有path
+        const parmsdata = {
+        [this._items.field]: JSON.stringify(data),
+        };
+        return Object.assign({}, parmsdata);
+
       }
-      const parmsdata = {
-        [parms.table]:{
-          [this._items.field]: JSON.stringify(data),
-        },
-        ID: parms.objId,
-        ...parms
-      };
-      return Object.assign({}, parmsdata);
+      
     },
     upSaveImg(obj, fixedData, path, index) {
       fkObjectSave({
