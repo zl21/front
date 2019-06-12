@@ -1130,7 +1130,7 @@
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
           }
-        } else if (this.itemId !== '-1') { // 主表编辑保存
+        } else if (this.itemId !== '-1') { // 主表编辑保存        
           this.mainTableEditorSave(obj);
         }
       },
@@ -1193,7 +1193,7 @@
         const type = 'modify';
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
-          this.itemTableValidation = true;
+          // this.itemTableValidation = true;
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -1209,26 +1209,25 @@
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
-          if (itemName === this.tableName) {
-            if (obj.requestUrlPath) { // 配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            }
-          } else {
-            if (this.updateData[itemName].modify[itemName].length > 0) { //
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            }
-            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-            if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-            }
+          // if (itemName === this.tableName) {
+          //   if (obj.requestUrlPath) { // 配置path
+          //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          //   } else { // 没有配置path
+          //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+          //   }
+          // } else {
+          if (this.updateData[itemName].modify[itemName].length > 0) { //
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
           }
+          // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+          if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+          }
+          // }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
-
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
 
         if (checkedInfo) {
