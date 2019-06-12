@@ -1048,7 +1048,7 @@
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
           this.setImportDialogTitle();
-          this.importGetUploadParametersForButtons(); // 调用导入参数接口
+          // this.importGetUploadParametersForButtons(); // 调用导入参数接口
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
