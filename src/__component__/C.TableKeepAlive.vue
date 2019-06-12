@@ -38,7 +38,7 @@
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
           const target = customizeModules[customizedModuleName];
-          Vue.component(componentName, Vue.extend(Object.assign({}, target ? target.component : PageNotFound)));
+          Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
         }
         this.currentModule = componentName;
       }
