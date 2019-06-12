@@ -33,14 +33,12 @@
     methods: {
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        console.log('externalModules = ', externalModules);
         const { customizedModuleName, customizedModuleId } = this.$route.params;
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== CUSTOMIZED_MODULE_PREFIX) { return; }
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
-          console.log('target = ', target);
           Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
         }
         this.currentModule = componentName;
