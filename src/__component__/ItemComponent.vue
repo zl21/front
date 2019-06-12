@@ -4,7 +4,7 @@
     <span
       class="itemLabel"
       :style="labelStyle"
-      :title="_items.title"
+     
     >
       <Poptip
         v-if="_items.props.comment"
@@ -20,7 +20,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      {{ _items.title }}:
+      <span  :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div class="itemComponent">
       <Input
@@ -146,6 +146,7 @@
         @on-keyup="fkrpSelectedInputKeyup"
         @on-keydown="fkrpSelectedInputKeydown"
         @on-popper-show="fkrpSelectedPopperShow"
+        @on-popper-hide = "fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
       <AttachFilter
@@ -366,7 +367,7 @@ export default {
         Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
         typeof this._items.event.blur === "function"
       ) {
-        this._items.event.blur(event, $this);
+        this._items.event.blur(event, $this, this._items);
       }
     },
     inputKeyUp(event, $this) {
@@ -548,8 +549,19 @@ export default {
         Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
         typeof this._items.event.blur === "function"
       ) {
+       
         this._items.event.blur(event, $this, this._items);
       }
+    },
+    fkrPopperHide(event, $this){
+       if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "on-popper-hide") &&
+        typeof this._items.event.blur === "function"
+      ) {
+       
+        this._items.event['on-popper-hide'](event, $this, this._items);
+      }
+
     },
     fkrpSelectedInputKeyup(event, $this) {
       if (
@@ -630,7 +642,7 @@ export default {
         Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
         typeof this._items.event.blur === "function"
       ) {
-        this._items.event.blur(event, $this);
+        this._items.event.blur(event, $this, this._items);
       }
     },
     attachFilterInputKeyup(event, $this) {
