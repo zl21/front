@@ -319,7 +319,13 @@
         });
 
         // this.performMainTableSaveAction(parame);
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        if (this.type === 'vertical') {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: {} });
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+          // this.updateChangeData({ tableName: this.itemName, value: {} });
+        }
         promise.then(() => {
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;

@@ -49,11 +49,6 @@
           <transition name="fade">
             <span v-if="loading">数据正在导入中，请稍候</span>
           </transition>
-          <div>
-            <span>
-              {{ errorMsg.message }}
-            </span>
-          </div>
         </div>
       </div>
       <div slot="footer">
@@ -75,7 +70,7 @@
             {{ ChineseDictionary.CANCEL }}
           </Button>
         </div>
-        <div v-if="errorMsg.errorList.length>0">
+        <!-- <div v-if="errorMsg.errorList.length>0">
           <div class="error-message">
             <div>
               <i class="iconfont">&#xe631;</i>
@@ -89,6 +84,35 @@
               </p>
               <div>
                 <p>{{ errorMsg.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div
+          v-if="errorMsg.errorList.length>0"
+          class="error-content"
+        >
+          <div class="error-message">
+            <div class="left-icon">
+              <i class="iconfont">&#xe631;</i>
+            </div>
+            <div class="right-content">
+              <p
+                v-if="errorMsg.errorUrl.length > 0"
+                class="link"
+              >
+                <a :href="errorMsg.errorUrl">（下载报错信息）</a>
+              </p>
+              <div class="content-message">
+                <p class="title">
+                  {{ errorMsg.message }}
+                </p>
+                <p
+                  v-for="(msg,index) in errorMsg.errorList"
+                  :key="index"
+                >
+                  <span v-if="msg.rowIndex">第{{ msg.rowIndex }}条记录报错:</span>{{ msg.message }}
+                </p>
               </div>
             </div>
           </div>
@@ -272,9 +296,8 @@
         if (response.code === 0) {
           this.closeDialog();
         } else {
-          if (undefined === response.path) this.errorMsg.errorUrl = '';
-          else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
-          this.errorMsg.errorList = response.data || [
+          if (response.data.path === 'undefined ===') { this.errorMsg.errorUrl = ''; } else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.data.path}`; }
+          this.errorMsg.errorList = response.data.error || [
             { rowIndex: 0, message: '' }
           ];
           this.errorMsg.message = response.message;
@@ -348,6 +371,55 @@
     margin-left: -61px;
     color: #b8b8b8;
   }
+     .error-content {
+        border-top: solid 1px #bcbcbc;
+        text-align: left;
+        position: relative;
+        font-size: 12px;
+        margin-top:10px;
+        .error-message {
+          height: auto;
+          margin: 10px 0px;
+          max-height: 240px;
+          position: relative;
+          width: 550px;
+          .left-icon {
+            height: 28px;
+            width: 28px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            i {
+              font-size: 28px;
+              color: #e80000;
+            }
+          }
+          .right-content {
+            position: relative;
+            margin-left: 38px;
+            .link {
+              line-height: 16px;
+              a {
+                color: #0F8EE9;
+                cursor: pointer;
+                display: inline-block;
+                padding-top: 6px;
+                text-decoration: none;
+              }
+            }
+            .content-message {
+              max-height: 220px;
+              min-height: 28px;
+              overflow: auto;
+              p {
+                word-break: break-word;
+                line-height: 16px;
+                margin: 6px 0;
+              }
+            }
+          }
+        }
+      }
   // .burgeon-modal-header {
   //   height: 30px !important;
   //   line-height: 30px !important;
