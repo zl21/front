@@ -1519,6 +1519,9 @@
         }
         .detail-search-input {
           margin-left: 10px;
+          .burgeon-input-group {
+            top: 0px;
+          }
           .burgeon-input-group-with-prepend {
             width: 190px;
           }
