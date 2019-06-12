@@ -46398,7 +46398,7 @@
         // When the styles change, update the <style> tags
         if(!content.locals) {
           module.hot.accept("!!../../../css-loader/index.js!./ag-grid.css", function() {
-            var newContent = require("!!../../../css-loader/index.js!./ag-grid.css");
+            var newContent = require("!!../../../css-loader/index.js!./css/ag-grid.css");
             if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
             update(newContent);
           });
@@ -47148,7 +47148,7 @@
         // When the styles change, update the <style> tags
         if(!content.locals) {
           module.hot.accept("!!../../../css-loader/index.js!./ag-theme-balham.css", function() {
-            var newContent = require("!!../../../css-loader/index.js!./ag-theme-balham.css");
+            var newContent = require("!!../../../css-loader/index.js!./css/ag-theme-balham.css");
             if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
             update(newContent);
           });
