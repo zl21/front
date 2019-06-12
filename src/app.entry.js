@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import BurgeonUi from 'burgeon-ui';
 import './assets/iconfont-r3/iconfont.css';
 import { getGuid } from './__utils__/random';
+import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
@@ -13,11 +14,16 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import { enableGateWay } from './constants/global';
 import CompositeForm from './__component__/CompositeForm';
-import navigationGuard from './__config__/router.navigation.guard';
+
 
 Vue.component('CompositeForm', CompositeForm);
-Vue.use(VueRouter);
 Vue.use(BurgeonUi);
+
+const createRouter = routes => new VueRouter({
+  routes,
+  mode: 'history'
+});
+
 const createDOM = () => {
   const div = document.createElement('div');
   div.setAttribute('id', getGuid());
@@ -26,12 +32,6 @@ const createDOM = () => {
 };
 
 const init = () => {
-  const router = new VueRouter({
-    routes: routerPrototype,
-    mode: 'history'
-  });
-
-  navigationGuard(router);
   const rootDom = createDOM();
   window.vm = new Vue({
     router,
@@ -39,6 +39,7 @@ const init = () => {
     render: createElement => createElement(App)
   }).$mount(rootDom);
 };
+
 const getCategory = () => {
   network.post('/p/cs/getSubSystems').then((res) => {
     if (res.data.data) {
@@ -52,6 +53,7 @@ const getCategory = () => {
     }
   });
 };
+
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
@@ -76,6 +78,7 @@ export default (projectConfig = { globalComponent: undefined, Login: undefined }
       d.component = globalComponent.Login;
     }
   });
+  router.matcher = createRouter(routerPrototype).matcher;
   if (enableGateWay) {
     getGateWayServiceId();
   } else {
