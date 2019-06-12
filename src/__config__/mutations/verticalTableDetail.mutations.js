@@ -66,7 +66,6 @@ export default {
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
-    console.log(data, 'formmm');
     componentAttribute.formData.data = data || [];
   },
   updateFormDataForRefshow(state) { // 去除子表缓存
