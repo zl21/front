@@ -51,7 +51,7 @@ module.exports = () => ({
       commonjs: 'burgeon-ui',
       commonjs2: 'burgeon-ui',
       amd: 'burgeon-ui',
-      root: 'burgeon'
+      root: 'Ark'
     }
   },
   module: {
