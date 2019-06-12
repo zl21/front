@@ -293,6 +293,12 @@
         }
       },
       clickButtonsRefresh() { // 按钮刷新事件
+        if (this.objectType === 'vertical') {
+          this.updateChangeData({ tableName: this.tableName, value: {} });
+          this.updateChangeData({ tableName: this.itemName, value: {} });
+        } else {
+          this.updateChangeData({ tableName: this.itemName, value: {} });
+        }
         const message = '刷新成功';
         this.upData(`${message}`);
       },
@@ -316,12 +322,7 @@
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
           // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
         }
-        if (this.objectType === 'vertical') {
-          this.updateChangeData({ tableName: this.tableName, value: {} });
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        } else {
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        }
+       
         setTimeout(() => {
           if (message) {
             this.$Message.success(message);
