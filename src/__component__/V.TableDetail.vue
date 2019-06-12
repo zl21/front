@@ -21,7 +21,7 @@
       :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       :paths="formPaths"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
-      :childTableName="getItemName"
+      :child-table-name="getItemName"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
@@ -52,7 +52,7 @@
 
 
   export default {
-    name: 'VTableDetail',
+    // name: 'VTableDetail',
     computed: {
       tabPanels() {
         const arr = [];
