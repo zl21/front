@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import BurgeonUi from 'burgeon-ui';
 import './assets/iconfont-r3/iconfont.css';
 import { getGuid } from './__utils__/random';
-import router from './__config__/router.config';
+import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
@@ -12,8 +13,10 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import { enableGateWay } from './constants/global';
 import CompositeForm from './__component__/CompositeForm';
+import navigationGuard from './__config__/router.navigation.guard';
 
 Vue.component('CompositeForm', CompositeForm);
+Vue.use(VueRouter);
 Vue.use(BurgeonUi);
 const createDOM = () => {
   const div = document.createElement('div');
@@ -23,6 +26,12 @@ const createDOM = () => {
 };
 
 const init = () => {
+  const router = new VueRouter({
+    routes: routerPrototype,
+    mode: 'history'
+  });
+
+  navigationGuard(router);
   const rootDom = createDOM();
   window.vm = new Vue({
     router,
@@ -54,22 +63,6 @@ const getGateWayServiceId = () => {
 };
 
 export default (projectConfig = { globalComponent: undefined, Login: undefined }) => {
-  const globalComponent = projectConfig.globalComponent || {};
-  router.options.routes.forEach((d) => {
-    if (d.children) {
-      d.children.forEach((c) => {
-        if (c.component.name === 'WelcomePage' && globalComponent.WelcomePage) {
-          console.log('replace WelcomePage');
-          c.component = globalComponent.WelcomePage;
-        }
-      });
-    }
-    if (d.component.name === 'Login' && globalComponent.Login) {
-      console.log('replace Login');
-      d.component = globalComponent.Login;
-    }
-  });
-  console.log(router.options.routes);
   if (enableGateWay) {
     getGateWayServiceId();
   } else {
