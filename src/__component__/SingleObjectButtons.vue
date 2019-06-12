@@ -514,17 +514,16 @@
           params = Object.assign({}, parimaryTableParams);
         }
         const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
           this.getObjTabActionSlientConfirm({
             params, path: tab.action, resolve, reject 
           });
         });
         
         promise.then(() => {
-        })
-          .catch((reason) => {
-            console.log('rejected');
-            console.log(reason);
-          });
+          this.$loading.hide();
+        });
+        
   
         // self.actionLoading = true;
         // axios({
