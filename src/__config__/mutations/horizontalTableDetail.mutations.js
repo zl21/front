@@ -55,6 +55,7 @@ export default {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
         delete: Object.assign({}, { [item.tablename]: {} }),
+        addDefault: {},
         default: {},
         checkedInfo: {},
         changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
@@ -95,11 +96,14 @@ export default {
   updateModifyData(state, data) {
     state.updateData[data.tableName].modify = data.value;
   },
+  updateAddDefaultData(state, data) {
+    state.updateData[data.tableName].addDefault = data.value;
+  },
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
   },
   updateChangeData(state, data) {
-    state.updateData[data.tableName].changeData = data.value;
+    state.updateData[data.tableName].changeData = Object.assign(data.value, {});
   },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
@@ -137,7 +141,7 @@ export default {
     //   if (item.parentdesc === '日志') {
     //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
     //   }
-    //   return state.defaultDataForCopy; 
+    //   return state.defaultDataForCopy;
     // });
   },
   emptyChangeData(state, tableName) {
@@ -163,12 +167,12 @@ export default {
                   } else {
                     copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                   }
-                } 
+                }
               }
             });
           });
         });
-      });  
+      });
       state.updateData[tableName].add[tableName] = Object.assign({}, copySaveDataForParam);
       state.updateData[tableName].changeData = copySaveDataForParam;
       state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);

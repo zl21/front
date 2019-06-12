@@ -19,13 +19,14 @@
           />
           <span v-if="!collapseHistoryAndFavorite">
             收藏夹
+           
             <i
               v-if="!collapseFavorite"
-              class="iconfont icon-xiajiantou arrow-icon"
+              class="iconfont icon-shangjiantou arrow-icon"
             />
             <i
               v-if="collapseFavorite"
-              class="iconfont icon-shangjiantou arrow-icon"
+              class="iconfont icon-xiajiantou arrow-icon"
             />
           </span>
         </div>
@@ -60,13 +61,14 @@
           />
           <span v-if="!collapseHistoryAndFavorite">
             最近使用
+           
             <i
               v-if="!collapseHistory"
-              class="iconfont icon-xiajiantou arrow-icon"
+              class="iconfont icon-shangjiantou arrow-icon"
             />
             <i
               v-if="collapseHistory"
-              class="iconfont icon-shangjiantou arrow-icon"
+              class="iconfont icon-xiajiantou arrow-icon"
             />
           </span>
         </div>

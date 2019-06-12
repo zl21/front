@@ -198,7 +198,7 @@
         return Object.keys(columns).reduce((item, option, key) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
-              type: 'index',
+              type: 'index.production.html',
               title: '编号'
             });
           } else {

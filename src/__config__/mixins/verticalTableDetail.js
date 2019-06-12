@@ -40,7 +40,8 @@ export default () => ({
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [
