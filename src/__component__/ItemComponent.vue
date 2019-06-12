@@ -875,6 +875,8 @@ export default {
               URL: data.URL
             });
           }
+           this.valueChange();
+
         }
       });
     },
