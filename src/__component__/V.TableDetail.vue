@@ -13,6 +13,8 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      object-type="vertical"
+      :is-main-table="true"
       :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
@@ -20,6 +22,8 @@
       module-form-type="vertical"
       :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       :paths="formPaths"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+      :child-table-name="getItemName"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
@@ -50,7 +54,7 @@
 
 
   export default {
-    name: 'VTableDetail',
+    // name: 'VTableDetail',
     computed: {
       tabPanels() {
         const arr = [];

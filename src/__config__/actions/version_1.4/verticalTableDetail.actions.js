@@ -241,33 +241,10 @@ export default {
       if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;// 子表修改
         const itemAdd = itemCurrentParameter.add;// 子表新增
-        const itemDefault = itemCurrentParameter.default;// 子表新增
+        const itemDefault = itemCurrentParameter.addDefault;// 子表新增
 
         if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            // let itmValues = itemModify[itemName];
-            // if (Object.values(itemModify[itemName]).length > 0) {
-            //   itemModify[itemName].ID = objId;
-            //   itemModify[itemName] = [
-            //     itemModify[itemName]
-            //   ];
-            // } else {
-            //   itemModify[itemName].ID = objId;
-            // }
-            // if (itemModify[itemName]) {
-            //   const itmValues = itemModify[itemName]; 
-            //   if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-            //     itemModify[itemName].ID = -1;
-            //   } else {
-            //     itemModify[itemName].ID = -1; 
-            //   itemModify[itemName] = [
-            //     itemModify[itemName]
-            //   ];
-            //   }
-            // } else {
-            //   itemModify[itemName].ID = objId;
-            // }
-            // itemModify[itemName].ID = objId;
             if (enter) {
               modify[tableName].ID = objId;
             }
@@ -276,20 +253,6 @@ export default {
               ...itemModify
             };
           } else {
-            // const itmValues = itemModify[itemName];
-
-            // if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-            //   itmValues.ID = objId;
-            // } else {
-            //   itmValues.ID = -1;
-            //   itemModify[itemName] = [
-            //     itmValues
-            //   ]; 
-            // }
-            // itmValues.ID = -1;
-            // itemModify[itemName] = [
-            //   itmValues
-            // ]; 
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
@@ -299,23 +262,24 @@ export default {
             };
           } 
         } else if (sataTypeName === 'add') { // 子表新增保存
-          const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
-          add[itemName].ID = -1;
-          add[itemName] = [
-            add[itemName] 
-          ]; 
+          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          Object.assign(itemAdd[itemName], add);
+          itemAdd[itemName].ID = -1;
+          itemAdd[itemName] = [
+            itemAdd[itemName] 
+          ];
           modify[tableName].ID = objId;
           if (path) {
             parames = {
               ...modify,
-              ...add
+              ...itemAdd
             };
           } else {
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add
+                ...itemAdd
               }
             };
           }
@@ -325,15 +289,15 @@ export default {
             ...modify
           };
         } else { // 带子表的没有path的主表保存
-          const itmValues = itemModify[itemName];
-          itemModify[itemName] = [
-            itmValues
-          ]; 
+          // const itmValues = modify[itemName];
+          // modify[itemName] = [
+          //   itmValues
+          // ]; 
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
+              ...modify
             }
           };
         }
@@ -489,7 +453,11 @@ export default {
         resolve();
 
         commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
       }
+    }).catch((e) => {
+      reject(e);
     });
   },
 };

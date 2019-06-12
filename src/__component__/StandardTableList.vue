@@ -99,7 +99,6 @@
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
   export default {
-    name: 'StandardTableList',
     components: {
       ButtonGroup,
       AgTable,
@@ -332,6 +331,8 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
+                  this.formItemsLists[itemIndex].item.props.data = {};
+                  // 初始化清空数据
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
@@ -436,7 +437,7 @@
                 break;
               case 'mrp':
                 obj.item.props.single = false;
-                obj.item.props.defaultSelected = this.defaultValue(current)|| [];
+                obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'pop':
                 obj.item.props.fkobj = current.fkobj;
@@ -787,7 +788,14 @@
           ids: this.buttons.selectIdArr,
           menu: this.buttons.tabledesc
         };
-        this.getExeActionDataForButtons({ item, obj });
+        const promise = new Promise((resolve, reject) => {
+          this.getExeActionDataForButtons({
+            item, obj, resolve, reject 
+          });
+        });
+        promise.then(() => {
+          
+        });
         let successAction = null;
         let errorAction = null;
         let refParam = null;
@@ -1040,7 +1048,7 @@
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
           this.setImportDialogTitle();
-          this.importGetUploadParametersForButtons(); // 调用导入参数接口
+          // this.importGetUploadParametersForButtons(); // 调用导入参数接口
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
@@ -1140,7 +1148,7 @@
         promise.then(() => {
           // this.$loading.hide();
 
-          const message = this.buttons.batchVoidForButtonsData;
+          const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             title: '成功',
             content: `${message}`

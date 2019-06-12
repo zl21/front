@@ -60,3 +60,16 @@ if (enableGateWay) {
 } else {
   init();
 }
+
+/*
+import R3 from './index.publish';
+
+R3.launchApplication({
+  globalComponent: {
+    WelcomePage: {
+      name: 'WELCOME_PAGE',
+      template: '<h1>Welcome Page</h1>'
+    }
+  }
+});
+ */

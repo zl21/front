@@ -17,6 +17,8 @@
       :is="'CompositeForm'"
       v-if="formData.isShow"
       v-show="status === 1"
+      :object-type="type"
+      :isMainTable="isMainTable"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -25,6 +27,8 @@
       class="form"
       :default-data="formData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :childTableName="tableName"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -33,6 +37,8 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :isMainTable="isMainTable"
+      :object-type="type"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -42,6 +48,8 @@
       type="PanelForm"
       :default-data="panelData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :childTableName="tableName"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -100,6 +108,10 @@
       isreftabs: {
         type: Boolean,
       },
+      isMainTable: {
+        type: Boolean,
+        default: false
+      }, // 判断是否是主表
       objreadonly: {
         type: Boolean,
       },
@@ -261,7 +273,7 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
@@ -271,18 +283,18 @@
               } else if (savePath) { // 配置path
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
                 if (Object.keys(add).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
                 }
-                
+
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 const store = this.$store.state[getModuleName()];
-                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) { 
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
                 const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
@@ -319,7 +331,13 @@
         });
 
         // this.performMainTableSaveAction(parame);
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        if (this.type === 'vertical') {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: {} });
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+          // this.updateChangeData({ tableName: this.itemName, value: {} });
+        }
         promise.then(() => {
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;

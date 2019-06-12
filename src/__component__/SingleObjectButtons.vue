@@ -322,9 +322,12 @@
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
           // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
         }
-        if (message) {
-          this.$Message.success(message);
-        }
+       
+        setTimeout(() => {
+          if (message) {
+            this.$Message.success(message);
+          }
+        }, 500);
       },
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
@@ -446,6 +449,9 @@
           break;
         }
       },
+      accept(tab) { // 验收
+
+      },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
         // tab.confirm = true
@@ -453,16 +459,14 @@
         if (!tab) tab = self.activeTabAction;
         if (tab.confirm) {
           if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            self.activeTabAction = tab;
-            self.confirmAction = 'objTabActionSlientConfirm';
-            self.confirmTips({
-              action: 'confirm',
-              title: tab.webdesc,
-              type: 'warning',
-              list: [],
-              isAction: true,
-              desc: tab.confirm,
-            });
+            this.$refs.dialogRef.open();
+            this.dialogConfig = {
+              title: '警告',
+              contentText: tab.confirm,
+              confirm: () => {
+                this.objTabActionSlientConfirm(tab);
+              }
+            };
           } else if (JSON.parse(tab.confirm).desc) {
             //            确定后执行下一步操作
             //            判断是否先执行保存
@@ -499,7 +503,7 @@
         const childTableParams = {};
         if (this.isreftabs) {
           if (this.itemNameGroup.length > 0) {
-            params.ID = self.storageItem.id;
+            params.ID = this.tableId;
           } else {
             parimaryTableParams[this.tableName] = { ID: this.tableId };
             childTableParams[self.tableTab.selectItem.tablename] = this.updateData[this.itemName].delete[this.itemName].map(d => ({ ID: d }));
@@ -510,13 +514,16 @@
           params = Object.assign({}, parimaryTableParams);
         }
         const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
           this.getObjTabActionSlientConfirm({
             params, path: tab.action, resolve, reject 
           });
         });
+        
         promise.then(() => {
-
+          this.$loading.hide();
         });
+        
   
         // self.actionLoading = true;
         // axios({
@@ -1187,37 +1194,35 @@
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
           this.itemTableValidation = true;
-          // if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 当子表form有值时校验，没有值的时候不进行校验，直接保存
-          //   this.itemTableValidation = true;
-          // } else {
-          // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             } else { // 没有配置path    if (this.verifyRequiredInformation()) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             }
-            
-            if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) { //
+            if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { //
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             }
-            const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-            if (Object.keys(add).length > 0) {
+            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+            if (Object.values(this.updateData[itemName].add[itemName]).length > 0) {
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
-          // if (obj.requestUrlPath) { // 配置path
-          //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-          // } else { // 没有配置path
-          //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-          // }
-          if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) { //
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-          }
-          const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-          if (Object.keys(add).length > 0) {
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+          if (itemName === this.tableName) {
+            if (obj.requestUrlPath) { // 配置path
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            } else { // 没有配置path
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            }
+          } else {
+            if (this.updateData[itemName].modify[itemName].length > 0) { //
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+            }
+            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+            if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            }
           }
         }
       },
@@ -1360,8 +1365,12 @@
               this.$Message.success(message);
             }
           } else {
-            this.updateChangeData({ tableName: this.itemName, value: {} });
-
+            if (this.objectType === 'vertical') {
+              this.updateChangeData({ tableName: this.tableName, value: {} });
+              this.updateChangeData({ tableName: this.itemName, value: {} });
+            } else {
+              this.updateChangeData({ tableName: this.itemName, value: {} });
+            }
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
          

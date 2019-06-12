@@ -16,7 +16,6 @@
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
-    name: 'HTableDetail',
     data() {
       return {
       };
@@ -33,6 +32,7 @@
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
+              obj.componentAttribute.isMainTable = true;
             }
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;

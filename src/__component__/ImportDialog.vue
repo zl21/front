@@ -17,7 +17,9 @@
         <div class="import-panel">
           <div class="el-upload__tip">
             {{ ChineseDictionary.IMPORTTITLE }}
-            <a @click.stop="downloadTemplate">{{ ChineseDictionary.DOWNTEMPLATE }}</a>
+            <a
+              @click.stop="downloadTemplate"
+            >{{ ChineseDictionary.DOWNTEMPLATE }}</a>
           </div>
           <div class="upload-panel">
             <Button
@@ -70,7 +72,7 @@
             {{ ChineseDictionary.CANCEL }}
           </Button>
         </div>
-        <div v-if="errorMsg.errorList.length>0">
+        <!-- <div v-if="errorMsg.errorList.length>0">
           <div class="error-message">
             <div>
               <i class="iconfont">&#xe631;</i>
@@ -87,6 +89,36 @@
               </div>
             </div>
           </div>
+        </div>-->
+        <div
+          v-if="errorMsg.errorList.length>0"
+          class="error-content"
+        >
+          <div class="error-message">
+            <div class="left-icon">
+              <i class="iconfont">&#xe631;</i>
+            </div>
+            <div class="right-content">
+              <p
+                v-if="errorMsg.errorUrl.length > 0"
+                class="link"
+              >
+                <a :href="errorMsg.errorUrl">（下载报错信息）</a>
+              </p>
+              <div class="content-message">
+                <p class="title">
+                  {{ errorMsg.message }}
+                </p>
+                <p
+                  v-for="(msg,index) in errorMsg.errorList"
+                  :key="index"
+                >
+                  <span v-if="msg.rowIndex">第{{ msg.rowIndex }}条记录报错:</span>
+                  {{ msg.message }}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </Modal>
@@ -98,7 +130,6 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
-
 
   export default {
     name: 'ImportDialog',
@@ -138,8 +169,7 @@
         default: '630'
       }
     },
-    components: {
-    },
+    components: {},
     data() {
       return {
         modalVisible: false,
@@ -165,21 +195,20 @@
           if (!val) {
             this.$emit('closeDialog');
           }
-        },
-      },
+        }
+      }
     },
     mounted() {
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
       else this.modalVisible = false;
       this.axiosSetting();
-    }, 
-   
+    },
+
     computed: {
       completeTitle() {
         return `${this.title}导入`;
-      },
-     
+      }
     },
 
     methods: {
@@ -194,9 +223,17 @@
       },
       // 发送请求, 获取上传参数
       axiosSetting() {
-        network.post('/p/cs/settings', urlSearchParams({ configNames: JSON.stringify(['upload.import.max-file-size']) }))
+        network
+          .post(
+            '/p/cs/settings',
+            urlSearchParams({
+              configNames: JSON.stringify(['upload.import.max-file-size'])
+            })
+          )
           .then((res) => {
-            if (res.data.code === 0) { this.fileSize = res.data.data['upload.import.max-file-size']; } else this.fileSize = '0M';
+            if (res.data.code === 0) {
+              this.fileSize = res.data.data['upload.import.max-file-size'];
+            } else this.fileSize = '0M';
           })
           .catch((error) => {
             if (error.response.status === 403) {
@@ -206,18 +243,21 @@
           });
       },
       // 发送请求, 下载模板
-      downloadTemplate() { // 下载模版
+      downloadTemplate() {
+        // 下载模版
         axios({
           url: '/p/cs/downloadImportTemplate',
           method: 'get',
           params: {
             searchdata: {
               table: this.tablename
-            },
-          },
+            }
+          }
         }).then((res) => {
           if (res.data.code === 0) {
-            const url = `${getGateway('/p/cs/download')}?filename=${res.data.data}`;
+            const url = `${getGateway('/p/cs/download')}?filename=${
+              res.data.data
+            }`;
             window.location = url;
           }
         });
@@ -242,7 +282,7 @@
           table: this.tablename,
           mainTable: this.mainTable,
           mainId: this.mainId,
-          menu: this.title,
+          menu: this.title
         };
         const aUploadParame = Object.assign(
           {},
@@ -253,13 +293,12 @@
             imgSize: this.fileSiz,
             success: this.handleSuccess,
             onerror: this.handleError,
-            onloadstart: this.onloadstart,
-            
+            onloadstart: this.onloadstart
           }
         );
         const article = new Upload(aUploadParame);
       },
-     
+
       // 上传成功
       handleSuccess(response) {
         // debugger;
@@ -267,9 +306,14 @@
         if (response.code === 0) {
           this.closeDialog();
         } else {
-          if (undefined === response.path) this.errorMsg.errorUrl = '';
-          else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
-          this.errorMsg.errorList = response.data || [
+          if (response.data.path === 'undefined ===') {
+            this.errorMsg.errorUrl = '';
+          } else {
+            this.errorMsg.errorUrl = `/p/cs/download?filename=${
+              response.data.path
+            }`;
+          }
+          this.errorMsg.errorList = response.data.error || [
             { rowIndex: 0, message: '' }
           ];
           this.errorMsg.message = response.message;
@@ -325,10 +369,10 @@
       height: 50px;
       margin-top: 10px;
     }
-    .fileName{
+    .fileName {
       height: 21px;
-    line-height: 21px;
-    color: #606266;
+      line-height: 21px;
+      color: #606266;
     }
   }
   .fileInput {
@@ -342,6 +386,55 @@
     display: inline-block;
     margin-left: -61px;
     color: #b8b8b8;
+  }
+  .error-content {
+    border-top: solid 1px #bcbcbc;
+    text-align: left;
+    position: relative;
+    font-size: 12px;
+    margin-top: 10px;
+    .error-message {
+      height: auto;
+      margin: 10px 0px;
+      max-height: 240px;
+      position: relative;
+      width: 550px;
+      .left-icon {
+        height: 28px;
+        width: 28px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        i {
+          font-size: 28px;
+          color: #e80000;
+        }
+      }
+      .right-content {
+        position: relative;
+        margin-left: 38px;
+        .link {
+          line-height: 16px;
+          a {
+            color: #0f8ee9;
+            cursor: pointer;
+            display: inline-block;
+            padding-top: 6px;
+            text-decoration: none;
+          }
+        }
+        .content-message {
+          max-height: 220px;
+          min-height: 28px;
+          overflow: auto;
+          p {
+            word-break: break-word;
+            line-height: 16px;
+            margin: 6px 0;
+          }
+        }
+      }
+    }
   }
   // .burgeon-modal-header {
   //   height: 30px !important;
