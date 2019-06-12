@@ -63,6 +63,19 @@ const getGateWayServiceId = () => {
 };
 
 export default (projectConfig = { globalComponent: undefined, Login: undefined }) => {
+  const globalComponent = projectConfig.globalComponent || {};
+  routerPrototype.forEach((d) => {
+    if (d.children) {
+      d.children.forEach((c) => {
+        if (c.component.name === 'WelcomePage' && globalComponent.WelcomePage) {
+          c.component = globalComponent.WelcomePage;
+        }
+      });
+    }
+    if (d.component.name === 'Login' && globalComponent.Login) {
+      d.component = globalComponent.Login;
+    }
+  });
   if (enableGateWay) {
     getGateWayServiceId();
   } else {
