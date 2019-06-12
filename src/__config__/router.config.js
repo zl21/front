@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Login from '../__component__/Login';
 import Content from '../__component__/Content';
-import Dashboard from '../__component__/Dashboard';
+import WelcomePage from '../__component__/WelcomePage';
 import {
   STANDARD_TABLE_LIST_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
@@ -20,7 +20,7 @@ const routes = [
     children: [
       {
         path: '/',
-        component: Dashboard
+        component: WelcomePage
       }, {
         path: `${STANDARD_TABLE_LIST_PREFIX}/:tableName/:tableId`, //
         component: () => import(
