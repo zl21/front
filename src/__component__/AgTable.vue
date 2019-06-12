@@ -171,7 +171,6 @@
     },
     watch: {
       datas(val) {
-        console.log(val);
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;
