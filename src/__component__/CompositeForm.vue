@@ -26,6 +26,7 @@
                 :is="FormItemComponent"
                 :ref="'FormComponent_'+index"
                 :key="index"
+                :path = "path"
                 :form-item-lists="item.childs"
                 :mapp-status="setMapping"
                 :verifymessageform="VerifyMessageForm"
@@ -44,6 +45,7 @@
         <component
           :is="FormItemComponent"
           ref="FormComponent_0"
+          :path = "path"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
@@ -148,6 +150,7 @@ export default {
       FormItemComponent,
       childFormData: [],
       computdefaultData: [], // form
+      pathArry: [], // path 数组
       show: true,
       defaultColumnCol: this.defaultData.objviewcol,
       tip: "new",
@@ -168,6 +171,11 @@ export default {
         this.Comparison();
       },
       deep: true
+    }
+  },
+  computed: {
+    path(){
+      return this.paths[1] || '';
     }
   },
   updated() {},
@@ -769,9 +777,7 @@ export default {
         : item.props.readonly;
       item.props.maxlength = item.props.length;
       item.props.comment = item.props.comment;
-      const paths = this.paths.some(x => x === "/p/cs/users/save");
-
-      item.props.path = paths;
+     
       if (this.objreadonly) {
         // 页面只读标记
         item.props.type = "text";
