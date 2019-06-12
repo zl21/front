@@ -425,6 +425,16 @@ export default {
           },
           "on-show": $this => {
             // 当外键下拉站开始去请求数据
+           
+            let Fitem = [];
+            if (current.formIndex !== "inpubobj") {
+              Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
+                .newFormItemLists;
+            } else {
+              Fitem = this.$refs.FormComponent_0.newFormItemLists;
+            }
+             // 先清除一下
+            Fitem[index].item.props.data = {};
             let searchObject = {};
             if (Object.hasOwnProperty.call(current, "refcolval")) {
               let refcolval = this.formData[current.refcolval.srccol]
@@ -467,9 +477,21 @@ export default {
           },
           blur: (event, $this, item) => {
             // 失去光标 单对象 外键 value 清除
-            if (item.props.fkdisplay && item.value[0]) {
-              if (!item.value[0].ID) {
-                event.target.value = "";
+            let Fitem = [];
+            if (current.formIndex !== "inpubobj") {
+              Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
+                .newFormItemLists;
+            } else {
+              Fitem = this.$refs.FormComponent_0.newFormItemLists;
+            }
+
+
+            if (item.props&& item.props.fkdisplay && this.type === "PanelForm") {
+              if (item.props.fkdisplay === 'pop' || item.props.fkdisplay === 'mop') {
+                  if(Array.isArray(item.props.Selected)){
+                      Fitem[index].item.value = '';
+                  }
+                  
               }
             }
           },
@@ -523,9 +545,9 @@ export default {
     },
     focusChange(value, current, index) {
       // 外键的模糊搜索
-      if (!value) {
-        return false;
-      }
+      // if (!value) {
+      //   return false;
+      // }
       let sendData = {};
       if (Object.hasOwnProperty.call(current, "refcolval")) {
         let refcolval = this.formData[current.refcolval.srccol]
