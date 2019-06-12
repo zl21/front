@@ -13,6 +13,8 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      object-type="vertical"
+      :is-main-table="true"
       :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
