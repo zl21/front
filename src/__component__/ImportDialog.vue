@@ -49,6 +49,11 @@
           <transition name="fade">
             <span v-if="loading">数据正在导入中，请稍候</span>
           </transition>
+          <div>
+            <span>
+              {{ errorMsg.message }}
+            </span>
+          </div>
         </div>
       </div>
       <div slot="footer">
@@ -267,11 +272,11 @@
         if (response.code === 0) {
           this.closeDialog();
         } else {
-          // if (undefined === response.path) this.errorMsg.errorUrl = '';
-          // else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
-          // this.errorMsg.errorList = response.data || [
-          //   { rowIndex: 0, message: '' }
-          // ];
+          if (undefined === response.path) this.errorMsg.errorUrl = '';
+          else { this.errorMsg.errorUrl = `/p/cs/download?filename=${response.path}`; }
+          this.errorMsg.errorList = response.data || [
+            { rowIndex: 0, message: '' }
+          ];
           this.errorMsg.message = response.message;
           this.clearFile();
         }
