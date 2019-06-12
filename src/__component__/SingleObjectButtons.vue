@@ -1201,16 +1201,21 @@
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             }
             
-            if (Object.keys(this.updateData[itemName].modify[itemName]).length > 0) { //
+            if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { //
+              console.log('🍓modify', this.updateData[itemName].modify);
+
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
             }
             const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-            if (Object.keys(add).length > 0) {
+           
+            if (Object.values(add).length > 0) {
+              console.log('🍓add', add);
+
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
-          if (this.tableName) {
+          if (itemName === this.tableName) {
             if (obj.requestUrlPath) { // 配置path
               this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             } else { // 没有配置path
