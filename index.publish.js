@@ -9,6 +9,7 @@ const validateConfig = (config) => {
 };
 
 export default {
+  version: '0.0.4',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -20,8 +21,10 @@ export default {
    *     Login: '',  // 登录页
    *     WelcomePage: '', // 欢迎页
    *   },
-   *   customizedEntry: {
-   *
+   *   externalModules: {
+   *      key-1: VueComponent-1
+   *      key-2: VueComponent-2
+   *      ...
    *   }
    * }
    */
@@ -31,7 +34,16 @@ export default {
       alert(validateInfo.message);
       return;
     }
+    if (projectConfig.externalModules) {
+      const m = projectConfig.externalModules;
+      // 将外部自定义界面入口模块的标识key置为大写
+      projectConfig.externalModules = Object.keys(m).reduce((a, c) => {
+        a[c.toUpperCase()] = m[c];
+        return a;
+      }, {});
+    }
     window.ProjectConfig = projectConfig;
+
     launchApp(projectConfig);
   },
   urlSearchParams,

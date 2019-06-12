@@ -2,6 +2,7 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
@@ -22,7 +23,7 @@ module.exports = env => ({
     'vue-router': 'VueRouter',
     axios: 'axios',
     'ag-grid': 'agGrid',
-    'burgeon-ui': 'burgeon'
+    'burgeon-ui': 'Ark'
   },
   devServer: {
     compress: true,
@@ -122,7 +123,14 @@ module.exports = env => ({
       template: env && env.production ? './index.pro.html' : './index.html',
       inject: true,
       favicon: projectConfig.projectIconPath,
-    })
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, './static'),
+        to: 'static',
+        ignore: ['.*'],
+      },
+    ]),
   ],
   mode: env && env.production ? 'production' : 'development',
   resolve: {
