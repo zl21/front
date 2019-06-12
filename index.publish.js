@@ -1,6 +1,5 @@
 import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
-import router from './src/__config__/router.config';
 
 const validateConfig = (config) => {
   return {
