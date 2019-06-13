@@ -479,7 +479,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = '/p/cs/menuimport';
+                obj.item.props.fkobj.url =  obj.item.props.serviceId +'/p/cs/menuimport';
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;

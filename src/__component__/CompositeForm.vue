@@ -168,7 +168,7 @@ export default {
       computdefaultData: [], // form
       pathArry: [], // path 数组
       show: true,
-      defaultColumnCol: this.defaultData.objviewcol,
+      defaultColumnCol: this.defaultData.objviewcol || 4,
       tip: "new",
       expand: "expand" // 面板是否展开
     };
@@ -177,6 +177,7 @@ export default {
     defaultData: {
       handler(val) {
         this.computdefaultData = this.reorganizeForm();
+        this.defaultColumnCol = this.defaultData.objviewcol || 4;
         this.Comparison();
       },
       deep: true
@@ -513,8 +514,6 @@ export default {
             }
             console.log(item.props.fkdisplay );
             if (item.props.fkdisplay) {
-                            console.log(item.props.Selected);
-
                   if(Array.isArray(item.props.Selected)){
                       Fitem[index].item.value = '';
                   }else{
