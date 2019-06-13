@@ -51,7 +51,12 @@ export default () => ({
         'updateCopyData',
         'changeFormDataForCopy',
         'updateTableData',
-        'updateTablePageInfo'
+        'updateTablePageInfo',
+        'updateModifyData',
+        'updateAddDefaultData',
+        'updateAddData',
+        'updateDeleteData'
+
       ]),
   },
   beforeDestroy() {

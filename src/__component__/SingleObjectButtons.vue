@@ -293,12 +293,7 @@
         }
       },
       clickButtonsRefresh() { // 按钮刷新事件
-        if (this.objectType === 'vertical') {
-          this.updateChangeData({ tableName: this.tableName, value: {} });
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        } else {
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        }
+        this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
       },
@@ -1356,7 +1351,8 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
-            this.updateChangeData({ tableName: this.tableName, value: {} });
+            this.clearEditData();// 清空store update数据
+            // this.updateChangeData({ tableName: this.tableName, value: {} });
 
             this.tabHref(tab);
             const message = this.buttonsData.message;
@@ -1364,17 +1360,30 @@
               this.$Message.success(message);
             }
           } else {
-            if (this.objectType === 'vertical') {
-              this.updateChangeData({ tableName: this.tableName, value: {} });
-              this.updateChangeData({ tableName: this.itemName, value: {} });
-            } else {
-              this.updateChangeData({ tableName: this.itemName, value: {} });
-            }
+            this.clearEditData();// 清空store update数据
+           
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
          
           this.decreasekeepAliveLists(moduleName());
         });
+      },
+      clearEditData() {
+        if (this.objectType === 'vertical') {
+          this.updateChangeData({ tableName: this.tableName, value: {} });
+          this.updateModifyData({ tableName: this.tableName, value: {} });
+          this.updateAddDefaultData({ tableName: this.tableName, value: {} });
+          this.updateAddData({ tableName: this.tableName, value: {} });
+          this.updateDeleteData({ tableName: this.tableName, value: {} });
+        }
+        this.clearItemEditData();
+      },
+      clearItemEditData() {
+        this.updateChangeData({ tableName: this.itemName, value: {} });
+        this.updateModifyData({ tableName: this.itemName, value: {} });
+        this.updateAddDefaultData({ tableName: this.itemName, value: {} });
+        this.updateAddData({ tableName: this.itemName, value: {} });
+        this.updateDeleteData({ tableName: this.itemName, value: {} });
       },
       saveParameters() { // 筛选按钮保存参数逻辑
         if (this.isreftabs) { // 有子表
