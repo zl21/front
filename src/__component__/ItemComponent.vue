@@ -146,7 +146,7 @@
         @on-keyup="fkrpSelectedInputKeyup"
         @on-keydown="fkrpSelectedInputKeydown"
         @on-popper-show="fkrpSelectedPopperShow"
-        @on-popper-hide = "fkrPopperHide"
+        @on-popper-hide ="fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
       <AttachFilter
@@ -557,7 +557,7 @@ export default {
     fkrPopperHide(event, $this){
        if (
         Object.prototype.hasOwnProperty.call(this._items.event, "on-popper-hide") &&
-        typeof this._items.event.blur === "function"
+        typeof this._items.event['on-popper-hide'] === "function"
       ) {
        
         this._items.event['on-popper-hide'](event, $this, this._items);
@@ -718,7 +718,7 @@ export default {
       }
     },
     attachFilterCancel($this){
-      console.log(this);
+      console.log($this);
 
     },
     attachFilterOk($this) {
