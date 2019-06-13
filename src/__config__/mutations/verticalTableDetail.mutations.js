@@ -20,6 +20,7 @@ export default {
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
+    data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
       const obj = { ...item };
       obj.label = item.tabledesc;
@@ -59,12 +60,12 @@ export default {
     mainFormInfo.buttonsData.data = data;
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.buttonsData.isShow = false;
     componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
     componentAttribute.formData.data = data || [];
   },
@@ -72,7 +73,7 @@ export default {
     state.mainFormInfo.formData.isShow = false;
   },
   updateTableListForRefTable(state, data) { // 更新子表列表数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = data.tabth && data.tabth.length > 0;
     componentAttribute.tableData.data = data;
   },
@@ -101,7 +102,7 @@ export default {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   },

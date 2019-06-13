@@ -18,7 +18,7 @@
       v-if="formData.isShow"
       v-show="status === 1"
       :object-type="type"
-      :isMainTable="isMainTable"
+      :is-main-table="isMainTable"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -28,7 +28,7 @@
       :default-data="formData.data"
       :paths="formPaths"
       :isreftabs="isreftabs"
-      :childTableName="tableName"
+      :child-table-name="tableName"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -37,7 +37,7 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
-      :isMainTable="isMainTable"
+      :is-main-table="isMainTable"
       :object-type="type"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
@@ -49,7 +49,7 @@
       :default-data="panelData.data"
       :paths="formPaths"
       :isreftabs="isreftabs"
-      :childTableName="tableName"
+      :child-table-name="tableName"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -307,6 +307,7 @@
         }
       },
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter) { // 主表新增保存方法
+        const tabIndex = this.$store.state[getModuleName()].tabCurrentIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
 
@@ -374,20 +375,20 @@
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
             });
-            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
+            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex });
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
 
             // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
             //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             // });
           } else if (itemId === 'New') {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: id });
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: id, tabIndex });
           } else {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
           }
           this.$Message.success(message);
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });

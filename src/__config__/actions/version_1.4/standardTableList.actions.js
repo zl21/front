@@ -84,17 +84,6 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {
-    // debugger;
-    // let param = {};
-    // if (item.action) {
-    //   param = {};
-    // } else {
-    //   param = {
-    //     actionid: item.webid,
-    //     webaction: null,
-    //     param: JSON.stringify(obj),
-    //   };
-    // }
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
@@ -160,8 +149,6 @@ export default {
         reject();
         commit('batchVoidForButtonsData', data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
   batchSubmitForButtons({ commit }, {
@@ -176,9 +163,8 @@ export default {
         commit('updateButtonbatchSubmitData', res.data);
       } else {
         reject();
+        commit('updateButtonbatchSubmitData', res.data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
  
@@ -187,13 +173,14 @@ export default {
     network.post('/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
-        resolve();
+        resolve(res);
         commit('updateButtonbatchUnSubmitData', res.data.message);
       } else {
         reject();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
       }
-    }).catch(() => {
-      reject();
+    }).catch((err) => {
+      reject(err);
     });
   },
   updateUserConfig({ commit }, { type, id }) {
