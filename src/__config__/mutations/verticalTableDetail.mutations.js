@@ -20,6 +20,7 @@ export default {
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
+    data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
       const obj = { ...item };
       obj.label = item.tabledesc;
