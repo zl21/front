@@ -648,18 +648,28 @@ export default {
     checkDisplay(item) {
       // 组件显示类型
       let str = "";
-      if (this.objreadonly) {
-        // 页面只读标记
-        str = "input";
-
-        return str;
-      }
-      if (item.readonly === true && item.fkdisplay) {
+      // if (this.objreadonly ) {
+      //   // 页面只读标记
+      //   if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
+      //      item.readonly === true;
+      //   }
+      //   //return str;
+      // }
+      // if (item.readonly === true && item.fkdisplay) {
+      //   //  不可编辑 变成 input
+      //      if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
+      //         str = "input";
+      //          return str;
+      //      }
+       
+      // }
+        if (item.readonly === true && item.fkdisplay) {
         //  不可编辑 变成 input
-        str = "input";
-
-        return str;
-      }
+           if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
+              str = "input";
+               return str;
+           }
+        }
       if (
         !item.display ||
         item.display === "text" ||
@@ -720,16 +730,15 @@ export default {
       //   item.valuedata = '';
       //   return '';
       // }
-      if (this.objreadonly) {
-        // 页面只读标记
+      // if (this.objreadonly) {
+      //   // 页面只读标记
 
-        if (item.display === "select" || item.display === "OBJ_SELECT") {
-          const value = item.defval || item.valuedata;
-          const index = item.combobox.findIndex(x => x.limitval === value);
-          return item.combobox[index].limitdesc || "";
-        }
-        return item.defval || item.valuedata || "";
-      }
+      //   if (item.display === "select" || item.display === "OBJ_SELECT") {
+      //     const value = item.defval || item.valuedata;
+      //     const index = item.combobox.findIndex(x => x.limitval === value);
+      //     return item.combobox[index].limitdesc || "";
+      //   }
+      // }
       if (item.readonly === true && item.fkdisplay) {
         //  不可编辑 变成 input
         return item.defval || item.valuedata || "";
@@ -813,17 +822,14 @@ export default {
     propsType(current, item) {
       // 表单 props
       const obj = item;
-      item.props.disabled = this.objreadonly
-        ? this.objreadonly
-        : item.props.readonly;
+      
       item.props.maxlength = item.props.length;
+      //item.props.disabled = item.props.readonly;
       item.props.comment = item.props.comment;
      
       if (this.objreadonly) {
         // 页面只读标记
-        item.props.type = "text";
         item.props.placeholder = "";
-        return false;
       }
       // 去除请输入 字段
       if (item.props.readonly) {
@@ -894,11 +900,10 @@ export default {
           });
           return sum;
         }, []);
-        arr.unshift({
-          label: "请选择",
-          value: ""
-        });
         item.options = arr;
+         item.props.disabled = this.objreadonly
+        ? this.objreadonly
+        : item.props.readonly;
         return item;
       }
       // 多状态合并的select
@@ -914,10 +919,10 @@ export default {
               return sum;
             }, [])
           );
-          item.unshift({
-            label: "请选择",
-            value: ""
-          });
+        item.props.disabled = this.objreadonly
+        ? this.objreadonly
+        : item.props.readonly;
+
           return item;
         });
 
@@ -1003,7 +1008,7 @@ export default {
                 refobjid: current.refobjid,
                 reftable: current.reftable,
                 reftableid: current.reftableid,
-                url: getGateway("/p/cs/menuimport")
+                url:(current.serviceId ? current.serviceId :'') +"/p/cs/menuimport"
               };
               item.props.datalist = [];
               item.props.Selected = [
@@ -1023,7 +1028,7 @@ export default {
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              url: getGateway("/p/cs/menuimport")
+              url: (current.serviceId ? current.serviceId :'') +"/p/cs/menuimport"
             };
             item.props.datalist = [];
             item.props.Selected = [
@@ -1044,9 +1049,10 @@ export default {
           ? JSON.parse(current.valuedata)
           : [];
         const ImageSize = Number(current.webconf && current.webconf.ImageSize);
-        const readonly = ImageSize
+        let readonly = ImageSize
           ? ImageSize > valuedata.length
           : current.readonly;
+          readonly = this.objreadonly ? true :readonly;
         item.props.itemdata = {
           colname: current.colname,
           width: 140,
@@ -1064,6 +1070,9 @@ export default {
       if (current.display === "clob") {
         item.props.path = `${this.masterName}/${this.masterId}/`;
       }
+      item.props.disabled = this.objreadonly
+        ? this.objreadonly
+        : item.props.readonly;
       return item;
     },
     getTableQuery() {

@@ -363,10 +363,15 @@
                     }
                   });
                 },
+                'on-popper-hide':($this)=>{
+                     // 初始化清空数据
+                    this.formItemsLists[itemIndex].item.props.data ={};
+                    this.formItemsLists = this.formItemsLists.concat([]);
+
+                },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
-                  this.formItemsLists[itemIndex].item.props.data = {};
-                  // 初始化清空数据
+
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
@@ -479,7 +484,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url =  obj.item.props.serviceId +'/p/cs/menuimport';
+                obj.item.props.fkobj.url =  obj.item.props.fkobj.serviceId +'/p/cs/menuimport';
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;
@@ -589,7 +594,7 @@
       },
       freshDropDownSelectFilterData(res, index) {
         // 外键下拉时，更新下拉数据
-        this.formItemsLists[index].item.props.data = res.data.data;
+        this.formItemsLists[index].item.props.data = Object.assign({},res.data.data);
         this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
