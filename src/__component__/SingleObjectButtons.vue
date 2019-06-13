@@ -901,7 +901,7 @@
                   contentText: '确认执行删除?',
                   confirm: () => {
                     this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
                     });
                     setTimeout(() => {
                       const deleteMessage = this.buttonsData.deleteData;
@@ -919,7 +919,7 @@
                         // });
                         const { tablename, refcolid } = this.itemInfo;
                         this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
@@ -952,7 +952,7 @@
                   contentText: '确认执行删除?',
                   confirm: () => {
                     this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
                     });
                     setTimeout(() => {
                       const deleteMessage = this.buttonsData.deleteData;
@@ -970,7 +970,7 @@
                         // });
                         const { tablename, refcolid } = this.itemInfo;
                         this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
+                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
@@ -1368,7 +1368,7 @@
            
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
-         
+          this.clearEditData();// 清空store update数据
           this.decreasekeepAliveLists(moduleName());
         });
       },

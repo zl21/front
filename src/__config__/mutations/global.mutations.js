@@ -60,6 +60,7 @@ export default {
     }
   },
   decreasekeepAliveLists(state, name) {
+    console.log('decrease keep alive lists name = ', name);
     state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
   },
   toggleActiveMenu(state, index) {
