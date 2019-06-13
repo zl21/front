@@ -32,12 +32,13 @@
     },
     methods: {
       generateComponent() {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== CUSTOMIZED_MODULE_PREFIX) { return; }
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
-          const target = customizeModules[customizedModuleName];
+          const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
           Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
         }
         this.currentModule = componentName;

@@ -17,6 +17,8 @@
       :is="'CompositeForm'"
       v-if="formData.isShow"
       v-show="status === 1"
+      :object-type="type"
+      :isMainTable="isMainTable"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -35,6 +37,8 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :isMainTable="isMainTable"
+      :object-type="type"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -104,6 +108,10 @@
       isreftabs: {
         type: Boolean,
       },
+      isMainTable: {
+        type: Boolean,
+        default: false
+      }, // 判断是否是主表
       objreadonly: {
         type: Boolean,
       },

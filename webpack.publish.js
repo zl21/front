@@ -15,6 +15,7 @@ module.exports = () => ({
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
+  devtool: 'source-map',
   externals: {
     vue: {
       commonjs: 'vue',
@@ -50,7 +51,7 @@ module.exports = () => ({
       commonjs: 'burgeon-ui',
       commonjs2: 'burgeon-ui',
       amd: 'burgeon-ui',
-      root: 'burgeon'
+      root: 'Ark'
     }
   },
   module: {

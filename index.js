@@ -24,8 +24,6 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
- 
-
   window.vm = new Vue({
     router,
     store,
