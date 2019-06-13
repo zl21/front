@@ -165,40 +165,44 @@
           return option;
         });
       },
-      dateRestructure(data, index, type) {
+      dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
-        this.IN = data.ids || [];
-        if (index === 1 && type !== 'search') {
-          this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
-          this.resultData.list.map((item) => {
-            if (item.exclude) {
-              item.exclude = false;
-            } else {
-              item.exclude = true;
-            }
-            item.string = item.screen_string;
-            item.ID = item.id_list;
-            return item;
-          });
-          this.resultData.total = data.data.total;
-        }
+          if(name !== 'clear'){
+              this.IN = data.ids || [];
+                if (index === 1 && type !== 'search') {
+                this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
+                this.resultData.list.map((item) => {
+                  if (item.exclude) {
+                    item.exclude = false;
+                  } else {
+                    item.exclude = true;
+                  }
+                  item.string = item.screen_string;
+                  item.ID = item.id_list;
+                  return item;
+                });
+              this.resultData.total = data.data.total;
+          }
 
+        }
+        
 
         this.componentData[index] = Object.assign(this.componentData[index], data.data);
 
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
+        console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
         return Object.keys(columns).reduce((item, option, key) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
-              type: 'index.production.html',
+              type: 'index',
               title: '编号'
             });
           } else {
@@ -385,8 +389,7 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         this.loading = true;
-        
-        
+        //this.sendMessage = 
         if (this.HRORG_ID.length > 0) {
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
@@ -547,7 +550,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (obj.clear !== '1') {
-              this.dateRestructure(res.data.data, index, name);
+              this.dateRestructure(res.data.data, index, name,'clear');
             }
             this.tableLoading = false;
           }

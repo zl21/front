@@ -220,8 +220,10 @@
         }
       }, // 是否存在子表
       childTableName: {
-          type: Array,
-          default: () => ([]) //子表表明
+          type: String,
+          default() {
+          return '';
+        }
       }
     },
     data() {
