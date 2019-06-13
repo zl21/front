@@ -28,6 +28,9 @@
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
       :on-sort-changed="onSortChange"
+      :on-column-moved="onColumnMoved"
+      :on-column-pinned="onColumnPinned"
+      :on-column-visible-changed="onColumnVisibleChanged"
     />
     <Modal
       v-if="buttons.actionDialog.show"
@@ -220,6 +223,27 @@
           asc: d.sort === 'asc'
         }));
         this.getQueryList()
+      },
+      onColumnMoved(cols) {
+        const { tableId } = this.$route.params;
+        this.setColPosition({
+          tableid: tableId,
+          colposition: cols
+        });
+      },
+      onColumnPinned(pinnedCols) {
+        const { tableId } = this.$route.params;
+        this.setColPin({
+          tableid: tableId,
+          fixedcolumn: pinnedCols
+        })
+      },
+      onColumnVisibleChanged(hideCols) {
+        const { tableId } = this.$route.params;
+        this.setColHide({
+          tableid: tableId,
+          hidecolumns: hideCols
+        })
       },
 
       // 表单操作

@@ -3,6 +3,15 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 
 export default {
+  setColHide(store, data) {
+    network.post('/p/cs/setHideColumn', urlSearchParams(data));
+  },
+  setColPosition(store, data) {
+    network.post('/p/cs/setColPosition', urlSearchParams(data));
+  },
+  setColPin(store, data) {
+    network.post('/p/cs/setFixedColumn', urlSearchParams(data));
+  },
   getQueryListForAg({ commit }, {
     table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby
   }) {
