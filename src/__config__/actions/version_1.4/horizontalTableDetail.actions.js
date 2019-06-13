@@ -153,14 +153,15 @@ export default {
               const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
               modify[tableName].ID = objId;// 主表id
+              const itemTableAdd = Object.assign({}, itemAdd);
 
-              itemAdd[itemName].ID = -1;
-              itemAdd[itemName] = [
-                itemAdd[itemName]
+              itemTableAdd[itemName].ID = -1;
+              itemTableAdd[itemName] = [
+                itemTableAdd[itemName]
               ];
               parames = {
                 ...modify,
-                ...itemAdd
+                ...itemTableAdd
               };
             } else if (sataTypeName === 'modify') { // 子表编辑
               modify[tableName].ID = objId;// 主表id
