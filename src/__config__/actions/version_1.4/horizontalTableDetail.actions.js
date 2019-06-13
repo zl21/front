@@ -2,7 +2,7 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
-  getObjectTabForMainTable({ commit }, { table, objid, type }) {
+  getObjectTabForMainTable({ commit }, { table, objid, type, tabIndex }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -22,14 +22,15 @@ export default {
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
-            objid
+            objid,
+            tabIndex
           };
           this._actions[`${getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }
     });
   }, // 获取主表按钮和子表信息
-  getObjectTabForChildTableButtons({ commit }, { maintable, table, objid }) {
+  getObjectTabForChildTableButtons({ commit }, { maintable, table, objid, tabIndex }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -40,11 +41,12 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ dispatch, commit }, { table, objid, type }) {
+  getObjectForMainTableForm({ dispatch, commit }, { table, objid, tabIndex }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -53,17 +55,16 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
-        dispatch('updateObjectForMainTableForm').then(() => {
-          commit('updatePanelData', formData);
-        });
+        commit('updatePanelData', formData);
       }
     });
   }, // 获取主表面板信息
   updateObjectForMainTableForm({ commit }) {
     commit('updateFormDataForRefshow');
   },
-  getInputForitemForChildTableForm({ commit }, { table }) {
+  getInputForitemForChildTableForm({ commit }, { table, tabIndex }) {
     // 参数说明 table 子表表名
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
@@ -71,11 +72,12 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updateFormData', formData);
       }
     });
   }, // 获取子表表单信息
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) {
+  getItemObjForChildTableForm({ commit }, { table, objid, refcolid, tabIndex }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -85,12 +87,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
   }, // 获取子表面板信息
   getObjectTableItemForTableData({ commit }, {
-    table, objid, refcolid, searchdata
+    table, objid, refcolid, searchdata, tabIndex
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id,searchdata查询条件
     const id = objid === 'New' ? '-1' : objid;
@@ -102,6 +105,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const tableData = res.data.data;
+        tableData.tabIndex = tabIndex;
         commit('updateTableData', tableData);
       }
     });
@@ -321,7 +325,7 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
@@ -339,7 +343,7 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
@@ -357,7 +361,7 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
@@ -376,7 +380,7 @@ export default {
     });
   },
   getObjTabActionSlientConfirm({ commit }, {
-    params, path, resolve, reject 
+    params, path, resolve, reject
   }) { // 获取作废数据
     network.post(path || '/p/cs/exeAction', { params }).then((res) => {
       if (res.data.code === 0) {
