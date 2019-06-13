@@ -86,7 +86,6 @@
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
 
   export default {
-    name: 'SingleObjectTabComponent',
 
     data() {
       return {

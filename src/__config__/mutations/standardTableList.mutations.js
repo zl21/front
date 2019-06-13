@@ -134,6 +134,12 @@ export default {
     state.colPosition = userConfig.colPosition;
     state.fixedColumn = userConfig.fixedColumn;
   },
+  updateAgConfig(state, { key, value }) {
+    // e.g: state['hideColumn'] = [];
+    // e.g: state['colPosition'] = '';
+    // e.g: state['fixedColumn'] = '';
+    state[key] = value;
+  },
   updateButtonsExport({ buttons }, data) { // 导出
     buttons.exportdata = data;
   }

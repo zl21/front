@@ -230,6 +230,7 @@
           tableid: tableId,
           colposition: cols
         });
+        this.updateAgConfig({ key: 'colPosition', value: cols });
       },
       onColumnPinned(pinnedCols) {
         const { tableId } = this.$route.params;
@@ -237,6 +238,7 @@
           tableid: tableId,
           fixedcolumn: pinnedCols
         });
+        this.updateAgConfig({ key: 'fixedColumn', value: pinnedCols });
       },
       onColumnVisibleChanged(hideCols) {
         const { tableId } = this.$route.params;
@@ -244,6 +246,7 @@
           tableid: tableId,
           hidecolumns: hideCols
         });
+        this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
 
       // 表单操作
@@ -1502,6 +1505,9 @@
   @import url('../assets/css/custom-ext.less');
 .StandardTableListRootDiv {
   width: 100%;
+  height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>

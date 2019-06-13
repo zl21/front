@@ -165,7 +165,13 @@
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
           image: { tag: 'Poptip', event: this.imageRender }
         },
-        beforeSendData: {}, // 之前的数据
+        _beforeSendData: {}, // 之前的数据
+        get beforeSendData() {
+          return this._beforeSendData;
+        },
+        set beforeSendData(value) {
+          this._beforeSendData=value;
+        },
         afterSendData: {}, // 改后的数据
         dialogConfig: { // 弹框配置信息
           title: '提示',
@@ -225,7 +231,7 @@
         );
       },
       data() {
-        this.filterBeforeData();
+        // this.filterBeforeData();
         return this.filterData(this.dataSource.row); // 每列的数据
       },
       copyDataSource() {
@@ -345,6 +351,15 @@
           this.reloadErrorTips(val);
         },
         deep: true
+      },
+      dataSource: {
+        handler(val, old) {
+          if (val.row) {
+            this.filterBeforeData();
+          }
+        },
+         deep: true,
+         immediate: true
       }
 
     },
