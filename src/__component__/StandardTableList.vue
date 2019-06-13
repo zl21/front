@@ -1159,6 +1159,7 @@
           });
         });
         promise.then(() => {
+          this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             title: '成功',
