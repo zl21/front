@@ -35,7 +35,6 @@ export default {
     buttons.tabcmd = data;
   },
   updateButtonWaListButtons({ buttons }, data) { // 获取静默类型的按钮数据
-    console.log(data);
     buttons.dataArray.waListButtonsConfig.waListButtons = data;
   },
   collectTablelist({ buttons }) { // 判断页面加载时收藏按钮状态
@@ -98,7 +97,7 @@ export default {
   },
   updateButtonDeleteData({ buttons, ag }, data) {
     buttons.batchDeleteData = data;
-    ag.datas.deleteFailInfo = data;
+    ag.datas.deleteFailInfo = data.data;
     ag.datas = Object.assign({}, ag.datas);
   },
   setErrorModalValue({ buttons }, {
