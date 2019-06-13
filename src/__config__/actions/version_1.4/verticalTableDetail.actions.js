@@ -19,7 +19,7 @@ export default {
     commit('updateFormDataForRefshow');
   },
   getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
-    table, objid, type
+    table, objid, type, tabIndex
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -45,7 +45,8 @@ export default {
             if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
               const param = {
                 table: firstReftab.tablename,
-                objid
+                objid,
+                tabIndex
               };
               this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
             }
@@ -55,7 +56,8 @@ export default {
               if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                 const formParam = {
                   table: firstReftab.tablename,
-                  inlinemode: firstReftab.tabinlinemode
+                  inlinemode: firstReftab.tabinlinemode,
+                  tabIndex
                 };
                 this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
@@ -68,8 +70,8 @@ export default {
                     refcolid: firstReftab.refcolid,
                     searchdata: {
                       column_include_uicontroller: true
-                    }
-
+                    },
+                    tabIndex
                   };
                   this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                 }
@@ -80,6 +82,7 @@ export default {
                     table: firstReftab.tablename,
                     objid,
                     refcolid: firstReftab.refcolid,
+                    tabIndex
                   };
                   this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                 }

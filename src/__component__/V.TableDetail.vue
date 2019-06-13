@@ -99,7 +99,7 @@
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-      this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+      this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex });
     },
     methods: {
       InitializationForm(val) {
