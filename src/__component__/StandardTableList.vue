@@ -222,7 +222,7 @@
           column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
           asc: d.sort === 'asc'
         }));
-        this.getQueryList()
+        this.getQueryList();
       },
       onColumnMoved(cols) {
         const { tableId } = this.$route.params;
@@ -236,14 +236,14 @@
         this.setColPin({
           tableid: tableId,
           fixedcolumn: pinnedCols
-        })
+        });
       },
       onColumnVisibleChanged(hideCols) {
         const { tableId } = this.$route.params;
         this.setColHide({
           tableid: tableId,
           hidecolumns: hideCols
-        })
+        });
       },
 
       // 表单操作
@@ -1474,10 +1474,13 @@
     },
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
-      this.getTableQuery();
-      setTimeout(() => {
+      const promise = new Promise((resolve, reject) => {
+        const searchData = this.searchData;
+        this.getTableQueryForForm({ searchData, resolve, reject }); 
+      });
+      promise.then(() => {
         this.getbuttonGroupdata();
-      }, 1000);
+      });
     },
     activated() {
       const { tableId } = this.$route.params;
