@@ -265,16 +265,17 @@ export default {
           } 
         } else if (sataTypeName === 'add') { // 子表新增保存
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          itemAdd[itemName].ID = -1;
-          itemAdd[itemName] = [
-            itemAdd[itemName] 
+          add.ID = -1;
+          const addItemName = {};
+          addItemName[itemName] = itemName;
+          addItemName[itemName] = [
+            add
           ];
           modify[tableName].ID = objId;
           if (path) {
             parames = {
               ...modify,
-              ...itemAdd
+              ...addItemName
             };
           } else {
             parames = {
