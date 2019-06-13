@@ -171,12 +171,13 @@ export default {
             add[tableName].ISACTIVE = 'Y';
             if (Object.values(itemAdd[itemName]).length > 0) {
               itemAdd[itemName].ID = objId;
-              itemAdd[itemName] = [
-                itemAdd[itemName]
+              const itemTableAdd = Object.assign({}, itemAdd);
+              itemTableAdd[itemName] = [
+                itemTableAdd[itemName]
               ];
               parames = {
                 ...add,
-                ...itemAdd
+                ...itemTableAdd
               };
             } else {
               parames = {
@@ -184,16 +185,17 @@ export default {
               };
             }
           } else if (Object.values(itemAdd[itemName]).length > 0) {
-            itemAdd[itemName].ID = objId;
-            itemAdd[itemName] = [
-              itemAdd[itemName]
+            const itemTableAdd = Object.assign({}, itemAdd);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
             ];
             parames = {
               table: tableName, // 主表表名
               objId, // 固定传值-1 表示新增
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...add,
-                ...itemAdd,
+                ...itemTableAdd,
               }
             };
           } else {
