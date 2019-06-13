@@ -29,13 +29,14 @@ export default {
       commit('updateTableData', updateTableData);
     });
   },
-  getTableQueryForForm({ commit }, { table }) {
+  getTableQueryForForm({ commit }, { searchData, resolve }) {
     network.post('/p/cs/getTableQuery', urlSearchParams({
-      table,
+      table: searchData.table,
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data.data;
+        resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
@@ -83,17 +84,6 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {
-    // debugger;
-    // let param = {};
-    // if (item.action) {
-    //   param = {};
-    // } else {
-    //   param = {
-    //     actionid: item.webid,
-    //     webaction: null,
-    //     param: JSON.stringify(obj),
-    //   };
-    // }
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
@@ -159,8 +149,6 @@ export default {
         reject();
         commit('batchVoidForButtonsData', data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
   batchSubmitForButtons({ commit }, {
@@ -175,9 +163,8 @@ export default {
         commit('updateButtonbatchSubmitData', res.data);
       } else {
         reject();
+        commit('updateButtonbatchSubmitData', res.data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
  
@@ -190,6 +177,7 @@ export default {
         commit('updateButtonbatchUnSubmitData', res.data.message);
       } else {
         reject();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
       }
     }).catch((err) => {
       reject(err);

@@ -59,7 +59,8 @@ export default () => ({
         'copyDefaultData',
         'updateUnSubmitData',
         'updateTableListForRefTable',
-        'updateTablePageInfo'
+        'updateTablePageInfo',
+        'updateAddDefaultData',
         // 'resetFormReadOnlyAttribute'
 
       ]),

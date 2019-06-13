@@ -293,34 +293,35 @@
         }
       },
       clickButtonsRefresh() { // 按钮刷新事件
-        if (this.objectType === 'vertical') {
-          this.updateChangeData({ tableName: this.tableName, value: {} });
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        } else {
-          this.updateChangeData({ tableName: this.itemName, value: {} });
-        }
+        this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑
         const { tablename, refcolid, tabrelation } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
-            this.getInputForitemForChildTableForm({ table: tablename });
-            this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+            this.getObjectTabForChildTableButtons({
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+            });
             this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
             });
           } else if (tabrelation === '1:1') {
-            this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
-            this.getItemObjForChildTableForm({ table: tablename, objid: this.itemId, refcolid });
+            this.getObjectTabForChildTableButtons({
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+            });
+            this.getItemObjForChildTableForm({
+              table: tablename, objid: this.itemId, refcolid, tabIndex 
+            });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-          // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
+          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
         }
        
         setTimeout(() => {
@@ -448,9 +449,6 @@
         default:
           break;
         }
-      },
-      accept(tab) { // 验收
-
       },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
@@ -892,6 +890,7 @@
           startIndex: 0,
           range: 10
         };
+        const tabIndex = this.tabCurrentIndex;
         if (this.isreftabs) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
@@ -922,7 +921,7 @@
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                         });
-                        this.getInputForitemForChildTableForm({ table: tablename });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
@@ -973,7 +972,7 @@
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                         });
-                        this.getInputForitemForChildTableForm({ table: tablename });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
@@ -1356,7 +1355,8 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
-            this.updateChangeData({ tableName: this.tableName, value: {} });
+            this.clearEditData();// 清空store update数据
+            // this.updateChangeData({ tableName: this.tableName, value: {} });
 
             this.tabHref(tab);
             const message = this.buttonsData.message;
@@ -1364,17 +1364,30 @@
               this.$Message.success(message);
             }
           } else {
-            if (this.objectType === 'vertical') {
-              this.updateChangeData({ tableName: this.tableName, value: {} });
-              this.updateChangeData({ tableName: this.itemName, value: {} });
-            } else {
-              this.updateChangeData({ tableName: this.itemName, value: {} });
-            }
+            this.clearEditData();// 清空store update数据
+           
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
          
           this.decreasekeepAliveLists(moduleName());
         });
+      },
+      clearEditData() {
+        if (this.objectType === 'vertical') {
+          this.updateChangeData({ tableName: this.tableName, value: {} });
+          this.updateModifyData({ tableName: this.tableName, value: {} });
+          this.updateAddDefaultData({ tableName: this.tableName, value: {} });
+          this.updateAddData({ tableName: this.tableName, value: {} });
+          this.updateDeleteData({ tableName: this.tableName, value: {} });
+        }
+        this.clearItemEditData();
+      },
+      clearItemEditData() {
+        this.updateChangeData({ tableName: this.itemName, value: {} });
+        this.updateModifyData({ tableName: this.itemName, value: {} });
+        this.updateAddDefaultData({ tableName: this.itemName, value: {} });
+        this.updateAddData({ tableName: this.itemName, value: {} });
+        this.updateDeleteData({ tableName: this.itemName, value: {} });
       },
       saveParameters() { // 筛选按钮保存参数逻辑
         if (this.isreftabs) { // 有子表

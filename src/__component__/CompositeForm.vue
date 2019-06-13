@@ -29,7 +29,7 @@
                 :path = "path"
                 :form-item-lists="item.childs"
                 :isreftabs = "isreftabsForm"
-                :itemNameGroup = "itemNameGroupForm"
+                :childTableName = "childTableName"
                 :mapp-status="setMapping"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
@@ -101,15 +101,17 @@ export default {
       }
     },
     isreftabs: {
-      type: Boolean,
-      default() {
-        return false;
-      }
+        type: Boolean,
+        default() {
+          return false;
+        }
     }, // 是否存在子表
     childTableName: {
-      type: Array,
-      default: () => [] //子表名称
-    },
+          type: String,
+          default() {
+          return '';
+        }
+    }, 
     paths: {
       type: Array,
       default() {
@@ -166,7 +168,7 @@ export default {
       computdefaultData: [], // form
       pathArry: [], // path 数组
       show: true,
-      defaultColumnCol: this.defaultData.objviewcol,
+      defaultColumnCol: this.defaultData.objviewcol || 4,
       tip: "new",
       expand: "expand" // 面板是否展开
     };
@@ -175,6 +177,7 @@ export default {
     defaultData: {
       handler(val) {
         this.computdefaultData = this.reorganizeForm();
+        this.defaultColumnCol = this.defaultData.objviewcol || 4;
         this.Comparison();
       },
       deep: true
@@ -188,13 +191,13 @@ export default {
     }
   },
   computed: {
-    path() {
-      return this.paths[1] || "";
+    path(){
+      return this.paths[1] || '';
     },
-    isreftabsForm() {
+    isreftabsForm(){
       return this.isreftabs;
     },
-    childTableNameForm() {
+    childTableNameForm(){
       return this.childTableName;
     }
   },
@@ -394,6 +397,11 @@ export default {
             if (current.isuppercase) {
               this.lowercaseToUppercase(index, current);
             }
+            console.log('dddd');
+            if (current.fkdisplay) {
+              
+              this.focusChange(event.target.value, current, index);
+            }
           },
           "on-delete": ($this, item, key) => {
             fkDelMultiQuery({
@@ -445,7 +453,7 @@ export default {
           },
           "on-show": $this => {
             // 当外键下拉站开始去请求数据
-
+           
             let Fitem = [];
             if (current.formIndex !== "inpubobj") {
               Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -453,7 +461,7 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-            // 先清除一下
+             // 先清除一下
             Fitem[index].item.props.data = {};
             let searchObject = {};
             if (Object.hasOwnProperty.call(current, "refcolval")) {
@@ -504,30 +512,15 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-
-            if (
-              item.props &&
-              item.props.fkdisplay &&
-              this.type === "PanelForm"
-            ) {
-              if (
-                item.props.fkdisplay === "pop" ||
-                item.props.fkdisplay === "mop"
-              ) {
-                if (Array.isArray(item.props.Selected)) {
-                  Fitem[index].item.value = "";
-                }
+            console.log(item.props.fkdisplay );
+            if (item.props.fkdisplay) {
+                  if(Array.isArray(item.props.Selected)){
+                      Fitem[index].item.value = '';
+                  }else{
+                      Fitem[index].item.value = '';
+                  }
+                  
               }
-            }
-          },
-          focus: event => {
-            if (current.fkdisplay) {
-              if (this.type !== "PanelForm") {
-                // 是否是面板
-                //  获取光标 请求 外键 接口
-                //this.focusChange(event.target.value, current, index);
-              }
-            }
           },
           inputValueChange: value => {
             this.focusChange(value, current, index);
@@ -805,7 +798,7 @@ export default {
               ""
           });
         } else {
-          let ID = item.refobjid ? item.refobjid : "";
+          let ID = item.refobjid ? item.refobjid :'';
           arr.push({
             ID: item.refobjid === "-1" ? "" : ID,
             Label: item.valuedata || item.defval || ""
@@ -825,7 +818,7 @@ export default {
         : item.props.readonly;
       item.props.maxlength = item.props.length;
       item.props.comment = item.props.comment;
-
+     
       if (this.objreadonly) {
         // 页面只读标记
         item.props.type = "text";

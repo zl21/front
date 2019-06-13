@@ -169,6 +169,7 @@
         @on-keyup="attachFilterInputKeyup"
         @on-keydown="attachFilterInputKeydown"
         @on-ok="attachFilterOk"
+        @on-cancel="attachFilterCancel"
         @on-popclick="attachFilterPopclick"
         @on-clear="attachFilterClear"
         @on-uploadFile="attachFile"
@@ -715,6 +716,10 @@ export default {
           this.index
         );
       }
+    },
+    attachFilterCancel($this){
+      console.log(this);
+
     },
     attachFilterOk($this) {
       if (
