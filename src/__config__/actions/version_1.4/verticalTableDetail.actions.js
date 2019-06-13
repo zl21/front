@@ -389,8 +389,6 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getObjectTryUnSubmit({ commit }, {
@@ -407,8 +405,6 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getObjectTryInvalid({ commit }, {
@@ -426,8 +422,6 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getExportQueryForButtons({ commit }, // 导出
@@ -442,8 +436,6 @@ export default {
       } else {
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getObjTabActionSlientConfirm({ commit }, {
@@ -458,8 +450,6 @@ export default {
       } else {
         reject();
       }
-    }).catch((e) => {
-      reject(e);
     });
   },
 };

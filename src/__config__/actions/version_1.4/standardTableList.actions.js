@@ -29,13 +29,14 @@ export default {
       commit('updateTableData', updateTableData);
     });
   },
-  getTableQueryForForm({ commit }, { table }) {
+  getTableQueryForForm({ commit }, { searchData, resolve }) {
     network.post('/p/cs/getTableQuery', urlSearchParams({
-      table,
+      table: searchData.table,
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data.data;
+        resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
