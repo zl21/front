@@ -53,7 +53,7 @@ export default {
       if (res.data.code === 0) {
         resolve();
         const data = res.data.data;
-        commit('updateButtonsExport', data,);
+        commit('updateButtonsExport', data);
       } else {
         reject();
       }
@@ -74,7 +74,7 @@ export default {
         resolve();
         const deleteTableData = res.data;
         commit('updateButtonDeleteData', deleteTableData);
-        commit('updateButtonsExport', data,);
+        commit('updateButtonsExport', deleteTableData);
       } else {
         reject();
       }
@@ -157,7 +157,7 @@ export default {
         commit('batchVoidForButtonsData', data);
       } else {
         reject();
-        commit('batchVoidForButtonsData', data.data,);
+        commit('batchVoidForButtonsData', data.data);
       }
     }).catch(() => {
       reject();
