@@ -101,15 +101,15 @@ export default {
       }
     },
     isreftabs: {
-        type: Boolean,
-        default() {
-          return false;
-        }
+      type: Boolean,
+      default() {
+        return false;
+      }
     }, // 是否存在子表
     childTableName: {
-        type: Array,
-        default: () => ([]) //子表名称
-    },  
+      type: Array,
+      default: () => [] //子表名称
+    },
     paths: {
       type: Array,
       default() {
@@ -188,13 +188,13 @@ export default {
     }
   },
   computed: {
-    path(){
-      return this.paths[1] || '';
+    path() {
+      return this.paths[1] || "";
     },
-    isreftabsForm(){
+    isreftabsForm() {
       return this.isreftabs;
     },
-    childTableNameForm(){
+    childTableNameForm() {
       return this.childTableName;
     }
   },
@@ -445,7 +445,7 @@ export default {
           },
           "on-show": $this => {
             // 当外键下拉站开始去请求数据
-           
+
             let Fitem = [];
             if (current.formIndex !== "inpubobj") {
               Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -453,7 +453,7 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-             // 先清除一下
+            // 先清除一下
             Fitem[index].item.props.data = {};
             let searchObject = {};
             if (Object.hasOwnProperty.call(current, "refcolval")) {
@@ -505,13 +505,18 @@ export default {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
 
-
-            if (item.props&& item.props.fkdisplay && this.type === "PanelForm") {
-              if (item.props.fkdisplay === 'pop' || item.props.fkdisplay === 'mop') {
-                  if(Array.isArray(item.props.Selected)){
-                      Fitem[index].item.value = '';
-                  }
-                  
+            if (
+              item.props &&
+              item.props.fkdisplay &&
+              this.type === "PanelForm"
+            ) {
+              if (
+                item.props.fkdisplay === "pop" ||
+                item.props.fkdisplay === "mop"
+              ) {
+                if (Array.isArray(item.props.Selected)) {
+                  Fitem[index].item.value = "";
+                }
               }
             }
           },
@@ -800,8 +805,9 @@ export default {
               ""
           });
         } else {
+          let ID = item.refobjid ? item.refobjid : "";
           arr.push({
-            ID: item.refobjid === "-1" ? "" : item.refobjid,
+            ID: item.refobjid === "-1" ? "" : ID,
             Label: item.valuedata || item.defval || ""
           });
         }
@@ -819,7 +825,7 @@ export default {
         : item.props.readonly;
       item.props.maxlength = item.props.length;
       item.props.comment = item.props.comment;
-     
+
       if (this.objreadonly) {
         // 页面只读标记
         item.props.type = "text";
