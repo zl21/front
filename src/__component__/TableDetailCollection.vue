@@ -292,7 +292,7 @@
               if (index === i) { this.buttonPath[cmd] = path; }
             });
           });
- 
+
           tabcmd.cmds.map((item, index) => {
             if (this.status === 2) {
               tabcmd.prem[index] = false;
@@ -316,11 +316,11 @@
                 );
               }
             }
-          
+
             return item;
           });
         }
-        
+
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         return buttonGroupShow;
       },
@@ -373,7 +373,7 @@
         //     "message": ['a','b',''][parseInt(Math.random()*3,10)]
         // 	}
         // ]
-      
+
         //     this.reloadErrorTips(a);
         //     return;
 
@@ -1032,7 +1032,7 @@
                 },
               })
             ]);
-          } 
+          }
           return h('div', {
             domProps: {
               innerHTML: `<span>${index}</span>`
@@ -1180,7 +1180,7 @@
           const exceptFlag = data.every((item) => {
             if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
               return true;
-            } 
+            }
             ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
             return false;
           });
@@ -1267,7 +1267,8 @@
             startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
             range: this.pageInfo.pageSize,
             fixedcolumns
-          }
+          },
+          tabIndex: this.tabCurrentIndex
         };
         this.getObjectTableItemForTableData(params);
         this.searchInfo = '';
@@ -1439,12 +1440,12 @@
       },
       getSelectValueCombobox(h, cellData) { // 做SelectValueCombobox 判空处理
         const combobox = [];
-        
+
         if (cellData.combobox) {
           combobox.push({
             limitval: '',
             limitdesc: '请选择'
-          }); 
+          });
           combobox.push(...cellData.combobox);
           return combobox.map(item => h('Option', {
             props: {
