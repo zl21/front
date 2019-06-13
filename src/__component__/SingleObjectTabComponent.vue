@@ -307,7 +307,7 @@
         }
       },
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter) { // 主表新增保存方法
-        const tabIndex = this.tabCurrentIndex;
+        const tabIndex = this.$store.state[getModuleName()].tabCurrentIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
 
