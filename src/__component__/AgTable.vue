@@ -184,11 +184,13 @@
       agGridTable(th, row, data) { // agGrid
         const self = this;
         const arr = [];
-        data.ordids.forEach((item) => {
-          const obj = {};
-          obj.sort = item.ordasc ? 'asc' : 'desc';
-          obj.colId = item.colname;
-        }); // 排序
+        if (data.ordids && Object.prototype.toString.call(data.ordids) === '[object Array]') {
+          data.ordids.forEach((item) => {
+            const obj = {};
+            obj.sort = item.ordasc ? 'asc' : 'desc';
+            obj.colId = item.colname;
+          }); // 排序
+        }
         const datas = self.datas;
         datas.hideColumn = self.hideColumn;
         datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
