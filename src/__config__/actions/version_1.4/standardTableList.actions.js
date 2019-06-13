@@ -186,13 +186,13 @@ export default {
     network.post('/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
-        resolve();
+        resolve(res);
         commit('updateButtonbatchUnSubmitData', res.data.message);
       } else {
         reject();
       }
-    }).catch(() => {
-      reject();
+    }).catch((err) => {
+      reject(err);
     });
   },
   updateUserConfig({ commit }, { type, id }) {

@@ -1236,7 +1236,7 @@
             this.$Modal.fcSuccess(data);
             this.getQueryListForAg(this.searchData);
           }
-        });
+        }, () => {});
       },
       forAgTableErrorMessage(errorData) { // 操纵列表数据失败时ag显示错误提示的图标以及message
         this.setAgTableErrorMessage(errorData);

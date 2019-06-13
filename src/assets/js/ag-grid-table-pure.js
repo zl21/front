@@ -376,7 +376,7 @@ sequenceComponent.prototype.init = function (params) {
   eGui.innerHTML = template;
 
   // for tooltip icon
-  if (failIds.indexOf(`${value}`) > -1) {
+  if (failIds && failIds.indexOf(`${value}`) > -1) {
     const toolTipIcon = document.createElement('i');
     toolTipIcon.setAttribute('class', `iconfont ${cssFeatures.hover}`);
     toolTipIcon.style.color = 'red';
