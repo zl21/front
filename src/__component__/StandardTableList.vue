@@ -222,7 +222,7 @@
           column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
           asc: d.sort === 'asc'
         }));
-        this.getQueryList()
+        this.getQueryList();
       },
       onColumnMoved(cols) {
         const { tableId } = this.$route.params;
@@ -236,14 +236,14 @@
         this.setColPin({
           tableid: tableId,
           fixedcolumn: pinnedCols
-        })
+        });
       },
       onColumnVisibleChanged(hideCols) {
         const { tableId } = this.$route.params;
         this.setColHide({
           tableid: tableId,
           hidecolumns: hideCols
-        })
+        });
       },
 
       // 表单操作
@@ -479,7 +479,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = '/p/cs/menuimport';
+                obj.item.props.fkobj.url =  obj.item.props.serviceId +'/p/cs/menuimport';
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;
@@ -1159,6 +1159,7 @@
           });
         });
         promise.then(() => {
+          this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             title: '成功',
@@ -1474,10 +1475,13 @@
     },
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
-      this.getTableQuery();
-      setTimeout(() => {
+      const promise = new Promise((resolve, reject) => {
+        const searchData = this.searchData;
+        this.getTableQueryForForm({ searchData, resolve, reject }); 
+      });
+      promise.then(() => {
         this.getbuttonGroupdata();
-      }, 1000);
+      });
     },
     activated() {
       const { tableId } = this.$route.params;
