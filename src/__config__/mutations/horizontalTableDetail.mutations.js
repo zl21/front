@@ -64,23 +64,23 @@ export default {
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateButtonsData(state, data) {
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.buttonsData.isShow = true;
     componentAttribute.buttonsData.data = data;
   }, // 更新按钮数据
   updateFormData(state, data) {
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = true;
     componentAttribute.formData.data = data;
   }, //
 
   updatePanelData(state, data) {
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   }, // 更新form数据
   updateTableData(state, data) {
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = true;
     componentAttribute.tableData.data = data;
   }, // 更新表格数据

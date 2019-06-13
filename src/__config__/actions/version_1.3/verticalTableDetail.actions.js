@@ -84,7 +84,7 @@ export default {
     });
   },
   getObjectTabForRefTable({ commit }, { // 获取子表按钮
-    table, objid
+    table, objid, tabIndex
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -94,12 +94,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateRefButtonsData', resData);
       }
     });
   },
   getFormDataForRefTable({ commit }, { // 获取子表表单数据
-    table, inlinemode
+    table, inlinemode, tabIndex
   }) {
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
@@ -107,12 +108,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateFormDataForRefTable', resData);
       }
     });
   },
   getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
-    table, objid, refcolid, searchdata // fixedcolumns - objectIds
+    table, objid, refcolid, searchdata, tabIndex // fixedcolumns - objectIds
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
@@ -123,13 +125,14 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.datas;
+        resData.tabIndex = tabIndex;
         commit('updateTableListForRefTable', resData);
       }
     });
   },
   
   // 按钮
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
+  getItemObjForChildTableForm({ commit }, { table, objid, refcolid, tabIndex }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -139,6 +142,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
@@ -190,7 +194,7 @@ export default {
             itmValues.ID = -1;
             itemModify[itemName] = [
               itmValues
-            ]; 
+            ];
           }
           parames = {
             table: tableName, // 主表表名
@@ -223,7 +227,7 @@ export default {
       }
     }
 
-    network.post('/p/cs/objectAdd', 
+    network.post('/p/cs/objectAdd',
       urlSearchParams(parames)).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

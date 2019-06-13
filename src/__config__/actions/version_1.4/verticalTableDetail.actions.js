@@ -91,7 +91,7 @@ export default {
     });
   },
   getObjectTabForRefTable({ commit }, { // 获取子表按钮
-    table, objid
+    table, objid, tabIndex
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -101,12 +101,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateRefButtonsData', resData);
       }
     });
   },
   getFormDataForRefTable({ commit }, { // 获取子表表单数据
-    table, inlinemode
+    table, inlinemode, tabIndex
   }) {
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
@@ -114,12 +115,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateFormDataForRefTable', resData);
       }
     });
   },
   getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
-    table, objid, refcolid, searchdata // fixedcolumns - objectIds
+    table, objid, refcolid, searchdata, tabIndex // fixedcolumns - objectIds
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
@@ -130,13 +132,16 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateTableListForRefTable', resData);
       }
     });
   },
   
   // 按钮
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
+  getItemObjForChildTableForm({ commit }, {
+    table, objid, refcolid, tabIndex 
+  }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -146,6 +151,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
@@ -221,7 +227,7 @@ export default {
             }
           };
         }
-      } else 
+      } else
       if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
@@ -262,7 +268,7 @@ export default {
                 ...itemModify
               }
             };
-          } 
+          }
         } else if (sataTypeName === 'add') { // 子表新增保存
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
           add.ID = -1;
@@ -295,7 +301,7 @@ export default {
           // const itmValues = modify[itemName];
           // modify[itemName] = [
           //   itmValues
-          // ]; 
+          // ];
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
@@ -377,7 +383,7 @@ export default {
 
   
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
@@ -393,7 +399,7 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
@@ -409,7 +415,7 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
@@ -440,7 +446,7 @@ export default {
     });
   },
   getObjTabActionSlientConfirm({ commit }, {
-    params, path, resolve, reject 
+    params, path, resolve, reject
   }) { // 获取作废数据
     network.post(path || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
