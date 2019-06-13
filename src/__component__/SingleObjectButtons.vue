@@ -299,23 +299,29 @@
       },
       upData(message) { // 页面刷新判断逻辑
         const { tablename, refcolid, tabrelation } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
+            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
-            this.getInputForitemForChildTableForm({ table: tablename });
-            this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+            this.getObjectTabForChildTableButtons({
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+            });
             this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
             });
           } else if (tabrelation === '1:1') {
-            this.getObjectTabForChildTableButtons({ maintable: this.tableName, table: tablename, objid: this.itemId });
-            this.getItemObjForChildTableForm({ table: tablename, objid: this.itemId, refcolid });
+            this.getObjectTabForChildTableButtons({
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+            });
+            this.getItemObjForChildTableForm({
+              table: tablename, objid: this.itemId, refcolid, tabIndex 
+            });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
-          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-          // searchdata: {"column_include_uicontroller":true,"range":10,"startindex":0,"fixedcolumns":{}}
+          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
+          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
         }
        
         setTimeout(() => {
@@ -443,9 +449,6 @@
         default:
           break;
         }
-      },
-      accept(tab) { // 验收
-
       },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
@@ -887,6 +890,7 @@
           startIndex: 0,
           range: 10
         };
+        const tabIndex = this.tabCurrentIndex;
         if (this.isreftabs) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
@@ -917,7 +921,7 @@
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                         });
-                        this.getInputForitemForChildTableForm({ table: tablename });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
@@ -968,7 +972,7 @@
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
                         });
-                        this.getInputForitemForChildTableForm({ table: tablename });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
