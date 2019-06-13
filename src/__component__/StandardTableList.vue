@@ -1135,13 +1135,15 @@
           });
         });
         promise.then(() => {
-          this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             title: '成功',
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
+          this.getQueryListForAg(this.searchData);
+        }).catch(() => {
+          this.$loading.hide();
           this.getQueryListForAg(this.searchData);
         });
       },

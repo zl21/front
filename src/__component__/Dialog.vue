@@ -65,7 +65,7 @@
       }, // 是否可以拖动
       mask: {
         type: Boolean,
-        default: () => false
+        default: () => true
       }, // 是否显示遮罩层
 
       maskClosable: {
