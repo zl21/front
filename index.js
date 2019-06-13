@@ -24,8 +24,6 @@ const createDOM = () => {
 
 const init = () => {
   const rootDom = createDOM();
- 
-
   window.vm = new Vue({
     router,
     store,
@@ -60,11 +58,3 @@ if (enableGateWay) {
 } else {
   init();
 }
-
-const launchApplication = () => {
-  console.log('U will launch Application.');
-};
-
-export default {
-  launchApplication
-};

@@ -4,7 +4,7 @@
     <span
       class="itemLabel"
       :style="labelStyle"
-      :title="_items.title"
+     
     >
       <Poptip
         v-if="_items.props.comment"
@@ -20,7 +20,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      {{ _items.title }}:
+      <span  :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div class="itemComponent">
       <Input
@@ -146,6 +146,7 @@
         @on-keyup="fkrpSelectedInputKeyup"
         @on-keydown="fkrpSelectedInputKeydown"
         @on-popper-show="fkrpSelectedPopperShow"
+        @on-popper-hide = "fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
       <AttachFilter
@@ -168,6 +169,7 @@
         @on-keyup="attachFilterInputKeyup"
         @on-keydown="attachFilterInputKeydown"
         @on-ok="attachFilterOk"
+        @on-cancel="attachFilterCancel"
         @on-popclick="attachFilterPopclick"
         @on-clear="attachFilterClear"
         @on-uploadFile="attachFile"
@@ -207,545 +209,802 @@
 </template>
 
 <script>
+import dataProp from "../__config__/props.config";
+// 弹窗多选面板
+import Dialog from "./ComplexsDialog";
+// 弹窗单选
+import myPopDialog from "./PopDialog";
+// 富文本编辑
+import WangeditorVue from "./Wangeditor";
 
-  import dataProp from '../__config__/props.config';
-  // 弹窗多选面板
-  import Dialog from './ComplexsDialog';
-  // 弹窗单选
-  import myPopDialog from './PopDialog';
-  // 富文本编辑
-  import WangeditorVue from './Wangeditor';
+import { Version } from "../constants/global";
 
-  import { Version } from '../constants/global';
-
-
-  const {
-    fkQueuploadProgressry, fkObjectSave, deleteImg
+const {
+  fkQueuploadProgressry,
+  fkObjectSave,
+  deleteImg
   // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+} = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
-  export default {
-    name: 'ItemComponent',
-    components: {
+export default {
+  name: "ItemComponent",
+  components: {},
+  props: {
+    labelWidth: {
+      type: Number,
+      default: 120
     },
-    props: {
-      labelWidth: {
-        type: Number,
-        default: 120
-      },
-      items: {
-        type: Object,
-        default() {
-          return {};
+    items: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    component: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    index: {
+      type: Number,
+      default() {
+        return 0;
+      }
+    },
+    formIndex: {
+      type: Number,
+      default() {
+        return 0;
+      }
+    },
+    type: {
+      type: String,
+      default() {
+        return "";
+      }
+    }
+  },
+  data() {
+    return {
+      filterDate: {}
+    };
+  },
+  computed: {
+    labelStyle() {
+      let style = "";
+      style = `width:${this.labelWidth}px`;
+      return style;
+    },
+    _items() {
+      // 将设置的props和默认props进行assign
+      const item = JSON.parse(JSON.stringify(this.items));
+      // const item = this.items;
+      item.props = Object.assign(
+        {},
+        item.type ? dataProp[item.type].props : {},
+        this.items.props
+      );
+      if (item.type === "AttachFilter") {
+        // 大弹窗卡槽页面
+        if (item.props.fkdisplay === "pop") {
+          item.componentType = myPopDialog;
+          item.props.fkobj.colid = item.props.colid;
+          item.props.fkobj.colname = item.props.colname;
+          item.props.dialog.model.title = "表";
+          item.props.dialog.model["footer-hide"] = true;
+          item.props.dialog.model.closable = true;
+        } else {
+          item.props.dialog.model.title = "弹窗多选";
+          item.componentType = Dialog;
+          item.props.datalist = dataProp[item.type].props.datalist.concat(
+            item.props.datalist
+          );
+          item.props.dialog.model["footer-hide"] = false;
+          item.props.datalist.forEach((option, i) => {
+            if (option.value === "导入") {
+              item.props.datalist[i].url = item.props.fkobj.url;
+              item.props.datalist[i].sendData = {
+                table: item.props.fkobj.reftable
+              };
+            }
+          });
         }
-      },
-      component: {
-        type: Object,
-        default() {
-          return {};
+      }
+      // eslint-disable-next-line no-empty
+      if (item.type === "Wangeditor") {
+        item.componentType = WangeditorVue;
+      }
+      item.event = Object.assign({}, this.items.event);
+
+      return item;
+    },
+    filterList() {
+      // 气泡选中过滤条件
+      return this.filterDate;
+    }
+  },
+  methods: {
+    valueChange() {
+      // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
+      this.$emit("inputChange", this._items.value, this._items, this.index);
+    },
+    // input event
+    inputChange(event, $this) {
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "change") &&
+        typeof this._items.event.change === "function"
+      ) {
+        this._items.event.change(event, $this);
+      }
+    },
+    inputEnter(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "enter") &&
+        typeof this._items.event.enter === "function"
+      ) {
+        this._items.event.enter(event, $this);
+      }
+    },
+    inputClick(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "click") &&
+        typeof this._items.event.click === "function"
+      ) {
+        this._items.event.click(event, $this);
+      }
+    },
+    inputFocus(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "focus") &&
+        typeof this._items.event.focus === "function"
+      ) {
+        this._items.event.focus(event, $this);
+      }
+    },
+    inputBlur(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
+        typeof this._items.event.blur === "function"
+      ) {
+        this._items.event.blur(event, $this, this._items);
+      }
+    },
+    inputKeyUp(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keyup") &&
+        typeof this._items.event.keyup === "function"
+      ) {
+        this._items.event.keyup(event, $this);
+      }
+    },
+    inputKeyDown(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keydown") &&
+        typeof this._items.event.keydown === "function"
+      ) {
+        this._items.event.keydown(event, $this);
+      }
+    },
+    inputKeyPress(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keypress") &&
+        typeof this._items.event.keypress === "function"
+      ) {
+        this._items.event.keypress(event, $this);
+      }
+    },
+    inputRegxCheck(value, $this, errorValue) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "regxCheck") &&
+        typeof this._items.event.regxCheck === "function"
+      ) {
+        this._items.event.regxCheck(value, $this, errorValue);
+      }
+    },
+
+    // checkbox event
+    checkBoxChange(value, $this) {
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "change") &&
+        typeof this._items.event.change === "function"
+      ) {
+        this._items.event.change(value, $this);
+      }
+    },
+
+    // select input
+    selectChange(value, $this) {
+      this._items.value = value;
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "change") &&
+        typeof this._items.event.change === "function"
+      ) {
+        this._items.event.change(value, $this);
+      }
+    },
+    selectClear($this) {
+      this._items.value = [];
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "clear") &&
+        typeof this._items.event.clear === "function"
+      ) {
+        this._items.event.clear($this);
+      }
+    },
+    selectOpenChange(value, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "openChange") &&
+        typeof this._items.event.openChange === "function"
+      ) {
+        this._items.event.openChange(value, $this);
+      }
+    },
+
+    // datepick event
+    datePickerChange(value, type, $this) {
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "change") &&
+        typeof this._items.event.change === "function"
+      ) {
+        this._items.event.change(value, $this);
+      }
+    },
+    datePickerClear($this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "clear") &&
+        typeof this._items.event.clear === "function"
+      ) {
+        this._items.event.clear($this);
+      }
+    },
+
+    // TimePicker event
+    timePickerChange(value, timeType, $this) {
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "change") &&
+        typeof this._items.event.change === "function"
+      ) {
+        this._items.event.change(value, $this);
+      }
+    },
+    timePickerClear($this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "clear") &&
+        typeof this._items.event.clear === "function"
+      ) {
+        this._items.event.clear($this);
+      }
+    },
+
+    // fkrpSelected event
+    fkrpSelected(value, $this) {
+      this._items.value = value;
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "fkrpSelected"
+        ) &&
+        typeof this._items.event.fkrpSelected === "function"
+      ) {
+        this._items.event.fkrpSelected(value, $this);
+      }
+    },
+    inputValueChange(value, $this) {
+      this._items.value = value;
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "inputValueChange"
+        ) &&
+        typeof this._items.event.inputValueChange === "function"
+      ) {
+        this._items.event.inputValueChange(value, $this);
+      }
+    },
+    fkrpSelectedClear($this) {
+      this._items.value = undefined;
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "clear") &&
+        typeof this._items.event.clear === "function"
+      ) {
+        this._items.event.clear($this);
+      }
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "inputValueChange"
+        ) &&
+        typeof this._items.event.inputValueChange === "function"
+      ) {
+        this._items.event.inputValueChange("", $this);
+      }
+    },
+    pageChange(value, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "pageChange") &&
+        typeof this._items.event.pageChange === "function"
+      ) {
+        this._items.event.pageChange(value, $this);
+      }
+    },
+    fkrpSelectedInputFocus(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "focus") &&
+        typeof this._items.event.focus === "function"
+      ) {
+        this._items.event.focus(event, $this);
+      }
+    },
+    fkrpSelectedInputBlur(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
+        typeof this._items.event.blur === "function"
+      ) {
+       
+        this._items.event.blur(event, $this, this._items);
+      }
+    },
+    fkrPopperHide(event, $this){
+       if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "on-popper-hide") &&
+        typeof this._items.event.blur === "function"
+      ) {
+       
+        this._items.event['on-popper-hide'](event, $this, this._items);
+      }
+
+    },
+    fkrpSelectedInputKeyup(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keyup") &&
+        typeof this._items.event.keyup === "function"
+      ) {
+        this._items.event.keyup(event, $this);
+      }
+    },
+    fkrpSelectedInputKeydown(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keydown") &&
+        typeof this._items.event.keydown === "function"
+      ) {
+        this._items.event.keydown(event, $this);
+      }
+    },
+    fkrpSelectedPopperShow($this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "on-show") &&
+        typeof this._items.event["on-show"] === "function"
+      ) {
+        this._items.event["on-show"]($this);
+      }
+    },
+
+    // AttachFilter event
+    attachFilterChange(value, $this) {
+      this._items.value = value;
+      this.valueChange();
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-value"
+        ) &&
+        typeof this._items.event["popper-value"] === "function"
+      ) {
+        this._items.event["popper-value"]($this, value, "change", this.index);
+      }
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "inputValueChange"
+        ) &&
+        typeof this._items.event.inputValueChange === "function"
+      ) {
+        this._items.event.inputValueChange(value, $this);
+      }
+    },
+    attachFilterSelected(row, $this) {
+      this._items.value = row.label;
+      this._items.props.selected = row.value;
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-value"
+        ) &&
+        typeof this._items.event["popper-value"] === "function"
+      ) {
+        this._items.event["popper-value"](
+          $this,
+          row.label,
+          row.value,
+          this.index
+        );
+      }
+    },
+    attachFilterInputFocus(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "focus") &&
+        typeof this._items.event.focus === "function"
+      ) {
+        this._items.event.focus(event, $this);
+      }
+    },
+    attachFilterInputBlur(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "blur") &&
+        typeof this._items.event.blur === "function"
+      ) {
+        this._items.event.blur(event, $this, this._items);
+      }
+    },
+    attachFilterInputKeyup(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keyup") &&
+        typeof this._items.event.keyup === "function"
+      ) {
+        this._items.event.keyup(event, $this);
+      }
+    },
+    attachFilterInputKeydown(event, $this) {
+      if (
+        Object.prototype.hasOwnProperty.call(this._items.event, "keydown") &&
+        typeof this._items.event.keydown === "function"
+      ) {
+        this._items.event.keydown(event, $this);
+      }
+    },
+    attachFilterPopclick(event, row, targName, $this) {
+      if (targName !== "I" && event !== 1) {
+        // 打开弹窗
+        $this.showModal = true;
+        if (event !== 0) {
+          this.filterDate = JSON.parse(row.label);
         }
-      },
-      index: {
-        type: Number,
-        default() {
-          return 0;
-        }
-      },
-      formIndex: {
-        type: Number,
-        default() {
-          return 0;
-        }
-      },
-      type: {
-        type: String,
-        default() {
-          return '';
+      } else if (
+        targName === "I" &&
+        Object.prototype.hasOwnProperty.call(this._items.event, "on-delete") &&
+        typeof this._items.event["on-delete"] === "function"
+      ) {
+        this._items.event["on-delete"]($this, this._items, row.key, this.index);
+      }
+    },
+    attachFilterClear(event, $this) {
+      this._items.value = "";
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-value"
+        ) &&
+        typeof this._items.event["popper-value"] === "function"
+      ) {
+        this._items.event["popper-value"]($this, "", [], this.index);
+      }
+    },
+    attachFilterPopperShow($this) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-show"
+        ) &&
+        typeof this._items.event["popper-show"] === "function"
+      ) {
+        this._items.event["popper-show"]($this, this._items, this.index);
+      }
+    },
+    attachFile(index, result, $this) {
+      // 导入功能
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-file"
+        ) &&
+        typeof this._items.event["popper-file"] === "function"
+      ) {
+        this._items.event["popper-file"](
+          $this,
+          result,
+          this._items,
+          this.index
+        );
+      }
+    },
+    attachFilterCancel($this){
+      console.log(this);
+
+    },
+    attachFilterOk($this) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this._items.event,
+          "popper-value"
+        ) &&
+        typeof this._items.event["popper-value"] === "function"
+      ) {
+        if ($this._data.IN.length > 0) {
+          const value = `已经选中${$this._data.IN.length}条数据`;
+          this._items.value = value;
+          this._items.Selected = $this._data.IN;
+          this._items.event["popper-value"](
+            $this,
+            value,
+            $this._data.IN,
+            this.index
+          );
+        } else {
+          this._items.value = "";
+          this._items.Selected = [];
+          this._items.event["popper-value"](
+            $this,
+            "",
+            $this._data.IN,
+            this.index
+          );
         }
       }
     },
-    data() {
-      return {
-        filterDate: {
-
-        }
-      };
+    uploadFileChange() {
+      // console.log(e);
     },
-    computed: {
-      labelStyle() {
-        let style = '';
-        style = `width:${this.labelWidth}px`;
-        return style;
-      },
-      _items() {
-        // 将设置的props和默认props进行assign
-        const item = JSON.parse(JSON.stringify(this.items));
-        // const item = this.items;
-        item.props = Object.assign({}, item.type ? dataProp[item.type].props : {}, this.items.props);
-        if (item.type === 'AttachFilter') {
-          // 大弹窗卡槽页面
-          if (item.props.fkdisplay === 'pop') {
-            item.componentType = myPopDialog;
-            item.props.fkobj.colid = item.props.colid;
-            item.props.fkobj.colname = item.props.colname;
-            item.props.dialog.model.title = '表';
-            item.props.dialog.model['footer-hide'] = true;
-            item.props.dialog.model.closable = true;
-          } else {
-            item.props.dialog.model.title = '弹窗多选';
-            item.componentType = Dialog;
-            item.props.datalist = dataProp[item.type].props.datalist.concat(item.props.datalist);
-            item.props.dialog.model['footer-hide'] = false;
-            item.props.datalist.forEach((option, i) => {
-              if (option.value === '导入') {
-                item.props.datalist[i].url = item.props.fkobj.url;
-                item.props.datalist[i].sendData = {
-                  table: item.props.fkobj.reftable
-                };
-              }
-            });
-          }
-        }
-        // eslint-disable-next-line no-empty
-        if (item.type === 'Wangeditor') {
-          item.componentType = WangeditorVue;
-        } 
-        item.event = Object.assign({}, this.items.event);
-
-        return item;
-      },
-      filterList() {
-        // 气泡选中过滤条件
-        return this.filterDate;
-      }
-    },
-    methods: {
-      valueChange() { // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        this.$emit('inputChange', this._items.value, this._items, this.index);
-      },
-      // input event
-      inputChange(event, $this) {
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(event, $this);
-        }
-      },
-      inputEnter(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'enter') && typeof this._items.event.enter === 'function') {
-          this._items.event.enter(event, $this);
-        }
-      },
-      inputClick(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'click') && typeof this._items.event.click === 'function') {
-          this._items.event.click(event, $this);
-        }
-      },
-      inputFocus(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'focus') && typeof this._items.event.focus === 'function') {
-          this._items.event.focus(event, $this);
-        }
-      },
-      inputBlur(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this);
-        }
-      },
-      inputKeyUp(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keyup') && typeof this._items.event.keyup === 'function') {
-          this._items.event.keyup(event, $this);
-        }
-      },
-      inputKeyDown(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keydown') && typeof this._items.event.keydown === 'function') {
-          this._items.event.keydown(event, $this);
-        }
-      },
-      inputKeyPress(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keypress') && typeof this._items.event.keypress === 'function') {
-          this._items.event.keypress(event, $this);
-        }
-      },
-      inputRegxCheck(value, $this, errorValue) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'regxCheck') && typeof this._items.event.regxCheck === 'function') {
-          this._items.event.regxCheck(value, $this, errorValue);
-        }
-      },
-
-      // checkbox event
-      checkBoxChange(value, $this) {
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(value, $this);
-        }
-      },
-
-      // select input
-      selectChange(value, $this) {
-        this._items.value = value;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(value, $this);
-        }
-      },
-      selectClear($this) {
-        this._items.value = [];
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
-          this._items.event.clear($this);
-        }
-      },
-      selectOpenChange(value, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'openChange') && typeof this._items.event.openChange === 'function') {
-          this._items.event.openChange(value, $this);
-        }
-      },
-
-
-      // datepick event
-      datePickerChange(value, type, $this) {
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(value, $this);
-        }
-      },
-      datePickerClear($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
-          this._items.event.clear($this);
-        }
-      },
-
-      // TimePicker event
-      timePickerChange(value, timeType, $this) {
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'change') && typeof this._items.event.change === 'function') {
-          this._items.event.change(value, $this);
-        }
-      },
-      timePickerClear($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
-          this._items.event.clear($this);
-        }
-      },
-
-      // fkrpSelected event
-      fkrpSelected(value, $this) {
-        this._items.value = value;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'fkrpSelected') && typeof this._items.event.fkrpSelected === 'function') {
-          this._items.event.fkrpSelected(value, $this);
-        }
-      },
-      inputValueChange(value, $this) {
-        this._items.value = value;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
-          this._items.event.inputValueChange(value, $this);
-        }
-      },
-      fkrpSelectedClear($this) {
-        this._items.value = undefined;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'clear') && typeof this._items.event.clear === 'function') {
-          this._items.event.clear($this);
-        }
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
-          this._items.event.inputValueChange('', $this);
-        }
-      },
-      pageChange(value, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange') && typeof this._items.event.pageChange === 'function') {
-          this._items.event.pageChange(value, $this);
-        }
-      },
-      fkrpSelectedInputFocus(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'focus') && typeof this._items.event.focus === 'function') {
-          this._items.event.focus(event, $this);
-        }
-      },
-      fkrpSelectedInputBlur(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this,this._items);
-        }
-      },
-      fkrpSelectedInputKeyup(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keyup') && typeof this._items.event.keyup === 'function') {
-          this._items.event.keyup(event, $this);
-        }
-      },
-      fkrpSelectedInputKeydown(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keydown') && typeof this._items.event.keydown === 'function') {
-          this._items.event.keydown(event, $this);
-        }
-      },
-      fkrpSelectedPopperShow($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'on-show') && typeof this._items.event['on-show'] === 'function') {
-          this._items.event['on-show']($this);
-        }
-      },
-
-      // AttachFilter event
-      attachFilterChange(value, $this) {
-        this._items.value = value;
-        this.valueChange();
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['popper-value']($this, value, 'change', this.index);
-        }
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
-          this._items.event.inputValueChange(value, $this);
-        }
-      },
-      attachFilterSelected(row, $this) {
-        this._items.value = row.label;
-        this._items.props.selected = row.value;
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['popper-value']($this, row.label, row.value, this.index);
-        }
-      },
-      attachFilterInputFocus(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'focus') && typeof this._items.event.focus === 'function') {
-          this._items.event.focus(event, $this);
-        }
-      },
-      attachFilterInputBlur(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'blur') && typeof this._items.event.blur === 'function') {
-          this._items.event.blur(event, $this);
-        }
-      },
-      attachFilterInputKeyup(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keyup') && typeof this._items.event.keyup === 'function') {
-          this._items.event.keyup(event, $this);
-        }
-      },
-      attachFilterInputKeydown(event, $this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'keydown') && typeof this._items.event.keydown === 'function') {
-          this._items.event.keydown(event, $this);
-        }
-      },
-      attachFilterPopclick(event, row, targName, $this) {
-        if (targName !== 'I' && event !== 1) {
-          // 打开弹窗
-          $this.showModal = true;
-          if (event !== 0) {
-            this.filterDate = JSON.parse(row.label);
-          }
-        } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
-          this._items.event['on-delete']($this, this._items, row.key, this.index);
-        }
-      },
-      attachFilterClear(event, $this) {
-        this._items.value = '';
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          this._items.event['popper-value']($this, '', [], this.index);
-        }
-      },
-      attachFilterPopperShow($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this, this._items, this.index);
-        }
-      },
-      attachFile(index, result, $this) {
-        // 导入功能
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-file') && typeof this._items.event['popper-file'] === 'function') {
-          this._items.event['popper-file']($this, result, this._items, this.index);
-        }
-      },
-      attachFilterOk($this) {
-        if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          if ($this._data.IN.length > 0) {
-            const value = `已经选中${$this._data.IN.length}条数据`;
-            this._items.value = value;
-            this._items.Selected = $this._data.IN;
-            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
-          } else {
-            this._items.value = '';
-            this._items.Selected = [];
-            this._items.event['popper-value']($this, '', $this._data.IN, this.index);
-          }
-        }
-      },
-      uploadFileChange() {
-        // console.log(e);
-      },
-      deleteImg(item, index) {
-        const that = this;
-        this.$Modal.info({
-          mask: true,
-          showCancel: true,
-          title: '提示',
-          content: '此操作将永久删除该图片, 是否继续?',
-          onOk: () => {
-            const HEADIMG = this._items.props.itemdata.valuedata.length > 1 ? JSON.stringify([item]) : '';
-            //  判断parms 是否 需要保存
-            const data = {
-              HEADIMG,
-              ID: that._items.props.itemdata.objId
-            }; 
-            // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
-            // 判断是否有path
-            if (this._items.props.path) {
-              that.deleteImgData({
+    deleteImg(item, index) {
+      const that = this;
+      this.$Modal.info({
+        mask: true,
+        showCancel: true,
+        title: "提示",
+        content: "此操作将永久删除该图片, 是否继续?",
+        onOk: () => {
+          const HEADIMG =
+            this._items.props.itemdata.valuedata.length > 1
+              ? JSON.stringify([item])
+              : "";
+          //  判断parms 是否 需要保存
+          const data = {
+            [that._items.field]:HEADIMG,
+            ID: that._items.props.itemdata.objId
+          };
+          // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
+          // 判断是否有path
+          if (this.$parent.pathcheck!== '') {
+            that.deleteImgData(
+              {
                 data
-              }, index);
-            } else {
-              
-              const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
-              that.upSaveImg(parms, '',index);
-            }
+              },
+              index
+            );
+          } else {
+            const parms = this.pathsCheckout(
+              data,
+              [that._items.field] === "" ? "" : [item]
+            );
+            let path = this.$parent.pathcheck!== '';
+            that.upSaveImg(parms, "", path, index);
           }
-        });
-      },
-      deleteImgData(obj, index) {
-        deleteImg({
-          params: {
-            ...obj
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code === 0) {
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
-            }
+        }
+      });
+    },
+    deleteImgData(obj, index) {
+      deleteImg({
+        params: {
+          ...obj
+        },
+        // eslint-disable-next-line consistent-return
+        success: res => {
+          if (res.data.code === 0) {
+            this._items.props.itemdata.valuedata.splice(index - 1, 1);
+            this._items.value = this._items.props.itemdata.valuedata;
           }
-        });
-      },
-      uploadFileChangeSuccess(result) {
-        const self = this;
-  
-        const resultData = result;
+        }
+      });
+    },
+    uploadFileChangeSuccess(result) {
+      const self = this;
 
-        fkQueuploadProgressry({
-          searchObject: {
-            uploadId: resultData.data.UploadId
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
-            const fixedData = [{ NAME: resultData.data.Name, URL: resultData.data.Url }];
-            
-            let parms = {
-              objId: this._items.props.itemdata.objId,
-              table: this._items.props.itemdata.masterName
-            };
-            //  判断parms 是否 需要保存
-            parms = this.pathsCheckout(parms, fixedData);
-            if (this.$route.params && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
-              //  判断是否需要调用保存
-              self.upSaveImg(parms, fixedData);
-            } else {
-              this._items.props.itemdata.valuedata.push(fixedData[0]);
-            }
+      const resultData = result;
+
+      fkQueuploadProgressry({
+        searchObject: {
+          uploadId: resultData.data.UploadId
+        },
+        // eslint-disable-next-line consistent-return
+        success: res => {
+          if (res.data.code !== 0) {
+            return false;
           }
-        });
-      },
-      pathsCheckout(parms, data) {
-        //  校验 是否 有 path
-        if (!this._items.props.path) {
-          const fixedData = {
-            fixedData: {
-              [this._items.props.itemdata.masterName]: {
-                [this._items.props.itemdata.colname]: data === '' ? '' : JSON.stringify(data)
-              }
-            },
+          const fixedData = [
+            { NAME: resultData.data.Name, URL: resultData.data.Url }
+          ];
+
+          let parms = {
             objId: this._items.props.itemdata.objId,
             table: this._items.props.itemdata.masterName
           };
-          return Object.assign(parms, fixedData);
+          //  判断parms 是否 需要保存
+          parms = this.pathsCheckout(parms, fixedData);
+          if (
+            this.$route.params &&
+            this.$route.params.itemId.toLocaleLowerCase() !== "new"
+          ) {
+            //  判断是否需要调用保存
+            let path = this.$parent.pathcheck!== '';
+            self.upSaveImg(parms, fixedData, path);
+          } else {
+            this._items.props.itemdata.valuedata.push(fixedData[0]);
+          }
         }
+      });
+    },
+    pathsCheckout(parms, data) {
+      //  校验 是否 有 path
+      let pathcheck = this.$parent.pathcheck;
+      let isreftabs = this.$parent.isreftabs;
+      // 子表表明
+      let childTableName = this.$parent.childTableName;
+      console.log(pathcheck,isreftabs,childTableName,this._items.props.itemdata.masterName);
+      if(isreftabs && pathcheck !==''){
+        // 主子表 有path  主表明+子表明 // parms.table 主表
         const parmsdata = {
-          HEADIMG: JSON.stringify(data),
-          ID: parms.objId,
-          ...parms
+              [parms.table]:{
+                [this._items.field]: JSON.stringify(data),
+              },
+              ID: parms.objId,
+              ...parms
+        };
+        // if(childTableName === this._items.props.itemdata.masterName){
+            
+
+        // } else{
+        //      const parmsdata = {
+        //       [parms.table]:{
+        //         [this._items.field]: JSON.stringify(data),
+        //         ID: parms.objId,
+        //       },
+        //       [childTableName]:{
+        //         [this._items.field]: JSON.stringify(data),
+        //       },
+        //       ...parms
+        //       };
+        // }
+        
+        return Object.assign({}, parmsdata);
+
+
+      }else if(isreftabs && pathcheck ===''){
+                // 主子表 无path
+       const fixedData = {
+          fixedData: {
+            [this._items.props.itemdata.masterName]: {
+              [this._items.props.itemdata.colname]:
+                data === "" ? "" : JSON.stringify(data)
+            }
+          },
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        return Object.assign(parms, fixedData);     
+
+
+      }else if(!isreftabs && pathcheck ===''){
+       // 单主表  无path
+       const fixedData = {
+          fixedData: {
+            [this._items.props.itemdata.masterName]: {
+              [this._items.props.itemdata.colname]:
+                data === "" ? "" : JSON.stringify(data)
+            }
+          },
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        return Object.assign(parms, fixedData);   
+
+
+      }else if(!isreftabs && pathcheck !==''){
+        // 单主表  有path
+        const parmsdata = {
+        [this._items.field]: JSON.stringify(data),
         };
         return Object.assign({}, parmsdata);
-      },
-      upSaveImg(obj, fixedData, index) {
-        fkObjectSave({
-          searchObject: {
-            ...obj
-          },
-          // eslint-disable-next-line consistent-return
-          success: (res) => {
-            if (res.data.code !== 0) {
-              return false;
-            }
-            if ( index ) {
-              // 删除
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
-            } else {
-              const data = fixedData[0];
-              if (typeof this._items.props.itemdata.valuedata !== 'object') {
-                this._items.props.itemdata.valuedata = [];
-              }
-            
-              this._items.props.itemdata.valuedata.push({
-                NAME: data.NAME,
-                URL: data.URL
-              });
-            }
-          }
-        });
-      },
-      uploadFileChangeOnerror() {
-        // console.log('err', result);
-      },
-      getWangeditorChangeItem(value) {
-        // 富文本change
-        this._items.value = value;
-        this.valueChange();
-      }
-    },
-    created() {
-      // console.log(this.type,this.formIndex);
 
+      }
+      
+    },
+    upSaveImg(obj, fixedData, path, index) {
+      fkObjectSave({
+        searchObject: {
+          ...obj
+        },
+        url: path ? this.$parent.pathcheck : undefined,
+        // eslint-disable-next-line consistent-return
+        success: res => {
+          if (res.data.code !== 0) {
+            return false;
+          }
+          if (index) {
+            // 删除
+            this._items.props.itemdata.valuedata.splice(index - 1, 1);
+            this._items.value = this._items.props.itemdata.valuedata;
+          } else {
+            const data = fixedData[0];
+            if (typeof this._items.props.itemdata.valuedata !== "object") {
+              this._items.props.itemdata.valuedata = [];
+            }
+
+            this._items.props.itemdata.valuedata.push({
+              NAME: data.NAME,
+              URL: data.URL
+            });
+          }
+           this.valueChange();
+
+        }
+      });
+    },
+    uploadFileChangeOnerror() {
+      // console.log('err', result);
+    },
+    getWangeditorChangeItem(value) {
+      // 富文本change
+      this._items.value = value;
+      this.valueChange();
     }
-  };
+  },
+  created() {
+    // console.log(this.type,this.formIndex);
+  }
+};
 </script>
 
 <style lang="less">
-  .ItemComponentRoot{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top:8px;
+.ItemComponentRoot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 8px;
 
-    .itemLabel{
-      margin-right: 4px;
-      text-align: right;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow:hidden;
-      line-height: 16px;
-      // display: flex;
-      // align-items: center;
-      // justify-content: flex-end;
+  .itemLabel {
+    margin-right: 4px;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 16px;
+    // display: flex;
+    // align-items: center;
+    // justify-content: flex-end;
 
-      i{
-        font-size: 12px;
-        color: red;
-      }
-    }
-
-    .itemComponent{
-      flex: 1;
-      overflow: hidden;
-    }
-    .label-tip{
+    i {
+      font-size: 12px;
       color: red;
-      font-size: 16px;
-      vertical-align: middle;
-      position: relative;
-      top: 3px;
-      right: 3px;
     }
   }
-  .AttachFilter-pop{
-    .icon-bj_tcduo:before{
-        content: "\e6b1";
-    }
+
+  .itemComponent {
+    flex: 1;
+    overflow: hidden;
   }
+  .label-tip {
+    color: red;
+    font-size: 16px;
+    vertical-align: middle;
+    position: relative;
+    top: 3px;
+    right: 3px;
+  }
+}
+.AttachFilter-pop {
+  .icon-bj_tcduo:before {
+    content: "\e6b1";
+  }
+}
 </style>

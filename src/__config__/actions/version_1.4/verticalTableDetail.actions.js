@@ -19,7 +19,7 @@ export default {
     commit('updateFormDataForRefshow');
   },
   getObjectTabForMainTable({ commit, state }, { // 获取主表按钮和子表信息
-    table, objid, type
+    table, objid, type, tabIndex
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -45,7 +45,8 @@ export default {
             if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
               const param = {
                 table: firstReftab.tablename,
-                objid
+                objid,
+                tabIndex
               };
               this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
             }
@@ -55,7 +56,8 @@ export default {
               if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                 const formParam = {
                   table: firstReftab.tablename,
-                  inlinemode: firstReftab.tabinlinemode
+                  inlinemode: firstReftab.tabinlinemode,
+                  tabIndex
                 };
                 this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
@@ -68,8 +70,8 @@ export default {
                     refcolid: firstReftab.refcolid,
                     searchdata: {
                       column_include_uicontroller: true
-                    }
-
+                    },
+                    tabIndex
                   };
                   this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                 }
@@ -80,6 +82,7 @@ export default {
                     table: firstReftab.tablename,
                     objid,
                     refcolid: firstReftab.refcolid,
+                    tabIndex
                   };
                   this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                 }
@@ -91,7 +94,7 @@ export default {
     });
   },
   getObjectTabForRefTable({ commit }, { // 获取子表按钮
-    table, objid
+    table, objid, tabIndex
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -101,12 +104,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateRefButtonsData', resData);
       }
     });
   },
   getFormDataForRefTable({ commit }, { // 获取子表表单数据
-    table, inlinemode
+    table, inlinemode, tabIndex
   }) {
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
@@ -114,12 +118,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateFormDataForRefTable', resData);
       }
     });
   },
   getObjectTableItemForTableData({ commit }, { // 获取子表列表数据
-    table, objid, refcolid, searchdata // fixedcolumns - objectIds
+    table, objid, refcolid, searchdata, tabIndex // fixedcolumns - objectIds
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTableItem', urlSearchParams({
@@ -130,13 +135,16 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateTableListForRefTable', resData);
       }
     });
   },
   
   // 按钮
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) { // 获取子表面板信息
+  getItemObjForChildTableForm({ commit }, {
+    table, objid, refcolid, tabIndex 
+  }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -146,6 +154,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
@@ -171,12 +180,13 @@ export default {
             add[tableName].ISACTIVE = 'Y';
             if (Object.values(itemAdd[itemName]).length > 0) {
               itemAdd[itemName].ID = objId;
-              itemAdd[itemName] = [
-                itemAdd[itemName]
+              const itemTableAdd = Object.assign({}, itemAdd);
+              itemTableAdd[itemName] = [
+                itemTableAdd[itemName]
               ];
               parames = {
                 ...add,
-                ...itemAdd
+                ...itemTableAdd
               };
             } else {
               parames = {
@@ -184,16 +194,17 @@ export default {
               };
             }
           } else if (Object.values(itemAdd[itemName]).length > 0) {
-            itemAdd[itemName].ID = objId;
-            itemAdd[itemName] = [
-              itemAdd[itemName]
+            const itemTableAdd = Object.assign({}, itemAdd);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
             ];
             parames = {
               table: tableName, // 主表表名
               objId, // 固定传值-1 表示新增
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...add,
-                ...itemAdd,
+                ...itemTableAdd,
               }
             };
           } else {
@@ -219,7 +230,7 @@ export default {
             }
           };
         }
-      } else 
+      } else
       if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
@@ -237,27 +248,14 @@ export default {
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
       const { sataType } = parame;
+      const sataTypeName = sataType ? sataType.sataType : '';
       if (isreftabs) {
-        const itemModify = itemCurrentParameter.modify;
-        if (sataType === 'itemSave') { // 子表保存
+        const itemModify = itemCurrentParameter.modify;// 子表修改
+        const itemAdd = itemCurrentParameter.add;// 子表新增
+        const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+
+        if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            // let itmValues = itemModify[itemName];
-            // if (Object.values(itemModify[itemName]).length > 0) {
-            //   itemModify[itemName].ID = objId;
-            //   itemModify[itemName] = [
-            //     itemModify[itemName]
-            //   ];
-            // } else {
-            //   itemModify[itemName].ID = objId;
-            // }
-            if (itemModify[itemName]) { 
-              itemModify[itemName].ID = -1; 
-              itemModify[itemName] = [
-                itemModify[itemName]
-              ];
-            } else {
-              itemModify[itemName].ID = objId;
-            }
             if (enter) {
               modify[tableName].ID = objId;
             }
@@ -266,16 +264,6 @@ export default {
               ...itemModify
             };
           } else {
-            const itmValues = itemModify[itemName];
-
-            if (itmValues instanceof Array === true) { // 判断上下结构是子表修改还是子表新增
-              itmValues.ID = objId;
-            } else {
-              itmValues.ID = -1;
-              itemModify[itemName] = [
-                itmValues
-              ]; 
-            }
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
@@ -283,22 +271,45 @@ export default {
                 ...itemModify
               }
             };
-          } 
+          }
+        } else if (sataTypeName === 'add') { // 子表新增保存
+          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          add.ID = -1;
+          const addItemName = {};
+          addItemName[itemName] = itemName;
+          addItemName[itemName] = [
+            add
+          ];
+          modify[tableName].ID = objId;
+          if (path) {
+            parames = {
+              ...modify,
+              ...addItemName
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...itemAdd
+              }
+            };
+          }
         } else if (path) { // 主表保存有path的参数
           modify[tableName].ID = objId;// 主表id
           parames = {
             ...modify
           };
         } else { // 带子表的没有path的主表保存
-          const itmValues = itemModify[itemName];
-          itemModify[itemName] = [
-            itmValues
-          ]; 
+          // const itmValues = modify[itemName];
+          // modify[itemName] = [
+          //   itmValues
+          // ];
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
+              ...modify
             }
           };
         }
@@ -375,7 +386,7 @@ export default {
 
   
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
@@ -388,12 +399,10 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
@@ -406,12 +415,10 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject 
+    objId, table, path, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
@@ -425,8 +432,6 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   getExportQueryForButtons({ commit }, // 导出
@@ -441,8 +446,20 @@ export default {
       } else {
         reject();
       }
-    }).catch(() => {
-      reject();
+    });
+  },
+  getObjTabActionSlientConfirm({ commit }, {
+    params, path, resolve, reject
+  }) { // 获取作废数据
+    network.post(path || '/p/cs/exeAction', params).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
+
+        commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
+      }
     });
   },
 };

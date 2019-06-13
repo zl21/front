@@ -8,14 +8,14 @@ module.exports = () => ({
     index: './index.publish.js'
   },
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].js',
+    filename: 'r3.min.js',
     path: path.join(__dirname, './publish'),
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
+  devtool: 'source-map',
   externals: {
     vue: {
       commonjs: 'vue',
@@ -40,6 +40,18 @@ module.exports = () => ({
       commonjs2: 'axios',
       amd: 'axios',
       root: 'axios'
+    },
+    'ag-grid': {
+      commonjs: 'ag-grid',
+      commonjs2: 'ag-grid',
+      amd: 'ag-grid',
+      root: 'agGrid'
+    },
+    'burgeon-ui': {
+      commonjs: 'burgeon-ui',
+      commonjs2: 'burgeon-ui',
+      amd: 'burgeon-ui',
+      root: 'Ark'
     }
   },
   module: {
@@ -75,7 +87,19 @@ module.exports = () => ({
         }],
       },
       {
-        test: /\.(png|jpg|gif|woff|woff2|eot|ttf|otf|svg)$/,
+        test: /\.(png|jpg|gif|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              name: '[path][name].[ext]'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
             loader: 'file-loader',
@@ -95,10 +119,5 @@ module.exports = () => ({
   mode: 'production',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
   },
 });

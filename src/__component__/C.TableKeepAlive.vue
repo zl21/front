@@ -11,6 +11,7 @@
 <script>
   import Vue from 'vue';
   import { mapState } from 'vuex';
+  import PageNotFound from './PageNotFound';
   import CustomizeModule from '../__config__/customize.config';
   import { CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX } from '../constants/global';
   
@@ -31,12 +32,14 @@
     },
     methods: {
       generateComponent() {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== CUSTOMIZED_MODULE_PREFIX) { return; }
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
-          Vue.component(componentName, customizeModules[customizedModuleName].component);
+          const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
+          Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
         }
         this.currentModule = componentName;
       }

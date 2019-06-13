@@ -65,7 +65,7 @@
       }, // 是否可以拖动
       mask: {
         type: Boolean,
-        default: () => false
+        default: () => true
       }, // 是否显示遮罩层
 
       maskClosable: {
@@ -148,5 +148,8 @@
   border-radius: 2px;
   height: 26px;
   line-height: 0px;
+}
+.burgeon-modal-content-drag{
+  min-width: 520px !important;
 }
 </style>

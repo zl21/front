@@ -1,8 +1,12 @@
 {
-  "name": "r3-frame",
-  "version": "0.0.1",
+  "name": "burgeon-r3",
+  "version": "0.0.4",
   "description": "A Project for R3 Erp.",
-  "main": "index.js",
+  "main": "publish/r3.min.js",
+  "files": [
+    "publish/r3.min.js",
+    "publish/r3.min.js.map"
+  ],
   "scripts": {
     "start": "webpack-dev-server --progress --env.develop",
     "build": "webpack --color --progress --config webpack.config.js --env.production",
@@ -23,11 +27,12 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^8.0.5",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
-    "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "clean-webpack-plugin": "^1.0.1",
+    "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.0",
     "eslint": "^5.12.1",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -41,6 +46,7 @@
     "less-loader": "^4.1.0",
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.1",
+    "url-loader": "^2.0.0",
     "vue-loader": "^15.6.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.8",

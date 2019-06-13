@@ -20,6 +20,7 @@ export default {
   },
   updateMainTabPanelsData(state, data) { // 更新主表tab数据
     const arr = [];
+    data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
       const obj = { ...item };
       obj.label = item.tabledesc;
@@ -45,6 +46,7 @@ export default {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
         delete: Object.assign({}, { [item.tablename]: {} }),
+        addDefault: Object.assign({}, { [item.tablename]: {} }),
         default: {},
         checkedInfo: {},
         changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
@@ -58,21 +60,20 @@ export default {
     mainFormInfo.buttonsData.data = data;
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.buttonsData.isShow = false;
     componentAttribute.buttonsData.data = data;
   },
   updateFormDataForRefTable(state, data) { // 更新子表表单数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.formData.isShow = data.inpubobj && data.inpubobj.length > 0;
-    console.log(data, 'formmm');
     componentAttribute.formData.data = data || [];
   },
   updateFormDataForRefshow(state) { // 去除子表缓存
     state.mainFormInfo.formData.isShow = false;
   },
   updateTableListForRefTable(state, data) { // 更新子表列表数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = data.tabth && data.tabth.length > 0;
     componentAttribute.tableData.data = data;
   },
@@ -88,6 +89,9 @@ export default {
   updateModifyData(state, data) {
     state.updateData[data.tableName].modify = data.value;
   },
+  updateAddDefaultData(state, data) {
+    state.updateData[data.tableName].addDefault = data.value;
+  },
   updateDeleteData(state, data) {
     state.updateData[data.tableName].delete = data.value;
   },
@@ -98,7 +102,7 @@ export default {
     state.updateData[data.tableName].checkedInfo = data.value;
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
+    const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.panelData.isShow = true;
     componentAttribute.panelData.data = data;
   },
@@ -122,7 +126,7 @@ export default {
     //   if (item.parentdesc === '日志') {
     //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
     //   }
-    //   return state.defaultDataForCopy; 
+    //   return state.defaultDataForCopy;
     // });
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
@@ -149,12 +153,12 @@ export default {
                   } else {
                     copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                   }
-                } 
+                }
               }
             });
           });
         });
-      }); 
+      });
       state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
       Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);

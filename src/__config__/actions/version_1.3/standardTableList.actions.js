@@ -19,12 +19,13 @@ export default {
       commit('updateTableData', updateTableData);
     });
   },
-  getTableQueryForForm({ commit }, { table }) {
+  getTableQueryForForm({ commit }, { table, resolve }) {
     network.post('/p/cs/getTableQuery', urlSearchParams({
       table,
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
+        resolve();
         const queryData = res.data;
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
@@ -95,14 +96,14 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  importGetUploadParametersForButtons({ commit }) {
-    network.post('/p/cs/settings', urlSearchParams({
-      configNames: JSON.stringify(['upload.import.max-file-size'])
-    })).then((res) => {
-      const data = res.data;
-      commit('updateButtonImportGetUploadParameters', data);
-    });
-  },
+  // importGetUploadParametersForButtons({ commit }) {
+  //   network.post('/p/cs/settings', urlSearchParams({
+  //     configNames: JSON.stringify(['upload.import.max-file-size'])
+  //   })).then((res) => {
+  //     const data = res.data;
+  //     commit('updateButtonImportGetUploadParameters', data);
+  //   });
+  // },
   downloadImportTemplateForButtons({ commit }, tableName) {
     network.post('/p/cs/downloadImportTemplate', urlSearchParams({
       searchdata: {

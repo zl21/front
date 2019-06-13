@@ -13,6 +13,8 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      object-type="vertical"
+      :is-main-table="true"
       :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
@@ -20,6 +22,8 @@
       module-form-type="vertical"
       :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
       :paths="formPaths"
+      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+      :child-table-name="getItemName"
       type="PanelForm"
       @formChange="formChange"
       @InitializationForm="InitializationForm"
@@ -50,7 +54,7 @@
 
 
   export default {
-    name: 'VTableDetail',
+    // name: 'VTableDetail',
     computed: {
       tabPanels() {
         const arr = [];
@@ -95,7 +99,7 @@
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-      this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+      this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex });
     },
     methods: {
       InitializationForm(val) {
@@ -134,18 +138,19 @@
           // 获取子表表单
           const formParam = {
             table: refTab.tablename,
-            inlinemode: refTab.tabinlinemode
+            inlinemode: refTab.tabinlinemode,
+            tabIndex: index
           };
           this.getFormDataForRefTable(formParam);
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
+          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
         }
         if (refTab.tabrelation === '1:m') {
           this.getObjectTableItemForTableData({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }
+            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }, tabIndex: index
           });
         } else if (refTab.tabrelation === '1:1') {
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId });
-          this.getItemObjForChildTableForm({ table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid });
+          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
+          this.getItemObjForChildTableForm({ table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index });
         }
       },
     },

@@ -40,7 +40,8 @@ export default () => ({
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -58,7 +59,8 @@ export default () => ({
         'copyDefaultData',
         'updateUnSubmitData',
         'updateTableListForRefTable',
-        'updateTablePageInfo'
+        'updateTablePageInfo',
+        'updateAddDefaultData',
         // 'resetFormReadOnlyAttribute'
 
       ]),

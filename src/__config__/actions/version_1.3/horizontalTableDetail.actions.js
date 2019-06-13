@@ -2,7 +2,7 @@ import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
-  getObjectTabForMainTable({ commit }, { table, objid }) {
+  getObjectTabForMainTable({ commit }, { table, objid, tabIndex }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -16,14 +16,15 @@ export default {
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
-            objid
+            objid,
+            tabIndex
           };
           this._actions[`${getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }
     });
   }, // 获取主表按钮和子表信息
-  getObjectTabForChildTableButtons({ commit }, { maintable, table, objid }) {
+  getObjectTabForChildTableButtons({ commit }, { maintable, table, objid, tabIndex }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -34,11 +35,12 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
       }
     });
   }, // 获取子表按钮
-  getObjectForMainTableForm({ commit }, { table, objid }) {
+  getObjectForMainTableForm({ commit }, { table, objid, tabIndex }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/getObject', urlSearchParams({
@@ -47,11 +49,12 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
   }, // 获取主表面板信息
-  getInputForitemForChildTableForm({ commit }, { table }) {
+  getInputForitemForChildTableForm({ commit }, { table, tabIndex }) {
     // 参数说明 table 子表表名
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
@@ -59,11 +62,12 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updateFormData', formData);
       }
     });
   }, // 获取子表表单信息
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid }) {
+  getItemObjForChildTableForm({ commit }, { table, objid, refcolid, tabIndex }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -73,12 +77,13 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
+        formData.tabIndex = tabIndex;
         commit('updatePanelData', formData);
       }
     });
   }, // 获取子表面板信息
   getObjectTableItemForTableData({ commit }, {
-    table, objid, refcolid, searchdata
+    table, objid, refcolid, searchdata, tabIndex
   }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id,searchdata查询条件
     const id = objid === 'New' ? '-1' : objid;
@@ -90,6 +95,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const tableData = res.data.data;
+        tableData.tabIndex = tabIndex;
         commit('updateTableData', tableData);
       }
     });

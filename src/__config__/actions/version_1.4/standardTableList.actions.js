@@ -3,8 +3,17 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 
 export default {
+  setColHide(store, data) {
+    network.post('/p/cs/setHideColumn', urlSearchParams(data));
+  },
+  setColPosition(store, data) {
+    network.post('/p/cs/setColPosition', urlSearchParams(data));
+  },
+  setColPin(store, data) {
+    network.post('/p/cs/setFixedColumn', urlSearchParams(data));
+  },
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -13,19 +22,21 @@ export default {
         range: range || 10,
         fixedcolumns,
         column_include_uicontroller,
+        orderby
       }
     })).then((res) => {
       const updateTableData = res.data.data;
       commit('updateTableData', updateTableData);
     });
   },
-  getTableQueryForForm({ commit }, { table }) {
+  getTableQueryForForm({ commit }, { searchData, resolve }) {
     network.post('/p/cs/getTableQuery', urlSearchParams({
-      table,
+      table: searchData.table,
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data.data;
+        resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
@@ -43,7 +54,7 @@ export default {
       if (res.data.code === 0) {
         resolve();
         const data = res.data.data;
-        commit('updateButtonsExport', data,);
+        commit('updateButtonsExport', data);
       } else {
         reject();
       }
@@ -64,7 +75,7 @@ export default {
         resolve();
         const deleteTableData = res.data;
         commit('updateButtonDeleteData', deleteTableData);
-        commit('updateButtonsExport', data,);
+        commit('updateButtonsExport', deleteTableData);
       } else {
         reject();
       }
@@ -73,17 +84,6 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {
-    // debugger;
-    // let param = {};
-    // if (item.action) {
-    //   param = {};
-    // } else {
-    //   param = {
-    //     actionid: item.webid,
-    //     webaction: null,
-    //     param: JSON.stringify(obj),
-    //   };
-    // }
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
@@ -147,10 +147,8 @@ export default {
         commit('batchVoidForButtonsData', data);
       } else {
         reject();
-        commit('batchVoidForButtonsData', data.data,);
+        commit('batchVoidForButtonsData', data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
   batchSubmitForButtons({ commit }, {
@@ -165,9 +163,8 @@ export default {
         commit('updateButtonbatchSubmitData', res.data);
       } else {
         reject();
+        commit('updateButtonbatchSubmitData', res.data.data);
       }
-    }).catch(() => {
-      reject();
     });
   },
  
@@ -180,6 +177,7 @@ export default {
         commit('updateButtonbatchUnSubmitData', res.data.message);
       } else {
         reject();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
       }
     }).catch(() => {
       reject();

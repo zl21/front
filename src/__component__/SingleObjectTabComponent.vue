@@ -17,6 +17,8 @@
       :is="'CompositeForm'"
       v-if="formData.isShow"
       v-show="status === 1"
+      :object-type="type"
+      :is-main-table="isMainTable"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -25,6 +27,8 @@
       class="form"
       :default-data="formData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :child-table-name="tableName"
       @on-formEnter="formEnter"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -33,6 +37,8 @@
     <component
       :is="'CompositeFormPanel'"
       v-if="panelData.isShow"
+      :is-main-table="isMainTable"
+      :object-type="type"
       :objreadonly="objreadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
@@ -42,6 +48,8 @@
       type="PanelForm"
       :default-data="panelData.data"
       :paths="formPaths"
+      :isreftabs="isreftabs"
+      :child-table-name="tableName"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"
@@ -100,6 +108,10 @@
       isreftabs: {
         type: Boolean,
       },
+      isMainTable: {
+        type: Boolean,
+        default: false
+      }, // 判断是否是主表
       objreadonly: {
         type: Boolean,
       },
@@ -252,18 +264,50 @@
               const objId = itemId;
               const sataType = 'itemSave';
               const enter = 'enterSave';
-              if (savePath) { // 配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
+              if (this.type === 'vertical') {
+                if (savePath) { // 配置path
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
+
+                // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                } else { // 没有配置path
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                }
+                const store = this.$store.state[getModuleName()];
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                }
+                const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+                if (Object.keys(add).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                }
+              } else if (savePath) { // 配置path
+                // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
+                const store = this.$store.state[getModuleName()];
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                }
+                const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+                if (Object.keys(add).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                }
 
                 // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                const store = this.$store.state[getModuleName()];
+                if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                }
+                const add = Object.assign({}, store.updateData[itemName].add[itemName], store.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+                if (Object.keys(add).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                }
               }
             }
           }
         }
       },
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter) { // 主表新增保存方法
+        const tabIndex = this.tabCurrentIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
 
@@ -288,7 +332,13 @@
         });
 
         // this.performMainTableSaveAction(parame);
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        if (this.type === 'vertical') {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: {} });
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+        } else {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+          // this.updateChangeData({ tableName: this.itemName, value: {} });
+        }
         promise.then(() => {
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;
@@ -318,27 +368,27 @@
             };
             // this.updateChangeData({ tableName: this.tableName, value: {} });
             this.$store.commit('global/tabHref', tab);
-          } 
+          }
 
 
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
             });
-            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename });
+            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex });
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
 
             // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
             //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             // });
           } else if (itemId === 'New') {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: id });
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: id, tabIndex });
           } else {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId });
+            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
+            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
           }
           this.$Message.success(message);
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
@@ -412,25 +462,16 @@
       },
       formChange(val, changeVal) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
         this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
-        }
+        this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
       },
       initForm(val) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
-        }
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
+        this.$store.commit(`${getModuleName()}/updateAddDefaultData`, { tableName, value: obj });
       },
       verifyForm(data) {
         const { tableName } = this;
@@ -468,12 +509,7 @@
       },
       tableDataChange(data) {
         const { tableName } = this;
-        const { itemId } = this.$route.params;
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: data });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
-        }
+        this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
       },
       tableSelectedRow(data) {
         const { tableName } = this;

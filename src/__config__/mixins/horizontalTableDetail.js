@@ -37,7 +37,8 @@ export default () => ({
         'getObjectTableItemForTableData',
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
-        'getExportQueryForButtons'
+        'getExportQueryForButtons',
+        'getObjTabActionSlientConfirm'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -50,7 +51,12 @@ export default () => ({
         'updateCopyData',
         'changeFormDataForCopy',
         'updateTableData',
-        'updateTablePageInfo'
+        'updateTablePageInfo',
+        'updateModifyData',
+        'updateAddDefaultData',
+        'updateAddData',
+        'updateDeleteData'
+
       ]),
   },
   beforeDestroy() {

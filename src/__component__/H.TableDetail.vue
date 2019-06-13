@@ -16,7 +16,6 @@
   import tabComponent from './SingleObjectTabComponent';
 
   export default {
-    name: 'HTableDetail',
     data() {
       return {
       };
@@ -33,6 +32,7 @@
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
+              obj.componentAttribute.isMainTable = true;
             }
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
@@ -55,30 +55,30 @@
       tabClick(index) {
         this.updateTabCurrentIndex(index);
         if (index === 0) {
-          this.getMainTable();
+          this.getMainTable(index);
         } else {
           if (this.tabPanel[index].tabrelation === '1:m') {
             if (this.tabPanel[index].refcolid !== -1) {
-              this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename });
+              this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index });
             }
             const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
-            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
+            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
             this.getObjectTableItemForTableData({
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
+              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex: index
             });
           } else if (this.tabPanel[index].tabrelation === '1:1') {
             const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
-            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId });
-            this.getItemObjForChildTableForm({ table: tablename, objid: itemId, refcolid });
+            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
+            this.getItemObjForChildTableForm({ table: tablename, objid: itemId, refcolid, tabIndex: index });
           }
         }
       }, // tab切换触发的方法
-      getMainTable() {
+      getMainTable(index) {
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        this.getObjectTabForMainTable({ table: tableName, objid: itemId });
+        this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: index });
       }
     },
     activated() {
@@ -87,7 +87,7 @@
     mounted() {
     },
     created() {
-      this.getMainTable();
+      this.getMainTable(this.tabCurrentIndex);
     }
   };
 </script>

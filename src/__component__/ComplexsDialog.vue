@@ -4,6 +4,7 @@
       :treedata="Tree"
       :loading="loading"
       :tree-loading="tree_loading"   
+      ref="dialog"
       :table-loading="tableLoading"
       :component-data="componentData"
       :result-data="resultData"
@@ -152,46 +153,55 @@
       treeChecked() {
         // tree_lists 树形结构重新组合
         const self = this;
-        this.treedata.map((option) => {
-          option.checked = false;
-          option.children.map((item) => {
-            if ((item.ID.toString()).indexOf(self.HRORG_ID.join(',')) === -1) {
-              item.checked = true;
-            } else {
-              item.checked = false;
-              return item;
-            }
-          });
-          return option;
+        this.treedata.forEach((item,index) => {
+         this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
+        // ((option) => {
+        //   option.checked = false;
+        //   option.children.map((item) => {
+        //     if ((item.ID.toString()).indexOf(self.HRORG_ID.join(',')) === -1) {
+        //       item.checked = true;
+        //     } else {
+        //       item.checked = false;
+
+        //       return item;
+        //     }
+        //   });
+        //   return option;
+        // });
+
       },
-      dateRestructure(data, index, type) {
+      dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
-        this.IN = data.ids || [];
-        if (index === 1 && type !== 'search') {
-          this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
-          this.resultData.list.map((item) => {
-            if (item.exclude) {
-              item.exclude = false;
-            } else {
-              item.exclude = true;
-            }
-            item.string = item.screen_string;
-            item.ID = item.id_list;
-            return item;
-          });
-          this.resultData.total = data.data.total;
-        }
+          if(name !== 'clear'){
+              this.IN = data.ids || [];
+                if (index === 1 && type !== 'search') {
+                this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
+                this.resultData.list.map((item) => {
+                  if (item.exclude) {
+                    item.exclude = false;
+                  } else {
+                    item.exclude = true;
+                  }
+                  item.string = item.screen_string;
+                  item.ID = item.id_list;
+                  return item;
+                });
+              this.resultData.total = data.data.total;
+          }
 
+        }
+        
 
         this.componentData[index] = Object.assign(this.componentData[index], data.data);
 
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
+        console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
@@ -371,7 +381,11 @@
         this.sendMessage.GLOBAL = str[0].trim();
         this.sendMessage.CONDITION = {};
         this.clearIndexPage();
-        this.multipleSelectionTable(this.sendMessage, this.index, 'search');
+        if( this.index  === 0){
+          this.multipleSelectionTable(this.sendMessage, this.index, 'search');
+        } else {
+          this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
+        }
       },
       clearIndexPage() {
         // 清除页面选中值
@@ -385,8 +399,7 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         this.loading = true;
-        
-        
+        //this.sendMessage = 
         if (this.HRORG_ID.length > 0) {
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
@@ -469,6 +482,7 @@
         }
       },
       deleBtn() {
+        // 清除全部
         this.resultData.list = [];
         this.text.result = [];
         this.IN = [];
@@ -476,11 +490,14 @@
         this.resultData.total = 0;
         this.sendMessage.CONDITION = '';
         this.EXCLUDE = '';
+        console.log(this.componentData);
+        this.componentData[1].list = [];
         this.clearIndexPage();
       },
       saveBtn(value) {
         if (value.length < 1) {
           this.$Message.info('模板名称不能为空');
+          return false;
         }
 
         const savemessage = {
@@ -504,6 +521,8 @@
         this.sendMessage.GLOBAL = '';
         this.sendMessage.PAGENUM = 1;
         this.sendMessage.PAGESIZE = 50;
+        
+        console.log(this.$refs.dialog.$refs.Tree);
         this.treeChecked();
         this.multipleSelectionTable(this.sendMessage, 0);
       },
@@ -547,7 +566,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (obj.clear !== '1') {
-              this.dateRestructure(res.data.data, index, name);
+              this.dateRestructure(res.data.data, index, name,'clear');
             }
             this.tableLoading = false;
           }
@@ -557,7 +576,6 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
-        
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {

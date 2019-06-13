@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -431,8 +431,8 @@
                     refcolid,
                     searchdata: {
                       column_include_uicontroller: true,
-                      startindex: 0,
-                      range: 10,
+                      startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+                      range: this.pageInfo.pageSize,
                       fixedcolumns: {}
                     }
                   });
@@ -512,7 +512,7 @@
         this.updateTablePageInfo({
           currentPageIndex: this.dataSource.start + 1,
           pageSize: this.dataSource.defaultrange
-        })
+        });
         // 组装beforeData
         if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tableName]) {
           return;
@@ -1454,8 +1454,8 @@
           }));
         }
         combobox.push({
-            value: '',
-            label: '请选择'
+          value: '',
+          label: '请选择'
         });
         return combobox;
       },
@@ -1519,6 +1519,9 @@
         }
         .detail-search-input {
           margin-left: 10px;
+          .burgeon-input-group {
+            top: 0px;
+          }
           .burgeon-input-group-with-prepend {
             width: 190px;
           }

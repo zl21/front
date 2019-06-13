@@ -27,6 +27,10 @@
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
+      :on-sort-changed="onSortChange"
+      :on-column-moved="onColumnMoved"
+      :on-column-pinned="onColumnPinned"
+      :on-column-visible-changed="onColumnVisibleChanged"
     />
     <Modal
       v-if="buttons.actionDialog.show"
@@ -99,7 +103,6 @@
   // eslint-disable-next-line import/no-dynamic-require
   const importCustom = file => require(`../__component__/${file}.vue`).default;
   export default {
-    name: 'StandardTableList',
     components: {
       ButtonGroup,
       AgTable,
@@ -115,7 +118,8 @@
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
-          range: 10
+          range: 10,
+          orderby: undefined
         },
         formItemsLists: [],
         modifyDialogshow: false, // 批量修改弹窗
@@ -212,6 +216,35 @@
           this.tabHref(tab);
         }
       }, // ag表格行双击回调
+      onSortChange(sortArr) {
+        const { tableName } = this.$route.params;
+        this.searchData.orderby = sortArr.map(d => ({
+          column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+          asc: d.sort === 'asc'
+        }));
+        this.getQueryList();
+      },
+      onColumnMoved(cols) {
+        const { tableId } = this.$route.params;
+        this.setColPosition({
+          tableid: tableId,
+          colposition: cols
+        });
+      },
+      onColumnPinned(pinnedCols) {
+        const { tableId } = this.$route.params;
+        this.setColPin({
+          tableid: tableId,
+          fixedcolumn: pinnedCols
+        });
+      },
+      onColumnVisibleChanged(hideCols) {
+        const { tableId } = this.$route.params;
+        this.setColHide({
+          tableid: tableId,
+          hidecolumns: hideCols
+        });
+      },
 
       // 表单操作
       refactoringData(defaultFormItemsLists) {
@@ -332,6 +365,8 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
+                  this.formItemsLists[itemIndex].item.props.data = {};
+                  // 初始化清空数据
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
@@ -432,11 +467,11 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
-                obj.item.props.defaultSelected = this.defaultValue(current);
+                obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'mrp':
                 obj.item.props.single = false;
-                obj.item.props.defaultSelected = this.defaultValue(current);
+                obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'pop':
                 obj.item.props.fkobj = current.fkobj;
@@ -444,7 +479,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = '/p/cs/menuimport';
+                obj.item.props.fkobj.url =  obj.item.props.serviceId +'/p/cs/menuimport';
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 break;
@@ -787,7 +822,14 @@
           ids: this.buttons.selectIdArr,
           menu: this.buttons.tabledesc
         };
-        this.getExeActionDataForButtons({ item, obj });
+        const promise = new Promise((resolve, reject) => {
+          this.getExeActionDataForButtons({
+            item, obj, resolve, reject 
+          });
+        });
+        promise.then(() => {
+          
+        });
         let successAction = null;
         let errorAction = null;
         let refParam = null;
@@ -1040,7 +1082,7 @@
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
           this.setImportDialogTitle();
-          this.importGetUploadParametersForButtons(); // 调用导入参数接口
+          // this.importGetUploadParametersForButtons(); // 调用导入参数接口
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
@@ -1125,6 +1167,9 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
+        }).catch(() => {
+          this.$loading.hide();
+          this.getQueryListForAg(this.searchData);
         });
       },
       batchVoid() {
@@ -1140,7 +1185,7 @@
         promise.then(() => {
           // this.$loading.hide();
 
-          const message = this.buttons.batchVoidForButtonsData;
+          const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             title: '成功',
             content: `${message}`
@@ -1430,10 +1475,13 @@
     },
     mounted() {
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
-      this.getTableQuery();
-      setTimeout(() => {
+      const promise = new Promise((resolve, reject) => {
+        const searchData = this.searchData;
+        this.getTableQueryForForm({ searchData, resolve, reject }); 
+      });
+      promise.then(() => {
         this.getbuttonGroupdata();
-      }, 1000);
+      });
     },
     activated() {
       const { tableId } = this.$route.params;

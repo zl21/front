@@ -1,63 +1,51 @@
-import Vue from 'vue';
-import BurgeonUi from 'burgeon-ui';
-import 'burgeon-ui/dist/styles/burgeon-ui.css';
-import './src/assets/iconfont-r3/iconfont.css';
-import { getGuid } from './src/__utils__/random';
-import router from './src/__config__/router.config';
-import store from './src/__config__/store.config';
-import App from './src/App';
-import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
-import './src/assets/theme/custom.less';
-import './src/constants/dateApi';
+import launchApp from './src/app.entry';
+import network, { urlSearchParams } from './src/__utils__/network';
 
-import network from './src/__utils__/network';
-import { enableGateWay } from './src/constants/global';
-import CompositeForm from './src/__component__/CompositeForm';
-
-Vue.component('CompositeForm', CompositeForm);
-Vue.use(BurgeonUi);
-const createDOM = () => {
-  const div = document.createElement('div');
-  div.setAttribute('id', getGuid());
-  document.body.appendChild(div);
-  return div;
+const validateConfig = (config) => {
+  return {
+    isQualified: true,
+    message: 'xxx'
+  };
 };
 
-const init = () => {
-  const rootDom = createDOM();
-
-
-  window.vm = new Vue({
-    router,
-    store,
-    render: createElement => createElement(App)
-  }).$mount(rootDom);
-};
-const getCategory = () => {
-  network.post('/p/cs/getSubSystems').then((res) => {
-    if (res.data.data) {
-      const serviceIdMaps = res.data.data.map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
-        .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
-      window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+export default {
+  version: '0.0.4',
+  /**
+   * @param projectConfig 项目配置
+   * projectConfig: {
+   *   image: {
+   *     enterpriseLogo: '',  // 公司 Logo 图片
+   *     enterpriseBanner: '', // 公司Banner 图片
+   *   },
+   *   globalComponent: {
+   *     Login: '',  // 登录页
+   *     WelcomePage: '', // 欢迎页
+   *   },
+   *   externalModules: {
+   *      key-1: VueComponent-1
+   *      key-2: VueComponent-2
+   *      ...
+   *   }
+   * }
+   */
+  launchApplication(projectConfig) {
+    const validateInfo = validateConfig(projectConfig);
+    if (!validateInfo.isQualified) {
+      alert(validateInfo.message);
+      return;
     }
-  });
-};
-const getGateWayServiceId = () => {
-  network.get('/p/c/get_service_id').then((res) => {
-    window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-    getCategory();
-    setTimeout(() => {
-      init();
-    }, 0);
-  });
-};
+    if (projectConfig.externalModules) {
+      const m = projectConfig.externalModules;
+      // 将外部自定义界面入口模块的标识key置为大写
+      projectConfig.externalModules = Object.keys(m).reduce((a, c) => {
+        a[c.toUpperCase()] = m[c];
+        return a;
+      }, {});
+    }
+    window.ProjectConfig = projectConfig;
 
-if (enableGateWay) {
-  getGateWayServiceId();
-} else {
-  init();
-}
+    launchApp(projectConfig);
+  },
+  urlSearchParams,
+  network,
+};

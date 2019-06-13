@@ -16,6 +16,9 @@ export default () => ({
   methods: {
     ...mapActions(getComponentName(),
       [
+        'setColHide',
+        'setColPin',
+        'setColPosition',
         'getQueryListForAg',
         'getTableQueryForForm',
         'getExportQueryForButtons',
