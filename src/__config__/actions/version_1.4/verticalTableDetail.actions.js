@@ -142,7 +142,9 @@ export default {
   },
   
   // 按钮
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid, tabIndex }) { // 获取子表面板信息
+  getItemObjForChildTableForm({ commit }, {
+    table, objid, refcolid, tabIndex 
+  }) { // 获取子表面板信息
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -272,16 +274,17 @@ export default {
           }
         } else if (sataTypeName === 'add') { // 子表新增保存
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          itemAdd[itemName].ID = -1;
-          itemAdd[itemName] = [
-            itemAdd[itemName]
+          add.ID = -1;
+          const addItemName = {};
+          addItemName[itemName] = itemName;
+          addItemName[itemName] = [
+            add
           ];
           modify[tableName].ID = objId;
           if (path) {
             parames = {
               ...modify,
-              ...itemAdd
+              ...addItemName
             };
           } else {
             parames = {

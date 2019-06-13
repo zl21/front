@@ -96,8 +96,10 @@ export default {
   updateButtonDownloadImportTemplate({ buttons }, data) {
     buttons.importTemplate = data;
   },
-  updateButtonDeleteData({ buttons }, data) {
+  updateButtonDeleteData({ buttons, ag }, data) {
     buttons.batchDeleteData = data;
+    ag.datas.deleteFailInfo = data;
+    ag.datas = Object.assign({}, ag.datas);
   },
   setErrorModalValue({ buttons }, {
     title, contentText, footerHide 
@@ -113,16 +115,18 @@ export default {
     buttons.actionDialog.show = true;
     buttons.actionDialog.title = obj.webdesc;
   },
-  updateButtonbatchSubmitData({ buttons }, data) { // 批量提交
+  updateButtonbatchSubmitData({ buttons, ag }, data) { // 批量提交
     buttons.batchSubmitData = data;
+    ag.datas.deleteFailInfo = data;
+    ag.datas = Object.assign({}, ag.datas);
   },
-  updateButtonbatchUnSubmitData({ buttons }, data) { // 批量反提交
+  updateButtonbatchUnSubmitData({ buttons, ag }, data) { // 批量反提交
     buttons.batchUnSubmitData = data;
+    ag.datas.deleteFailInfo = data;
+    ag.datas = Object.assign({}, ag.datas);
   },
-  batchVoidForButtonsData({ buttons, ag }, data) { // 批量反提交
+  batchVoidForButtonsData({ buttons, ag }, data) { // 作废
     buttons.batchVoidForButtonsData = data;
-     
-    // ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, data);
     ag.datas.deleteFailInfo = data;
     ag.datas = Object.assign({}, ag.datas);
   },
