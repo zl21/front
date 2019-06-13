@@ -330,10 +330,14 @@
           } else {
             onfousInput = elDiv.querySelector('input');
           }
-          item.push({
+          if(current && onfousInput){
+             item.push({
             ...current,
             onfousInput
           });
+
+          }
+         
           return item;
         }, []);
 
