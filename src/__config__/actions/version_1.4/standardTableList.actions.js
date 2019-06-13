@@ -71,12 +71,15 @@ export default {
         tableName,
         ids
       }).then((res) => {
+      const deleteTableData = res.data;
       if (res.data.code === 0) {
         resolve();
-        const deleteTableData = res.data;
+       
         commit('updateButtonDeleteData', deleteTableData);
-        commit('updateButtonsExport', deleteTableData);
+        // commit('updateButtonsExport', deleteTableData);
       } else {
+        commit('updateButtonDeleteData', deleteTableData);
+
         reject();
       }
     }).catch(() => {
