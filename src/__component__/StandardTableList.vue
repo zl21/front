@@ -27,6 +27,7 @@
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
+      :on-sort-changed="onSortChange"
     />
     <Modal
       v-if="buttons.actionDialog.show"
@@ -114,7 +115,8 @@
         searchData: {
           table: this.$route.params.tableName,
           startIndex: 0,
-          range: 10
+          range: 10,
+          orderby: undefined
         },
         formItemsLists: [],
         modifyDialogshow: false, // 批量修改弹窗
@@ -211,6 +213,14 @@
           this.tabHref(tab);
         }
       }, // ag表格行双击回调
+      onSortChange(sortArr) {
+        const { tableName } = this.$route.params;
+        this.searchData.orderby = sortArr.map(d => ({
+          column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+          asc: d.sort === 'asc'
+        }));
+        this.getQueryList()
+      },
 
       // 表单操作
       refactoringData(defaultFormItemsLists) {
