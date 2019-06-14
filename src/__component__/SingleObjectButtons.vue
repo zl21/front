@@ -926,6 +926,8 @@
                         //   }
                         // });
                         const { tablename, refcolid } = this.itemInfo;
+                        const startindex = this.tablePageInfo.currentPageIndex;
+                        const range = this.tablePageInfo.pageSize;
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
                         });
@@ -977,8 +979,10 @@
                         //   }
                         // });
                         const { tablename, refcolid } = this.itemInfo;
+                        const startindex = this.tablePageInfo.currentPageIndex;
+                        const range = this.tablePageInfo.pageSize;
                         this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
+                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10 }, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
@@ -1360,6 +1364,8 @@
         });
    
         promise.then(() => {
+          this.clearEditData();// 清空store update数据
+
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
             let types = '';
             if (this.objectType === 'horizontal') {
@@ -1375,7 +1381,7 @@
               label,
               id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
             };
-            this.clearEditData();// 清空store update数据
+            
             // this.updateChangeData({ tableName: this.tableName, value: {} });
 
             this.tabHref(tab);
@@ -1386,7 +1392,6 @@
             this.decreasekeepAliveLists(moduleName());
           } else {
             this.clearEditData();// 清空store update数据
-           
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
           this.clearEditData();// 清空store update数据

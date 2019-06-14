@@ -153,7 +153,6 @@
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
         :option-tip="_items.props.optionTip"
-        :show="_items.props.show"
         :filter-tip="_items.props.filterTip"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
@@ -267,7 +266,8 @@ export default {
   },
   data() {
     return {
-      filterDate: {}
+      filterDate: {},
+      resultData:{} //结果传值
     };
   },
   computed: {
@@ -291,12 +291,14 @@ export default {
           item.componentType = myPopDialog;
           item.props.fkobj.colid = item.props.colid;
           item.props.fkobj.colname = item.props.colname;
+           item.props.fkobj.show = false;
           item.props.dialog.model.title = "表";
           item.props.dialog.model["footer-hide"] = true;
           item.props.dialog.model.closable = true;
         } else {
           item.props.dialog.model.title = "弹窗多选";
           item.componentType = Dialog;
+          item.props.fkobj.show = true;
           item.props.datalist = dataProp[item.type].props.datalist.concat(
             item.props.datalist
           );
@@ -665,7 +667,11 @@ export default {
     attachFilterPopclick(event, row, targName, $this) {
       if (targName !== "I" && event !== 1) {
         // 打开弹窗
-        $this.showModal = true;
+        $this.complexs = false;
+        setTimeout(() => {
+              $this.showModal = true;
+              $this.complexs = true;
+        }, 100);
         if (event !== 0) {
           this.filterDate = JSON.parse(row.label);
         }
@@ -718,8 +724,20 @@ export default {
       }
     },
     attachFilterCancel($this){
-      console.log($this);
+      this.filterDate = {};
+        if($this){
+            //console.log(/选中/.test(this._items.value));
+                          //console.log(this.$refs.complex,this.$refs.complex.data);
 
+            if(/选中/.test(this._items.value)){
+               this.$refs.complex = Object.assign(this.$refs.complex,this.resultData);
+
+            } else{ 
+              $this.complexs = false;
+            }
+            
+            
+        } 
     },
     attachFilterOk($this) {
       if (
@@ -729,7 +747,19 @@ export default {
         ) &&
         typeof this._items.event["popper-value"] === "function"
       ) {
+        if($this._data.params){
+          console.log($this._data.parms);
+          let value = $this._data.parms.NAME.val;
+          this._items.event["popper-value"](
+            $this,
+            value,
+            $this._data.parms.ID.val,
+            this.index
+          );
+          return false;
+        }
         if ($this._data.IN.length > 0) {
+          this.resultData = {...$this._data};
           const value = `已经选中${$this._data.IN.length}条数据`;
           this._items.value = value;
           this._items.Selected = $this._data.IN;

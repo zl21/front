@@ -84,7 +84,11 @@ export default {
     state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
-    state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    if (Object.values(data.value).length === 0) {
+      state.updateData[data.tableName].add[data.tableName] = {};
+    } else {
+      state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    }
   },
   updateModifyData(state, data) {
     state.updateData[data.tableName].modify = data.value;
@@ -131,6 +135,9 @@ export default {
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
     state.updateData[tableName].add = defaultForCopyDatas;
+  },
+  updateTablePageInfo(state, data) { //  更改列表分页数据
+    state.tablePageInfo = data;
   },
   updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
     state.copyDataForReadOnly = data;

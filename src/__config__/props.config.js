@@ -280,13 +280,14 @@ const AttachFilter = {
     // 是否显示筛选提示弹窗 true、false
     filterTip: true,
     // 是否选中后禁止编辑 true、false
-    disabled: false,
-    // 默认提示框
     placeholder: null,
     // 模糊查询的文字信息，支持多列
     AuotData: [],
     // 定义选中展示的文字的key
     hideColumnsKey: ["id"],
+    //
+    disabled: false,
+    filterDate: {},
     // 配置弹窗的配置项 model
     dialog: {
       model: {
@@ -296,7 +297,7 @@ const AttachFilter = {
         closable: true,
         scrollable: true,
         maskClosable: false,
-        width: 860
+        width: 920
       }
     },
     datalist: [
