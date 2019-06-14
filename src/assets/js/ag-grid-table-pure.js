@@ -391,9 +391,25 @@ sequenceComponent.prototype.init = function (params) {
       if (options && options.datas && options.datas.deleteFailInfo && Object.prototype.toString.call(options.datas.deleteFailInfo) === '[object Array]') {
         tooltipBox.innerText = options.datas.deleteFailInfo[failIds.indexOf(value)].message;
       }
+      const offsetBottomCalibration = tooltipBox.offsetHeight - offsetBottom - 12;
+      if (offsetBottomCalibration > 0) {
+        tooltipBox.style.top = `${(offsetTop - (target.offsetHeight / 2)) - (offsetBottomCalibration)}px`;
+        const pseudoStyle = document.createElement('style');
+        pseudoStyle.setAttribute('type', 'text/css');
+        pseudoStyle.setAttribute('id', 'pseudoStyle');
+        pseudoStyle.innerText = `
+        .${cssFeatures.tooltipBox}::before {
+            top: ${8 + (offsetBottomCalibration)}px !important;
+        }`;
+        document.head.appendChild(pseudoStyle);
+      }
     };
     toolTipIcon.onmouseleave = function () {
       tooltipBox.style.display = 'none';
+      const pseudoStyle = document.getElementById('pseudoStyle');
+      if (pseudoStyle) {
+        pseudoStyle.remove();
+      }
     };
     eGui.appendChild(toolTipIcon);
   }
