@@ -139,7 +139,6 @@
     watch: {
       formList: {
         handler(val) {
-          console.log('watch');
           this.newformList = Object.assign(this.newformList,val);
         },
         deep: true
@@ -166,7 +165,6 @@
                   item.data = {};
                 }
               });
-              console.log(Data);
               this.formList.inpubobj = Data.dataarry;
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
@@ -229,7 +227,6 @@
                 }
                 return arr;
               }, []);
-              console.log(data.row,'data.row');
               this.SelectionData.row = data.row.concat([]);
             }
           }

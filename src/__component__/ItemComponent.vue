@@ -153,7 +153,6 @@
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
         :option-tip="_items.props.optionTip"
-        :show="_items.props.show"
         :filter-tip="_items.props.filterTip"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
@@ -741,7 +740,6 @@ export default {
         } 
     },
     attachFilterOk($this) {
-      console.log('oj',$this);
       if (
         Object.prototype.hasOwnProperty.call(
           this._items.event,
