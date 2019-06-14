@@ -267,7 +267,8 @@ export default {
   },
   data() {
     return {
-      filterDate: {}
+      filterDate: {},
+      resultData:{} //结果传值
     };
   },
   computed: {
@@ -665,7 +666,11 @@ export default {
     attachFilterPopclick(event, row, targName, $this) {
       if (targName !== "I" && event !== 1) {
         // 打开弹窗
-        $this.showModal = true;
+        $this.complexs = false;
+        setTimeout(() => {
+              $this.showModal = true;
+              $this.complexs = true;
+        }, 100);
         if (event !== 0) {
           this.filterDate = JSON.parse(row.label);
         }
@@ -718,9 +723,19 @@ export default {
       }
     },
     attachFilterCancel($this){
-      console.log($this,'$this');
+      this.filterDate = {};
         if($this){
-            $this.complexs = false;
+            //console.log(/选中/.test(this._items.value));
+                          //console.log(this.$refs.complex,this.$refs.complex.data);
+
+            if(/选中/.test(this._items.value)){
+               this.$refs.complex = Object.assign(this.$refs.complex,this.resultData);
+
+            } else{ 
+              $this.complexs = false;
+            }
+            
+            
         } 
     },
     attachFilterOk($this) {
@@ -732,6 +747,8 @@ export default {
         typeof this._items.event["popper-value"] === "function"
       ) {
         if ($this._data.IN.length > 0) {
+          console.log($this._data);
+          this.resultData = {...$this._data};
           const value = `已经选中${$this._data.IN.length}条数据`;
           this._items.value = value;
           this._items.Selected = $this._data.IN;

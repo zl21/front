@@ -187,9 +187,9 @@
                 this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
                 this.resultData.list.map((item) => {
                   if (item.exclude) {
-                    item.exclude = check ? item.exclude : false;
+                    item.exclude = false;
                   } else {
-                    item.exclude = check ? item.exclude : true;
+                    item.exclude = true;
                   }
                   item.string = item.screen_string;
                   item.ID = item.id_list;
@@ -501,6 +501,15 @@
         this.EXCLUDE = '';
         this.componentData[1].list = [];
         this.clearIndexPage();
+      },
+      savemessage(){
+          let s_value = this.sendMessage;
+              s_value.IN = this.IN;
+              s_value.NOTIN = this.NOTIN;
+              return {
+                  value:s_value,
+                  text:JSON.stringify(this.text)
+              }
       },
       saveBtn(value) {
         if (value.length < 1) {

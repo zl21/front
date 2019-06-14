@@ -1031,6 +1031,7 @@ export default {
               url: (current.serviceId ? current.serviceId :'') +"/p/cs/menuimport"
             };
             item.props.datalist = [];
+            item.props.filterDate = {};
             item.props.Selected = [
               {
                 label: current.refobjid,

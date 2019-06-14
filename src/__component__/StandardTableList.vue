@@ -489,6 +489,8 @@
                 obj.item.props.fkobj.url = `${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
+                obj.item.props.filterDate = {};
+
                 break;
               default:
                 break;

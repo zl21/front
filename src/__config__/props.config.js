@@ -285,6 +285,8 @@ const AttachFilter = {
     AuotData: [],
     // 定义选中展示的文字的key
     hideColumnsKey: ["id"],
+    //
+    filterDate: {},
     // 配置弹窗的配置项 model
     dialog: {
       model: {
