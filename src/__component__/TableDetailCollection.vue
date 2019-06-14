@@ -267,6 +267,20 @@
       },
       totalData() {
         const total = [];
+        if (this.dataSource.isSubTotalEnabled) {
+          const cell = {
+            COLLECTION_INDEX: '合计'
+          };
+          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          needSubtotalList.map((ele) => {
+            const needSubtotalDatas = [];
+            this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            cell[ele.colname] = `${totalNumber}`;
+            return ele;
+          });
+          total.push(cell);
+        }
         if (this.isHorizontal) {
           if (this.dataSource.isFullRangeSubTotalEnabled) {
             // 总计
@@ -281,20 +295,6 @@
                 }
               }
             }
-            total.push(cell);
-          }
-          if (this.dataSource.isSubTotalEnabled) {
-            const cell = {
-              COLLECTION_INDEX: '合计'
-            };
-            const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-            needSubtotalList.map((ele) => {
-              const needSubtotalDatas = [];
-              this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-              const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-              cell[ele.colname] = `${totalNumber}`;
-              return ele;
-            });
             total.push(cell);
           }
         }
