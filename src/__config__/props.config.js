@@ -286,6 +286,7 @@ const AttachFilter = {
     // 定义选中展示的文字的key
     hideColumnsKey: ["id"],
     //
+    disabled: false,
     filterDate: {},
     // 配置弹窗的配置项 model
     dialog: {

@@ -531,7 +531,7 @@ export default {
               searchObject: {
                 isdroplistsearch: true,
                 refcolid: current.colid,
-                startindex: 10 * ($this.currentPage - 1),
+                startindex: $this.data.defaultrange * ($this.currentPage - 1),
                 range: $this.pageSize
               },
               serviceId: current.serviceId,
@@ -1109,7 +1109,9 @@ export default {
         item = this.$refs.FormComponent_0.newFormItemLists;
       }
       item[index].item.props.totalRowCount = res.data.data.totalRowCount;
+      item[index].item.props.pageSize = res.data.data.defaultrange;
       item[index].item.props.data = res.data.data;
+      
     },
     freshDropDownSelectFilterAutoData(res, index, current) {
       // 外键的模糊搜索数据更新

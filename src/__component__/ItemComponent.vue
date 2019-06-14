@@ -747,7 +747,6 @@ export default {
         typeof this._items.event["popper-value"] === "function"
       ) {
         if ($this._data.IN.length > 0) {
-          console.log($this._data);
           this.resultData = {...$this._data};
           const value = `已经选中${$this._data.IN.length}条数据`;
           this._items.value = value;
