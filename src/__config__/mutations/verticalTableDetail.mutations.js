@@ -132,6 +132,9 @@ export default {
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
     state.updateData[tableName].add = defaultForCopyDatas;
   },
+  updateTablePageInfo(state, data) { //  更改列表分页数据
+    state.tablePageInfo = data;
+  },
   updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
     state.copyDataForReadOnly = data;
   },

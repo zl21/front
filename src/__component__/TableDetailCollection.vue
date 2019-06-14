@@ -91,6 +91,19 @@
         查询条件:{{ dataSource.queryDesc }}
       </div>
     </div>
+    <!-- 导入弹框 -->
+    <ImportDialog
+      v-if="importData.importDialog"
+      :name="importData.importDialog"
+      :visible="importData.importDialog"
+      :show-close="true"
+      :title="importData.importDialogTitle"
+      :tablename="tableName"
+      :main-table="mainFormInfo.tablename"
+      :main-id="pageItemId"
+      @confirmImport="importsuccess"
+      @closeDialog="closeImportDialog"
+    />
   </div>
 </template>
 
@@ -101,8 +114,9 @@
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
-
+  import ImportDialog from './ImportDialog';
   import router from '../__config__/router.config';
+  import { getGateway } from '../__utils__/network';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
@@ -123,7 +137,8 @@
   export default {
     name: 'TableDetailCollection',
     components: {
-      Dialog
+      Dialog,
+      ImportDialog, // 导入弹框
     },
     data() {
       return {
@@ -171,6 +186,10 @@
         },
         set beforeSendData(value) {
           this._beforeSendData=value;
+        },
+        importData: {
+          importDialog: '',
+          importDialogTitle: ''
         },
         afterSendData: {}, // 改后的数据
         dialogConfig: { // 弹框配置信息
@@ -326,7 +345,7 @@
             return item;
           });
         }
-
+        buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         return buttonGroupShow;
       },
@@ -340,6 +359,9 @@
       },
       pageInfo() {
         return this.tablePageInfo;
+      },
+      pageItemId() {
+        return router.currentRoute.params.itemId;
       }
     },
     watch: {
@@ -370,6 +392,9 @@
 
       buttonClick(obj) {
         switch (obj.eName) {
+        case 'actionIMPORT': // 导入
+          this.objectIMPORT();
+          break;
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
           break;
@@ -1428,6 +1453,50 @@
         });
         // this.pageInfo.pageSize = index;
         this.getTabelList();
+      },
+      objectEXPORT() { // 导出
+        const { tableId, itemId } = router.currentRoute.params;
+        const tableRowSelectedIds = [];
+        this.tableRowSelectedIds.map(ele => tableRowSelectedIds.push(ele.ID));
+        const searchData = {
+          table: this.tableName,
+          column_include_uicontroller: true,
+          fixedcolumns: { ID: tableRowSelectedIds.length === 0 ? null :  tableRowSelectedIds},
+          objectIds: `${this.itemInfo.refcolid}=${itemId}`,
+          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+          range: this.pageInfo.pageSize,
+        };
+        const OBJ = {
+          searchdata: searchData,
+          filename: this.itemInfo.tabledesc,
+          filetype: '.xlsx',
+          showColumnName: true,
+          menu: this.itemInfo.tabledesc
+        };
+        const promise = new Promise((resolve, reject) => {
+          this.getExportQueryForButtons({ OBJ, resolve, reject });
+        });
+        promise.then(() => {
+          if (this.buttonsData.exportdata) {
+            const eleLink = document.createElement('a');
+            const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+            eleLink.setAttribute('href', path);
+            eleLink.style.display = 'none';
+            document.body.appendChild(eleLink);
+            eleLink.click();
+            document.body.removeChild(eleLink);
+          }
+        });
+      },
+      objectIMPORT() { // 导入
+        this.importData.importDialog = true;
+        this.importData.importDialogTitle = this.itemInfo.tabledesc;
+      },
+      closeImportDialog() { // 关闭导入弹框
+        this.importData.importDialog = false;
+      },
+      importsuccess() { // 导入成功
+
       },
       isJsonString(str) {
         if (typeof JSON.parse(str) === 'object') {
