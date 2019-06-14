@@ -154,9 +154,13 @@
         }
       },
       $route() {
-        if (this.$route.query.isBack) {
-          this.searchClickData();
-        }
+        setTimeout(() => {
+          // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
+          if (this.$route.query.isBack && !this._inactive) {
+            this.searchClickData();
+          }
+        }, 0);
+        
       },
     },
     methods: {
