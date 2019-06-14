@@ -131,18 +131,17 @@ export default {
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
     openedMenuLists.forEach((item, index) => {
-      if (item.routeFullPath === tab.routeFullPath) {
+      if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
-      }
-      if (tabRouteFullPath) {
-        if (openedMenuLists.length > 0) {
-          const lastLength = openedMenuLists.length - 1;
-          state.activeTab = openedMenuLists[lastLength]; // 关闭当前tab时始终打开的是最后一个tab
-          router.push({
-            path: state.activeTab.routeFullPath,
-          });
-        } else {
-          router.push('/');
+        if (tabRouteFullPath) {
+          if (openedMenuLists.length > 0) {
+            state.activeTab = openedMenuLists[openedMenuLists.length - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            router.push({
+              path: state.activeTab.routeFullPath,
+            });
+          } else {
+            router.push('/');
+          }
         }
       }
     });
