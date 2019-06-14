@@ -520,6 +520,14 @@
         
         promise.then(() => {
           this.$loading.hide();
+          console.log(this);
+          
+          const message = this.objTabActionSlientConfirmData.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
         });
         
   
@@ -1192,19 +1200,25 @@
         const type = 'modify';
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
-          // this.itemTableValidation = true;
+          // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+          // } else {
+          //   this.itemTableValidation = true;
+          // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            if (obj.requestUrlPath) { // 配置path
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            } else { // 没有配置path    if (this.verifyRequiredInformation()) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-            }
-            if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { //
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-            }
-            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-            if (Object.values(this.updateData[itemName].add[itemName]).length > 0) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            if (Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+              if (obj.requestUrlPath) { // 配置path
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              } else { // 没有配置path    if (this.verifyRequiredInformation()) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              }
+            } else {
+              if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { //
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              }
+              // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+              if (Object.values(this.updateData[itemName].add[itemName]).length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
@@ -1376,7 +1390,7 @@
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
           this.clearEditData();// 清空store update数据
-        });
+        }, () => {});
       },
       clearEditData() {
         if (this.objectType === 'vertical') {

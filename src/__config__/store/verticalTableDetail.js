@@ -31,7 +31,8 @@ export default () => ({
     tablePageInfo: {
       currentPageIndex: 0,
       pageSize: 10
-    }
+    },
+    objTabActionSlientConfirmData: {}
   },
   actions,
   mutations

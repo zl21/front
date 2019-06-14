@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -170,7 +170,7 @@
           return this._beforeSendData;
         },
         set beforeSendData(value) {
-          this._beforeSendData=value;
+          this._beforeSendData = value;
         },
         afterSendData: {}, // 改后的数据
         dialogConfig: { // 弹框配置信息
@@ -358,8 +358,8 @@
             this.filterBeforeData();
           }
         },
-         deep: true,
-         immediate: true
+        deep: true,
+        immediate: true
       }
 
     },
@@ -381,17 +381,6 @@
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
-        // 测试数据
-        //     const a = [
-        // 	{
-        //     "objid":2,
-        //     "message": ['a','b',''][parseInt(Math.random()*3,10)]
-        // 	}
-        // ]
-
-        //     this.reloadErrorTips(a);
-        //     return;
-
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
             title: '警告',
@@ -437,9 +426,10 @@
                   this.reloadErrorTips(res.data.data);
                 } else {
                   const deleteMessage = res.data.message;
-                  this.$Message.success(`删除${deleteMessage}`);
+                  this.$Message.success(`${deleteMessage}`);
                   const { refcolid } = this.itemInfo;
-                  this.getObjectForMainTableForm({ table: tableName, objid: itemId });
+                  const tabIndex = this.tabCurrentIndex;
+                  this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
                   this.getObjectTableItemForTableData({
                     table: this.tableName,
                     objid: itemId,
@@ -449,7 +439,8 @@
                       startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
                       range: this.pageInfo.pageSize,
                       fixedcolumns: {}
-                    }
+                    },
+                    tabIndex
                   });
                 }
               }

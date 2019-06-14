@@ -182,6 +182,12 @@ export default {
   },
   updateButtonsExport(state, data) { // 导出
     state.buttonsData.exportdata = data;
+  },
+  updateTablePageInfo(state, data) { //  更改列表分页数据
+    state.tablePageInfo = data;
+  },
+  updateObjTabActionSlientConfirm(state, data) { // 动作定义类型接口返回值
+    state.objTabActionSlientConfirmData = data;
   }
   // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
   //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {

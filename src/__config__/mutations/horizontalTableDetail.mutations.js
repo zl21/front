@@ -198,5 +198,8 @@ export default {
   updateiInvalidData(state, invalidData) { // 作废
     state.buttonsData.invalidData = invalidData;
   },
+  updateObjTabActionSlientConfirm(state, data) { // 动作定义类型接口返回值
+    state.objTabActionSlientConfirmData = data;
+  }
   
 };
