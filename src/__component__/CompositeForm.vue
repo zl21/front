@@ -320,13 +320,8 @@ export default {
       this.formData = Object.assign(this.formData, data);
 
       this.formDataDef = Object.assign(formData, setdefval);
-
       const key = Object.keys(data)[0];
-      if (key.split(":").length > 1) {
-        delete this.formData[key.split(":")[0]];
-      } else {
-        delete this.formData[`${key}:NAME`];
-      }
+      delete this.formData[`${key}:NAME`];
 
       this.VerificationForm.forEach(item => {
         Object.keys(this.formData).forEach(option => {
@@ -512,12 +507,15 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-            console.log(item.props.fkdisplay );
             if (item.props.fkdisplay) {
                   if(Array.isArray(item.props.Selected)){
                       Fitem[index].item.value = '';
-                  }else{
-                      Fitem[index].item.value = '';
+                  }else if(Array.isArray(item.value)){                  
+                      if(item.value[0].ID === '' || item.value[0].ID === undefined){
+                        Fitem[index].item.props.defaultSelected = [
+                        ];
+                      }
+                      
                   }
                   
               }
