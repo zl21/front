@@ -179,12 +179,10 @@
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
-        console.log(data, name);
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
           if(name !== 'clear'){
-              console.log(type);
               if(type !=='search'){
                 this.IN = data.ids || [];
               }
@@ -201,17 +199,16 @@
                   item.ID = item.id_list;
                   return item;
                 });
-                if(this.text){
-                  this.resultData.total = data.data.total;
-                } else{
-                  this.resultData.total = data.data.total;
-                }
+                this.resultData.total = data.data.total;
           }
 
         }
-        
-
-        this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        //console.log(type,this.resultData.total);
+        if( type !== 'search'){
+           this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        }else if(index === 1 && this.resultData.total>0){
+           this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        }
 
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
@@ -421,6 +418,10 @@
         // 清除页面选中值
         this.sendMessage.PAGESIZE = 50;
         this.sendMessage.PAGENUM = 1;
+        this.componentData[1].list = [];
+        this.componentData[1].total = 0;
+        this.componentData[1].pageNum = 1;
+        this.componentData[1].pageSize = 50;
       },
       checkboxChange(value) {
         this.checkbox = value;
@@ -670,7 +671,6 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          console.log( this.text.result);
           this.sendMessage = this.filter.value;
           
           this.multipleScreenResultCheckFiter(this.filter.value, 1);
