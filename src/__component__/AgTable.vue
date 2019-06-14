@@ -292,6 +292,9 @@
 <style lang="less">
  .standardTable {
    padding: 20px 0 0 0;
+   display: flex;
+   flex: 1;
+   flex-direction: column;
  }
   .detailTable {
     border: 1px solid #d8d8d8;
@@ -299,6 +302,7 @@
   }
 
  .queryDesc {
+   height: 20px;
    margin: 5px 0;
    line-height: 18px;
    display: flex;

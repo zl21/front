@@ -154,9 +154,13 @@
         }
       },
       $route() {
-        if (this.$route.query.isBack) {
-          this.searchClickData();
-        }
+        setTimeout(() => {
+          // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
+          if (this.$route.query.isBack && !this._inactive) {
+            this.searchClickData();
+          }
+        }, 0);
+        
       },
     },
     methods: {
@@ -352,7 +356,7 @@
                   if (Selected !== 'change') {
                     this.formItemsLists[index].item.props.Selected = Selected;
                   }
-                // this.formItemsLists = this.formItemsLists.concat([]);
+                  this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'popper-show': ($this, item, index) => {
                   // 当气泡拉展开时去请求数据
@@ -373,7 +377,6 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
-
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
@@ -407,7 +410,7 @@
                     searchObject: {
                       isdroplistsearch: true,
                       refcolid: current.colid,
-                      startindex: 10 * ($this.currentPage - 1),
+                      startindex: $this.data.defaultrange * ($this.currentPage - 1),
                       range: $this.pageSize
                     },
                     serviceId: current.fkobj.serviceId,
@@ -489,6 +492,8 @@
                 obj.item.props.fkobj.url = `${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
+                obj.item.props.filterDate = {};
+
                 break;
               default:
                 break;
@@ -598,6 +603,7 @@
         // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = Object.assign({}, res.data.data);
         this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
+        this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
       freshDropDownSelectFilterAutoData(res, index) {
@@ -1505,6 +1511,9 @@
   @import url('../assets/css/custom-ext.less');
 .StandardTableListRootDiv {
   width: 100%;
+  height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>
