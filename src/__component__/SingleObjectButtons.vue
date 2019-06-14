@@ -1215,13 +1215,19 @@
           //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           //   }
           // } else {
-          if (this.updateData[itemName].modify[itemName].length > 0) { //
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+          if (this.updateData[itemName].modify[itemName]) { 
+            if (this.updateData[itemName].modify[itemName].length > 0) { //
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+            }
           }
+          
           // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-          if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
-            this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+          if (this.updateData[itemName].add[itemName]) {
+            if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            }
           }
+        
           // }
         }
       },
@@ -1363,13 +1369,13 @@
             if (message) {
               this.$Message.success(message);
             }
+            this.decreasekeepAliveLists(moduleName());
           } else {
             this.clearEditData();// 清空store update数据
            
             this.saveEventAfterClick();// 保存成功后执行的事件
           }
           this.clearEditData();// 清空store update数据
-          this.decreasekeepAliveLists(moduleName());
         });
       },
       clearEditData() {
@@ -1386,7 +1392,7 @@
         this.updateChangeData({ tableName: this.itemName, value: {} });
         this.updateModifyData({ tableName: this.itemName, value: {} });
         this.updateAddDefaultData({ tableName: this.itemName, value: {} });
-        this.updateAddData({ tableName: this.itemName, value: {} });
+        this.updateAddData({ tableName: this.itemName, value: { } });
         this.updateDeleteData({ tableName: this.itemName, value: {} });
       },
       saveParameters() { // 筛选按钮保存参数逻辑
@@ -1406,6 +1412,8 @@
         }, {});
       },
       saveEventAfterClick() { // 保存成功后执行的事件
+        this.clearEditData();// 清空store update数据
+
         if (this.saveEventAfter === 'submit') { // 提交操作
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
