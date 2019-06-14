@@ -931,6 +931,11 @@ const initializeAgTable = (container, opt) => {
                   }
                   // 向后台发送API，清除所有隐藏列
                   options.onColumnVisibleChanged('');
+                  agTable.preventPinnedEmit = true;
+                  agTable.dealWithPinnedColumns();
+                  setTimeout(function() {
+                    agTable.preventPinnedEmit = false;
+                  }, 100);
                 }
               },
             },
@@ -1134,7 +1139,9 @@ const initializeAgTable = (container, opt) => {
 
             //  将固定列保存到数据库
             const pinnedPosition = `${pinnedLeft.join(',')}|${pinnedRight.join(',')}`;
-            options.onColumnPinned(pinnedPosition);
+            if (!agTable.preventPinnedEmit) {
+              options.onColumnPinned(pinnedPosition);
+            }
           }
         },
         getRowClass(params) {

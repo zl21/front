@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
 import network, { urlSearchParams } from '../../../__utils__/network';
+import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   setColHide(store, data) {
@@ -15,6 +16,7 @@ export default {
   getQueryListForAg({ commit }, {
     table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby
   }) {
+    console.log('🐑');
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
         table,
@@ -62,7 +64,7 @@ export default {
       reject();
     });
   },
-  getBatchDeleteForButtons({ commit }, {
+  getBatchDeleteForButtons({ dispatch, commit }, {
     tableName, selectIdArr, resolve, reject 
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
@@ -79,11 +81,12 @@ export default {
         // commit('updateButtonsExport', deleteTableData);
       } else {
         commit('updateButtonDeleteData', deleteTableData);
-
         reject();
+
+        // this.dispatch(`${getComponentName()}/getQueryListForAg`).then(() => {
+        //   commit('updateButtonDeleteData', deleteTableData);
+        // });
       }
-    }).catch(() => {
-      reject();
     });
   },
   getExeActionDataForButtons({ commit }, { item, obj }) {

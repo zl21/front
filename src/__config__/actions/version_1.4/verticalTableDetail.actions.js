@@ -256,9 +256,9 @@ export default {
 
         if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            if (enter) {
-              modify[tableName].ID = objId;
-            }
+            // if (enter) {
+            modify[tableName].ID = objId;
+            // }
             parames = {
               ...modify,
               ...itemModify

@@ -91,6 +91,7 @@
       return {
         currentParameter: {},
         itemCurrentParameter: {},
+        isclick: true
       };
     },
     components: {
@@ -194,6 +195,7 @@
         }
       },
       formEnter() {
+        this.isclick = false;
         let savePath = '';
         const { itemId } = router.currentRoute.params;
 
@@ -264,13 +266,13 @@
               const sataType = 'itemSave';
               const enter = 'enterSave';
               if (this.type === 'vertical') {
-                if (savePath) { // 配置path
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
+                // if (savePath) { // 配置path
+                //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter);
 
-                // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                } else { // 没有配置path
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                }
+                // // this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                // } else { // 没有配置path
+                //   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                // }
                 const store = this.$store.state[getModuleName()];
                 if (Object.keys(store.updateData[itemName].modify[itemName]).length > 0) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });

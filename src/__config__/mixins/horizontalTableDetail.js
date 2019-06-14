@@ -15,6 +15,7 @@ export default () => ({
       updateData: ({ ...updateData }) => updateData.updateData,
       tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
+      objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
@@ -55,7 +56,8 @@ export default () => ({
         'updateModifyData',
         'updateAddDefaultData',
         'updateAddData',
-        'updateDeleteData'
+        'updateDeleteData',
+        'updateObjTabActionSlientConfirm'
 
       ]),
   },

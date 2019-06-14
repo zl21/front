@@ -1180,9 +1180,9 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        }).catch(() => {
+        }, () => {}).catch(() => {
           this.$loading.hide();
-          // this.getQueryListForAg(this.searchData);
+          this.getQueryListForAg(this.searchData);
         });
       },
       batchVoid() {
@@ -1205,7 +1205,7 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        });
+        }, () => {});
         // promise.catch(() => {
         //   this.forAgTableErrorMessage(this.buttons.batchVoidForButtonsData.data);
         // });
@@ -1228,7 +1228,7 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        });
+        }, () => {});
       },
       batchUnSubmit() {
         // 批量反提交
