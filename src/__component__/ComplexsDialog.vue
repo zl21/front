@@ -173,24 +173,33 @@
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
+        console.log(type, name);
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
           if(name !== 'clear'){
-              this.IN = data.ids || [];
+              console.log(type);
+              if(type !=='search'){
+                this.IN = data.ids || [];
+              }
                 if (index === 1 && type !== 'search') {
+                let check = this.filter.text ? true :false;
                 this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
                 this.resultData.list.map((item) => {
                   if (item.exclude) {
-                    item.exclude = false;
+                    item.exclude = check ? item.exclude : false;
                   } else {
-                    item.exclude = true;
+                    item.exclude = check ? item.exclude : true;
                   }
                   item.string = item.screen_string;
                   item.ID = item.id_list;
                   return item;
                 });
-              this.resultData.total = data.data.total;
+                if(this.text){
+                  this.resultData.total = data.data.total;
+                } else{
+                  this.resultData.total = data.data.total;
+                }
           }
 
         }
@@ -201,7 +210,7 @@
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
-        console.log(this.IN,'this.INthis.IN');
+        //console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
@@ -490,7 +499,6 @@
         this.resultData.total = 0;
         this.sendMessage.CONDITION = '';
         this.EXCLUDE = '';
-        console.log(this.componentData);
         this.componentData[1].list = [];
         this.clearIndexPage();
       },
@@ -522,7 +530,6 @@
         this.sendMessage.PAGENUM = 1;
         this.sendMessage.PAGESIZE = 50;
         
-        console.log(this.$refs.dialog.$refs.Tree);
         this.treeChecked();
         this.multipleSelectionTable(this.sendMessage, 0);
       },
@@ -629,6 +636,7 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
+          console.log( this.text.result);
           this.sendMessage = this.filter.value;
           
           this.multipleScreenResultCheckFiter(this.filter.value, 1);
@@ -637,10 +645,10 @@
 
     },
     activated() {
-      console.log('激活');
     },
     mounted() {
       /**/
+      console.log('激活');
     },
     created() {
       this.loading = true;
@@ -658,7 +666,14 @@
     .burgeon-tabs-bar{
       margin-bottom: 10px
     }
+    .burgeon-tabs{
+      overflow: visible;
+    }
 }
+  .burgeon--dialog .dialog_center .dialog_center_bottom{
+    margin-top: 10px;
+    height: 44px;
+  }
 </style>
 <style lang="less" scoped>
   .burgeon-select-item{
@@ -718,4 +733,5 @@
           }
       }
   }
+
 </style>
