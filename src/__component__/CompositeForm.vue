@@ -1006,7 +1006,7 @@ export default {
                 refobjid: current.refobjid,
                 reftable: current.reftable,
                 reftableid: current.reftableid,
-                url:(current.serviceId ? current.serviceId :'') +"/p/cs/menuimport"
+                url:(current.serviceId ? +'/'+current.serviceId :'') +"/p/cs/menuimport"
               };
               item.props.datalist = [];
               item.props.Selected = [

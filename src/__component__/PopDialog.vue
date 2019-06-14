@@ -209,7 +209,7 @@
                             domProps: {
                               innerHTML: item.colname === 'ID' ? data.start + params.index + 1 : params.row[item.colname].val
                             }
-                          })
+                      })
                     });
 
                 }else{
