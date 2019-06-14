@@ -718,8 +718,10 @@ export default {
       }
     },
     attachFilterCancel($this){
-      console.log($this);
-
+      console.log($this,'$this');
+        if($this){
+            $this.complexs = false;
+        } 
     },
     attachFilterOk($this) {
       if (

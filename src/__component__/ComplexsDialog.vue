@@ -177,7 +177,10 @@
           this.akname = data.akname || 'ECODE';
         }
           if(name !== 'clear'){
-              this.IN = data.ids || [];
+              console.log(type);
+              if(type !=='search'){
+                this.IN = data.ids || [];
+              }
                 if (index === 1 && type !== 'search') {
                 this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
                 this.resultData.list.map((item) => {
@@ -201,7 +204,7 @@
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
-        console.log(this.IN,'this.INthis.IN');
+        //console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
@@ -490,7 +493,6 @@
         this.resultData.total = 0;
         this.sendMessage.CONDITION = '';
         this.EXCLUDE = '';
-        console.log(this.componentData);
         this.componentData[1].list = [];
         this.clearIndexPage();
       },
@@ -522,7 +524,6 @@
         this.sendMessage.PAGENUM = 1;
         this.sendMessage.PAGESIZE = 50;
         
-        console.log(this.$refs.dialog.$refs.Tree);
         this.treeChecked();
         this.multipleSelectionTable(this.sendMessage, 0);
       },
@@ -637,7 +638,7 @@
 
     },
     activated() {
-      console.log('激活');
+      //console.log('激活');
     },
     mounted() {
       /**/
@@ -658,7 +659,14 @@
     .burgeon-tabs-bar{
       margin-bottom: 10px
     }
+    .burgeon-tabs{
+      overflow: visible;
+    }
 }
+  .burgeon--dialog .dialog_center .dialog_center_bottom{
+    margin-top: 10px;
+    height: 44px;
+  }
 </style>
 <style lang="less" scoped>
   .burgeon-select-item{
@@ -718,4 +726,5 @@
           }
       }
   }
+
 </style>
