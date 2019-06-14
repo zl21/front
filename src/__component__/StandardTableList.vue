@@ -356,7 +356,7 @@
                   if (Selected !== 'change') {
                     this.formItemsLists[index].item.props.Selected = Selected;
                   }
-                // this.formItemsLists = this.formItemsLists.concat([]);
+                  this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'popper-show': ($this, item, index) => {
                   // 当气泡拉展开时去请求数据
@@ -377,7 +377,6 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
-
                   fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
@@ -411,7 +410,7 @@
                     searchObject: {
                       isdroplistsearch: true,
                       refcolid: current.colid,
-                      startindex: 10 * ($this.currentPage - 1),
+                      startindex: $this.data.defaultrange * ($this.currentPage - 1),
                       range: $this.pageSize
                     },
                     serviceId: current.fkobj.serviceId,
@@ -604,6 +603,7 @@
         // 外键下拉时，更新下拉数据
         this.formItemsLists[index].item.props.data = Object.assign({}, res.data.data);
         this.formItemsLists[index].item.props.totalRowCount = res.data.data.totalRowCount;
+        this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
       freshDropDownSelectFilterAutoData(res, index) {
@@ -1180,9 +1180,9 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        }).catch(() => {
+        }, () => {}).catch(() => {
           this.$loading.hide();
-          // this.getQueryListForAg(this.searchData);
+          this.getQueryListForAg(this.searchData);
         });
       },
       batchVoid() {
@@ -1205,7 +1205,7 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        });
+        }, () => {});
         // promise.catch(() => {
         //   this.forAgTableErrorMessage(this.buttons.batchVoidForButtonsData.data);
         // });
@@ -1228,7 +1228,7 @@
           };
           this.$Modal.fcSuccess(data);
           this.getQueryListForAg(this.searchData);
-        });
+        }, () => {});
       },
       batchUnSubmit() {
         // 批量反提交

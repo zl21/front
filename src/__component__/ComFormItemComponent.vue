@@ -387,11 +387,12 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else {
-              // 否则为输入项
-              delete obj[current.item.field];
-              obj[current.item.inputname] = current.item.value;
             }
+            //  else {
+            //   // 否则为输入项
+            //   delete obj[current.item.field];
+            //   obj[current.item.inputname] = current.item.value;
+            // }
           } else if (
             current.item.value
           && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0
@@ -406,9 +407,11 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else {
-              obj[current.item.inputname] = current.item.value;
-            }
+            } 
+            // 单对象界面 不需要
+            // else {
+            //   obj[current.item.inputname] = current.item.value;
+            // }
           } else if (current.item.type === 'checkbox') {
             obj[current.item.field] = current.item.value;
           } else if (current.item.value) {
@@ -457,9 +460,11 @@
         } else {
           this.changeFormData = obj;
         }
-        const valueItem = {
-          [Object.keys(obj)[0]]: current.item.value
-        };
+         const valueItem = { };
+        if(Object.keys(obj)[0]){
+          valueItem[Object.keys(obj)[0]] = current.item.value
+        }
+        
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
       },

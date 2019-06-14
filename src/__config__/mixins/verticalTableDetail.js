@@ -15,6 +15,7 @@ export default () => ({
       updateData: ({ updateData }) => updateData,
       tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
+      objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
 
@@ -61,6 +62,7 @@ export default () => ({
         'updateTableListForRefTable',
         'updateTablePageInfo',
         'updateAddDefaultData',
+        'updateObjTabActionSlientConfirm'
         // 'resetFormReadOnlyAttribute'
 
       ]),
