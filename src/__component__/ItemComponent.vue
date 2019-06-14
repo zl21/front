@@ -292,12 +292,14 @@ export default {
           item.componentType = myPopDialog;
           item.props.fkobj.colid = item.props.colid;
           item.props.fkobj.colname = item.props.colname;
+           item.props.fkobj.show = false;
           item.props.dialog.model.title = "表";
           item.props.dialog.model["footer-hide"] = true;
           item.props.dialog.model.closable = true;
         } else {
           item.props.dialog.model.title = "弹窗多选";
           item.componentType = Dialog;
+          item.props.fkobj.show = true;
           item.props.datalist = dataProp[item.type].props.datalist.concat(
             item.props.datalist
           );
@@ -739,6 +741,7 @@ export default {
         } 
     },
     attachFilterOk($this) {
+      console.log('oj',$this);
       if (
         Object.prototype.hasOwnProperty.call(
           this._items.event,
@@ -746,6 +749,17 @@ export default {
         ) &&
         typeof this._items.event["popper-value"] === "function"
       ) {
+        if($this._data.params){
+          console.log($this._data.parms);
+          let value = $this._data.parms.NAME.val;
+          this._items.event["popper-value"](
+            $this,
+            value,
+            $this._data.parms.ID.val,
+            this.index
+          );
+          return false;
+        }
         if ($this._data.IN.length > 0) {
           this.resultData = {...$this._data};
           const value = `已经选中${$this._data.IN.length}条数据`;

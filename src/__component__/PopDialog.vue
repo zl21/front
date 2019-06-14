@@ -61,6 +61,7 @@
         :highlight-row="true"
         :height="200"
         border
+         @on-row-dblclick="rowdblclick"
         :columns="SelectionData.thead"
         :data="SelectionData.row"
       />
@@ -88,6 +89,7 @@
           objviewcol: 4
         },
         newformList: {},
+        parms:{},
         formChangeData: {},
         SelectionData: {
           config: [],
@@ -105,7 +107,7 @@
           currentPageIndex: 1, // 当前页码
           pageSize: 10, // 显示条数
           defaultrange: 10, // 分页下拉选中值
-          totalRowCount: 100,
+          totalRowCount: 0,
           startindex: 0,
           selectrange: [10, 20, 50, 100, 200]
         },
@@ -137,13 +139,18 @@
     watch: {
       formList: {
         handler(val) {
-          this.newformList = val;
+          console.log('watch');
+          this.newformList = Object.assign(this.newformList,val);
         },
         deep: true
 
       }
     },
     methods: {
+      rowdblclick(parms){
+        this.parms = parms;
+         this.$parent.ok();
+      },
       getData(searchObject) {
         //  form 请求
         getTableQuery({
@@ -159,9 +166,11 @@
                   item.data = {};
                 }
               });
+              console.log(Data);
               this.formList.inpubobj = Data.dataarry;
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
+              this.getList();
             }
           }
         });
@@ -193,19 +202,35 @@
               // this.selectOperation.startindex = data.start;
               this.SelectionData.thead = data.ordids.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname).name;
-                arr.unshift({
-                  title: title !== 'ID' ? title : '序号',
+                if(title === 'ID'){
+                    arr.unshift({
+                      title: '序号',
+                      key: `${item.colname}`,
+                      render: (h, params) => h('div',
+                          {
+                            domProps: {
+                              innerHTML: item.colname === 'ID' ? data.start + params.index + 1 : params.row[item.colname].val
+                            }
+                          })
+                    });
+
+                }else{
+                  arr.push({
+                  title: title,
                   key: `${item.colname}`,
                   render: (h, params) => h('div',
-                                           {
-                                             domProps: {
-                                               innerHTML: item.colname === 'ID' ? data.start + params.index + 1 : params.row[item.colname].val
-                                             }
-                                           })
+                      {
+                        domProps: {
+                          innerHTML: params.row[item.colname].val
+                        }
+                      })
                 });
+
+                }
                 return arr;
               }, []);
-              this.SelectionData.row = data.row;
+              console.log(data.row,'data.row');
+              this.SelectionData.row = data.row.concat([]);
             }
           }
         });
