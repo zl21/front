@@ -173,6 +173,7 @@
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
+        console.log(type, name);
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
@@ -182,18 +183,23 @@
                 this.IN = data.ids || [];
               }
                 if (index === 1 && type !== 'search') {
+                let check = this.filter.text ? true :false;
                 this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
                 this.resultData.list.map((item) => {
                   if (item.exclude) {
-                    item.exclude = false;
+                    item.exclude = check ? item.exclude : false;
                   } else {
-                    item.exclude = true;
+                    item.exclude = check ? item.exclude : true;
                   }
                   item.string = item.screen_string;
                   item.ID = item.id_list;
                   return item;
                 });
-              this.resultData.total = data.data.total;
+                if(this.text){
+                  this.resultData.total = data.data.total;
+                } else{
+                  this.resultData.total = data.data.total;
+                }
           }
 
         }
@@ -630,6 +636,7 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
+          console.log( this.text.result);
           this.sendMessage = this.filter.value;
           
           this.multipleScreenResultCheckFiter(this.filter.value, 1);
@@ -638,10 +645,10 @@
 
     },
     activated() {
-      //console.log('激活');
     },
     mounted() {
       /**/
+      console.log('激活');
     },
     created() {
       this.loading = true;
