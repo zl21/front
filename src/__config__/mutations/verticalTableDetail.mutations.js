@@ -166,10 +166,17 @@ export default {
           });
         });
       });
-      state.updateData[tableName].add[tableName] = copySaveDataForParam;
+
+      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
+      // state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+      // Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+      // state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
+
+
+      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
       Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
-      state.mainFormInfo.formData = state.defaultDataForCopy;
+      state.mainFormInfo.formData.data = state.defaultDataForCopy;
     }
   },
   emptyChangeData(state, tableName) {

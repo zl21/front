@@ -210,8 +210,10 @@
       objList() { // 返回克隆表定制弹框所需数据
         if (this.objectType === 'horizontal') { // 横向布局
           return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        } if (this.objectType === 'vertical') {
+          return this.mainFormInfo.formData.data.addcolums;
         }
-        return this.mainFormInfo.formData.data.addcolums;
+        return [];
       }
     },
     props: {
