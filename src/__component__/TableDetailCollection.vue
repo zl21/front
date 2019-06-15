@@ -797,6 +797,7 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
+                console.log(data);
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
                 } else {
@@ -1149,7 +1150,7 @@
       },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
-        const defaultData = [];
+        let defaultData = [];
         if (cellData.fkdisplay === 'drp') {
           if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
@@ -1163,25 +1164,30 @@
             }
           }
         } else if (this.dataSource.row[params.index][cellData.colname]) {
-          let ids = [];
-          const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
-          const val = this.dataSource.row[params.index][cellData.colname].val;
-          if (typeof refobjid === 'string') {
-            ids = refobjid.split(',');
-          }
-          if (ids.length > 0) {
-            ids.map((ele, index) => {
-              val.split(',').map((item, ind) => {
-                if (index === ind) {
-                  defaultData.push({
-                    ID: ele,
-                    Label: item
-                  });
-                }
-                return item;
+          if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
+            defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            console.log(this.fkSelectedChangeData[params.index][cellData.key]);
+          } else {
+            let ids = [];
+            const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
+            const val = this.dataSource.row[params.index][cellData.colname].val;
+            if (typeof refobjid === 'string') {
+              ids = refobjid.split(',');
+            }
+            if (ids.length > 0) {
+              ids.map((ele, index) => {
+                val.split(',').map((item, ind) => {
+                  if (index === ind) {
+                    defaultData.push({
+                      ID: ele,
+                      Label: item
+                    });
+                  }
+                  return item;
+                });
+                return ele;
               });
-              return ele;
-            });
+            }
           }
         }
         return defaultData;
