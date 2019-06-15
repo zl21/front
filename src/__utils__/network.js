@@ -1,54 +1,49 @@
 import axios from 'axios';
+import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
 
-axios.interceptors.request.use(
-  (config) => {
-    const { tableName, customizedModuleName } = router.currentRoute.params;
-    const url = config.url;
-    const globalServiceId = window.sessionStorage.getItem('serviceId');
-    const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-    if (!enableGateWay) {
-      return config;
-    }
+const pendingRequestMap = {};
+window.pendingRequestMap = pendingRequestMap;
 
-    if (config.serviceId) {
-    // 外键 配置网关
-
-      config.url = config.serviceId ? `/${config.serviceId}${url}` : url;
-      return config;
+const matchUrl = (url) => {
+  const { tableName, customizedModuleName } = router.currentRoute.params;
+  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+  // eslint-disable-next-line no-empty
+  if (!enableGateWay) {
+    return url;
+  }
+  if (ignoreGateWay.includes(url)) {
+    return url;
+  }
+  if (globalGateWay.includes(url)) {
+    return globalServiceId ? `/${globalServiceId}${url}` : url;
+  }
+  if (tableName) {
+    if (serviceId[tableName] !== 'undefined') {
+      const serviceIdMapApi = serviceId[tableName];
+      return serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
     }
-    if (ignoreGateWay.includes(url)) {
-      return config;
+  } else if (customizedModuleName) {
+    if (serviceId[customizedModuleName] !== 'undefined') {
+      const serviceIdMapApi = serviceId[customizedModuleName];
+      return serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
     }
-    if (globalGateWay.includes(url)) {
-      config.url = globalServiceId ? `/${globalServiceId}${url}` : url;
-      return config;
-    }
-
-    if (tableName) {
-      if (serviceId[tableName] !== 'undefined') {
-        const serviceIdMapApi = serviceId[tableName];
-        config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
-        return config;
-      }
-    }
-
-    if (customizedModuleName) {
-      if (serviceId[customizedModuleName] !== 'undefined') {
-        const serviceIdMapApi = serviceId[customizedModuleName];
-        config.url = serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
-        return config;
-      }
-    }
-    return config;
-  },
-  error => Promise.reject(error)
-);
+  }
+  return url;
+};
 
 axios.interceptors.response.use(
   (response) => {
+    const { config } = response;
+    const currentPendingRequest = md5(JSON.stringify({
+      data: config.data,
+      url: config.url,
+      method: config.method
+    }));
+    delete pendingRequestMap[currentPendingRequest];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
         title: '错误',
@@ -134,4 +129,24 @@ export const urlSearchParams = (data) => {
   return params;
 };
 
-export default axios;
+export default {
+  post(url, config) {
+    const matchedUrl = matchUrl(url);
+    let reqeuestParams = '';
+    if (config instanceof URLSearchParams) {
+      reqeuestParams = config.toString();
+    } else {
+      try {
+        reqeuestParams = JSON.stringify(config);
+      } catch (e) {
+        reqeuestParams = `${config}`;
+      }
+    }
+    console.log('reqeuestParams = ', reqeuestParams);
+    return axios.post(matchedUrl, config);
+  },
+  get(url, config) {
+    const matchedUrl = matchUrl(url);
+    return axios.get(matchedUrl, config);
+  }
+};
