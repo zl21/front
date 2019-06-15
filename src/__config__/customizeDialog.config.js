@@ -14,14 +14,3 @@ export default {
     )
   },
 };
-
-// export default [
-//   {
-//     componentName: 'ChangePassword',
-//     component: () => import('../__customizeDialog__/ChangePassword/ChangePassword')
-//   },
-//   {
-//     filePath: 'custompage/clonePopUp',
-//     component: () => import('../__customizeDialog__/ClonePopUp/ClonePopUp')
-//   },
-// ];

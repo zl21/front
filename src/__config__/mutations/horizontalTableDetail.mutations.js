@@ -183,10 +183,10 @@ export default {
       // state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
 
 
-      state.updateData[tableName].add[tableName] = copySaveDataForParam;
+      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
       state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
       Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
-      state.mainFormInfo.formData = state.defaultDataForCopy;
+      state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
     }
   },
   updateButtonsExport(state, data) { // 导出
