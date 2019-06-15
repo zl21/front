@@ -22,6 +22,7 @@
     <component
       :is="dialogComponentName"
       v-if="dialogComponentName"
+      :obj-list="objList"
       @closeActionDialog="closeActionDialog"
     />
   </Modal>
@@ -39,6 +40,10 @@
       //   type: String,
       //   default: () => 'auto'
       // },
+      objList: {
+        type: Array,
+        default: () => []
+      },
       dialogComponentName: {
         type: String,
         default: () => ''
@@ -134,7 +139,7 @@
   };
 </script>
 
-<style lang="less">
+<style lang="less" scope>
 .burgeon-modal-footer {
   border: none;
 }
@@ -149,7 +154,7 @@
   height: 26px;
   line-height: 0px;
 }
-.burgeon-modal-content-drag{
-  min-width: 520px !important;
-}
+// .burgeon-modal-content-drag{
+//   min-width: 520px !important;
+// }
 </style>
