@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
-
 import network, { urlSearchParams } from '../../../__utils__/network';
-import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   setColHide(store, data) {
@@ -64,7 +62,7 @@ export default {
       reject();
     });
   },
-  getBatchDeleteForButtons({ dispatch, commit }, {
+  getBatchDeleteForButtons({ commit }, {
     tableName, selectIdArr, resolve, reject 
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
@@ -191,7 +189,9 @@ export default {
   },
   updateUserConfig({ commit }, { type, id }) {
     network.post('/p/cs/getUserConfig', urlSearchParams({ type, id })).then((res) => {
-      commit('updateUserConfig', { userConfig: res.data.data });
+      setTimeout(() => {
+        commit('updateUserConfig', { userConfig: res.data.data });
+      }, 100);
     });
   }
 };

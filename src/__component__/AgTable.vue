@@ -48,6 +48,14 @@
     name: 'AgTable',
     components: {},
     props: {
+      userConfigForAgTable: {
+        type: Object,
+        default: () => ({
+          hideColumn: '',
+          colPosition: '',
+          fixedColumn: ''
+        })
+      }, // 控制ag列表的固定列、隐藏列、列顺序等显示环节。
       isPageShow: {
         type: Boolean,
         default: true
@@ -170,6 +178,12 @@
       } // 图例,
     },
     watch: {
+      userConfigForAgTable(val) {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+        }
+      },
       datas(val) {
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
@@ -192,10 +206,10 @@
           }); // 排序
         }
         const datas = self.datas;
-        datas.hideColumn = self.hideColumn;
         datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
-        datas.colPosition = self.colPosition; // 移动列
-        datas.pinnedPosition = self.fixedColumn; // 固定列
+        datas.hideColumn = self.userConfigForAgTable.hideColumn; // 隐藏列
+        datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列
+        datas.pinnedPosition = self.userConfigForAgTable.fixedColumn; // 固定列
         // selectIdArr
         return agTable(this.$refs.agGridTableContainer, {
           cssStatus: self.legend, // 颜色配置信息
