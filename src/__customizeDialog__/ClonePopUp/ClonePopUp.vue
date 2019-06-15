@@ -4,10 +4,19 @@
       <div class="pop-input">
         <ul>
           <li>
-            <span>版本号：</span><input
-              v-model="versionNumber"
-              type="text"
-            >
+            <span>版本号：</span>
+            <span class="version">
+              <DropDownSelectFilter
+                :single="true"
+                :data="version.data"
+                :total-row-count="version.totalRowCount"
+                :data-empty-message="version.dataEmptyMessage"
+                :auto-data="version.AutoData"
+                @on-popper-show="getVersion"
+                @on-fkrp-selected="getVersionID"
+                @on-input-value-change="fuzzyquerybyak"
+              />
+            </span>
           </li>
           <li>
             <span>{{ chineseName.SOURCETABLENAME }}：</span>
@@ -63,6 +72,7 @@
 <script>
   import axios from 'axios';
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
+  import network, { urlSearchParams, getGateway } from '../../__utils__/network';
 
   export default {
     name: 'ClonePopUp',
@@ -81,12 +91,47 @@
         errorData: [{ message: '' }], // 弹框内容
         errorDialogBack: false, // 是否有返回按钮
         chineseName: {}, // 名字集合
+        version: {
+          data: {},
+          totalRowCount: 39,
+          pageSize: 10,
+          AutoData: [],
+          dataEmptyMessage: '数据加载中...', // 无数据的提示
+          columns: ['name', 'value']// 展现的组
+        }
       };
     },
     components: {
      
     },
     methods: {
+      getVersionID(value) {
+        this.version.ID = value[0].ID;
+      },
+      getVersion() {
+        const searchdata = { 
+          isdroplistsearch: true, refcolid: 165894, startindex: 0, range: 10
+        };
+        network.post('/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
+          if (res.data.code === 0) {
+            this.version.data = res.data.data;
+            this.version.totalRowCount = res.data.data.totalRowCount;
+            this.version.pageSize = res.data.data.totalRowCount.defaultrange;
+          }
+        });
+      },
+      fuzzyquerybyak(value) {
+        const searchdata = { 
+          ak: value,
+          colid: ' 165884',
+          fixedcolumns: {}
+        };
+        network.post('/p/cs/fuzzyquerybyak', urlSearchParams(searchdata)).then((res) => {
+          if (res.data.code === 0) {
+            this.version.AutoData = res.data.data;
+          }
+        });
+      },
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
           this.errorDialogClass = 'warning';
@@ -95,17 +140,6 @@
           return;
         }
         axios({
-          // url: '/p/cs/exeAction',
-          // method: 'get',
-          // params: {
-          //   webaction: 'clone_table_ok',
-          //   actionid: 0,
-          //   param: {
-          //     "srctable": this.o_table_name,//源表表名
-          //     "destable": this.t_table_name.trim(),//目标表名
-          //     "destdesc": this.s_table_name.trim(),//目标描述
-          //   }
-          // }
           url: '/p/cs/clone',
           method: 'post',
           contentType: 'application/json',
@@ -113,6 +147,7 @@
             srctable: this.o_table_name, // 源表表名
             destable: this.t_table_name.trim(), // 目标表名
             destdesc: this.s_table_name.trim(), // 目标描述
+            ad_version_id: this.version.ID
           }
         }).then((res) => {
           const res_data = res.data;
@@ -158,7 +193,7 @@
   .clonePopUp {
     font-size: 12px;
     .pop-title {
-      width: 400px;
+      // width: 400px;
       height: 152px;
       box-sizing: border-box;
     }
@@ -169,6 +204,11 @@
       }
       li {
         margin-bottom: 10px;
+        .version{
+          width: 228px;
+    height: 22px;
+    border-radius: 2px;
+        }
       }
       span {
         display: inline-block;

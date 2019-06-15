@@ -211,7 +211,9 @@
         if (this.objectType === 'horizontal') { // 横向布局
           return this.itemInfo.componentAttribute.panelData.data.addcolums;
         } if (this.objectType === 'vertical') {
-          return this.mainFormInfo.formData.data.addcolums;
+          if (this.mainFormInfo.formData.data) {
+            return this.mainFormInfo.formData.data.addcolums;
+          }
         }
         return [];
       }
@@ -1258,27 +1260,26 @@
             }
           }
         } else if (this.verifyRequiredInformation()) { // 横向结构保存校验
-          // if (itemName === this.tableName) {
-          //   if (obj.requestUrlPath) { // 配置path
-          //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-          //   } else { // 没有配置path
-          //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-          //   }
-          // } else {
-          if (this.updateData[itemName].modify[itemName]) { 
-            if (this.updateData[itemName].modify[itemName].length > 0) { //
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+          if (itemName === this.tableName) {
+            if (obj.requestUrlPath) { // 配置path
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            } else { // 没有配置path
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
             }
-          }
+          } else {
+            if (this.updateData[itemName].modify[itemName]) { 
+              if (this.updateData[itemName].modify[itemName].length > 0) { //
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              }
+            }
           
-          // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-          if (this.updateData[itemName].add[itemName]) {
-            if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
-              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
+            if (this.updateData[itemName].add[itemName]) {
+              if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
             }
           }
-        
-          // }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
