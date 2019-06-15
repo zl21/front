@@ -1,126 +1,126 @@
 <template>
-  <div class="TableDetailCollection">
-    <div class="detail-collection">
-      <div class="detail-top">
-        <div class="page-buttons">
-          <Page
-            :total="dataSource.totalRowCount"
-            :page-size-opts="dataSource.selectrange"
-            class="table-page"
-            size="small"
-            show-elevator
-            show-sizer
-            show-total
-            @on-change="pageChangeEvent"
-            @on-page-size-change="pageSizeChangeEvent"
-          />
-          <ul
-            v-if="!isHorizontal"
-            class="detail-buttons"
-          >
-            <a
-              v-for="item in buttonGroups"
-              :key="item.name"
-              @click="buttonClick(item)"
+    <div class="TableDetailCollection">
+        <div class="detail-collection">
+            <div class="detail-top">
+                <div class="page-buttons">
+                    <Page
+                            :total="dataSource.totalRowCount"
+                            :page-size-opts="dataSource.selectrange"
+                            class="table-page"
+                            size="small"
+                            show-elevator
+                            show-sizer
+                            show-total
+                            @on-change="pageChangeEvent"
+                            @on-page-size-change="pageSizeChangeEvent"
+                    />
+                    <ul
+                            v-if="!isHorizontal"
+                            class="detail-buttons"
+                    >
+                        <a
+                                v-for="item in buttonGroups"
+                                :key="item.name"
+                                @click="buttonClick(item)"
+                        >
+                            【{{ item.name }}】
+                        </a>
+                    </ul>
+                    <Dialog
+                            ref="dialogRef"
+                            :title="dialogConfig.title"
+                            :mask="dialogConfig.mask"
+                            :content-text="dialogConfig.contentText"
+                            :footer-hide="dialogConfig.footerHide"
+                            :confirm="dialogConfig.confirm"
+                    />
+                </div>
+                <div
+                        v-if="filterList.length > 0"
+                        class="detail-search"
+                >
+                    <Select
+                            v-model="searchCondition"
+                            clearable
+                            placeholder="查询条件"
+                            @on-clear="searchCondition=null"
+                    >
+                        <Option
+                                v-for="item in filterList"
+                                :key="item.colname"
+                                :label="item.name"
+                                :value="item.isfk ? item.inputname : item.colname"
+                        >
+                            {{ item.label }}
+                        </Option>
+                    </Select>
+                    <div class="detail-search-input">
+                        <Input
+                                v-model="searchInfo"
+                                search
+                                placeholder="请输入查询内容"
+                                @on-search="getTabelList"
+                        >
+                        <Button
+                                slot="prepend"
+                                @click="getTabelList"
+                        >
+                            搜索
+                        </Button>
+                        </Input>
+                    </div>
+                </div>
+            </div>
+            <div class="table-outside">
+                <Table
+                        ref="selection"
+                        class="table-in"
+                        :height="tableHeight? tableHeight :true"
+                        border
+                        :columns="columns"
+                        :data="data"
+                        :total-data="totalData"
+                        @on-selection-change="tableSelectedChange"
+                        @on-sort-change="tableSortChange"
+                />
+            </div>
+            <div
+                    v-if="isHorizontal"
+                    class="queryCondition"
             >
-              【{{ item.name }}】
-            </a>
-          </ul>
-          <Dialog
-            ref="dialogRef"
-            :title="dialogConfig.title"
-            :mask="dialogConfig.mask"
-            :content-text="dialogConfig.contentText"
-            :footer-hide="dialogConfig.footerHide"
-            :confirm="dialogConfig.confirm"
-          />
+                查询条件:{{ dataSource.queryDesc }}
+            </div>
         </div>
-        <div
-          v-if="filterList.length > 0"
-          class="detail-search"
-        >
-          <Select
-            v-model="searchCondition"
-            clearable
-            placeholder="查询条件"
-            @on-clear="searchCondition=null"
-          >
-            <Option
-              v-for="item in filterList"
-              :key="item.colname"
-              :label="item.name"
-              :value="item.isfk ? item.inputname : item.colname"
-            >
-              {{ item.label }}
-            </Option>
-          </Select>
-          <div class="detail-search-input">
-            <Input
-              v-model="searchInfo"
-              search
-              placeholder="请输入查询内容"
-              @on-search="getTabelList"
-            >
-            <Button
-              slot="prepend"
-              @click="getTabelList"
-            >
-              搜索
-            </Button>
-            </Input>
-          </div>
-        </div>
-      </div>
-      <div class="table-outside">
-        <Table
-          ref="selection"
-          class="table-in"
-          :height="tableHeight? tableHeight :true"
-          border
-          :columns="columns"
-          :data="data"
-          :total-data="totalData"
-          @on-selection-change="tableSelectedChange"
-          @on-sort-change="tableSortChange"
+        <!-- 导入弹框 -->
+        <ImportDialog
+                v-if="importData.importDialog"
+                :name="importData.importDialog"
+                :visible="importData.importDialog"
+                :show-close="true"
+                :title="importData.importDialogTitle"
+                :tablename="tableName"
+                :main-table="mainFormInfo.tablename"
+                :main-id="pageItemId"
+                @confirmImport="importsuccess"
+                @closeDialog="closeImportDialog"
         />
-      </div>
-      <div
-        v-if="isHorizontal"
-        class="queryCondition"
-      >
-        查询条件:{{ dataSource.queryDesc }}
-      </div>
     </div>
-    <!-- 导入弹框 -->
-    <ImportDialog
-      v-if="importData.importDialog"
-      :name="importData.importDialog"
-      :visible="importData.importDialog"
-      :show-close="true"
-      :title="importData.importDialogTitle"
-      :tablename="tableName"
-      :main-table="mainFormInfo.tablename"
-      :main-id="pageItemId"
-      @confirmImport="importsuccess"
-      @closeDialog="closeImportDialog"
-    />
-  </div>
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import {mapState, mapMutations} from 'vuex';
   import regExp from '../constants/regExp';
-  import { Version } from '../constants/global';
+  import {Version} from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog';
   import router from '../__config__/router.config';
-  import { getGateway } from '../__utils__/network';
+  import {getGateway} from '../__utils__/network';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
-  // eslint-disable-next-line import/no-dynamic-require
+    // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
@@ -142,6 +142,7 @@
     },
     data() {
       return {
+        fkSelectedChangeData: [], // 保存外键修改的数据
         buttonPath: {},
         tableRowSelectedIds: [], // 表格选中的ID
         // columns: [],
@@ -152,7 +153,7 @@
         //   currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
         //   pageSize: this.dataSource.defaultrange || 10 // 显示条数
         // },
-        fkData: ({ totalRowCount: 0 }), // // 外键下拉选择（drp mrp） 的数据
+        fkData: ({totalRowCount: 0}), // // 外键下拉选择（drp mrp） 的数据
         fkDropPageInfo: { // 外键下拉选择（drp mrp） 的分页
           currentPageIndex: 1, // 当前页码
           pageSize: 10 // 显示条数
@@ -160,25 +161,25 @@
         fkAutoData: [], // 外键关联下拉 模糊搜索数据
         popFilterData: {}, // mop气泡的特殊数据
         popFilterDataList: [{
-                              value: '更多筛选',
-                              lable: 0
-                            },
-                            {
-                              value: '导入',
-                              lable: 2
-                            }],
+          value: '更多筛选',
+          lable: 0
+        },
+          {
+            value: '导入',
+            lable: 2
+          }],
         currentOrderList: [], // 当前排序的内容
         DISPLAY_ENUM: { // 标签映射
-          text: { tag: 'Input', event: this.inputRender },
-          check: { tag: 'Checkbox', event: this.checkboxRender },
-          select: { tag: 'Select', event: this.selectRender },
-          drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mop: { tag: 'AttachFilter', event: this.attachFilterRender },
-          OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
-          OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
-          OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
-          image: { tag: 'Poptip', event: this.imageRender }
+          text: {tag: 'Input', event: this.inputRender},
+          check: {tag: 'Checkbox', event: this.checkboxRender},
+          select: {tag: 'Select', event: this.selectRender},
+          drp: {tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender},
+          mrp: {tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender},
+          mop: {tag: 'AttachFilter', event: this.attachFilterRender},
+          OBJ_DATENUMBER: {tag: 'DatePicker', event: this.datePickertRender},
+          OBJ_DATE: {tag: 'DatePicker', event: this.datePickertRender},
+          OBJ_TIME: {tag: 'TimePicker', event: this.timePickerRender},
+          image: {tag: 'Poptip', event: this.imageRender}
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -241,8 +242,8 @@
     },
     computed: {
       ...mapState('global', {
-      // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
-      // menuLists: ({ menuLists }) => menuLists
+        // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        // menuLists: ({ menuLists }) => menuLists
       }),
       filterList() {
         return this.columns.filter(
@@ -304,7 +305,7 @@
         return this.type === pageType.Horizontal;
       },
       buttonGroups() { // 按钮组的数据组合
-        const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        const {tabcmd} = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
@@ -314,7 +315,9 @@
           this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
             this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
               // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-              if (index === i) { this.buttonPath[cmd] = path; }
+              if (index === i) {
+                this.buttonPath[cmd] = path;
+              }
             });
           });
 
@@ -392,17 +395,17 @@
 
       buttonClick(obj) {
         switch (obj.eName) {
-        case 'actionIMPORT': // 导入
-          this.objectIMPORT();
-          break;
-        case 'actionEXPORT': // 导出
-          this.objectEXPORT();
-          break;
-        case 'actionDELETE': // 删除
-          this.objectTryDelete(obj);
-          break;
-        default:
-          break;
+          case 'actionIMPORT': // 导入
+            this.objectIMPORT();
+            break;
+          case 'actionEXPORT': // 导出
+            this.objectEXPORT();
+            break;
+          case 'actionDELETE': // 删除
+            this.objectTryDelete(obj);
+            break;
+          default:
+            break;
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
@@ -420,7 +423,7 @@
           contentText: '确认执行删除?',
           confirm: () => {
             let params = {};
-            const { tableName, tableId, itemId } = router.currentRoute.params;
+            const {tableName, tableId, itemId} = router.currentRoute.params;
             const path = obj.path;
             const itemTable = this.updateData[this.tableName].delete;
             if (obj.path) {
@@ -437,7 +440,7 @@
               params = {
                 delMTable: false,
                 objId: tableId,
-                tabItem: { ...itemTable },
+                tabItem: {...itemTable},
                 table: tableName
               };
             }
@@ -452,9 +455,9 @@
                 } else {
                   const deleteMessage = res.data.message;
                   this.$Message.success(`${deleteMessage}`);
-                  const { refcolid } = this.itemInfo;
+                  const {refcolid} = this.itemInfo;
                   const tabIndex = this.tabCurrentIndex;
-                  this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
+                  this.getObjectForMainTableForm({table: tableName, objid: itemId, tabIndex});
                   this.getObjectTableItemForTableData({
                     table: this.tableName,
                     objid: itemId,
@@ -559,32 +562,31 @@
           tabth.map((tab) => {
             let val = ele[tab.colname].val;
             switch (tab.display) {
-            case 'check':
-              {
+              case 'check': {
                 const currentCheck = tab.combobox.filter(box => box.limitdesc === ele[tab.colname].val);
                 const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
                 val = limitval;
               }
-              break;
-            case 'OBJ_DATENUMBER':
-              val = ele[tab.colname].val.replace(/\-/g, '');
-              break;
-            default:
-              break;
-            }
-            if (tab.isfk) {
-              switch (tab.fkdisplay) {
-              case 'drp':
-                val = ele[tab.colname].refobjid;
                 break;
-              case 'mrp':
-                val = ele[tab.colname].refobjid; // mrp快鱼之前是存的val
-                break;
-              case 'mop':
-                val = ele[tab.colname].refobjid;
+              case 'OBJ_DATENUMBER':
+                val = ele[tab.colname].val.replace(/\-/g, '');
                 break;
               default:
                 break;
+            }
+            if (tab.isfk) {
+              switch (tab.fkdisplay) {
+                case 'drp':
+                  val = ele[tab.colname].refobjid;
+                  break;
+                case 'mrp':
+                  val = ele[tab.colname].refobjid; // mrp快鱼之前是存的val
+                  break;
+                case 'mop':
+                  val = ele[tab.colname].refobjid;
+                  break;
+                default:
+                  break;
               }
             }
             param[tab.colname] = val;
@@ -636,7 +638,7 @@
             },
             props: {
               value: params.row[cellData.colname],
-              regx: this.inputRegx(cellData),
+              regx: this.inputRegx(cellData, params),
               maxlength: cellData.length
             },
             nativeOn: {
@@ -723,6 +725,7 @@
             },
             props: {
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
+              // defaultSelected: () =>{},
               single: cellData.fkdisplay === 'drp',
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
@@ -794,7 +797,11 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
-                this.fkAutoData = [];
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, {[cellData.key]: data});
+                }
                 let ids = null;
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
@@ -850,15 +857,14 @@
             },
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
-                console.log(item);
                 this.popFilterDataList = [{
-                                            value: '更多筛选',
-                                            lable: 0
-                                          },
-                                          {
-                                            value: '导入',
-                                            lable: 2
-                                          }];
+                  value: '更多筛选',
+                  lable: 0
+                },
+                  {
+                    value: '导入',
+                    lable: 2
+                  }];
                 fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
@@ -1045,8 +1051,7 @@
                 },
                 scopedSlots: {
                   default: () => h('div', {
-                    style: {
-                    },
+                    style: {},
                     domProps: {
                       innerHTML: `<span>${index}</span>
                             <i class="iconfont icon-jinggao" style="margin-left:5px; color: red" />`
@@ -1146,12 +1151,16 @@
         // drp mrp 初始数据赋值
         const defaultData = [];
         if (cellData.fkdisplay === 'drp') {
-          if (this.dataSource.row[params.index][cellData.colname]) {
-            const data = {
-              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
-              Label: params.row[cellData.colname]
-            };
-            defaultData.push(data);
+          if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
+            defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
+          } else {
+            if (this.dataSource.row[params.index][cellData.colname]) {
+              const data = {
+                ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+                Label: params.row[cellData.colname]
+              };
+              defaultData.push(data);
+            }
           }
         } else if (this.dataSource.row[params.index][cellData.colname]) {
           let ids = [];
@@ -1197,7 +1206,7 @@
       tableSelectedChange(data) {
         const param = {};
         const datas = data.reduce((acc, cur) => {
-          acc.push({ ID: cur[EXCEPT_COLUMN_NAME] });
+          acc.push({ID: cur[EXCEPT_COLUMN_NAME]});
           return acc;
         }, []);
         this.tableRowSelectedIds = datas;
@@ -1233,9 +1242,11 @@
         // 输入框正则
         if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
           return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
-        } if (cellData.type === 'NUMBER') {
+        }
+        if (cellData.type === 'NUMBER') {
           return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
-        } if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
+        }
+        if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
           return regExp.Capital;
         }
         return null;
@@ -1287,7 +1298,7 @@
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
-        const { itemId } = this.$route.params;
+        const {itemId} = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
           table: this.tableName,
@@ -1402,7 +1413,7 @@
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
-        const { itemId } = this.$route.params;
+        const {itemId} = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
           table: this.tableName,
@@ -1447,13 +1458,13 @@
         this.getTabelList();
       },
       objectEXPORT() { // 导出
-        const { tableId, itemId } = router.currentRoute.params;
+        const {tableId, itemId} = router.currentRoute.params;
         const tableRowSelectedIds = [];
         this.tableRowSelectedIds.map(ele => tableRowSelectedIds.push(ele.ID));
         const searchData = {
           table: this.tableName,
           column_include_uicontroller: true,
-          fixedcolumns: { ID: tableRowSelectedIds.length === 0 ? null :  tableRowSelectedIds},
+          fixedcolumns: {ID: tableRowSelectedIds.length === 0 ? null : tableRowSelectedIds},
           objectIds: `${this.itemInfo.refcolid}=${itemId}`,
           startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
           range: this.pageInfo.pageSize,
@@ -1466,7 +1477,7 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.getExportQueryForButtons({ OBJ, resolve, reject });
+          this.getExportQueryForButtons({OBJ, resolve, reject});
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
@@ -1557,75 +1568,75 @@
 </script>
 
 <style scoped lang="less">
-.TableDetailCollection {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-  margin: 10px 5px 10px 5px;
-  .detail-collection {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow-y: hidden;
-    .detail-top {
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      .page-buttons {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .table-page {
-        white-space: nowrap;
-      }
-      .detail-buttons {
-        margin-left: 10px;
-        a {
-          line-height: 26px;
-          vertical-align: middle;
-        }
-      }
-      .detail-search {
-        display: inline-block;
-        display: flex;
-        // justify-content: space-around;
-        // align-content: stretch;
-        .burgeon-select {
-          width: 120px;
-        }
-        .detail-search-input {
-          margin-left: 10px;
-          .burgeon-input-group {
-            top: 0px;
-          }
-          .burgeon-input-group-with-prepend {
-            width: 190px;
-          }
-          .burgeon-input-group-prepend {
-            .burgeon-btn {
-              display: flex;
-              align-items: center;
-              span {
-                bottom: 2px;
-                position: relative;
-              }
-            }
-          }
-        }
-      }
-    }
-    .table-outside {
-      flex: 1;
-      overflow-y: hidden;
-      display: flex;
-      .table-in {
+    .TableDetailCollection {
         flex: 1;
-      }
+        display: flex;
+        flex-direction: column;
+        overflow-y: hidden;
+        margin: 10px 5px 10px 5px;
+        .detail-collection {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: hidden;
+            .detail-top {
+                margin-bottom: 6px;
+                display: flex;
+                justify-content: space-between;
+                .page-buttons {
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+                .table-page {
+                    white-space: nowrap;
+                }
+                .detail-buttons {
+                    margin-left: 10px;
+                    a {
+                        line-height: 26px;
+                        vertical-align: middle;
+                    }
+                }
+                .detail-search {
+                    display: inline-block;
+                    display: flex;
+                    // justify-content: space-around;
+                    // align-content: stretch;
+                    .burgeon-select {
+                        width: 120px;
+                    }
+                    .detail-search-input {
+                        margin-left: 10px;
+                        .burgeon-input-group {
+                            top: 0px;
+                        }
+                        .burgeon-input-group-with-prepend {
+                            width: 190px;
+                        }
+                        .burgeon-input-group-prepend {
+                            .burgeon-btn {
+                                display: flex;
+                                align-items: center;
+                                span {
+                                    bottom: 2px;
+                                    position: relative;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .table-outside {
+                flex: 1;
+                overflow-y: hidden;
+                display: flex;
+                .table-in {
+                    flex: 1;
+                }
+            }
+            .queryCondition {
+                margin-top: 5px;
+            }
+        }
     }
-    .queryCondition {
-      margin-top: 5px;
-    }
-  }
-}
 </style>
