@@ -98,6 +98,12 @@
     components: {
     },
     props: {
+      mainFormPaths: {
+        type: Array,
+        default() {
+          return [];
+        }
+      }, // form组件主表paths
       type: {
         type: String,
         default: 'vertical'
@@ -163,8 +169,12 @@
     watch: {},
     computed: {
       formPaths() {
-        if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
-          return this.buttonsData.data.tabcmd.paths;
+        if (this.type === 'vertical') {
+          return this.mainFormPaths;
+        } else {
+          if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
+            return this.buttonsData.data.tabcmd.paths;
+          }
         }
         return [];
       },
@@ -382,7 +392,7 @@
               startindex: (Number(this.$store.state[getModuleName()].tablePageInfo.currentPageIndex) - 1) * Number(this.$store.state[getModuleName()].tablePageInfo.pageSize),
               range: this.$store.state[getModuleName()].tablePageInfo.pageSize,
             };
-            
+
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata, tabIndex
             });

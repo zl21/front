@@ -379,6 +379,7 @@
       },
       dataSource: {
         handler(val, old) {
+          this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -511,9 +512,11 @@
             align: 'center'
           },
           {
-            title: '序号',
             width: 60,
-            key: COLLECTION_INDEX,
+            type: 'index',
+            renderHeader: (h, params) => h('div', [
+              h('Span', '序号')
+            ]),
             render: this.collectionIndexRender(columns)
           }
         ];
@@ -1080,7 +1083,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`
+            innerHTML: params.row[cellData.colname]?`<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`:''
           },
           on: {
             click: (event) => {
@@ -1149,7 +1152,7 @@
       },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
-        const defaultData = [];
+        let defaultData = [];
         if (cellData.fkdisplay === 'drp') {
           if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
@@ -1163,25 +1166,30 @@
             }
           }
         } else if (this.dataSource.row[params.index][cellData.colname]) {
-          let ids = [];
-          const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
-          const val = this.dataSource.row[params.index][cellData.colname].val;
-          if (typeof refobjid === 'string') {
-            ids = refobjid.split(',');
-          }
-          if (ids.length > 0) {
-            ids.map((ele, index) => {
-              val.split(',').map((item, ind) => {
-                if (index === ind) {
-                  defaultData.push({
-                    ID: ele,
-                    Label: item
-                  });
-                }
-                return item;
+          if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
+            defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            console.log(this.fkSelectedChangeData[params.index][cellData.key]);
+          } else {
+            let ids = [];
+            const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
+            const val = this.dataSource.row[params.index][cellData.colname].val;
+            if (typeof refobjid === 'string') {
+              ids = refobjid.split(',');
+            }
+            if (ids.length > 0) {
+              ids.map((ele, index) => {
+                val.split(',').map((item, ind) => {
+                  if (index === ind) {
+                    defaultData.push({
+                      ID: ele,
+                      Label: item
+                    });
+                  }
+                  return item;
+                });
+                return ele;
               });
-              return ele;
-            });
+            }
           }
         }
         return defaultData;

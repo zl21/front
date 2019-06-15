@@ -33,6 +33,7 @@ const init = () => {
 const getCategory = () => {
   network.post('/p/cs/getSubSystems').then((res) => {
     if (res.data.data) {
+      store.commit('global/updateMenuLists', res.data.data);
       const serviceIdMaps = res.data.data.map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)

@@ -728,10 +728,9 @@ export default {
         if($this){
             //console.log(/选中/.test(this._items.value));
                           //console.log(this.$refs.complex,this.$refs.complex.data);
-
+            console.log(this.resultData,'resultData');
             if(/选中/.test(this._items.value)){
                this.$refs.complex = Object.assign(this.$refs.complex,this.resultData);
-
             } else{ 
               $this.complexs = false;
             }
@@ -740,6 +739,7 @@ export default {
         } 
     },
     attachFilterOk($this) {
+      //this.resultData = Object.assign({},this.$refs.complex);
       if (
         Object.prototype.hasOwnProperty.call(
           this._items.event,
@@ -759,7 +759,7 @@ export default {
           return false;
         }
         if ($this._data.IN.length > 0) {
-          this.resultData = {...$this._data};
+          this.resultData =Object.assign({},$this._data);
           const value = `已经选中${$this._data.IN.length}条数据`;
           this._items.value = value;
           this._items.Selected = $this._data.IN;
@@ -794,17 +794,19 @@ export default {
         onOk: () => {
           const HEADIMG =
             this._items.props.itemdata.valuedata.length > 1
-              ? JSON.stringify([item])
+              ? [item]
               : "";
           //  判断parms 是否 需要保存
           const data = {
             [that._items.field]:HEADIMG,
-            ID: that._items.props.itemdata.objId
+            ID: that._items.props.itemdata.objId,
+            table:this._items.props.itemdata.masterName
           };
           // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
           // 判断是否有path
-          if (this.$parent.pathcheck!== '') {
-            that.deleteImgData(
+          
+          if (this.$parent.pathcheck === '') {
+            this.deleteImgData(
               {
                 data
               },
@@ -813,8 +815,9 @@ export default {
           } else {
             const parms = this.pathsCheckout(
               data,
-              [that._items.field] === "" ? "" : [item]
+              HEADIMG
             );
+            console.log(data);
             let path = this.$parent.pathcheck!== '';
             that.upSaveImg(parms, "", path, index);
           }
@@ -824,7 +827,7 @@ export default {
     deleteImgData(obj, index) {
       deleteImg({
         params: {
-          ...obj
+          ...obj.data
         },
         // eslint-disable-next-line consistent-return
         success: res => {
@@ -849,10 +852,9 @@ export default {
           if (res.data.code !== 0) {
             return false;
           }
-          const fixedData = [
-            { NAME: resultData.data.Name, URL: resultData.data.Url }
-          ];
-
+          const fixedData = [...this._items.props.itemdata.valuedata];
+          fixedData.push({ NAME: resultData.data.Name, URL: resultData.data.Url });
+          // 
           let parms = {
             objId: this._items.props.itemdata.objId,
             table: this._items.props.itemdata.masterName
@@ -867,7 +869,7 @@ export default {
             let path = this.$parent.pathcheck!== '';
             self.upSaveImg(parms, fixedData, path);
           } else {
-            this._items.props.itemdata.valuedata.push(fixedData[0]);
+            this._items.props.itemdata.valuedata.push(fixedData[fixedData.length-1]);
           }
         }
       });
@@ -883,10 +885,10 @@ export default {
         // 主子表 有path  主表明+子表明 // parms.table 主表
         const parmsdata = {
               [parms.table]:{
-                [this._items.field]: JSON.stringify(data),
+                [this._items.field]: data == '' ? '' :JSON.stringify(data),
+                ID: parms.objId || parms.ID,
               },
-              ID: parms.objId,
-              ...parms
+              
         };
         // if(childTableName === this._items.props.itemdata.masterName){
             
@@ -919,7 +921,7 @@ export default {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        return Object.assign(parms, fixedData);     
+        return Object.assign({}, fixedData);     
 
 
       }else if(!isreftabs && pathcheck ===''){
@@ -934,7 +936,7 @@ export default {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        return Object.assign(parms, fixedData);   
+        return Object.assign({}, fixedData);   
 
 
       }else if(!isreftabs && pathcheck !==''){
@@ -942,7 +944,7 @@ export default {
         const parmsdata = {
         [this._items.field]: JSON.stringify(data),
         };
-        return Object.assign({}, parmsdata);
+        return Object.assign({ID:parms.objId }, parmsdata);
 
       }
       
@@ -963,7 +965,7 @@ export default {
             this._items.props.itemdata.valuedata.splice(index - 1, 1);
             this._items.value = this._items.props.itemdata.valuedata;
           } else {
-            const data = fixedData[0];
+            const data = fixedData[fixedData.length-1];
             if (typeof this._items.props.itemdata.valuedata !== "object") {
               this._items.props.itemdata.valuedata = [];
             }

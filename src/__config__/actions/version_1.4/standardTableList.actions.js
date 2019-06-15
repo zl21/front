@@ -14,7 +14,6 @@ export default {
   getQueryListForAg({ commit }, {
     table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby
   }) {
-    console.log('🐑');
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
         table,
