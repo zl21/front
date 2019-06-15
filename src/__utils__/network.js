@@ -137,8 +137,9 @@ export const urlSearchParams = (data) => {
   return params;
 };
 
-export default {
-  post(url, config) {
+function NetworkConstructor() {
+  // equals to axios.post(url, config)
+  this.post = (url, config) => {
     const matchedUrl = matchUrl(url);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
@@ -147,18 +148,30 @@ export default {
     });
     if (pendingRequestMap[requestMd5]) {
       return { then: () => {} };
-    } 
+    }
     pendingRequestMap[requestMd5] = true;
     return axios.post(matchedUrl, config);
-  },
-  get(url, config) {
+  };
+
+  // equals to axios.get(url, config)
+  this.get = (url, config) => {
     const matchedUrl = matchUrl(url);
     const requestMd5 = getRequestMd5({
       data: config,
       url: matchedUrl,
       method: 'get'
     });
+    if (pendingRequestMap[requestMd5]) {
+      return { then: () => {} };
+    }
     pendingRequestMap[requestMd5] = true;
     return axios.get(matchedUrl, config);
-  }
-};
+  };
+
+  // make axios available
+  this.axios = axios;
+}
+
+const network = new NetworkConstructor();
+
+export default network;
