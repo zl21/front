@@ -72,12 +72,15 @@
 <script>
   import axios from 'axios';
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
-  import network, { urlSearchParams, getGateway } from '../../__utils__/network';
+  import network from '../../__utils__/network';
 
   export default {
     name: 'ClonePopUp',
     props: {
-      objList: Array
+      objList: {
+        type: Array,
+        default: () => ([])
+      },
     },
     data() {
       return {

@@ -171,11 +171,11 @@
       formPaths() {
         if (this.type === 'vertical') {
           return this.mainFormPaths;
-        } else {
-          if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
-            return this.buttonsData.data.tabcmd.paths;
-          }
+        } 
+        if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
+          return this.buttonsData.data.tabcmd.paths;
         }
+        
         return [];
       },
       // ...mapState(moduleName(), {
@@ -423,7 +423,7 @@
           //     fixedcolumns: {}
           //   }
           // });
-        });
+        }, () => {});
       },
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
