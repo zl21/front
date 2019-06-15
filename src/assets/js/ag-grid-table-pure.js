@@ -1059,7 +1059,7 @@ const initializeAgTable = (container, opt) => {
           document.body.appendChild(tooltipTopBox);
           // 移除ag-tool-panel
           agGridDiv.querySelector('.ag-tool-panel').remove();
-          agTable.dealWithPinnedColumns();
+          agTable.dealWithPinnedColumns(true);
         }, // 当表格渲染好之后，触发onGridReady
         onBodyScroll(params) {
           const { columnApi, direction } = params;
@@ -1211,8 +1211,8 @@ const initializeAgTable = (container, opt) => {
         agTable.colPosition = colPosition;
         const positionColumns = colPosition.split(',');
         const columnMap = {};
-        const visibleColumns = [];
-        const unVisibleColumns = [];
+        const visibleColumns = [];   // 不可见列
+        const unVisibleColumns = [];  // 可见列
 
         data.forEach((d) => {
           columnMap[d.colname] = d;
@@ -1242,10 +1242,16 @@ const initializeAgTable = (container, opt) => {
     };
 
     // 处理pinned columns
-    agTable.dealWithPinnedColumns = () => {
+    agTable.dealWithPinnedColumns = (preventPinnedEmit, fixedColumns) => {
+      if (preventPinnedEmit) {
+        agTable.preventPinnedEmit = true;
+        setTimeout(() => {
+          agTable.preventPinnedEmit = false;
+        }, 400);
+      }
       const options = agTable.customizeOptions;
-      const { pinnedPosition } = options.datas;
-      if (pinnedPosition !== null) {
+      const pinnedPosition = fixedColumns || options.datas.pinnedPosition;
+      if (pinnedPosition !== null && pinnedPosition !== undefined) {
         const pinnedColumns = pinnedPosition.split('|');
         const pinnedLeftColumns = pinnedColumns[0].split(',');
         if (pinnedColumns[1] != null) {
