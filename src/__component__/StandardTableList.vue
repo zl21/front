@@ -488,7 +488,7 @@
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
-                obj.item.props.fkobj.url = `${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
+                obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
                 obj.item.props.filterDate = {};

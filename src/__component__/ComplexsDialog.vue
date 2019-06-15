@@ -73,6 +73,9 @@
             list: [],
             search: '',
             pageOptions: [10, 20, 50, 100],
+            pageSize:10,
+            total:0,
+            pageNum:1,
             height: 340,
             searchName: '全局检索',
             checked: false
@@ -81,6 +84,9 @@
             tab: '查看选中结果',
             columns: [],
             list: [],
+            pageSize:10,
+            total:0,
+            pageNum:1,
             height: 340,
             pageOptions: [10, 20, 50, 100],
             search: '',
@@ -173,12 +179,10 @@
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
-        console.log(type, name);
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
           if(name !== 'clear'){
-              console.log(type);
               if(type !=='search'){
                 this.IN = data.ids || [];
               }
@@ -195,17 +199,16 @@
                   item.ID = item.id_list;
                   return item;
                 });
-                if(this.text){
-                  this.resultData.total = data.data.total;
-                } else{
-                  this.resultData.total = data.data.total;
-                }
+                this.resultData.total = data.data.total;
           }
 
         }
-        
-
-        this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        //console.log(type,this.resultData.total);
+        if( type !== 'search'){
+           this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        }else if(index === 1 && this.resultData.total>0){
+           this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        }
 
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
@@ -214,11 +217,18 @@
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
+        console.log( this.sendMessage.PAGESIZE*(this.sendMessage.PAGENUM-1)+3)
         return Object.keys(columns).reduce((item, option, key) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
-              type: 'index',
-              title: '编号'
+              key: 'ID',
+              title: '编号',
+              render: (h, params) => h('div',
+                  {
+                    domProps: {
+                      innerHTML:this.sendMessage.PAGESIZE*(this.sendMessage.PAGENUM-1)+params.index+1
+                    }
+              })
             });
           } else {
             item.push({
@@ -296,7 +306,11 @@
           return false;
         }
         this.sendMessage.PAGENUM = index;
-        this.multipleSelectionTable(this.sendMessage, this.index);
+         if( this.index  === 0){
+          this.multipleSelectionTable(this.sendMessage, this.index, 'search');
+        } else {
+          this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
+        }
       },
       changePageSize(index) {
         // 点击显示条数
@@ -304,7 +318,11 @@
           return false;
         }
         this.sendMessage.PAGESIZE = index;
-        this.multipleSelectionTable(this.sendMessage, this.index);
+        if( this.index  === 0){
+          this.multipleSelectionTable(this.sendMessage, this.index, 'search');
+        } else {
+          this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
+        }
       },
       rowdbclick(row) {
         // 表格双击
@@ -400,6 +418,10 @@
         // 清除页面选中值
         this.sendMessage.PAGESIZE = 50;
         this.sendMessage.PAGENUM = 1;
+        this.componentData[1].list = [];
+        this.componentData[1].total = 0;
+        this.componentData[1].pageNum = 1;
+        this.componentData[1].pageSize = 50;
       },
       checkboxChange(value) {
         this.checkbox = value;
@@ -500,6 +522,10 @@
         this.sendMessage.CONDITION = '';
         this.EXCLUDE = '';
         this.componentData[1].list = [];
+        this.componentData[1].total = 0;
+        this.componentData[1].pageNum = 1;
+        this.componentData[1].pageSize = 50;
+
         this.clearIndexPage();
       },
       savemessage(){
@@ -548,7 +574,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
-              this.$Message.info('模板保存成功');
+              this.$Message.success('模板保存成功');
             }
           }
         });
@@ -645,7 +671,6 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          console.log( this.text.result);
           this.sendMessage = this.filter.value;
           
           this.multipleScreenResultCheckFiter(this.filter.value, 1);

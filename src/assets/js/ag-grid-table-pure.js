@@ -391,9 +391,25 @@ sequenceComponent.prototype.init = function (params) {
       if (options && options.datas && options.datas.deleteFailInfo && Object.prototype.toString.call(options.datas.deleteFailInfo) === '[object Array]') {
         tooltipBox.innerText = options.datas.deleteFailInfo[failIds.indexOf(value)].message;
       }
+      const offsetBottomCalibration = tooltipBox.offsetHeight - offsetBottom - 12;
+      if (offsetBottomCalibration > 0) {
+        tooltipBox.style.top = `${(offsetTop - (target.offsetHeight / 2)) - (offsetBottomCalibration)}px`;
+        const pseudoStyle = document.createElement('style');
+        pseudoStyle.setAttribute('type', 'text/css');
+        pseudoStyle.setAttribute('id', 'pseudoStyle');
+        pseudoStyle.innerText = `
+        .${cssFeatures.tooltipBox}::before {
+            top: ${8 + (offsetBottomCalibration)}px !important;
+        }`;
+        document.head.appendChild(pseudoStyle);
+      }
     };
     toolTipIcon.onmouseleave = function () {
       tooltipBox.style.display = 'none';
+      const pseudoStyle = document.getElementById('pseudoStyle');
+      if (pseudoStyle) {
+        pseudoStyle.remove();
+      }
     };
     eGui.appendChild(toolTipIcon);
   }
@@ -931,6 +947,11 @@ const initializeAgTable = (container, opt) => {
                   }
                   // 向后台发送API，清除所有隐藏列
                   options.onColumnVisibleChanged('');
+                  agTable.preventPinnedEmit = true;
+                  agTable.dealWithPinnedColumns();
+                  setTimeout(function() {
+                    agTable.preventPinnedEmit = false;
+                  }, 100);
                 }
               },
             },
@@ -1134,7 +1155,9 @@ const initializeAgTable = (container, opt) => {
 
             //  将固定列保存到数据库
             const pinnedPosition = `${pinnedLeft.join(',')}|${pinnedRight.join(',')}`;
-            options.onColumnPinned(pinnedPosition);
+            if (!agTable.preventPinnedEmit) {
+              options.onColumnPinned(pinnedPosition);
+            }
           }
         },
         getRowClass(params) {
