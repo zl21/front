@@ -773,25 +773,25 @@
                 });
               },
               'on-blur': (event, value) => {
-                if (value.notAutoData) {
-                  // autodata中没有 清空输入框 及上次选中的值
-                  value.inputValue = '';
-                  delete value.notAutoData;
-                } else if (this.fkAutoData.length > 0) {
-                  // 当选择模糊搜索结果的时候
-                  const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-                  value.inputValue = autoData[0].value;
-                  value.transferDefaultSelected = [{
-                    ID: autoData[0].id,
-                    Label: autoData[0].value
-                  }];
-                }
-                this.fkAutoData = [];
-                let ids = null;
-                if (value.transferDefaultSelected.length > 0) {
-                  ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
-                }
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                // if (value.notAutoData) {
+                //   // autodata中没有 清空输入框 及上次选中的值
+                //   value.inputValue = '';
+                //   delete value.notAutoData;
+                // } else if (this.fkAutoData.length > 0) {
+                //   // 当选择模糊搜索结果的时候
+                //   const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                //   value.inputValue = autoData[0].value;
+                //   value.transferDefaultSelected = [{
+                //     ID: autoData[0].id,
+                //     Label: autoData[0].value
+                //   }];
+                // }
+                // this.fkAutoData = [];
+                // let ids = null;
+                // if (value.transferDefaultSelected.length > 0) {
+                //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                // }
+                // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
                 this.fkAutoData = [];
@@ -1488,7 +1488,7 @@
         this.importData.importDialog = false;
       },
       importsuccess() { // 导入成功
-
+        this.getTabelList();
       },
       isJsonString(str) {
         if (typeof JSON.parse(str) === 'object') {
