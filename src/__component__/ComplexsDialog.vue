@@ -206,7 +206,13 @@
         //console.log(type,this.resultData.total);
         if( type !== 'search'){
            this.componentData[index] = Object.assign(this.componentData[index], data.data);
-        }else if(index === 1 && this.resultData.total>0){
+        }else if(index === 1){
+           if(this.resultData.total>0){
+              this.componentData[index] = Object.assign(this.componentData[index], data.data);
+           }else{
+              this.componentData[index].list = [];
+           }
+        }else if(index === 0){
            this.componentData[index] = Object.assign(this.componentData[index], data.data);
         }
 
@@ -217,7 +223,6 @@
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
-        console.log( this.sendMessage.PAGESIZE*(this.sendMessage.PAGENUM-1)+3)
         return Object.keys(columns).reduce((item, option, key) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
@@ -499,9 +504,7 @@
             this.NOTIN.splice(indexI, 1);
           }
         }
-        if (this.text.result.length > 0) {
-          this.multipleScreenResultCheck(this.sendMessage, 1);
-        } else if (type === 'td') {
+        if (this.resultData.total > 1) {
           this.multipleScreenResultCheck(this.sendMessage, 1);
         } else {
           this.resultData.total = 0;

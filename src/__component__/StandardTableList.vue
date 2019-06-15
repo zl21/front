@@ -579,6 +579,7 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
+
           this.updateFormData(data);
         }
       },
@@ -961,11 +962,13 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
+            if(temp.item.inputname === item ){
+                  value = jsonData[item]
+            }
             
 
             return true;
           });
-          
           if (value) {
             obj[item] = value;
           }
@@ -976,6 +979,7 @@
       searchClickData() {
         // 按钮查找 查询第一页数据
         this.searchData.startIndex = 0;
+        console.log(this.dataProcessing());
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },

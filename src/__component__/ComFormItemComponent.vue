@@ -226,6 +226,12 @@ export default {
       default() {
         return "";
       }
+    },
+    Condition: {
+      type: String,
+      default() {
+        return "";
+      }
     }
   },
   data() {
@@ -379,7 +385,7 @@ export default {
           if (current.item.value instanceof Array) {
             // 结果为数组则为选中项
             delete obj[current.item.inputname];
-            console.log(current.item.value);
+            //console.log(current.item.value);
             obj[current.item.field] = current.item.value
               .reduce((sum, temp) => {
                 sum.push(temp.ID);
@@ -390,11 +396,14 @@ export default {
               //  id 转number
               obj[current.item.field] = Number(obj[current.item.field]);
             }
+          } else if (this.Condition) {
+            // 模糊查询
+            delete obj[current.item.field];
+            obj[current.item.inputname] = current.item.value;
           }
           //  else {
           //   // 否则为输入项
-          //   delete obj[current.item.field];
-          //   obj[current.item.inputname] = current.item.value;
+
           // }
         } else if (
           current.item.value &&
@@ -404,11 +413,18 @@ export default {
           obj[current.item.field] = undefined;
         } else if (current.item.type === "AttachFilter") {
           // 若为外键则要处理输入还是选中
-          obj[current.item.field] = current.item.props.Selected;
-          if (Version === "1.3") {
-            //  id 转number
-            obj[current.item.field] = Number(obj[current.item.field]);
+          if (current.item.props.Selected) {
+            obj[current.item.field] = current.item.props.Selected;
+            if (Version === "1.3") {
+              //  id 转number
+              obj[current.item.field] = Number(obj[current.item.field]);
+            }
+          } else if (this.Condition) {
+            // 模糊查询
+            delete obj[current.item.field];
+            obj[current.item.inputname] = current.item.value;
           }
+
           // 单对象界面 不需要
           // else {
           //   obj[current.item.inputname] = current.item.value;

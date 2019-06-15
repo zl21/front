@@ -106,7 +106,10 @@ const select = {
     placement: "bottom",
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
     transfer: true,
-    optionsVisible: true
+    optionsVisible: true,
+    //qua
+    
+    chooseAll:true,
   }
 };
 // 复选框组件
