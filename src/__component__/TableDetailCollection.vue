@@ -60,7 +60,7 @@
               search
               placeholder="请输入查询内容"
               @on-search="getTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="getTabelList"
@@ -1422,10 +1422,11 @@
         this.getObjectTableItemForTableData(params);
       },
       pageChangeEvent(index) {
+
         // 分页 页码改变的回调
-        if (index === this.pageInfo.currentPageIndex) {
-          return;
-        }
+        // if (index === this.pageInfo.currentPageIndex) {
+        //   return;
+        // }
         this.updateTablePageInfo({
           currentPageIndex: index,
           pageSize: this.pageInfo.pageSize
