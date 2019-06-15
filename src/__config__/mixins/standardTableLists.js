@@ -51,7 +51,7 @@ export default () => ({
         'updateButtonbatchUnSubmitData',
         'setActionDialog',
         'closeImportDialog',
-        'setAgTableErrorMessage'
+        'setAgTableErrorMessage',
       
         
       ]),

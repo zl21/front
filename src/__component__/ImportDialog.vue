@@ -149,7 +149,7 @@
         default: ''
       },
       tablename: {
-        // 表名
+        // 子表名
         type: String,
         default: ''
       },
@@ -203,6 +203,7 @@
       if (this.visible) this.modalVisible = true;
       else this.modalVisible = false;
       this.axiosSetting();
+      console.log(this.tablename);
     },
 
     computed: {
