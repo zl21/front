@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
-
 import network, { urlSearchParams } from '../../../__utils__/network';
-import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   setColHide(store, data) {
@@ -64,7 +62,7 @@ export default {
       reject();
     });
   },
-  getBatchDeleteForButtons({ dispatch, commit }, {
+  getBatchDeleteForButtons({ commit }, {
     tableName, selectIdArr, resolve, reject 
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
@@ -89,13 +87,16 @@ export default {
       }
     });
   },
-  getExeActionDataForButtons({ commit }, { item, obj }) {
+  getExeActionDataForButtons({ commit }, { item, obj, resolve }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
-      commit('updateButtonExeActionData', res.data);
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonExeActionData', res.data.message);
+      }
     });
   },
   getActionDataForButtons({ commit }, { successAction }) {
@@ -191,7 +192,9 @@ export default {
   },
   updateUserConfig({ commit }, { type, id }) {
     network.post('/p/cs/getUserConfig', urlSearchParams({ type, id })).then((res) => {
-      commit('updateUserConfig', { userConfig: res.data.data });
+      setTimeout(() => {
+        commit('updateUserConfig', { userConfig: res.data.data });
+      }, 100);
     });
   }
 };

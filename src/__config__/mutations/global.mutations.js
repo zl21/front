@@ -202,6 +202,16 @@ export default {
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;
+  },
+  switchTabForActiveTab(state, tab) {
+    state.activeTab = {
+      isActive: tab.isActive,
+      keepAliveModuleName: tab.keepAliveModuleName,
+      label: tab.label,
+      routeFullPath: tab.routeFullPath,
+      routePrefix: tab.routePrefix,
+      tableName: tab.tableName,
+    };
   }
   
 };

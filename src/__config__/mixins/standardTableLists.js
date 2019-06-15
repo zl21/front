@@ -51,7 +51,7 @@ export default () => ({
         'updateButtonbatchUnSubmitData',
         'setActionDialog',
         'closeImportDialog',
-        'setAgTableErrorMessage'
+        'setAgTableErrorMessage',
       
         
       ]),
@@ -59,9 +59,7 @@ export default () => ({
   computed: {
     ...mapState(getComponentName(), {
       ag: ({ ag }) => ag,
-      hideColumn: ({ hideColumn }) => hideColumn,
-      colPosition: ({ colPosition }) => colPosition,
-      fixedColumn: ({ fixedColumn }) => fixedColumn,
+      userConfigForAgTable: ({userConfigForAgTable}) => userConfigForAgTable,
       pageAttribute: ({ ag }) => ({
         current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 1,
         total: ag.datas.totalRowCount || 0,

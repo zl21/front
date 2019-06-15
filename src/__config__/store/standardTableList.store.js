@@ -2,6 +2,7 @@
 import mutations from '../mutations/standardTableList.mutations';
 import { Version } from '../../constants/global';
 
+// eslint-disable-next-line import/no-dynamic-require
 const actions = require(`../actions/version_${Version}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
@@ -94,6 +95,11 @@ export default () => ({
         queryString: '',
       },
       
+    },
+    userConfigForAgTable: {
+      hideColumn: '',
+      colPosition: '',
+      fixedColumn: ''
     }
   },
   actions,

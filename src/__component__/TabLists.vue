@@ -112,10 +112,11 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['tabCloseAppoint', 'addExcludedComponents', 'emptyTabs']),
+      ...mapMutations('global', ['tabCloseAppoint', 'addExcludedComponents', 'emptyTabs', 'switchTabForActiveTab']),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         router.push({ path: tag.routeFullPath });
+        this.switchTabForActiveTab(item);
       },
       handleClose(tag) {
         this.tabCloseAppoint(tag);

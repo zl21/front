@@ -76,6 +76,7 @@
 
 <script>
   import Vue from 'vue';
+  import { mapMutations } from 'vuex';
   import router from '../__config__/router.config';
   import tableDetailCollection from './TableDetailCollection';
   import singleObjectButtons from './SingleObjectButtons';
@@ -178,7 +179,7 @@
       this.generateComponent();
     },
     methods: {
-
+      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
 
       // ...mapActions(getModuleName(), ['performMainTableSaveAction']),
       generateComponent() {
@@ -369,14 +370,21 @@
             };
             // this.updateChangeData({ tableName: this.tableName, value: {} });
             this.$store.commit('global/tabHref', tab);
+            this.decreasekeepAliveLists(getModuleName());
           }
 
 
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
+            const searchdata = {
+              column_include_uicontroller: true,
+              startindex: (Number(this.$store.state[getModuleName()].tablePageInfo.currentPageIndex) - 1) * Number(this.$store.state[getModuleName()].tablePageInfo.pageSize),
+              range: this.$store.state[getModuleName()].tablePageInfo.pageSize,
+            };
+            
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
+              table: tablename, objid: itemId, refcolid, searchdata, tabIndex
             });
             this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex });
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });

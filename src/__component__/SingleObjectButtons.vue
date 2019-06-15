@@ -25,6 +25,7 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :obj-list="objList"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -65,11 +66,10 @@
       :visible="importData.importDialog"
       :show-close="true"
       :title="importData.importDialogTitle"
-      :tablename="tableName"
+      :tablename="itemName"
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
-      @closeDialog="closeDialog"
     />
     <!-- @confirmImport="" -->
   </div>
@@ -88,7 +88,6 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import store from '../__config__/store/global.store';
 
   export default {
     data() {
@@ -156,26 +155,26 @@
     watch: {
       tabcmd: {
         handler(val, oldval) {
-          if (JSON.stringify(val) !== JSON.stringify(oldval)) {
-            if (Object.keys(val).length > 0) {
-              this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-              setTimeout(() => {
-                if (this.objectType === 'horizontal') { // 横向布局
-                  if (this.itemName !== this.tableName) {
-                    const { tabrelation } = this.itemInfo;
-                    if (tabrelation === '1:m') { // 子表
-                      val.cmds.forEach((item, index) => {
-                        if (item === 'actionEXPORT') {
-                          val.prem[index] = true;
-                        }
-                      });
+          // if (JSON.stringify(val) !== JSON.stringify(oldval)) {
+          if (Object.keys(val).length > 0) {
+            this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+            // setTimeout(() => {
+            if (this.objectType === 'horizontal') { // 横向布局
+              if (this.itemName !== this.tableName) {
+                const { tabrelation } = this.itemInfo;
+                if (tabrelation === '1:m') { // 子表
+                  val.cmds.forEach((item, index) => {
+                    if (item === 'actionEXPORT') {
+                      val.prem[index] = true;
                     }
-                  }
+                  });
                 }
-                this.buttonsReorganization(val);
-              }, 300);
+              }
             }
+            this.buttonsReorganization(val);
+            // }, 300);
           }
+          // }
         },
         deep: true
       },
@@ -207,8 +206,13 @@
           return this.watermarkimg.replace('/static/img/', '/src/assets/image/');
         }
         return this.watermarkimg;
+      },
+      objList() { // 返回克隆表定制弹框所需数据
+        if (this.objectType === 'horizontal') { // 横向布局
+          return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        }
+        return this.mainFormInfo.formData.data.addcolums;
       }
-  
     },
     props: {
       watermarkimg: {
@@ -246,6 +250,10 @@
       itemInfo: {// 当前子表信息
         type: Object,
         default: () => ({})
+      },
+      childTableName: {// 子表表名
+        type: String,
+        default: ''
       },
     },
     methods: {
@@ -308,8 +316,14 @@
             this.getObjectTabForChildTableButtons({
               maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
             });
+          
+            const searchdata = {
+              column_include_uicontroller: true,
+              startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+              range: this.pageInfo.pageSize,
+            };
             this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex
+              table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
@@ -374,12 +388,18 @@
       },
       objectIMPORT() { // 导入
         this.importData.importDialog = true;
-        this.importData.importDialogTitle = this.activeTab.label;
+        this.importData.importDialogTitle = this.itemInfo.tabledesc;
       },
       importsuccess() {
         const { refcolid } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
+        const searchdata = {
+          column_include_uicontroller: true,
+          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+          range: this.pageInfo.pageSize,
+        };
         this.getObjectTableItemForTableData({
-          table: this.tableName, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
+          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
         });
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
@@ -520,8 +540,6 @@
         
         promise.then(() => {
           this.$loading.hide();
-          console.log(this);
-          
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             title: '成功',
@@ -658,6 +676,7 @@
         }
       },
       objectEXPORT() { // 导出功能
+        // if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
         const searchData = {
           table: this.tableName,
           column_include_uicontroller: true,
@@ -670,8 +689,13 @@
           filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
-          menu: this.activeTab.label
+          menu: this.itemInfo.tabledesc
+
         };
+        // } else {
+   
+        // }
+     
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
@@ -926,10 +950,13 @@
                         //   }
                         // });
                         const { tablename, refcolid } = this.itemInfo;
-                        const startindex = this.tablePageInfo.currentPageIndex;
-                        const range = this.tablePageInfo.pageSize;
+                        const searchdata = {
+                          column_include_uicontroller: true,
+                          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+                          range: this.pageInfo.pageSize,
+                        };
                         this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
+                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
@@ -979,10 +1006,13 @@
                         //   }
                         // });
                         const { tablename, refcolid } = this.itemInfo;
-                        const startindex = this.tablePageInfo.currentPageIndex;
-                        const range = this.tablePageInfo.pageSize;
+                        const searchdata = {
+                          column_include_uicontroller: true,
+                          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+                          range: this.pageInfo.pageSize,
+                        };
                         this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10 }, tabIndex
+                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         // this.clickButtonsBack();
@@ -1386,8 +1416,12 @@
 
             this.tabHref(tab);
             const message = this.buttonsData.message;
+            const data = {
+              title: '成功',
+              content: `${message}`
+            };
             if (message) {
-              this.$Message.success(message);
+              this.$Message.success(data);
             }
             this.decreasekeepAliveLists(moduleName());
           } else {
@@ -1404,8 +1438,12 @@
           this.updateAddDefaultData({ tableName: this.tableName, value: {} });
           this.updateAddData({ tableName: this.tableName, value: {} });
           this.updateDeleteData({ tableName: this.tableName, value: {} });
+          if (this.isreftabs && this.itemNameGroup.length > 0) {
+            this.clearItemEditData();
+          }
+        } else {
+          this.clearItemEditData();
         }
-        this.clearItemEditData();
       },
       clearItemEditData() {
         this.updateChangeData({ tableName: this.itemName, value: {} });

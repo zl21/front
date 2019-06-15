@@ -63,8 +63,8 @@ export default {
   }, obj) {
     buttons.activeTabAction = obj;
   },
-  updateButtonExeActionData({ buttons }, data) {
-    buttons.ExeActionData = data;
+  updateButtonExeActionData({ buttons }, message) {
+    buttons.ExeActionData = message;
   },
   updateButtonGetActionData({ buttons }, data) {
     buttons.ExeActionData = data;
@@ -125,14 +125,21 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   batchVoidForButtonsData({ buttons, ag }, data) { // 作废
+    console.log(data);
     buttons.batchVoidForButtonsData = data;
     ag.datas.deleteFailInfo = data;
     ag.datas = Object.assign({}, ag.datas);
   },
   updateUserConfig(state, { userConfig }) {
-    state.hideColumn = userConfig.hideColumn;
-    state.colPosition = userConfig.colPosition;
-    state.fixedColumn = userConfig.fixedColumn;
+    // state.hideColumn = userConfig.hideColumn;
+    // state.colPosition = userConfig.colPosition;
+    // state.fixedColumn = userConfig.fixedColumn;
+    // 将控制隐藏列、列顺序、固定列等信息统一由state.userConfigForAgTable控制
+    state.userConfigForAgTable = {
+      hideColumn: userConfig.hideColumn,
+      colPosition: userConfig.colPosition,
+      fixedColumn: userConfig.fixedColumn
+    };
   },
   updateAgConfig(state, { key, value }) {
     // e.g: state['hideColumn'] = [];

@@ -20,9 +20,7 @@
       :datas="ag.datas"
       :css-status="ag.status4css"
       :legend="ag.status4css"
-      :hide-column="hideColumn"
-      :col-position="colPosition"
-      :fixed-column="fixedColumn"
+      :user-config-for-ag-table="userConfigForAgTable"
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
@@ -160,7 +158,6 @@
             this.searchClickData();
           }
         }, 0);
-        
       },
     },
     methods: {
@@ -582,6 +579,7 @@
           if (this.formItemsLists.length > 0) {
             this.formItemsLists[index].item.value = item.item.value;
           }
+
           this.updateFormData(data);
         }
       },
@@ -841,7 +839,12 @@
           });
         });
         promise.then(() => {
-          
+          const message = this.buttons.ExeActionData;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
         });
         let successAction = null;
         let errorAction = null;
@@ -959,11 +962,13 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
+            if(temp.item.inputname === item ){
+                  value = jsonData[item]
+            }
             
 
             return true;
           });
-          
           if (value) {
             obj[item] = value;
           }
@@ -974,6 +979,7 @@
       searchClickData() {
         // 按钮查找 查询第一页数据
         this.searchData.startIndex = 0;
+        console.log(this.dataProcessing());
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },
@@ -1189,7 +1195,6 @@
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         // this.$loading.show();
-       
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
             tableName, ids, resolve, reject 
