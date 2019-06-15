@@ -31,6 +31,7 @@
                 :isreftabs = "isreftabsForm"
                 :childTableName = "childTableName"
                 :mapp-status="setMapping"
+                :Condition = "Condition"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :type="type"
@@ -53,6 +54,7 @@
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
+          :Condition = "Condition"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -101,17 +103,17 @@ export default {
       }
     },
     isreftabs: {
-        type: Boolean,
-        default() {
-          return false;
-        }
+      type: Boolean,
+      default() {
+        return false;
+      }
     }, // 是否存在子表
     childTableName: {
-          type: String,
-          default() {
-          return '';
-        }
-    }, 
+      type: String,
+      default() {
+        return "";
+      }
+    },
     paths: {
       type: Array,
       default() {
@@ -150,6 +152,13 @@ export default {
       default() {
         return "";
       }
+    },
+    Condition: {
+      // 是标准列还是 但对象界面
+      type: String,
+      default() {
+        return "";
+      }
     }
   },
   data() {
@@ -161,7 +170,7 @@ export default {
       defaultFormData: {}, // form 默认值
       Mapping: {}, // 设置映射关系
       mapData: {}, // 全部联动关系
-      mountChecked: false,
+      mountChecked: false, //区分是默认值还是change 值
       verifyMessItem: {}, // 空form        watchComputFormList:[],
       FormItemComponent,
       childFormData: [],
@@ -191,13 +200,13 @@ export default {
     }
   },
   computed: {
-    path(){
-      return this.paths[1] || '';
+    path() {
+      return this.paths[1] || "";
     },
-    isreftabsForm(){
+    isreftabsForm() {
       return this.isreftabs;
     },
-    childTableNameForm(){
+    childTableNameForm() {
       return this.childTableName;
     }
   },
@@ -308,9 +317,9 @@ export default {
       return items;
     },
     // eslint-disable-next-line consistent-return
-    formDataChange(data, setdefval) {
+    formDataChange(data, setdefval,current) {
       // 表单数据修改  判断vuex 里面是否有input name
-      if (!this.mountChecked) {
+      if (!this.mountChecked && this.Condition==='') {
         return false;
       }
       if (Array.isArray(data)) {
@@ -321,7 +330,11 @@ export default {
 
       this.formDataDef = Object.assign(formData, setdefval);
       const key = Object.keys(data)[0];
-      delete this.formData[`${key}:NAME`];
+      if(key.split(':').length >1){
+        delete this.formData[current.item.field];
+      }else{
+        delete this.formData[current.item.inputname];
+      }
 
       this.VerificationForm.forEach(item => {
         Object.keys(this.formData).forEach(option => {
@@ -339,6 +352,8 @@ export default {
         this.verifyMessItem = {};
         this.$emit("VerifyMessage", {});
       }
+            console.log(this.formData);
+
       this.$emit("formChange", this.formData, this.formDataDef);
     },
     VerifyMessageForm(value) {
@@ -392,9 +407,7 @@ export default {
             if (current.isuppercase) {
               this.lowercaseToUppercase(index, current);
             }
-            console.log('dddd');
             if (current.fkdisplay) {
-              
               this.focusChange(event.target.value, current, index);
             }
           },
@@ -448,7 +461,7 @@ export default {
           },
           "on-show": $this => {
             // 当外键下拉站开始去请求数据
-           
+
             let Fitem = [];
             if (current.formIndex !== "inpubobj") {
               Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -456,7 +469,7 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-             // 先清除一下
+            // 先清除一下
             Fitem[index].item.props.data = {};
             let searchObject = {};
             if (Object.hasOwnProperty.call(current, "refcolval")) {
@@ -507,18 +520,19 @@ export default {
             } else {
               Fitem = this.$refs.FormComponent_0.newFormItemLists;
             }
-            if (item.props.fkdisplay) {
-                  if(Array.isArray(item.props.Selected)){
-                      Fitem[index].item.value = '';
-                  }else if(Array.isArray(item.value)){                  
-                      if(item.value[0].ID === '' || item.value[0].ID === undefined){
-                        Fitem[index].item.props.defaultSelected = [
-                        ];
-                      }
-                      
-                  }
-                  
+            console.log("blur");
+            if (item.props.fkdisplay && this.Condition !== "list") {
+              if (Array.isArray(item.props.Selected)) {
+                Fitem[index].item.value = "";
+              } else if (Array.isArray(item.value)) {
+                if (item.value[0].ID === "" || item.value[0].ID === undefined) {
+                  Fitem[index].item.props.defaultSelected = [];
+                }
+              }else if( typeof item.value ==='string'){
+                  Fitem[index].item.props.defaultSelected = [];
+                  Fitem[index].item.value = "";
               }
+            }
           },
           inputValueChange: value => {
             this.focusChange(value, current, index);
@@ -659,15 +673,20 @@ export default {
       //         str = "input";
       //          return str;
       //      }
-       
+
       // }
-        if (item.readonly === true && item.fkdisplay) {
+      if (item.readonly === true && item.fkdisplay) {
         //  不可编辑 变成 input
-           if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
-              str = "input";
-               return str;
-           }
+        if (
+          item.fkdisplay === "drp" ||
+          item.fkdisplay === "mop" ||
+          item.fkdisplay === "pop" ||
+          item.fkdisplay === "mrp"
+        ) {
+          str = "input";
+          return str;
         }
+      }
       if (
         !item.display ||
         item.display === "text" ||
@@ -805,7 +824,7 @@ export default {
               ""
           });
         } else {
-          let ID = item.refobjid ? item.refobjid :'';
+          let ID = item.refobjid ? item.refobjid : "";
           arr.push({
             ID: item.refobjid === "-1" ? "" : ID,
             Label: item.valuedata || item.defval || ""
@@ -820,11 +839,11 @@ export default {
     propsType(current, item) {
       // 表单 props
       const obj = item;
-      
+
       item.props.maxlength = item.props.length;
       //item.props.disabled = item.props.readonly;
       item.props.comment = item.props.comment;
-     
+
       if (this.objreadonly) {
         // 页面只读标记
         item.props.placeholder = "";
@@ -899,9 +918,9 @@ export default {
           return sum;
         }, []);
         item.options = arr;
-         item.props.disabled = this.objreadonly
-        ? this.objreadonly
-        : item.props.readonly;
+        item.props.disabled = this.objreadonly
+          ? this.objreadonly
+          : item.props.readonly;
         return item;
       }
       // 多状态合并的select
@@ -917,9 +936,9 @@ export default {
               return sum;
             }, [])
           );
-        item.props.disabled = this.objreadonly
-        ? this.objreadonly
-        : item.props.readonly;
+          item.props.disabled = this.objreadonly
+            ? this.objreadonly
+            : item.props.readonly;
 
           return item;
         });
@@ -1006,7 +1025,9 @@ export default {
                 refobjid: current.refobjid,
                 reftable: current.reftable,
                 reftableid: current.reftableid,
-                url:(current.serviceId ? +'/'+current.serviceId :'') +"/p/cs/menuimport"
+                url:
+                  (current.serviceId ? +"/" + current.serviceId : "") +
+                  "/p/cs/menuimport"
               };
               item.props.datalist = [];
               item.props.Selected = [
@@ -1026,7 +1047,9 @@ export default {
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              url: (current.serviceId ? current.serviceId :'') +"/p/cs/menuimport"
+              url:
+                (current.serviceId ? current.serviceId : "") +
+                "/p/cs/menuimport"
             };
             item.props.datalist = [];
             item.props.filterDate = {};
@@ -1051,7 +1074,7 @@ export default {
         let readonly = ImageSize
           ? ImageSize > valuedata.length
           : current.readonly;
-          readonly = this.objreadonly ? true :readonly;
+        readonly = this.objreadonly ? true : readonly;
         item.props.itemdata = {
           colname: current.colname,
           width: 140,
@@ -1109,7 +1132,6 @@ export default {
       item[index].item.props.totalRowCount = res.data.data.totalRowCount;
       item[index].item.props.pageSize = res.data.data.defaultrange;
       item[index].item.props.data = res.data.data;
-      
     },
     freshDropDownSelectFilterAutoData(res, index, current) {
       // 外键的模糊搜索数据更新
