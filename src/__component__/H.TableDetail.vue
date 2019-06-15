@@ -30,7 +30,7 @@
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
             if (index === 0) {
-              obj.label = this.activeTab.label;
+              obj.label = `${this.activeTab.label}编辑`;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.isMainTable = true;
             }
