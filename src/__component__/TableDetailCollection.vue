@@ -379,6 +379,7 @@
       },
       dataSource: {
         handler(val, old) {
+          this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -511,9 +512,11 @@
             align: 'center'
           },
           {
-            title: '序号',
             width: 60,
-            key: COLLECTION_INDEX,
+            type: 'index',
+            renderHeader: (h, params) => h('div', [
+              h('Span', '序号')
+            ]),
             render: this.collectionIndexRender(columns)
           }
         ];
@@ -797,7 +800,6 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
-                console.log(data);
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
                 } else {
@@ -1081,7 +1083,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`
+            innerHTML: params.row[cellData.colname]?`<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`:''
           },
           on: {
             click: (event) => {

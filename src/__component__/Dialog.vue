@@ -1,30 +1,31 @@
 <!--引入曼卡龙的弹框组件-->
 <template>
   <Modal
-    v-model="showModal"
-    :title="title"
-    :title-align="titleAlign"
-    :scrollable="scrollable"
-    :closable="closable"
-    :draggable="draggable"
-    :mask="mask"
-    :mask-closable="maskClosable"
-    :transfer="transfer"
-    :footer-hide="footerHide"
-    :ok-text="okText"
-    :cancel-text="cancelText"
-    @on-cancel="onCancel"
-    @on-ok="onOk"
+          v-model="showModal"
+          :title="title"
+          :title-align="titleAlign"
+          :scrollable="scrollable"
+          :closable="closable"
+          :draggable="draggable"
+          :mask="mask"
+          :mask-closable="maskClosable"
+          :transfer="transfer"
+          :footer-hide="footerHide"
+          :ok-text="okText"
+          :cancel-text="cancelText"
+          :width="modalWidth"
+          @on-cancel="onCancel"
+          @on-ok="onOk"
   >
     <p v-if="contentText">
       {{ contentText }}
     </p>
     <component
-      :is="dialogComponentName"
-      v-if="dialogComponentName"
-      class="a"
-      :obj-list="objList"
-      @closeActionDialog="closeActionDialog"
+            :is="dialogComponentName"
+            ref="modalComponent"
+            v-if="dialogComponentName"
+            :obj-list="objList"
+            @closeActionDialog="closeActionDialog"
     />
   </Modal>
 </template>
@@ -110,15 +111,31 @@
     data() {
       return {
         showModal: false,
+        modalWidth: 520
       };
+    },
+    watch: {
+      dialogComponentName(val) {
+        if (val) {
+          this.getModalWidth();
+        }
+      }
     },
     mounted() {
     },
     methods: {
+      getModalWidth() {
+        const self = this;
+        if (this.$refs.modalComponent) {
+          this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
+        } else {
+          self.getModalWidth();
+        }
+      },
       open() {
         this.showModal = true;
       },
-      
+
       // 确定
       onOk() {
         if (typeof this.confirm === 'function') {
@@ -135,27 +152,24 @@
       closeActionDialog() {
         this.showModal = false;
       }
-    
+
     }
   };
 </script>
 
 <style lang="less" scope>
-.burgeon-modal-footer {
-  border: none;
-}
+  .burgeon-modal-footer {
+    border: none;
+  }
 
-.burgeon-modal-footer button > span {
-  font-size: 12px;
-}
+  .burgeon-modal-footer button > span {
+    font-size: 12px;
+  }
 
-.burgeon-modal-footer button {
-  width: auto;
-  border-radius: 2px;
-  height: 26px;
-  line-height: 0px;
-}
-.a{
-  min-width: 520px !important;
-}
+  .burgeon-modal-footer button {
+    width: auto;
+    border-radius: 2px;
+    height: 26px;
+    line-height: 0px;
+  }
 </style>
