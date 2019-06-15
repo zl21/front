@@ -35,15 +35,17 @@ const matchUrl = (url) => {
   return url;
 };
 
+const getRequestMd5 = data => md5(JSON.stringify(data));
+
 axios.interceptors.response.use(
   (response) => {
     const { config } = response;
-    const currentPendingRequest = md5(JSON.stringify({
+    const requestMd5 = md5(JSON.stringify({
       data: config.data,
       url: config.url,
       method: config.method
     }));
-    delete pendingRequestMap[currentPendingRequest];
+    delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
         title: '错误',
@@ -54,7 +56,13 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      const { status } = error.response;
+      const { status, config } = error.response;
+      const requestMd5 = md5(JSON.stringify({
+        data: config.data,
+        url: config.url,
+        method: config.method
+      }));
+      delete pendingRequestMap[requestMd5];
       if (status === 403) {
         router.push('/login');
       } else if (status === 500) {
@@ -132,21 +140,25 @@ export const urlSearchParams = (data) => {
 export default {
   post(url, config) {
     const matchedUrl = matchUrl(url);
-    let reqeuestParams = '';
-    if (config instanceof URLSearchParams) {
-      reqeuestParams = config.toString();
-    } else {
-      try {
-        reqeuestParams = JSON.stringify(config);
-      } catch (e) {
-        reqeuestParams = `${config}`;
-      }
-    }
-    console.log('reqeuestParams = ', reqeuestParams);
+    const requestMd5 = getRequestMd5({
+      data: config instanceof URLSearchParams ? config.toString() : config,
+      url: matchedUrl,
+      method: 'post'
+    });
+    if (pendingRequestMap[requestMd5]) {
+      return { then: () => {} };
+    } 
+    pendingRequestMap[requestMd5] = true;
     return axios.post(matchedUrl, config);
   },
   get(url, config) {
     const matchedUrl = matchUrl(url);
+    const requestMd5 = getRequestMd5({
+      data: config,
+      url: matchedUrl,
+      method: 'get'
+    });
+    pendingRequestMap[requestMd5] = true;
     return axios.get(matchedUrl, config);
   }
 };
