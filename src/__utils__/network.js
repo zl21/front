@@ -64,17 +64,29 @@ axios.interceptors.response.use(
         router.push('/login');
       } else if (status === 500) {
       // 如果http状态码正常，则直接返回数据
-        let emg = error.response.data.message;
+        const emg = error.response.data.message;
+        let formatJsonEmg = null;
         try {
-          emg = JSON.stringify(emg, null, 4);
-        } catch (e) { console.info(e); }
+          formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+        } catch (e) {
+          if (typeof emg === 'string') {
+            formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
+          }
+        }
         window.vm.$Modal.info({
+          mask: true,
+          titleAlign: 'center',
           title: '错误',
           render: createElement => createElement('textarea', {
             domProps: {
-              value: emg,
+              value: formatJsonEmg,
               rows: 8,
-              style: 'width: 100%;margin-bottom: -15px;box-sizing: border-box; padding: 2px;resize: none;'
+              style: `width: 100%;
+              margin-bottom: -8px;
+              box-sizing: border-box;
+              padding: 5px;
+              resize: none;
+              `
             },
             attrs: {
               readonly: 'readonly',
