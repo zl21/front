@@ -379,6 +379,7 @@
       },
       dataSource: {
         handler(val, old) {
+          this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -797,7 +798,6 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
-                console.log(data);
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
                 } else {

@@ -126,13 +126,11 @@
     methods: {
       getModalWidth() {
         const self = this;
-        setTimeout(() => {
-          if (this.$refs.modalComponent) {
-            this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
-          } else {
-            self.getModalWidth();
-          }
-        },0);
+        if (this.$refs.modalComponent) {
+          this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
+        } else {
+          self.getModalWidth();
+        }
       },
       open() {
         this.showModal = true;
