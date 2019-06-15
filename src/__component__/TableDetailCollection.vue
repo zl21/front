@@ -512,9 +512,11 @@
             align: 'center'
           },
           {
-            title: '序号',
             width: 60,
-            key: COLLECTION_INDEX,
+            type: 'index',
+            renderHeader: (h, params) => h('div', [
+              h('Span', '序号')
+            ]),
             render: this.collectionIndexRender(columns)
           }
         ];
