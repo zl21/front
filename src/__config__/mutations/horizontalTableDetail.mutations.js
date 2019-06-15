@@ -178,9 +178,15 @@ export default {
           });
         });
       });
-      state.updateData[tableName].add[tableName] = Object.assign({}, copySaveDataForParam);
-      state.updateData[tableName].changeData = copySaveDataForParam;
-      state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
+      // state.updateData[tableName].add[tableName] = Object.assign({}, copySaveDataForParam);
+      // state.updateData[tableName].changeData = copySaveDataForParam;
+      // state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
+
+
+      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
+      state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+      Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+      state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
     }
   },
   updateButtonsExport(state, data) { // 导出

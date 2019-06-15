@@ -25,6 +25,7 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      :obj-list="objList"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -205,8 +206,15 @@
           return this.watermarkimg.replace('/static/img/', '/src/assets/image/');
         }
         return this.watermarkimg;
+      },
+      objList() { // 返回克隆表定制弹框所需数据
+        if (this.objectType === 'horizontal') { // 横向布局
+          return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        } if (this.objectType === 'vertical') {
+          return this.mainFormInfo.formData.data.addcolums;
+        }
+        return [];
       }
-  
     },
     props: {
       watermarkimg: {
@@ -534,8 +542,6 @@
         
         promise.then(() => {
           this.$loading.hide();
-          console.log(this);
-          
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             title: '成功',
@@ -1412,8 +1418,12 @@
 
             this.tabHref(tab);
             const message = this.buttonsData.message;
+            const data = {
+              title: '成功',
+              content: `${message}`
+            };
             if (message) {
-              this.$Message.success(message);
+              this.$Message.success(data);
             }
             this.decreasekeepAliveLists(moduleName());
           } else {
