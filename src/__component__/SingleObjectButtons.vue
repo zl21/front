@@ -65,11 +65,10 @@
       :visible="importData.importDialog"
       :show-close="true"
       :title="importData.importDialogTitle"
-      :tablename="tableName"
+      :tablename="itemName"
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
-      @closeDialog="closeDialog"
     />
     <!-- @confirmImport="" -->
   </div>
@@ -88,7 +87,6 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import store from '../__config__/store/global.store';
 
   export default {
     data() {
@@ -247,6 +245,10 @@
         type: Object,
         default: () => ({})
       },
+      childTableName: {// 子表表名
+        type: String,
+        default: ''
+      },
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
@@ -374,12 +376,13 @@
       },
       objectIMPORT() { // 导入
         this.importData.importDialog = true;
-        this.importData.importDialogTitle = this.activeTab.label;
+        this.importData.importDialogTitle = this.itemInfo.tabledesc;
       },
       importsuccess() {
         const { refcolid } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
         this.getObjectTableItemForTableData({
-          table: this.tableName, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true }
+          table: this.itemName, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, }, tabIndex
         });
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
@@ -658,6 +661,7 @@
         }
       },
       objectEXPORT() { // 导出功能
+        // if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
         const searchData = {
           table: this.tableName,
           column_include_uicontroller: true,
@@ -670,8 +674,13 @@
           filename: this.activeTab.label,
           filetype: '.xlsx',
           showColumnName: true,
-          menu: this.activeTab.label
+          menu: this.itemInfo.tabledesc
+
         };
+        // } else {
+   
+        // }
+     
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });

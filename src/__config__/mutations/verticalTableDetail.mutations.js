@@ -190,9 +190,6 @@ export default {
   updateButtonsExport(state, data) { // 导出
     state.buttonsData.exportdata = data;
   },
-  updateTablePageInfo(state, data) { //  更改列表分页数据
-    state.tablePageInfo = data;
-  },
   updateObjTabActionSlientConfirm(state, data) { // 动作定义类型接口返回值
     state.objTabActionSlientConfirmData = data;
   }

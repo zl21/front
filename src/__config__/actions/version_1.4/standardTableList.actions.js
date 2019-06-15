@@ -87,13 +87,16 @@ export default {
       }
     });
   },
-  getExeActionDataForButtons({ commit }, { item, obj }) {
+  getExeActionDataForButtons({ commit }, { item, obj, resolve }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
-      commit('updateButtonExeActionData', res.data);
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonExeActionData', res.data.message);
+      }
     });
   },
   getActionDataForButtons({ commit }, { successAction }) {

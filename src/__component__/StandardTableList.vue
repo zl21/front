@@ -158,7 +158,6 @@
             this.searchClickData();
           }
         }, 0);
-        
       },
     },
     methods: {
@@ -839,7 +838,12 @@
           });
         });
         promise.then(() => {
-          
+          const message = this.buttons.ExeActionData;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
         });
         let successAction = null;
         let errorAction = null;
@@ -1187,7 +1191,6 @@
         const tableName = this.buttons.tableName;
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         // this.$loading.show();
-       
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
             tableName, ids, resolve, reject 
