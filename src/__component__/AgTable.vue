@@ -175,6 +175,7 @@
           const { agGridTableContainer } = this.$refs;
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.fixContainerHeight();
+            agGridTableContainer.agTable.emptyAllFilters();
           }
         }, 30);
       },

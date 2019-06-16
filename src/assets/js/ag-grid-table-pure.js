@@ -1194,6 +1194,13 @@ const initializeAgTable = (container, opt) => {
       api.setRowData([]);
     };
 
+    agTable.emptyAllFilters = () => {
+      api.setFilterModel(null);
+      if (agGridTableContainer) {
+        agGridTableContainer.querySelectorAll('.ag-floating-filter-input').forEach(e => { e.value = '' })
+      }
+    };
+
     // 设置columnDefs
     agTable.setCols = (data) => {
       agTable.colPosition = '';
