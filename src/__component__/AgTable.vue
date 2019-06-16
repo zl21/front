@@ -89,21 +89,6 @@
         type: Object,
         default: () => ({})
       }, // 所有返回数据  /p/cs/getTableQuery 接口返回
-      hideColumn: {
-        // required: true,
-        type: String,
-        default: ''
-      }, // 隐藏列状态   /p/cs/getUserConfig 接口返回
-      colPosition: {
-        // required: true,
-        type: String,
-        default: ''
-      }, // 移动状态   /p/cs/getUserConfig 接口返回
-      fixedColumn: {
-        // required: true,
-        type: String,
-        default: ''
-      }, // 固定列   /p/cs/getUserConfig 接口返回
       errorArr: {
         type: Array,
         default: () => []

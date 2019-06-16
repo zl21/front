@@ -991,6 +991,9 @@ const initializeAgTable = (container, opt) => {
                   options.onColumnMoved('');
                   agTable.colPosition = '';
                 }
+                if (typeof options.onColumnPinned === 'function') {
+                  options.onColumnPinned('ID|')
+                }
                 setTimeout(() => {
                   isResetAllColumn = false;
                 }, 500);
