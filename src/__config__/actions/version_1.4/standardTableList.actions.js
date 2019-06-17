@@ -12,7 +12,7 @@ export default {
     network.post('/p/cs/setFixedColumn', urlSearchParams(data));
   },
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -25,7 +25,11 @@ export default {
       }
     })).then((res) => {
       const updateTableData = res.data.data;
-      commit('updateTableData', updateTableData);
+      if (merge) {
+        commit('updateTableDataWithMerge', updateTableData);
+      } else {
+        commit('updateTableData', updateTableData);
+      }
     });
   },
   getTableQueryForForm({ commit }, { searchData, resolve }) {
@@ -160,7 +164,6 @@ export default {
   batchSubmitForButtons({ commit }, {
     url, tableName, ids, resolve, reject 
   }) { // 调用提交接口
-    console.log('1');
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
       ids

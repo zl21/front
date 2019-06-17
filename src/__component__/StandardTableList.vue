@@ -1460,9 +1460,20 @@
             label
           });
         }
+      },
+      
+      // network 监听函数
+      networkEventListener(event) {
+        if (this._inactive) { return }
+        const { detail } = event;
+        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        if (urlArr.indexOf(detail.url || '') > -1) {
+          this.getQueryListForAg(Object.assign({}, this.searchData, { merge: true }));
+        }
       }
     },
     mounted() {
+      window.addEventListener('network', this.networkEventListener);
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -1479,6 +1490,9 @@
     created() {
       this.buttonMap = buttonmap;
       this.ChineseDictionary = ChineseDictionary;
+    },
+    beforeDestroy() {
+      window.removeEventListener('network', this.networkEventListener);
     }
   };
 </script>
