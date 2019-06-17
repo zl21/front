@@ -1,122 +1,124 @@
 <template>
-    <div class="TableDetailCollection">
-        <div class="detail-collection">
-            <div class="detail-top">
-                <div class="page-buttons">
-                    <Page
-                            :total="dataSource.totalRowCount"
-                            :page-size-opts="dataSource.selectrange"
-                            class="table-page"
-                            size="small"
-                            show-elevator
-                            show-sizer
-                            show-total
-                            @on-change="pageChangeEvent"
-                            @on-page-size-change="pageSizeChangeEvent"
-                    />
-                    <ul
-                            v-if="!isHorizontal"
-                            class="detail-buttons"
-                    >
-                        <a
-                                v-for="item in buttonGroups"
-                                :key="item.name"
-                                @click="buttonClick(item)"
-                        >
-                            【{{ item.name }}】
-                        </a>
-                    </ul>
-                    <Dialog
-                            ref="dialogRef"
-                            :title="dialogConfig.title"
-                            :mask="dialogConfig.mask"
-                            :content-text="dialogConfig.contentText"
-                            :footer-hide="dialogConfig.footerHide"
-                            :confirm="dialogConfig.confirm"
-                    />
-                </div>
-                <div
-                        v-if="filterList.length > 0"
-                        class="detail-search"
-                >
-                    <Select
-                            v-model="searchCondition"
-                            clearable
-                            placeholder="查询条件"
-                            @on-clear="searchCondition=null"
-                    >
-                        <Option
-                                v-for="item in filterList"
-                                :key="item.colname"
-                                :label="item.name"
-                                :value="item.isfk ? item.inputname : item.colname"
-                        >
-                            {{ item.label }}
-                        </Option>
-                    </Select>
-                    <div class="detail-search-input">
-                        <Input
-                                v-model="searchInfo"
-                                search
-                                placeholder="请输入查询内容"
-                                @on-search="getTabelList"
-                        >
-                        <Button
-                                slot="prepend"
-                                @click="getTabelList"
-                        >
-                            搜索
-                        </Button>
-                        </Input>
-                    </div>
-                </div>
-            </div>
-            <div class="table-outside">
-                <Table
-                        ref="selection"
-                        class="table-in"
-                        :height="tableHeight? tableHeight :true"
-                        border
-                        :columns="columns"
-                        :data="data"
-                        :total-data="totalData"
-                        @on-selection-change="tableSelectedChange"
-                        @on-sort-change="tableSortChange"
-                />
-            </div>
-            <div
-                    v-if="isHorizontal"
-                    class="queryCondition"
+  <div class="TableDetailCollection">
+    <div class="detail-collection">
+      <div class="detail-top">
+        <div class="page-buttons">
+          <Page
+            :total="dataSource.totalRowCount"
+            :page-size-opts="dataSource.selectrange"
+            class="table-page"
+            size="small"
+            show-elevator
+            show-sizer
+            show-total
+            @on-change="pageChangeEvent"
+            @on-page-size-change="pageSizeChangeEvent"
+          />
+          <ul
+            v-if="!isHorizontal"
+            class="detail-buttons"
+          >
+            <a
+              v-for="item in buttonGroups"
+              :key="item.name"
+              @click="buttonClick(item)"
             >
-                查询条件:{{ dataSource.queryDesc }}
-            </div>
+              【{{ item.name }}】
+            </a>
+          </ul>
+          <Dialog
+            ref="dialogRef"
+            :title="dialogConfig.title"
+            :mask="dialogConfig.mask"
+            :content-text="dialogConfig.contentText"
+            :footer-hide="dialogConfig.footerHide"
+            :confirm="dialogConfig.confirm"
+          />
         </div>
-        <!-- 导入弹框 -->
-        <ImportDialog
-                v-if="importData.importDialog"
-                :name="importData.importDialog"
-                :visible="importData.importDialog"
-                :show-close="true"
-                :title="importData.importDialogTitle"
-                :tablename="tableName"
-                :main-table="mainFormInfo.tablename"
-                :main-id="pageItemId"
-                @confirmImport="importsuccess"
-                @closeDialog="closeImportDialog"
+        <div
+          v-if="filterList.length > 0"
+          class="detail-search"
+        >
+          <Select
+            v-model="searchCondition"
+            clearable
+            placeholder="查询条件"
+            @on-clear="searchCondition=null"
+          >
+            <Option
+              v-for="item in filterList"
+              :key="item.colname"
+              :label="item.name"
+              :value="item.isfk ? item.inputname : item.colname"
+            >
+              {{ item.label }}
+            </Option>
+          </Select>
+          <div class="detail-search-input">
+            <Input
+              v-model="searchInfo"
+              search
+              placeholder="请输入查询内容"
+              @on-search="getTabelList"
+            >
+            <Button
+              slot="prepend"
+              @click="getTabelList"
+            >
+              搜索
+            </Button>
+            </Input>
+          </div>
+        </div>
+      </div>
+      <div class="table-outside">
+        <Table
+          ref="selection"
+          class="table-in"
+          :height="tableHeight? tableHeight :true"
+          border
+          :columns="columns"
+          :data="data"
+          :total-data="totalData"
+          @on-selection-change="tableSelectedChange"
+          @on-sort-change="tableSortChange"
         />
+      </div>
+      <div
+        v-if="isHorizontal"
+        class="queryCondition"
+      >
+        查询条件:{{ dataSource.queryDesc }}
+      </div>
     </div>
+    <!-- 导入弹框 -->
+    <ImportDialog
+      v-if="importData.importDialog"
+      :name="importData.importDialog"
+      :visible="importData.importDialog"
+      :show-close="true"
+      :title="importData.importDialogTitle"
+      :tablename="tableName"
+      :main-table="mainFormInfo.tablename"
+      :main-id="pageItemId"
+      @confirmImport="importsuccess"
+      @closeDialog="closeImportDialog"
+    />
+  </div>
 </template>
 
 <script>
-  import {mapState, mapMutations} from 'vuex';
+  /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return */
+
+  import { mapState, mapMutations } from 'vuex';
   import regExp from '../constants/regExp';
-  import {Version} from '../constants/global';
+  import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog';
   import router from '../__config__/router.config';
-  import {getGateway} from '../__utils__/network';
+  import { getGateway } from '../__utils__/network';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
@@ -153,7 +155,7 @@
         //   currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) || 1, // 当前页码
         //   pageSize: this.dataSource.defaultrange || 10 // 显示条数
         // },
-        fkData: ({totalRowCount: 0}), // // 外键下拉选择（drp mrp） 的数据
+        fkData: ({ totalRowCount: 0 }), // // 外键下拉选择（drp mrp） 的数据
         fkDropPageInfo: { // 外键下拉选择（drp mrp） 的分页
           currentPageIndex: 1, // 当前页码
           pageSize: 10 // 显示条数
@@ -161,25 +163,25 @@
         fkAutoData: [], // 外键关联下拉 模糊搜索数据
         popFilterData: {}, // mop气泡的特殊数据
         popFilterDataList: [{
-          value: '更多筛选',
-          lable: 0
-        },
-          {
-            value: '导入',
-            lable: 2
-          }],
+                              value: '更多筛选',
+                              lable: 0
+                            },
+                            {
+                              value: '导入',
+                              lable: 2
+                            }],
         currentOrderList: [], // 当前排序的内容
         DISPLAY_ENUM: { // 标签映射
-          text: {tag: 'Input', event: this.inputRender},
-          check: {tag: 'Checkbox', event: this.checkboxRender},
-          select: {tag: 'Select', event: this.selectRender},
-          drp: {tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender},
-          mrp: {tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender},
-          mop: {tag: 'AttachFilter', event: this.attachFilterRender},
-          OBJ_DATENUMBER: {tag: 'DatePicker', event: this.datePickertRender},
-          OBJ_DATE: {tag: 'DatePicker', event: this.datePickertRender},
-          OBJ_TIME: {tag: 'TimePicker', event: this.timePickerRender},
-          image: {tag: 'Poptip', event: this.imageRender}
+          text: { tag: 'Input', event: this.inputRender },
+          check: { tag: 'Checkbox', event: this.checkboxRender },
+          select: { tag: 'Select', event: this.selectRender },
+          drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mop: { tag: 'AttachFilter', event: this.attachFilterRender },
+          OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
+          OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
+          OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
+          image: { tag: 'Poptip', event: this.imageRender }
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -283,21 +285,21 @@
           total.push(cell);
         }
         // if (this.isHorizontal) {
-          if (this.dataSource.isFullRangeSubTotalEnabled) {
-            // 总计
-            const cell = {
-              COLLECTION_INDEX: '总计',
-            };
-            if (this.dataSource.fullRangeSubTotalRow) {
-              for (const key in this.dataSource.fullRangeSubTotalRow) {
-                if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                  const element = this.dataSource.fullRangeSubTotalRow[key];
-                  cell[key] = element.val;
-                }
+        if (this.dataSource.isFullRangeSubTotalEnabled) {
+          // 总计
+          const cell = {
+            COLLECTION_INDEX: '总计',
+          };
+          if (this.dataSource.fullRangeSubTotalRow) {
+            for (const key in this.dataSource.fullRangeSubTotalRow) {
+              if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = element.val;
               }
             }
-            total.push(cell);
           }
+          total.push(cell);
+        }
         // }
         return total;
       },
@@ -305,7 +307,7 @@
         return this.type === pageType.Horizontal;
       },
       buttonGroups() { // 按钮组的数据组合
-        const {tabcmd} = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
@@ -372,13 +374,13 @@
         this.$emit(TABLE_BEFORE_DATA, val);
       },
       tooltipForItemTable: {
-        handler(val, old) {
+        handler(val) {
           this.reloadErrorTips(val);
         },
         deep: true
       },
       dataSource: {
-        handler(val, old) {
+        handler(val) {
           this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
@@ -396,17 +398,17 @@
 
       buttonClick(obj) {
         switch (obj.eName) {
-          case 'actionIMPORT': // 导入
-            this.objectIMPORT();
-            break;
-          case 'actionEXPORT': // 导出
-            this.objectEXPORT();
-            break;
-          case 'actionDELETE': // 删除
-            this.objectTryDelete(obj);
-            break;
-          default:
-            break;
+        case 'actionIMPORT': // 导入
+          this.objectIMPORT();
+          break;
+        case 'actionEXPORT': // 导出
+          this.objectEXPORT();
+          break;
+        case 'actionDELETE': // 删除
+          this.objectTryDelete(obj);
+          break;
+        default:
+          break;
         }
       },
       objectTryDelete(obj) { // 按钮删除方法
@@ -424,7 +426,7 @@
           contentText: '确认执行删除?',
           confirm: () => {
             let params = {};
-            const {tableName, tableId, itemId} = router.currentRoute.params;
+            const { tableName, tableId, itemId } = router.currentRoute.params;
             const path = obj.path;
             const itemTable = this.updateData[this.tableName].delete;
             if (obj.path) {
@@ -441,7 +443,7 @@
               params = {
                 delMTable: false,
                 objId: tableId,
-                tabItem: {...itemTable},
+                tabItem: { ...itemTable },
                 table: tableName
               };
             }
@@ -456,9 +458,9 @@
                 } else {
                   const deleteMessage = res.data.message;
                   this.$Message.success(`${deleteMessage}`);
-                  const {refcolid} = this.itemInfo;
+                  const { refcolid } = this.itemInfo;
                   const tabIndex = this.tabCurrentIndex;
-                  this.getObjectForMainTableForm({table: tableName, objid: itemId, tabIndex});
+                  this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
                   this.getObjectTableItemForTableData({
                     table: this.tableName,
                     objid: itemId,
@@ -527,7 +529,7 @@
           return [];
         }
         // 整合数据源
-        const data = rows.map((ele, index) => {
+        const data = rows.map((ele) => {
           const item = {
             // COLLECTION_INDEX: Number(this.dataSource.start) + index + 1
           };
@@ -565,31 +567,31 @@
           tabth.map((tab) => {
             let val = ele[tab.colname].val;
             switch (tab.display) {
-              case 'check': {
-                const currentCheck = tab.combobox.filter(box => box.limitdesc === ele[tab.colname].val);
-                const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
-                val = limitval;
-              }
-                break;
-              case 'OBJ_DATENUMBER':
-                val = ele[tab.colname].val.replace(/\-/g, '');
-                break;
-              default:
-                break;
+            case 'check': {
+                            const currentCheck = tab.combobox.filter(box => box.limitdesc === ele[tab.colname].val);
+                            const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
+                            val = limitval;
+                          }
+                          break;
+            case 'OBJ_DATENUMBER':
+              val = ele[tab.colname].val.replace(/\-/g, '');
+              break;
+            default:
+              break;
             }
             if (tab.isfk) {
               switch (tab.fkdisplay) {
-                case 'drp':
-                  val = ele[tab.colname].refobjid;
-                  break;
-                case 'mrp':
-                  val = ele[tab.colname].refobjid; // mrp快鱼之前是存的val
-                  break;
-                case 'mop':
-                  val = ele[tab.colname].refobjid;
-                  break;
-                default:
-                  break;
+              case 'drp':
+                val = ele[tab.colname].refobjid;
+                break;
+              case 'mrp':
+                val = ele[tab.colname].refobjid; // mrp快鱼之前是存的val
+                break;
+              case 'mop':
+                val = ele[tab.colname].refobjid;
+                break;
+              default:
+                break;
               }
             }
             param[tab.colname] = val;
@@ -607,7 +609,7 @@
         });
         return renderColumns;
       },
-      collectionCellRender(cellData, index) {
+      collectionCellRender(cellData) {
         // 给cell赋render
         if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
           // 不可编辑状态 显示label
@@ -778,7 +780,7 @@
                   }
                 });
               },
-              'on-blur': (event, value) => {
+              'on-blur': () => {
                 // if (value.notAutoData) {
                 //   // autodata中没有 清空输入框 及上次选中的值
                 //   value.inputValue = '';
@@ -801,9 +803,9 @@
               },
               'on-fkrp-selected': (data, value) => {
                 if (this.fkSelectedChangeData[params.index]) {
-                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: data });
                 } else {
-                  this.fkSelectedChangeData[params.index] = Object.assign({}, {[cellData.key]: data});
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: data });
                 }
                 let ids = null;
                 if (value.transferDefaultSelected.length > 0) {
@@ -861,13 +863,13 @@
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
                 this.popFilterDataList = [{
-                  value: '更多筛选',
-                  lable: 0
-                },
-                  {
-                    value: '导入',
-                    lable: 2
-                  }];
+                                            value: '更多筛选',
+                                            lable: 0
+                                          },
+                                          {
+                                            value: '导入',
+                                            lable: 2
+                                          }];
                 fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
@@ -894,7 +896,7 @@
                 }
                 this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
-              'on-clear': (a, b, $this) => {
+              'on-clear': () => {
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                 this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
@@ -953,7 +955,7 @@
                 }
                 this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
-              'on-select': (data, value) => {
+              'on-select': (data) => {
                 this.fkAutoData = [];
                 this.copyDataSource.row[params.index][cellData.colname].val = data.label;
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [data.value];
@@ -1035,7 +1037,7 @@
           })
         ]);
       },
-      collectionIndexRender(cellData) {
+      collectionIndexRender() {
         // 序号的render
         return (h, params) => {
           const index = Number(this.dataSource.start) + params.index + 1;
@@ -1083,7 +1085,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: params.row[cellData.colname]?`<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`:''
+            innerHTML: params.row[cellData.colname] ? `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}` : ''
           },
           on: {
             click: (event) => {
@@ -1156,19 +1158,16 @@
         if (cellData.fkdisplay === 'drp') {
           if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
-          } else {
-            if (this.dataSource.row[params.index][cellData.colname]) {
-              const data = {
-                ID: this.dataSource.row[params.index][cellData.colname].refobjid,
-                Label: params.row[cellData.colname]
-              };
-              defaultData.push(data);
-            }
+          } else if (this.dataSource.row[params.index][cellData.colname]) {
+            const data = {
+              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+              Label: params.row[cellData.colname]
+            };
+            defaultData.push(data);
           }
         } else if (this.dataSource.row[params.index][cellData.colname]) {
           if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
             defaultData = this.fkSelectedChangeData[params.index][cellData.key];
-            console.log(this.fkSelectedChangeData[params.index][cellData.key]);
           } else {
             let ids = [];
             const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
@@ -1194,7 +1193,7 @@
         }
         return defaultData;
       },
-      freshDropDownPopFilterData(res, cellData) {
+      freshDropDownPopFilterData(res) {
         // mop 气泡点击事件
         if (res.length > 0) {
           res.forEach((item) => {
@@ -1214,7 +1213,7 @@
       tableSelectedChange(data) {
         const param = {};
         const datas = data.reduce((acc, cur) => {
-          acc.push({ID: cur[EXCEPT_COLUMN_NAME]});
+          acc.push({ ID: cur[EXCEPT_COLUMN_NAME] });
           return acc;
         }, []);
         this.tableRowSelectedIds = datas;
@@ -1223,7 +1222,7 @@
         this.$emit(TABLE_SELECTED_ROW, param);
       },
       reloadErrorTips(data) {
-        const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
+        // const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
         this.dataSource.row.map((ele) => {
           const exceptFlag = data.every((item) => {
             if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
@@ -1306,7 +1305,7 @@
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
-        const {itemId} = this.$route.params;
+        const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
           table: this.tableName,
@@ -1421,7 +1420,7 @@
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
         }
-        const {itemId} = this.$route.params;
+        const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
         const params = {
           table: this.tableName,
@@ -1441,7 +1440,6 @@
         this.getObjectTableItemForTableData(params);
       },
       pageChangeEvent(index) {
-
         // 分页 页码改变的回调
         // if (index === this.pageInfo.currentPageIndex) {
         //   return;
@@ -1466,13 +1464,13 @@
         // this.getTabelList();
       },
       objectEXPORT() { // 导出
-        const {tableId, itemId} = router.currentRoute.params;
+        const { itemId } = router.currentRoute.params;
         const tableRowSelectedIds = [];
         this.tableRowSelectedIds.map(ele => tableRowSelectedIds.push(ele.ID));
         const searchData = {
           table: this.tableName,
           column_include_uicontroller: true,
-          fixedcolumns: {ID: tableRowSelectedIds.length === 0 ? null : tableRowSelectedIds},
+          fixedcolumns: { ID: tableRowSelectedIds.length === 0 ? null : tableRowSelectedIds },
           objectIds: `${this.itemInfo.refcolid}=${itemId}`,
           startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
           range: this.pageInfo.pageSize,
@@ -1485,7 +1483,7 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
-          this.getExportQueryForButtons({OBJ, resolve, reject});
+          this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
