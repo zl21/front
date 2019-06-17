@@ -1482,9 +1482,14 @@
       networkEventListener(event) {
         if (this._inactive) { return }
         const { detail } = event;
+        const { response } = detail;
         const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        let merge = false;
         if (urlArr.indexOf(detail.url || '') > -1) {
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge: true }));
+          if (response && response.data && response.data.code === -1) {
+            merge = true;
+          }
+          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
         }
       }
     },
