@@ -200,6 +200,9 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
         keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
+
+        
       }),
       watermarkImg() { // 匹配水印图片路径
         if (this.watermarkimg.includes('/static/img/')) {
@@ -476,17 +479,24 @@
         }
       },
       objTabActionNavbar(tab) {
+        // 判断跳转到哪个页面
         const url = tab.action;
         const index = url.lastIndexOf('\/');
         const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
         const type = 'tableDetailAction';
-        const { tableId } = this.$route.params;
+        const name = Object.keys(this.keepAliveLabelMaps);
+        let customizedModuleId = '';
+        name.forEach((item) => {
+          if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+            customizedModuleId = item.split(/\./)[2];
+          }
+        });
         if (tab.action) {
           this.tabOpen({
             type,
             customizedModuleName,
-            customizedModuleId: tableId,
+            customizedModuleId,
             label
           });
         }

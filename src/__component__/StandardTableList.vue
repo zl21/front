@@ -88,9 +88,9 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
-  // import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import moduleName from '../__utils__/getModuleName';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
@@ -128,8 +128,8 @@
       ...mapState('global', {
         favorite: ({ favorite }) => favorite,
         activeTab: ({ activeTab }) => activeTab,
-        serviceIdMap: ({ serviceIdMap }) => serviceIdMap
-
+        serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
+        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps
       }),
       formLists() {
         return this.refactoringData(
@@ -1354,6 +1354,7 @@
             return;
           }
           if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
+            debugger;
             // 弹窗动作定义提示后操作
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
@@ -1458,12 +1459,18 @@
         const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
         const type = 'tableDetailAction';
-        const { tableId } = this.$route.params;
+        const name = Object.keys(this.keepAliveLabelMaps);
+        let customizedModuleId = '';
+        name.forEach((item) => {
+          if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+            customizedModuleId = item.split(/\./)[2];
+          }
+        });
         if (tab.action) {
           this.tabOpen({
             type,
             customizedModuleName,
-            customizedModuleId: tableId,
+            customizedModuleId,
             label
           });
         }

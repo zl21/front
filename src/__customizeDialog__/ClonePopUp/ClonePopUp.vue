@@ -53,26 +53,10 @@
         </button>
       </div>
     </div>
-    <drag-dialog
-      v-if="errorDialog"
-      :title="errorDialogTitle"
-      :visible.sync="errorDialog"
-      :close-on-click-modal="false"
-      :show-close="true"
-      :dialog-class="errorDialogClass"
-    >
-      <errorMessage
-        :error-message="errorData"
-        :dialog-back="errorDialogBack"
-        :dialog-class="errorDialogClass"
-        @refreshbizlines="errorDialogClose"
-      />
-    </drag-dialog>
   </div>
 </template>
 
 <script>
-  import axios from 'axios';
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
 
