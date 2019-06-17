@@ -144,33 +144,32 @@
       },
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
-          this.errorDialogClass = 'warning';
-          this.errorData = [{ message: '请输入目标表名或目标描述' }];
-          this.errorDialog = true;
+          const data = {
+            title: 'warning',
+            content: '请输入目标表名或目标描述'
+          };
+          this.$Modal.fcWarning(data);
           return;
         }
-        axios({
-          url: '/p/cs/clone',
-          method: 'post',
-          contentType: 'application/json',
-          data: {
-            srctable: this.o_table_name, // 源表表名
-            destable: this.t_table_name.trim(), // 目标表名
-            destdesc: this.s_table_name.trim(), // 目标描述
-            ad_version_id: this.version.ID
-          }
-        }).then((res) => {
-          const res_data = res.data;
-          if (res_data.code !== 0) {
-            return;
-          }
-          this.$message({
-            message: '克隆成功',
-            center: true,
-            type: 'success'
+        const searchdata = {
+          srctable: this.o_table_name, // 源表表名
+          destable: this.t_table_name.trim(), // 目标表名
+          destdesc: this.s_table_name.trim(), // 目标描述
+          ad_version_id: this.version.ID
+        };
+        network.post('/p/cs/clone', searchdata)
+          .then((res) => {
+            const res_data = res.data;
+            if (res_data.code !== 0) {
+              return;
+            }
+            const data = {
+              title: 'success',
+              content: '克隆成功'
+            };
+            this.$Modal.fcWarning(data);
+            this.$emit('closeActionDialog'); // 关闭弹框
           });
-          this.$emit('closeActionDialog'); // 关闭弹框
-        });
       }, // 确定
       cancel() {
         this.$emit('closeActionDialog'); // 关闭弹框
@@ -201,6 +200,7 @@
 <style lang="less" scoped type="text/less">
 .clonePopUp {
   font-size: 12px;
+  height: 174px;
   .pop-title {
     // width: 400px;
     height: 152px;

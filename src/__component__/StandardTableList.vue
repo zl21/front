@@ -1024,6 +1024,7 @@
               id
             });
           }
+          return;
         }
         if (obj.name === this.buttonMap.CMD_DELETE.name) {
           // 删除动作  对用网络请求
@@ -1038,6 +1039,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
@@ -1054,6 +1056,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_VOID.name) {
@@ -1069,6 +1072,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_UNSUBMIT.name) {
@@ -1084,6 +1088,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
@@ -1095,12 +1100,14 @@
             return;
           }
           this.batchExport();
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
           this.setImportDialogTitle();
           // this.importGetUploadParametersForButtons(); // 调用导入参数接口
+          return;
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改

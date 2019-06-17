@@ -160,7 +160,6 @@ export default {
   batchSubmitForButtons({ commit }, {
     url, tableName, ids, resolve, reject 
   }) { // 调用提交接口
-    console.log('1');
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
       ids
@@ -168,9 +167,11 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
+        commit('onSelectionChangedAssignment', {});
       } else {
         reject();
         commit('updateButtonbatchSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
       }
     });
   },
