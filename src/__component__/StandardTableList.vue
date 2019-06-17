@@ -162,7 +162,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'TabOpen']),
+      ...mapMutations('global', ['tabHref', 'tabOpen']),
       closeDialog() {
         this.closeImportDialog();
       },
@@ -962,8 +962,8 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
-            if(temp.item.inputname === item ){
-                  value = jsonData[item]
+            if (temp.item.inputname === item) {
+              value = jsonData[item];
             }
             
 
@@ -1169,26 +1169,21 @@
       deleteTableList() { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
-        this.$loading.show();
-
+        // this.$loading.show();
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
             tableName, selectIdArr, resolve, reject 
           });
         });
         promise.then(() => {
-          this.$loading.hide();
+          // this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             title: '成功',
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          this.getQueryListForAg(this.searchData);
-        }, () => {}).catch(() => {
-          this.$loading.hide();
-          this.getQueryListForAg(this.searchData);
-        });
+        }, () => {});
       },
       batchVoid() {
         const tableName = this.buttons.tableName;
@@ -1201,18 +1196,14 @@
         });
         promise.then(() => {
           // this.$loading.hide();
-
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             title: '成功',
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          this.getQueryListForAg(this.searchData);
+          // this.getQueryListForAg(this.searchData);
         }, () => {});
-        // promise.catch(() => {
-        //   this.forAgTableErrorMessage(this.buttons.batchVoidForButtonsData.data);
-        // });
       },
       batchSubmit() {
         // 批量提交
@@ -1231,7 +1222,7 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          this.getQueryListForAg(this.searchData);
+          // this.getQueryListForAg(this.searchData);
         }, () => {});
       },
       batchUnSubmit() {
@@ -1252,7 +1243,7 @@
               content: `${message}`
             };
             this.$Modal.fcSuccess(data);
-            this.getQueryListForAg(this.searchData);
+            // this.getQueryListForAg(this.searchData);
           }
         }, () => {});
       },
@@ -1280,9 +1271,8 @@
               this.buttonMap.CMD_UNSUBMIT.name
             ) >= 0
           ) {
-            this.batchUnSubmit();
-            this.selectIdArr = [];
-            this.selectArr = [];
+            this.batchUnSubmit();// 按钮取消提交动作
+            // this.searchClickData();
             return;
           }
           if (
@@ -1290,10 +1280,8 @@
               this.buttonMap.CMD_SUBMIT.name
             ) >= 0
           ) {
-            this.batchSubmit();
-            this.selectIdArr = [];
-            this.selectArr = [];
-            this.searchClickData();
+            this.batchSubmit();// 按钮提交动作
+            // this.searchClickData();
             return;
           }
           if (
@@ -1302,6 +1290,7 @@
             ) >= 0
           ) {
             this.deleteTableList(); // 按钮删除动作
+            // this.searchClickData();
             return;
           }
           if (
@@ -1310,8 +1299,6 @@
             ) >= 0
           ) {
             this.batchVoid(); // 按钮作废动作
-            this.selectIdArr = [];
-            this.selectArr = [];
             return;
           }
         }
@@ -1459,34 +1446,19 @@
       },
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
-        const pathType = tab.action.split('/')[2];
-        const tableName = this.buttons.tableName;
-        const tableId = this.buttons.tableId;
+        const url = tab.action;
+        const index = url.lastIndexOf('\/');
+        const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
+        const type = 'tableDetailAction';
+        const { tableId } = this.$route.params;
         if (tab.action) {
-          if (pathType === 'ACTION') {
-            tab.action = eval(`\`${tab.action}\``);
-            //            判断是否是有父级标签
-            const type = 'tableDetailAction';
-            const param = {
-              type,
-              tableName,
-              tableId,
-              label
-            };
-            this.TabOpen(param);
-          } else if (pathType === 'TABLE') {
-            tab.action = eval(`\`${tab.action}\``);
-            const type = 'tableDetailAction';
-            const param = {
-              type,
-              tableName,
-              tableId,
-              label,
-              pathType
-            };
-            this.TabOpen(param);
-          }
+          this.tabOpen({
+            type,
+            customizedModuleName,
+            customizedModuleId: tableId,
+            label
+          });
         }
       }
     },

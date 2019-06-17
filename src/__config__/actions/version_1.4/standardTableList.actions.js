@@ -160,6 +160,7 @@ export default {
   batchSubmitForButtons({ commit }, {
     url, tableName, ids, resolve, reject 
   }) { // 调用提交接口
+    console.log('1');
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
       ids

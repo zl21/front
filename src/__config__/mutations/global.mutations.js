@@ -3,7 +3,8 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
-  CUSTOMIZED_MODULE_COMPONENT_PREFIX
+  CUSTOMIZED_MODULE_COMPONENT_PREFIX,
+  CUSTOMIZED_MODULE_PREFIX,
 } from '../../constants/global';
 import router from '../router.config';
 
@@ -145,7 +146,7 @@ export default {
       }
     });
   }, // 关闭当前tab
-  tabHref(state, {
+  tabHref(state, {// 当前tab更换路由
     back, type, tableName, tableId, id
   }) {
     let path = '';
@@ -166,39 +167,28 @@ export default {
       router.push(routeInfo);
     }
   },
-  tabOpen(state, tab) {
+  tabOpen(state, {// 打开一个新tab添加路由
+    type, tableName, tableId, id, label, customizedModuleName, customizedModuleId
+  }) {
     let path = '';
-    if (tab.type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
+    if (type === 'tableDetailHorizontal') {
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       router.push({
         path
       });
     }
-    if (tab.type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.id}`;
+    if (type === 'tableDetailVertical') {
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       router.push({
         path
       });
     }
-    if (tab.type === 'tableDetailAction') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tab.tableName}/${tab.tableId}/${tab.pathType}`;
+    if (type === 'tableDetailAction') {
+      path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       router.push({
         path
       });
     }
-    const afterClickActiveTab = {
-      routeFullPath: path,
-      isActive: true,
-      label: tab.label
-    };
-    state.openedMenuLists.forEach((item) => {
-      if (item.routeFullPath === state.activeTab.routeFullPath) {
-        state.openedMenuLists.push(afterClickActiveTab);
-        item.isActive = false;
-        state.activeTab = afterClickActiveTab;
-      }
-    });
-    // 添加到新的列表中
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;
