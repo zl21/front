@@ -3,6 +3,7 @@
     <Page
       v-if="isPageShow"
       ref="page"
+      size="small"
       v-bind="pageAttribute"
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
