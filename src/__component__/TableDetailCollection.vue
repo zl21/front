@@ -282,7 +282,7 @@
           });
           total.push(cell);
         }
-        if (this.isHorizontal) {
+        // if (this.isHorizontal) {
           if (this.dataSource.isFullRangeSubTotalEnabled) {
             // 总计
             const cell = {
@@ -298,7 +298,7 @@
             }
             total.push(cell);
           }
-        }
+        // }
         return total;
       },
       isHorizontal() { // 是否是左右结构
@@ -514,6 +514,7 @@
           {
             width: 60,
             type: 'index',
+            key: COLLECTION_INDEX,
             renderHeader: (h, params) => h('div', [
               h('Span', '序号')
             ]),

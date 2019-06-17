@@ -145,7 +145,9 @@ export default {
     // e.g: state['hideColumn'] = [];
     // e.g: state['colPosition'] = '';
     // e.g: state['fixedColumn'] = '';
-    state[key] = value;
+    state.userConfigForAgTable = Object.assign({}, state.userConfigForAgTable, {
+      [key]: value
+    });
   },
   updateButtonsExport({ buttons }, data) { // 导出
     buttons.exportdata = data;
