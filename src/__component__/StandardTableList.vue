@@ -1363,7 +1363,6 @@
             return;
           }
           if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
-            debugger;
             // 弹窗动作定义提示后操作
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
@@ -1487,7 +1486,7 @@
       
       // network 监听函数
       networkEventListener(event) {
-        if (this._inactive) { return }
+        if (this._inactive) { return; }
         const { detail } = event;
         const { response } = detail;
         const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
