@@ -72,7 +72,7 @@
 <script>
   import axios from 'axios';
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
-  import network from '../../__utils__/network';
+  import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
     name: 'ClonePopUp',
