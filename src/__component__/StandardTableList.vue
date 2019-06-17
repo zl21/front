@@ -162,7 +162,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'TabOpen']),
+      ...mapMutations('global', ['tabHref', 'tabOpen']),
       closeDialog() {
         this.closeImportDialog();
       },
@@ -962,8 +962,8 @@
               value = jsonData[item].map(option => `=${option}`);
               return false;
             }
-            if(temp.item.inputname === item ){
-                  value = jsonData[item]
+            if (temp.item.inputname === item) {
+              value = jsonData[item];
             }
             
 
@@ -1459,34 +1459,19 @@
       },
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
-        const pathType = tab.action.split('/')[2];
-        const tableName = this.buttons.tableName;
-        const tableId = this.buttons.tableId;
+        const url = tab.action;
+        const index = url.lastIndexOf('\/');
+        const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
+        const type = 'tableDetailAction';
+        const { tableId } = this.$route.params;
         if (tab.action) {
-          if (pathType === 'ACTION') {
-            tab.action = eval(`\`${tab.action}\``);
-            //            判断是否是有父级标签
-            const type = 'tableDetailAction';
-            const param = {
-              type,
-              tableName,
-              tableId,
-              label
-            };
-            this.TabOpen(param);
-          } else if (pathType === 'TABLE') {
-            tab.action = eval(`\`${tab.action}\``);
-            const type = 'tableDetailAction';
-            const param = {
-              type,
-              tableName,
-              tableId,
-              label,
-              pathType
-            };
-            this.TabOpen(param);
-          }
+          this.tabOpen({
+            type,
+            customizedModuleName,
+            customizedModuleId: tableId,
+            label
+          });
         }
       }
     },
