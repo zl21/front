@@ -129,7 +129,9 @@
         if (this.$refs.modalComponent) {
           this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
         } else {
-          self.getModalWidth();
+          setTimeout(() => { // 释放资源
+            self.getModalWidth();
+          }, 0);
         }
       },
       open() {

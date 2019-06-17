@@ -58,7 +58,6 @@ axios.interceptors.response.use(
       url: config.url,
       method: config.method
     }));
-    console.log('requestMd5', requestMd5);
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
