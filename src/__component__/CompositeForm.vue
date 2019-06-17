@@ -173,6 +173,7 @@
         mountChecked: false, // 区分是默认值还是change 值
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
+        Condition:this.Condition,
         childFormData: [],
         computdefaultData: [], // form
         pathArry: [], // path 数组

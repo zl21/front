@@ -883,28 +883,25 @@ export default {
       console.log(pathcheck,isreftabs,childTableName,this._items.props.itemdata.masterName);
       if(isreftabs && pathcheck !==''){
         // 主子表 有path  主表明+子表明 // parms.table 主表
-        const parmsdata = {
+        if(childTableName){
+            const parmsdata = {
+              [parms.table]:{
+                ID: parms.objId || parms.ID,
+              },
+              [childTableName]:{
+                [this._items.field]: JSON.stringify(data),
+              },
+            };
+
+        } else{ 
+          const parmsdata = {
               [parms.table]:{
                 [this._items.field]: data == '' ? '' :JSON.stringify(data),
                 ID: parms.objId || parms.ID,
               },
-              
-        };
-        // if(childTableName === this._items.props.itemdata.masterName){
-            
-
-        // } else{
-        //      const parmsdata = {
-        //       [parms.table]:{
-        //         [this._items.field]: JSON.stringify(data),
-        //         ID: parms.objId,
-        //       },
-        //       [childTableName]:{
-        //         [this._items.field]: JSON.stringify(data),
-        //       },
-        //       ...parms
-        //       };
-        // }
+          }
+             
+        }
         
         return Object.assign({}, parmsdata);
 
