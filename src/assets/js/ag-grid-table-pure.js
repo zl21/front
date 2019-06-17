@@ -385,6 +385,7 @@ sequenceComponent.prototype.init = function (params) {
       const { target } = e;
       const offsetLeft = target.getBoundingClientRect().left - agGridDiv.getBoundingClientRect().left;
       const offsetTop = target.getBoundingClientRect().top - agGridDiv.getBoundingClientRect().top;
+      const offsetBottom = agGridDiv.getBoundingClientRect().bottom - target.getBoundingClientRect().bottom;
       tooltipBox.style.display = '';
       tooltipBox.style.left = `${offsetLeft + 22}px`;
       tooltipBox.style.top = `${offsetTop - (target.offsetHeight / 2)}px`;
