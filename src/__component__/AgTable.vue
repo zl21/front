@@ -3,6 +3,7 @@
     <Page
       v-if="isPageShow"
       ref="page"
+      size="small"
       v-bind="pageAttribute"
       @on-change="pageChange"
       @on-page-size-change="pageSizeChange"
@@ -173,7 +174,7 @@
         this.agGridTable(val.tabth, val.row, val);
         setTimeout(() => {
           const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer.agTable) {
+          if (agGridTableContainer && agGridTableContainer.agTable) {
             agGridTableContainer.agTable.fixContainerHeight();
             agGridTableContainer.agTable.emptyAllFilters();
           }

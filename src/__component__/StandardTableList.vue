@@ -16,6 +16,7 @@
     />
     <AgTable
       ref="agTableElement"
+      :style="agTableElementStyles"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
       :css-status="ag.status4css"
@@ -135,6 +136,14 @@
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])
         );
+      },
+      agTableElementStyles() {
+        if (this.formItemsLists.length === 0) {
+          return {
+            paddingTop: 0
+          };
+        }
+        return {};
       }
     },
     watch: {
@@ -1474,9 +1483,25 @@
             label
           });
         }
+      },
+      
+      // network 监听函数
+      networkEventListener(event) {
+        if (this._inactive) { return }
+        const { detail } = event;
+        const { response } = detail;
+        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        let merge = false;
+        if (urlArr.indexOf(detail.url || '') > -1) {
+          if (response && response.data && response.data.code === -1) {
+            merge = true;
+          }
+          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+        }
       }
     },
     mounted() {
+      window.addEventListener('network', this.networkEventListener);
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -1493,6 +1518,9 @@
     created() {
       this.buttonMap = buttonmap;
       this.ChineseDictionary = ChineseDictionary;
+    },
+    beforeDestroy() {
+      window.removeEventListener('network', this.networkEventListener);
     }
   };
 </script>

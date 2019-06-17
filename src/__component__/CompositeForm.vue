@@ -173,7 +173,7 @@
         mountChecked: false, // 区分是默认值还是change 值
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
-        Condition:this.Condition,
+        Condition: this.Condition,
         childFormData: [],
         computdefaultData: [], // form
         pathArry: [], // path 数组
@@ -282,7 +282,7 @@
         }
         if (
           this.type
-        && Object.prototype.hasOwnProperty.call(defaultData, 'addcolums')
+          && Object.prototype.hasOwnProperty.call(defaultData, 'addcolums')
         ) {
           items = defaultData.addcolums.reduce((array, current, index) => {
             let tem = [];
@@ -331,9 +331,9 @@
 
         this.formDataDef = Object.assign(formData, setdefval);
         const key = Object.keys(data)[0];
-        if (key.split(':').length > 1) {
+        if (key && key.split(':').length > 1) {
           delete this.formData[current.item.field];
-        }else {
+        } else {
           delete this.formData[current.item.inputname];
         }
 
@@ -353,7 +353,6 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(this.formData);
 
         this.$emit('formChange', this.formData, this.formDataDef);
       },
@@ -484,7 +483,7 @@
                   this.$Message.info('请选择关联表字段');
                   return false;
                 }
-                const query =                current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
 
                 searchObject = {
                   isdroplistsearch: true,
@@ -520,9 +519,8 @@
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
-              console.log('blur');
               if (item.props.fkdisplay && this.Condition !== 'list') {
-                if (Array.isArray(item.props.Selected)) {
+                if (item.props.Selected) {
                   Fitem[index].item.value = '';
                 } else if (Array.isArray(item.value)) {
                   if (item.value[0].ID === '' || item.value[0].ID === undefined) {
@@ -590,7 +588,7 @@
             this.$Message.info('请选择关联表字段');
             return false;
           }
-          const query =          current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+          const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
           sendData = {
             ak: value,
             colid: current.colid,
@@ -626,7 +624,7 @@
             const value = option.item.props.defval || option.item.props.valuedata;
             return (
               option.item.field === refcolumn
-            && JSON.stringify(value) === JSON.stringify(refval)
+              && JSON.stringify(value) === JSON.stringify(refval)
             );
           });
         }
@@ -678,9 +676,9 @@
           //  不可编辑 变成 input
           if (
             item.fkdisplay === 'drp'
-          || item.fkdisplay === 'mop'
-          || item.fkdisplay === 'pop'
-          || item.fkdisplay === 'mrp'
+            || item.fkdisplay === 'mop'
+            || item.fkdisplay === 'pop'
+            || item.fkdisplay === 'mrp'
           ) {
             str = 'input';
             return str;
@@ -688,8 +686,8 @@
         }
         if (
           !item.display
-        || item.display === 'text'
-        || item.display === 'textarea'
+          || item.display === 'text'
+          || item.display === 'textarea'
         ) {
           str = 'input';
         }
@@ -706,10 +704,10 @@
         }
         if (
           item.display === 'text'
-        || item.display === 'xml'
-        || item.display === 'OBJ_FK'
+          || item.display === 'xml'
+          || item.display === 'OBJ_FK'
         ) {
-          const casefkdisplay =          item.fkdisplay || (item.fkobj && item.fkobj.searchmodel);
+          const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.searchmodel);
           switch (casefkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -761,7 +759,7 @@
         // 设置表单的默认值
         if (
           (item.display === 'textarea' && !item.fkdisplay)
-        || (item.display === 'text' && !item.fkdisplay)
+          || (item.display === 'text' && !item.fkdisplay)
         ) {
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
@@ -818,8 +816,8 @@
               ID: this.defaultSetValue[item.colname][0].ID || '',
               Label:
                 item.valuedata
-              || this.defaultSetValue[item.colname][0].Label
-              || ''
+                || this.defaultSetValue[item.colname][0].Label
+                || ''
             });
           } else {
             const ID = item.refobjid ? item.refobjid : '';
@@ -972,7 +970,7 @@
             disabledDate(date) {
               return (
                 date
-              && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
               );
             }
           };
@@ -982,7 +980,7 @@
             disabledDate(date) {
               return (
                 date
-              && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
               );
             }
           };
@@ -1024,7 +1022,7 @@
                 reftable: current.reftable,
                 reftableid: current.reftableid,
                 url:
-                  `${current.serviceId ? +"/" + current.serviceId : "" 
+                  `${current.serviceId ? +'/' + current.serviceId : '' 
                   }/p/cs/menuimport`
               };
               item.props.datalist = [];
@@ -1046,7 +1044,7 @@
               reftable: current.reftable,
               reftableid: current.reftableid,
               url:
-                `${current.serviceId ? current.serviceId : "" 
+                `${current.serviceId ? current.serviceId : '' 
                 }/p/cs/menuimport`
             };
             item.props.datalist = [];
@@ -1176,12 +1174,12 @@
               VerificationMessage.eq = item.eq;
             } else if (
               VerificationMessage.eq === ''
-            || VerificationMessage.eq > item.eq
+              || VerificationMessage.eq > item.eq
             ) {
               VerificationMessage.eq = item.eq;
               if (
                 VerificationMessage.index === ''
-              || VerificationMessage.index > item.index
+                || VerificationMessage.index > item.index
               ) {
                 VerificationMessage.index = item.index;
                 VerificationMessage.validateForm = item.onfousInput;
@@ -1197,9 +1195,9 @@
           .$children;
         const focusItemArry = [...arry];
         focusItemArry.splice(0, index + 1);
-        const _index =        index
-        + 1
-        + focusItemArry.findIndex(item => item.item.props.readonly === false);
+        const _index = index
+          + 1
+          + focusItemArry.findIndex(item => item.item.props.readonly === false);
 
         if (item[_index] && arry[_index].item.type !== 'checkbox') {
           if (item[_index].$el.querySelector('input')) {

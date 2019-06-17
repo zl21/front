@@ -1,5 +1,8 @@
 
 export default {
+  updateTableDataWithMerge({ ag }, data) {
+    ag.datas = Object.assign({}, ag.datas, data);
+  },
   updateTableData({
     ag
   }, data) {

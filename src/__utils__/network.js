@@ -53,8 +53,9 @@ const dispatchR3Event = (data) => {
 axios.interceptors.response.use(
   (response) => {
     const { config } = response;
+    const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
     const requestMd5 = md5(JSON.stringify({
-      data: config.data,
+      data: isJson ? JSON.parse(config.data) : config.data,
       url: config.url,
       method: config.method
     }));
@@ -173,9 +174,12 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
+      console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
-    pendingRequestMap[requestMd5] = true;
+    pendingRequestMap[requestMd5] = {
+      reqTime: Date.now()
+    };
     return axios.post(matchedUrl, config);
   };
 
@@ -189,9 +193,12 @@ function NetworkConstructor() {
       method: 'get'
     });
     if (pendingRequestMap[requestMd5]) {
+      console.warn(`request: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
-    pendingRequestMap[requestMd5] = true;
+    pendingRequestMap[requestMd5] = {
+      reqTime: Date.now()
+    };
     return axios.get(matchedUrl, config);
   };
 
