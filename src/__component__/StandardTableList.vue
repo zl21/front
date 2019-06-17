@@ -7,6 +7,7 @@
       @buttonClick="buttonClick"
     />
     <FormItemComponent
+      v-if="formItemsLists.length > 0"
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
@@ -16,6 +17,7 @@
     />
     <AgTable
       ref="agTableElement"
+      :style="agTableElementStyles"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
       :css-status="ag.status4css"
@@ -135,6 +137,14 @@
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])
         );
+      },
+      agTableElementStyles() {
+        if (this.formItemsLists.length === 0) {
+          return {
+            paddingTop: 0
+          };
+        }
+        return {};
       }
     },
     watch: {
