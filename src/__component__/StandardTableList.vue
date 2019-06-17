@@ -7,7 +7,6 @@
       @buttonClick="buttonClick"
     />
     <FormItemComponent
-      v-if="formItemsLists.length > 0"
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
