@@ -979,7 +979,6 @@
       searchClickData() {
         // 按钮查找 查询第一页数据
         this.searchData.startIndex = 0;
-        console.log(this.dataProcessing());
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
       },

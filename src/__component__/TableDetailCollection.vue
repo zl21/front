@@ -282,7 +282,7 @@
           });
           total.push(cell);
         }
-        if (this.isHorizontal) {
+        // if (this.isHorizontal) {
           if (this.dataSource.isFullRangeSubTotalEnabled) {
             // 总计
             const cell = {
@@ -298,7 +298,7 @@
             }
             total.push(cell);
           }
-        }
+        // }
         return total;
       },
       isHorizontal() { // 是否是左右结构
@@ -379,6 +379,7 @@
       },
       dataSource: {
         handler(val, old) {
+          this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -511,9 +512,12 @@
             align: 'center'
           },
           {
-            title: '序号',
             width: 60,
+            type: 'index',
             key: COLLECTION_INDEX,
+            renderHeader: (h, params) => h('div', [
+              h('Span', '序号')
+            ]),
             render: this.collectionIndexRender(columns)
           }
         ];
@@ -797,7 +801,6 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
-                console.log(data);
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {[cellData.key]: data});
                 } else {
@@ -1081,7 +1084,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`
+            innerHTML: params.row[cellData.colname]?`<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}`:''
           },
           on: {
             click: (event) => {
@@ -1461,7 +1464,7 @@
           pageSize: index
         });
         // this.pageInfo.pageSize = index;
-        this.getTabelList();
+        // this.getTabelList();
       },
       objectEXPORT() { // 导出
         const {tableId, itemId} = router.currentRoute.params;

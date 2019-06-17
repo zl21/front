@@ -991,6 +991,9 @@ const initializeAgTable = (container, opt) => {
                   options.onColumnMoved('');
                   agTable.colPosition = '';
                 }
+                if (typeof options.onColumnPinned === 'function') {
+                  options.onColumnPinned('ID|')
+                }
                 setTimeout(() => {
                   isResetAllColumn = false;
                 }, 500);
@@ -1189,6 +1192,13 @@ const initializeAgTable = (container, opt) => {
     // 清空数据
     agTable.cleanRows = () => {
       api.setRowData([]);
+    };
+
+    agTable.emptyAllFilters = () => {
+      api.setFilterModel(null);
+      if (agGridTableContainer) {
+        agGridTableContainer.querySelectorAll('.ag-floating-filter-input').forEach(e => { e.value = '' })
+      }
     };
 
     // 设置columnDefs
