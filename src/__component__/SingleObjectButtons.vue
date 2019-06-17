@@ -261,7 +261,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'decreasekeepAliveLists']),
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
@@ -304,6 +304,7 @@
           this.searchClickData();
         }
       },
+
       clickButtonsRefresh() { // 按钮刷新事件
         this.clearEditData();
         const message = '刷新成功';
@@ -474,6 +475,23 @@
           break;
         }
       },
+      objTabActionNavbar(tab) {
+        const url = tab.action;
+        const index = url.lastIndexOf('\/');
+        const customizedModuleName = url.substring(index + 1, url.length);
+        const label = tab.webdesc;
+        const type = 'tableDetailAction';
+        const { tableId } = this.$route.params;
+        if (tab.action) {
+          this.tabOpen({
+            type,
+            customizedModuleName,
+            customizedModuleId: tableId,
+            label
+          });
+        }
+      },
+       
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
         // tab.confirm = true
