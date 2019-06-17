@@ -4,6 +4,10 @@
       <div class="pop-input">
         <ul>
           <li>
+            <span>{{ chineseName.SOURCETABLENAME }}：</span>
+            {{ o_table_name }}
+          </li>
+          <li class="resTop">
             <span>版本号：</span>
             <span class="version">
               <DropDownSelectFilter
@@ -19,17 +23,15 @@
             </span>
           </li>
           <li>
-            <span>{{ chineseName.SOURCETABLENAME }}：</span>
-            {{ o_table_name }}
-          </li>
-          <li>
-            <span>{{ chineseName.TARGETTABLENVARCHAR }}：</span><input
+            <span>{{ chineseName.TARGETTABLENVARCHAR }}：</span>
+            <input
               v-model="t_table_name"
               type="text"
             >
           </li>
           <li>
-            <span>{{ chineseName.TARGETDESCRIPTION }}：</span><input
+            <span>{{ chineseName.TARGETDESCRIPTION }}：</span>
+            <input
               v-model="s_table_name"
               type="text"
             >
@@ -79,8 +81,8 @@
     props: {
       objList: {
         type: Array,
-        default: () => ([])
-      },
+        default: () => []
+      }
     },
     data() {
       return {
@@ -100,73 +102,77 @@
           pageSize: 10,
           AutoData: [],
           dataEmptyMessage: '数据加载中...', // 无数据的提示
-          columns: ['name', 'value']// 展现的组
+          columns: ['name', 'value'] // 展现的组
         }
       };
     },
-    components: {
-     
-    },
+    components: {},
     methods: {
       getVersionID(value) {
         this.version.ID = value[0].ID;
       },
       getVersion() {
-        const searchdata = { 
-          isdroplistsearch: true, refcolid: 165894, startindex: 0, range: 10
+        const searchdata = {
+          isdroplistsearch: true,
+          refcolid: 165894,
+          startindex: 0,
+          range: 10
         };
-        network.post('/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
-          if (res.data.code === 0) {
-            this.version.data = res.data.data;
-            this.version.totalRowCount = res.data.data.totalRowCount;
-            this.version.pageSize = res.data.data.totalRowCount.defaultrange;
-          }
-        });
+        network
+          .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.version.data = res.data.data;
+              this.version.totalRowCount = res.data.data.totalRowCount;
+              this.version.pageSize = res.data.data.totalRowCount.defaultrange;
+            }
+          });
       },
       fuzzyquerybyak(value) {
-        const searchdata = { 
+        const searchdata = {
           ak: value,
           colid: ' 165884',
           fixedcolumns: {}
         };
-        network.post('/p/cs/fuzzyquerybyak', urlSearchParams(searchdata)).then((res) => {
-          if (res.data.code === 0) {
-            this.version.AutoData = res.data.data;
-          }
-        });
+        network
+          .post('/p/cs/fuzzyquerybyak', urlSearchParams(searchdata))
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.version.AutoData = res.data.data;
+            }
+          });
       },
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
-          this.errorDialogClass = 'warning';
-          this.errorData = [{ message: '请输入目标表名或目标描述' }];
-          this.errorDialog = true;
+          const data = {
+            title: 'warning',
+            content: '请输入目标表名或目标描述'
+          };
+          this.$Modal.fcWarning(data);
           return;
         }
-        axios({
-          url: '/p/cs/clone',
-          method: 'post',
-          contentType: 'application/json',
-          data: {
-            srctable: this.o_table_name, // 源表表名
-            destable: this.t_table_name.trim(), // 目标表名
-            destdesc: this.s_table_name.trim(), // 目标描述
-            ad_version_id: this.version.ID
-          }
-        }).then((res) => {
-          const res_data = res.data;
-          if (res_data.code !== 0) {
-            return;
-          }
-          this.$message({
-            message: '克隆成功',
-            center: true,
-            type: 'success'
+        const searchdata = {
+          srctable: this.o_table_name, // 源表表名
+          destable: this.t_table_name.trim(), // 目标表名
+          destdesc: this.s_table_name.trim(), // 目标描述
+          ad_version_id: this.version.ID
+        };
+        network.post('/p/cs/clone', searchdata)
+          .then((res) => {
+            const res_data = res.data;
+            if (res_data.code !== 0) {
+              return;
+            }
+            const data = {
+              title: 'success',
+              content: '克隆成功'
+            };
+            this.$Modal.fcWarning(data);
+            this.$emit('closeActionDialog'); // 关闭弹框
           });
-          this.$emit('closeActionDialog');// 关闭弹框
-        });
       }, // 确定
       cancel() {
-        this.$emit('closeActionDialog');// 关闭弹框
+        this.$emit('closeActionDialog'); // 关闭弹框
       }, // 取消
       findName(data, name, val) {
         for (const i of data) {
@@ -181,78 +187,84 @@
       },
       errorDialogClose() {
         this.errorDialog = false;
-      }, // 关闭弹框
+      } // 关闭弹框
     },
     created() {
       this.chineseName = ChineseDictionary;
     },
     mounted() {
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
-    },
-   
+    }
   };
 </script>
 <style lang="less" scoped type="text/less">
-  .clonePopUp {
-    font-size: 12px;
-    .pop-title {
-      // width: 400px;
-      height: 152px;
-      box-sizing: border-box;
+.clonePopUp {
+  font-size: 12px;
+  height: 174px;
+  .pop-title {
+    // width: 400px;
+    height: 152px;
+    box-sizing: border-box;
+  }
+  .pop-input {
+    padding-top: 10px;
+    ul {
+      list-style: none;
     }
-    .pop-input {
-      padding-top: 10px;
-       ul{
-        list-style: none;
-      }
-      li {
-        margin-bottom: 10px;
-        .version{
-          width: 228px;
-    height: 22px;
-    border-radius: 2px;
-        }
-      }
-      span {
-        display: inline-block;
-        width: 100px;
-        text-align: right;
-      }
-      input {
-        border: 1px solid #d8d8d8;
+    li {
+      margin-bottom: 10px;
+      .version {
         width: 228px;
         height: 22px;
-        padding: 0 5px;
         border-radius: 2px;
-        font-size: 12px;
-        color: #575757;
-        transition: border-color .2s ease;
-      }
-      input:focus {
-        border-color: #0F8EE9;
       }
     }
-    .pop-btn {
+    .resTop{
+      margin-bottom: 15px;
+    }
+    span {
+      display: inline-block;
+      width: 100px;
       text-align: right;
-      padding: 6px 40px 0 0;
-      .sav-btn, .cancel-btn {
-        padding: 0 18px;
-        width: 66px;
-        height: 24px;
-        box-sizing: border-box;
-        background-color: #fff;
-        border: 1px solid;
-        color: #FD6442;
-        font-size: 12px;
-        border-radius: 2px;
-        span {
-          color: #FD6442;
-        }
-      }
-      .sav-btn:hover, .cancel-btn:hover {
-        background-color: rgba(253, 100, 66, .3);
-        color: rgba(253, 100, 66, .6);
-      }
+    }
+    input {
+      border: 1px solid #d8d8d8;
+      width: 228px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 2px;
+      font-size: 12px;
+      color: #575757;
+      transition: border-color 0.2s ease;
+      margin-left: -1px;
+    }
+    input:focus {
+      border-color: #0f8ee9;
     }
   }
+  .pop-btn {
+    text-align: right;
+    padding: 6px 40px 0 0;
+    .sav-btn,
+    .cancel-btn {
+      padding: 0 18px;
+      width: 66px;
+      height: 24px;
+      box-sizing: border-box;
+      background-color: #fff;
+      border: 1px solid;
+      color: #fd6442;
+      font-size: 12px;
+      border-radius: 2px;
+      span {
+        color: #fd6442;
+      }
+    }
+    .sav-btn:hover,
+    .cancel-btn:hover {
+      background-color: rgba(253, 100, 66, 0.3);
+      color: rgba(253, 100, 66, 0.6);
+    }
+  }
+}
 </style>

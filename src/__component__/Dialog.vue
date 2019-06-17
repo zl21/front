@@ -1,38 +1,38 @@
 <!--引入曼卡龙的弹框组件-->
 <template>
   <Modal
-          v-model="showModal"
-          :title="title"
-          :title-align="titleAlign"
-          :scrollable="scrollable"
-          :closable="closable"
-          :draggable="draggable"
-          :mask="mask"
-          :mask-closable="maskClosable"
-          :transfer="transfer"
-          :footer-hide="footerHide"
-          :ok-text="okText"
-          :cancel-text="cancelText"
-          :width="modalWidth"
-          @on-cancel="onCancel"
-          @on-ok="onOk"
+    v-model="showModal"
+    :title="title"
+    :title-align="titleAlign"
+    :scrollable="scrollable"
+    :closable="closable"
+    :draggable="draggable"
+    :mask="mask"
+    :mask-closable="maskClosable"
+    :transfer="transfer"
+    :footer-hide="footerHide"
+    :ok-text="okText"
+    :cancel-text="cancelText"
+    :width="modalWidth"
+    @on-cancel="onCancel"
+    @on-ok="onOk"
   >
     <p v-if="contentText">
       {{ contentText }}
     </p>
     <component
-            :is="dialogComponentName"
-            ref="modalComponent"
-            v-if="dialogComponentName"
-            :obj-list="objList"
-            @closeActionDialog="closeActionDialog"
+      :is="dialogComponentName"
+      v-if="dialogComponentName"
+      ref="modalComponent"
+      :obj-list="objList"
+      @closeActionDialog="closeActionDialog"
     />
   </Modal>
 </template>
 
 <script>
   export default {
-    name: 'DialogComponent',
+    // name: 'DialogComponent',
     props: {
       // showModal: {
       //   type: Boolean,
@@ -129,7 +129,9 @@
         if (this.$refs.modalComponent) {
           this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
         } else {
-          self.getModalWidth();
+          setTimeout(() => { // 释放资源
+            self.getModalWidth();
+          }, 0);
         }
       },
       open() {

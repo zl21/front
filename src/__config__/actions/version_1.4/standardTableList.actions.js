@@ -155,9 +155,11 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('batchVoidForButtonsData', data);
+        commit('onSelectionChangedAssignment', {});
       } else {
         reject();
         commit('batchVoidForButtonsData', data.data);
+        commit('onSelectionChangedAssignment', {});
       }
     });
   },
@@ -171,9 +173,11 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
+        commit('onSelectionChangedAssignment', {});
       } else {
         reject();
         commit('updateButtonbatchSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
       }
     });
   },
@@ -185,9 +189,11 @@ export default {
       if (res.data.code === 0) {
         resolve(res);
         commit('updateButtonbatchUnSubmitData', res.data.message);
+        commit('onSelectionChangedAssignment', {});
       } else {
         reject();
         commit('updateButtonbatchUnSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
       }
     }).catch((err) => {
       reject(err);

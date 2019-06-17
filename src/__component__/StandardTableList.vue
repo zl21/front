@@ -7,6 +7,7 @@
       @buttonClick="buttonClick"
     />
     <FormItemComponent
+      v-if="formItemsLists.length > 0"
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
@@ -16,6 +17,7 @@
     />
     <AgTable
       ref="agTableElement"
+      :style="agTableElementStyles"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
       :css-status="ag.status4css"
@@ -135,6 +137,14 @@
         return this.refactoringData(
           this.formItems.defaultFormItemsLists.concat([])
         );
+      },
+      agTableElementStyles() {
+        if (this.formItemsLists.length === 0) {
+          return {
+            paddingTop: 0
+          };
+        }
+        return {};
       }
     },
     watch: {
@@ -1024,6 +1034,7 @@
               id
             });
           }
+          return;
         }
         if (obj.name === this.buttonMap.CMD_DELETE.name) {
           // 删除动作  对用网络请求
@@ -1038,6 +1049,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_SUBMIT.name) {
@@ -1054,6 +1066,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_VOID.name) {
@@ -1069,6 +1082,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_UNSUBMIT.name) {
@@ -1084,6 +1098,7 @@
             };
             this.$Modal.fcWarning(data);
           }
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_EXPORT.name) {
@@ -1095,12 +1110,14 @@
             return;
           }
           this.batchExport();
+          return;
         }
 
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
           this.setImportDialogTitle();
           // this.importGetUploadParametersForButtons(); // 调用导入参数接口
+          return;
         }
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
