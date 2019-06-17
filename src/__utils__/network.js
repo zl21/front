@@ -7,35 +7,48 @@ import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
 
-const matchUrl = (url) => {
+const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceId = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+  const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   // eslint-disable-next-line no-empty
   if (!enableGateWay) {
-    return url;
+    return undefined;
   }
   if (ignoreGateWay.includes(url)) {
-    return url;
+    return undefined;
   }
   if (globalGateWay.includes(url)) {
-    return globalServiceId ? `/${globalServiceId}${url}` : url;
+    return globalServiceId || undefined;
   }
   if (tableName) {
-    if (serviceId[tableName] !== 'undefined') {
-      const serviceIdMapApi = serviceId[tableName];
-      return serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+    if (serviceIdMap[tableName] !== 'undefined') {
+      const serviceIdMapApi = serviceIdMap[tableName];
+      return serviceIdMapApi || undefined;
     }
   } else if (customizedModuleName) {
-    if (serviceId[customizedModuleName] !== 'undefined') {
-      const serviceIdMapApi = serviceId[customizedModuleName];
-      return serviceIdMapApi ? `/${serviceIdMapApi}${url}` : url;
+    if (serviceIdMap[customizedModuleName] !== 'undefined') {
+      const serviceIdMapApi = serviceIdMap[customizedModuleName];
+      return serviceIdMapApi || undefined;
     }
   }
-  return url;
+  return undefined;
 };
 
 const getRequestMd5 = data => md5(JSON.stringify(data));
+
+const dispatchR3Event = (data) => {
+  const globalServiceId = window.sessionStorage.getItem('serviceId');
+  const gateWay = matchGateWay((data.url || '').replace(`${globalServiceId ? `/${globalServiceId}` : ''}`, ''));
+  if (gateWay) {
+    data.url = data.url.replace(`/${gateWay}`, '');
+  }
+  setTimeout(() => {
+    window.dispatchEvent(new CustomEvent('network', {
+      detail: Object.assign({}, data || {}, { urlGateway: gateWay })
+    }));
+  }, 10);
+};
 
 axios.interceptors.response.use(
   (response) => {
@@ -52,6 +65,12 @@ axios.interceptors.response.use(
         content: response.data.message || 'No Error Message.'
       });
     }
+    dispatchR3Event({
+      url: config.url,
+      response: JSON.parse(JSON.stringify(response)),
+      fulfilled: true,
+      rejected: false,
+    });
     return response;
   },
   (error) => {
@@ -97,6 +116,12 @@ axios.interceptors.response.use(
           })
         });
       }
+      dispatchR3Event({
+        url: config.url,
+        response: JSON.parse(JSON.stringify(error.response)),
+        fulfilled: false,
+        rejected: true
+      });
     }
     return Promise.reject(error);
   }
@@ -140,7 +165,8 @@ export const urlSearchParams = (data) => {
 function NetworkConstructor() {
   // equals to axios.post(url, config)
   this.post = (url, config) => {
-    const matchedUrl = matchUrl(url);
+    const gateWay = matchGateWay(url);
+    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
@@ -155,7 +181,8 @@ function NetworkConstructor() {
 
   // equals to axios.get(url, config)
   this.get = (url, config) => {
-    const matchedUrl = matchUrl(url);
+    const gateWay = matchGateWay(url);
+    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
     const requestMd5 = getRequestMd5({
       data: config,
       url: matchedUrl,

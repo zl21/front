@@ -21,7 +21,6 @@ const createDOM = () => {
   document.body.appendChild(div);
   return div;
 };
-
 const init = () => {
   const rootDom = createDOM();
   window.vm = new Vue({

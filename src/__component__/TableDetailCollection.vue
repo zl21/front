@@ -1464,7 +1464,7 @@
           pageSize: index
         });
         // this.pageInfo.pageSize = index;
-        this.getTabelList();
+        // this.getTabelList();
       },
       objectEXPORT() { // 导出
         const {tableId, itemId} = router.currentRoute.params;
