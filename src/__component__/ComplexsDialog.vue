@@ -709,6 +709,10 @@
     margin-top: 10px;
     height: 44px;
   }
+  .burgeon--dialog .dialog_center .table{
+         margin-bottom: 10px;
+         height: 338px;
+  }
 </style>
 <style lang="less" scoped>
   .burgeon-select-item{
