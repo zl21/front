@@ -20,17 +20,23 @@
     <p v-if="contentText">
       {{ contentText }}
     </p>
-    <component
-      :is="dialogComponentName"
-      v-if="dialogComponentName"
-      ref="modalComponent"
-      :obj-list="objList"
-      @closeActionDialog="closeActionDialog"
-    />
+    <div v-if="dialogComponentName">
+      <component
+        :is="dialogComponentName"
+        v-if="showModal"
+        ref="modalComponent"
+        :obj-list="objList"
+        @closeActionDialog="closeActionDialog"
+      />
+    </div>
   </Modal>
 </template>
 
 <script>
+
+
+  import store from '../__config__/store.config';
+
   export default {
     // name: 'DialogComponent',
     props: {
@@ -111,7 +117,7 @@
     data() {
       return {
         showModal: false,
-        modalWidth: 520
+        modalWidth: 520,
       };
     },
     watch: {
@@ -153,8 +159,8 @@
       },
       closeActionDialog() {
         this.showModal = false;
-      }
-
+      },
+   
     }
   };
 </script>
