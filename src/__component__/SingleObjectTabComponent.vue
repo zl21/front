@@ -171,11 +171,11 @@
       formPaths() {
         if (this.type === 'vertical') {
           return this.mainFormPaths;
-        } 
+        }
         if (this.buttonsData.data && this.buttonsData.data.tabcmd && this.buttonsData.data.tabcmd.paths) {
           return this.buttonsData.data.tabcmd.paths;
         }
-        
+
         return [];
       },
       // ...mapState(moduleName(), {
@@ -535,8 +535,8 @@
         this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
       },
       tableVerifyMessage(data) {
-        const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        // const { tableName } = this;
+        // this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       }
     }
   };

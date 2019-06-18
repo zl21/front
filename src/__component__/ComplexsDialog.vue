@@ -207,7 +207,7 @@
         } else if (index === 1) {
           if (this.resultData.total > 0) {
             this.componentData[index] = Object.assign(this.componentData[index], data.data);
-          } else{
+          } else {
             this.componentData[index].list = [];
           }
         } else if (index === 0) {
@@ -537,6 +537,25 @@
           value: s_value,
           text: JSON.stringify(this.text)
         };
+      },
+      savObjemessage() {
+        let sendMessage = {
+          idArray: this.IN,
+          lists: {
+            result: this.resultData.list,
+            total: this.resultData.total
+          },
+          value: {
+            CONDITION: this.sendMessage.CONDITION,
+            EXCLUDE: this.sendMessage.EXCLUDE,
+            GLOBAL: this.sendMessage.GLOBAL,
+            IN: this.sendMessage.IN,
+            NOTIN: this.sendMessage.NOTIN,
+            TABLENAME: this.sendMessage.TABLENAME
+          }
+
+        };
+        return JSON.stringify(sendMessage);
       },
       saveBtn(value) {
         if (value.length < 1) {

@@ -1008,6 +1008,7 @@
             item.props.single = false;
             item.props.data = {};
             item.props.empty = 0;
+            
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
@@ -1016,6 +1017,7 @@
               item.props.type = 'AttachFilter';
               item.props.empty = 0;
               item.props.optionTip = false;
+              //  单对象界面
               item.props.AutoData = [];
               item.props.fkobj = {
                 refobjid: current.refobjid,
@@ -1043,6 +1045,7 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
+              saveType : 'object',
               url:
                 `${current.serviceId ? current.serviceId : '' 
                 }/p/cs/menuimport`

@@ -1167,10 +1167,12 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
+                              console.log(this.searchData);
+
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this.$route.params, this.buttons.selectIdArr.length
+                this.$route.params, this.buttons.selectIdArr.length, this.searchData.fixedcolumns,this.buttons.selectIdArr
               );
             }, 200);
           } else {
@@ -1181,10 +1183,11 @@
               }行),是否确定继续操作?`,
               showCancel: true,
               onOk: () => {
+                console.log(this);
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this.$route.params, this.ag.datas.totalRowCount
+                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns,this.ag.datas
                   );
                 }, 200);
               },

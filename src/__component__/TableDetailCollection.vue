@@ -549,7 +549,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: this.dataSource.start + 1,
+          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
