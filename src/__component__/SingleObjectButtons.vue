@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 
 <template>
   <div
@@ -463,6 +464,7 @@
         // console.log('action',tab)
         switch (tab.vuedisplay) {
         case 'native': // 跳转url
+          // eslint-disable-next-line no-restricted-globals
           location.href = tab.action;
           break;
         case 'slient':

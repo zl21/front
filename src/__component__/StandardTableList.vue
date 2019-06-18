@@ -749,7 +749,6 @@
         }
       },
       webactionClick(type, obj) {
-        debugger;
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
         if (obj.vuedisplay === 'native') {
@@ -1327,7 +1326,6 @@
         }
       },
       errorconfirmDialog() {
-        debugger;
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
