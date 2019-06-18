@@ -58,6 +58,8 @@
         formList: {},
         newformList: {},
         formChangeData: {},
+        fixedcolumns:{},
+        objids:[],
         loading: false,
         router: {},
         ids: []
@@ -139,7 +141,8 @@
       saveData() {
         this.loading = true;
         const localdata = {
-
+          objids:this.objids,
+          fixedcolumns:this.fixedcolumns, // 参数 条件 
           table: this.router.tableName, // 表名
           column_include_uicontroller: true, //
           reffixedcolumns: this.reffixedcolumns, // 左边树
@@ -161,10 +164,13 @@
           }
         });
       },
-      open(router, ids) {
+      open(router, ids, fixedcolumns,id) {
         //  打开弹窗
+        console.log(id, fixedcolumns);
         this.ids = ids;
         this.router = router;
+        this.objids = id;
+        this.fixedcolumns = fixedcolumns || {};
         this.$refs.Modal.open();
         this.loading = true;
         const searchObject = {
