@@ -847,7 +847,8 @@
                   title: '弹窗多选',
                   mask: true,
                   draggable: true,
-                  scrollable: true
+                  scrollable: true,
+                  width: 920
                 }
               },
               datalist: this.popFilterDataList,
