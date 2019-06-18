@@ -1424,9 +1424,9 @@
    
         promise.then(() => {
           this.clearEditData();// 清空store update数据
-        }, () => {}).then(
-          this.saveAfter(type, tableName)
-        );
+        }, () => {}).then(() => {
+          this.saveAfter(type, tableName);
+        });
       },
       saveAfter(type, tableName) {
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
@@ -1541,9 +1541,22 @@
           }
         }
       },
-
+      networkEventListener(event) {
+        if (this._inactive) { return; }
+        const { detail } = event;
+        const { response } = detail;
+        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
+        let merge = false;
+        if (urlArr.indexOf(detail.url || '') > -1) {
+          if (response && response.data && response.data.code === -1) {
+            merge = true;
+          }
+          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+        }
+      }
     },
     mounted() {
+      window.addEventListener('network', this.networkEventListener);
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },

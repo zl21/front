@@ -65,6 +65,15 @@
       :confirm="buttons.dialogConfig.confirm"
       @confirmDialog="errorconfirmDialog()"
     />
+    <dialogComponent
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+    />
     <!-- 批量 -->
     <modifyDialog
       v-if="modifyDialogshow"
@@ -84,7 +93,7 @@
   import FormItemComponent from './FormItemComponent';
   import ItemComponent from './ItemComponent';
   import buttonmap from '../assets/js/buttonmap';
-
+  import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
@@ -92,6 +101,7 @@
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
+  import CustomizeModule from '../__config__/customizeDialog.config';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
@@ -100,7 +110,7 @@
   // import ModuleName from '../__utils__/getModuleName.js';
 
   // eslint-disable-next-line import/no-dynamic-require
-  const importCustom = file => require(`../__component__/${file}.vue`).default;
+  // const importCustom = file => require(`../__component__/${file}.vue`).default;
   export default {
     components: {
       ButtonGroup,
@@ -108,7 +118,8 @@
       FormItemComponent,
       ImportDialog,
       ErrorModal,
-      modifyDialog
+      modifyDialog,
+      dialogComponent
     },
     data() {
       return {
@@ -122,7 +133,16 @@
         },
         formItemsLists: [],
         modifyDialogshow: false, // 批量修改弹窗
-        formDefaultComplete: false
+        formDefaultComplete: false,
+        dialogComponentName: null,
+        dialogConfig: {
+          title: '提示',
+          mask: true,
+          footerHide: false,
+          contentText: '',
+          confirm: () => {
+          }
+        }, // 弹框配置信息
       };
     },
     computed: {
@@ -708,132 +728,149 @@
           }
         }
       },
-     
+      objTabActionDialog(tab) { // 动作定义弹出框
+        this.$refs.dialogRef.open();
+        const title = `${tab.webdesc}`;
+        this.dialogConfig = {
+          title,
+        };
+        this.dialogConfig.footerHide = true;
+        // this.actionDialog.show = true;
+        // this.actionDialog.title = tab.webdesc;
+        if (tab.action.indexOf('?') >= 0) {
+          this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
+        } else {
+          const url = tab.action;
+          const index = url.lastIndexOf('\/');
+          const filePath = url.substring(index + 1, url.length);
+          Vue.component(filePath, CustomizeModule[filePath].component);
+          this.dialogComponentName = filePath;
+        }
+      },
       webactionClick(type, obj) {
+        // debugger;
         // 点击自定义按钮 创建table
-        clearTimeout(window.timer);
-        window.timer = setTimeout(() => {
-          this.setActiveTabActionValue(obj);
-          if (obj.vuedisplay === 'native') {
-            // 接口返回有url地址
-            // eslint-disable-next-line no-restricted-globals
-            location.href = obj.action;
-            return;
-          }
-          if (obj.vuedisplay === 'slient') {
-            // 静默程序            if(obj.confirm){  //有提示
-            if (obj.confirm) {
-              // 有提示
-              if (obj.confirm.indexOf('{') >= 0) {
-                if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-                  if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
-                    const title = this.ChineseDictionary.WARNING;
-                    const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                    this.dialogMessage(title, contentText);
-                  } else if (
-                    JSON.parse(obj.confirm).isradio
-                    && this.selectIdArr.length !== 1
-                  ) {
-                    const title = this.ChineseDictionary.WARNING;
-                    const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
-                    this.dialogMessage(title, contentText);
-                  } else if (JSON.parse(obj.confirm).desc) {
-                    const title = this.ChineseDictionary.WARNING;
-                    const contentText = `${JSON.parse(obj.confirm).desc}`;
-                    this.dialogMessage(title, contentText);
-                  } else {
-                    // 参数都不存在,直接执行
-                    this.webActionSlient(obj);
-                  }
-                }
-              } else {
-                const title = this.ChineseDictionary.WARNING;
-                const contentText = `${obj.confirm}`;
-                this.dialogMessage(title, contentText);
-              }
-            } else {
-              this.webActionSlient(obj);
-            }
-          } else if (obj.vuedisplay === 'navbar') {
-            // !JSON.parse(obj.confirm.isselect)
-            if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-              this.objTabActionNavbar(obj); // 新标签跳转
-            } else {
-              // 动作定义根据列表是否选值
-              const confirm = JSON.parse(obj.confirm);
-              if (this.selectIdArr.length > 0) {
-                if (confirm.isradio && this.selectIdArr.length !== 1) {
+        this.setActiveTabActionValue(obj);
+        if (obj.vuedisplay === 'native') {
+          // 接口返回有url地址
+          // eslint-disable-next-line no-restricted-globals
+          location.href = obj.action;
+          return;
+        }
+        if (obj.vuedisplay === 'slient') {
+          // 静默程序            if(obj.confirm){  //有提示
+          if (obj.confirm) {
+            // 有提示
+            if (obj.confirm.indexOf('{') >= 0) {
+              if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+                if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
                   const title = this.ChineseDictionary.WARNING;
-                  const contentText = `${confirm.radiodesc}`;
+                  const contentText = `${JSON.parse(obj.confirm).nodesc}`;
                   this.dialogMessage(title, contentText);
-                } else if (confirm.desc) {
+                } else if (
+                  JSON.parse(obj.confirm).isradio
+                  && this.selectIdArr.length !== 1
+                ) {
                   const title = this.ChineseDictionary.WARNING;
-                  const contentText = `${confirm.desc}`;
+                  const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                  this.dialogMessage(title, contentText);
+                } else if (JSON.parse(obj.confirm).desc) {
+                  const title = this.ChineseDictionary.WARNING;
+                  const contentText = `${JSON.parse(obj.confirm).desc}`;
                   this.dialogMessage(title, contentText);
                 } else {
-                  this.objTabActionNavbar(obj); // 新标签跳转
+                  // 参数都不存在,直接执行
+                  this.webActionSlient(obj);
                 }
-              } else if (confirm.nodesc) {
+              }
+            } else {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${obj.confirm}`;
+              this.dialogMessage(title, contentText);
+            }
+          } else {
+            this.webActionSlient(obj);
+          }
+        } else if (obj.vuedisplay === 'navbar') {
+          // !JSON.parse(obj.confirm.isselect)
+          if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
+            this.objTabActionNavbar(obj); // 新标签跳转
+          } else {
+            // 动作定义根据列表是否选值
+            const confirm = JSON.parse(obj.confirm);
+            if (this.selectIdArr.length > 0) {
+              if (confirm.isradio && this.selectIdArr.length !== 1) {
                 const title = this.ChineseDictionary.WARNING;
-                const contentText = `${confirm.nodesc}`;
+                const contentText = `${confirm.radiodesc}`;
+                this.dialogMessage(title, contentText);
+              } else if (confirm.desc) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${confirm.desc}`;
                 this.dialogMessage(title, contentText);
               } else {
                 this.objTabActionNavbar(obj); // 新标签跳转
-              }
-            }
-          } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-            this.setActionDialog(obj);
-            const componentName = obj.action.split('?')[0].replace(/\//g, '/');
-            Vue.component(
-              componentName,
-              Vue.extend(importCustom(obj.action.split('?')[0]))
-            );
-          } else if (JSON.parse(obj.confirm).isselect) {
-            // 是否是必选列表项, 动作定义根据列表是否选值
-            const confirm = JSON.parse(obj.confirm);
-            if (this.buttons.selectIdArr.length > 0) {
-              if (confirm.isradio && this.selectIdArr.length !== 1) {
-                const title = this.ChineseDictionary.WARNING;
-                const contentText = `${confirm.desc.replace(
-                  '{isselect}',
-                  this.selectIdArr.length
-                )}`;
-                this.dialogMessage(title, contentText);
-              } else {
-                this.setActionDialog(obj);
-                const componentName = obj.action
-                  .split('?')[0]
-                  .replace(/\//g, '_');
-                Vue.component(
-                  componentName,
-                  Vue.extend(importCustom(obj.action.split('?')[0]))
-                );
-                this.dialogComponent = componentName;
               }
             } else if (confirm.nodesc) {
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${confirm.nodesc}`;
               this.dialogMessage(title, contentText);
             } else {
+              this.objTabActionNavbar(obj); // 新标签跳转
+            }
+          }
+        } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
+          this.objTabActionDialog(obj);
+          // this.setActionDialog(obj);
+          // const componentName = obj.action.split('?')[0].replace(/\//g, '/');
+          // Vue.component(
+          //   componentName,
+          //   Vue.extend(importCustom(obj.action.split('?')[0]))
+          // );
+        } else if (JSON.parse(obj.confirm).isselect) {
+          // 是否是必选列表项, 动作定义根据列表是否选值
+          const confirm = JSON.parse(obj.confirm);
+          if (this.buttons.selectIdArr.length > 0) {
+            if (confirm.isradio && this.selectIdArr.length !== 1) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${confirm.desc.replace(
+                '{isselect}',
+                this.selectIdArr.length
+              )}`;
+              this.dialogMessage(title, contentText);
+            } else {
               this.setActionDialog(obj);
-
-              const componentName = obj.action.split('?')[0].replace(/\//g, '_');
-
+              const componentName = obj.action
+                .split('?')[0]
+                .replace(/\//g, '_');
               Vue.component(
                 componentName,
                 Vue.extend(importCustom(obj.action.split('?')[0]))
               );
               this.dialogComponent = componentName;
             }
-          } else {
-            const message = obj.confirm.indexOf('{') >= 0
-              ? JSON.parse(obj.confirm).nodesc
-              : obj.confirm;
+          } else if (confirm.nodesc) {
             const title = this.ChineseDictionary.WARNING;
-            const contentText = `${message}`;
+            const contentText = `${confirm.nodesc}`;
             this.dialogMessage(title, contentText);
+          } else {
+            this.setActionDialog(obj);
+
+            const componentName = obj.action.split('?')[0].replace(/\//g, '_');
+
+            Vue.component(
+              componentName,
+              Vue.extend(importCustom(obj.action.split('?')[0]))
+            );
+            this.dialogComponent = componentName;
           }
-        }, 300);
+        } else {
+          const message = obj.confirm.indexOf('{') >= 0
+            ? JSON.parse(obj.confirm).nodesc
+            : obj.confirm;
+          const title = this.ChineseDictionary.WARNING;
+          const contentText = `${message}`;
+          this.dialogMessage(title, contentText);
+        }
       },
       webActionSlient(item) {
         // this.actionLoading = true;
@@ -1319,6 +1356,7 @@
           }
         }
         if (this.buttons.activeTabAction) {
+          debugger;
           if (this.buttons.activeTabAction.vuedisplay === 'slient') {
             // slient静默跳转页面类型按钮
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
@@ -1363,6 +1401,7 @@
             return;
           }
           if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
+            debugger;
             // 弹窗动作定义提示后操作
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
