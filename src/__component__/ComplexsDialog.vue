@@ -73,9 +73,9 @@
             list: [],
             search: '',
             pageOptions: [10, 20, 50, 100],
-            pageSize:10,
-            total:0,
-            pageNum:1,
+            pageSize: 10,
+            total: 0,
+            pageNum: 1,
             height: 340,
             searchName: '全局检索',
             checked: false
@@ -84,9 +84,9 @@
             tab: '查看选中结果',
             columns: [],
             list: [],
-            pageSize:10,
-            total:0,
-            pageNum:1,
+            pageSize: 10,
+            total: 0,
+            pageNum: 1,
             height: 340,
             pageOptions: [10, 20, 50, 100],
             search: '',
@@ -159,8 +159,8 @@
       treeChecked() {
         // tree_lists 树形结构重新组合
         const self = this;
-        this.treedata.forEach((item,index) => {
-         this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
+        this.treedata.forEach((item, index) => {
+          this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
         // ((option) => {
         //   option.checked = false;
@@ -175,51 +175,49 @@
         //   });
         //   return option;
         // });
-
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
         if (!this.akname) {
           this.akname = data.akname || 'ECODE';
         }
-          if(name !== 'clear'){
-              if(type !=='search'){
-                this.IN = data.ids || [];
-              }
-                if (index === 1 && type !== 'search') {
-                let check = this.filter.text ? true :false;
-                this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
-                this.resultData.list.map((item) => {
-                  if (item.exclude) {
-                    item.exclude = false;
-                  } else {
-                    item.exclude = true;
-                  }
-                  item.string = item.screen_string;
-                  item.ID = item.id_list;
-                  return item;
-                });
-                this.resultData.total = data.data.total;
+        if (name !== 'clear') {
+          if (type !== 'search') {
+            this.IN = data.ids || [];
           }
-
+          if (index === 1 && type !== 'search') {
+            const check = !!this.filter.text;
+            this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
+            this.resultData.list.map((item) => {
+              if (item.exclude) {
+                item.exclude = false;
+              } else {
+                item.exclude = true;
+              }
+              item.string = item.screen_string;
+              item.ID = item.id_list;
+              return item;
+            });
+            this.resultData.total = data.data.total;
+          }
         }
-        //console.log(type,this.resultData.total);
-        if( type !== 'search'){
-           this.componentData[index] = Object.assign(this.componentData[index], data.data);
-        }else if(index === 1){
-           if(this.resultData.total>0){
-              this.componentData[index] = Object.assign(this.componentData[index], data.data);
-           }else{
-              this.componentData[index].list = [];
-           }
-        }else if(index === 0){
-           this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        // console.log(type,this.resultData.total);
+        if (type !== 'search') {
+          this.componentData[index] = Object.assign(this.componentData[index], data.data);
+        } else if (index === 1) {
+          if (this.resultData.total > 0) {
+            this.componentData[index] = Object.assign(this.componentData[index], data.data);
+          } else{
+            this.componentData[index].list = [];
+          }
+        } else if (index === 0) {
+          this.componentData[index] = Object.assign(this.componentData[index], data.data);
         }
 
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
-        //console.log(this.IN,'this.INthis.IN');
+        // console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns, index) {
         // 表格头部 数据重组
@@ -229,11 +227,11 @@
               key: 'ID',
               title: '编号',
               render: (h, params) => h('div',
-                  {
-                    domProps: {
-                      innerHTML:this.sendMessage.PAGESIZE*(this.sendMessage.PAGENUM-1)+params.index+1
-                    }
-              })
+                                       {
+                                         domProps: {
+                                           innerHTML: this.sendMessage.PAGESIZE * (this.sendMessage.PAGENUM - 1) + params.index + 1
+                                         }
+                                       })
             });
           } else {
             item.push({
@@ -288,7 +286,6 @@
         return items.join('');
       },
       changeTtree(obj) {
-        
         this.treeId(obj);
         this.treeSelectData = obj;
         if (this.HRORG_ID.length > 0) {
@@ -307,11 +304,12 @@
       },
       changePage(index) {
         // 点击页面
+        this.tableLoading = true;
         if (index === this.sendMessage.PAGENUM) {
           return false;
         }
         this.sendMessage.PAGENUM = index;
-         if( this.index  === 0){
+        if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
@@ -323,7 +321,7 @@
           return false;
         }
         this.sendMessage.PAGESIZE = index;
-        if( this.index  === 0){
+        if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
@@ -413,7 +411,7 @@
         this.sendMessage.GLOBAL = str[0].trim();
         this.sendMessage.CONDITION = {};
         this.clearIndexPage();
-        if( this.index  === 0){
+        if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
@@ -435,7 +433,7 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         this.loading = true;
-        //this.sendMessage = 
+        // this.sendMessage = 
         if (this.HRORG_ID.length > 0) {
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
@@ -531,14 +529,14 @@
 
         this.clearIndexPage();
       },
-      savemessage(){
-          let s_value = this.sendMessage;
-              s_value.IN = this.IN;
-              s_value.NOTIN = this.NOTIN;
-              return {
-                  value:s_value,
-                  text:JSON.stringify(this.text)
-              }
+      savemessage() {
+        const s_value = this.sendMessage;
+        s_value.IN = this.IN;
+        s_value.NOTIN = this.NOTIN;
+        return {
+          value: s_value,
+          text: JSON.stringify(this.text)
+        };
       },
       saveBtn(value) {
         if (value.length < 1) {
@@ -611,7 +609,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (obj.clear !== '1') {
-              this.dateRestructure(res.data.data, index, name,'clear');
+              this.dateRestructure(res.data.data, index, name, 'clear');
             }
             this.tableLoading = false;
           }
