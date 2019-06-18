@@ -86,6 +86,8 @@ const select = {
     // { value: '105', label: '新鲜水果', disabled: false },
   ],
   props: {
+    // 全选
+    chooseAll: true,
     // 是否支持多选
     multiple: true,
     // 多选情况下的样式控制,只在multiple为true有效
@@ -106,10 +108,7 @@ const select = {
     placement: "bottom",
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
     transfer: true,
-    optionsVisible: true,
-    //qua
-    
-    chooseAll:true,
+    optionsVisible: true
   }
 };
 // 复选框组件
