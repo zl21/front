@@ -338,7 +338,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
-        && typeof this._items.event.change === 'function'
+          && typeof this._items.event.change === 'function'
         ) {
           this._items.event.change(event, $this);
         }
@@ -346,7 +346,7 @@
       inputEnter(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'enter')
-        && typeof this._items.event.enter === 'function'
+          && typeof this._items.event.enter === 'function'
         ) {
           this._items.event.enter(event, $this);
         }
@@ -354,7 +354,7 @@
       inputClick(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'click')
-        && typeof this._items.event.click === 'function'
+          && typeof this._items.event.click === 'function'
         ) {
           this._items.event.click(event, $this);
         }
@@ -362,7 +362,7 @@
       inputFocus(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'focus')
-        && typeof this._items.event.focus === 'function'
+          && typeof this._items.event.focus === 'function'
         ) {
           this._items.event.focus(event, $this);
         }
@@ -370,7 +370,7 @@
       inputBlur(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'blur')
-        && typeof this._items.event.blur === 'function'
+          && typeof this._items.event.blur === 'function'
         ) {
           this._items.event.blur(event, $this, this._items);
         }
@@ -378,7 +378,7 @@
       inputKeyUp(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
-        && typeof this._items.event.keyup === 'function'
+          && typeof this._items.event.keyup === 'function'
         ) {
           this._items.event.keyup(event, $this);
         }
@@ -386,7 +386,7 @@
       inputKeyDown(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
-        && typeof this._items.event.keydown === 'function'
+          && typeof this._items.event.keydown === 'function'
         ) {
           this._items.event.keydown(event, $this);
         }
@@ -394,7 +394,7 @@
       inputKeyPress(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keypress')
-        && typeof this._items.event.keypress === 'function'
+          && typeof this._items.event.keypress === 'function'
         ) {
           this._items.event.keypress(event, $this);
         }
@@ -402,7 +402,7 @@
       inputRegxCheck(value, $this, errorValue) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'regxCheck')
-        && typeof this._items.event.regxCheck === 'function'
+          && typeof this._items.event.regxCheck === 'function'
         ) {
           this._items.event.regxCheck(value, $this, errorValue);
         }
@@ -413,7 +413,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
-        && typeof this._items.event.change === 'function'
+          && typeof this._items.event.change === 'function'
         ) {
           this._items.event.change(value, $this);
         }
@@ -425,7 +425,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
-        && typeof this._items.event.change === 'function'
+          && typeof this._items.event.change === 'function'
         ) {
           this._items.event.change(value, $this);
         }
@@ -435,7 +435,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        && typeof this._items.event.clear === 'function'
+          && typeof this._items.event.clear === 'function'
         ) {
           this._items.event.clear($this);
         }
@@ -443,7 +443,7 @@
       selectOpenChange(value, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'openChange')
-        && typeof this._items.event.openChange === 'function'
+          && typeof this._items.event.openChange === 'function'
         ) {
           this._items.event.openChange(value, $this);
         }
@@ -454,7 +454,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
-        && typeof this._items.event.change === 'function'
+          && typeof this._items.event.change === 'function'
         ) {
           this._items.event.change(value, $this);
         }
@@ -462,7 +462,7 @@
       datePickerClear($this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        && typeof this._items.event.clear === 'function'
+          && typeof this._items.event.clear === 'function'
         ) {
           this._items.event.clear($this);
         }
@@ -473,7 +473,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
-        && typeof this._items.event.change === 'function'
+          && typeof this._items.event.change === 'function'
         ) {
           this._items.event.change(value, $this);
         }
@@ -481,7 +481,7 @@
       timePickerClear($this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        && typeof this._items.event.clear === 'function'
+          && typeof this._items.event.clear === 'function'
         ) {
           this._items.event.clear($this);
         }
@@ -496,7 +496,7 @@
             this._items.event,
             'fkrpSelected'
           )
-        && typeof this._items.event.fkrpSelected === 'function'
+          && typeof this._items.event.fkrpSelected === 'function'
         ) {
           this._items.event.fkrpSelected(value, $this);
         }
@@ -509,7 +509,7 @@
             this._items.event,
             'inputValueChange'
           )
-        && typeof this._items.event.inputValueChange === 'function'
+          && typeof this._items.event.inputValueChange === 'function'
         ) {
           this._items.event.inputValueChange(value, $this);
         }
@@ -519,7 +519,7 @@
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-        && typeof this._items.event.clear === 'function'
+          && typeof this._items.event.clear === 'function'
         ) {
           this._items.event.clear($this);
         }
@@ -528,7 +528,7 @@
             this._items.event,
             'inputValueChange'
           )
-        && typeof this._items.event.inputValueChange === 'function'
+          && typeof this._items.event.inputValueChange === 'function'
         ) {
           this._items.event.inputValueChange('', $this);
         }
@@ -536,7 +536,7 @@
       pageChange(value, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'pageChange')
-        && typeof this._items.event.pageChange === 'function'
+          && typeof this._items.event.pageChange === 'function'
         ) {
           this._items.event.pageChange(value, $this);
         }
@@ -544,7 +544,7 @@
       fkrpSelectedInputFocus(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'focus')
-        && typeof this._items.event.focus === 'function'
+          && typeof this._items.event.focus === 'function'
         ) {
           this._items.event.focus(event, $this);
         }
@@ -552,7 +552,7 @@
       fkrpSelectedInputBlur(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'blur')
-        && typeof this._items.event.blur === 'function'
+          && typeof this._items.event.blur === 'function'
         ) {
           this._items.event.blur(event, $this, this._items);
         }
@@ -560,7 +560,7 @@
       fkrPopperHide(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'on-popper-hide')
-        && typeof this._items.event['on-popper-hide'] === 'function'
+          && typeof this._items.event['on-popper-hide'] === 'function'
         ) {
           this._items.event['on-popper-hide'](event, $this, this._items);
         }
@@ -568,7 +568,7 @@
       fkrpSelectedInputKeyup(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
-        && typeof this._items.event.keyup === 'function'
+          && typeof this._items.event.keyup === 'function'
         ) {
           this._items.event.keyup(event, $this);
         }
@@ -576,7 +576,7 @@
       fkrpSelectedInputKeydown(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
-        && typeof this._items.event.keydown === 'function'
+          && typeof this._items.event.keydown === 'function'
         ) {
           this._items.event.keydown(event, $this);
         }
@@ -584,7 +584,7 @@
       fkrpSelectedPopperShow($this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'on-show')
-        && typeof this._items.event['on-show'] === 'function'
+          && typeof this._items.event['on-show'] === 'function'
         ) {
           this._items.event['on-show']($this);
         }
@@ -599,7 +599,7 @@
             this._items.event,
             'popper-value'
           )
-        && typeof this._items.event['popper-value'] === 'function'
+          && typeof this._items.event['popper-value'] === 'function'
         ) {
           this._items.event['popper-value']($this, value, 'change', this.index);
         }
@@ -608,7 +608,7 @@
             this._items.event,
             'inputValueChange'
           )
-        && typeof this._items.event.inputValueChange === 'function'
+          && typeof this._items.event.inputValueChange === 'function'
         ) {
           this._items.event.inputValueChange(value, $this);
         }
@@ -621,7 +621,7 @@
             this._items.event,
             'popper-value'
           )
-        && typeof this._items.event['popper-value'] === 'function'
+          && typeof this._items.event['popper-value'] === 'function'
         ) {
           this._items.event['popper-value'](
             $this,
@@ -634,7 +634,7 @@
       attachFilterInputFocus(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'focus')
-        && typeof this._items.event.focus === 'function'
+          && typeof this._items.event.focus === 'function'
         ) {
           this._items.event.focus(event, $this);
         }
@@ -642,7 +642,7 @@
       attachFilterInputBlur(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'blur')
-        && typeof this._items.event.blur === 'function'
+          && typeof this._items.event.blur === 'function'
         ) {
           this._items.event.blur(event, $this, this._items);
         }
@@ -650,7 +650,7 @@
       attachFilterInputKeyup(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keyup')
-        && typeof this._items.event.keyup === 'function'
+          && typeof this._items.event.keyup === 'function'
         ) {
           this._items.event.keyup(event, $this);
         }
@@ -658,7 +658,7 @@
       attachFilterInputKeydown(event, $this) {
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
-        && typeof this._items.event.keydown === 'function'
+          && typeof this._items.event.keydown === 'function'
         ) {
           this._items.event.keydown(event, $this);
         }
@@ -676,8 +676,8 @@
           }
         } else if (
           targName === 'I'
-        && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete')
-        && typeof this._items.event['on-delete'] === 'function'
+          && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete')
+          && typeof this._items.event['on-delete'] === 'function'
         ) {
           this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
@@ -689,7 +689,7 @@
             this._items.event,
             'popper-value'
           )
-        && typeof this._items.event['popper-value'] === 'function'
+          && typeof this._items.event['popper-value'] === 'function'
         ) {
           this._items.event['popper-value']($this, '', [], this.index);
         }
@@ -700,8 +700,27 @@
             this._items.event,
             'popper-show'
           )
-        && typeof this._items.event['popper-show'] === 'function'
+          && typeof this._items.event['popper-show'] === 'function'
         ) {
+          if (this._items.props.fkobj.saveType && this._items.value && /选中/.test(this._items.value)) {
+            // this.filter = data;
+            const data = JSON.parse(this._items.value);
+            setTimeout(() => {
+              if (this.$refs.complex && typeof data === 'object') {
+                this.$refs.complex.sendMessage = Object.assign(this.$refs.complex.sendMessage, data.value);
+                this.$refs.complex.IN = data.idArray;
+                const list = data.lists.result.reduce((arr, item) => {
+                  item.exclude = !item.exclude;
+                  arr.push(item);
+                  return arr;
+                },[]);
+                this.$refs.complex.text.result = list;
+                this.$refs.complex.resultData.list = list;
+                this.$refs.complex.resultData.total = data.lists.total;
+                this.$refs.complex.multipleScreenResultCheck(this.$refs.complex.sendMessage, 1);
+              }
+            }, 20);
+          }
           this._items.event['popper-show']($this, this._items, this.index);
         }
       },
@@ -712,7 +731,7 @@
             this._items.event,
             'popper-file'
           )
-        && typeof this._items.event['popper-file'] === 'function'
+          && typeof this._items.event['popper-file'] === 'function'
         ) {
           this._items.event['popper-file'](
             $this,
@@ -743,7 +762,7 @@
             this._items.event,
             'popper-value'
           )
-        && typeof this._items.event['popper-value'] === 'function'
+          && typeof this._items.event['popper-value'] === 'function'
         ) {
           if ($this._data.params) {
             console.log($this._data.parms);
@@ -758,16 +777,28 @@
           }
           if ($this._data.IN.length > 0) {
             const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
+            const saveObjectmessage = $this.savObjemessage();
+            console.log(savemessage);
             this.resultData = savemessage;
             const value = `已经选中${$this._data.IN.length}条数据`;
             this._items.value = value;
-            this._items.Selected = $this._data.IN;
-            this._items.event['popper-value'](
-              $this,
-              value,
-              $this._data.IN,
-              this.index
-            );
+            if (this._items.props.fkobj.saveType) {
+              this._items.props.Selected = saveObjectmessage;
+              this._items.event['popper-value'](
+                $this,
+                value,
+                saveObjectmessage,
+                this.index
+              );
+            } else {
+              this._items.props.Selected = $this._data.IN;
+              this._items.event['popper-value'](
+                $this,
+                value,
+                $this._data.IN,
+                this.index
+              );
+            }
           } else {
             this._items.value = '';
             this._items.Selected = [];
@@ -868,7 +899,7 @@
             parms = this.pathsCheckout(parms, fixedData);
             if (
               this.$route.params
-            && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+              && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
@@ -880,104 +911,88 @@
         });
       },
       pathsCheckout(parms, data) {
-      //  校验 是否 有 path
-      let pathcheck = this.$parent.pathcheck;
-      let isreftabs = this.$parent.isreftabs;
-      // 子表表明
-      let childTableName = this.$parent.type=== '' ? this.$parent.childTableName : false;
-      console.log(isreftabs,childTableName,'子表，主表',this._items.props.itemdata.masterName);
-      if(isreftabs && pathcheck !==''){
-        // 主子表 有path  主表明+子表明 // parms.table 主表
-        if(childTableName){
-          console.log('主子表 子表 path')
+        //  校验 是否 有 path
+        const pathcheck = this.$parent.pathcheck;
+        const isreftabs = this.$parent.isreftabs;
+        // 子表表明
+        const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+        console.log(isreftabs, childTableName, '子表，主表', this._items.props.itemdata.masterName);
+        if (isreftabs && pathcheck !== '') {
+          // 主子表 有path  主表明+子表明 // parms.table 主表
+          if (childTableName) {
+            console.log('主子表 子表 path');
             const parmsdata = {
-              [parms.table]:{
+              [parms.table]: {
                 ID: parms.objId || parms.ID,
               },
-              [childTableName]:{
+              [childTableName]: {
                 [this._items.field]: JSON.stringify(data),
               },
             };
-                    return Object.assign({}, parmsdata);
-
-
-        } else{ 
-                    console.log('主子表 path')
+            return Object.assign({}, parmsdata);
+          }  
+          console.log('主子表 path');
 
           const parmsdata = {
-              [parms.table]:{
-                [this._items.field]: data == '' ? '' :JSON.stringify(data),
-                ID: parms.objId || parms.ID,
+            [parms.table]: {
+              [this._items.field]: data == '' ? '' : JSON.stringify(data),
+              ID: parms.objId || parms.ID,
+            },
+          };
+          return Object.assign({}, parmsdata);
+        } if (isreftabs && pathcheck === '') {
+          // 主子表 无path
+          console.log('主子表 无path');
+          if (childTableName) {
+            const fixedData = {
+              fixedData: {
+                [childTableName]:
+                  [{
+                    [this._items.props.itemdata.colname]:
+                      data === '' ? '' : JSON.stringify(data) 
+                  }]
               },
+              objId: this._items.props.itemdata.objId,
+              table: this._items.props.itemdata.masterName
+            };
+            return Object.assign({}, fixedData);
           }
-                  return Object.assign({}, parmsdata);
+          const fixedData = {
+            fixedData: {
+              [this._items.props.itemdata.masterName]: {
+                [this._items.props.itemdata.colname]:
+                  data === '' ? '' : JSON.stringify(data)
+              }
+            },
+            objId: this._items.props.itemdata.objId,
+            table: this._items.props.itemdata.masterName
+          };
+          return Object.assign({}, fixedData);
+        } if (!isreftabs && pathcheck === '') {
+          // 单主表  无path
+          console.log('单主表 有sspath');
 
-             
+          const fixedData = {
+            fixedData: {
+              [this._items.props.itemdata.masterName]: {
+                [this._items.props.itemdata.colname]:
+                  data === '' ? '' : JSON.stringify(data)
+              }
+            },
+            objId: this._items.props.itemdata.objId,
+            table: this._items.props.itemdata.masterName
+          };
+          return Object.assign({}, fixedData);
+        } if (!isreftabs && pathcheck !== '') {
+          // 单主表  有path
+          console.log('单主表 无path');
+
+          const parmsdata = {
+            [this._items.field]: JSON.stringify(data),
+          };
+          return Object.assign({ ID: parms.objId }, parmsdata);
         }
-        
-
-
-      }if(isreftabs && pathcheck ===''){
-                // 主子表 无path
-      console.log('主子表 无path');
-      if(childTableName){
-        const fixedData = {
-          fixedData: {
-            [childTableName]:
-              [{[this._items.props.itemdata.colname]:
-                data === "" ? "" : JSON.stringify(data)}]
-          },
-          objId: this._items.props.itemdata.objId,
-          table: this._items.props.itemdata.masterName
-        };
-                return Object.assign({}, fixedData);     
-
-      }else{
-        const fixedData = {
-          fixedData: {
-            [this._items.props.itemdata.masterName]: {
-              [this._items.props.itemdata.colname]:
-                data === "" ? "" : JSON.stringify(data)
-            }
-          },
-          objId: this._items.props.itemdata.objId,
-          table: this._items.props.itemdata.masterName
-        };
-                return Object.assign({}, fixedData);     
-
-      }
-       
-
-
-      }else if(!isreftabs && pathcheck ===''){
-       // 单主表  无path
-             console.log('单主表 有sspath');
-
-       const fixedData = {
-          fixedData: {
-            [this._items.props.itemdata.masterName]: {
-              [this._items.props.itemdata.colname]:
-                data === "" ? "" : JSON.stringify(data)
-            }
-          },
-          objId: this._items.props.itemdata.objId,
-          table: this._items.props.itemdata.masterName
-        };
-        return Object.assign({}, fixedData);   
-
-
-      }else if(!isreftabs && pathcheck !==''){
-        // 单主表  有path
-                     console.log('单主表 无path');
-
-        const parmsdata = {
-        [this._items.field]: JSON.stringify(data),
-        };
-        return Object.assign({ID:parms.objId }, parmsdata);
-
-      }
-      
-    },
+      },
       upSaveImg(obj, fixedData, path, index) {
         fkObjectSave({
           searchObject: {
