@@ -94,10 +94,14 @@
         handler(val) {
           if (Object.hasOwnProperty.call(val, 'addcolums')) {
             let childs = val.addcolums.reduce((arr, item) => {
-              item.childs.forEach((item) => {
-                item.isnotnull = false;
-              });
-              arr.push(item.childs);
+              const itemChilds = item.childs || item.child;
+              if (Array.isArray(itemChilds)) {
+                itemChilds.forEach((item) => {
+                  item.isnotnull = false;
+                });
+                arr.push(itemChilds);
+              }    
+             
               return arr;
             }, []);
             childs = childs.flat();

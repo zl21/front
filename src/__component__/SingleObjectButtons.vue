@@ -200,6 +200,9 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
         keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
+        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
+
+        
       }),
       watermarkImg() { // 匹配水印图片路径
         if (this.watermarkimg.includes('/static/img/')) {
@@ -310,7 +313,7 @@
         const message = '刷新成功';
         this.upData(`${message}`);
       },
-      upData(message) { // 页面刷新判断逻辑
+      upData(message) { // 页面刷新判断逻辑 
         const { tablename, refcolid, tabrelation } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
@@ -324,8 +327,8 @@
           
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-              range: this.pageInfo.pageSize,
+              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+              range: this.tablePageInfo.pageSize,
             };
             this.getObjectTableItemForTableData({
               table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -400,8 +403,8 @@
         const tabIndex = this.tabCurrentIndex;
         const searchdata = {
           column_include_uicontroller: true,
-          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-          range: this.pageInfo.pageSize,
+          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+          range: this.tablePageInfo.pageSize,
         };
         this.getObjectTableItemForTableData({
           table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -476,17 +479,24 @@
         }
       },
       objTabActionNavbar(tab) {
+        // 判断跳转到哪个页面
         const url = tab.action;
         const index = url.lastIndexOf('\/');
         const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
         const type = 'tableDetailAction';
-        const { tableId } = this.$route.params;
+        const name = Object.keys(this.keepAliveLabelMaps);
+        let customizedModuleId = '';
+        name.forEach((item) => {
+          if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+            customizedModuleId = item.split(/\./)[2];
+          }
+        });
         if (tab.action) {
           this.tabOpen({
             type,
             customizedModuleName,
-            customizedModuleId: tableId,
+            customizedModuleId,
             label
           });
         }
@@ -570,8 +580,6 @@
           this.$Modal.fcSuccess(data);
         });
         
-  
-        // self.actionLoading = true;
         // axios({
         //   method: 'post',
         //   contentType: 'application/json',
@@ -974,8 +982,8 @@
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-                          range: this.pageInfo.pageSize,
+                          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                          range: this.tablePageInfo.pageSize,
                         };
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -1030,8 +1038,8 @@
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-                          range: this.pageInfo.pageSize,
+                          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                          range: this.tablePageInfo.pageSize,
                         };
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -1416,41 +1424,43 @@
    
         promise.then(() => {
           this.clearEditData();// 清空store update数据
-
-          if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
-            let types = '';
-            if (this.objectType === 'horizontal') {
-              types = 'tableDetailHorizontal';
-            } else {
-              types = 'tableDetailVertical';
-            }
-            const label = `${this.activeTab.label.replace('新增', '编辑')}`;
-            const tab = {
-              type: types,
-              tableName,
-              tableId: this.tableId,
-              label,
-              id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
-            };
-            
-            // this.updateChangeData({ tableName: this.tableName, value: {} });
-
-            this.tabHref(tab);
-            const message = this.buttonsData.message;
-            const data = {
-              title: '成功',
-              content: `${message}`
-            };
-            if (message) {
-              this.$Message.success(data);
-            }
-            this.decreasekeepAliveLists(moduleName());
+        }, () => {}).then(
+          this.saveAfter(type, tableName)
+        );
+      },
+      saveAfter(type, tableName) {
+        if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
+          let types = '';
+          if (this.objectType === 'horizontal') {
+            types = 'tableDetailHorizontal';
           } else {
-            this.clearEditData();// 清空store update数据
-            this.saveEventAfterClick();// 保存成功后执行的事件
+            types = 'tableDetailVertical';
           }
+          const label = `${this.activeTab.label.replace('新增', '编辑')}`;
+          const tab = {
+            type: types,
+            tableName,
+            tableId: this.tableId,
+            label,
+            id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+          };
+            
+          // this.updateChangeData({ tableName: this.tableName, value: {} });
+
+          this.tabHref(tab);
+          const message = this.buttonsData.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          if (message) {
+            this.$Message.success(data);
+          }
+          this.decreasekeepAliveLists(moduleName());
+        } else {
           this.clearEditData();// 清空store update数据
-        }, () => {});
+          this.saveEventAfterClick();// 保存成功后执行的事件
+        }
       },
       clearEditData() {
         if (this.objectType === 'vertical') {

@@ -15,6 +15,7 @@ export default () => ({
       updateData: ({ ...updateData }) => updateData.updateData,
       tablePageInfo: ({ ...tablePageInfo }) => tablePageInfo.tablePageInfo,
       copy: ({ copy }) => copy,
+      pageInfo: ({ pageInfo }) => pageInfo,
       objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
