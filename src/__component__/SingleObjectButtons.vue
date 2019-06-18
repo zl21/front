@@ -263,6 +263,10 @@
         type: String,
         default: ''
       },
+      itemTableCheckFunc: {
+        type: Function,
+        default: () => {}
+      },
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'tabOpen', 'decreasekeepAliveLists']),
@@ -549,24 +553,30 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const self = this;
-        let params = {};
-        const parimaryTableParams = {};
-        const childTableParams = {};
-        if (this.isreftabs) {
-          if (this.itemNameGroup.length > 0) {
+        const params = {};
+        if (this.objectType === 'vertical') { // 上下结构
+          const childTableParams = [];
+         
+          if (this.isreftabs) { // 有子表
+            if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+              childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+              params[this.itemName] = {
+                ...childTableParams[this.itemName]
+              };
+            }
+            params[this.tableName] = {
+              ID: this.tableId
+            };
+          } else { // 没有子表
             params.ID = this.tableId;
-          } else {
-            parimaryTableParams[this.tableName] = { ID: this.tableId };
-            childTableParams[self.tableTab.selectItem.tablename] = this.updateData[this.itemName].delete[this.itemName].map(d => ({ ID: d }));
-            params = Object.assign({}, parimaryTableParams, childTableParams);
           }
-        } else if (Object.values(this.updateData[this.tableName].delete[this.tableName]).length === 0) {
-          parimaryTableParams.ID = this.tableId; 
-          params = Object.assign({}, parimaryTableParams);
+        } else { // 左右结构
+          params[this.tableName] = {
+            ID: this.tableId
+          };
         }
+       
         const promise = new Promise((resolve, reject) => {
-          this.$loading.show();
           this.getObjTabActionSlientConfirm({
             params, path: tab.action, resolve, reject 
           });
@@ -1278,7 +1288,8 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             } else {
-              if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { //
+              if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { // 子表表格编辑修改
+                // this.itemTableCheckFunc();// 校验子表表格必填项
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               }
               // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
@@ -1296,7 +1307,8 @@
             }
           } else {
             if (this.updateData[itemName].modify[itemName]) { 
-              if (this.updateData[itemName].modify[itemName].length > 0) { //
+              if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
+                // this.itemTableCheckFunc();// 校验子表表格必填项
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               }
             }
@@ -1420,6 +1432,7 @@
           sataType,
           itemNameGroup
         };
+
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });

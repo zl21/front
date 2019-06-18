@@ -3,8 +3,8 @@ import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
   getObjectTabForMainTable({ commit }, {
- table, objid, type, tabIndex 
-}) {
+    table, objid, type, tabIndex 
+  }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -33,8 +33,8 @@ export default {
     });
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, {
- maintable, table, objid, tabIndex 
-}) {
+    maintable, table, objid, tabIndex 
+  }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -82,8 +82,8 @@ export default {
     });
   }, // 获取子表表单信息
   getItemObjForChildTableForm({ commit }, {
- table, objid, refcolid, tabIndex 
-}) {
+    table, objid, refcolid, tabIndex 
+  }) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({
@@ -388,7 +388,7 @@ export default {
   getObjTabActionSlientConfirm({ commit }, {
     params, path, resolve, reject
   }) { // 获取作废数据
-    network.post(path || '/p/cs/exeAction', { params }).then((res) => {
+    network.post(path, params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
