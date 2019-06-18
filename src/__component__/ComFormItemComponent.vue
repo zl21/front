@@ -329,8 +329,9 @@
           // 判断必须输入的值是否为空
           const elDiv =          this.$refs[`component_${current.index}`][0]
           && this.$refs[`component_${current.index}`][0].$el;
+          
           if (!elDiv) {
-            return false;
+            return [];
           }
           let onfousInput = {};
           if (current.type === 'textarea') {
