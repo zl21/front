@@ -91,6 +91,8 @@
         showModal: false,
       };
     },
+    mounted() {
+    },
     methods: {
       open() {
         this.showModal = true;

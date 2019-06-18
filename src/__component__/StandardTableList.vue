@@ -31,7 +31,7 @@
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
     />
-    <Modal
+    <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
       :mask="true"
@@ -43,7 +43,8 @@
       >
         <component :is="dialogComponent" />
       </keep-alive>
-    </Modal>
+    </Modal> -->
+    <!-- 导入弹框 -->
     <ImportDialog
       v-if="buttons.importData.importDialog"
       :name="buttons.importData.importDialog"
@@ -57,7 +58,7 @@
       @closeDialog="closeDialog"
     />
     <ErrorModal
-      ref="dialogRef"
+      ref="dialogRefs"
       :mask="buttons.dialogConfig.mask"
       :title="buttons.dialogConfig.title"
       :content-text="buttons.dialogConfig.contentText"
@@ -67,11 +68,11 @@
     />
     <dialogComponent
       ref="dialogRef"
-      :title="dialogConfig.title"
-      :mask="dialogConfig.mask"
-      :content-text="dialogConfig.contentText"
-      :footer-hide="dialogConfig.footerHide"
-      :confirm="dialogConfig.confirm"
+      :title="dialogComponentNameConfig.title"
+      :mask="dialogComponentNameConfig.mask"
+      :content-text="dialogComponentNameConfig.contentText"
+      :footer-hide="dialogComponentNameConfig.footerHide"
+      :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
     />
     <!-- 批量 -->
@@ -135,7 +136,7 @@
         modifyDialogshow: false, // 批量修改弹窗
         formDefaultComplete: false,
         dialogComponentName: null,
-        dialogConfig: {
+        dialogComponentNameConfig: {
           title: '提示',
           mask: true,
           footerHide: false,
@@ -694,7 +695,7 @@
           if (obj.confirm) { // 有提示信息
             if (obj.confirm.indexOf('{') >= 0) {
               if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-                if (this.selectIdArr && this.selectIdArr.length === 0) { // 判断没有选中任何信息的情况
+                if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) { // 判断没有选中任何信息的情况
                   const data = {
                     content: JSON.parse(obj.confirm).nodesc
                   };
@@ -731,10 +732,10 @@
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
         const title = `${tab.webdesc}`;
-        this.dialogConfig = {
+        this.dialogComponentNameConfig = {
           title,
         };
-        this.dialogConfig.footerHide = true;
+        this.dialogComponentNameConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
         if (tab.action.indexOf('?') >= 0) {
@@ -748,7 +749,7 @@
         }
       },
       webactionClick(type, obj) {
-        // debugger;
+        debugger;
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
         if (obj.vuedisplay === 'native') {
@@ -769,7 +770,7 @@
                   this.dialogMessage(title, contentText);
                 } else if (
                   JSON.parse(obj.confirm).isradio
-                  && this.selectIdArr.length !== 1
+                  && this.buttons.selectIdArr.length !== 1
                 ) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
@@ -798,8 +799,8 @@
           } else {
             // 动作定义根据列表是否选值
             const confirm = JSON.parse(obj.confirm);
-            if (this.selectIdArr.length > 0) {
-              if (confirm.isradio && this.selectIdArr.length !== 1) {
+            if (this.buttons.selectIdArr.length > 0) {
+              if (confirm.isradio && this.buttons.selectIdArr.length !== 1) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${confirm.radiodesc}`;
                 this.dialogMessage(title, contentText);
@@ -830,38 +831,47 @@
           // 是否是必选列表项, 动作定义根据列表是否选值
           const confirm = JSON.parse(obj.confirm);
           if (this.buttons.selectIdArr.length > 0) {
-            if (confirm.isradio && this.selectIdArr.length !== 1) {
+            if (confirm.isradio && this.buttons.selectIdArr.length !== 1) {
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${confirm.desc.replace(
                 '{isselect}',
-                this.selectIdArr.length
+                this.buttons.selectIdArr.length
+              )}`;
+              this.dialogMessage(title, contentText);
+            } else if (confirm.desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${confirm.desc.replace(
+                '{isselect}',
+                this.buttons.selectIdArr.length
               )}`;
               this.dialogMessage(title, contentText);
             } else {
-              this.setActionDialog(obj);
-              const componentName = obj.action
-                .split('?')[0]
-                .replace(/\//g, '_');
-              Vue.component(
-                componentName,
-                Vue.extend(importCustom(obj.action.split('?')[0]))
-              );
-              this.dialogComponent = componentName;
+              // this.setActionDialog(obj);
+              // const componentName = obj.action
+              //   .split('?')[0]
+              //   .replace(/\//g, '_');
+              // Vue.component(
+              //   componentName,
+              //   Vue.extend(importCustom(obj.action.split('?')[0]))
+              // );
+              // this.dialogComponent = componentName;
+              this.objTabActionDialog(obj);
             }
           } else if (confirm.nodesc) {
             const title = this.ChineseDictionary.WARNING;
             const contentText = `${confirm.nodesc}`;
             this.dialogMessage(title, contentText);
           } else {
-            this.setActionDialog(obj);
+            // this.setActionDialog(obj);
 
-            const componentName = obj.action.split('?')[0].replace(/\//g, '_');
+            // const componentName = obj.action.split('?')[0].replace(/\//g, '_');
 
-            Vue.component(
-              componentName,
-              Vue.extend(importCustom(obj.action.split('?')[0]))
-            );
-            this.dialogComponent = componentName;
+            // Vue.component(
+            //   componentName,
+            //   Vue.extend(importCustom(obj.action.split('?')[0]))
+            // );
+            // this.dialogComponent = componentName;
+            this.objTabActionDialog(obj);
           }
         } else {
           const message = obj.confirm.indexOf('{') >= 0
@@ -1029,11 +1039,11 @@
         this.getQueryListForAg(this.searchData);
       },
       dialogMessage(title, contentText) {
-        this.$refs.dialogRef.open();
         this.setErrorModalValue({
           title,
           contentText,
         });
+        this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
@@ -1317,6 +1327,7 @@
         }
       },
       errorconfirmDialog() {
+        debugger;
         // this.$nextTick(() => {
         if (this.buttons.selectIdArr.length > 0) {
           if (
@@ -1356,7 +1367,6 @@
           }
         }
         if (this.buttons.activeTabAction) {
-          debugger;
           if (this.buttons.activeTabAction.vuedisplay === 'slient') {
             // slient静默跳转页面类型按钮
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
@@ -1401,99 +1411,87 @@
             return;
           }
           if (this.buttons.activeTabAction.vuedisplay === 'dialog') {
-            debugger;
             // 弹窗动作定义提示后操作
             if (this.buttons.activeTabAction.confirm.indexOf('{') >= 0) {
               if (JSON.parse(this.buttons.activeTabAction.confirm).isselect) {
-                if (
-                  JSON.parse(this.buttons.activeTabAction.confirm).isradio
-                ) {
+                if (JSON.parse(this.buttons.activeTabAction.confirm).isradio) {
                   // 单选
                   if (this.buttons.selectIdArr.length === 1) {
-                    const obj = this.buttons.activeTabAction;
-                    this.setActionDialog(obj);
+                    // const obj = this.buttons.activeTabAction;
+                    //   this.setActionDialog(obj);
 
-                    const componentName = obj.action
-                      .split('?')[0]
-                      .replace(/\//g, '_');
-                    Vue.component(
-                      componentName,
-                      Vue.extend(importCustom(obj.action.split('?')[0]))
-                    );
-                    this.dialogComponent = componentName;
-                  }
+                    //   const componentName = obj.action
+                    //     .split('?')[0]
+                    //     .replace(/\//g, '_');
+                    //   Vue.component(
+                    //     componentName,
+                    //     Vue.extend(importCustom(obj.action.split('?')[0]))
+                    //   );
+                    //   this.dialogComponent = componentName;
+                    // }
+                    this.objTabActionDialog(this.buttons.activeTabAction);
+                  } 
                 } else if (this.buttons.selectIdArr.length > 0) {
-                  const obj = this.buttons.activeTabAction;
-                  this.setActionDialog(obj);
+                  // const obj = this.buttons.activeTabAction;
+                  // this.setActionDialog(obj);
 
-                  const componentName = obj.action
-                    .split('?')[0]
-                    .replace(/\//g, '_');
-                  Vue.component(
-                    componentName,
-                    Vue.extend(importCustom(obj.action.split('?')[0]))
-                  );
-                  this.dialogComponent = componentName;
-                } else {
-                  const obj = this.buttons.activeTabAction;
-                  this.actionModal = true;
-                  const componentName = obj.action
-                    .split('?')[0]
-                    .replace(/\//g, '_');
-                  Vue.component(
-                    componentName,
-                    Vue.extend(importCustom(obj.action))
-                  );
-
-                  this.dialogComponent = componentName;
-                  this.webActionSlient(this.buttons.activeTabAction);
-                }
+                  // const componentName = obj.action
+                  //   .split('?')[0]
+                  //   .replace(/\//g, '_');
+                  // Vue.component(
+                  //   componentName,
+                  //   Vue.extend(importCustom(obj.action.split('?')[0]))
+                  // );
+                  // this.dialogComponent = componentName;
+                  this.objTabActionDialog(this.buttons.activeTabAction);
+                } 
               } else {
-                const obj = this.buttons.activeTabAction;
-                this.setActionDialog(obj);
+                // const obj = this.buttons.activeTabAction;
+                // this.setActionDialog(obj);
 
-                const componentName = obj.action
-                  .split('?')[0]
-                  .replace(/\//g, '_');
-                Vue.component(
-                  componentName,
-                  Vue.extend(importCustom(obj.action.split('?')[0]))
-                );
-                this.dialogComponent = componentName;
+                // const componentName = obj.action
+                //   .split('?')[0]
+                //   .replace(/\//g, '_');
+                // Vue.component(
+                //   componentName,
+                //   Vue.extend(importCustom(obj.action.split('?')[0]))
+                // );
+                // this.dialogComponent = componentName;
+                this.objTabActionDialog(this.buttons.activeTabAction);
               }
             } else {
-              const obj = this.buttons.activeTabAction;
-              this.setActionDialog(obj);
+              // const obj = this.buttons.activeTabAction;
+              // this.setActionDialog(obj);
 
-              const componentName = obj.action
-                .split('?')[0]
-                .replace(/\//g, '_');
-              Vue.component(
-                componentName,
-                Vue.extend(importCustom(obj.action.split('?')[0]))
-              );
-              this.dialogComponent = componentName;
+              // const componentName = obj.action
+              //   .split('?')[0]
+              //   .replace(/\//g, '_');
+              // Vue.component(
+              //   componentName,
+              //   Vue.extend(importCustom(obj.action.split('?')[0]))
+              // );
+              // this.dialogComponent = componentName;
+              this.objTabActionDialog(this.buttons.activeTabAction);
             }
           }
+          if (this.buttons.dialogConfig.contentText.indexOf('批量更新') >= 0) {
+            this.dataConShow.dataConShow = true;
+            this.dataConShow.title = this.$store.state.activeTab.label;
+            this.dataConShow.tabConfig = {
+              tabledesc: this.$store.state.activeTab.label,
+              tablename: this.param.tablename,
+              tableid: this.formObj_tableid,
+              tabrelation: '1:1',
+              objid: this.buttons.selectIdArr
+            };
+          } else if (
+            this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
+          ) {
+            this.batchExport();
+          } else if (this.buttons.selectSysment.length > 0) {
+            this.searchData('backfresh');
+          }
         }
-        if (this.buttons.dialogConfig.contentText.indexOf('批量更新') >= 0) {
-          this.dataConShow.dataConShow = true;
-          this.dataConShow.title = this.$store.state.activeTab.label;
-          this.dataConShow.tabConfig = {
-            tabledesc: this.$store.state.activeTab.label,
-            tablename: this.param.tablename,
-            tableid: this.formObj_tableid,
-            tabrelation: '1:1',
-            objid: this.selectIdArr
-          };
-        } else if (
-          this.buttons.dialogConfig.contentText.indexOf('操作会执行全量导出') >= 0
-        ) {
-          this.batchExport();
-        } else if (this.buttons.selectSysment.length > 0) {
-          this.searchData('backfresh');
-        }
-        // });
       },
       errorDialogClose() {
         const errorDialogvalue = false;

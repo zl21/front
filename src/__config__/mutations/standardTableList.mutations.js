@@ -106,6 +106,7 @@ export default {
   setErrorModalValue({ buttons }, {
     title, contentText, footerHide 
   }) { // 设置error弹窗提示信息
+    debugger;
     buttons.dialogConfig = {
       title,
       footerHide,
