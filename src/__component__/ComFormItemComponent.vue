@@ -138,7 +138,6 @@
               );
             }
           }
-
           return option;
         }, {});
 
@@ -239,7 +238,7 @@
         changeFormData: {}, // 当前form 被改动的key
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
-        formValueItem: {},
+        formValueItem: {}, //当前字段
         changeNumber: 0, // 更改次数
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
@@ -277,14 +276,15 @@
       },
       formDataObject: {
         handler(val, old) {
-          if (this.indexItem < 0) {
-            return;
-          }
+          // if (this.indexItem === -1) {
+          //   return;
+          // }
+          //console.log(val,'this.indexItem',this.indexItem);
+          val = Object.assign(val,this.formValueItem);
           this.changeNumber = this.changeNumber + 1;
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
-
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if (
                 val[item.validate.dynamicforcompute.computecolumn]
@@ -295,10 +295,12 @@
               // this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-              console.log(item);
+
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              console.log(val[_refcolumn],old[_refcolumn],old,val)
-              if (val[_refcolumn] !== old[_refcolumn]) {
+              const _refval = item.validate.hidecolumn.refval;
+              let checkVal =  _refval === val[_refcolumn] ? 1 : 0;
+              let checkShow =  items.show ? 1 : 0;
+              if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
@@ -481,7 +483,7 @@
         if (Object.keys(obj)[0]) {
           valueItem[Object.keys(obj)[0]] = current.item.value;
         }
-
+        this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
       },
@@ -542,9 +544,8 @@
               const value = Array.isArray(option.item.value)
                 ? option.item.value.toString()
                 : option.item.value;
-                        console.log(refval,value);
-
-              if (JSON.stringify(value) === JSON.stringify(refval)) {
+              console.log(refcolumn ,JSON.stringify(refval) === JSON.stringify(value));
+              if (JSON.stringify(refval) === JSON.stringify(value)) {
                 this.newFormItemLists[index].show = true;
               } else {
                 this.newFormItemLists[index].show = false;

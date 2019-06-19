@@ -279,7 +279,7 @@
       },
       _items() {
         // 将设置的props和默认props进行assign
-        const item = JSON.parse(JSON.stringify(this.items));
+        const item = this.items;
         // const item = this.items;
         item.props = Object.assign(
           {},
@@ -324,7 +324,6 @@
       },
       filterList() {
         // 气泡选中过滤条件
-        console.log(this.filterDate);
         return this.filterDate;
       }
     },
@@ -746,7 +745,6 @@
         if ($this) {
           // console.log(/选中/.test(this._items.value));
           // console.log(this.$refs.complex,this.$refs.complex.data);
-          console.log(this.resultData, 'resultData');
           if (/选中/.test(this._items.value)) {
             this.filterDate = this.resultData;
             // this.$refs.complex = Object.assign(this.$refs.complex.$data,this.resultData);
