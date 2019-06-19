@@ -1013,7 +1013,7 @@
           // 单主表  有path
 
           const parmsdata = {
-            [this._items.field]: JSON.stringify(data),
+            [this._items.field]: data === '' ? '' : JSON.stringify(data),
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }

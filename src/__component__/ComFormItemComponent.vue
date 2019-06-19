@@ -296,16 +296,16 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval.toString();
+              const _refval = item.validate.hidecolumn.refval.toString().trim();
               if(val[_refcolumn] === undefined){
                 return false;
               }
-              console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
+              //console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              let checkVal =  (_refval === val[_refcolumn].toString()) ? 1 : 0;
+              let checkVal =  (_refval === val[_refcolumn].toString().trim()) ? 1 : 0;
               let checkShow =  items.show ? 1 : 0;
-               console.log(_refval , val[_refcolumn]);
-               console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
+              // console.log(_refval , val[_refcolumn]);
+              // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
 
               if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
