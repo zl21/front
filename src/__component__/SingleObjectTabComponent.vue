@@ -9,6 +9,7 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
+      :itemTableCheckFunc="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
       :isreftabs="isreftabs"
@@ -205,6 +206,9 @@
           Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
         }
       },
+      itemTableCheckFunc() {
+
+      }, // 传给按钮组件的回调方法，用来调表格组件的校验
       formEnter() {
         this.isclick = false;
         let savePath = '';

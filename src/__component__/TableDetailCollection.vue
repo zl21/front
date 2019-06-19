@@ -1399,6 +1399,20 @@
         });
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
+      tableFormVerify() {
+        // const verifyTip = [];
+        // const data = this.afterSendData[this.tableName];
+        // data.map((ele) => {
+        //   Reflect.ownKeys(ele).forEach((key) => {
+        //     const value = ele[key];
+        //     if (value === null || value === undefined || value === '') {
+        //       const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
+        //     }
+        //   });
+        //   return ele;
+        // });
+        // return false;
+      }, // 表格里的表单验证 true为校验通过，false为校验不通过
       tableSortChange(value) {
         const tableName = this.tableName;
         let flag = this.currentOrderList.some((ele) => {
