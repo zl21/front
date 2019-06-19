@@ -705,6 +705,7 @@
               },
               props: {
                 transfer: true,
+                clearable: true,
                 value: this.getSelectValue(params, cellData)
               },
               nativeOn: {
@@ -1550,10 +1551,6 @@
         const combobox = [];
 
         if (cellData.combobox) {
-          combobox.push({
-            limitval: '',
-            limitdesc: '请选择'
-          });
           combobox.push(...cellData.combobox);
           return combobox.map(item => h('Option', {
             props: {
@@ -1562,10 +1559,6 @@
             }
           }));
         }
-        combobox.push({
-          value: '',
-          label: '请选择'
-        });
         return combobox;
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
