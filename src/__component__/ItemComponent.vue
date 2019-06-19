@@ -712,7 +712,7 @@
                   item.exclude = !item.exclude;
                   arr.push(item);
                   return arr;
-                },[]);
+                }, []);
                 this.$refs.complex.text.result = list;
                 this.$refs.complex.resultData.list = list;
                 this.$refs.complex.resultData.total = data.lists.total;
@@ -763,7 +763,6 @@
           && typeof this._items.event['popper-value'] === 'function'
         ) {
           if ($this._data.params) {
-            console.log($this._data.parms);
             const value = $this._data.parms.NAME.val;
             this._items.event['popper-value'](
               $this,
@@ -841,18 +840,39 @@
               data,
               HEADIMG
             );
-            console.log(parms, this.$parent.pathcheck);
-            if (this.$parent.pathcheck === '') {
-              if (this.$parent.childTableName === '') {
+            console.log(parms, this.$parent.pathcheck, this.$parent.childTableName);
+            if (this.$route.params
+              && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+              //  不是新增  和不是主子表中的子表
+              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+
+              if (childTableName !== false && this.$parent.isreftabs) {
+                this._items.props.itemdata.valuedata.splice(index - 1, 1);
+                if (this._items.props.itemdata.valuedata.length > 0) {
+                  this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+                } else {
+                  this._items.value = '';
+                }
+                this.valueChange();
+              } else if (this.$parent.pathcheck === '') {
                 parms.path = '/p/cs/objectSave';
+                this.deleteImgData(
+                  parms,
+                  index
+                );
+              } else {
+                const path = this.$parent.pathcheck !== '';
+                that.upSaveImg(parms, '', path, index);
               }
-              this.deleteImgData(
-                parms,
-                index
-              );
             } else {
-              const path = this.$parent.pathcheck !== '';
-              that.upSaveImg(parms, '', path, index);
+              // new
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              if (this._items.props.itemdata.valuedata.length > 0) {
+                this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+              } else {
+                this._items.value = '';
+              }
+              this.valueChange();
             }
           }
         });
@@ -897,13 +917,24 @@
             parms = this.pathsCheckout(parms, fixedData);
             if (
               this.$route.params
-              && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+              && this.$route.params.itemId.toLocaleLowerCase() !== 'new' 
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
-              self.upSaveImg(parms, fixedData, path);
+              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+
+              if (this.$parent.isreftabs && childTableName !== false) {
+                //  主子表 子表 
+                this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
+                this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+                this.valueChange();
+              } else {
+                self.upSaveImg(parms, fixedData, path);
+              }
             } else {
               this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
+              this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+              this.valueChange();
             }
           }
         });
@@ -914,11 +945,9 @@
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
         const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
-        console.log(isreftabs, childTableName, '子表，主表', this._items.props.itemdata.masterName);
         if (isreftabs && pathcheck !== '') {
           // 主子表 有path  主表明+子表明 // parms.table 主表
           if (childTableName) {
-            console.log('主子表 子表 path');
             const parmsdata = {
               [parms.table]: {
                 ID: parms.objId || parms.ID,
@@ -940,7 +969,6 @@
           return Object.assign({}, parmsdata);
         } if (isreftabs && pathcheck === '') {
           // 主子表 无path
-          console.log('主子表 无path');
           if (childTableName) {
             const fixedData = {
               fixedData: {
@@ -983,7 +1011,6 @@
           return Object.assign({}, fixedData);
         } if (!isreftabs && pathcheck !== '') {
           // 单主表  有path
-          console.log('单主表 无path');
 
           const parmsdata = {
             [this._items.field]: JSON.stringify(data),

@@ -141,6 +141,7 @@ export const editorUpload = function editorUpload({ params, success }) {
 export const deleteImg = function deleteImg({ params, success }) {
   // 删除图片保存
   const { path } = params;
+  delete params.path;
   network.post(path || "/p/cs/users/save", params).then(res => {
     if (typeof success === "function") {
       success(res);
