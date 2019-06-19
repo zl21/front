@@ -1187,7 +1187,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns,this.ag.datas
+                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns,'all'
                   );
                 }, 200);
               },
