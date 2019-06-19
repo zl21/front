@@ -16,7 +16,7 @@
         class="pickedAll"
         @click="pickAll"
       >
-        {{ pickedAll ? '全选' : '清空' }}
+        {{ pickedAll ? '清空' : '全选' }}
       </span>
       <li
         v-for="(item, index) in enumerableLists"
@@ -86,9 +86,9 @@
           this.$emit('valueChange', this.value);
         }, 0);
         if (this.hasPickedAll()) {
-          this.pickedAll = false;
-        } else {
           this.pickedAll = true;
+        } else {
+          this.pickedAll = false;
         }
       },
       clickEventListener(event) {
@@ -102,7 +102,7 @@
       },
       pickAll() {
         this.enumerableLists.forEach((d, i) => {
-          this.itemPicked[i] = this.pickedAll;
+          this.itemPicked[i] = !this.pickedAll;
         });
         this.computeValue();
         setTimeout(() => {
