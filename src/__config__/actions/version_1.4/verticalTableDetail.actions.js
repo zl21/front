@@ -167,7 +167,6 @@ export default {
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
     const { isreftabs } = parame;
-    const { enter } = parame;
     const { itemNameGroup } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数

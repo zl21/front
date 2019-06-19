@@ -383,6 +383,7 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
+        obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -555,13 +556,13 @@
         };
         // 属性赋值
         // 是否显示 隐藏字段
-        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          if (this.computdefaultData.length > 0) {
-            this.computdefaultData[current.formIndex].childs[index].show = true;
-          } else {
-            obj.show = this.hidecolumn(array, current);
-          }
-        }
+        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+        //   if (this.computdefaultData.length > 0) {
+        //     this.computdefaultData[current.formIndex].childs[index].show = true;
+        //   } else {
+        //     obj.show = this.hidecolumn(array, current);
+        //   }
+        // }
 
         // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
         //   console.log(obj, this);
@@ -839,6 +840,7 @@
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
         item.props.comment = item.props.comment;
+        
 
         if (this.objreadonly) {
           // 页面只读标记
@@ -856,14 +858,15 @@
           );
           if (check) {
             // eslint-disable-next-line no-tabs
-            item.props.falseValue = current.valuedata || current.defval;
+            item.props.falseValue = current.valuedata || current.defval || falseName[0];
             const index = falseName.findIndex(x => x === item.props.falseValue);
-            item.props.trueValue = checkName[index];
+            console.log(index);
+            item.props.trueValue = checkName[index] || checkName[0];
           } else {
             // eslint-disable-next-line no-tabs
-            item.props.trueValue = current.valuedata || current.defval;
+            item.props.trueValue = current.valuedata || current.defval || checkName[0];
             const index = checkName.findIndex(x => x === item.props.trueValue);
-            item.props.falseValue = falseName[index];
+            item.props.falseValue = falseName[index] || falseName[0];
           }
         }
 
@@ -1090,6 +1093,17 @@
         }
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
+        }
+        if (item.props.readonly === true && item.props.fkdisplay) {
+          //  不可编辑 变成 input
+          if (
+            item.props.fkdisplay === 'drp'
+            || item.props.fkdisplay === 'mop'
+            || item.props.fkdisplay === 'pop'
+            || item.props.fkdisplay === 'mrp'
+          ) {
+            item.props.type = 'text';
+          }
         }
         item.props.disabled = this.objreadonly
           ? this.objreadonly

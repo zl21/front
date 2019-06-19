@@ -202,6 +202,9 @@ export default {
       routePrefix: tab.routePrefix,
       tableName: tab.tableName,
     };
+  },
+  copyDataForSingleObject(state, { copyData }) {
+    state.copyDatas = copyData;
   }
   
 };

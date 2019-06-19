@@ -93,6 +93,7 @@
   export default {
     data() {
       return {
+        ready: false,
         loading: true,
         importData: {
           importDialog: '',
@@ -202,6 +203,7 @@
         activeTab: ({ activeTab }) => activeTab,
         keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
+        copyDatas: ({ copyDatas }) => copyDatas,
 
         
       }),
@@ -269,7 +271,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists']),
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
@@ -565,14 +567,14 @@
               };
             }
             params[this.tableName] = {
-              ID: this.tableId
+              ID: this.itemId
             };
           } else { // 没有子表
             params.ID = this.tableId;
           }
         } else { // 左右结构
           params[this.tableName] = {
-            ID: this.tableId
+            ID: this.itemId
           };
         }
        
@@ -759,46 +761,28 @@
        
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            // this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
-            // const defaultCopyValue = this.updateData[this.tableName].default;
-            // const changeDataCopyValue = this.updateData[this.tableName].changeData;
-            // this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
             let formData = {};
             this.tabPanel.forEach((item) => {
               if (item.tablename === this.tableName) {
                 formData = item.componentAttribute.panelData;
               }
             });
-            this.defaultForCopyData = { ...formData };
-            // this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
-            // this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', type: 'copy' });
+            const copyData = { ...formData };
+            this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
-            this.tabHref({
+            this.tabHref({// 跳转路由，复制是新增逻辑
               type,
               tableName: this.tableName,
               tableId: this.tableId,
               label,
               id
             });
-            // this.changeFormDataForCopy({ defaultForCopyData: this.defaultForCopyData, tableName: this.tableName });
-            setTimeout(() => {
-              // this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
-              this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
-              const copyData = { ...formData };
-              this.$store.commit(`${moduleName()}/savaCopyData`, copyData);
-              this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
-            }, 2000);
+            window.addEventListener('network', this.networkEventListener);// 监听接口
           }
         } else { // 纵向布局
-          // this.getObjectForMainTableForm({ table: this.tableName, objid: '-1', });
-          // this.getObjectTabForMainTable({ table: this.tableName, objid: '-1', type: 'copy' });
-          // this.savaCopyData(this.tableName);// 整合默认数据和修改过后的数据
-          // const defaultCopyValue = this.updateData[this.tableName].default;
-          // const changeDataCopyValue = this.updateData[this.tableName].changeData;
-          // this.defaultForCopyDatas = Object.assign(defaultCopyValue, changeDataCopyValue);// 整合默认数据和修改过后的数据
           const copyData = { ...this.mainFormInfo.formData };
-
+          this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const type = 'tableDetailVertical';
           this.tabHref({
             type,
@@ -807,14 +791,17 @@
             label,
             id
           });
-          setTimeout(() => {
-            // this.$store.commit(`${moduleName()}/changeFormDataForCopy`, { defaultForCopyDatas: this.defaultForCopyDatas, tableName: this.tableName });// 保存修改过的值
-            this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
-            this.$store.commit(`${moduleName()}/savaCopyData`, copyData);
-            this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
-          }, 2000);
+          window.addEventListener('network', this.networkEventListener);// 监听接口
         }
         this.changeCopy(true);
+      },
+      copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName });
+      },
+      copyForVertical() {
+        // this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName });
+        this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -1557,21 +1544,29 @@
         }
       },
       networkEventListener(event) {
-        if (this._inactive) { return; }
         const { detail } = event;
         const { response } = detail;
-        const urlArr = ['/p/cs/batchUnSubmit', '/p/cs/batchSubmit', '/p/cs/batchDelete', '/p/cs/batchVoid'];
-        let merge = false;
-        if (urlArr.indexOf(detail.url || '') > -1) {
-          if (response && response.data && response.data.code === -1) {
-            merge = true;
+        // let urlArr = [];
+        let url = '';
+        url = '/p/cs/getObject';
+        // if (this.objectType === 'vertical') {
+        //   urlArr = ['/p/cs/objectTab', '/p/cs/getObject', '/p/cs/inputForitem'];
+        // } else {
+        //   urlArr = ['/p/cs/objectTab', '/p/cs/getObject'];
+        // }
+        if (url === detail.url) {
+          if (response && response.data && response.data.code === 0) {
+            this.ready = true;
+            if (this.objectType === 'vertical') {
+              this.copyForVertical();
+            } else {
+              this.copyForHorizontal();
+            }
           }
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
         }
       }
     },
     mounted() {
-      window.addEventListener('network', this.networkEventListener);
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },
