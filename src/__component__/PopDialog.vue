@@ -172,12 +172,6 @@
               this.formList.inpubobj = Data.dataarry;
               this.formList.show = true;
               this.formList.objviewcol = Data.searchFoldnum;
-
-              // setTimeout(() => {
-              //   // if (this.$refs.CompositeForm) {
-              //   //   this.$refs.CompositeForm.mountChecked = true;
-              //   // }
-              // }, 100);
               this.getList();
             }
           }
@@ -194,9 +188,19 @@
           startindex: this.selectOperation.startindex,
           range: this.selectOperation.pageSize
         };
-        if (Object.keys(this.formChangeData).length > 0) {
-          searchObject.fixedcolumns = { ...this.formChangeData };
-        }
+        const fixedcolumns = Object.keys(this.formChangeData).reduce((arr, item) => {
+          console.log(this.formChangeData[item][0]);
+          if (Array.isArray(this.formChangeData[item])) {
+            if (this.formChangeData[item][0] !== undefined) {
+              arr[item] = this.formChangeData[item];
+            }
+          } else if (this.formChangeData[item] !== '') {
+            arr[item] = this.formChangeData[item];
+          }
+          return arr;
+        }, {});
+        console.log(fixedcolumns, 'fixedcolumns');
+        searchObject.fixedcolumns = { ...fixedcolumns };
         fkQueryListPop({
           searchObject,
           success: (res) => {
@@ -247,7 +251,6 @@
       },
       saveData() {},
       pageChange(index) {
-        console.log(this.selectOperation.pageSize);
         this.selectOperation.startindex = (index - 1) * this.selectOperation.pageSize;
 
         this.getList();
@@ -283,14 +286,30 @@
             this.formList.inpubobj[index].display === 'OBJ_SELECT'
             || this.formList.inpubobj[index].display === 'select'
           ) {
-            data[item] = [`=${data[item]}`.toString()];
+            console.log(data[item]);
+            if (/=/.test(data[item][0]) !== true) {
+              // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
+               if(data[item][0]){
+                   data[item] = [`=${data[item]}`.toString()];
+               } else {
+                  delete data[item];
+               }
+            }
           }
         }
         return data;
       },
       formChange(data) {
         // form 修改的数据
-        this.formChangeData = data;
+        if (Object.keys(data).length > 0) {
+          Object.keys(data).forEach((item) => {
+            if (data[item] !== undefined) {
+              const dataSelect = this.checkForm(data, item);
+              console.log(dataSelect);
+              this.formChangeData = data;
+            }
+          });
+        }
       },
       confirm() {
         // b保存提交
