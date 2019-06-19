@@ -1167,12 +1167,12 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
-                              console.log(this.searchData);
+            console.log(this.searchData);
 
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this.$route.params, this.buttons.selectIdArr.length, this.searchData.fixedcolumns,this.buttons.selectIdArr
+                this.$route.params, this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
               );
             }, 200);
           } else {

@@ -140,54 +140,41 @@ export default {
   // changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
   //   state.updateData[tableName].add = defaultForCopyDatas;
   // },
-  savaCopyData(state, copyData) { // 执行按钮复制操作存储form默认值数据
-    state.defaultDataForCopy = copyData;
-    // state.defaultDataForCopy.data.addcolums.map((item, index) => {
-    //   if (item.parentdesc === '日志') {
-    //     return state.defaultDataForCopy.data.addcolums.splice(index, 1);
-    //   }
-    //   return state.defaultDataForCopy;
-    // });
+  savaCopyData(state, { copyDatas, tableName }) { // 执行按钮复制操作存储form默认值数据
+    console.log('🍌', copyDatas);
+    // state.defaultDataForCopy = copyData;
+    // console.log('🍌', state.defaultDataForCopy);
+    const copySaveDataForParam = {};
+    // if (Object.keys(copyData).length > 0) {
+    state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
+      copyDatas.data.addcolums.forEach((item) => {
+        d.childs.forEach((c) => {
+          item.childs.forEach((b) => {
+            if (b.name === c.name) {
+              b.readonly = c.readonly;
+              if (c.readonly === true) {
+                b.valuedata = '';// 将配置为不可编辑的值置空
+              } else if (b.valuedata) {
+                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                  copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                } else {
+                  copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                }
+              }
+            }
+          });
+        });
+      });
+    });
+    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+    const a = Object.assign({}, copyDatas, state.copyDataForReadOnly);
+    state.tabPanels[0].componentAttribute.panelData = a;
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};
   },
   updateCopyDataForRealdOnly(state, data) {
     state.copyDataForReadOnly = data;
-  },
-  updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
-    const copySaveDataForParam = {};
-    if (Object.keys(state.defaultDataForCopy).length > 0) {
-      state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
-        state.defaultDataForCopy.data.addcolums.forEach((item) => {
-          d.childs.forEach((c) => {
-            item.childs.forEach((b) => {
-              if (b.name === c.name) {
-                b.readonly = c.readonly;
-                if (c.readonly === true) {
-                  b.valuedata = '';// 将配置为不可编辑的值置空
-                } else if (b.valuedata) {
-                  if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
-                    copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                  } else {
-                    copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
-                  }
-                }
-              }
-            });
-          });
-        });
-      });
-      // state.updateData[tableName].add[tableName] = Object.assign({}, copySaveDataForParam);
-      // state.updateData[tableName].changeData = copySaveDataForParam;
-      // state.tabPanels[0].componentAttribute.panelData = Object.assign({}, state.defaultDataForCopy, state.copyDataForReadOnly);
-
-
-      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
-      state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
-      Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
-      state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
-    }
   },
   updateButtonsExport(state, data) { // 导出
     state.buttonsData.exportdata = data;
