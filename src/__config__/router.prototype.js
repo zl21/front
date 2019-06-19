@@ -1,6 +1,7 @@
 import Login from '../__component__/Login';
 import Content from '../__component__/Content';
 import WelcomePage from '../__component__/WelcomePage';
+import ComponentProtoType from '../__component__/ComponentPrototype';
 import {
   CUSTOMIZED_MODULE_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
@@ -53,6 +54,10 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/ComponentPrototype',
+    component: ComponentProtoType
   }
 ];
 
