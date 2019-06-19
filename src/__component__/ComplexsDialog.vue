@@ -530,6 +530,7 @@
         this.clearIndexPage();
       },
       savemessage() {
+        this.sendMessage.TABLENAME = this.sendMessage.reftable;
         const s_value = this.sendMessage;
         s_value.IN = this.IN;
         s_value.NOTIN = this.NOTIN;
@@ -539,7 +540,7 @@
         };
       },
       savObjemessage() {
-        let sendMessage = {
+        const sendMessage = {
           idArray: this.IN,
           lists: {
             result: this.resultData.list,
