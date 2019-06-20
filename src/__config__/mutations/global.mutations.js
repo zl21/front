@@ -205,6 +205,9 @@ export default {
   },
   copyDataForSingleObject(state, { copyData }) {
     state.copyDatas = copyData;
+  },
+  copyModifyDataForSingleObject(state, modifyData) {
+    state.modifyData = modifyData;
   }
   
 };

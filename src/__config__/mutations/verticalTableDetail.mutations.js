@@ -122,7 +122,7 @@ export default {
     state.copy = data;
   },
  
-  savaCopyData(state, { copyDatas, tableName }) { // 执行按钮复制操作存储form默认值数据
+  savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
@@ -144,7 +144,7 @@ export default {
         });
       });
     });
-    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
     state.mainFormInfo.formData.data = data;
   },
@@ -157,43 +157,43 @@ export default {
   updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
     state.copyDataForReadOnly = data;
   },
-  updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
-    const copySaveDataForParam = {};
+  // updateCopyData(state, tableName) { // form的配置信息按照新增接口返回值
+  //   const copySaveDataForParam = {};
 
-    if (Object.keys(state.defaultDataForCopy).length > 0) {
-      state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
-        state.defaultDataForCopy.data.addcolums.forEach((item) => {
-          d.childs.forEach((c) => {
-            item.childs.forEach((b) => {
-              if (b.name === c.name) {
-                b.readonly = c.readonly;
-                if (c.readonly === true) {
-                  b.valuedata = '';// 将配置为不可编辑的值置空
-                } else if (b.valuedata) {
-                  if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
-                    copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                  } else {
-                    copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
-                  }
-                }
-              }
-            });
-          });
-        });
-      });
+  //   if (Object.keys(state.defaultDataForCopy).length > 0) {
+  //     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
+  //       state.defaultDataForCopy.data.addcolums.forEach((item) => {
+  //         d.childs.forEach((c) => {
+  //           item.childs.forEach((b) => {
+  //             if (b.name === c.name) {
+  //               b.readonly = c.readonly;
+  //               if (c.readonly === true) {
+  //                 b.valuedata = '';// 将配置为不可编辑的值置空
+  //               } else if (b.valuedata) {
+  //                 if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+  //                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+  //                 } else {
+  //                   copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+  //                 }
+  //               }
+  //             }
+  //           });
+  //         });
+  //       });
+  //     });
 
-      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
-      // state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
-      // Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
-      // state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
+  //     // state.updateData[tableName].add[tableName] = copySaveDataForParam;
+  //     // state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+  //     // Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+  //     // state.tabPanels[0].componentAttribute.panelData = state.defaultDataForCopy;
 
 
-      // state.updateData[tableName].add[tableName] = copySaveDataForParam;
-      state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
-      Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
-      state.mainFormInfo.formData.data = state.defaultDataForCopy;
-    }
-  },
+  //     // state.updateData[tableName].add[tableName] = copySaveDataForParam;
+  //     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
+  //     Object.assign(state.defaultDataForCopy.data, state.copyDataForReadOnly);
+  //     state.mainFormInfo.formData.data = state.defaultDataForCopy;
+  //   }
+  // },
   emptyChangeData(state, tableName) {
     if (state.updateData[tableName].changeData) {
       state.updateData[tableName].add = {};
