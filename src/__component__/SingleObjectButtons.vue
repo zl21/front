@@ -146,6 +146,7 @@
         saveButtonPath: '', // 类型为保存的按钮path
         saveEventAfter: '', // 保存事件执行完成后的操作
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
+        savaCopy: false
       };
     },
     name: 'SingleObjectButtons',
@@ -755,6 +756,7 @@
         });
       },
       objectCopy() { // 按钮复制功能
+        this.savaCopy = true;
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
        
@@ -804,9 +806,11 @@
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
+        this.savaCopy = false;
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
+        this.savaCopy = false;
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -1560,11 +1564,12 @@
         // }
         if (url === detail.url) {
           if (response && response.data && response.data.code === 0) {
-            this.ready = true;
-            if (this.objectType === 'vertical') {
-              this.copyForVertical();
-            } else {
-              this.copyForHorizontal();
+            if (this.savaCopy === true) {
+              if (this.objectType === 'vertical') {
+                this.copyForVertical();
+              } else {
+                this.copyForHorizontal();
+              }
             }
           }
         }
