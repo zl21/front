@@ -173,7 +173,7 @@
         mountChecked: false, // 区分是默认值还是change 值
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
-        Condition: this.Condition,
+        Condition: '',
         childFormData: [],
         computdefaultData: [], // form
         pathArry: [], // path 数组
@@ -321,7 +321,9 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
+        //console.log(this.mountChecked && this.Condition);
         if (!this.mountChecked && this.Condition !== 'list') {
+          // 区分是否是默认值的change 拦截 
           return false;
         }
         if (Array.isArray(data)) {
@@ -522,15 +524,15 @@
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
               if (item.props.fkdisplay && this.Condition !== 'list') {
-                if (item.props.Selected) {
-                  Fitem[index].item.value = '';
+                console.log(item.props);
+                if (item.props.type === 'AttachFilter') {
+                  if (item.props.Selected === '') {
+                    Fitem[index].item.value = '';
+                  }
                 } else if (Array.isArray(item.value)) {
                   if (item.value[0].ID === '' || item.value[0].ID === undefined) {
                     Fitem[index].item.props.defaultSelected = [];
                   }
-                } else if (typeof item.value === 'string') {
-                  Fitem[index].item.props.defaultSelected = [];
-                  Fitem[index].item.value = '';
                 }
               }
             },
@@ -804,11 +806,11 @@
           }
           return arr;
         }
-        if(item.fkdisplay === 'mop'){
-            if(item.valuedata && /total/.test(item.valuedata)){
-                let valuedata = JSON.parse(item.valuedata);
-                return '已经选中'+valuedata.total+'条';
-            }
+        if (item.fkdisplay === 'mop') {
+          if (item.valuedata && /total/.test(item.valuedata)) {
+            const valuedata = JSON.parse(item.valuedata);
+            return `已经选中${valuedata.total}条`;
+          }
         }
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
@@ -867,7 +869,6 @@
             // eslint-disable-next-line no-tabs
             item.props.falseValue = current.valuedata || current.defval || falseName[0];
             const index = falseName.findIndex(x => x === item.props.falseValue);
-            console.log(index);
             item.props.trueValue = checkName[index] || checkName[0];
           } else {
             // eslint-disable-next-line no-tabs
@@ -1055,7 +1056,7 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
-              saveType : 'object',
+              saveType: 'object',
               url:
                 `${current.serviceId ? current.serviceId : '' 
                 }/p/cs/menuimport`
@@ -1245,6 +1246,7 @@
       if (this.$el) {
         this.setdefaultColumnCol();
       }
+      this.Condition = this.condition;
       window.addEventListener('resize', (e) => {
         if (this.$el) {
           this.setdefaultColumnCol();
