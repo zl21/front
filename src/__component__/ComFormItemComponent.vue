@@ -364,7 +364,7 @@
             this.verifymessageform(VerificationForm);
           }
           this.mountdataForm(this.formDataObject);
-        }, 100);
+        }, 200);
       },
       setMapping(data) {
         //  获取映射关系

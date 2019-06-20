@@ -185,7 +185,7 @@
     },
     watch: {
       defaultData: {
-        handler(val) {
+        handler() {
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -195,6 +195,7 @@
       objreadonly: {
         handler() {
           this.computdefaultData = this.reorganizeForm();
+          this.Condition = this.condition;
           this.Comparison();
         },
         deep: true
@@ -320,7 +321,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-        if (!this.mountChecked && this.Condition === '') {
+        if (!this.mountChecked && this.Condition !== 'list') {
           return false;
         }
         if (Array.isArray(data)) {
@@ -374,7 +375,7 @@
         // 获取表单默认值
         setTimeout(() => {
           this.mountChecked = true;
-        }, 300);
+        }, 200);
         this.defaultFormData = Object.assign(this.defaultFormData, value);
         this.$emit('InitializationForm', this.defaultFormData);
       },
