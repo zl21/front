@@ -207,6 +207,7 @@
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
         this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
       },
       onPageChange(page) {
         const { range } = this.searchData;
@@ -878,6 +879,7 @@
               this.getActionDataForButtons({ param, resolve });
             });
             promise.then(() => {
+              exeActionDataForComponent = this.buttons.ExeActionDataForComponent;
               webactionClick(type, obj);
             });
           } else {
@@ -969,6 +971,7 @@
         this.searchData.startIndex = 0;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
       },
       dialogMessage(title, contentText) {
         this.setErrorModalValue({
@@ -1469,6 +1472,7 @@
             merge = true;
           }
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
         }
       }
     },

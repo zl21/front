@@ -82,6 +82,7 @@ export default {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
   onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
+    debugger;
     buttons.selectIdArr = rowIdArray;
     buttons.selectArr = rowArray;
   },
@@ -128,7 +129,6 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   batchVoidForButtonsData({ buttons, ag }, data) { // 作废
-    console.log(data);
     buttons.batchVoidForButtonsData = data;
     ag.datas.deleteFailInfo = data;
     ag.datas = Object.assign({}, ag.datas);
