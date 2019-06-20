@@ -52,7 +52,6 @@
       :show-close="true"
       :title="buttons.importData.importDialogTitle"
       :tablename="buttons.tableName"
-      :main-table="buttons.tableName"
       :main-id="buttons.tableId"
       @confirmImport="searchClickData"
       @closeDialog="closeDialog"
@@ -1198,23 +1197,16 @@
         let searchData = {};
         const { tableName } = this.$route.params;
         // 导出
+        searchData = {
+          table: tableName,
+          column_include_uicontroller: true,
+          fixedcolumns: { ID: this.buttons.selectIdArr },
+          range: 10,
+          startindex: 0
+        };
         if (this.buttons.selectIdArr.length === 0) {
-          searchData = {
-            table: tableName,
-            column_include_uicontroller: true,
-            fixedcolumns: this.dataProcessing(),
-            range: 10,
-            startindex: 0
-          };
-        } else {
-          searchData = {
-            table: tableName,
-            column_include_uicontroller: true,
-            fixedcolumns: { ID: this.buttons.selectIdArr },
-            range: 10,
-            startindex: 0
-          };
-        }
+          searchData.fixedcolumns = this.dataProcessing();
+        } 
         const OBJ = {
           searchdata: searchData,
           filename: this.activeTab.label,
