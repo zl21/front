@@ -189,11 +189,14 @@
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
             this.resultData.list.map((item) => {
+              console.log(name);
               if (item.exclude) {
                 item.exclude = false;
               } else {
                 item.exclude = true;
               }
+                
+              
               item.string = item.screen_string;
               item.ID = item.id_list;
               return item;
@@ -541,11 +544,11 @@
       },
       savObjemessage() {
         const sendMessage = {
-          idArray: this.IN,
+          idArray: [],
           lists: {
             result: this.resultData.list,
-            total: this.resultData.total
           },
+          total: this.resultData.total,
           value: {
             CONDITION: this.sendMessage.CONDITION,
             EXCLUDE: this.sendMessage.EXCLUDE,
@@ -557,6 +560,29 @@
 
         };
         return JSON.stringify(sendMessage);
+      },
+      setvalueData(obj){
+        let data = obj;
+        if (data) {
+                this.sendMessage = Object.assign(this.sendMessage, data.value);
+                this.text.result = data.lists.result.map((item) => {
+                  if (item.exclude) {
+                    item.exclude = false;
+                  } else {
+                    item.exclude = true;
+                  }
+                  return item;
+                });
+                this.EXCLUDE = data.value.EXCLUDE;
+                this.IN = data.value.IN;
+                this.NOTIN = data.value.NOTIN;
+                this.resultData.total = data.total;
+                console.log(this.sendMessage);
+
+                this.multipleScreenResultCheck(this.sendMessage,1,'result');
+              
+              }
+
       },
       saveBtn(value) {
         if (value.length < 1) {
@@ -655,6 +681,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.tableLoading = false;
+            console.log(type,'type');
             this.dateRestructure(res.data.data, index, type);
           }
         });

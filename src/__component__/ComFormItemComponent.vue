@@ -295,11 +295,18 @@
               // this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval;
-              let checkVal =  _refval === val[_refcolumn] ? 1 : 0;
+              const _refval = item.validate.hidecolumn.refval.toString().trim();
+              if(val[_refcolumn] === undefined){
+                return false;
+              }
+              //console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
+
+              let checkVal =  (_refval === val[_refcolumn].toString().trim()) ? 1 : 0;
               let checkShow =  items.show ? 1 : 0;
+              // console.log(_refval , val[_refcolumn]);
+              // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
+
               if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
               }
@@ -544,7 +551,6 @@
               const value = Array.isArray(option.item.value)
                 ? option.item.value.toString()
                 : option.item.value;
-              console.log(refcolumn ,JSON.stringify(refval) === JSON.stringify(value));
               if (JSON.stringify(refval) === JSON.stringify(value)) {
                 this.newFormItemLists[index].show = true;
               } else {

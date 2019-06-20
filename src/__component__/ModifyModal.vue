@@ -58,9 +58,10 @@
         formList: {},
         newformList: {},
         formChangeData: {},
-        fixedcolumns:{},
-        objids:[],
+        fixedcolumns: {},
+        objids: [],
         loading: false,
+        type: false, // 判断是勾选 还是批量
         router: {},
         ids: []
       };
@@ -141,17 +142,19 @@
       saveData() {
         this.loading = true;
         const localdata = {
-          objids:this.objids,
-          fixedcolumns:this.fixedcolumns, // 参数 条件 
           table: this.router.tableName, // 表名
           column_include_uicontroller: true, //
           reffixedcolumns: this.reffixedcolumns, // 左边树
         };
-        if (this.ids.length > 0) {
+        if (!this.type) {
           localdata.objids = this.ids;
         } else {
-          localdata.reffixedcolumns = this.reffixedcolumns;// 左边树
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
         }
+        // if (this.ids.length > 0) {
+        // } else {
+        //   localdata.reffixedcolumns = this.reffixedcolumns;// 左边树
+        // }
         const searchObject = {
           fixedData: this.formChangeData,
           searchdata: localdata
@@ -164,13 +167,18 @@
           }
         });
       },
-      open(router, ids, fixedcolumns,id) {
+      open(router, ids, fixedcolumns, id) {
         //  打开弹窗
         console.log(id, fixedcolumns);
         this.ids = ids;
         this.router = router;
-        this.objids = id;
-        this.fixedcolumns = fixedcolumns || {};
+        if (id === 'all') {
+          this.fixedcolumns = fixedcolumns || {};
+          this.type = true;
+        } else {
+          this.objids = id;
+          this.type = false;
+        }
         this.$refs.Modal.open();
         this.loading = true;
         const searchObject = {

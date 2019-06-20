@@ -694,6 +694,7 @@
         }
       },
       attachFilterPopperShow($this) {
+        console.log('dddd',this._items);
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -701,24 +702,15 @@
           )
           && typeof this._items.event['popper-show'] === 'function'
         ) {
-          if (this._items.props.fkobj.saveType && this._items.value && /选中/.test(this._items.value)) {
+          if (this._items.props.fkobj.saveType && this._items.props.valuedata && /total/.test(this._items.props.valuedata)) {
             // this.filter = data;
-            const data = JSON.parse(this._items.value);
+            const data = JSON.parse(this._items.props.valuedata);
+              console.log(data);
             setTimeout(() => {
               if (this.$refs.complex && typeof data === 'object') {
-                this.$refs.complex.sendMessage = Object.assign(this.$refs.complex.sendMessage, data.value);
-                this.$refs.complex.IN = data.idArray;
-                const list = data.lists.result.reduce((arr, item) => {
-                  item.exclude = !item.exclude;
-                  arr.push(item);
-                  return arr;
-                }, []);
-                this.$refs.complex.text.result = list;
-                this.$refs.complex.resultData.list = list;
-                this.$refs.complex.resultData.total = data.lists.total;
-                this.$refs.complex.multipleScreenResultCheck(this.$refs.complex.sendMessage, 1);
+                this.$refs.complex.setvalueData(data, 1);
               }
-            }, 20);
+            }, 500);
           }
           this._items.event['popper-show']($this, this._items, this.index);
         }
@@ -1013,7 +1005,7 @@
           // 单主表  有path
 
           const parmsdata = {
-            [this._items.field]: JSON.stringify(data),
+            [this._items.field]: data === '' ? '' : JSON.stringify(data),
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
