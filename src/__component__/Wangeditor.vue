@@ -124,8 +124,9 @@
           const textArea = document.createElement('textArea');
           textArea.setAttribute('id', 'textarea');
           textArea.setAttribute('style', 'display:none;width:100%;height:100%;resize:none;');
-          
-          editorSelector.querySelector('.w-e-text-container').appendChild(textArea);
+          if(editorSelector.querySelector('.w-e-text-container')){
+            editorSelector.querySelector('.w-e-text-container').appendChild(textArea);
+          }
           const wangEditoMenu = document.createElement('div');
           wangEditoMenu.style.display = 'inline-flex';
           
