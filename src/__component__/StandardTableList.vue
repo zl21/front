@@ -832,10 +832,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             if (confirm.isradio && this.buttons.selectIdArr.length !== 1) {
               const title = this.ChineseDictionary.WARNING;
-              const contentText = `${confirm.desc.replace(
-                '{isselect}',
-                this.buttons.selectIdArr.length
-              )}`;
+              const contentText = `${confirm.radiodesc}`;
               this.dialogMessage(title, contentText);
             } else if (confirm.desc) {
               const title = this.ChineseDictionary.WARNING;
@@ -1167,8 +1164,6 @@
         if (obj.name === this.buttonMap.CMD_GROUPMODIFY.name) {
           // 批量修改
           if (this.buttons.selectIdArr.length > 0) {
-            console.log(this.searchData);
-
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
@@ -1187,7 +1182,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns,'all'
+                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
                   );
                 }, 200);
               },
@@ -1200,15 +1195,26 @@
         }
       },
       batchExport() {
+        let searchData = {};
         const { tableName } = this.$route.params;
         // 导出
-        const searchData = {
-          table: tableName,
-          column_include_uicontroller: true,
-          fixedcolumns: { ID: this.buttons.selectIdArr },
-          range: 10,
-          startindex: 0
-        };
+        if (this.buttons.selectIdArr.length === 0) {
+          searchData = {
+            table: tableName,
+            column_include_uicontroller: true,
+            fixedcolumns: this.dataProcessing(),
+            range: 10,
+            startindex: 0
+          };
+        } else {
+          searchData = {
+            table: tableName,
+            column_include_uicontroller: true,
+            fixedcolumns: { ID: this.buttons.selectIdArr },
+            range: 10,
+            startindex: 0
+          };
+        }
         const OBJ = {
           searchdata: searchData,
           filename: this.activeTab.label,
