@@ -1,11 +1,6 @@
 <template>
-  <div>
+  <div style="height: 100%; overflow: scroll">
     <h1> Component Prototype </h1>
-    <div clss="container">
-      <div style="width: 80%; height: 400px; margin: 0 auto;">
-        <ExtentionProperty></ExtentionProperty>
-      </div>
-    </div>
     <div class="container">
       <div class="wrapper">
         <h3>字段读写规则应用：EnumerableInput</h3>
@@ -25,6 +20,21 @@
         />
       </div>
     </div>
+    <!--  拓展属性   -->
+    <div clss="container">
+      <div style="width: 90%; height: 400px; margin: 0 auto;">
+        <h3>Extention For Table</h3>
+        <ExtentionProperty :options="extentionForTable"></ExtentionProperty>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div clss="container">
+      <div style="width: 90%; height: 400px; margin: 0 auto;">
+        <h3>Extention For Column</h3>
+        <ExtentionProperty :options="extentionForColumn"></ExtentionProperty>
+      </div>
+    </div>
+    <div class="divider"></div>
   </div>
 </template>
 
@@ -40,7 +50,9 @@
     name: 'ComponentPrototype',
     data: () => ({
       enumerableForColumn,
-      enumerableForTable
+      enumerableForTable,
+      extentionForColumn,
+      extentionForTable
     }),
     components: {
       EnumerableInput,
@@ -58,6 +70,10 @@
 </script>
 
 <style scoped lang="less">
+  .divider {
+    height: 30px;
+    width: 100%;
+  }
   h1, h2, h3, h4, h5, h6 {
     margin-bottom: 5px;
   }
