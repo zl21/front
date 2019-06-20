@@ -82,7 +82,6 @@ export default {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
   onSelectionChangedAssignment({ buttons }, { rowIdArray, rowArray }) {
-    debugger;
     buttons.selectIdArr = rowIdArray;
     buttons.selectArr = rowArray;
   },
