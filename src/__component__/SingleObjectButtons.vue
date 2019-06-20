@@ -204,8 +204,7 @@
         keepAliveLists: ({ keepAliveLists }) => keepAliveLists,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         copyDatas: ({ copyDatas }) => copyDatas,
-
-        
+        modifyData: ({ modifyData }) => modifyData,
       }),
       watermarkImg() { // 匹配水印图片路径
         if (this.watermarkimg.includes('/static/img/')) {
@@ -271,7 +270,7 @@
       },
     },
     methods: {
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
@@ -768,7 +767,12 @@
               }
             });
             const copyData = { ...formData };
+           
+            const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
+
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
+            this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
+
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
             this.tabHref({// 跳转路由，复制是新增逻辑
@@ -783,6 +787,9 @@
         } else { // 纵向布局
           const copyData = { ...this.mainFormInfo.formData };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
+          const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
+          this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
+          this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
           const type = 'tableDetailVertical';
           this.tabHref({
             type,
@@ -796,12 +803,10 @@
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName });
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
-      copyForVertical() {
-        // this.$store.commit(`${moduleName()}/copyDefaultData`, { tableName: this.tableName });
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName });
-        this.$store.commit(`${moduleName()}/updateCopyData`, this.tableName);
+      copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -812,7 +817,6 @@
         };
 
         this.$store.commit('global/tabHref', param);
-        // const a = `${STANDARD_TABLE_COMPONENT_PREFIX}.${this.tableName}.${this.tableId}`;
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
