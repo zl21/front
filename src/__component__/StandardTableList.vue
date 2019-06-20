@@ -207,7 +207,7 @@
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
         this.getQueryListForAg(this.searchData);
-        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       onPageChange(page) {
         const { range } = this.searchData;
@@ -846,55 +846,66 @@
           ids: this.buttons.selectIdArr,
           menu: this.buttons.tabledesc
         };
-        const promise = new Promise((resolve, reject) => {
+        let promise = new Promise((resolve, reject) => {
           this.getExeActionDataForButtons({
             item, obj, resolve, reject 
           });
         });
-        let successAction = null;
-        let errorAction = null;
-        let param = {};
+       
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
-          const nextOperate = JSON.parse(
+          const nextOperate = JSON.parse(// 配置信息
             this.buttons.activeTabAction.cuscomponent
           );
-          if (nextOperate.success) {
-            successAction = nextOperate.success;
-            param = {
-              actionid: 0,
-              webaction: successAction
-            };
-          } 
-          if (nextOperate.failure) {
-            errorAction = nextOperate.failure;
-            param = {
-              actionid: 0,
-              webaction: errorAction
-            };
-          }
-        }
-        promise.then(() => {
-          if (successAction) {
-            const promise = new Promise((resolve) => {
-              this.getActionDataForButtons({ param, resolve });
-            });
-            promise.then(() => {
-              exeActionDataForComponent = this.buttons.ExeActionDataForComponent;
-              webactionClick(type, obj);
-            });
-          } else {
+          promise.then(() => {
+            if (nextOperate.success) {
+              let successAction = null;
+              let successActionParam = {};
+              successAction = nextOperate.success;
+              successActionParam = {
+                actionid: 0,
+                webaction: successAction
+              };
+              promise = new Promise((resolve) => {
+                this.getActionDataForButtons({ successActionParam, resolve });
+              });
+              promise.then(() => {
+                const exeActionDataForComponent = this.buttons.ExeActionDataForComponent.data;
+                exeActionDataForComponent.action = exeActionDataForComponent.webname;
+                const type = 'custom';
+                this.webactionClick(type, exeActionDataForComponent);
+              });
+            } else {
+              const message = this.buttons.ExeActionData;
+              const data = {
+                title: '成功',
+                content: `${message}`
+              };
+              this.$Modal.fcSuccess(data);
+            }
+          }, () => {
+            if (nextOperate.failure) {
+              let errorAction = null;
+              let errorActionParam = {};
+              errorAction = nextOperate.failure;
+              errorActionParam = {
+                actionid: 0,
+                webaction: errorAction
+              };
+              if (!this.buttons.ExeActionData) {
+                this.getActionDataForButtons(errorActionParam);
+              }
+            }
+          });
+        } else { // 没有配置动作定义调动作定义逻辑
+          promise.then(() => {
             const message = this.buttons.ExeActionData;
             const data = {
               title: '成功',
               content: `${message}`
             };
             this.$Modal.fcSuccess(data);
-          }
-        }, () => {
-          if (!this.buttons.ExeActionData && errorAction) {
-            this.getActionDataForButtons(param);
-          }
-        });
+          });
+        }
       },
 
       dataProcessing() { // 查询数据处理
@@ -971,7 +982,7 @@
         this.searchData.startIndex = 0;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
-        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       dialogMessage(title, contentText) {
         this.setErrorModalValue({
@@ -1472,7 +1483,7 @@
             merge = true;
           }
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
-          this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       }
     },
