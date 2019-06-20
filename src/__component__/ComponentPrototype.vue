@@ -1,15 +1,14 @@
 <template>
   <div>
     <h1> Component Prototype </h1>
-    <EnumerableInput
+    <div class="container">
+      <div class="wrapper">
+        <h4>字段读写规则应用：EnumerableInput</h4>
+        <EnumerableInput
           @valueChange="enumerableValueChange1"
           :enumerable-lists="enumerableLists1"
           :default-value="`${1010101}`"
         />
-    <div class="container">
-      <div class="wrapper">
-        <h4>字段读写规则应用：EnumerableInput</h4>
-        
       </div>
       <div class="wrapper">
         <h4>表的读写规则应用：EnumerableInput</h4>
@@ -101,6 +100,7 @@
 
 <style scoped lang="less">
   .container {
+    font-family: "Roboto", "Microsoft YaHei", sans-serif;
     display: flex;
     .wrapper {
       margin: 30px auto;
