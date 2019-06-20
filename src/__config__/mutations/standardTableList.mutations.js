@@ -70,7 +70,7 @@ export default {
     buttons.ExeActionData = message;
   },
   updateButtonGetActionData({ buttons }, data) {
-    buttons.ExeActionData = data;
+    buttons.ExeActionDataForComponent = data;
   },
   updateButtonSetFavoriteData({ buttons }, data) { // 收藏
     if (data.code === 0) {

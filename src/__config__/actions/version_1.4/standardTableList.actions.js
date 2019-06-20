@@ -90,7 +90,9 @@ export default {
       }
     });
   },
-  getExeActionDataForButtons({ commit }, { item, obj, resolve }) {
+  getExeActionDataForButtons({ commit }, {
+    item, obj, resolve, reject 
+  }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
@@ -99,15 +101,16 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonExeActionData', res.data.message);
+      } else if (res.data.code === -1) {
+        commit('updateButtonExeActionData', res.data.message);
+        reject();
       }
     });
   },
-  getActionDataForButtons({ commit }, { successAction }) {
-    network.post('/p/cs/getAction', urlSearchParams({
-      actionid: 0,
-      webaction: successAction,
-    })).then((res) => {
+  getActionDataForButtons({ commit }, { param, resolve }) {
+    network.post('/p/cs/getAction', urlSearchParams(param)).then((res) => {
       commit('updateButtonGetActionData', res.data);
+      resolve();
     });
   },
   getToFavoriteDataForButtons({ commit }, { id, type }) { // 收藏
