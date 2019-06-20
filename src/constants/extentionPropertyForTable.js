@@ -14,7 +14,7 @@ export default [
         name: '升序',
         key: 'asc',
         type: 'radio',
-        enumerateValue: [true, false]
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       }
     ],
     description: '请描述一下这个配置有啥作用'
@@ -89,7 +89,7 @@ export default [
             name: '升序',
             key: 'asc',
             type: 'radio',
-            enumerateValue: [true, false]
+            enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
           }
         ]
       },
@@ -105,19 +105,22 @@ export default [
   {
     name: '输入键查询',
     key: 'ak2',
-    type: 'input'
+    type: 'input',
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '导出',
     key: 'DisableEXPORT',
     type: 'radio',
-    enumerateValue: [true, false]
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '导入',
     key: 'smalltable',
     type: 'radio',
-    enumerateValue: [true, false]
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '商品数量矩阵配置',
@@ -138,7 +141,7 @@ export default [
         name: '是否显示数量',
         key: 'qtyisshow',
         type: 'radio',
-        enumerateValue: [true, false]
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       },
       {
         name: '扫描数量',
@@ -146,7 +149,8 @@ export default [
         type: 'input',
         inputType: 'Number'
       },
-    ]
+    ],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '按钮显示',
@@ -170,7 +174,8 @@ export default [
           { text: '打印', value: 'actionPRINT' },
         ]
       }
-    ]
+    ],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '只读状态',
@@ -188,24 +193,28 @@ export default [
         type: 'input',
         outputValueType: 'Array'
       }
-    ]
+    ],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '水印图片优先级',
     key: 'wkprioritys',
     type: 'input',
-    outputValueType: 'Array'
+    outputValueType: 'Array',
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '列表样式优先级',
     key: 'status4css_priority',
-    type: 'input'
+    type: 'input',
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '下拉列表显示行数',
     key: 'listrange',
     type: 'input',
-    inputType: 'Number'
+    inputType: 'Number',
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '列表定制查询',
@@ -216,6 +225,7 @@ export default [
         name: '服务名',
         key: 'action'
       }
-    ]
+    ],
+    description: '请描述一下这个配置有啥作用'
   },
 ];

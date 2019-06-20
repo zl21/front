@@ -7,11 +7,11 @@
     </div>
     <div class="middle">
       <div class="item-render-area" v-for="(item, index) in options" :key="index">
-        <ExtentionInput v-if="item.type === 'input'"></ExtentionInput>
-        <ExtentionRadio v-if="item.type === 'radio'"></ExtentionRadio>
-        <ExtentionInputGroup v-if="item.type === 'input-group'"></ExtentionInputGroup>
-        <ExtentionObjectGroup v-if="item.type === 'object-group'"></ExtentionObjectGroup>
-        <ExtentionObjectCombine v-if="item.type === 'object-combine'"></ExtentionObjectCombine>
+        <ExtentionInput v-if="item.type === 'input'" :option="item"></ExtentionInput>
+        <ExtentionRadio v-if="item.type === 'radio'" :option="item"></ExtentionRadio>
+        <ExtentionInputGroup v-if="item.type === 'input-group'" :option="item"></ExtentionInputGroup>
+        <ExtentionObjectGroup v-if="item.type === 'object-group'" :option="item"></ExtentionObjectGroup>
+        <ExtentionObjectCombine v-if="item.type === 'object-combine'" :option="item"></ExtentionObjectCombine>
       </div>
     </div>
     <div class="right"></div>
@@ -45,7 +45,7 @@
   };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
   .extentionProperty {
     width: 100%;
     height: 100%;
@@ -54,7 +54,7 @@
       list-style: none;
     }
     .left {
-      flex: 2;
+      flex: 1;
       border: 1px solid darkslategrey;
       display: flex;
       ul {
@@ -74,20 +74,48 @@
       }
     }
     .middle {
-      flex: 3;
+      flex: 5;
       border: 1px solid red;
       display: flex;
       flex-direction: column;
       height: 100%;
       overflow: scroll;
       .item-render-area {
-        display: flex;
         flex-direction: column;
         justify-content: center;
-        flex: 1;
         width: 100%;
         background-color: #e1ecfc;
-        border: 1px solid black
+        border: 1px solid black;
+        .content {
+          flex: 1;
+          .input-group-item {
+            display: flex;
+            label {
+              text-align: right;
+              line-height: 24px;
+              vertical-align: middle;
+            }
+            label {
+              flex: 1;
+            }
+            input {
+              flex: 3;
+              padding: 0 5px;
+            }
+          }
+          .radioItem {
+            cursor: pointer;
+            display: block;
+            padding: 5px;
+            input[type='radio'] {
+              line-height: 100%;
+              vertical-align: middle;
+            }
+          }
+          .radioItem:hover {
+            opacity: 0.8;
+          }
+        }
       }
     }
     .right {

@@ -3,7 +3,7 @@ export default [
     name: '是否加密',
     key: 'ispassword',
     type: 'radio',
-    enumerateValue: [true, false],
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '请描述一下这个配置有啥作用'
   },
   {
@@ -16,14 +16,20 @@ export default [
     name: 'HR折叠',
     key: 'hrdisplay',
     type: 'radio',
-    enumerateValue: ['fold', 'expand'],
+    enumerateValue: [{ text: '展开', value: 'expand' }, { text: '折叠', value: 'fold' }],
     description: '请描述一下这个配置有啥作用'
   },
   {
     name: '日期类型',
     key: 'datelimit',
     type: 'radio',
-    enumerateValue: ['all', 'before', 'after', 'beforetoday', 'aftertoday'],
+    enumerateValue: [
+      { text: '所有', value: 'all' },
+      { text: '之前（含今天）', value: 'before' },
+      { text: '之后（含今天）', value: 'after' },
+      { text: '之前（不含今天）', value: 'beforetoday' },
+      { text: '之后（不含今天）', value: 'aftertoday' }
+    ],
     description: '请描述一下这个配置有啥作用'
   },
   {
@@ -143,7 +149,7 @@ export default [
     name: '是否过滤不可用数据',
     key: 'must_be_active',
     type: 'radio',
-    enumerateValue: [true, false],
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '请描述一下这个配置有啥作用'
   },
   {

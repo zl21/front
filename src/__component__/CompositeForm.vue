@@ -321,7 +321,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-        //console.log(this.mountChecked && this.Condition);
+        // console.log(this.mountChecked && this.Condition);
         if (!this.mountChecked && this.Condition !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -329,7 +329,7 @@
         if (Array.isArray(data)) {
           data = data[0];
         }
-        const formData = Object.assign(this.defaultSetValue, this.formDataDef);
+        const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
         this.formData = Object.assign(this.formData, data);
 
         this.formDataDef = Object.assign(formData, setdefval);
@@ -819,22 +819,18 @@
           //   console.log(this.defaultSetValue[item.colname],'item.colname',item.colname);
           // }, 500);
           // console.log(this.defaultSetValue[item.colname],'000000');
+          const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+          const ID = item.refobjid ? item.refobjid : '';
+          arr.push({
+            ID: item.refobjid === '-1' ? '' : ID,
+            Label: item.valuedata || item.defval || ''
+          });
 
-          if (this.defaultSetValue[item.colname] !== undefined) {
-            arr.push({
-              ID: this.defaultSetValue[item.colname][0].ID || '',
-              Label:
-                item.valuedata
-                || this.defaultSetValue[item.colname][0].Label
-                || ''
-            });
-          } else {
-            const ID = item.refobjid ? item.refobjid : '';
-            arr.push({
-              ID: item.refobjid === '-1' ? '' : ID,
-              Label: item.valuedata || item.defval || ''
-            });
+          if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
+            arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+            arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
           }
+          
 
           return arr;
         }
