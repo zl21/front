@@ -140,12 +140,9 @@ export default {
   // changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
   //   state.updateData[tableName].add = defaultForCopyDatas;
   // },
-  savaCopyData(state, { copyDatas, tableName }) { // 执行按钮复制操作存储form默认值数据
-    console.log('🍌', copyDatas);
+  savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     // state.defaultDataForCopy = copyData;
-    // console.log('🍌', state.defaultDataForCopy);
     const copySaveDataForParam = {};
-    // if (Object.keys(copyData).length > 0) {
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         d.childs.forEach((c) => {
@@ -166,9 +163,8 @@ export default {
         });
       });
     });
-    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam);
-    const a = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    state.tabPanels[0].componentAttribute.panelData = a;
+    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
+    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};
