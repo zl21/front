@@ -31,20 +31,5 @@
   .extentionRadio {
     display: flex;
     flex-direction: column;
-    .content {
-      flex: 1;
-      .radioItem {
-        cursor: pointer;
-        display: block;
-        padding: 5px;
-        input[type='radio'] {
-          line-height: 100%;
-          vertical-align: middle;
-        }
-      }
-      .radioItem:hover {
-        opacity: 0.8;
-      }
-    }
   }
 </style>

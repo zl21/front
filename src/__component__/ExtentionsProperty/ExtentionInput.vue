@@ -2,8 +2,10 @@
   <div class="extentionInput">
     <div class="description">{{option.description}}</div>
     <div class="content">
-      <label for="extentionInputElement">{{option.name}}：</label>
-      <input id="extentionInputElement" />
+      <div class="input-group-item">
+        <label for="extentionInputElement">{{option.name}}：</label>
+        <input id="extentionInputElement" :type="option.type === 'Number' ? 'number' : 'text'" />
+      </div>
     </div>
   </div>
 </template>
@@ -24,8 +26,5 @@
   .extentionInput {
     display: flex;
     flex-direction: column;
-    .content {
-      flex: 1;
-    }
   }
 </style>
