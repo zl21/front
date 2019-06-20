@@ -7,11 +7,11 @@
     </div>
     <div class="middle">
       <div class="item-render-area" v-for="(item, index) in options" :key="index">
-        <ExtentionInput v-if="item.type === 'input'"></ExtentionInput>
-        <ExtentionRadio v-if="item.type === 'radio'"></ExtentionRadio>
-        <ExtentionInputGroup v-if="item.type === 'input-group'"></ExtentionInputGroup>
-        <ExtentionObjectGroup v-if="item.type === 'object-group'"></ExtentionObjectGroup>
-        <ExtentionObjectCombine v-if="item.type === 'object-combine'"></ExtentionObjectCombine>
+        <ExtentionInput v-if="item.type === 'input'" :option="item"></ExtentionInput>
+        <ExtentionRadio v-if="item.type === 'radio'" :option="item"></ExtentionRadio>
+        <ExtentionInputGroup v-if="item.type === 'input-group'" :option="item"></ExtentionInputGroup>
+        <ExtentionObjectGroup v-if="item.type === 'object-group'" :option="item"></ExtentionObjectGroup>
+        <ExtentionObjectCombine v-if="item.type === 'object-combine'" :option="item"></ExtentionObjectCombine>
       </div>
     </div>
     <div class="right"></div>
@@ -84,7 +84,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        flex: 1;
+        flex-grow: 1;
         width: 100%;
         background-color: #e1ecfc;
         border: 1px solid black
