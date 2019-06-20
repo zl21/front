@@ -21,7 +21,7 @@
       :default-data="formList"
       :default-column-col="formList.objviewcol"
       class="formPanel"
-      :Condition = "Condition"
+      :condition = "Condition"
       @InitializationForm="InitializationForm"
       @formChange="formChange"
       @on-formEnter="searchForm"
