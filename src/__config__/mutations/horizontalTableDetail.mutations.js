@@ -109,6 +109,7 @@ export default {
   },
   updateChangeData(state, data) {
     state.updateData[data.tableName].changeData = Object.assign(data.value, {});
+    state.updateData = Object.assign({}, state.updateData);
   },
   updateCheckedInfoData(state, data) {
     state.updateData[data.tableName].checkedInfo = data.value;
@@ -164,6 +165,7 @@ export default {
       });
     });
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
+    state.updateData = Object.assign({}, state.updateData);
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
   emptyChangeData(state, tableName) {

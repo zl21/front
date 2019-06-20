@@ -37,7 +37,7 @@
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+            obj.componentAttribute.changeData = JSON.parse(JSON.stringify(this.updateData[item.tablename].changeData));
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
