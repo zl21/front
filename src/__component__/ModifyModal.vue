@@ -147,7 +147,7 @@
           reffixedcolumns: this.reffixedcolumns, // 左边树
         };
         if (!this.type) {
-          localdata.objids = this.ids;
+          localdata.objids = this.objids;
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
         }
