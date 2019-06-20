@@ -164,8 +164,7 @@ export default {
       });
     });
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
-    const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    state.tabPanels[0].componentAttribute.panelData = data;
+    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};
