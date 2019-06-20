@@ -207,6 +207,7 @@
         const { agTableElement } = this.$refs;
         agTableElement.showAgLoading();
         this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
       },
       onPageChange(page) {
         const { range } = this.searchData;
@@ -689,45 +690,6 @@
           this.searchClickData();
         }
       },
-      webaction(type, obj) {
-        if (obj.vuedisplay === 'slient') { // 静默
-          if (obj.confirm) { // 有提示信息
-            if (obj.confirm.indexOf('{') >= 0) {
-              if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-                if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) { // 判断没有选中任何信息的情况
-                  const data = {
-                    content: JSON.parse(obj.confirm).nodesc
-                  };
-                  const errorDialogTitle = this.ChineseDictionary.WARNING;
-                  const errorDialogvalue = true;
-                  // const errorDialogBack = true;
-                  this.setErrorModalValue({
-                    data,
-                    errorDialogTitle,
-                    errorDialogvalue,
-                    // errorDialogBack
-                  });
-                } else { // 选择了明细
-                  const data = {
-                    content: JSON.parse(obj.confirm).desc
-                  };
-                  const errorDialogTitle = this.ChineseDictionary.WARNING;
-                  const errorDialogvalue = true;
-                  // const errorDialogBack = true;
-                  this.setErrorModalValue({
-                    data,
-                    errorDialogTitle,
-                    errorDialogvalue,
-                    // errorDialogBack
-                  });
-                }
-              }
-            }
-          } else { // 没有提示信息
-            this.webActionSlient(obj);
-          }
-        }
-      },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
         const title = `${tab.webdesc}`;
@@ -889,73 +851,50 @@
             item, obj, resolve, reject 
           });
         });
-        promise.then(() => {
-          const message = this.buttons.ExeActionData;
-          const data = {
-            title: '成功',
-            content: `${message}`
-          };
-          this.$Modal.fcSuccess(data);
-        });
         let successAction = null;
         let errorAction = null;
-        let refParam = null;
-        const getActionData = this.buttons.getActionData;
-        const exeActionData = this.buttons.exeActionData;
-        if (exeActionData) {
-          // 如果返回了id和tablename;
-          refParam = exeActionData;
-        }
-        if (this.buttons.activeTabAction.cuscomponent) {
+        let param = {};
+        if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
           const nextOperate = JSON.parse(
             this.buttons.activeTabAction.cuscomponent
           );
-          if (nextOperate.success) successAction = nextOperate.success;
-          if (nextOperate.failure) errorAction = nextOperate.failure;
+          if (nextOperate.success) {
+            successAction = nextOperate.success;
+            param = {
+              actionid: 0,
+              webaction: successAction
+            };
+          } 
+          if (nextOperate.failure) {
+            errorAction = nextOperate.failure;
+            param = {
+              actionid: 0,
+              webaction: errorAction
+            };
+          }
         }
-        if (exeActionData.code === 0) {
+        promise.then(() => {
           if (successAction) {
-            // 如果有静默后需要执行的操作
-            this.getActionDataForButtons(successAction);
-            if (getActionData.code === 0) {
-              const tab = getActionData.data;
-              if (refParam) {
-                for (const key of Object.keys(refParam)) {
-                  tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-                }
-              }
-              this.webactionClick(tab);
-            }
-          }
-        } else if (
-          getActionData.code === -1
-          && !getActionData.message
-          && errorAction
-        ) {
-          this.getActionDataForButtons(errorAction);
-          if (getActionData.code === 0) {
-            const tab = getActionData.data;
-            if (refParam) {
-              for (const key of Object.keys(refParam)) {
-                tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-              }
-            }
-            this.webactionClick(tab);
-          }
-        } else {
-          this.actionLoading = false;
-          this.errorTable = {};
-          if (getActionData.data) {
-            getActionData.data.forEach(() => {
-              const objs = {};
-              objs.flag = true;
-              objs.message = item.message;
-              this.$set(this.errorTable, item.objid, objs);
+            const promise = new Promise((resolve) => {
+              this.getActionDataForButtons({ param, resolve });
             });
-          // this.searchData('fresh');
+            promise.then(() => {
+              exeActionDataForComponent = this.buttons.ExeActionDataForComponent;
+              webactionClick(type, obj);
+            });
+          } else {
+            const message = this.buttons.ExeActionData;
+            const data = {
+              title: '成功',
+              content: `${message}`
+            };
+            this.$Modal.fcSuccess(data);
           }
-        }
-        // this.setActiveTabActionValue(null);
+        }, () => {
+          if (!this.buttons.ExeActionData && errorAction) {
+            this.getActionDataForButtons(param);
+          }
+        });
       },
 
       dataProcessing() { // 查询数据处理
@@ -1032,6 +971,7 @@
         this.searchData.startIndex = 0;
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
       },
       dialogMessage(title, contentText) {
         this.setErrorModalValue({
@@ -1532,6 +1472,7 @@
             merge = true;
           }
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          this.onSelectionChangedAssignment({});// 查询成功后清除表格选中项
         }
       }
     },

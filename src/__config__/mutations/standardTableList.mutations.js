@@ -70,7 +70,7 @@ export default {
     buttons.ExeActionData = message;
   },
   updateButtonGetActionData({ buttons }, data) {
-    buttons.ExeActionData = data;
+    buttons.ExeActionDataForComponent = data;
   },
   updateButtonSetFavoriteData({ buttons }, data) { // 收藏
     if (data.code === 0) {
@@ -128,7 +128,6 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   batchVoidForButtonsData({ buttons, ag }, data) { // 作废
-    console.log(data);
     buttons.batchVoidForButtonsData = data;
     ag.datas.deleteFailInfo = data;
     ag.datas = Object.assign({}, ag.datas);

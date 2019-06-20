@@ -31,7 +31,8 @@ export default () => ({
         'batchVoidForButtons',
         'batchSubmitForButtons',
         'batchUnSubmitForButtons',
-        'updateUserConfig'
+        'updateUserConfig',
+        'getActionDataForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -59,7 +60,7 @@ export default () => ({
   computed: {
     ...mapState(getComponentName(), {
       ag: ({ ag }) => ag,
-      userConfigForAgTable: ({userConfigForAgTable}) => userConfigForAgTable,
+      userConfigForAgTable: ({ userConfigForAgTable }) => userConfigForAgTable,
       pageAttribute: ({ ag }) => ({
         current: (ag.datas.start + ag.datas.defaultrange) / ag.datas.defaultrange || 1,
         total: ag.datas.totalRowCount || 0,

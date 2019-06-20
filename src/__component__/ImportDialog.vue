@@ -224,18 +224,14 @@
       },
       // 发送请求, 获取上传参数
       axiosSetting() {
-        network
-          .post(
-            '/p/cs/settings',
-            urlSearchParams({
-              configNames: JSON.stringify(['upload.import.max-file-size'])
-            })
-          )
-          .then((res) => {
-            if (res.data.code === 0) {
-              this.fileSize = res.data.data['upload.import.max-file-size'];
-            } else this.fileSize = '0M';
-          })
+        network.post('/p/cs/settings',
+                     urlSearchParams({ 
+                       configNames: JSON.stringify(['upload.import.max-file-size']) 
+                     })).then((res) => {
+          if (res.data.code === 0) {
+            this.fileSize = res.data.data['upload.import.max-file-size'];
+          } else this.fileSize = '0M';
+        })
           .catch((error) => {
             if (error.response.status === 403) {
               this.closeDialog();
@@ -246,8 +242,9 @@
       // 发送请求, 下载模板
       downloadTemplate() {
         // 下载模版
+        const path = getGateway('/p/cs/downloadImportTemplate');
         axios({
-          url: '/p/cs/downloadImportTemplate',
+          url: path,
           method: 'get',
           params: {
             searchdata: {

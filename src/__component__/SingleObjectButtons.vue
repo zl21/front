@@ -585,7 +585,6 @@
         });
         
         promise.then(() => {
-          this.$loading.hide();
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             title: '成功',

@@ -143,7 +143,7 @@ export default {
   // },
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     // state.defaultDataForCopy = copyData;
-    const copySaveDataForParam = {};
+    const copySaveDataForParam = {};// 整合changeData所需数据格式
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         d.childs.forEach((c) => {
@@ -153,7 +153,7 @@ export default {
               if (c.readonly === true) {
                 b.valuedata = '';// 将配置为不可编辑的值置空
               } else if (b.valuedata) {
-                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'mop' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                 } else {
                   copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
@@ -164,7 +164,18 @@ export default {
         });
       });
     });
-    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
+    // Object.keys(modifyData).map((modify) => {//将修改过的值重新赋值给form所需数据
+    //   copyDatas.data.addcolums.forEach((copy) => {
+    //     copy.childs.forEach((childs) => {
+    //       if (modify === childs.colname) {
+    //         childs.valuedata = modifyData[modify];
+    //       }
+    //     });
+    //   });
+    // });
+    
+    state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
+    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
     state.updateData = Object.assign({}, state.updateData);
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
