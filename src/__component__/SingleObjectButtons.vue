@@ -878,18 +878,18 @@
                         //     range: 10,
                         //   }
                         // });
-                        const { tablename, refcolid } = this.itemInfo;
-                        const searchdata = {
-                          column_include_uicontroller: true,
-                          startindex: this.tablePageInfo.currentPageIndex,
-                          range: this.tablePageInfo.pageSize,
-                        };
-                        this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
-                        });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
-                        // this.clickButtonsBack();
-                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                        // const { tablename, refcolid } = this.itemInfo;
+                        // const searchdata = {
+                        //   column_include_uicontroller: true,
+                        //   startindex: this.tablePageInfo.currentPageIndex,
+                        //   range: this.tablePageInfo.pageSize,
+                        // };
+                        // this.getObjectTableItemForTableData({
+                        //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                        // });
+                        // this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+                        this.clickButtonsBack();
+                        // this.getQueryListForAg(searchData);
                       }
                     }, 1000);
                   }
@@ -1377,17 +1377,22 @@
       },
       clearEditData() {
         if (this.objectType === 'vertical') {
-          this.updateChangeData({ tableName: this.tableName, value: {} });
-          this.updateModifyData({ tableName: this.tableName, value: {} });
-          this.updateAddDefaultData({ tableName: this.tableName, value: {} });
-          this.updateAddData({ tableName: this.tableName, value: {} });
-          this.updateDeleteData({ tableName: this.tableName, value: {} });
           if (this.isreftabs && this.itemNameGroup.length > 0) {
+            this.clearMainEditData();
             this.clearItemEditData();
+          } else {
+            this.clearMainEditData();
           }
         } else {
           this.clearItemEditData();
         }
+      },
+      clearMainEditData() {
+        this.updateChangeData({ tableName: this.tableName, value: {} });
+        this.updateModifyData({ tableName: this.tableName, value: {} });
+        this.updateAddDefaultData({ tableName: this.tableName, value: {} });
+        this.updateAddData({ tableName: this.tableName, value: {} });
+        this.updateDeleteData({ tableName: this.tableName, value: {} });
       },
       clearItemEditData() {
         this.updateChangeData({ tableName: this.itemName, value: {} });

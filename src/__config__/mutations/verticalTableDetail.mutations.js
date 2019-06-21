@@ -1,6 +1,7 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
 import router from '../router.config';
+import moduleName from '../../__utils__/getModuleName';
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -100,6 +101,9 @@ export default {
     state.updateData[data.tableName].delete = data.value;
   },
   updateChangeData(state, data) {
+    console.log('moduleName=', moduleName());
+    console.log('state=', state);
+
     state.updateData[data.tableName].changeData = data.value;
   },
   updateCheckedInfoData(state, data) {

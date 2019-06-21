@@ -175,10 +175,12 @@ export default {
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
+
           if (path) { // 有path的参数
             add[tableName].ID = objId;
             add[tableName].ISACTIVE = 'Y';
-            if (Object.values(itemAdd[itemName]).length > 0 || Object.values(addDefault[itemName]).length > 0) {
+
+            if (Object.values(itemAdd[itemName]).length > 0) {
               itemAdd[itemName].ID = objId;
               const itemTableAdd = Object.assign({}, itemAdd);
               itemTableAdd[itemName] = [
@@ -188,13 +190,37 @@ export default {
                 ...add,
                 ...itemTableAdd
               };
-            } else {
+            } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
+              const itemTableAdd = Object.assign({}, addDefault);
+              itemTableAdd[itemName].ID = objId;
+              itemTableAdd[itemName] = [
+                itemTableAdd[itemName]
+              ];
               parames = {
-                ...add,
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
               };
             }
-          } else if (Object.values(itemAdd[itemName]).length > 0 || Object.values(addDefault[itemName]).length > 0) {
+          } else if (Object.values(itemAdd[itemName]).length > 0) {
             const itemTableAdd = Object.assign({}, itemAdd);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
+            ];
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 固定传值-1 表示新增
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+                ...itemTableAdd,
+              }
+            };
+          } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
+            const itemTableAdd = Object.assign({}, addDefault);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
@@ -276,7 +302,7 @@ export default {
           const addItem = Object.assign({}, add, itemAdd[itemName]);
          
 
-          add.ID = -1;
+          addItem.ID = -1;
           const addItemName = {};
           addItemName[itemName] = itemName;
           addItemName[itemName] = [

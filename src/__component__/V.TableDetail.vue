@@ -3,7 +3,7 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
-      :itemTableCheckFunc="itemTableCheckFunc"
+      :item-table-check-func="itemTableCheckFunc"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
       :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:''"
@@ -32,8 +32,8 @@
     />
     <TabPanels
       v-if="tabPanels.length > 0"
-      class="tabPanel"
       ref="tabPanel"
+      class="tabPanel"
       :tab-margin-left="20"
       is-keep-alive
       :type="'singleCard'"
@@ -158,7 +158,9 @@
           });
         } else if (refTab.tabrelation === '1:1') {
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-          this.getItemObjForChildTableForm({ table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index });
+          this.getItemObjForChildTableForm({
+            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index 
+          });
         }
       },
     },
