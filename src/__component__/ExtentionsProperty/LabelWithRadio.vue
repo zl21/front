@@ -2,7 +2,13 @@
   <div class="input-group-item">
     <div class="cell">
       <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
-      <EnumerateRadioItem :option="item" :break-line="false"></EnumerateRadioItem>
+      <EnumerateRadioItem
+        :option="item"
+        :break-line="false"
+        @radioValueChange="radioValueChange"
+      >
+      
+      </EnumerateRadioItem>
     </div>
   </div>
 </template>
@@ -16,6 +22,11 @@
     components: {
       LabelForInput,
       EnumerateRadioItem
+    },
+    methods: {
+      radioValueChange({ key, value}) {
+        this.$emit('radioValueChange', { key, value });
+      }
     },
     props: {
       item: {

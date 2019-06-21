@@ -190,7 +190,7 @@
         padding: 5px;
         font-size: 14px;
         font-weight: 600;
-        font-family: Consolas,serif;
+        font-family: Consolas, "Microsoft YaHei", serif;
       }
     }
   }

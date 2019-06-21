@@ -15,6 +15,11 @@
       />
       {{radio.text}}
     </label>
+    <!-- 清空项   -->
+    <label class="radioItem">
+      <input type="radio" :name="option.key" @change="radioValueChange('')">
+      <span style="color: red;">清除此配置项</span>
+    </label>
   </div>
 </template>
 
