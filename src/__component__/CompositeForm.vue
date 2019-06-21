@@ -66,11 +66,11 @@
 
 <script>
   import FormItemComponent from './ComFormItemComponent';
-  import ItemComponent from './ItemComponent';
   import { Version } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
+  import ItemComponent from './ItemComponent';
 
   const {
     fkQueryList,
@@ -186,6 +186,11 @@
     watch: {
       defaultData: {
         handler() {
+          // 开启  默认值(刷新界面))
+          this.mountChecked = false;
+          setTimeout(() => {
+            this.mountChecked = true;
+          }, 500);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -321,7 +326,8 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-        // console.log(this.mountChecked && this.Condition);
+
+        console.log(data, setdefval);
         if (!this.mountChecked && this.Condition !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -385,7 +391,7 @@
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
-        obj.component = ItemComponent;
+        obj.component = {};
         obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
@@ -445,17 +451,16 @@
                 item = this.$refs.FormComponent_0.newFormItemLists;
               }
 
-              item[index].item.value = value;
               // 
               if (Selected !== 'change') {
                 item[index].item.props.Selected = Selected;
               } else {
                 item[index].item.props.Selected = [{
                   lable: '',
-                  value: ''
+                  ID: ''
                 }];
               }
-            // this.formItemsLists = this.formItemsLists.concat([]);
+              item[index].item.value = value;
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
@@ -531,8 +536,14 @@
               }
               if (item.props.fkdisplay && this.Condition !== 'list') {
                 if (item.type === 'AttachFilter') {
-                  if (item.props.Selected[0].value === '') {
+                  if (item.props.Selected[0].ID === '') {
                     Fitem[index].item.value = '';
+                    Fitem[index].item.props.Selected = [
+                      {
+                        label: '',
+                        ID: ''
+                      }
+                    ];
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
@@ -821,6 +832,14 @@
             return `已经选中${valuedata.total}条`;
           }
         }
+        const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+
+        if (item.fkdisplay === 'pop') {
+          if (fkdisplayValue) {
+            return fkdisplayValue.Label;
+          }
+          return item.defval || item.valuedata || item.default || '';
+        }
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
@@ -834,12 +853,10 @@
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
-
           if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
             arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-            arr[0].Label = fkdisplayValue ? fkdisplayValue.LabelForInput : '';
+            arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
           }
-          
 
           return arr;
         }
@@ -1047,7 +1064,7 @@
               item.props.Selected = [
                 {
                   label: current.valuedata,
-                  value: current.refobjid
+                  ID: current.refobjid
                 }
               ];
             }
@@ -1071,7 +1088,7 @@
             item.props.Selected = [
               {
                 label: current.valuedata,
-                value: current.refobjid
+                ID: current.refobjid
               }
             ];
             break;

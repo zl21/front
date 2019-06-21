@@ -29,6 +29,7 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
+  import ItemComponent from './ItemComponent';
 
   export default {
     name: 'FormItemComponent',
@@ -38,6 +39,7 @@
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           // console.log(list[current].item.value, 'item');
+          list[current].component = ItemComponent;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -98,7 +100,7 @@
           const value = items.item.props.refobjid
             ? items.item.props.refobjid
             : items.item.value;
-          if (value === undefined ) {
+          if (value === undefined) {
             return option;
           }
           if (items.item.props.readonly) {
@@ -281,7 +283,6 @@
           // }
           // console.log(val,'this.indexItem',this.indexItem);
           val = Object.assign(val, this.formValueItem);
-          this.changeNumber = this.changeNumber + 1;
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
@@ -302,7 +303,7 @@
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              const checkVal = (_refval === val[_refcolumn].toString().trim()) ? 1 : 0;
+              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
@@ -322,9 +323,13 @@
       formItemLists: {
         handler() {
           this.changeNumber = 0;
-          this.newFormItemLists = this.formItemLists.concat();
+          // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
+          this.newFormItemLists = this.formItemLists.concat([]);
         },
         deep: true
+      },
+      changeNumber() {
+        console.log('changeNumber', this.changeNumber);
       }
     },
     methods: {
@@ -338,7 +343,7 @@
           // 判断必须输入的值是否为空
           const elDiv = this.$refs[`component_${current.index}`][0]
             && this.$refs[`component_${current.index}`][0].$el;
-          
+
           if (!elDiv) {
             return [];
           }
@@ -422,8 +427,9 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            if (current.item.props.Selected) {
-              obj[current.item.field] = current.item.props.Selected;
+            console.log(current.item.props.Selected);
+            if (current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
+              obj[current.item.field] = current.item.props.Selected[0].ID;
               if (Version === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
@@ -488,7 +494,11 @@
         }
         const valueItem = {};
         if (Object.keys(obj)[0]) {
-          valueItem[Object.keys(obj)[0]] = current.item.value;
+          if (current.item.type === 'AttachFilter') {
+            valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
+          }else {
+            valueItem[Object.keys(obj)[0]] = current.item.value;
+          }
         }
         this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段

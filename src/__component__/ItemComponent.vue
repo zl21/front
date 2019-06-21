@@ -162,7 +162,8 @@
         :dialog="_items.props.dialog"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
-        @input="attachFilterChange"
+        @input="attachFilterInput"
+        @on-change="attachFilterChange"
         @on-select="attachFilterSelected"
         @on-focus="attachFilterInputFocus"
         @on-blur="attachFilterInputBlur"
@@ -588,9 +589,7 @@
           this._items.event['on-show']($this);
         }
       },
-
-      // AttachFilter event
-      attachFilterChange(value, $this) {
+      attachFilterInput(value, $this) {
         this._items.value = value;
         this.valueChange();
         if (
@@ -600,7 +599,6 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
-          console.log('dddd');
           this._items.event['popper-value']($this, value, 'change', this.index);
         }
         if (
@@ -613,16 +611,23 @@
           this._items.event.inputValueChange(value, $this);
         }
       },
+
+      // AttachFilter event
+      attachFilterChange(value, $this) {
+        this._items.value = value;
+        this.valueChange();
+      },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
         this._items.props.selected = [{
           label: row.label,
-          value: row.value
+          ID: row.value
         }];
         let selected = [{
           label: row.label,
-          value: row.value
+          ID: row.value
         }];
+        this.valueChange();
         console.log(this._items.props.selected);
         if (
           Object.prototype.hasOwnProperty.call(
