@@ -1,18 +1,27 @@
 <template>
   <div class="extentionInput">
-    <div class="description">{{option.description}}</div>
+    <Description :option="option"></Description>
     <div class="content">
       <div class="input-group-item">
-        <label for="extentionInputElement">{{option.name}}：</label>
-        <input id="extentionInputElement" :type="option.type === 'Number' ? 'number' : 'text'" />
+        <div class="cell">
+          <LabelForInput :for="'extentionInputElement'" :item="option"></LabelForInput>
+          <input class="input" id="extentionInputElement" :type="option.inputType === 'Number' ? 'number' : 'text'" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Description from './Description';
+  import LabelForInput from './LabelForInput';
+  
   export default {
     name: 'Input',
+    components: {
+      Description,
+      LabelForInput
+    },
     props: {
       option: {
         type: Object,

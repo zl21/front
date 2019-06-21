@@ -837,7 +837,7 @@
 
           if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
             arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-            arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+            arr[0].Label = fkdisplayValue ? fkdisplayValue.LabelForInput : '';
           }
           
 

@@ -49,6 +49,7 @@ export default [
         outputValueType: 'Array'
       },
     ],
+    description: '请描述一下这个配置有啥作用'
   },
   {
     name: '模糊匹配',
@@ -173,6 +174,11 @@ export default [
           { text: '导出', value: 'actionEXPORT' },
           { text: '打印', value: 'actionPRINT' },
         ]
+      },
+      {
+        name: '显示条件',
+        key: 'sqlfilter',
+        type: 'input',
       }
     ],
     description: '请描述一下这个配置有啥作用'
