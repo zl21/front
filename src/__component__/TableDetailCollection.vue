@@ -385,6 +385,7 @@
       },
       dataSource: {
         handler(val) {
+          this.verifyTipObj = {};
           this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
