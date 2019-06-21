@@ -711,7 +711,7 @@
           tableName,
           back: true,
         };
-        this.clearEditData();
+        // this.clearEditData();
         this.$store.commit('global/tabHref', param);
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
@@ -1214,38 +1214,28 @@
           if (tabinlinemode === 'Y') { // 当子表中存在form时
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-              if (!KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
-                this.saveParameters();
-                if (this.objectType === 'vertical') {
-                  if (this.itemId === 'New') {
-                    if (this.itemNameGroup.length > 0) {
+              this.saveParameters();
+              if (this.objectType === 'vertical') {
+                if (this.itemId === 'New') {
+                  if (this.itemNameGroup.length > 0) { // 有子表
+                    if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
                       const addInfo = this.itemCurrentParameter.add[this.itemName];
-                     
-                      if (itemCheckedInfo) {
-                        const itemMessageTip = itemCheckedInfo.messageTip;
-                        if (itemMessageTip) {
-                          if (itemMessageTip.length > 0) {
-                            this.$Message.warning(itemMessageTip[0]);
-                            itemCheckedInfo.validateForm.focus();
-                            return false;
-                          }
-                        }
-                      } else if (Object.values(addInfo).length < 1) {
+                      if (Object.values(addInfo).length < 1) {
                         this.$Message.warning('个人信息不能为空!');
                         return false;
                       }
-                    }
-                  } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
-                    const itemMessageTip = itemCheckedInfo.messageTip;
-                    if (itemMessageTip) {
-                      if (itemMessageTip.length > 0) {
-                        this.$Message.warning(itemMessageTip[0]);
-                        itemCheckedInfo.validateForm.focus();
-                        return false;
+                    } else if (itemCheckedInfo) {
+                      const itemMessageTip = itemCheckedInfo.messageTip;
+                      if (itemMessageTip) {
+                        if (itemMessageTip.length > 0) {
+                          this.$Message.warning(itemMessageTip[0]);
+                          itemCheckedInfo.validateForm.focus();
+                          return false;
+                        }
                       }
-                    }
+                    } 
                   }
-                } else if (itemCheckedInfo) {
+                } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
                   const itemMessageTip = itemCheckedInfo.messageTip;
                   if (itemMessageTip) {
                     if (itemMessageTip.length > 0) {
@@ -1257,8 +1247,6 @@
                 }
               } else if (itemCheckedInfo) {
                 const itemMessageTip = itemCheckedInfo.messageTip;
-                console.log(itemMessageTip);
-
                 if (itemMessageTip) {
                   if (itemMessageTip.length > 0) {
                     this.$Message.warning(itemMessageTip[0]);
@@ -1267,6 +1255,18 @@
                   }
                 }
               }
+              
+              
+              // else if (itemCheckedInfo) {
+              //   const itemMessageTip = itemCheckedInfo.messageTip;
+              //   if (itemMessageTip) {
+              //     if (itemMessageTip.length > 0) {
+              //       this.$Message.warning(itemMessageTip[0]);
+              //       itemCheckedInfo.validateForm.focus();
+              //       return false;
+              //     }
+              //   }
+              // }
             }
           }
         }
@@ -1302,6 +1302,8 @@
         };
 
         const promise = new Promise((resolve, reject) => {
+          debugger;
+
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
    

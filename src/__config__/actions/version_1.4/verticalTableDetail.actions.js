@@ -168,18 +168,17 @@ export default {
     const { itemCurrentParameter } = parame;
     const { isreftabs } = parame;
     const { itemNameGroup } = parame;
-    const { addDefault } = itemCurrentParameter;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
+          const { addDefault } = itemCurrentParameter;
 
           if (path) { // 有path的参数
             add[tableName].ID = objId;
             add[tableName].ISACTIVE = 'Y';
-
             if (Object.values(itemAdd[itemName]).length > 0) {
               itemAdd[itemName].ID = objId;
               const itemTableAdd = Object.assign({}, itemAdd);
