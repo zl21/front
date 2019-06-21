@@ -876,6 +876,7 @@
             } else {
               const message = this.buttons.ExeActionData;
               const data = {
+                mask: true,
                 title: '成功',
                 content: `${message}`
               };
@@ -904,6 +905,7 @@
           promise.then(() => {
             const message = this.buttons.ExeActionData;
             const data = {
+              mask: true,
               title: '成功',
               content: `${message}`
             };
@@ -1040,6 +1042,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1073,6 +1076,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1126,6 +1130,7 @@
             }, 200);
           } else {
             this.$Modal.confirm({
+              mask: true,
               title: '警告',
               content: `未勾选记录,将批量更新所有查询结果(共计${
                 this.ag.datas.totalRowCount
@@ -1197,6 +1202,7 @@
           // this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
+            mask: true,
             title: '成功',
             content: `${message}`
           };
@@ -1216,6 +1222,7 @@
           // this.$loading.hide();
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
+            mask: true,
             title: '成功',
             content: `${message}`
           };
@@ -1236,6 +1243,7 @@
         promise.then(() => {
           const message = this.buttons.batchSubmitData.message;
           const data = {
+            mask: true,
             title: '成功',
             content: `${message}`
           };
@@ -1257,6 +1265,7 @@
           const message = this.buttons.batchUnSubmitData;
           if (message) {
             const data = {
+              mask: true,
               title: '成功',
               content: `${message}`
             };

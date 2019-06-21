@@ -868,28 +868,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        // this.getObjectTableItemForTableData({
-                        //   table: tablename,
-                        //   objid: this.itemId,
-                        //   refcolid, 
-                        //   searchdata: {
-                        //     column_include_uicontroller: true,
-                        //     startindex: 0,
-                        //     range: 10,
-                        //   }
-                        // });
-                        // const { tablename, refcolid } = this.itemInfo;
-                        // const searchdata = {
-                        //   column_include_uicontroller: true,
-                        //   startindex: this.tablePageInfo.currentPageIndex,
-                        //   range: this.tablePageInfo.pageSize,
-                        // };
-                        // this.getObjectTableItemForTableData({
-                        //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
-                        // });
-                        // this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                         this.clickButtonsBack();
-                        // this.getQueryListForAg(searchData);
                       }
                     }, 1000);
                   }
@@ -910,7 +889,7 @@
                   }
                 };
               }
-            } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) { // 子表删除
               if (obj.requestUrlPath) { // 有path
                 this.$refs.dialogRef.open();
                 this.saveParameters();// 调用获取参数方法
@@ -924,16 +903,6 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        // this.getObjectTableItemForTableData({
-                        //   table: tablename,
-                        //   objid: this.itemId,
-                        //   refcolid, 
-                        //   searchdata: {
-                        //     column_include_uicontroller: true,
-                        //     startindex: 0,
-                        //     range: 10,
-                        //   }
-                        // });
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
@@ -968,6 +937,7 @@
               }
             } else {
               const data = {
+                mask: true,
                 title: '警告',
                 content: `请先选择需要${obj.name}的记录！`
               };
