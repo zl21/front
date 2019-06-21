@@ -90,7 +90,7 @@
 
       <DatePicker
         v-if="_items.type === 'DatePicker'"
-        v-model="_items.value"
+        :value="_items.value"
         :type="_items.props.type"
         :transfer="_items.props.transfer"
         :format="_items.props.format"
@@ -451,6 +451,8 @@
 
       // datepick event
       datePickerChange(value, type, $this) {
+        console.log(value,'time');
+        this._items.value = value;
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
