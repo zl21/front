@@ -22,6 +22,7 @@
           @rootDataChange="rootDataChange"></ExtentionInputGroup>
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
+          :rootData="JSON.parse(JSON.stringify(rootData))"
           :option="item"
           @rootDataChange="rootDataChange"></ExtentionObjectGroup>
         <ExtentionObjectCombine

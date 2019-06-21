@@ -1,13 +1,12 @@
 <template>
   <div class="input-group-item">
     <div class="cell">
-      <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
+      <LabelForInput :item="item"></LabelForInput>
       <EnumerateRadioItem
         :option="item"
         :break-line="false"
         @radioValueChange="radioValueChange"
       >
-      
       </EnumerateRadioItem>
     </div>
   </div>
@@ -33,10 +32,6 @@
         type: Object,
         default: () => ({})
       },
-      index: {
-        type: [String, Number],
-        default: 0
-      }
     }
   };
 </script>
