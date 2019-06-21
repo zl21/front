@@ -59,6 +59,7 @@
       :is="'TableDetailCollection'"
       v-if="tableData.isShow"
       class="objectTable"
+      ref="objectTableRef"
       :table-height="type === 'vertical'? 300: 0"
       :table-name="tableName"
       :data-source="tableData.data"
@@ -207,7 +208,10 @@
         }
       },
       itemTableCheckFunc() {
-
+        if (Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
+          return false;
+        }
+        return true;
       }, // 传给按钮组件的回调方法，用来调表格组件的校验
       formEnter() {
         this.isclick = false;

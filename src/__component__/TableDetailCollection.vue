@@ -145,6 +145,9 @@
     data() {
       return {
         fkSelectedChangeData: [], // 保存外键修改的数据
+        verifyTipObj: {}, // 保存校验对象
+        isTableRender: false, // 表格是否重新渲染
+
         buttonPath: {},
         tableRowSelectedIds: [], // 表格选中的ID
         // columns: [],
@@ -260,7 +263,8 @@
         return JSON.parse(JSON.stringify(this.dataSource));
       },
       columns() {
-        return this.filterColumns(this.dataSource.tabth); // 每列的属性
+        const isTableRender = this.isTableRender;
+        return this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
       },
       isFullRangeSubTotalEnabled() { // 是否显示总计
         return this.dataSource.isFullRangeSubTotalEnabled;
@@ -381,6 +385,7 @@
       },
       dataSource: {
         handler(val) {
+          this.verifyTipObj = {};
           this.fkSelectedChangeData = [];
           if (val.row) {
             this.filterBeforeData();
@@ -1043,7 +1048,8 @@
         // 序号的render
         return (h, params) => {
           const index = Number(this.dataSource.start) + params.index + 1;
-          if (this.dataSource.row[params.index].errorTips && this.dataSource.row[params.index].errorTips.length > 0) {
+          // if (this.dataSource.row[params.index].errorTips && this.dataSource.row[params.index].errorTips.length > 0) {
+          if (Object.keys(this.verifyTipObj).length > 0 && this.verifyTipObj[params.row.ID]) {
             return h('div', [
               h('Poptip', {
                 style: {
@@ -1069,7 +1075,7 @@
                       width: '180px',
                     },
                     domProps: {
-                      innerHTML: `<span>${this.dataSource.row[params.index].errorTips}</span>`
+                      innerHTML: `<span>${this.verifyTipObj[params.row.ID]}</span>`
                     }
                   }),
                 },
@@ -1401,18 +1407,21 @@
         this.$emit(TABLE_VERIFY_MESSAGE, verifyData);
       },
       tableFormVerify() {
-        // const verifyTip = [];
-        // const data = this.afterSendData[this.tableName];
-        // data.map((ele) => {
-        //   Reflect.ownKeys(ele).forEach((key) => {
-        //     const value = ele[key];
-        //     if (value === null || value === undefined || value === '') {
-        //       const titleArray = this.dataSource.tabth.filter(col => col.colname === key && col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME);
-        //     }
-        //   });
-        //   return ele;
-        // });
-        // return false;
+        this.verifyTipObj = {};
+        const data = JSON.parse(JSON.stringify(this.afterSendData[this.tableName]));
+        const tabthData = JSON.parse(JSON.stringify(this.dataSource.tabth)).reverse();
+        data.map((ele) => {
+          tabthData.forEach((col) =>{
+            if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME) {
+              if (ele[col.colname] === '') {
+                this.verifyTipObj[ele.ID] = `${col.name}不能为空，请输入！`;
+              }
+            }
+          });
+          return ele;
+        });
+        this.isTableRender = !this.isTableRender;
+        return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
       tableSortChange(value) {
         const tableName = this.tableName;
