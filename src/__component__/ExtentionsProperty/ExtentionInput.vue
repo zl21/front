@@ -2,9 +2,7 @@
   <div class="extentionInput">
     <Description :option="option"></Description>
     <div class="content">
-      <div class="input-group-item">
-        <LabelWithInput :item="option"></LabelWithInput>
-      </div>
+      <LabelWithInput :item="option"></LabelWithInput>
     </div>
   </div>
 </template>

@@ -79,7 +79,8 @@
       display: flex;
       flex-direction: column;
       height: 100%;
-      overflow: scroll;
+      overflow-y: scroll;
+      overflow-x: hidden;
       .item-render-area {
         flex-direction: column;
         justify-content: center;
@@ -92,6 +93,8 @@
         }
         .content {
           flex: 1;
+          display: flex;
+          flex-direction: column;
           .input-group-item {
             margin: 5px 7px;
             display: flex;

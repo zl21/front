@@ -2,10 +2,10 @@
   <div class="extentionInputGroup">
     <Description :option="option"></Description>
     <div class="content">
-      <div class="input-group-item" v-for="(item, index) in option.inputLists" :key="index">
-        <LabelWithInput v-if="item.type === 'input'" :item="item"></LabelWithInput>
-        <LabelWithRadio v-if="item.type === 'radio'" :item="item" :index="index"></LabelWithRadio>
-      </div>
+      <template v-for="(item, index) in option.inputLists" >
+        <LabelWithInput v-if="item.type === 'input'" :item="item" :key="index"></LabelWithInput>
+        <LabelWithRadio v-if="item.type === 'radio'" :item="item" :index="index" :key="index"></LabelWithRadio>
+      </template>
     </div>
   </div>
 </template>

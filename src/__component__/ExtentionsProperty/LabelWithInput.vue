@@ -1,7 +1,9 @@
 <template>
-  <div class="cell">
-    <LabelForInput :item="item"></LabelForInput>
-    <input class="input" :type="item.inputType === 'Number' ? 'number' : 'text'" />
+  <div class="input-group-item">
+    <div class="cell">
+      <LabelForInput :item="item"></LabelForInput>
+      <input class="input" :type="item.inputType === 'Number' ? 'number' : 'text'" />
+    </div>
   </div>
 </template>
 

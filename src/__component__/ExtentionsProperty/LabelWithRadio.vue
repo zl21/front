@@ -1,7 +1,9 @@
 <template>
-  <div class="cell">
-    <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
-    <EnumerateRadioItem :option="item" :break-line="false"></EnumerateRadioItem>
+  <div class="input-group-item">
+    <div class="cell">
+      <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
+      <EnumerateRadioItem :option="item" :break-line="false"></EnumerateRadioItem>
+    </div>
   </div>
 </template>
 
