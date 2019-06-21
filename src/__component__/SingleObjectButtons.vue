@@ -711,7 +711,7 @@
           tableName,
           back: true,
         };
-
+        this.clearEditData();
         this.$store.commit('global/tabHref', param);
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑

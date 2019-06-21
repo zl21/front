@@ -168,6 +168,7 @@ export default {
     const { itemCurrentParameter } = parame;
     const { isreftabs } = parame;
     const { itemNameGroup } = parame;
+    const { addDefault } = itemCurrentParameter;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
@@ -177,7 +178,7 @@ export default {
           if (path) { // 有path的参数
             add[tableName].ID = objId;
             add[tableName].ISACTIVE = 'Y';
-            if (Object.values(itemAdd[itemName]).length > 0) {
+            if (Object.values(itemAdd[itemName]).length > 0 || Object.values(addDefault[itemName]).length > 0) {
               itemAdd[itemName].ID = objId;
               const itemTableAdd = Object.assign({}, itemAdd);
               itemTableAdd[itemName] = [
@@ -192,7 +193,7 @@ export default {
                 ...add,
               };
             }
-          } else if (Object.values(itemAdd[itemName]).length > 0) {
+          } else if (Object.values(itemAdd[itemName]).length > 0 || Object.values(addDefault[itemName]).length > 0) {
             const itemTableAdd = Object.assign({}, itemAdd);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
@@ -229,8 +230,7 @@ export default {
             }
           };
         }
-      } else
-      if (path) { // 没有子表    有path的参数
+      } else if (path) { // 没有子表    有path的参数
         add[tableName].ID = objId;
         parames = {
           ...add[tableName]
