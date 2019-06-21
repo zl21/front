@@ -29,7 +29,6 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
-  import ItemComponent from './ItemComponent';
 
   export default {
     name: 'FormItemComponent',
@@ -39,7 +38,6 @@
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           // console.log(list[current].item.value, 'item');
-          list[current].component = ItemComponent;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -125,6 +123,7 @@
                 || items.item.value
                 || items.item.props.valuedata;
             }
+
             if (items.item.props.number) {
               if (option[items.item.field]) {
                 option[items.item.field] = Number(
@@ -324,7 +323,7 @@
         handler() {
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
-          this.newFormItemLists = this.formItemLists.concat([]);
+          this.newFormItemLists = this.formItemLists;
         },
         deep: true
       },
@@ -521,7 +520,7 @@
         this.dataProcessing(this.newFormItemLists[index], index);
       },
       refcolval(items, json, index) {
-        if (interlocks === 'qiaodan') {
+        if (interlocks === true) {
           const srccol = items.validate.refcolval.srccol;
 
           if (json[srccol] === undefined) {
@@ -547,7 +546,9 @@
         const _index = this.newFormItemLists.findIndex(
           option => option.item.field === items.validate.dynamicforcompute.computecolumn
         );
-        this.newFormItemLists[_index].item.value = eval(str);
+        if(this.newFormItemLists[_index]){
+          this.newFormItemLists[_index].item.value = eval(str);
+        }
       },
       hidecolumn(items, index) {
         // 隐藏

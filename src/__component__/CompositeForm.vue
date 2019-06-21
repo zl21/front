@@ -31,7 +31,7 @@
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
                 :mapp-status="setMapping"
-                :condition="Condition"
+                :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :type="type"
@@ -54,7 +54,7 @@
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
-          :condition="Condition"
+          :condition="conditiontype"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -173,7 +173,7 @@
         mountChecked: false, // 区分是默认值还是change 值
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
-        Condition: '',
+        conditiontype: '',
         childFormData: [],
         computdefaultData: [], // form
         pathArry: [], // path 数组
@@ -200,7 +200,7 @@
       objreadonly: {
         handler() {
           this.computdefaultData = this.reorganizeForm();
-          this.Condition = this.condition;
+          this.conditiontype = this.condition;
           this.Comparison();
         },
         deep: true
@@ -327,8 +327,8 @@
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
 
-        console.log(data, setdefval);
-        if (!this.mountChecked && this.Condition !== 'list') {
+        //console.log(data, setdefval);
+        if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
         }
@@ -362,7 +362,6 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(this.formData);
         this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {
@@ -391,7 +390,7 @@
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
-        obj.component = {};
+        obj.component = ItemComponent;
         obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
@@ -534,7 +533,7 @@
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
-              if (item.props.fkdisplay && this.Condition !== 'list') {
+              if (item.props.fkdisplay && this.conditiontype !== 'list') {
                 if (item.type === 'AttachFilter') {
                   if (item.props.Selected[0].ID === '') {
                     Fitem[index].item.value = '';
@@ -790,7 +789,7 @@
           }
           return item.defval || item.valuedata || '';
         }
-        if (item.display === 'OBJ_DATENUMBER') {
+        if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
           // 日期控件
           // 保存change 之前的默认值
           if (this.defaultSetValue[item.colname] !== undefined) {
@@ -1268,7 +1267,7 @@
       if (this.$el) {
         this.setdefaultColumnCol();
       }
-      this.Condition = this.condition;
+      this.conditiontype = this.condition;
       window.addEventListener('resize', (e) => {
         if (this.$el) {
           this.setdefaultColumnCol();
