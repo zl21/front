@@ -784,21 +784,29 @@
             console.log(savemessage);
             this.resultData = savemessage;
             const value = `已经选中${$this._data.IN.length}条数据`;
+            let Select =  [{
+                label: value,
+                ID: saveObjectmessage
+              }];
             this._items.value = value;
             if (this._items.props.fkobj.saveType) {
-              this._items.props.Selected = saveObjectmessage;
+              this._items.props.Selected = Select;
               this._items.event['popper-value'](
                 $this,
                 value,
-                saveObjectmessage,
+                Select,
                 this.index
               );
             } else {
-              this._items.props.Selected = $this._data.IN;
+              let Select =  [{
+                label: row.label,
+                ID: $this._data.IN
+              }];
+              this._items.props.selected = Select;
               this._items.event['popper-value'](
                 $this,
                 value,
-                $this._data.IN,
+                Select,
                 this.index
               );
             }

@@ -362,7 +362,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-
+        console.log(this.formData);
         this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {

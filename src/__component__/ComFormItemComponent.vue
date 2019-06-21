@@ -427,7 +427,7 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            console.log(current.item.props.Selected);
+            console.log(current.item.props.Selected,'AttachFilter');
             if (current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
               obj[current.item.field] = current.item.props.Selected[0].ID;
               if (Version === '1.3') {
