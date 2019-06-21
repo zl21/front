@@ -33,6 +33,7 @@
     <TabPanels
       v-if="tabPanels.length > 0"
       class="tabPanel"
+      ref="tabPanel"
       :tab-margin-left="20"
       is-keep-alive
       :type="'singleCard'"
@@ -105,7 +106,9 @@
     },
     methods: {
       itemTableCheckFunc() {
-
+        if (this.$refs.tabPanel) {
+          this.$refs.tabPanel.$children[3].itemTableCheckFunc();
+        }
       }, // 按钮点击保存的回调
       InitializationForm(val) {
         const { tableName, itemId } = this.$route.params;

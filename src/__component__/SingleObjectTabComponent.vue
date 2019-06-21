@@ -208,7 +208,7 @@
         }
       },
       itemTableCheckFunc() {
-        if (Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
+        if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
           return false;
         }
         return true;

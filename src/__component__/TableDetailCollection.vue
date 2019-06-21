@@ -647,7 +647,7 @@
               width: '100px'
             },
             props: {
-              value: params.row[cellData.colname],
+              value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
               regx: this.inputRegx(cellData, params),
               maxlength: cellData.length
             },
@@ -1408,7 +1408,7 @@
       },
       tableFormVerify() {
         this.verifyTipObj = {};
-        const data = JSON.parse(JSON.stringify(this.afterSendData[this.tableName]));
+        const data = this.afterSendData[this.tableName] ? JSON.parse(JSON.stringify(this.afterSendData[this.tableName])) : [];
         const tabthData = JSON.parse(JSON.stringify(this.dataSource.tabth)).reverse();
         data.map((ele) => {
           tabthData.forEach((col) =>{
@@ -1420,7 +1420,9 @@
           });
           return ele;
         });
-        this.isTableRender = !this.isTableRender;
+        if (Object.keys(this.verifyTipObj) > 0) {
+          this.isTableRender = !this.isTableRender;
+        }
         return this.verifyTipObj;
       }, // 表格里的表单验证 true为校验通过，false为校验不通过
       tableSortChange(value) {
