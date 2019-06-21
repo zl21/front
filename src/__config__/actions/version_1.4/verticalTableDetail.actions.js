@@ -194,8 +194,6 @@ export default {
               };
             }
           } else if (Object.values(itemAdd[itemName]).length > 0 || Object.values(addDefault[itemName]).length > 0) {
-            debugger;
-
             const itemTableAdd = Object.assign({}, itemAdd);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
