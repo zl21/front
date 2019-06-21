@@ -128,7 +128,6 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   batchVoidForButtonsData({ buttons, ag }, data) { // 作废
-    console.log(data);
     buttons.batchVoidForButtonsData = data;
     ag.datas.deleteFailInfo = data;
     ag.datas = Object.assign({}, ag.datas);

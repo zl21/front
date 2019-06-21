@@ -31,6 +31,7 @@
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
           class="formPanel"
+          :condition = "Condition"
           type="PanelForm"
           @formChange="formChange"
         />
@@ -59,6 +60,7 @@
         newformList: {},
         formChangeData: {},
         fixedcolumns: {},
+        Condition:'list',
         objids: [],
         loading: false,
         type: false, // 判断是勾选 还是批量
@@ -144,17 +146,13 @@
         const localdata = {
           table: this.router.tableName, // 表名
           column_include_uicontroller: true, //
-          reffixedcolumns: this.reffixedcolumns, // 左边树
+          reffixedcolumns:{}, // 左边树
         };
         if (!this.type) {
           localdata.objids = this.objids;
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
-        }
-        // if (this.ids.length > 0) {
-        // } else {
-        //   localdata.reffixedcolumns = this.reffixedcolumns;// 左边树
-        // }
+        };
         const searchObject = {
           fixedData: this.formChangeData,
           searchdata: localdata

@@ -858,16 +858,21 @@
               }
             } else {
               // new
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              if (this._items.props.itemdata.valuedata.length > 0) {
-                this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
-              } else {
-                this._items.value = '';
-              }
-              this.valueChange();
+               this._items.props.itemdata.valuedata.splice(index - 1, 1);
+               this.valueImgChange();
+
             }
           }
         });
+      },
+      valueImgChange(){
+        if (this._items.props.itemdata.valuedata.length > 0) {
+          this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+        } else {
+          this._items.value = '';
+        }
+        this.valueChange();
+
       },
       deleteImgData(obj, index) {
         deleteImg({
@@ -897,7 +902,9 @@
             if (res.data.code !== 0) {
               return false;
             }
-            const fixedData = [...this._items.props.itemdata.valuedata];
+            console.log(this._items.props.itemdata.valuedata);
+            let valuedata = this._items.props.itemdata.valuedata;
+            const fixedData = Array.isArray(valuedata) ? [...valuedata]  :[];
             fixedData.push({ NAME: resultData.data.Name, URL: resultData.data.Url });
             // 
             let parms = {
@@ -925,8 +932,8 @@
               }
             } else {
               this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
-              this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
-              this.valueChange();
+              this.valueImgChange();
+
             }
           }
         });
@@ -1036,7 +1043,7 @@
                 URL: data.URL
               });
             }
-            this.valueChange();
+            //this.valueChange();
           }
         });
       },
