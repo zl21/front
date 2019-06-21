@@ -154,7 +154,6 @@ export default {
         if (path) { // 有path的参数
           const { modify } = parame;
           // const itmValues = itemModify[itemName];
-        
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
             // itemModify[itemName].ID = objId;
             // const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
@@ -254,7 +253,6 @@ export default {
         };
       }
     }
-
     network.post(path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;

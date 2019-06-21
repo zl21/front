@@ -616,7 +616,7 @@
         const { refcolid, tabledesc } = this.itemInfo;
         const searchdata = {
           table: this.itemName,
-          objectIds: `${refcolid}=${this.tableId}`,
+          objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
           fixedcolumns: { ID: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : this.updateData[this.itemName].delete[this.itemName] },
           startindex: this.tablePageInfo.currentPageIndex,
@@ -1244,7 +1244,7 @@
           if (tabinlinemode === 'Y') { // 当子表中存在form时
             if (!this.itemTableValidation) {
               const itemCheckedInfo = this.itemCurrentParameter.checkedInfo;// 子表校验信息
-              if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
+              if (!KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
                 this.saveParameters();
                 if (this.objectType === 'vertical') {
                   if (this.itemId === 'New') {
@@ -1287,6 +1287,8 @@
                 }
               } else if (itemCheckedInfo) {
                 const itemMessageTip = itemCheckedInfo.messageTip;
+                console.log(itemMessageTip);
+
                 if (itemMessageTip) {
                   if (itemMessageTip.length > 0) {
                     this.$Message.warning(itemMessageTip[0]);
