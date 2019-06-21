@@ -14,7 +14,7 @@
 
 <script>
   export default {
-    name: 'LabelForRadio',
+    name: 'EnumerateRadioItem',
     props: {
       option: {
         type: Object,

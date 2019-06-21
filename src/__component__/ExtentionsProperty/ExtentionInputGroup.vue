@@ -11,7 +11,7 @@
         </LabelWithInput>
         <div class="cell" v-if="item.type === 'radio'">
           <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
-          <LableWithRadio :option="item" :break-line="false"></LableWithRadio>
+          <EnumerateRadioItem :option="item" :break-line="false"></EnumerateRadioItem>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
   import Description from './Description';
   import LabelForInput from './LabelForInput';
   import LabelWithInput from './LabelWithInput';
-  import LableWithRadio from './LabelWithRadio';
+  import EnumerateRadioItem from './EnumerateRadioItem';
   
   export default {
     name: 'ExtentionInputGroup',
@@ -30,7 +30,7 @@
       Description,
       LabelWithInput,
       LabelForInput,
-      LableWithRadio
+      EnumerateRadioItem
     },
     props: {
       option: {
