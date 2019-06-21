@@ -541,9 +541,9 @@
                     Fitem[index].item.props.Selected = [
                       {
                         label: '',
-                        ID:''
+                        ID: ''
                       }
-                    ]
+                    ];
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
@@ -832,6 +832,14 @@
             return `已经选中${valuedata.total}条`;
           }
         }
+        const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+
+        if (item.fkdisplay === 'pop') {
+          if (fkdisplayValue) {
+            return fkdisplayValue.Label;
+          }
+          return item.defval || item.valuedata || item.default || '';
+        }
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
           // 外键默认值
           const arr = [];
@@ -845,12 +853,10 @@
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
-
           if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
             arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-            arr[0].Label = fkdisplayValue ? fkdisplayValue.LabelForInput : '';
+            arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
           }
-          
 
           return arr;
         }
