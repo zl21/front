@@ -334,7 +334,7 @@
           
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+              startindex: this.tablePageInfo.currentPageIndex,
               range: this.tablePageInfo.pageSize,
             };
             this.getObjectTableItemForTableData({
@@ -410,7 +410,7 @@
         const tabIndex = this.tabCurrentIndex;
         const searchdata = {
           column_include_uicontroller: true,
-          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+          startindex: this.tablePageInfo.currentPageIndex,
           range: this.tablePageInfo.pageSize,
         };
         this.getObjectTableItemForTableData({
@@ -613,25 +613,24 @@
         }
       },
       objectEXPORT() { // 导出功能
-        // if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-        const searchData = {
-          table: this.tableName,
+        const { refcolid, tabledesc } = this.itemInfo;
+        const searchdata = {
+          table: this.itemName,
+          objectIds: `${refcolid}=${this.tableId}`,
           column_include_uicontroller: true,
-          fixedcolumns: { ID: this.updateData[this.itemName].delete[this.itemName] },
-          range: 10,
-          startindex: 0
+          fixedcolumns: { ID: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : this.updateData[this.itemName].delete[this.itemName] },
+          startindex: this.tablePageInfo.currentPageIndex,
+          range: this.tablePageInfo.pageSize,
         };
+
         const OBJ = {
-          searchdata: searchData,
-          filename: this.activeTab.label,
+          searchdata: JSON.stringify(searchdata),
+          filename: tabledesc,
+          menu: tabledesc,
           filetype: '.xlsx',
           showColumnName: true,
-          menu: this.itemInfo.tabledesc
-
         };
-        // } else {
-   
-        // }
+       
      
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
@@ -882,7 +881,7 @@
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                          startindex: this.tablePageInfo.currentPageIndex,
                           range: this.tablePageInfo.pageSize,
                         };
                         this.getObjectTableItemForTableData({
@@ -938,7 +937,7 @@
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                          startindex: this.tablePageInfo.currentPageIndex,
                           range: this.tablePageInfo.pageSize,
                         };
                         this.getObjectTableItemForTableData({
@@ -1178,7 +1177,7 @@
             } else {
               if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { // 子表表格编辑修改
                 // 校验子表表格必填项
-                if (this.itemTableCheckFunc) {
+                if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
               }
@@ -1203,7 +1202,7 @@
               if (this.updateData[itemName].modify[itemName]) { 
                 if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
                   // this.itemTableCheckFunc();// 校验子表表格必填项
-                  if (this.itemTableCheckFunc) {
+                  if (this.itemTableCheckFunc()) {
                     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                   }
                 }
