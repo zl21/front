@@ -74,12 +74,12 @@ export default [
     name: '外键下拉',
     key: 'fkdrplist',
     type: 'object-combine',
-    enableIncrease: true,
     objectInfo: [
       {
         name: '排序信息',
         key: 'orderby',
         type: 'object-group',
+        enableIncrease: true,
         objectInfo: [
           {
             name: '字段名称',

@@ -1,10 +1,25 @@
 <template>
-  
+  <div class="extentionObjectGroup">
+    <Description :option="option"></Description>
+    <div>
+    </div>
+  </div>
 </template>
 
 <script>
+  import Description from './Description';
+  
   export default {
-    name: 'ObjectGroup'
+    name: 'ExtentionObjectGroup',
+    components: {
+      Description
+    },
+    props: {
+      option: {
+        type: Object,
+        default: () => ({})
+      }
+    }
   };
 </script>
 

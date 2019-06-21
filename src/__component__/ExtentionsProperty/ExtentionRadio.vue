@@ -12,7 +12,7 @@
   import LabelWithRadio from './LabelWithRadio';
   
   export default {
-    name: 'Radio',
+    name: 'ExtentionRadio',
     components: {
       Description,
       LabelWithRadio

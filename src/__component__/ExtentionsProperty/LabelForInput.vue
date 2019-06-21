@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'Label',
+    name: 'LabelForInput',
     props: {
       item: {
         type: Object,
