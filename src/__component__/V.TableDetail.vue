@@ -3,6 +3,7 @@
     <single-object-buttons
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
+      :itemTableCheckFunc="itemTableCheckFunc"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
       :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:''"
@@ -103,6 +104,9 @@
       this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex });
     },
     methods: {
+      itemTableCheckFunc() {
+
+      }, // 按钮点击保存的回调
       InitializationForm(val) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
