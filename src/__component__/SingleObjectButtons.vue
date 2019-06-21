@@ -585,119 +585,13 @@
         });
         
         promise.then(() => {
-          const message = this.objTabActionSlientConfirmData.message;
-          const data = {
-            title: '成功',
-            content: `${message}`
-          };
-          this.$Modal.fcSuccess(data);
+          // const message = this.objTabActionSlientConfirmData.message;
+          // const data = {
+          //   title: '成功',
+          //   content: `${message}`
+          // };
+          // this.$Modal.fcSuccess(data);
         });
-        
-        // axios({
-        //   method: 'post',
-        //   contentType: 'application/json',
-        //   url: tab.action || '/p/cs/exeAction',
-        //   data: params
-        /*
-          data: {
-            actionid: self.activeTabAction.webid,
-            webaction: null,
-            param: self.activeTabAction.sourceType == 1
-              ? {
-                objid: self.storageItem.id,
-                table: self.storageItem.name,
-                menu: self.$route.query.ptitle || (self.$route.query.tabTitle && self.$route.query.tabTitle.replace('编辑', '')) || '',
-                subParam: {
-                  idArr: self.tableChooseList,
-                  table: self.tableTab.selectItem ? self.tableTab.selectItem.tablename : '',
-                },
-              } : {
-                table: self.tableTab.selectItem ? self.tableTab.selectItem.tablename : '',
-                ids: self.tableChooseList,
-                menu: self.$route.query.ptitle || (self.$route.query.tabTitle && self.$route.query.tabTitle.replace('编辑', '')) || '',
-              }
-          },
-          */
-        // }).then((res) => {
-        //   let successAction = null;
-        //   let errorAction = null;
-        //   let refParam = null;
-        //   if (res.data.data) {
-        //     // 如果返回了id和tablename
-        //     refParam = res.data.data;
-        //   }
-        //   if (self.activeTabAction.cuscomponent) {
-        //     const nextOperate = JSON.parse(self.activeTabAction.cuscomponent);
-        //     if (nextOperate.success) successAction = nextOperate.success;
-        //     if (nextOperate.failure) errorAction = nextOperate.failure;
-        //   }
-        //   if (res.data.code == 0) {
-        //     if (successAction) {
-        //       // 如果有静默后需要执行的操作
-        //       axios({
-        //         method: 'post',
-        //         url: '/p/cs/getAction',
-        //         data: {
-        //           actionid: 0,
-        //           webaction: successAction,
-        //         },
-        //       }).then((res) => {
-        //         self.actionLoading = false;
-        //         if (res.data.code === 0) {
-        //           const tab = res.data.data;
-        //           if (refParam) {
-        //             for (const key of Object.keys(refParam)) {
-        //               tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-        //             }
-        //           }
-        //           self.TryObjTabConfigAction(tab, 1);
-        //         }
-        //       });
-        //       if (!res.data.message) {
-        //         self.refreshData();
-        //       }
-        //     } else {
-        //       self.actionLoading = false;
-
-        //       self.$message({
-        //         message: res.data.message,
-        //         type: 'success',
-        //       });
-        //       self.refreshData();
-        //     }
-        //   } else if (res.data.code == -1 && !res.data.message && errorAction) {
-        //     axios({
-        //       method: 'post',
-        //       url: '/p/cs/getAction',
-        //       data: {
-        //         actionid: 0,
-        //         webaction: errorAction,
-        //       },
-        //     }).then((res) => {
-        //       self.actionLoading = false;
-        //       if (res.data.code === 0) {
-        //         const tab = res.data.data;
-        //         if (refParam) {
-        //           for (const key of Object.keys(refParam)) {
-        //             tab.action = tab.action.replace(`\${${key}}`, refParam[key]);
-        //           }
-        //         }
-        //         self.TryObjTabConfigAction(tab, 1);
-        //       }
-        //     });
-        //   } else if (res.data.data && Array.isArray(res.data.data)) {
-        //     self.actionLoading = false;
-        //     store.commit('errorDialog', { // 其它报错
-        //       message: res.data.message,
-        //     });
-        //     self.tableSaveLoading.type = 'error';
-        //     self.tableSaveLoading.list = res.data.data;
-        //     self.tableErrorList = res.data.data;
-        //     self.getObjectTableItem(self.storageItem.id, 'saveLoading');
-        //   } else {
-        //     self.actionLoading = false;
-        //   }
-        // });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
@@ -1283,8 +1177,10 @@
               }
             } else {
               if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { // 子表表格编辑修改
-                // this.itemTableCheckFunc();// 校验子表表格必填项
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                // 校验子表表格必填项
+                if (this.itemTableCheckFunc) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                }
               }
               // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
               if (Object.values(this.updateData[itemName].add[itemName]).length > 0) {
@@ -1303,7 +1199,9 @@
             if (this.updateData[itemName].modify[itemName]) { 
               if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
                 // this.itemTableCheckFunc();// 校验子表表格必填项
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                if (this.itemTableCheckFunc) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                }
               }
             }
           
