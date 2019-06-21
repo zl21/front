@@ -1302,8 +1302,6 @@
         };
 
         const promise = new Promise((resolve, reject) => {
-          debugger;
-
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
    
