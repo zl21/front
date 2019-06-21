@@ -326,6 +326,8 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
+
+        console.log(data, setdefval);
         if (!this.mountChecked && this.Condition !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -449,17 +451,16 @@
                 item = this.$refs.FormComponent_0.newFormItemLists;
               }
 
-              item[index].item.value = value;
               // 
               if (Selected !== 'change') {
                 item[index].item.props.Selected = Selected;
               } else {
                 item[index].item.props.Selected = [{
                   lable: '',
-                  value: ''
+                  ID: ''
                 }];
               }
-            // this.formItemsLists = this.formItemsLists.concat([]);
+              item[index].item.value = value;
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
@@ -535,8 +536,14 @@
               }
               if (item.props.fkdisplay && this.Condition !== 'list') {
                 if (item.type === 'AttachFilter') {
-                  if (item.props.Selected[0].value === '') {
+                  if (item.props.Selected[0].ID === '') {
                     Fitem[index].item.value = '';
+                    Fitem[index].item.props.Selected = [
+                      {
+                        label: '',
+                        ID:''
+                      }
+                    ]
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
@@ -1051,7 +1058,7 @@
               item.props.Selected = [
                 {
                   label: current.valuedata,
-                  value: current.refobjid
+                  ID: current.refobjid
                 }
               ];
             }
@@ -1075,7 +1082,7 @@
             item.props.Selected = [
               {
                 label: current.valuedata,
-                value: current.refobjid
+                ID: current.refobjid
               }
             ];
             break;

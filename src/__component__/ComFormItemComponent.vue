@@ -39,7 +39,7 @@
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
           // console.log(list[current].item.value, 'item');
-          list[current].component = ItemComponent
+          list[current].component = ItemComponent;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -50,7 +50,7 @@
           if (Array.isArray(items.item.value)) {
             if (
               items.item.value[0]
-            && Object.hasOwnProperty.call(items.item.value[0], 'ID')
+              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
             ) {
               if (items.item.required === true) {
                 // 赋值 需要校验的 值
@@ -112,7 +112,7 @@
             if (Array.isArray(items.item.value)) {
               if (
                 items.item.value[0]
-              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
+                && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
                 if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
@@ -121,9 +121,9 @@
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
-              option[items.item.field] =              items.item.props.defval
-              || items.item.value
-              || items.item.props.valuedata;
+              option[items.item.field] = items.item.props.defval
+                || items.item.value
+                || items.item.props.valuedata;
             }
             if (items.item.props.number) {
               if (option[items.item.field]) {
@@ -148,8 +148,8 @@
       // 计算属性的 div 的坐标起始点
       setDiv() {
         return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${
-            item.y
-          }/${item.y + item.row};`;
+          item.y
+        }/${item.y + item.row};`;
       },
       pathcheck() {
         return this.path;
@@ -265,7 +265,7 @@
         handler(val, old) {
           if (
             val.length > old.length
-          || JSON.stringify(val) !== JSON.stringify(old)
+            || JSON.stringify(val) !== JSON.stringify(old)
           ) {
             if (this.indexItem < 0) {
               setTimeout(() => {
@@ -289,7 +289,7 @@
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if (
                 val[item.validate.dynamicforcompute.computecolumn]
-              === old[item.validate.dynamicforcompute.computecolumn]
+                === old[item.validate.dynamicforcompute.computecolumn]
               ) {
                 this.dynamicforcompute(item, val, i);
               } else {
@@ -303,7 +303,7 @@
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              const checkVal =              _refval === val[_refcolumn].toString().trim() ? 1 : 0;
+              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
@@ -341,8 +341,8 @@
         }
         const VerificationForm = this.VerificationForm.reduce((item, current) => {
           // 判断必须输入的值是否为空
-          const elDiv =          this.$refs[`component_${current.index}`][0]
-          && this.$refs[`component_${current.index}`][0].$el;
+          const elDiv = this.$refs[`component_${current.index}`][0]
+            && this.$refs[`component_${current.index}`][0].$el;
 
           if (!elDiv) {
             return [];
@@ -421,14 +421,15 @@
           // }
           } else if (
             current.item.value
-          && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0
+            && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0
           ) {
             // 当为全选时，将对应的字段改为undefined
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            if (current.item.props.Selected) {
-              obj[current.item.field] = current.item.props.Selected;
+            console.log(current.item.props.Selected);
+            if (current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
+              obj[current.item.field] = current.item.props.Selected[0].ID;
               if (Version === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
@@ -493,7 +494,11 @@
         }
         const valueItem = {};
         if (Object.keys(obj)[0]) {
-          valueItem[Object.keys(obj)[0]] = current.item.value;
+          if (current.item.type === 'AttachFilter') {
+            valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
+          }else {
+            valueItem[Object.keys(obj)[0]] = current.item.value;
+          }
         }
         this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
