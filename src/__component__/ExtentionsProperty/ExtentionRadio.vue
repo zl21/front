@@ -1,23 +1,22 @@
 <template>
   <div class="extentionRadio">
-    <div class="description">{{option.description}}</div>
+    <Description :option="option"></Description>
     <div class="content">
-      <label
-        class="radioItem"
-        :for="`${option.key}-${index}`"
-        v-for="(radio, index) in option.enumerateValue"
-        :key="index"
-      >
-        <input :id="`${option.key}-${index}`" type="radio" :name="option.key" />
-        {{radio.text}}
-      </label>
+      <LabelWithRadio :option="option"></LabelWithRadio>
     </div>
   </div>
 </template>
 
 <script>
+  import Description from './Description';
+  import LabelWithRadio from './LabelWithRadio';
+  
   export default {
     name: 'Radio',
+    components: {
+      Description,
+      LabelWithRadio
+    },
     props: {
       option: {
         type: Object,

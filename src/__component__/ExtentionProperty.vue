@@ -54,7 +54,7 @@
       list-style: none;
     }
     .left {
-      flex: 1;
+      flex: 1.3;
       border: 1px solid darkslategrey;
       display: flex;
       ul {
@@ -74,7 +74,7 @@
       }
     }
     .middle {
-      flex: 5;
+      flex: 6.5;
       border: 1px solid red;
       display: flex;
       flex-direction: column;
@@ -86,34 +86,51 @@
         width: 100%;
         background-color: #e1ecfc;
         border: 1px solid black;
+        .description {
+          margin: 5px;
+          padding: 5px;
+        }
         .content {
           flex: 1;
           .input-group-item {
+            margin: 5px 7px;
             display: flex;
-            label {
+            .cell {
               text-align: right;
               line-height: 24px;
               vertical-align: middle;
-            }
-            label {
+              display: flex;
               flex: 1;
-            }
-            input {
-              flex: 3;
-              padding: 0 5px;
-            }
-          }
-          .radioItem {
-            cursor: pointer;
-            display: block;
-            padding: 5px;
-            input[type='radio'] {
-              line-height: 100%;
-              vertical-align: middle;
+              .label {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+              }
+              .input {
+                flex: 3;
+                padding: 0 5px;
+              }
             }
           }
-          .radioItem:hover {
-            opacity: 0.8;
+          .radioItemWrapper {
+            display: flex;
+            align-items: center;
+            flex: 3;
+            flex-wrap: wrap;
+            .radioItem {
+              cursor: pointer;
+              padding: 5px;
+              text-align: left;
+              min-width: 150px;
+              input[type='radio'] {
+                line-height: 100%;
+                vertical-align: middle;
+              }
+            }
+            .radioItem:hover {
+              opacity: 0.8;
+            }
           }
         }
       }

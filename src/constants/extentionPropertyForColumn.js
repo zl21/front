@@ -9,7 +9,25 @@ export default [
   {
     name: '过滤',
     key: 'refcolval',
-    type: 'filter',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '外键关联字段',
+        key: 'fixcolumn',
+        type: 'input'
+      },
+      {
+        name: '已知条件字段',
+        key: 'srccol',
+        type: 'input'
+      },
+      {
+        name: '过滤字段在表头',
+        key: 'maintable',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+      },
+    ],
     description: '请描述一下这个配置有啥作用'
   },
   {
