@@ -3,10 +3,7 @@
     <Description :option="option"></Description>
     <div class="content">
       <div class="input-group-item">
-        <div class="cell">
-          <LabelForInput :for="'extentionInputElement'" :item="option"></LabelForInput>
-          <input class="input" id="extentionInputElement" :type="option.inputType === 'Number' ? 'number' : 'text'" />
-        </div>
+        <LabelWithInput :item="option"></LabelWithInput>
       </div>
     </div>
   </div>
@@ -14,13 +11,13 @@
 
 <script>
   import Description from './Description';
-  import LabelForInput from './LabelForInput';
+  import LabelWithInput from './LabelWithInput';
   
   export default {
-    name: 'Input',
+    name: 'ExtentionInput',
     components: {
       Description,
-      LabelForInput
+      LabelWithInput
     },
     props: {
       option: {

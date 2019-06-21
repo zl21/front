@@ -95,6 +95,7 @@
           .input-group-item {
             margin: 5px 7px;
             display: flex;
+            flex-direction: column;
             .cell {
               text-align: right;
               line-height: 24px;
@@ -107,7 +108,7 @@
                 justify-content: flex-end;
                 align-items: center;
               }
-              .input {
+              .input, .select {
                 flex: 3;
                 padding: 0 5px;
               }

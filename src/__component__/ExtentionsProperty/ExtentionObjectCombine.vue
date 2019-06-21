@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'ObjectCombine'
+    name: 'ExtentionObjectCombine'
   };
 </script>
 

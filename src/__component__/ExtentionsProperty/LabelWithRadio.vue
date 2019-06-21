@@ -1,28 +1,28 @@
 <template>
-  <div class="radioItemWrapper">
-    <label
-      class="radioItem"
-      :for="`${option.key}-${index}`"
-      v-for="(radio, index) in option.enumerateValue"
-      :key="index"
-    >
-      <input :id="`${option.key}-${index}`" type="radio" :name="option.key" />
-      {{radio.text}}
-    </label>
+  <div class="cell">
+    <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
+    <EnumerateRadioItem :option="item" :break-line="false"></EnumerateRadioItem>
   </div>
 </template>
 
 <script>
+  import LabelForInput from './LabelForInput';
+  import EnumerateRadioItem from './EnumerateRadioItem';
+  
   export default {
-    name: 'LabelForRadio',
+    name: 'LabelWithRadio',
+    components: {
+      LabelForInput,
+      EnumerateRadioItem
+    },
     props: {
-      option: {
+      item: {
         type: Object,
         default: () => ({})
       },
-      breakLine: {
-        type: Boolean,
-        default: true
+      index: {
+        type: [String, Number],
+        default: 0
       }
     }
   };

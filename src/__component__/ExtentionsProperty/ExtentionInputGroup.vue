@@ -3,22 +3,8 @@
     <Description :option="option"></Description>
     <div class="content">
       <div class="input-group-item" v-for="(item, index) in option.inputLists" :key="index">
-        <div
-          class="cell"
-          :for="`${item.name}-${index}`"
-          v-if="item.type === 'input'"
-        >
-          <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
-          <input
-            class="input"
-            :id="`${item.name}-${index}`"
-            :type="item.InputType === 'Number' ? 'number' : 'text'"
-          />
-        </div>
-        <div class="cell" v-if="item.type === 'radio'">
-          <LabelForInput :for="`${item.name}-${index}`" :item="item"></LabelForInput>
-          <LableWithRadio :option="item" :break-line="false"></LableWithRadio>
-        </div>
+        <LabelWithInput v-if="item.type === 'input'" :item="item"></LabelWithInput>
+        <LabelWithRadio v-if="item.type === 'radio'" :item="item" :index="index"></LabelWithRadio>
       </div>
     </div>
   </div>
@@ -26,15 +12,15 @@
 
 <script>
   import Description from './Description';
-  import LabelForInput from './LabelForInput';
-  import LableWithRadio from './LabelWithRadio';
+  import LabelWithInput from './LabelWithInput';
+  import LabelWithRadio from './LabelWithRadio';
   
   export default {
-    name: 'InputGroup',
+    name: 'ExtentionInputGroup',
     components: {
       Description,
-      LabelForInput,
-      LableWithRadio
+      LabelWithInput,
+      LabelWithRadio,
     },
     props: {
       option: {

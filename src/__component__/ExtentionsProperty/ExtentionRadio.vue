@@ -2,20 +2,20 @@
   <div class="extentionRadio">
     <Description :option="option"></Description>
     <div class="content">
-      <LabelWithRadio :option="option"></LabelWithRadio>
+      <EnumerateRadioItem :option="option"></EnumerateRadioItem>
     </div>
   </div>
 </template>
 
 <script>
   import Description from './Description';
-  import LabelWithRadio from './LabelWithRadio';
+  import EnumerateRadioItem from './EnumerateRadioItem';
   
   export default {
-    name: 'Radio',
+    name: 'ExtentionRadio',
     components: {
       Description,
-      LabelWithRadio
+      EnumerateRadioItem
     },
     props: {
       option: {

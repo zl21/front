@@ -1,5 +1,24 @@
 export default [
   {
+    name: '模糊匹配',
+    key: 'fuzzyQuery',
+    type: 'object-group',
+    enableIncrease: true,
+    objectInfo: [
+      {
+        name: '字段名称',
+        key: 'colName',
+        type: 'input'
+      },
+      {
+        name: '模糊匹配方式',
+        key: 'matchType',
+        type: 'input',
+      }
+    ],
+    description: '请描述一下这个配置有啥作用'
+  },
+  {
     name: '列表默认排序',
     key: 'orderby',
     type: 'object-group',
@@ -51,35 +70,17 @@ export default [
     ],
     description: '请描述一下这个配置有啥作用'
   },
-  {
-    name: '模糊匹配',
-    key: 'fuzzyQuery',
-    type: 'object-group',
-    enableIncrease: true,
-    objectInfo: [
-      {
-        name: '字段名称',
-        key: 'colName',
-        type: 'input'
-      },
-      {
-        name: '模糊匹配方式',
-        key: 'matchType',
-        type: 'input',
-      }
-    ],
-    description: '请描述一下这个配置有啥作用'
-  },
+  // 模糊匹配占位
   {
     name: '外键下拉',
     key: 'fkdrplist',
     type: 'object-combine',
-    enableIncrease: true,
     objectInfo: [
       {
         name: '排序信息',
         key: 'orderby',
         type: 'object-group',
+        enableIncrease: true,
         objectInfo: [
           {
             name: '字段名称',
