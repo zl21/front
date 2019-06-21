@@ -71,6 +71,14 @@ export default {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
+    state.activeTab = {
+      isActive: openedMenuInfo.isActive,
+      keepAliveModuleName: openedMenuInfo.keepAliveModuleName,
+      label: openedMenuInfo.label,
+      routeFullPath: openedMenuInfo.routeFullPath,
+      routePrefix: openedMenuInfo.routePrefix,
+      tableName: openedMenuInfo.tableName,
+    };
   },
   increaseOpenedMenuLists(state, {
     label, keepAliveModuleName, tableName, routeFullPath, routePrefix
