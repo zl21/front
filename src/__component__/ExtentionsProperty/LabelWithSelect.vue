@@ -1,7 +1,9 @@
 <template>
   <div class="cell">
     <LabelForInput :item="item"></LabelForInput>
-    <input class="input" :type="item.inputType === 'Number' ? 'number' : 'text'" />
+    <select class="select">
+      <option v-for="(o, i) in item.selectOptions" :value="o.value" :key="i">{{ o.text }}</option>
+    </select>
   </div>
 </template>
 
@@ -9,7 +11,7 @@
   import LabelForInput from './LabelForInput';
   
   export default {
-    name: 'LabelWithInput',
+    name: 'LabelWithSelect',
     components: {
       LabelForInput
     },
@@ -17,7 +19,7 @@
       item: {
         type: Object,
         default: () => ({})
-      }
+      },
     }
   };
 </script>
