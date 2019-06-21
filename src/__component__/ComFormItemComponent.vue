@@ -98,7 +98,7 @@
           const value = items.item.props.refobjid
             ? items.item.props.refobjid
             : items.item.value;
-          if (value !== undefined ) {
+          if (value === undefined ) {
             return option;
           }
           if (items.item.props.readonly) {
