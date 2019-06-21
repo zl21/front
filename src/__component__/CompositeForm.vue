@@ -531,9 +531,7 @@
               }
               if (item.props.fkdisplay && this.Condition !== 'list') {
                 if (item.type === 'AttachFilter') {
-                  console.log(item.props.Selected);
-
-                  if (item.props.Selected === '') {
+                  if (item.props.Selected[0].value === '') {
                     Fitem[index].item.value = '';
                   }
                 } else if (item.type === 'DropDownSelectFilter') {

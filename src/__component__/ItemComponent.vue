@@ -162,7 +162,7 @@
         :dialog="_items.props.dialog"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
-        @on-change="attachFilterChange"
+        @input="attachFilterChange"
         @on-select="attachFilterSelected"
         @on-focus="attachFilterInputFocus"
         @on-blur="attachFilterInputBlur"
@@ -619,6 +619,10 @@
           label: row.label,
           value: row.value
         }];
+        let selected = [{
+          label: row.label,
+          value: row.value
+        }];
         console.log(this._items.props.selected);
         if (
           Object.prototype.hasOwnProperty.call(
@@ -630,7 +634,7 @@
           this._items.event['popper-value'](
             $this,
             row.label,
-            row.this._items.props.selected,
+            selected,
             this.index
           );
         }
