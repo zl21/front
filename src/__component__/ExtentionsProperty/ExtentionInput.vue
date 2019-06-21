@@ -2,7 +2,11 @@
   <div class="extentionInput">
     <Description :option="option"></Description>
     <div class="content">
-      <LabelWithInput :item="option"></LabelWithInput>
+      <LabelWithInput
+        :item="option"
+        @inputValueChange="inputValueChange"
+      >
+      </LabelWithInput>
     </div>
   </div>
 </template>
@@ -16,6 +20,11 @@
     components: {
       Description,
       LabelWithInput
+    },
+    methods: {
+      inputValueChange({ key, value }) {
+        this.$emit('rootDataChange', { key, value });
+      }
     },
     props: {
       option: {

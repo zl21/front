@@ -2,7 +2,7 @@
   <div class="extentionRadio">
     <Description :option="option"></Description>
     <div class="content">
-      <EnumerateRadioItem :option="option"></EnumerateRadioItem>
+      <EnumerateRadioItem :option="option" @radioValueChange="radioValueChange"></EnumerateRadioItem>
     </div>
   </div>
 </template>
@@ -16,6 +16,11 @@
     components: {
       Description,
       EnumerateRadioItem
+    },
+    methods: {
+      radioValueChange({ key, value }) {
+        this.$emit('rootDataChange', { key, value });
+      }
     },
     props: {
       option: {

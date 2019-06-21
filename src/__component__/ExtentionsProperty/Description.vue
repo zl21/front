@@ -1,6 +1,6 @@
 <template>
   <div class="description">
-    配置项 [ {{option.name}} ] ：
+    配置项<b style="color: orangered;">[ {{option.name}} ] </b>：
     {{option.description}}
   </div>
 </template>

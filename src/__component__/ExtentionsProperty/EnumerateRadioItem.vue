@@ -6,7 +6,13 @@
       v-for="(radio, index) in option.enumerateValue"
       :key="index"
     >
-      <input :id="`${option.key}-${index}`" type="radio" :name="option.key" />
+      <input
+        :id="`${option.key}-${index}`"
+        type="radio"
+        :name="option.key"
+        :value="radio.value"
+        @change="radioValueChange(radio.value)"
+      />
       {{radio.text}}
     </label>
   </div>
@@ -15,6 +21,11 @@
 <script>
   export default {
     name: 'EnumerateRadioItem',
+    methods: {
+      radioValueChange(value) {
+        this.$emit('radioValueChange', { key: this.option.key, value });
+      }
+    },
     props: {
       option: {
         type: Object,

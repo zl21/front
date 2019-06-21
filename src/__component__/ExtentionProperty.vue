@@ -17,6 +17,7 @@
           @rootDataChange="rootDataChange"></ExtentionRadio>
         <ExtentionInputGroup
           v-if="item.type === 'input-group'"
+          :rootData="JSON.parse(JSON.stringify(rootData))"
           :option="item"
           @rootDataChange="rootDataChange"></ExtentionInputGroup>
         <ExtentionObjectGroup
@@ -64,14 +65,19 @@
     },
     computed: {
       formatedRootData() {
-        return JSON.stringify(this.rootData, null, 4);
+        return JSON.stringify(this.rootData, null, 2);
       },
     },
     methods: {
       updateRootData(key, value) {
-        this.rootData[key] = value;
+        if (value === '') {
+          delete this.rootData[key];
+          this.rootData = Object.assign({}, this.rootData);
+        } else {
+          this.rootData = Object.assign({}, this.rootData, { [key]: value });
+        }
       },
-      rootDataChange({key, value}) {
+      rootDataChange({ key, value }) {
         this.updateRootData(key, value);
       },
     },
@@ -181,8 +187,10 @@
         width: 100%;
         height: 100%;
         resize: none;
-        letter-spacing: 2px;
         padding: 5px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: Consolas,serif;
       }
     }
   }
