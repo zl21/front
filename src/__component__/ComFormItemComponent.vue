@@ -38,7 +38,8 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          list[current].component = ItemComponent;
+          // console.log(list[current].item.value, 'item');
+          list[current].component = ItemComponent
           temp.push(list[current]);
           return temp;
         }, []);
@@ -49,7 +50,7 @@
           if (Array.isArray(items.item.value)) {
             if (
               items.item.value[0]
-              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
+            && Object.hasOwnProperty.call(items.item.value[0], 'ID')
             ) {
               if (items.item.required === true) {
                 // 赋值 需要校验的 值
@@ -111,7 +112,7 @@
             if (Array.isArray(items.item.value)) {
               if (
                 items.item.value[0]
-                && Object.hasOwnProperty.call(items.item.value[0], 'ID')
+              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
                 if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
@@ -120,9 +121,9 @@
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
-              option[items.item.field] = items.item.props.defval
-                || items.item.value
-                || items.item.props.valuedata;
+              option[items.item.field] =              items.item.props.defval
+              || items.item.value
+              || items.item.props.valuedata;
             }
             if (items.item.props.number) {
               if (option[items.item.field]) {
@@ -147,8 +148,8 @@
       // 计算属性的 div 的坐标起始点
       setDiv() {
         return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${
-          item.y
-        }/${item.y + item.row};`;
+            item.y
+          }/${item.y + item.row};`;
       },
       pathcheck() {
         return this.path;
@@ -260,21 +261,21 @@
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
-      // VerificationForm: {
-      //   handler(val, old) {
-      //     if (
-      //       val.length > old.length
-      //     || JSON.stringify(val) !== JSON.stringify(old)
-      //     ) {
-      //       if (this.indexItem < 0) {
-      //         setTimeout(() => {
-      //           this.VerificationFormInt();
-      //         }, 300);
-      //       }
-      //     }
-      //   },
-      //   deep: true
-      // },
+      VerificationForm: {
+        handler(val, old) {
+          if (
+            val.length > old.length
+          || JSON.stringify(val) !== JSON.stringify(old)
+          ) {
+            if (this.indexItem < 0) {
+              setTimeout(() => {
+                this.VerificationFormInt();
+              }, 300);
+            }
+          }
+        },
+        deep: true
+      },
       formDataObject: {
         handler(val, old) {
           // if (this.indexItem === -1) {
@@ -288,7 +289,7 @@
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if (
                 val[item.validate.dynamicforcompute.computecolumn]
-                === old[item.validate.dynamicforcompute.computecolumn]
+              === old[item.validate.dynamicforcompute.computecolumn]
               ) {
                 this.dynamicforcompute(item, val, i);
               } else {
@@ -302,7 +303,7 @@
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
+              const checkVal =              _refval === val[_refcolumn].toString().trim() ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
@@ -322,29 +323,26 @@
       formItemLists: {
         handler() {
           this.changeNumber = 0;
-          this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
-          setTimeout(() => {
-            this.VerificationFormInt();
-          }, 500);
+          // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
+          this.newFormItemLists = this.formItemLists.concat([]);
         },
         deep: true
       },
-      
+      changeNumber() {
+        console.log('changeNumber', this.changeNumber);
+      }
     },
     methods: {
       VerificationFormInt() {
         //  form 计算 校验
-         setTimeout(() => {
-          //  传form 默认值
-          this.mountdataForm(this.formDataObject);
-        }, 200);
+        // 传值默认data
         if (this.VerificationForm.length < 1) {
           return false;
         }
         const VerificationForm = this.VerificationForm.reduce((item, current) => {
           // 判断必须输入的值是否为空
-          const elDiv = this.$refs[`component_${current.index}`][0]
-            && this.$refs[`component_${current.index}`][0].$el;
+          const elDiv =          this.$refs[`component_${current.index}`][0]
+          && this.$refs[`component_${current.index}`][0].$el;
 
           if (!elDiv) {
             return [];
@@ -423,7 +421,7 @@
           // }
           } else if (
             current.item.value
-            && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0
+          && JSON.stringify(current.item.value).indexOf('bSelect-all') >= 0
           ) {
             // 当为全选时，将对应的字段改为undefined
             obj[current.item.field] = undefined;

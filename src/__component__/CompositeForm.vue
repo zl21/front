@@ -70,6 +70,7 @@
 
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
+  import ItemComponent from './ItemComponent';
 
   const {
     fkQueryList,
@@ -185,8 +186,11 @@
     watch: {
       defaultData: {
         handler() {
-          // 开启  默认值
-          this.mountChecked = true;
+          // 开启  默认值(刷新界面))
+          this.mountChecked = false;
+          setTimeout(() => {
+            this.mountChecked = true;
+          }, 500);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -322,7 +326,6 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-        // console.log(this.mountChecked && this.Condition);
         if (!this.mountChecked && this.Condition !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
