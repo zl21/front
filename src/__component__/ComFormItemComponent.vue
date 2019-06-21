@@ -29,6 +29,7 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
+  import ItemComponent from './ItemComponent';
 
   export default {
     name: 'FormItemComponent',
@@ -37,7 +38,7 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          // console.log(list[current].item.value, 'item');
+          list[current].component = ItemComponent;
           temp.push(list[current]);
           return temp;
         }, []);
@@ -98,7 +99,7 @@
           const value = items.item.props.refobjid
             ? items.item.props.refobjid
             : items.item.value;
-          if (value === undefined ) {
+          if (value === undefined) {
             return option;
           }
           if (items.item.props.readonly) {
@@ -259,21 +260,21 @@
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
-      VerificationForm: {
-        handler(val, old) {
-          if (
-            val.length > old.length
-            || JSON.stringify(val) !== JSON.stringify(old)
-          ) {
-            if (this.indexItem < 0) {
-              setTimeout(() => {
-                this.VerificationFormInt();
-              }, 300);
-            }
-          }
-        },
-        deep: true
-      },
+      // VerificationForm: {
+      //   handler(val, old) {
+      //     if (
+      //       val.length > old.length
+      //     || JSON.stringify(val) !== JSON.stringify(old)
+      //     ) {
+      //       if (this.indexItem < 0) {
+      //         setTimeout(() => {
+      //           this.VerificationFormInt();
+      //         }, 300);
+      //       }
+      //     }
+      //   },
+      //   deep: true
+      // },
       formDataObject: {
         handler(val, old) {
           // if (this.indexItem === -1) {
@@ -281,7 +282,6 @@
           // }
           // console.log(val,'this.indexItem',this.indexItem);
           val = Object.assign(val, this.formValueItem);
-          this.changeNumber = this.changeNumber + 1;
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
@@ -302,7 +302,7 @@
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              const checkVal = (_refval === val[_refcolumn].toString().trim()) ? 1 : 0;
+              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
@@ -322,10 +322,14 @@
       formItemLists: {
         handler() {
           this.changeNumber = 0;
-          this.newFormItemLists = this.formItemLists.concat();
+          this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
+          setTimeout(() => {
+            this.VerificationFormInt();
+          }, 500);
         },
         deep: true
-      }
+      },
+      
     },
     methods: {
       VerificationFormInt() {
@@ -338,7 +342,7 @@
           // 判断必须输入的值是否为空
           const elDiv = this.$refs[`component_${current.index}`][0]
             && this.$refs[`component_${current.index}`][0].$el;
-          
+
           if (!elDiv) {
             return [];
           }

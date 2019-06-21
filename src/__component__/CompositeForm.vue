@@ -66,7 +66,6 @@
 
 <script>
   import FormItemComponent from './ComFormItemComponent';
-  import ItemComponent from './ItemComponent';
   import { Version } from '../constants/global';
 
   import regExp from '../constants/regExp';
@@ -186,6 +185,8 @@
     watch: {
       defaultData: {
         handler() {
+          // 开启  默认值
+          this.mountChecked = true;
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -385,7 +386,7 @@
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
-        obj.component = ItemComponent;
+        obj.component = {};
         obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
