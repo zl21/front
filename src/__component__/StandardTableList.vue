@@ -866,11 +866,10 @@
                 webaction: successAction
               };
               promise = new Promise((resolve) => {
-                this.getActionDataForButtons({ successActionParam, resolve });
+                this.getActionDataForButtons({ param: successActionParam, resolve });
               });
               promise.then(() => {
                 const exeActionDataForComponent = this.buttons.ExeActionDataForComponent.data;
-                exeActionDataForComponent.action = exeActionDataForComponent.webname;
                 const type = 'custom';
                 this.webactionClick(type, exeActionDataForComponent);
               });
@@ -891,9 +890,14 @@
                 actionid: 0,
                 webaction: errorAction
               };
-              if (!this.buttons.ExeActionData) {
-                this.getActionDataForButtons(errorActionParam);
-              }
+              promise = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: errorActionParam, resolve });
+              });
+              promise.then(() => {
+                const exeActionDataForComponent = this.buttons.ExeActionDataForComponent.data;
+                const type = 'custom';
+                this.webactionClick(type, exeActionDataForComponent);
+              });
             }
           });
         } else { // 没有配置动作定义调动作定义逻辑

@@ -446,8 +446,14 @@
               }
 
               item[index].item.value = value;
+              // 
               if (Selected !== 'change') {
                 item[index].item.props.Selected = Selected;
+              } else {
+                item[index].item.props.Selected = [{
+                  lable: '',
+                  value: ''
+                }];
               }
             // this.formItemsLists = this.formItemsLists.concat([]);
             },
@@ -524,13 +530,16 @@
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
               if (item.props.fkdisplay && this.Condition !== 'list') {
-                console.log(item.props);
-                if (item.props.type === 'AttachFilter') {
-                  if (item.props.Selected === '') {
+                if (item.type === 'AttachFilter') {
+                  if (item.props.Selected[0].value === '') {
                     Fitem[index].item.value = '';
                   }
-                } else if (Array.isArray(item.value)) {
-                  if (item.value[0].ID === '' || item.value[0].ID === undefined) {
+                } else if (item.type === 'DropDownSelectFilter') {
+                  if (Array.isArray(item.value)) {
+                    if (item.value[0].ID === '' || item.value[0].ID === undefined) {
+                      Fitem[index].item.props.defaultSelected = [];
+                    }
+                  } else {
                     Fitem[index].item.props.defaultSelected = [];
                   }
                 }
@@ -1037,8 +1046,8 @@
               item.props.datalist = [];
               item.props.Selected = [
                 {
-                  label: current.refobjid,
-                  value: current.valuedata
+                  label: current.valuedata,
+                  value: current.refobjid
                 }
               ];
             }
@@ -1061,8 +1070,8 @@
             item.props.filterDate = {};
             item.props.Selected = [
               {
-                label: current.refobjid,
-                value: current.valuedata
+                label: current.valuedata,
+                value: current.refobjid
               }
             ];
             break;

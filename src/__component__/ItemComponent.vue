@@ -162,7 +162,7 @@
         :dialog="_items.props.dialog"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
-        @on-change="attachFilterChange"
+        @input="attachFilterChange"
         @on-select="attachFilterSelected"
         @on-focus="attachFilterInputFocus"
         @on-blur="attachFilterInputBlur"
@@ -600,6 +600,7 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
+          console.log('dddd');
           this._items.event['popper-value']($this, value, 'change', this.index);
         }
         if (
@@ -614,7 +615,15 @@
       },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
-        this._items.props.selected = row.value;
+        this._items.props.selected = [{
+          label: row.label,
+          value: row.value
+        }];
+        let selected = [{
+          label: row.label,
+          value: row.value
+        }];
+        console.log(this._items.props.selected);
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -625,7 +634,7 @@
           this._items.event['popper-value'](
             $this,
             row.label,
-            row.value,
+            selected,
             this.index
           );
         }
@@ -694,7 +703,7 @@
         }
       },
       attachFilterPopperShow($this) {
-        console.log('dddd',this._items);
+        console.log('dddd', this._items);
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -705,7 +714,7 @@
           if (this._items.props.fkobj.saveType && this._items.props.valuedata && /total/.test(this._items.props.valuedata)) {
             // this.filter = data;
             const data = JSON.parse(this._items.props.valuedata);
-              console.log(data);
+            console.log(data);
             setTimeout(() => {
               if (this.$refs.complex && typeof data === 'object') {
                 this.$refs.complex.setvalueData(data, 1);
@@ -858,21 +867,19 @@
               }
             } else {
               // new
-               this._items.props.itemdata.valuedata.splice(index - 1, 1);
-               this.valueImgChange();
-
+              this._items.props.itemdata.valuedata.splice(index - 1, 1);
+              this.valueImgChange();
             }
           }
         });
       },
-      valueImgChange(){
+      valueImgChange() {
         if (this._items.props.itemdata.valuedata.length > 0) {
           this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
         } else {
           this._items.value = '';
         }
         this.valueChange();
-
       },
       deleteImgData(obj, index) {
         deleteImg({
@@ -903,8 +910,8 @@
               return false;
             }
             console.log(this._items.props.itemdata.valuedata);
-            let valuedata = this._items.props.itemdata.valuedata;
-            const fixedData = Array.isArray(valuedata) ? [...valuedata]  :[];
+            const valuedata = this._items.props.itemdata.valuedata;
+            const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({ NAME: resultData.data.Name, URL: resultData.data.Url });
             // 
             let parms = {
@@ -933,7 +940,6 @@
             } else {
               this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
               this.valueImgChange();
-
             }
           }
         });
@@ -1043,7 +1049,7 @@
                 URL: data.URL
               });
             }
-            //this.valueChange();
+            // this.valueChange();
           }
         });
       },
@@ -1104,6 +1110,9 @@
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
     content: "\e6b1";
+  }
+  .icon-bj_tcduo{
+    padding-top: 2px
   }
 }
 </style>
