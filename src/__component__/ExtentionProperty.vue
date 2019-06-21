@@ -7,14 +7,31 @@
     </div>
     <div class="middle">
       <div class="item-render-area" v-for="(item, index) in options" :key="index">
-        <ExtentionInput v-if="item.type === 'input'" :option="item"></ExtentionInput>
-        <ExtentionRadio v-if="item.type === 'radio'" :option="item"></ExtentionRadio>
-        <ExtentionInputGroup v-if="item.type === 'input-group'" :option="item"></ExtentionInputGroup>
-        <ExtentionObjectGroup v-if="item.type === 'object-group'" :option="item"></ExtentionObjectGroup>
-        <ExtentionObjectCombine v-if="item.type === 'object-combine'" :option="item"></ExtentionObjectCombine>
+        <ExtentionInput
+          v-if="item.type === 'input'"
+          :option="item"
+          @rootDataChange="rootDataChange"></ExtentionInput>
+        <ExtentionRadio
+          v-if="item.type === 'radio'"
+          :option="item"
+          @rootDataChange="rootDataChange"></ExtentionRadio>
+        <ExtentionInputGroup
+          v-if="item.type === 'input-group'"
+          :option="item"
+          @rootDataChange="rootDataChange"></ExtentionInputGroup>
+        <ExtentionObjectGroup
+          v-if="item.type === 'object-group'"
+          :option="item"
+          @rootDataChange="rootDataChange"></ExtentionObjectGroup>
+        <ExtentionObjectCombine
+          v-if="item.type === 'object-combine'"
+          :option="item"
+          @rootDataChange="rootDataChange"></ExtentionObjectCombine>
       </div>
     </div>
-    <div class="right"></div>
+    <div class="right">
+      <textarea :value="formatedRootData" readonly></textarea>
+    </div>
   </div>
 </template>
 
@@ -27,6 +44,11 @@
   
   export default {
     name: 'ExtentionProperty',
+    data() {
+      return {
+        rootData: {}
+      };
+    },
     components: {
       ExtentionInput,
       ExtentionRadio,
@@ -39,6 +61,19 @@
         type: Array,
         default: () => ([]),
       }
+    },
+    computed: {
+      formatedRootData() {
+        return JSON.stringify(this.rootData, null, 4);
+      },
+    },
+    methods: {
+      updateRootData(key, value) {
+        this.rootData[key] = value;
+      },
+      rootDataChange({key, value}) {
+        this.updateRootData(key, value);
+      },
     },
     mounted() {
     }
@@ -142,6 +177,13 @@
     .right {
       flex: 3;
       border: 1px solid blue;
+      textarea {
+        width: 100%;
+        height: 100%;
+        resize: none;
+        letter-spacing: 2px;
+        padding: 5px;
+      }
     }
   }
 </style>
