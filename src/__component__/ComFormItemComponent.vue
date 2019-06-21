@@ -334,7 +334,10 @@
     methods: {
       VerificationFormInt() {
         //  form 计算 校验
-        // 传值默认data
+         setTimeout(() => {
+          //  传form 默认值
+          this.mountdataForm(this.formDataObject);
+        }, 200);
         if (this.VerificationForm.length < 1) {
           return false;
         }
