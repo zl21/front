@@ -512,6 +512,7 @@
         this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
       },
       formPanelChange(val, changeVal) {
+        debugger;
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};

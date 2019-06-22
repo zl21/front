@@ -326,8 +326,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-
-        //console.log(data, setdefval);
+        // console.log(data, setdefval);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
