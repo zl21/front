@@ -34,6 +34,7 @@
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
+                :mountedType ="mountNumber"
                 :type="type"
                 :default-column="defaultColumnCol"
                 @formDataChange="formDataChange"
@@ -55,6 +56,7 @@
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
+          :mountedType ="mountNumber"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -171,6 +173,7 @@
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
         mountChecked: false, // 区分是默认值还是change 值
+        mountNumber:0,//页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         conditiontype: '',
@@ -188,9 +191,9 @@
         handler() {
           // 开启  默认值(刷新界面))
           this.mountChecked = false;
-          setTimeout(() => {
-            this.mountChecked = true;
-          }, 1000);
+          // 开启 (刷新界面))
+          this.mountNumber = (Math.random()*1000).toFixed(0);
+          console.log(this.mountNumber);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -1280,6 +1283,7 @@
     },
     created() {
       this.computdefaultData = this.reorganizeForm();
+      this.mountNumber = (Math.random()*1000).toFixed(0);
     }
   };
 </script>
