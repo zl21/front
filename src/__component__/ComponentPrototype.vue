@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; overflow: scroll">
+  <div class="componentPrototype" style="height: 100%; overflow: scroll">
     <h1> Component Prototype </h1>
     <div class="container">
       <div class="wrapper">
@@ -22,14 +22,14 @@
     </div>
     <!--  拓展属性   -->
     <div clss="container">
-      <div style="width: 90%; height: 400px; margin: 0 auto;">
+      <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Table</h3>
         <ExtentionProperty :options="extentionForTable"></ExtentionProperty>
       </div>
     </div>
     <div class="divider"></div>
     <div clss="container">
-      <div style="width: 90%; height: 400px; margin: 0 auto;">
+      <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
         <ExtentionProperty :options="extentionForColumn"></ExtentionProperty>
       </div>
@@ -70,20 +70,23 @@
 </script>
 
 <style scoped lang="less">
-  .divider {
-    height: 30px;
-    width: 100%;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 5px;
-  }
-  .container {
-    font-family: "Roboto", "Microsoft YaHei", sans-serif;
-    display: flex;
-    .wrapper {
-      margin: 30px auto;
-      width: 30%;
-      padding: 5px;
+  .componentPrototype {
+    font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
+    .divider {
+      height: 30px;
+      width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-bottom: 5px;
+    }
+    .container {
+      font-family: "Roboto", "Microsoft YaHei", sans-serif;
+      display: flex;
+      .wrapper {
+        margin: 30px auto;
+        width: 30%;
+        padding: 5px;
+      }
     }
   }
 </style>

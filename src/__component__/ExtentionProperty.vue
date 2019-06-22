@@ -8,6 +8,8 @@
           @click="scrollIntoView(item, index)"
         >
           {{ item.name }}
+          <br>
+          {{ item.key }}
         </li>
       </ul>
     </div>
@@ -119,6 +121,8 @@
 
 <style lang="less">
   .extentionProperty {
+    border: 1px solid lightgrey;
+    font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
     width: 100%;
     height: 100%;
     display: flex;
@@ -126,8 +130,7 @@
       list-style: none;
     }
     .left {
-      flex: 1.3;
-      border: 1px solid darkslategrey;
+      flex: 1.5;
       display: flex;
       ul {
         flex: 1;
@@ -146,8 +149,8 @@
       }
     }
     .middle {
+      border-left: 1px solid lightgrey;
       flex: 6.5;
-      border: 1px solid red;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -157,8 +160,6 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
-        background-color: #e1ecfc;
-        border: 1px solid black;
         .description {
           margin: 5px;
           padding: 5px;
@@ -212,15 +213,15 @@
       }
     }
     .right {
+      border-left: 1px solid lightgrey;
       flex: 3;
-      border: 1px solid blue;
       textarea {
+        border: none;
         width: 100%;
         height: 100%;
         resize: none;
         padding: 5px;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 12px;
         font-family: Consolas, "Microsoft YaHei", serif;
       }
     }

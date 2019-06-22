@@ -88,6 +88,5 @@
 <style scoped>
   .LabelWithObjectGroup {
     margin: 5px;
-    background-color: #e298ff;
   }
 </style>
