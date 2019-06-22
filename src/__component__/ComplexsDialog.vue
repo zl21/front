@@ -189,7 +189,6 @@
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
             this.resultData.list.map((item) => {
-              console.log(name);
               if (item.exclude) {
                 item.exclude = false;
               } else {
@@ -577,7 +576,6 @@
                 this.IN = data.value.IN;
                 this.NOTIN = data.value.NOTIN;
                 this.resultData.total = data.total;
-                console.log(this.sendMessage);
 
                 this.multipleScreenResultCheck(this.sendMessage,1,'result');
               
