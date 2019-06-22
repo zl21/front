@@ -126,28 +126,32 @@ export default {
     const copySaveDataForParam = {};
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
-        d.childs.forEach((c) => {
-          item.childs.forEach((b) => {
-            if (b.name === c.name) {
-              b.readonly = c.readonly;
-              if (c.readonly === true) {
-                b.valuedata = '';// 将配置为不可编辑的值置空
-              } else if (b.valuedata) {
-                // debugger;
-                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
-                  copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                } else if (b.fkdisplay === 'mop') {
-                  const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                  //                   ID:"{"idArray":[],"lists":{"result":[{"exclude":false,"id_list":5,"screen":5,"screen_string":"ST001","string":"ST001","ID":5},{"exclude":false,"id_list":4,"screen":4,"screen_string":"Tencent","string":"Tencent","ID":4}]},"total":2,"value":{"CONDITION":"","GLOBAL":"","IN":[4,5],"NOTIN":[],"TABLENAME":"C_STORE"}}"
-                  // label:"已经选中2条数据"
-                } else {
-                  copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+        if (d.childs) {
+          d.childs.forEach((c) => {
+            if (item.childs) {
+              item.childs.forEach((b) => {
+                if (b.name === c.name) {
+                  b.readonly = c.readonly;
+                  if (c.readonly === true) {
+                    b.valuedata = '';// 将配置为不可编辑的值置空
+                  } else if (b.valuedata) {
+                    // debugger;
+                    if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                      copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                    } else if (b.fkdisplay === 'mop') {
+                      const number = JSON.parse(b.valuedata).lists.result.length;
+                      copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                      //                   ID:"{"idArray":[],"lists":{"result":[{"exclude":false,"id_list":5,"screen":5,"screen_string":"ST001","string":"ST001","ID":5},{"exclude":false,"id_list":4,"screen":4,"screen_string":"Tencent","string":"Tencent","ID":4}]},"total":2,"value":{"CONDITION":"","GLOBAL":"","IN":[4,5],"NOTIN":[],"TABLENAME":"C_STORE"}}"
+                      // label:"已经选中2条数据"
+                    } else {
+                      copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                    }
+                  }
                 }
-              }
+              });
             }
           });
-        });
+        }
       });
     });
     console.log('🍓', copySaveDataForParam);

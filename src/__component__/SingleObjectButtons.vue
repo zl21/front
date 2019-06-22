@@ -697,12 +697,14 @@
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.savaCopy = false;
+
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.savaCopy = false;
+
+        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -1169,9 +1171,15 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             } else {
+              if (this.updateData[itemName].add[itemName]) {
+                if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                }
+              }
               if (this.updateData[itemName].modify[itemName]) { 
                 if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
                   // this.itemTableCheckFunc();// 校验子表表格必填项
+                  console.log(this.itemTableCheckFunc());
                   if (this.itemTableCheckFunc()) {
                     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                   }
@@ -1179,11 +1187,6 @@
               }
           
               // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-              if (this.updateData[itemName].add[itemName]) {
-                if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-                }
-              }
             }
           }
         }
