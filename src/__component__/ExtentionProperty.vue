@@ -22,6 +22,7 @@
           @rootDataChange="rootDataChange"></ExtentionInputGroup>
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
+          :rootData="JSON.parse(JSON.stringify(rootData))"
           :option="item"
           @rootDataChange="rootDataChange"></ExtentionObjectGroup>
         <ExtentionObjectCombine
@@ -190,7 +191,7 @@
         padding: 5px;
         font-size: 14px;
         font-weight: 600;
-        font-family: Consolas,serif;
+        font-family: Consolas, "Microsoft YaHei", serif;
       }
     }
   }

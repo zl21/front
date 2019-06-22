@@ -163,6 +163,7 @@ export default [
         key: 'ackey',
         type: 'select',
         selectOptions: [
+          { text: '-- 请选择 --', value: '' },
           { text: '新增', value: 'actionADD' },
           { text: '修改', value: 'actionMODIFY' },
           { text: '删除', value: 'ctionDELETE' },
@@ -229,7 +230,8 @@ export default [
     inputLists: [
       {
         name: '服务名',
-        key: 'action'
+        key: 'action',
+        type: 'input'
       }
     ],
     description: '请描述一下这个配置有啥作用'

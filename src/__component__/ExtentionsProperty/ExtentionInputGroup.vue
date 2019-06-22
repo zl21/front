@@ -7,10 +7,17 @@
           v-if="item.type === 'input'"
           :item="item"
           :key="index"
-          @inputValueChange="inputValueChange"
+          @inputValueChange="inputGroupValueChange"
         >
         </LabelWithInput>
-        <LabelWithRadio v-if="item.type === 'radio'" :item="item" :index="index" :key="index"></LabelWithRadio>
+        <LabelWithRadio
+          v-if="item.type === 'radio'"
+          :item="item"
+          :index="index"
+          :key="index"
+          @radioValueChange="inputGroupValueChange"
+        >
+        </LabelWithRadio>
       </template>
     </div>
   </div>
@@ -29,7 +36,7 @@
       LabelWithRadio,
     },
     methods: {
-      inputValueChange({ key, value }) {
+      inputGroupValueChange({ key, value }) {
         if (this.option.key === '__root__') {
           this.$emit('rootDataChange', { key, value });
           return;
