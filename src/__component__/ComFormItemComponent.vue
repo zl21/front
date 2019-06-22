@@ -264,9 +264,10 @@
         handler(val, old) {
           if (
             val.length > old.length
-            || JSON.stringify(val) !== JSON.stringify(old)
+            || JSON.stringify(val) !== JSON.stringify(old) || val.length<1 
           ) {
             if (this.indexItem < 0) {
+              this.indexItem ++;
               setTimeout(() => {
                 this.VerificationFormInt();
               }, 300);
@@ -335,6 +336,10 @@
       VerificationFormInt() {
         //  form 计算 校验
         // 传值默认data
+        setTimeout(() => {
+          //  传form 默认值
+          this.mountdataForm(this.formDataObject);
+        }, 200);
         if (this.VerificationForm.length < 1) {
           return false;
         }

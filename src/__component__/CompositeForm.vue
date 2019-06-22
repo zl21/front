@@ -190,7 +190,7 @@
           this.mountChecked = false;
           setTimeout(() => {
             this.mountChecked = true;
-          }, 500);
+          }, 1000);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -328,6 +328,7 @@
         // 表单数据修改  判断vuex 里面是否有input name
 
         //console.log(data, setdefval);
+      //  console.log(this.mountChecked,this.conditiontype);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
