@@ -23,7 +23,7 @@
       inputChange(e) {
         this.$emit('inputValueChange', {
           key: this.item.key,
-          value: e.target.value
+          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : e.target.value
         });
       }
     },

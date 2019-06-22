@@ -41,7 +41,7 @@
     },
     methods: {
       objectGroupValueChange({ key, value }) {
-        this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value });
+        this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value, belongKey: this.option.key });
       },
       addButtonClick() {
         this.$emit('addButtonClick');

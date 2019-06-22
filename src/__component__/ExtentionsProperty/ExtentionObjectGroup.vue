@@ -8,7 +8,7 @@
     >
       <LabelWithObjectGroup
         v-if="index <= currentIndex"
-        :objectGroupIndex="index"
+        :object-group-index="index"
         :data="data"
         :option="option"
         :show-add-button="currentIndex === index && currentIndex !== 9"
