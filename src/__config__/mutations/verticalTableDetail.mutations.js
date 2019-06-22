@@ -81,7 +81,9 @@ export default {
     state.tabCurrentIndex = index;
   },
   updateDefaultData(state, data) {
-    state.updateData[data.tableName].default = data.value;
+    if (state.updateData && state.updateData[data.tableName] && state.updateData[data.tableName].default) {
+      state.updateData[data.tableName].default = data.value;
+    }
   },
   updateAddData(state, data) {
     if (Object.values(data.value).length === 0) {
@@ -103,7 +105,9 @@ export default {
     state.updateData[data.tableName].changeData = data.value;
   },
   updateCheckedInfoData(state, data) {
-    state.updateData[data.tableName].checkedInfo = data.value;
+    if (state.updateData && state.updateData[data.tableName] && state.updateData[data.tableName].checkedInfo) {
+      state.updateData[data.tableName].checkedInfo = data.value;
+    }
   },
   updatePanelData(state, data) { // 更新子表面板数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
