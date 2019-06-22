@@ -801,7 +801,7 @@
               );
             } else {
               let Select =  [{
-                label: row.label,
+                label: value,
                 ID: $this._data.IN
               }];
               this._items.props.selected = Select;
@@ -811,6 +811,7 @@
                 Select,
                 this.index
               );
+            console.log(this._items.props.selected);
             }
           } else {
             this._items.value = '';
