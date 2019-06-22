@@ -1,23 +1,21 @@
 <template>
   <div class="extentionInputGroup">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
-      <template v-for="(item, index) in option.inputLists" >
+      <template v-for="(item, index) in option.inputLists">
         <LabelWithInput
           v-if="item.type === 'input'"
-          :item="item"
           :key="index"
+          :item="item"
           @inputValueChange="inputGroupValueChange"
-        >
-        </LabelWithInput>
+        />
         <LabelWithRadio
           v-if="item.type === 'radio'"
+          :key="index"
           :item="item"
           :index="index"
-          :key="index"
           @radioValueChange="inputGroupValueChange"
-        >
-        </LabelWithRadio>
+        />
       </template>
     </div>
   </div>

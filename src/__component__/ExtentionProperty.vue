@@ -2,37 +2,61 @@
   <div class="extentionProperty">
     <div class="left">
       <ul>
-        <li v-for="(item, index) in options" :key="index">{{ item.name }}</li>
+        <li
+          v-for="(item, index) in options"
+          :key="index"
+          @click="scrollIntoView(item, index)"
+        >
+          {{ item.name }}
+        </li>
       </ul>
     </div>
     <div class="middle">
-      <div class="item-render-area" v-for="(item, index) in options" :key="index">
+      <div
+        v-for="(item, index) in options"
+        :key="index"
+        class="item-render-area"
+      >
         <ExtentionInput
           v-if="item.type === 'input'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionInput>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionRadio
           v-if="item.type === 'radio'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionRadio>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionInputGroup
           v-if="item.type === 'input-group'"
-          :rootData="JSON.parse(JSON.stringify(rootData))"
+          :id="`${item.key}-${index}-${guid}`"
+          :root-data="JSON.parse(JSON.stringify(rootData))"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionInputGroup>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
-          :rootData="JSON.parse(JSON.stringify(rootData))"
+          :id="`${item.key}-${index}-${guid}`"
+          :root-data="JSON.parse(JSON.stringify(rootData))"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionObjectGroup>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionObjectCombine
           v-if="item.type === 'object-combine'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionObjectCombine>
+          :root-data="JSON.parse(JSON.stringify(rootData))"
+          @rootDataChange="rootDataChange"
+        />
       </div>
     </div>
     <div class="right">
-      <textarea :value="formatedRootData" readonly></textarea>
+      <textarea
+        :value="formatedRootData"
+        readonly
+      />
     </div>
   </div>
 </template>
@@ -43,11 +67,14 @@
   import ExtentionObjectGroup from './ExtentionsProperty/ExtentionObjectGroup';
   import ExtentionObjectCombine from './ExtentionsProperty/ExtentionObjectCombine';
   import ExtentionInputGroup from './ExtentionsProperty/ExtentionInputGroup';
+
+  const getGuid = () => Math.round(Math.random() * 10000000000);
   
   export default {
     name: 'ExtentionProperty',
     data() {
       return {
+        guid: getGuid(),
         rootData: {}
       };
     },
@@ -70,6 +97,9 @@
       },
     },
     methods: {
+      scrollIntoView(item, index) {
+        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView(true);
+      },
       updateRootData(key, value) {
         if (value === '') {
           delete this.rootData[key];

@@ -1,12 +1,11 @@
 <template>
   <div class="extentionInput">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
       <LabelWithInput
         :item="option"
         @inputValueChange="inputValueChange"
-      >
-      </LabelWithInput>
+      />
     </div>
   </div>
 </template>

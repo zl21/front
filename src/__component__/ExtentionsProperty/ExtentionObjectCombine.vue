@@ -1,28 +1,39 @@
 <template>
   <div class="extentionObjectCombine">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
       <template v-for="(o, i) in option.objectInfo">
         <div
-          class="content"
           v-if="o.type === 'object-group'"
           :key="i"
+          class="content"
         >
-          <LabelWithObjectGroup
-            v-for="(data, dataIndex) in dataArray"
-            v-if="dataIndex <= currentIndex"
-            :key="dataIndex"
-            :object-group-index="dataIndex"
-            :data="data"
-            :option="o"
-            :show-add-button="true"
-            :show-minus-button="true"
-            @objectGroupItemChange="objectGroupItemChange"
-            @addButtonClick="addButtonClick"
-            @minusButtonClick="minusButtonClick"
-          ></LabelWithObjectGroup>
+          <div
+            v-for="(data, index) in dataArray"
+            :key="index"
+            class="content"
+          >
+            <LabelWithObjectGroup
+              v-if="index <= currentIndex"
+              :key="index"
+              :object-group-index="index"
+              :data="data"
+              :option="o"
+              :show-add-button="currentIndex === index && currentIndex !== 9"
+              :show-minus-button="currentIndex === index && currentIndex !== 0"
+              @objectGroupItemChange="objectGroupItemChange"
+              @addButtonClick="addButtonClick"
+              @minusButtonClick="minusButtonClick"
+            />
+          </div>
         </div>
-        <LabelWithInput v-if="o.type === 'input'" :item="o" :key="i"></LabelWithInput>
+        <LabelWithInput
+          v-if="o.type === 'input'"
+          :key="i"
+          :belong-key="option.key"
+          :item="o"
+          @inputValueChange="inputValueChange"
+        />
       </template>
     </div>
   </div>
@@ -56,18 +67,38 @@
       };
     },
     methods: {
+      cloneObject(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      },
       objectGroupItemChange(index, { key, value, belongKey }) {
-        console.log(index, { key, value, belongKey });
+        const copyData = this.cloneObject(this.rootData[this.option.key] ? this.rootData[this.option.key][belongKey] || [] : []);
+        if (value === '') {
+          if (copyData[index] && copyData[index][key]) {
+            delete copyData[index][key];
+          }
+        } else {
+          copyData[index] = Object.assign({}, copyData[index], { [key]: value });
+        }
+        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, this.rootData[this.option.key], { [belongKey]: copyData }) });
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }
         this.currentIndex = this.currentIndex + 1;
       },
-      minusButtonClick() {
+      minusButtonClick({ belongKey }) {
         if (this.currentIndex <= 0) { return; }
         this.currentIndex = this.currentIndex - 1;
-        const copyData = JSON.parse(JSON.stringify(this.rootData[this.option.key] || []));
+        const copyData = this.cloneObject(this.rootData[this.option.key] ? this.rootData[this.option.key][belongKey] || [] : []);
         copyData.pop();
+        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, this.rootData[this.option.key], { [belongKey]: copyData }) });
+      },
+      inputValueChange({ key, value }) {
+        let copyData = this.cloneObject(this.rootData[this.option.key] || {});
+        if (value === '') {
+          delete copyData[key];
+        } else {
+          copyData = Object.assign({}, copyData, { [key]: value });
+        }
         this.$emit('rootDataChange', { key: this.option.key, value: copyData });
       }
     },
@@ -75,13 +106,14 @@
       option: {
         type: Object,
         default: () => ({})
-      }
+      },
+      rootData: {
+        type: Object,
+        default: () => ({})
+      },
     }
   };
 </script>
 
 <style scoped>
-  .extentionObjectCombine {
-    background-color: green;
-  }
 </style>

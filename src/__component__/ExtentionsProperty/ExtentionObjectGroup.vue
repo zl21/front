@@ -1,10 +1,10 @@
 <template>
   <div class="extentionObjectGroup">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div
-      class="content"
       v-for="(data, index) in dataArray"
       :key="index"
+      class="content"
     >
       <LabelWithObjectGroup
         v-if="index <= currentIndex"
@@ -16,7 +16,7 @@
         @objectGroupItemChange="objectGroupItemChange"
         @addButtonClick="addButtonClick"
         @minusButtonClick="minusButtonClick"
-      ></LabelWithObjectGroup>
+      />
     </div>
   </div>
 </template>

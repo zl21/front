@@ -5,25 +5,35 @@
     >
       <LabelWithInput
         v-if="item.type === 'input'"
-        :item="item"
         :key="index"
+        :item="item"
         @inputValueChange="objectGroupValueChange"
-      ></LabelWithInput>
+      />
       <LabelWithRadio
         v-if="item.type === 'radio'"
-        :item="item"
         :key="index"
+        :item="item"
         @radioValueChange="objectGroupValueChange"
-      ></LabelWithRadio>
+      />
       <LabelWithSelect
         v-if="item.type === 'select'"
-        :item="item"
         :key="index"
+        :item="item"
         @selectValueChange="objectGroupValueChange"
-      ></LabelWithSelect>
+      />
     </template>
-    <button v-if="showAddButton" @click="addButtonClick"> + </button>
-    <button v-if="showMinusButton" @click="minusButtonClick"> - </button>
+    <button
+      v-if="showAddButton"
+      @click="addButtonClick"
+    >
+      +
+    </button>
+    <button
+      v-if="showMinusButton"
+      @click="minusButtonClick"
+    >
+      -
+    </button>
   </div>
 </template>
 
@@ -44,10 +54,10 @@
         this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value, belongKey: this.option.key });
       },
       addButtonClick() {
-        this.$emit('addButtonClick');
+        this.$emit('addButtonClick', { belongKey: this.option.key });
       },
       minusButtonClick() {
-        this.$emit('minusButtonClick');
+        this.$emit('minusButtonClick', { belongKey: this.option.key });
       },
     },
     props: {

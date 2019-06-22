@@ -1,13 +1,12 @@
 <template>
   <div class="input-group-item">
     <div class="cell">
-      <LabelForInput :item="item"></LabelForInput>
+      <LabelForInput :item="item" />
       <EnumerateRadioItem
         :option="item"
         :break-line="false"
         @radioValueChange="radioValueChange"
-      >
-      </EnumerateRadioItem>
+      />
     </div>
   </div>
 </template>
@@ -23,7 +22,7 @@
       EnumerateRadioItem
     },
     methods: {
-      radioValueChange({ key, value}) {
+      radioValueChange({ key, value }) {
         this.$emit('radioValueChange', { key, value });
       }
     },

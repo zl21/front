@@ -1,12 +1,12 @@
 <template>
   <div class="input-group-item">
     <div class="cell">
-      <LabelForInput :item="item"></LabelForInput>
+      <LabelForInput :item="item" />
       <input
         class="input"
         :type="item.inputType === 'Number' ? 'number' : 'text'"
         @input="inputChange"
-      />
+      >
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@
       item: {
         type: Object,
         default: () => ({})
-      }
+      },
     }
   };
 </script>
