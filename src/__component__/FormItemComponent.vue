@@ -207,8 +207,8 @@
                 obj[current.item.inputname] = current.item.value;
               }
             } else if (current.item.type === 'AttachFilter') { // 若为外键则要处理输入还是选中
-              if (current.item.props.Selected[0] !== undefined) {
-                obj[current.item.field] = current.item.props.Selected;
+              if (current.item.props.Selected[0] && current.item.props.Selected[0].ID !== undefined) {
+                obj[current.item.field] = current.item.props.Selected[0].ID;
               } else {
                 obj[current.item.inputname] = current.item.value;
               }

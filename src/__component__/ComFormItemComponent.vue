@@ -230,6 +230,12 @@
         default() {
           return '';
         }
+      },
+      mountedType:{
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
@@ -241,6 +247,8 @@
         mapData: {}, // 全部联动关系
         formValueItem: {}, // 当前字段
         changeNumber: 0, // 更改次数
+        checkMounted:false, // 是否初始化
+        mountedTypeName:'',
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
@@ -254,26 +262,20 @@
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
+      setTimeout(() => {
+                this.VerificationFormInt();
+        }, 500);
+
     // this.VerificationFormInt();
     },
     created() {
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
-      VerificationForm: {
-        handler(val, old) {
-          if (
-            val.length > old.length
-            || JSON.stringify(val) !== JSON.stringify(old)
-          ) {
-            if (this.indexItem < 0) {
-              setTimeout(() => {
+      mountedType(){
+        setTimeout(() => {
                 this.VerificationFormInt();
-              }, 300);
-            }
-          }
-        },
-        deep: true
+        }, 500);
       },
       formDataObject: {
         handler(val, old) {
@@ -335,6 +337,10 @@
       VerificationFormInt() {
         //  form 计算 校验
         // 传值默认data
+        setTimeout(() => {
+          //  传form 默认值
+          this.mountdataForm(this.formDataObject);
+        }, 200);
         if (this.VerificationForm.length < 1) {
           return false;
         }
@@ -426,7 +432,7 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            console.log(current.item.props.Selected,'AttachFilter');
+            //console.log(current.item.props.Selected,'AttachFilter');
             if (current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
               obj[current.item.field] = current.item.props.Selected[0].ID;
               if (Version === '1.3') {
@@ -450,11 +456,18 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                const value = current.item.value
+                console.log(typeof current.item.value ,current.item.value);
+                if( typeof current.item.value === 'number' || typeof current.item.value === 'object'){
+                obj[current.item.field] = current.item.value;
+                }else{
+                  const value = current.item.value
                   ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
                   : '';
 
                 obj[current.item.field] = Number(value);
+
+                }
+                
               }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value

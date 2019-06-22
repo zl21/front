@@ -622,7 +622,7 @@
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
         this._items.props.selected = [{
-          label: row.label,
+          Label: row.label,
           ID: row.value
         }];
         let selected = [{
@@ -630,7 +630,6 @@
           ID: row.value
         }];
         this.valueChange();
-        console.log(this._items.props.selected);
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -699,6 +698,8 @@
       },
       attachFilterClear(event, $this) {
         this._items.value = '';
+        this.resultData = {};
+        this._items.props.valuedata ={};
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -706,11 +707,15 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
-          this._items.event['popper-value']($this, '', [], this.index);
+          this._items.event['popper-value']($this, '', [
+            {
+              Label: '',
+              ID: ''
+            }
+          ], this.index);
         }
       },
       attachFilterPopperShow($this) {
-        console.log('dddd', this._items);
         if (
           Object.prototype.hasOwnProperty.call(
             this._items.event,
@@ -718,10 +723,10 @@
           )
           && typeof this._items.event['popper-show'] === 'function'
         ) {
-          if (this._items.props.fkobj.saveType && this._items.props.valuedata && /total/.test(this._items.props.valuedata)) {
+
+          if (this._items.props.fkobj.saveType && this._items.props.Selected[0].ID && /total/.test(this._items.props.Selected[0].ID)) {
             // this.filter = data;
-            const data = JSON.parse(this._items.props.valuedata);
-            console.log(data);
+            const data = JSON.parse(this._items.props.Selected[0].ID);
             setTimeout(() => {
               if (this.$refs.complex && typeof data === 'object') {
                 this.$refs.complex.setvalueData(data, 1);
@@ -783,11 +788,10 @@
           if ($this._data.IN.length > 0) {
             const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
             const saveObjectmessage = $this.savObjemessage();
-            console.log(savemessage);
             this.resultData = savemessage;
             const value = `已经选中${$this._data.IN.length}条数据`;
             let Select =  [{
-                label: value,
+                Label: value,
                 ID: saveObjectmessage
               }];
             this._items.value = value;
@@ -801,7 +805,7 @@
               );
             } else {
               let Select =  [{
-                label: row.label,
+                Label: value,
                 ID: $this._data.IN
               }];
               this._items.props.selected = Select;
@@ -811,10 +815,16 @@
                 Select,
                 this.index
               );
+            console.log(this._items.props.selected);
             }
           } else {
             this._items.value = '';
-            this._items.Selected = [];
+            this._items.Selected = [
+              {
+                Label: '',
+                ID: ''
+              }
+            ];
             this._items.event['popper-value'](
               $this,
               '',
@@ -838,7 +848,6 @@
             let HEADIMG = this._items.props.itemdata.valuedata.concat([]);
             HEADIMG.splice(index - 1, 1);
             HEADIMG = HEADIMG.length < 1 ? '' : HEADIMG;
-            console.log(index, HEADIMG);
             // this._items.props.itemdata.valuedata.length > 1
             //   ? [item]
             //   : "";
@@ -924,7 +933,6 @@
             if (res.data.code !== 0) {
               return false;
             }
-            console.log(this._items.props.itemdata.valuedata);
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({ NAME: resultData.data.Name, URL: resultData.data.Url });

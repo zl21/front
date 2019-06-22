@@ -214,14 +214,14 @@
         return this.watermarkimg;
       },
       objList() { // 返回克隆表定制弹框所需数据
-        if (this.objectType === 'horizontal') { // 横向布局
-          return this.itemInfo.componentAttribute.panelData.data.addcolums;
-        } if (this.objectType === 'vertical') {
-          if (this.mainFormInfo.formData.data) {
-            return this.mainFormInfo.formData.data.addcolums;
-          }
-        }
-        return [];
+        // if (this.objectType === 'horizontal') { // 横向布局
+        //   return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        // } if (this.objectType === 'vertical') {
+        //   if (this.mainFormInfo.formData.data) {
+        //     return this.mainFormInfo.formData.data.addcolums;
+        //   }
+        // }
+        // return [];
       }
     },
     props: {
@@ -1220,9 +1220,19 @@
                   if (this.itemNameGroup.length > 0) { // 有子表
                     if (KEEP_SAVE_ITEM_TABLE_MANDATORY) { // 为true时，子表没有必填项也必须要输入值才能保存
                       const addInfo = this.itemCurrentParameter.add[this.itemName];
-                      if (Object.values(addInfo).length < 1) {
-                        this.$Message.warning('个人信息不能为空!');
-                        return false;
+                      if (itemCheckedInfo) {
+                        const itemMessageTip = itemCheckedInfo.messageTip;
+                        if (itemMessageTip) {
+                          if (itemMessageTip.length > 0) {
+                            this.$Message.warning(itemMessageTip[0]);
+                            itemCheckedInfo.validateForm.focus();
+                            return false;
+                          } 
+                        } if (Object.values(addInfo).length < 1) {
+                          this.$Message.warning('个人信息不能为空!');
+                        
+                          return false;
+                        }
                       }
                     } else if (itemCheckedInfo) {
                       const itemMessageTip = itemCheckedInfo.messageTip;

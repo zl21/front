@@ -34,6 +34,7 @@
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
+                :mountedType ="mountNumber"
                 :type="type"
                 :default-column="defaultColumnCol"
                 @formDataChange="formDataChange"
@@ -55,6 +56,7 @@
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
+          :mountedType ="mountNumber"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -171,6 +173,7 @@
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
         mountChecked: false, // 区分是默认值还是change 值
+        mountNumber:0,//页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         conditiontype: '',
@@ -188,9 +191,9 @@
         handler() {
           // 开启  默认值(刷新界面))
           this.mountChecked = false;
-          setTimeout(() => {
-            this.mountChecked = true;
-          }, 500);
+          // 开启 (刷新界面))
+          this.mountNumber = (Math.random()*1000).toFixed(0);
+          console.log(this.mountNumber);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -327,7 +330,8 @@
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
 
-        //console.log(data, setdefval);
+        // console.log(data, setdefval);
+        //  console.log(this.mountChecked,this.conditiontype);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -455,7 +459,7 @@
                 item[index].item.props.Selected = Selected;
               } else {
                 item[index].item.props.Selected = [{
-                  lable: '',
+                  Lable: '',
                   ID: ''
                 }];
               }
@@ -535,8 +539,11 @@
               }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
                 if (item.type === 'AttachFilter') {
-                  if (item.props.Selected[0].ID === '') {
+                  if (item.props.Selected[0] && item.props.Selected[0].ID === '') {
                     Fitem[index].item.value = '';
+                    
+                    this.resultData = {};
+                    this._items.props.valuedata = {};
                     Fitem[index].item.props.Selected = [
                       {
                         label: '',
@@ -825,38 +832,66 @@
           }
           return arr;
         }
-        if (item.fkdisplay === 'mop') {
-          if (item.valuedata && /total/.test(item.valuedata)) {
-            const valuedata = JSON.parse(item.valuedata);
-            return `已经选中${valuedata.total}条`;
-          }
-        }
-        const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        // const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        // if (item.fkdisplay === 'mop') {
+        //   if (fkdisplayValue) {
+        //     return fkdisplayValue.lable;
+         
+        // }
 
-        if (item.fkdisplay === 'pop') {
-          if (fkdisplayValue) {
-            return fkdisplayValue.Label;
-          }
-          return item.defval || item.valuedata || item.default || '';
-        }
-        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
+        // if (item.fkdisplay === 'pop') {
+        //   const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        //   const ID = item.refobjid ? item.refobjid : '';
+        //   arr.push({
+        //     ID: item.refobjid === '-1' ? '' : ID,
+        //     Label: item.valuedata || item.defval || ''
+        //   });
+        //   if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
+        //     arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+        //     arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+        //   }
+
+        //   return arr;
+        //   if (fkdisplayValue) {
+        //     return fkdisplayValue.Label;
+        //   }
+        //   return item.defval || item.valuedata || item.default || '';
+        // }
+        const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' ||item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
-          // setTimeout(() => {
-          //   console.log(this.defaultSetValue[item.colname],'item.colname',item.colname);
-          // }, 500);
-          // console.log(this.defaultSetValue[item.colname],'000000');
-          const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+          
           const ID = item.refobjid ? item.refobjid : '';
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
-          if (this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0]) {
-            arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-            arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
-          }
+          if( item.fkdisplay === 'mop'){
+            arr[0].ID = item.valuedata || item.defval || '';
+            if(item.valuedata && /total/.test(item.valuedata)){
+                const valuedata = JSON.parse(item.valuedata);
+                arr[0].Label = `已经选中${valuedata.total}条` || '';
+                arr.push(`已经选中${valuedata.total}条` || '');
+            }
+          }else if(item.fkdisplay === 'pop') {
+                arr.push(fkdisplayValue && fkdisplayValue.label ||'');
+            }
+          if (fkdisplayValue) {
+            if( item.fkdisplay === 'drp' || item.fkdisplay === 'mrp'){
+               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+               arr.push(fkdisplayValue && fkdisplayValue.Label || '');
 
+            } else if(item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
+               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+               arr.push(fkdisplayValue && fkdisplayValue.Label || '');
+
+            }
+            
+          }
+          
           return arr;
         }
         
@@ -1060,12 +1095,10 @@
                   }/p/cs/menuimport`
               };
               item.props.datalist = [];
-              item.props.Selected = [
-                {
-                  label: current.valuedata,
-                  ID: current.refobjid
-                }
-              ];
+              item.props.Selected = [];
+              item.props.Selected.push(this.defaultValue(current)[1]);
+              
+              item.value = this.defaultValue(current)[1];
             }
 
             break;
@@ -1083,13 +1116,10 @@
                 }/p/cs/menuimport`
             };
             item.props.datalist = [];
+            item.props.Selected = [];
             item.props.filterDate = {};
-            item.props.Selected = [
-              {
-                label: current.valuedata,
-                ID: current.refobjid
-              }
-            ];
+            item.value = this.defaultValue(current)[1];
+            item.props.Selected.push(this.defaultValue(current)[0]);
             break;
           default:
             break;
@@ -1279,6 +1309,7 @@
     },
     created() {
       this.computdefaultData = this.reorganizeForm();
+      this.mountNumber = (Math.random()*1000).toFixed(0);
     }
   };
 </script>
