@@ -98,7 +98,7 @@
     },
     methods: {
       scrollIntoView(item, index) {
-        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView(true);
+        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
       updateRootData(key, value) {
         if (value === '') {
