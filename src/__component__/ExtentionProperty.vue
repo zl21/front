@@ -129,6 +129,9 @@
     ul li {
       list-style: none;
     }
+    li:not(:last-child) {
+      border-bottom: 1px solid lightgrey;
+    }
     .left {
       flex: 1.5;
       display: flex;
@@ -150,7 +153,7 @@
     }
     .middle {
       border-left: 1px solid lightgrey;
-      flex: 6.5;
+      flex: 6;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -163,6 +166,9 @@
         .description {
           margin: 5px;
           padding: 5px;
+          .fieldName {
+            color: #000;
+          }
         }
         .content {
           flex: 1;
@@ -179,7 +185,7 @@
               display: flex;
               flex: 1;
               .label {
-                flex: 1;
+                flex: 1.5;
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
@@ -187,6 +193,12 @@
               .input, .select {
                 flex: 3;
                 padding: 0 5px;
+              }
+              input[type="text"]::placeholder {
+                color: grey;
+                font-size: 12px;
+                font-style: italic;
+                letter-spacing: 1px;
               }
             }
           }
@@ -210,6 +222,16 @@
             }
           }
         }
+        .labelWithObjectGroup {
+          border-radius: 5px;
+          padding: 5px;
+          margin: 5px;
+          border: 1px solid lightgrey;
+          box-shadow: 0 0 2px lightgrey;
+        }
+      }
+      .item-render-area:not(:last-child) {
+        border-bottom: 1px solid lightgrey;
       }
     }
     .right {

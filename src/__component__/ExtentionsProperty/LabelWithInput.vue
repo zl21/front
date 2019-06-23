@@ -4,6 +4,7 @@
       <LabelForInput :item="item" />
       <input
         class="input"
+        :placeholder="`请输入[${item.name}]${item.outputValueType === 'Array' ? '，以英文逗号(,)间隔' : ''}`"
         :type="item.inputType === 'Number' ? 'number' : 'text'"
         @input="inputChange"
       >
@@ -23,7 +24,8 @@
       inputChange(e) {
         this.$emit('inputValueChange', {
           key: this.item.key,
-          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : e.target.value
+          // eslint-disable-next-line no-nested-ternary
+          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : (this.item.inputType === 'Number' ? parseInt(e.target.value, 10) : e.target.value)
         });
       }
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="LabelWithObjectGroup">
+  <div class="labelWithObjectGroup">
     <template
       v-for="(item, index) in option.objectInfo"
     >
@@ -86,7 +86,4 @@
 </script>
 
 <style scoped>
-  .LabelWithObjectGroup {
-    margin: 5px;
-  }
 </style>
