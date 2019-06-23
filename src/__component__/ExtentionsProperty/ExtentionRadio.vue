@@ -3,6 +3,7 @@
     <Description :option="option" />
     <div class="content">
       <EnumerateRadioItem
+        :default-data="defaultData"
         :option="option"
         @radioValueChange="radioValueChange"
       />
@@ -29,6 +30,10 @@
       option: {
         type: Object,
         default: () => ({})
+      },
+      defaultData: {
+        type: [Boolean, String],
+        default: ''
       }
     }
   };

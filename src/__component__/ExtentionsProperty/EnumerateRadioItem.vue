@@ -1,5 +1,5 @@
 <template>
-  <div class="radioItemWrapper">
+  <div class="radioItemWrapper" ref="radioItemWrapper">
     <label
       v-for="(radio, index) in option.enumerateValue"
       :key="index"
@@ -23,10 +23,11 @@
       <input
         :id="`${option.key}-${guid}-clean`"
         type="radio"
+        :value="''"
         :name="`${option.key}-${guid}`"
         @change="radioValueChange('')"
       >
-      <span style="color: red;">
+      <span>
         清除此配置项
       </span>
     </label>
@@ -56,6 +57,17 @@
         type: Boolean,
         default: true
       },
+      defaultData: {
+        type: [Boolean, String],
+        default: ''
+      }
+    },
+    mounted() {
+      this.$refs.radioItemWrapper.querySelectorAll('input[type=radio]').forEach((e) => {
+        if (`${e.value}` === `${this.defaultData}`) {
+          e.checked = true;
+        }
+      });
     }
   };
 </script>

@@ -4,6 +4,7 @@
       <LabelForInput :item="item" />
       <select
         class="select"
+        ref="select"
         @change="selectValueChange"
       >
         <option
@@ -36,6 +37,13 @@
         type: Object,
         default: () => ({})
       },
+      defaultData: {
+        type: String,
+        default: ''
+      }
+    },
+    mounted() {
+      this.$refs.select.value = this.defaultData;
     }
   };
 </script>

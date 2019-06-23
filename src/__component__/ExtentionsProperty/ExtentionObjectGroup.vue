@@ -9,6 +9,7 @@
       <LabelWithObjectGroup
         v-if="index <= currentIndex"
         :object-group-index="index"
+        :default-data="defaultData[index]"
         :data="data"
         :option="option"
         :show-add-button="currentIndex === index && currentIndex !== 9"
@@ -75,10 +76,14 @@
         type: Object,
         default: () => ({})
       },
-      rootData: {
-        type: Object,
-        default: () => ({})
+      defaultData: {
+        type: [Array],
+        default: () => []
       },
+    },
+    created() {
+      this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[i]);
+      this.currentIndex = this.defaultData.length - 1;
     }
   };
 </script>

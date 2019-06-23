@@ -23,25 +23,27 @@
           v-if="item.type === 'input'"
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           @rootDataChange="rootDataChange"
         />
         <ExtentionRadio
           v-if="item.type === 'radio'"
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           @rootDataChange="rootDataChange"
         />
         <ExtentionInputGroup
           v-if="item.type === 'input-group'"
           :id="`${item.key}-${index}-${guid}`"
-          :root-data="JSON.parse(JSON.stringify(rootData))"
+          :default-data="JSON.parse(JSON.stringify(rootData))"
           :option="item"
           @rootDataChange="rootDataChange"
         />
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
           :id="`${item.key}-${index}-${guid}`"
-          :root-data="JSON.parse(JSON.stringify(rootData))"
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           :option="item"
           @rootDataChange="rootDataChange"
         />
@@ -49,7 +51,7 @@
           v-if="item.type === 'object-combine'"
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          :root-data="JSON.parse(JSON.stringify(rootData))"
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           @rootDataChange="rootDataChange"
         />
       </div>
@@ -91,10 +93,15 @@
       options: {
         type: Array,
         default: () => ([]),
-      }
+      },
+      defaultData: {
+        type: Object,
+        default: () => ({})
+      },
     },
     computed: {
       formatedRootData() {
+        if (Object.keys(this.rootData).length === 0) { return ''; }
         return JSON.stringify(this.rootData, null, 2);
       },
     },
@@ -113,6 +120,9 @@
       rootDataChange({ key, value }) {
         this.updateRootData(key, value);
       },
+    },
+    created() {
+      this.rootData = JSON.parse(JSON.stringify(this.defaultData));
     },
     mounted() {
     }
@@ -163,6 +173,7 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
+        padding: 7px 0;
         .description {
           margin: 5px;
           padding: 5px;

@@ -4,6 +4,7 @@
     <div class="content">
       <LabelWithInput
         :item="option"
+        :default-data="defaultData"
         @inputValueChange="inputValueChange"
       />
     </div>
@@ -29,6 +30,10 @@
       option: {
         type: Object,
         default: () => ({})
+      },
+      defaultData: {
+        type: [String, Number, Array],
+        default: ''
       }
     }
   };

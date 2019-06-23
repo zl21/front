@@ -17,6 +17,7 @@
               v-if="index <= currentIndex"
               :key="index"
               :object-group-index="index"
+              :default-data="defaultData[o.key][index]"
               :data="data"
               :option="o"
               :show-add-button="currentIndex === index && currentIndex !== 9"
@@ -32,6 +33,7 @@
           :key="i"
           :belong-key="option.key"
           :item="o"
+          :default-data="defaultData[o.key]"
           @inputValueChange="inputValueChange"
         />
       </template>
@@ -107,10 +109,18 @@
         type: Object,
         default: () => ({})
       },
-      rootData: {
+      defaultData: {
         type: Object,
         default: () => ({})
       },
+    },
+    created() {
+      // this.option.objectInfo.forEach(obj => {
+      //   if (obj.type === 'object-group') {
+      //     this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[obj.key][i]);
+      //     this.currentIndex = this.defaultData.length - 1;
+      //   }
+      // });
     }
   };
 </script>

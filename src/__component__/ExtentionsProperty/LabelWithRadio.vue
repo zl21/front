@@ -5,6 +5,7 @@
       <EnumerateRadioItem
         :option="item"
         :break-line="false"
+        :default-data="defaultData"
         @radioValueChange="radioValueChange"
       />
     </div>
@@ -31,6 +32,10 @@
         type: Object,
         default: () => ({})
       },
+      defaultData: {
+        type: [Boolean, String],
+        default: ''
+      }
     }
   };
 </script>

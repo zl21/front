@@ -7,18 +7,21 @@
         v-if="item.type === 'input'"
         :key="index"
         :item="item"
+        :default-data="defaultData[item.key]"
         @inputValueChange="objectGroupValueChange"
       />
       <LabelWithRadio
         v-if="item.type === 'radio'"
         :key="index"
         :item="item"
+        :default-data="defaultData[item.key]"
         @radioValueChange="objectGroupValueChange"
       />
       <LabelWithSelect
         v-if="item.type === 'select'"
         :key="index"
         :item="item"
+        :default-data="defaultData[item.key]"
         @selectValueChange="objectGroupValueChange"
       />
     </template>
@@ -80,6 +83,10 @@
       objectGroupIndex: {
         type: Number,
         default: 0
+      },
+      defaultData: {
+        type: Object,
+        default: () => ({})
       }
     }
   };

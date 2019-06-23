@@ -7,6 +7,7 @@
           v-if="item.type === 'input'"
           :key="index"
           :item="item"
+          :default-data="option.key === '__root__' ? defaultData[item.key] : (defaultData[option.key] ? defaultData[option.key][item.key] : '')"
           @inputValueChange="inputGroupValueChange"
         />
         <LabelWithRadio
@@ -14,6 +15,7 @@
           :key="index"
           :item="item"
           :index="index"
+          :default-data="defaultData[item.key]"
           @radioValueChange="inputGroupValueChange"
         />
       </template>
@@ -53,7 +55,7 @@
         type: Object,
         default: () => ({})
       },
-      rootData: {
+      defaultData: {
         type: Object,
         default: () => ({})
       }

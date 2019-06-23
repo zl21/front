@@ -3,6 +3,7 @@
     <div class="cell">
       <LabelForInput :item="item" />
       <input
+        ref="input"
         class="input"
         :placeholder="`请输入[${item.name}]${item.outputValueType === 'Array' ? '，以英文逗号(,)间隔' : ''}`"
         :type="item.inputType === 'Number' ? 'number' : 'text'"
@@ -34,6 +35,13 @@
         type: Object,
         default: () => ({})
       },
+      defaultData: {
+        type: [String, Number, Array],
+        default: ''
+      }
+    },
+    mounted() {
+      this.$refs.input.value = this.defaultData;
     }
   };
 </script>
