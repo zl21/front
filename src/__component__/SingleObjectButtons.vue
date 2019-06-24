@@ -1160,35 +1160,43 @@
             }
           }
         } else { // 横向结构
-          if (this.updateData[itemName].modify[itemName] && this.updateData[itemName].modify[itemName].length > 0) {
+          const itemModify = this.updateData[itemName].modify[itemName] && this.updateData[itemName].modify[itemName];
+          const itemAdd = this.updateData[itemName].add[itemName] && Object.keys(this.updateData[itemName].add[itemName]);
+          if (itemModify.length > 0 && itemAdd.length < 1) {
             this.itemTableValidation = true;
+          } else if (itemModify.length > 0 && itemAdd.length > 0) {
+            this.itemTableValidation = false;
           }
-          if (this.verifyRequiredInformation()) { // 横向结构保存校验
-            if (itemName === this.tableName) {
+          if (itemName === this.tableName) {
+            if (this.verifyRequiredInformation()) { // 横向结构保存校验
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
-            } else {
-              if (this.updateData[itemName].add[itemName]) {
-                if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+            }
+          } else {
+            if (this.updateData[itemName].add[itemName]) {
+              if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+                if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
                 }
               }
-              if (this.updateData[itemName].modify[itemName]) { 
-                if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
-                  // this.itemTableCheckFunc();// 校验子表表格必填项
-                  console.log(this.itemTableCheckFunc());
-                  if (this.itemTableCheckFunc()) {
+            }
+            if (this.updateData[itemName].modify[itemName]) { 
+              if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
+                // this.itemTableCheckFunc();// 校验子表表格必填项
+                if (this.itemTableCheckFunc()) {
+                  if (this.verifyRequiredInformation()) { // 横向结构保存校验
                     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                   }
                 }
               }
-          
-              // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
             }
+          
+            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
           }
+          // }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
