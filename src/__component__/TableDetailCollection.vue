@@ -1665,3 +1665,14 @@
         }
     }
 </style>
+<style lang="less">
+  .table-in {
+    flex: 1;
+    .burgeon-input-wrapper >input{
+      height: 22px;
+    }
+    .burgeon-select-selection {
+      height: 22px;
+    }
+  }
+</style>
