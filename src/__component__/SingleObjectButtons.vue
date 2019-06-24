@@ -1133,6 +1133,8 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
+        debugger;
+
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
@@ -1148,6 +1150,7 @@
             } else {
               if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { // 子表表格编辑修改
                 // 校验子表表格必填项
+                console.log(this.itemTableCheckFunc());
                 if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }

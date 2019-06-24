@@ -161,19 +161,27 @@ export default {
             if (sataTypeName === 'add') { // 子表新增
               const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
-              modify[tableName].ID = objId;// 主表id
+              // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
 
               itemTableAdd[itemName].ID = -1;
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
+              const mainTabale = {};
+              mainTabale[tableName] = {
+                ID: objId// 主表id
+              };
               parames = {
-                ...modify,
+                ...mainTabale,
                 ...itemTableAdd
               };
             } else if (sataTypeName === 'modify') { // 子表编辑
-              modify[tableName].ID = objId;// 主表id
+              const mainTabale = {};
+              mainTabale[tableName] = {
+                ID: objId// 主表id
+              };
+              // modify[tableName].ID = objId;// 主表id
 
               parames = {
                 ...modify,
