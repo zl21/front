@@ -437,9 +437,9 @@
       // eslint-disable-next-line consistent-return
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
-        this.loading = true;
         // this.sendMessage = 
         if (this.HRORG_ID.length > 0) {
+          this.loading = true;
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
             this.EXCLUDE = '';
@@ -489,18 +489,16 @@
         } else if (this.verify(this.IN, this.tdData.id)) {
           this.IN.push(this.tdData.id);
         }
-        setTimeout(() =>{
+        setTimeout(() => {
           this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
           this.tdData.id = '';
           this.tdData.list = [];
           this.tdData.index = -1;
-        },200)
+        }, 200);
         if (this.tdData.id !== '') {
           this.text.result.push(this.tdData.list[0]);
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
-        
-        
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
@@ -674,6 +672,12 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
+        // setTimeout(() =>{
+        //   this.loading = false, // z最大loading
+        //   this.tree_loading =  false, // 左边的 的loading
+        //   this.tableLoading =  false, // 中间的 的loading
+        // },300)
+        
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
