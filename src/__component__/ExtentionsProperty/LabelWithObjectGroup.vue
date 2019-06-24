@@ -88,7 +88,7 @@
         type: Object,
         default: () => ({})
       }
-    }
+    },
   };
 </script>
 

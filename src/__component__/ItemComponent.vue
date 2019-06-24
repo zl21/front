@@ -453,7 +453,6 @@
 
       // datepick event
       datePickerChange(value, type, $this) {
-        console.log(value, 'time');
         this._items.value = value;
         this.valueChange();
         if (
@@ -708,26 +707,33 @@
       attachFilterClear(event, $this) {
         this._items.value = '';
         this.resultData = {};
-        this._items.props.valuedata = {};
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value'](
-            $this,
-            '',
-            [
-              {
-                Label: '',
-                ID: ''
-              }
-            ],
-            this.index
-          );
-        }
+        this._items.props.Selected = [
+          {
+            Label: '',
+            ID: ''
+          }
+        ];
+        console.log('valueChange');
+        this.valueChange();
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     '',
+        //     [
+        //       {
+        //         Label: '',
+        //         ID: ''
+        //       }
+        //     ],
+        //     this.index
+        //   );
+        // }
       },
       attachFilterPopperShow($this) {
         if (
@@ -791,12 +797,20 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
+         
           if ($this._data.params) {
             const value = $this._data.parms.NAME.val;
+            const Selected = [
+              {
+                Label: value,
+                ID: $this._data.parms.ID.val
+              }
+            ];
+
             this._items.event['popper-value'](
               $this,
               value,
-              $this._data.parms.ID.val,
+              Selected,
               this.index
             );
             return false;

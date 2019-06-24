@@ -49,9 +49,9 @@
     },
     methods: {
       objectGroupItemChange(index, { key, value }) {
-        const copyData = JSON.parse(JSON.stringify(this.rootData[this.option.key] || []));
+        const copyData = JSON.parse(JSON.stringify(this.defaultData || []));
         if (value === '') {
-          if (copyData[index] && copyData[index][key]) {
+          if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
           }
         } else {
@@ -66,7 +66,7 @@
       minusButtonClick() {
         if (this.currentIndex <= 0) { return; }
         this.currentIndex = this.currentIndex - 1;
-        const copyData = JSON.parse(JSON.stringify(this.rootData[this.option.key] || []));
+        const copyData = JSON.parse(JSON.stringify(this.defaultData[this.option.key] || []));
         copyData.pop();
         this.$emit('rootDataChange', { key: this.option.key, value: copyData });
       }

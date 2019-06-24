@@ -79,7 +79,8 @@
     data() {
       return {
         guid: getGuid(),
-        rootData: {}
+        rootData: {},
+        currentIndex: 0,
       };
     },
     components: {
@@ -107,6 +108,7 @@
     },
     methods: {
       scrollIntoView(item, index) {
+        this.currentIndex = index;
         document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
       updateRootData(key, value) {

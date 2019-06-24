@@ -892,7 +892,6 @@
             if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
-              arr.push(fkdisplayValue && fkdisplayValue.Label || '');
             } else if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
@@ -1096,6 +1095,12 @@
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
+                  width: 920,
+                  mask: true,
+                  draggable: true,
+                  closable: true,
+                  scrollable: true,
+                  maskClosable: false,
                   'footer-hide': true
                 }
               };
