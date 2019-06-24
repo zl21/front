@@ -558,7 +558,6 @@
         const params = {};
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
-         
           if (this.isreftabs) { // 有子表
             if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
               childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
