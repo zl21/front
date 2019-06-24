@@ -36,7 +36,7 @@
         type: [Boolean, String],
         default: ''
       }
-    }
+    },
   };
 </script>
 
