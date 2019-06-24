@@ -30,6 +30,7 @@
       :on-column-moved="onColumnMoved"
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
+      :on-cell-single-click="onCellSingleClick"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
@@ -279,7 +280,17 @@
         });
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
-
+      onCellSingleClick(colDef, rowData, target) {
+        if (target.getAttribute('data-target-tag') === 'fkIcon') {
+          const { reftableid, reftablename, refobjid } = rowData[colDef.colId];
+          this.tabHref({
+            id: refobjid,
+            tableName: reftablename,
+            tableId: reftableid,
+            type: 'tableDetailVertical'
+          });
+        }
+      },
       // 表单操作
       refactoringData(defaultFormItemsLists) {
         // 对获取的数据进行处理
