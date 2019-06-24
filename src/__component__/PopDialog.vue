@@ -188,18 +188,20 @@
           startindex: this.selectOperation.startindex,
           range: this.selectOperation.pageSize
         };
-        const fixedcolumns = Object.keys(this.formChangeData).reduce((arr, item) => {
-          console.log(this.formChangeData[item][0]);
-          if (Array.isArray(this.formChangeData[item])) {
-            if (this.formChangeData[item][0] !== undefined) {
+        const fixedcolumns = Object.keys(this.formChangeData).reduce(
+          (arr, item) => {
+            console.log(this.formChangeData[item][0]);
+            if (Array.isArray(this.formChangeData[item])) {
+              if (this.formChangeData[item][0] !== undefined) {
+                arr[item] = this.formChangeData[item];
+              }
+            } else if (this.formChangeData[item] !== '') {
               arr[item] = this.formChangeData[item];
             }
-          } else if (this.formChangeData[item] !== '') {
-            arr[item] = this.formChangeData[item];
-          }
-          return arr;
-        }, {});
-        console.log(fixedcolumns, 'fixedcolumns');
+            return arr;
+          },
+          {}
+        );
         searchObject.fixedcolumns = { ...fixedcolumns };
         fkQueryListPop({
           searchObject,
@@ -212,7 +214,7 @@
               this.selectOperation.selectrange = data.selectrange;
               this.selectOperation.defaultrange = data.defaultrange;
               // this.selectOperation.startindex = data.start;
-              this.SelectionData.thead = data.ordids.reduce((arr, item) => {
+              this.SelectionData.thead = data.tabth.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname)
                   .name;
                 if (title === 'ID') {
@@ -272,7 +274,7 @@
             }
           });
         }
-        this.getList();
+        //this.getList();
       },
       checkForm(data, item) {
         // 校验select
@@ -289,11 +291,11 @@
             console.log(data[item]);
             if (/=/.test(data[item][0]) !== true) {
               // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
-               if(data[item][0]){
-                   data[item] = [`=${data[item]}`.toString()];
-               } else {
-                  delete data[item];
-               }
+              if (data[item][0]) {
+                data[item] = [`=${data[item]}`.toString()];
+              } else {
+                delete data[item];
+              }
             }
           }
         }
