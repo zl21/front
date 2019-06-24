@@ -173,7 +173,7 @@
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
         mountChecked: false, // 区分是默认值还是change 值
-        mountNumber:0,//页面是否刷新
+        mountNumber: 0, // 页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
         conditiontype: '',
@@ -192,8 +192,7 @@
           // 开启  默认值(刷新界面))
           this.mountChecked = false;
           // 开启 (刷新界面))
-          this.mountNumber = (Math.random()*1000).toFixed(0);
-          console.log(this.mountNumber);
+          this.mountNumber = (Math.random() * 1000).toFixed(0);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -772,17 +771,18 @@
         //   item.valuedata = '';
         //   return '';
         // }
-        // if (this.objreadonly) {
-        //   // 页面只读标记
-
-        //   if (item.display === "select" || item.display === "OBJ_SELECT") {
-        //     const value = item.defval || item.valuedata;
-        //     const index = item.combobox.findIndex(x => x.limitval === value);
-        //     return item.combobox[index].limitdesc || "";
-        //   }
-        // }
+        if (this.objreadonly) {
+          // 页面只读标记
+          
+          // if (item.display === "select" || item.display === "OBJ_SELECT") {
+          //   const value = item.defval || item.valuedata;
+          //   const index = item.combobox.findIndex(x => x.limitval === value);
+          //   return item.combobox[index].limitdesc || "";
+          // }
+        }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
+         
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
@@ -831,15 +831,14 @@
           }
           return arr;
         }
-        if(item.display === 'image'){
-          let arr = item.valuedata
+        if (item.display === 'image') {
+          const arr = item.valuedata
             ? JSON.parse(item.valuedata)
             : [];
-            if(this.defaultSetValue[item.colname]){
-             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
-            }
-            return arr;
-
+          if (this.defaultSetValue[item.colname]) {
+            // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
+          }
+          return arr;
         }
         // const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         // if (item.fkdisplay === 'mop') {
@@ -866,8 +865,11 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
+        if (this.objreadonly === true) {  
+          return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
+        }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
-        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' ||item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
+        if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
           
@@ -876,35 +878,33 @@
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
-          if( item.fkdisplay === 'mop'){
+          if (item.fkdisplay === 'mop') {
             arr[0].ID = item.valuedata || item.defval || '';
-            if(item.valuedata && /total/.test(item.valuedata)){
-                const valuedata = JSON.parse(item.valuedata);
-                arr[0].Label = `已经选中${valuedata.total}条` || '';
-                arr.push(`已经选中${valuedata.total}条` || '');
+            if (item.valuedata && /total/.test(item.valuedata)) {
+              const valuedata = JSON.parse(item.valuedata);
+              arr[0].Label = `已经选中${valuedata.total}条` || '';
+              arr.push(`已经选中${valuedata.total}条` || '');
             }
-          }else if(item.fkdisplay === 'pop') {
-                arr.push(fkdisplayValue && fkdisplayValue.label ||'');
-            }
+          } else if (item.fkdisplay === 'pop') {
+            arr.push(fkdisplayValue && fkdisplayValue.label || '');
+          }
           if (fkdisplayValue) {
-            if( item.fkdisplay === 'drp' || item.fkdisplay === 'mrp'){
-               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
-               arr.push(fkdisplayValue && fkdisplayValue.Label || '');
-
-            } else if(item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
-               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
-               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
-               arr.push(fkdisplayValue && fkdisplayValue.Label || '');
-
+            if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
+              arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+              arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+              arr.push(fkdisplayValue && fkdisplayValue.Label || '');
+            } else if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
+              arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
+              arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
+              arr.push(fkdisplayValue && fkdisplayValue.Label || '');
             }
-            
           }
           
           return arr;
         }
+      
         
-        return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] ||'';
+        return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
       // wewe
       },
       propsType(current, item) {
@@ -1093,12 +1093,19 @@
               item.props.type = 'AttachFilter';
               item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.dialog = {
+                model: {
+                  title: current.fkdesc,
+                  'footer-hide': true
+                }
+              };
               //  单对象界面
               item.props.AutoData = [];
               item.props.fkobj = {
-                refobjid: current.refobjid,
+                colid: current.colid,
                 reftable: current.reftable,
                 reftableid: current.reftableid,
+                show: false,
                 url:
                   `${current.serviceId ? +'/' + current.serviceId : '' 
                   }/p/cs/menuimport`
@@ -1115,10 +1122,17 @@
             item.props.type = 'AttachFilter';
             item.props.empty = 0;
             item.props.AutoData = [];
+            item.props.dialog = {
+              model: {
+                title: '弹窗多选',
+                'footer-hide': false
+              }
+            };
             item.props.fkobj = {
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
+              show: true,
               saveType: 'object',
               url:
                 `${current.serviceId ? current.serviceId : '' 
@@ -1137,7 +1151,7 @@
         if (current.display === 'image') {
           // 待确定
           item.props.type = 'ImageUpload';
-          let valuedata = this.defaultValue(current);
+          const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
           let readonly = ImageSize
             ? ImageSize > valuedata.length
@@ -1160,7 +1174,7 @@
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
         }
-        if (item.props.readonly === true && item.props.fkdisplay) {
+        if (item.props.readonly === true && item.props.fkdisplay || this.objreadonly && item.props.fkdisplay) {
           //  不可编辑 变成 input
           if (
             item.props.fkdisplay === 'drp'
@@ -1169,6 +1183,7 @@
             || item.props.fkdisplay === 'mrp'
           ) {
             item.props.type = 'text';
+            item.type = 'input';
           }
         }
         item.props.disabled = this.objreadonly
@@ -1316,7 +1331,7 @@
     },
     created() {
       this.computdefaultData = this.reorganizeForm();
-      this.mountNumber = (Math.random()*1000).toFixed(0);
+      this.mountNumber = (Math.random() * 1000).toFixed(0);
     }
   };
 </script>

@@ -55,7 +55,7 @@
       tabClick(index) {
         this.updateTabCurrentIndex(index);
         if (index === 0) {
-          this.getMainTable(index);
+          this.getMainTable(index, true);
         } else {
           if (this.tabPanel[index].tabrelation === '1:m') {
             if (this.tabPanel[index].refcolid !== -1) {
@@ -75,10 +75,10 @@
           }
         }
       }, // tab切换触发的方法
-      getMainTable(index) {
+      getMainTable(index, isNotFirstRequest) {
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: index });
+        this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest });
       }
     },
     activated() {
@@ -87,7 +87,7 @@
     mounted() {
     },
     created() {
-      this.getMainTable(this.tabCurrentIndex);
+      this.getMainTable(this.tabCurrentIndex, false);
     }
   };
 </script>
