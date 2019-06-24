@@ -1,5 +1,7 @@
 <template>
-  <label class="label">{{item.name}}：<br/>[ {{item.key}} ] &nbsp;&nbsp;</label>
+  <label class="label">
+    {{ item.name }}：<br>[ {{ item.key }} ] &nbsp;&nbsp;
+  </label>
 </template>
 
 <script>

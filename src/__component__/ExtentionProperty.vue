@@ -2,37 +2,65 @@
   <div class="extentionProperty">
     <div class="left">
       <ul>
-        <li v-for="(item, index) in options" :key="index">{{ item.name }}</li>
+        <li
+          v-for="(item, index) in options"
+          :key="index"
+          @click="scrollIntoView(item, index)"
+        >
+          {{ item.name }}
+          <br>
+          {{ item.key }}
+        </li>
       </ul>
     </div>
     <div class="middle">
-      <div class="item-render-area" v-for="(item, index) in options" :key="index">
+      <div
+        v-for="(item, index) in options"
+        :key="index"
+        class="item-render-area"
+      >
         <ExtentionInput
           v-if="item.type === 'input'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionInput>
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionRadio
           v-if="item.type === 'radio'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionRadio>
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionInputGroup
           v-if="item.type === 'input-group'"
-          :rootData="JSON.parse(JSON.stringify(rootData))"
+          :id="`${item.key}-${index}-${guid}`"
+          :default-data="JSON.parse(JSON.stringify(rootData))"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionInputGroup>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
-          :rootData="JSON.parse(JSON.stringify(rootData))"
+          :id="`${item.key}-${index}-${guid}`"
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionObjectGroup>
+          @rootDataChange="rootDataChange"
+        />
         <ExtentionObjectCombine
           v-if="item.type === 'object-combine'"
+          :id="`${item.key}-${index}-${guid}`"
           :option="item"
-          @rootDataChange="rootDataChange"></ExtentionObjectCombine>
+          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+          @rootDataChange="rootDataChange"
+        />
       </div>
     </div>
     <div class="right">
-      <textarea :value="formatedRootData" readonly></textarea>
+      <textarea
+        :value="formatedRootData"
+        readonly
+      />
     </div>
   </div>
 </template>
@@ -43,11 +71,14 @@
   import ExtentionObjectGroup from './ExtentionsProperty/ExtentionObjectGroup';
   import ExtentionObjectCombine from './ExtentionsProperty/ExtentionObjectCombine';
   import ExtentionInputGroup from './ExtentionsProperty/ExtentionInputGroup';
+
+  const getGuid = () => Math.round(Math.random() * 10000000000);
   
   export default {
     name: 'ExtentionProperty',
     data() {
       return {
+        guid: getGuid(),
         rootData: {}
       };
     },
@@ -62,14 +93,22 @@
       options: {
         type: Array,
         default: () => ([]),
-      }
+      },
+      defaultData: {
+        type: Object,
+        default: () => ({})
+      },
     },
     computed: {
       formatedRootData() {
+        if (Object.keys(this.rootData).length === 0) { return ''; }
         return JSON.stringify(this.rootData, null, 2);
       },
     },
     methods: {
+      scrollIntoView(item, index) {
+        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
       updateRootData(key, value) {
         if (value === '') {
           delete this.rootData[key];
@@ -82,6 +121,9 @@
         this.updateRootData(key, value);
       },
     },
+    created() {
+      this.rootData = JSON.parse(JSON.stringify(this.defaultData));
+    },
     mounted() {
     }
   };
@@ -89,15 +131,19 @@
 
 <style lang="less">
   .extentionProperty {
+    border: 1px solid lightgrey;
+    font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
     width: 100%;
     height: 100%;
     display: flex;
     ul li {
       list-style: none;
     }
+    li:not(:last-child) {
+      border-bottom: 1px solid lightgrey;
+    }
     .left {
-      flex: 1.3;
-      border: 1px solid darkslategrey;
+      flex: 1.5;
       display: flex;
       ul {
         flex: 1;
@@ -116,8 +162,8 @@
       }
     }
     .middle {
-      flex: 6.5;
-      border: 1px solid red;
+      border-left: 1px solid lightgrey;
+      flex: 6;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -127,11 +173,13 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
-        background-color: #e1ecfc;
-        border: 1px solid black;
+        padding: 7px 0;
         .description {
           margin: 5px;
           padding: 5px;
+          .fieldName {
+            color: #000;
+          }
         }
         .content {
           flex: 1;
@@ -148,7 +196,7 @@
               display: flex;
               flex: 1;
               .label {
-                flex: 1;
+                flex: 1.5;
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
@@ -156,6 +204,12 @@
               .input, .select {
                 flex: 3;
                 padding: 0 5px;
+              }
+              input[type="text"]::placeholder {
+                color: grey;
+                font-size: 12px;
+                font-style: italic;
+                letter-spacing: 1px;
               }
             }
           }
@@ -179,18 +233,28 @@
             }
           }
         }
+        .labelWithObjectGroup {
+          border-radius: 5px;
+          padding: 5px;
+          margin: 5px;
+          border: 1px solid lightgrey;
+          box-shadow: 0 0 2px lightgrey;
+        }
+      }
+      .item-render-area:not(:last-child) {
+        border-bottom: 1px solid lightgrey;
       }
     }
     .right {
+      border-left: 1px solid lightgrey;
       flex: 3;
-      border: 1px solid blue;
       textarea {
+        border: none;
         width: 100%;
         height: 100%;
         resize: none;
         padding: 5px;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 12px;
         font-family: Consolas, "Microsoft YaHei", serif;
       }
     }

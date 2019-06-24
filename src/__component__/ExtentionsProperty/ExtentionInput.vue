@@ -1,12 +1,12 @@
 <template>
   <div class="extentionInput">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
       <LabelWithInput
         :item="option"
+        :default-data="defaultData"
         @inputValueChange="inputValueChange"
-      >
-      </LabelWithInput>
+      />
     </div>
   </div>
 </template>
@@ -30,6 +30,10 @@
       option: {
         type: Object,
         default: () => ({})
+      },
+      defaultData: {
+        type: [String, Number, Array],
+        default: ''
       }
     }
   };

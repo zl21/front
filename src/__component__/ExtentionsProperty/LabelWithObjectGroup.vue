@@ -1,29 +1,42 @@
 <template>
-  <div class="LabelWithObjectGroup">
+  <div class="labelWithObjectGroup">
     <template
       v-for="(item, index) in option.objectInfo"
     >
       <LabelWithInput
         v-if="item.type === 'input'"
-        :item="item"
         :key="index"
+        :item="item"
+        :default-data="defaultData[item.key]"
         @inputValueChange="objectGroupValueChange"
-      ></LabelWithInput>
+      />
       <LabelWithRadio
         v-if="item.type === 'radio'"
-        :item="item"
         :key="index"
+        :item="item"
+        :default-data="defaultData[item.key]"
         @radioValueChange="objectGroupValueChange"
-      ></LabelWithRadio>
+      />
       <LabelWithSelect
         v-if="item.type === 'select'"
-        :item="item"
         :key="index"
+        :item="item"
+        :default-data="defaultData[item.key]"
         @selectValueChange="objectGroupValueChange"
-      ></LabelWithSelect>
+      />
     </template>
-    <button v-if="showAddButton" @click="addButtonClick"> + </button>
-    <button v-if="showMinusButton" @click="minusButtonClick"> - </button>
+    <button
+      v-if="showAddButton"
+      @click="addButtonClick"
+    >
+      +
+    </button>
+    <button
+      v-if="showMinusButton"
+      @click="minusButtonClick"
+    >
+      -
+    </button>
   </div>
 </template>
 
@@ -41,13 +54,13 @@
     },
     methods: {
       objectGroupValueChange({ key, value }) {
-        this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value });
+        this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value, belongKey: this.option.key });
       },
       addButtonClick() {
-        this.$emit('addButtonClick');
+        this.$emit('addButtonClick', { belongKey: this.option.key });
       },
       minusButtonClick() {
-        this.$emit('minusButtonClick');
+        this.$emit('minusButtonClick', { belongKey: this.option.key });
       },
     },
     props: {
@@ -70,14 +83,14 @@
       objectGroupIndex: {
         type: Number,
         default: 0
+      },
+      defaultData: {
+        type: Object,
+        default: () => ({})
       }
     }
   };
 </script>
 
 <style scoped>
-  .LabelWithObjectGroup {
-    margin: 5px;
-    background-color: #e298ff;
-  }
 </style>

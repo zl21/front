@@ -1,5 +1,38 @@
 export default [
   {
+    name: '外键下拉',
+    key: 'fkdrplist',
+    type: 'object-combine',
+    objectInfo: [
+      {
+        name: '排序信息',
+        key: 'orderby',
+        type: 'object-group',
+        enableIncrease: true,
+        objectInfo: [
+          {
+            name: '字段名称',
+            key: 'column',
+            type: 'input'
+          },
+          {
+            name: '升序',
+            key: 'asc',
+            type: 'radio',
+            enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+          }
+        ]
+      },
+      {
+        name: '下拉弹出显示列',
+        key: 'searchcols',
+        type: 'input',
+        outputValueType: 'Array'
+      }
+    ],
+    description: '请描述一下这个配置有啥作用'
+  },
+  {
     name: '列表默认排序',
     key: 'orderby',
     type: 'object-group',
@@ -70,39 +103,7 @@ export default [
     ],
     description: '请描述一下这个配置有啥作用'
   },
-  {
-    name: '外键下拉',
-    key: 'fkdrplist',
-    type: 'object-combine',
-    objectInfo: [
-      {
-        name: '排序信息',
-        key: 'orderby',
-        type: 'object-group',
-        enableIncrease: true,
-        objectInfo: [
-          {
-            name: '字段名称',
-            key: 'column',
-            type: 'input'
-          },
-          {
-            name: '升序',
-            key: 'asc',
-            type: 'radio',
-            enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-          }
-        ]
-      },
-      {
-        name: '下拉弹出显示列',
-        key: 'searchcols',
-        type: 'input',
-        outputValueType: 'Array'
-      }
-    ],
-    description: '请描述一下这个配置有啥作用'
-  },
+  // 外键下拉占位
   {
     name: '输入键查询',
     key: 'ak2',

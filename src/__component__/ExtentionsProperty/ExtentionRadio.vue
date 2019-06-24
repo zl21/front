@@ -1,8 +1,12 @@
 <template>
   <div class="extentionRadio">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
-      <EnumerateRadioItem :option="option" @radioValueChange="radioValueChange"></EnumerateRadioItem>
+      <EnumerateRadioItem
+        :default-data="defaultData"
+        :option="option"
+        @radioValueChange="radioValueChange"
+      />
     </div>
   </div>
 </template>
@@ -26,6 +30,10 @@
       option: {
         type: Object,
         default: () => ({})
+      },
+      defaultData: {
+        type: [Boolean, String],
+        default: ''
       }
     }
   };

@@ -1,23 +1,23 @@
 <template>
   <div class="extentionInputGroup">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div class="content">
-      <template v-for="(item, index) in option.inputLists" >
+      <template v-for="(item, index) in option.inputLists">
         <LabelWithInput
           v-if="item.type === 'input'"
-          :item="item"
           :key="index"
+          :item="item"
+          :default-data="option.key === '__root__' ? defaultData[item.key] : (defaultData[option.key] ? defaultData[option.key][item.key] : '')"
           @inputValueChange="inputGroupValueChange"
-        >
-        </LabelWithInput>
+        />
         <LabelWithRadio
           v-if="item.type === 'radio'"
+          :key="index"
           :item="item"
           :index="index"
-          :key="index"
+          :default-data="defaultData[item.key]"
           @radioValueChange="inputGroupValueChange"
-        >
-        </LabelWithRadio>
+        />
       </template>
     </div>
   </div>
@@ -55,7 +55,7 @@
         type: Object,
         default: () => ({})
       },
-      rootData: {
+      defaultData: {
         type: Object,
         default: () => ({})
       }

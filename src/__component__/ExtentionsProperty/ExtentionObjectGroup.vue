@@ -1,14 +1,15 @@
 <template>
   <div class="extentionObjectGroup">
-    <Description :option="option"></Description>
+    <Description :option="option" />
     <div
-      class="content"
       v-for="(data, index) in dataArray"
       :key="index"
+      class="content"
     >
       <LabelWithObjectGroup
         v-if="index <= currentIndex"
-        :objectGroupIndex="index"
+        :object-group-index="index"
+        :default-data="defaultData[index]"
         :data="data"
         :option="option"
         :show-add-button="currentIndex === index && currentIndex !== 9"
@@ -16,7 +17,7 @@
         @objectGroupItemChange="objectGroupItemChange"
         @addButtonClick="addButtonClick"
         @minusButtonClick="minusButtonClick"
-      ></LabelWithObjectGroup>
+      />
     </div>
   </div>
 </template>
@@ -75,10 +76,14 @@
         type: Object,
         default: () => ({})
       },
-      rootData: {
-        type: Object,
-        default: () => ({})
+      defaultData: {
+        type: [Array],
+        default: () => []
       },
+    },
+    created() {
+      this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[i]);
+      this.currentIndex = this.defaultData.length - 1;
     }
   };
 </script>

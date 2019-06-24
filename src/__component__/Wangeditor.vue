@@ -48,19 +48,24 @@
         timertomUploadImg: false,
         value: '',
         Html: '',
+        textHtml:'',
       };
     },
     mounted() {
-      this.init();
-      console.log(this.$refs.editor.id);
+      this.init()
+      this.textHtml = this.valuedata;
     },
     computed: {
       itemData() {
         return this.item;
-      },
-      textHtml() {
-        return this.valuedata;
       }
+    },
+    watch:{
+      valuedata(val){
+         this.init()
+         this.textHtml = this.valuedata;
+      }
+
     },
     methods: {
       init() {
@@ -113,6 +118,7 @@
         this.$nextTick(() => { 
           // 默认值
           self.value = this.textHtml;
+          console.log('self.value',self.value);
           this.editor.txt.html(this.textHtml);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 

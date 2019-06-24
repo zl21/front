@@ -832,6 +832,16 @@
           }
           return arr;
         }
+        if(item.display === 'image'){
+          let arr = item.valuedata
+            ? JSON.parse(item.valuedata)
+            : [];
+            if(this.defaultSetValue[item.colname]){
+             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
+            }
+            return arr;
+
+        }
         // const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         // if (item.fkdisplay === 'mop') {
         //   if (fkdisplayValue) {
@@ -895,7 +905,7 @@
           return arr;
         }
         
-        return item.defval || item.valuedata || item.default || '';
+        return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] ||'';
       // wewe
       },
       propsType(current, item) {
@@ -1128,9 +1138,7 @@
         if (current.display === 'image') {
           // 待确定
           item.props.type = 'ImageUpload';
-          const valuedata = current.valuedata
-            ? JSON.parse(current.valuedata)
-            : [];
+          let valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
           let readonly = ImageSize
             ? ImageSize > valuedata.length

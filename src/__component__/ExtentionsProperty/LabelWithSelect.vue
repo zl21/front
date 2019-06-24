@@ -1,9 +1,19 @@
 <template>
   <div class="input-group-item">
     <div class="cell">
-      <LabelForInput :item="item"></LabelForInput>
-      <select class="select" @change="selectValueChange">
-        <option v-for="(o, i) in item.selectOptions" :value="o.value" :key="i">{{ o.text }}</option>
+      <LabelForInput :item="item" />
+      <select
+        class="select"
+        ref="select"
+        @change="selectValueChange"
+      >
+        <option
+          v-for="(o, i) in item.selectOptions"
+          :key="i"
+          :value="o.value"
+        >
+          {{ o.text }}
+        </option>
       </select>
     </div>
   </div>
@@ -27,6 +37,13 @@
         type: Object,
         default: () => ({})
       },
+      defaultData: {
+        type: String,
+        default: ''
+      }
+    },
+    mounted() {
+      this.$refs.select.value = this.defaultData;
     }
   };
 </script>

@@ -1,7 +1,9 @@
 <template>
   <div class="description">
-    配置项<b style="color: orangered;">[ {{option.name}} ] </b>：
-    {{option.description}}
+    <span class="fieldName">
+       {{ option.name }} ：
+    </span>
+    {{ option.description }}
   </div>
 </template>
 
