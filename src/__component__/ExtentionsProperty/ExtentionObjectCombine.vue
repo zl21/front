@@ -77,11 +77,21 @@
         if (value === '') {
           if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
+            if (index === 0 && JSON.stringify(copyData[index]) === '{}') {
+              copyData.splice(index, 1);
+            }
           }
         } else {
           copyData[index] = Object.assign({}, copyData[index], { [key]: value });
         }
-        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData })) });
+        const emitData = Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData.length === 0 ? '' : copyData }));
+        // 移除空数组
+        Object.keys(emitData).forEach((k) => {
+          if (emitData[k] === '') {
+            delete emitData[k];
+          }
+        });
+        this.$emit('rootDataChange', { key: this.option.key, value: JSON.stringify(emitData) === '{}' ? '' : emitData });
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }

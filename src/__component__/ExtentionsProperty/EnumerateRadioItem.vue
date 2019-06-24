@@ -23,7 +23,7 @@
       <input
         :id="`${option.key}-${guid}-clean`"
         type="radio"
-        :value="''"
+        :value="'__empty__'"
         :name="`${option.key}-${guid}`"
         @change="radioValueChange('')"
       >
@@ -59,7 +59,7 @@
       },
       defaultData: {
         type: [Boolean, String],
-        default: ''
+        default: '__empty__'
       }
     },
     mounted() {
