@@ -184,7 +184,7 @@ export default {
               // modify[tableName].ID = objId;// 主表id
 
               parames = {
-                ...modify,
+                ...mainTabale,
                 ...itemModify
               };
             }
