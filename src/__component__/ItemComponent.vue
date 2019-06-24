@@ -453,7 +453,6 @@
 
       // datepick event
       datePickerChange(value, type, $this) {
-        console.log(value, 'time');
         this._items.value = value;
         this.valueChange();
         if (
@@ -714,7 +713,7 @@
             ID: ''
           }
         ];
-        console.log('valueChange')
+        console.log('valueChange');
         this.valueChange();
         // if (
         //   Object.prototype.hasOwnProperty.call(
@@ -798,12 +797,20 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
+         
           if ($this._data.params) {
             const value = $this._data.parms.NAME.val;
+            const Selected = [
+              {
+                Label: value,
+                ID: $this._data.parms.ID.val
+              }
+            ];
+
             this._items.event['popper-value'](
               $this,
               value,
-              $this._data.parms.ID.val,
+              Selected,
               this.index
             );
             return false;
