@@ -34,9 +34,6 @@
 
 <script>
 
-
-  import store from '../__config__/store.config';
-
   export default {
     // name: 'DialogComponent',
     props: {
