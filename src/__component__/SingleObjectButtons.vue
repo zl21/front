@@ -26,7 +26,7 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
-      :obj-list="objList"
+      :obj-list="dialogComponentName?objList:[]"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -214,14 +214,14 @@
         return this.watermarkimg;
       },
       objList() { // 返回克隆表定制弹框所需数据
-        // if (this.objectType === 'horizontal') { // 横向布局
-        //   return this.itemInfo.componentAttribute.panelData.data.addcolums;
-        // } if (this.objectType === 'vertical') {
-        //   if (this.mainFormInfo.formData.data) {
-        //     return this.mainFormInfo.formData.data.addcolums;
-        //   }
-        // }
-        // return [];
+        if (this.objectType === 'horizontal') { // 横向布局
+          return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        } if (this.objectType === 'vertical') {
+          if (this.mainFormInfo.formData.data) {
+            return this.mainFormInfo.formData.data.addcolums;
+          }
+        }
+        return [];
       }
     },
     props: {
@@ -293,9 +293,6 @@
           if (this.copy === true) { 
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
-            // setTimeout(() => {
-            //   this.changeCopy(false);
-            // }, 5000);
           }
         }
       },
@@ -1147,25 +1144,29 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             } else {
-              if (Object.values(this.updateData[itemName].modify[itemName]).length > 0) { // 子表表格编辑修改
+              const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+              const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+              if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
-                console.log(this.itemTableCheckFunc());
                 if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
               }
               // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
-              if (Object.values(this.updateData[itemName].add[itemName]).length > 0) {
+              if (itemAdd.length > 0 && itemModify.length < 1) { // 子表新增
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
+              if (itemAdd.length > 0 && itemModify.length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               }
             }
           }
         } else { // 横向结构
-          const itemModify = this.updateData[itemName].modify[itemName] && this.updateData[itemName].modify[itemName];
-          const itemAdd = this.updateData[itemName].add[itemName] && Object.keys(this.updateData[itemName].add[itemName]);
-          if (itemModify.length > 0 && itemAdd.length < 1) {
+          const modify = Object.values(this.updateData[itemName].modify[itemName]);
+          const add = Object.keys(this.updateData[itemName].add[itemName]);
+          if (modify.length > 0 && add.length < 1) {
             this.itemTableValidation = true;
-          } else if (itemModify.length > 0 && itemAdd.length > 0) {
+          } else if (modify.length > 0 && add.length > 0) {
             this.itemTableValidation = false;
           }
           if (itemName === this.tableName) {
@@ -1177,27 +1178,27 @@
               }
             }
           } else {
-            if (this.updateData[itemName].add[itemName]) {
-              if (Object.keys(this.updateData[itemName].add[itemName]).length > 0) {
+            const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+            const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            if (itemAdd.length > 0 && itemModify.length > 0) {
+              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+              }
+            }
+            if (itemAdd.length > 0 && itemModify.length < 1) {
+              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
+            }
+            if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
+              // this.itemTableCheckFunc();// 校验子表表格必填项
+              if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
               }
             }
-            if (this.updateData[itemName].modify[itemName]) { 
-              if (this.updateData[itemName].modify[itemName].length > 0) { // 子表表格编辑修改
-                // this.itemTableCheckFunc();// 校验子表表格必填项
-                if (this.itemTableCheckFunc()) {
-                  if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                    this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                  }
-                }
-              }
-            }
-          
-            // const add = Object.assign({}, this.updateData[itemName].add[itemName], this.updateData[itemName].addDefault[itemName]);// 整合子表新增和默认值数据
           }
-          // }
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
@@ -1476,6 +1477,7 @@
       }
     },
     mounted() {
+      console.log('mounted', this._deactivate, this);
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },
