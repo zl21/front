@@ -1133,7 +1133,6 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
-        debugger;
 
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {

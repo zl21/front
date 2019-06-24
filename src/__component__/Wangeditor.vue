@@ -48,11 +48,11 @@
         timertomUploadImg: false,
         value: '',
         Html: '',
-        textHtml:'',
+        textHtml: '',
       };
     },
     mounted() {
-      this.init()
+      this.init();
       this.textHtml = this.valuedata;
     },
     computed: {
@@ -60,10 +60,10 @@
         return this.item;
       }
     },
-    watch:{
-      valuedata(val){
-         this.init()
-         this.textHtml = this.valuedata;
+    watch: {
+      valuedata(val) {
+        this.textHtml = this.valuedata;
+        this.editor.txt.html(this.textHtml);
       }
 
     },
@@ -118,7 +118,7 @@
         this.$nextTick(() => { 
           // 默认值
           self.value = this.textHtml;
-          console.log('self.value',self.value);
+          console.log('self.value', self.value);
           this.editor.txt.html(this.textHtml);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 
@@ -130,7 +130,7 @@
           const textArea = document.createElement('textArea');
           textArea.setAttribute('id', 'textarea');
           textArea.setAttribute('style', 'display:none;width:100%;height:100%;resize:none;');
-          if(editorSelector.querySelector('.w-e-text-container')){
+          if (editorSelector.querySelector('.w-e-text-container')) {
             editorSelector.querySelector('.w-e-text-container').appendChild(textArea);
           }
           const wangEditoMenu = document.createElement('div');

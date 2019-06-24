@@ -225,7 +225,7 @@
           return '';
         }
       },
-      Condition: {
+      condition: {
         type: String,
         default() {
           return '';
@@ -415,7 +415,7 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else if (this.Condition) {
+            } else if (this.condition) {
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
@@ -439,7 +439,7 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else if (this.Condition) {
+            } else if (this.condition) {
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
