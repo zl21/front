@@ -196,7 +196,8 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
-      <component
+      <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
+        <component
       
         :is="_items.componentType"
         v-if="_items.type === 'Wangeditor'"
@@ -205,6 +206,13 @@
         :item="_items.props"
         @getChangeItem="getWangeditorChangeItem"
       />
+
+      </template>
+      <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
+        <div v-html="_items.value"></div>
+
+      </template>
+      
     </div>
   </div>
 </template>
@@ -291,14 +299,8 @@
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
             item.componentType = myPopDialog;
-            item.props.fkobj.colid = item.props.colid;
-            item.props.fkobj.colname = item.props.colname;
             item.props.fkobj.show = false;
-            item.props.dialog.model.title = '表';
-            item.props.dialog.model['footer-hide'] = true;
-            item.props.dialog.model.closable = true;
           } else {
-            item.props.dialog.model.title = '弹窗多选';
             item.componentType = Dialog;
             item.props.fkobj.show = true;
             item.props.datalist = dataProp[item.type].props.datalist.concat(
@@ -451,7 +453,6 @@
 
       // datepick event
       datePickerChange(value, type, $this) {
-        console.log(value,'time');
         this._items.value = value;
         this.valueChange();
         if (
@@ -561,7 +562,10 @@
       },
       fkrPopperHide(event, $this) {
         if (
-          Object.prototype.hasOwnProperty.call(this._items.event, 'on-popper-hide')
+          Object.prototype.hasOwnProperty.call(
+            this._items.event,
+            'on-popper-hide'
+          )
           && typeof this._items.event['on-popper-hide'] === 'function'
         ) {
           this._items.event['on-popper-hide'](event, $this, this._items);
@@ -621,14 +625,18 @@
       },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
-        this._items.props.selected = [{
-          Label: row.label,
-          ID: row.value
-        }];
-        let selected = [{
-          label: row.label,
-          ID: row.value
-        }];
+        this._items.props.selected = [
+          {
+            Label: row.label,
+            ID: row.value
+          }
+        ];
+        const selected = [
+          {
+            label: row.label,
+            ID: row.value
+          }
+        ];
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
@@ -699,21 +707,33 @@
       attachFilterClear(event, $this) {
         this._items.value = '';
         this.resultData = {};
-        this._items.props.valuedata ={};
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value']($this, '', [
-            {
-              Label: '',
-              ID: ''
-            }
-          ], this.index);
-        }
+        this._items.props.Selected = [
+          {
+            Label: '',
+            ID: ''
+          }
+        ];
+        console.log('valueChange');
+        this.valueChange();
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     '',
+        //     [
+        //       {
+        //         Label: '',
+        //         ID: ''
+        //       }
+        //     ],
+        //     this.index
+        //   );
+        // }
       },
       attachFilterPopperShow($this) {
         if (
@@ -723,8 +743,11 @@
           )
           && typeof this._items.event['popper-show'] === 'function'
         ) {
-
-          if (this._items.props.fkobj.saveType && this._items.props.Selected[0].ID && /total/.test(this._items.props.Selected[0].ID)) {
+          if (
+            this._items.props.fkobj.saveType
+            && this._items.props.Selected[0].ID
+            && /total/.test(this._items.props.Selected[0].ID)
+          ) {
             // this.filter = data;
             const data = JSON.parse(this._items.props.Selected[0].ID);
             setTimeout(() => {
@@ -760,11 +783,10 @@
           // console.log(this.$refs.complex,this.$refs.complex.data);
           if (/选中/.test(this._items.value)) {
             this.filterDate = this.resultData;
-            // this.$refs.complex = Object.assign(this.$refs.complex.$data,this.resultData);
-          } else { 
-          }
+          // this.$refs.complex = Object.assign(this.$refs.complex.$data,this.resultData);
+          } 
           $this.complexs = false;
-        } 
+        }
       },
       attachFilterOk($this) {
         // this.resultData = Object.assign({},this.$refs.complex);
@@ -775,12 +797,20 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
+         
           if ($this._data.params) {
             const value = $this._data.parms.NAME.val;
+            const Selected = [
+              {
+                Label: value,
+                ID: $this._data.parms.ID.val
+              }
+            ];
+
             this._items.event['popper-value'](
               $this,
               value,
-              $this._data.parms.ID.val,
+              Selected,
               this.index
             );
             return false;
@@ -790,32 +820,26 @@
             const saveObjectmessage = $this.savObjemessage();
             this.resultData = savemessage;
             const value = `已经选中${$this._data.IN.length}条数据`;
-            let Select =  [{
+            const Select = [
+              {
                 Label: value,
                 ID: saveObjectmessage
-              }];
+              }
+            ];
             this._items.value = value;
             if (this._items.props.fkobj.saveType) {
               this._items.props.Selected = Select;
-              this._items.event['popper-value'](
-                $this,
-                value,
-                Select,
-                this.index
-              );
+              this._items.event['popper-value']($this, value, Select, this.index);
             } else {
-              let Select =  [{
-                Label: value,
-                ID: $this._data.IN
-              }];
+              const Select = [
+                {
+                  Label: value,
+                  ID: $this._data.IN
+                }
+              ];
               this._items.props.selected = Select;
-              this._items.event['popper-value'](
-                $this,
-                value,
-                Select,
-                this.index
-              );
-            console.log(this._items.props.selected);
+              this._items.event['popper-value']($this, value, Select, this.index);
+              console.log(this._items.props.selected);
             }
           } else {
             this._items.value = '';
@@ -858,33 +882,35 @@
               objId: that._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
             };
-          
+
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             // 判断是否有path
-            const parms = this.pathsCheckout(
-              data,
-              HEADIMG
+            const parms = this.pathsCheckout(data, HEADIMG);
+            console.log(
+              parms,
+              this.$parent.pathcheck,
+              this.$parent.childTableName
             );
-            console.log(parms, this.$parent.pathcheck, this.$parent.childTableName);
-            if (this.$route.params
-              && this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+            if (
+              this.$route.params
+              && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+            ) {
               //  不是新增  和不是主子表中的子表
               const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
 
               if (childTableName !== false && this.$parent.isreftabs) {
                 this._items.props.itemdata.valuedata.splice(index - 1, 1);
                 if (this._items.props.itemdata.valuedata.length > 0) {
-                  this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+                  this._items.value = JSON.stringify([
+                    ...this._items.props.itemdata.valuedata
+                  ]);
                 } else {
                   this._items.value = '';
                 }
                 this.valueChange();
               } else if (this.$parent.pathcheck === '') {
                 parms.path = '/p/cs/objectSave';
-                this.deleteImgData(
-                  parms,
-                  index
-                );
+                this.deleteImgData(parms, index);
               } else {
                 const path = this.$parent.pathcheck !== '';
                 that.upSaveImg(parms, '', path, index);
@@ -899,7 +925,9 @@
       },
       valueImgChange() {
         if (this._items.props.itemdata.valuedata.length > 0) {
-          this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+          this._items.value = JSON.stringify([
+            ...this._items.props.itemdata.valuedata
+          ]);
         } else {
           this._items.value = '';
         }
@@ -935,33 +963,41 @@
             }
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
-            fixedData.push({ NAME: resultData.data.Name, URL: resultData.data.Url });
-            // 
+            fixedData.push({
+              NAME: resultData.data.Name,
+              URL: resultData.data.Url
+            });
+            //
             let parms = {
               objId: this._items.props.itemdata.objId,
-              table: this._items.props.itemdata.masterName,
-            
+              table: this._items.props.itemdata.masterName
             };
             //  判断parms 是否 需要保存
             parms = this.pathsCheckout(parms, fixedData);
             if (
               this.$route.params
-              && this.$route.params.itemId.toLocaleLowerCase() !== 'new' 
+              && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
               const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
 
               if (this.$parent.isreftabs && childTableName !== false) {
-                //  主子表 子表 
-                this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
-                this._items.value = JSON.stringify([...this._items.props.itemdata.valuedata]);
+                //  主子表 子表
+                this._items.props.itemdata.valuedata.push(
+                  fixedData[fixedData.length - 1]
+                );
+                this._items.value = JSON.stringify([
+                  ...this._items.props.itemdata.valuedata
+                ]);
                 this.valueChange();
               } else {
                 self.upSaveImg(parms, fixedData, path);
               }
             } else {
-              this._items.props.itemdata.valuedata.push(fixedData[fixedData.length - 1]);
+              this._items.props.itemdata.valuedata.push(
+                fixedData[fixedData.length - 1]
+              );
               this.valueImgChange();
             }
           }
@@ -978,33 +1014,35 @@
           if (childTableName) {
             const parmsdata = {
               [parms.table]: {
-                ID: parms.objId || parms.ID,
+                ID: parms.objId || parms.ID
               },
               [childTableName]: {
-                [this._items.field]: JSON.stringify(data),
-              },
+                [this._items.field]: JSON.stringify(data)
+              }
             };
             return Object.assign({}, parmsdata);
-          }  
+          }
           console.log('主子表 path');
 
           const parmsdata = {
             [parms.table]: {
               [this._items.field]: data == '' ? '' : JSON.stringify(data),
-              ID: parms.objId || parms.ID,
-            },
+              ID: parms.objId || parms.ID
+            }
           };
           return Object.assign({}, parmsdata);
-        } if (isreftabs && pathcheck === '') {
+        }
+        if (isreftabs && pathcheck === '') {
           // 主子表 无path
           if (childTableName) {
             const fixedData = {
               fixedData: {
-                [childTableName]:
-                  [{
+                [childTableName]: [
+                  {
                     [this._items.props.itemdata.colname]:
-                      data === '' ? '' : JSON.stringify(data) 
-                  }]
+                      data === '' ? '' : JSON.stringify(data)
+                  }
+                ]
               },
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
@@ -1022,7 +1060,8 @@
             table: this._items.props.itemdata.masterName
           };
           return Object.assign({}, fixedData);
-        } if (!isreftabs && pathcheck === '') {
+        }
+        if (!isreftabs && pathcheck === '') {
           // 单主表  无path
           console.log('单主表 有sspath');
 
@@ -1037,11 +1076,12 @@
             table: this._items.props.itemdata.masterName
           };
           return Object.assign({}, fixedData);
-        } if (!isreftabs && pathcheck !== '') {
+        }
+        if (!isreftabs && pathcheck !== '') {
           // 单主表  有path
 
           const parmsdata = {
-            [this._items.field]: data === '' ? '' : JSON.stringify(data),
+            [this._items.field]: data === '' ? '' : JSON.stringify(data)
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
@@ -1072,7 +1112,7 @@
                 URL: data.URL
               });
             }
-            // this.valueChange();
+          // this.valueChange();
           }
         });
       },
@@ -1134,8 +1174,8 @@
   .icon-bj_tcduo:before {
     content: "\e6b1";
   }
-  .icon-bj_tcduo{
-    padding-top: 2px
+  .icon-bj_tcduo {
+    padding-top: 2px;
   }
 }
 </style>

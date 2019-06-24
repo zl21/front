@@ -225,7 +225,7 @@
           return '';
         }
       },
-      Condition: {
+      condition: {
         type: String,
         default() {
           return '';
@@ -415,7 +415,7 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else if (this.Condition) {
+            } else if (this.condition) {
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
@@ -432,18 +432,18 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            //console.log(current.item.props.Selected,'AttachFilter');
-            if (current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
-              obj[current.item.field] = current.item.props.Selected[0].ID;
+            console.log(current.item.props.Selected,'AttachFilter');
+            if (current.item.props.Selected[0] && this.condition === '') {
+              obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
               if (Version === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else if (this.Condition) {
+            } else if (this.condition) {
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
-            }
+            } 
 
           // 单对象界面 不需要
           // else {

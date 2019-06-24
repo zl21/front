@@ -145,8 +145,6 @@ export default {
                     } else if (b.fkdisplay === 'mop') {
                       const number = JSON.parse(b.valuedata).lists.result.length;
                       copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                      //                   ID:"{"idArray":[],"lists":{"result":[{"exclude":false,"id_list":5,"screen":5,"screen_string":"ST001","string":"ST001","ID":5},{"exclude":false,"id_list":4,"screen":4,"screen_string":"Tencent","string":"Tencent","ID":4}]},"total":2,"value":{"CONDITION":"","GLOBAL":"","IN":[4,5],"NOTIN":[],"TABLENAME":"C_STORE"}}"
-                      // label:"已经选中2条数据"
                     } else {
                       copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                     }
@@ -158,7 +156,6 @@ export default {
         }
       });
     });
-    console.log('🍓', copySaveDataForParam);
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
     state.mainFormInfo.formData.data = data;
