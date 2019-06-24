@@ -193,7 +193,6 @@
           this.mountChecked = false;
           // 开启 (刷新界面))
           this.mountNumber = (Math.random() * 1000).toFixed(0);
-          console.log(this.mountNumber);
           this.computdefaultData = this.reorganizeForm();
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -772,17 +771,18 @@
         //   item.valuedata = '';
         //   return '';
         // }
-        // if (this.objreadonly) {
-        //   // 页面只读标记
-
-        //   if (item.display === "select" || item.display === "OBJ_SELECT") {
-        //     const value = item.defval || item.valuedata;
-        //     const index = item.combobox.findIndex(x => x.limitval === value);
-        //     return item.combobox[index].limitdesc || "";
-        //   }
-        // }
+        if (this.objreadonly) {
+          // 页面只读标记
+          
+          // if (item.display === "select" || item.display === "OBJ_SELECT") {
+          //   const value = item.defval || item.valuedata;
+          //   const index = item.combobox.findIndex(x => x.limitval === value);
+          //   return item.combobox[index].limitdesc || "";
+          // }
+        }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
+         
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
@@ -865,6 +865,9 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
+        if (this.objreadonly === true) {  
+          return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
+        }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
@@ -899,6 +902,7 @@
           
           return arr;
         }
+      
         
         return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
       // wewe
@@ -1096,7 +1100,6 @@
                 }
               };
               //  单对象界面
-              console.log(current.colid);
               item.props.AutoData = [];
               item.props.fkobj = {
                 colid: current.colid,
@@ -1171,7 +1174,7 @@
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
         }
-        if (item.props.readonly === true && item.props.fkdisplay) {
+        if (item.props.readonly === true && item.props.fkdisplay || this.objreadonly && item.props.fkdisplay) {
           //  不可编辑 变成 input
           if (
             item.props.fkdisplay === 'drp'
@@ -1180,6 +1183,7 @@
             || item.props.fkdisplay === 'mrp'
           ) {
             item.props.type = 'text';
+            item.type = 'input';
           }
         }
         item.props.disabled = this.objreadonly
