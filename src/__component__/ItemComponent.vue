@@ -708,26 +708,33 @@
       attachFilterClear(event, $this) {
         this._items.value = '';
         this.resultData = {};
-        this._items.props.valuedata = {};
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value'](
-            $this,
-            '',
-            [
-              {
-                Label: '',
-                ID: ''
-              }
-            ],
-            this.index
-          );
-        }
+        this._items.props.Selected = [
+          {
+            Label: '',
+            ID: ''
+          }
+        ];
+        console.log('valueChange')
+        this.valueChange();
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     '',
+        //     [
+        //       {
+        //         Label: '',
+        //         ID: ''
+        //       }
+        //     ],
+        //     this.index
+        //   );
+        // }
       },
       attachFilterPopperShow($this) {
         if (
