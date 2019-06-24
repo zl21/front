@@ -89,7 +89,7 @@ export default {
     if (Object.values(data.value).length === 0) {
       state.updateData[data.tableName].add[data.tableName] = {};
     } else {
-      state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
     }
   },
   updateModifyData(state, data) {
