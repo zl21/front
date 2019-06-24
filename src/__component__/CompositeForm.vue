@@ -543,7 +543,6 @@
                     Fitem[index].item.value = '';
                     
                     this.resultData = {};
-                    this._items.props.valuedata = {};
                     Fitem[index].item.props.Selected = [
                       {
                         label: '',
