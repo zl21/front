@@ -47,6 +47,8 @@
 </template>
 
 <script>
+  /* eslint-disable consistent-return */
+
 
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
@@ -107,7 +109,7 @@
     methods: {
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
-          this.$refs.tabPanel.$children[3].itemTableCheckFunc();
+          return this.$refs.tabPanel.$children[3].itemTableCheckFunc();
         }
       }, // 按钮点击保存的回调
       InitializationForm(val) {
@@ -159,7 +161,7 @@
         } else if (refTab.tabrelation === '1:1') {
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
           this.getItemObjForChildTableForm({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index 
+            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
           });
         }
       },
