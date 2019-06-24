@@ -73,15 +73,25 @@
         return JSON.parse(JSON.stringify(obj));
       },
       objectGroupItemChange(index, { key, value, belongKey }) {
-        const copyData = this.cloneObject(this.rootData[this.option.key] ? this.rootData[this.option.key][belongKey] || [] : []);
+        const copyData = this.cloneObject(this.defaultData[belongKey] ? this.defaultData[belongKey] || [] : []);
         if (value === '') {
-          if (copyData[index] && copyData[index][key]) {
+          if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
+            if (index === 0 && JSON.stringify(copyData[index]) === '{}') {
+              copyData.splice(index, 1);
+            }
           }
         } else {
           copyData[index] = Object.assign({}, copyData[index], { [key]: value });
         }
-        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, this.rootData[this.option.key], { [belongKey]: copyData }) });
+        const emitData = Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData.length === 0 ? '' : copyData }));
+        // 移除空数组
+        Object.keys(emitData).forEach((k) => {
+          if (emitData[k] === '') {
+            delete emitData[k];
+          }
+        });
+        this.$emit('rootDataChange', { key: this.option.key, value: JSON.stringify(emitData) === '{}' ? '' : emitData });
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }
@@ -90,12 +100,12 @@
       minusButtonClick({ belongKey }) {
         if (this.currentIndex <= 0) { return; }
         this.currentIndex = this.currentIndex - 1;
-        const copyData = this.cloneObject(this.rootData[this.option.key] ? this.rootData[this.option.key][belongKey] || [] : []);
+        const copyData = this.cloneObject(this.defaultData[belongKey] ? this.defaultData[belongKey] || [] : []);
         copyData.pop();
-        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, this.rootData[this.option.key], { [belongKey]: copyData }) });
+        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData })) });
       },
       inputValueChange({ key, value }) {
-        let copyData = this.cloneObject(this.rootData[this.option.key] || {});
+        let copyData = this.cloneObject(this.defaultData || {});
         if (value === '') {
           delete copyData[key];
         } else {
@@ -115,12 +125,9 @@
       },
     },
     created() {
-      // this.option.objectInfo.forEach(obj => {
-      //   if (obj.type === 'object-group') {
-      //     this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[obj.key][i]);
-      //     this.currentIndex = this.defaultData.length - 1;
-      //   }
-      // });
+      const key = this.option.objectInfo.filter(d => d.type === 'object-group')[0].key;
+      this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[key][i]);
+      this.currentIndex = this.defaultData[key].length - 1;
     }
   };
 </script>

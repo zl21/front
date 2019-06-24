@@ -1095,6 +1095,12 @@
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
+                  width: 920,
+                  mask: true,
+                  draggable: true,
+                  closable: true,
+                  scrollable: true,
+                  maskClosable: false,
                   'footer-hide': true
                 }
               };

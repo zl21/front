@@ -34,9 +34,9 @@
       },
       defaultData: {
         type: [Boolean, String],
-        default: ''
+        default: '__empty__'
       }
-    }
+    },
   };
 </script>
 
