@@ -55,15 +55,17 @@
       },
       ctrlOptions: {
         type: Object,
-        default: () => ({})
+        default: () => ({
+          rows: 8
+        })
       }
     },
     data() {
       return {
         currentValue: '',
         showModal: false,
-        rows: 4,
         transformedData: {},
+        rows: 8
       };
     },
     methods: {
