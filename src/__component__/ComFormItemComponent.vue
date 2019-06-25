@@ -231,7 +231,7 @@
           return '';
         }
       },
-      mountedType:{
+      mountedType: {
         type: String,
         default() {
           return '';
@@ -247,8 +247,8 @@
         mapData: {}, // 全部联动关系
         formValueItem: {}, // 当前字段
         changeNumber: 0, // 更改次数
-        checkMounted:false, // 是否初始化
-        mountedTypeName:'',
+        checkMounted: false, // 是否初始化
+        mountedTypeName: '',
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
       };
@@ -263,8 +263,8 @@
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
-                this.VerificationFormInt();
-        }, 500);
+        this.VerificationFormInt();
+      }, 500);
 
     // this.VerificationFormInt();
     },
@@ -272,9 +272,9 @@
       this.newFormItemLists = this.formItemLists.concat([]);
     },
     watch: {
-      mountedType(){
+      mountedType() {
         setTimeout(() => {
-                this.VerificationFormInt();
+          this.VerificationFormInt();
         }, 500);
       },
       formDataObject: {
@@ -432,7 +432,7 @@
             obj[current.item.field] = undefined;
           } else if (current.item.type === 'AttachFilter') {
             // 若为外键则要处理输入还是选中
-            console.log(current.item.props.Selected,'AttachFilter');
+            console.log(current.item.props.Selected, 'AttachFilter');
             if (current.item.props.Selected[0] && this.condition === '') {
               obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
               if (Version === '1.3') {
@@ -456,18 +456,16 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                console.log(typeof current.item.value ,current.item.value);
-                if( typeof current.item.value === 'number' || typeof current.item.value === 'object'){
-                obj[current.item.field] = current.item.value;
-                }else{
+                console.log(typeof current.item.value , current.item.value);
+                if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
+                  obj[current.item.field] = current.item.value;
+                }else {
                   const value = current.item.value
-                  ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
-                  : '';
+                    ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
+                    : '';
 
-                obj[current.item.field] = Number(value);
-
+                  obj[current.item.field] = Number(value);
                 }
-                
               }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value
@@ -508,7 +506,7 @@
         if (Object.keys(obj)[0]) {
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
-          }else {
+          } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
@@ -559,7 +557,7 @@
         const _index = this.newFormItemLists.findIndex(
           option => option.item.field === items.validate.dynamicforcompute.computecolumn
         );
-        if(this.newFormItemLists[_index]){
+        if (this.newFormItemLists[_index]) {
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
