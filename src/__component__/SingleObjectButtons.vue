@@ -1337,8 +1337,8 @@
    
         promise.then(() => {
           this.clearEditData();// 清空store update数据
-        }, () => {}).then(() => {
           this.saveAfter(type, tableName);
+        }, () => {}).then(() => {
         });
       },
       saveAfter(type, tableName) {
