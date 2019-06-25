@@ -77,8 +77,9 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status, config } = error.response;
+      const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
       const requestMd5 = md5(JSON.stringify({
-        data: config.data,
+        data: isJson ? JSON.parse(config.data) : config.data,
         url: config.url,
         method: config.method
       }));
