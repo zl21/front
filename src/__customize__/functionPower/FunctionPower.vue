@@ -17,7 +17,7 @@
                         placeholder="请输入用户名"
                         clearable
                         icon="ios-search"
-                />
+                >
                 <span slot="prepend">检索</span>
                 </Input>
                 <ul class="menuContainer">
@@ -46,7 +46,7 @@
                             <Table
                                     class="table"
                                     :columns="columns"
-                                    :index="1"
+                                    :index="tableDefaultSelectedRowIndex"
                                     highlight-row
                                     :height="true"
                                     :data="tableData"
@@ -70,69 +70,105 @@
         <Modal
                 v-model="copyPermission"
                 closable
+                :width="420"
                 footer-hide
+                mask
                 title="复制权限"
         >
-            <div class="buttonGroup">
-                <Button
-                        type="fcdefault"
-                        class="saveButton"
-                >
-                    保存
-                </Button>
-                <Button
-                        type="fcdefault"
-                        class="refreshButton"
-                >
-                    刷新
-                </Button>
+            <div class="modalContent">
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>源角色:</div>
+                    </div>
+                    <DropDownSelectFilter class="itemCom"
+                                          :totalRowCount="totalRowCount"
+                                          :pageSize="dropPageSize"
+                                          @on-fkrp-selected="singleDropSelected"
+                                          @on-page-change="singleDropPageChange"
+                                          @on-popper-hide="singlePopperHide"
+                                          @on-clear="singleDropClear"
+                                          :data="singleDropDownSelectFilterData">
+                    </DropDownSelectFilter>
+                </div>
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>目的角色:</div>
+                    </div>
+                    <DropDownSelectFilter :single="false"
+                                          class="itemCom"
+                                          :totalRowCount="totalRowCount"
+                                          :pageSize="dropPageSize"
+                                          @on-fkrp-selected="mutlineDropSelected"
+                                          @on-page-change="mutlineDropPageChange"
+                                          @on-popper-hide="mutlinePopperHide"
+                                          @on-clear="mutlineDropClear"
+                                          :data="multipleDropDownSelectFilterData">
+                    </DropDownSelectFilter>
+                </div>
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>复制方式:</div>
+                    </div>
+                    <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
+                        <Option value="cover">覆盖原有权限</Option>
+                        <Option value="copy">保留原有权限</Option>
+                    </Select>
+                </div>
+                <div class="modalButton">
+                    <Button
+                            type="fcdefault"
+                            class="Button"
+                            @click="modalConfirm"
+                    >
+                        确定
+                    </Button>
+                    <Button
+                            type="fcdefault"
+                            class="Button"
+                            @click="modalCancel"
+                    >
+                        取消
+                    </Button>
+                </div>
             </div>
         </Modal>
     </div>
 </template>
 
 <script>
+  /* eslint-disable arrow-parens */
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
     data() {
       return {
         copyPermission: false, // 复制权限弹框
+        copyType: '', // 复制权限弹框  复制方式
+        singlePermissionId: null, // 复制权限外键单选id
+        mutlinePermissionId: null, // 复制权限外键多选id
+        backupsDropData: [], // 备份复制权限外键数据
+        singleDropDownSelectFilterData: {}, // 复制权限外键单选数据
+        multipleDropDownSelectFilterData: {}, // 复制权限外键多选数据
+        totalRowCount: 0, // 复制权限外键数据的totalRowCount
+        dropPageSize: 10, // 复制权限外键数据的pageSize
+
         buttonsData: [], // 按钮数据
         menuHighlightIndex: 0, // 菜单高亮的index
         menuList: [], // 菜单数据
         groupId: '', // 菜单id
+
+
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
+        adTableCateId: null, // 树子节点ID
+
+        tableDefaultSelectedRowIndex: 0, // 表格默认选中的行的index
         tableData: [], // 表格数据
-        extendTableData: [], // 扩展功能表格数据
-        columnsBottom: [
-          {
-            title: '扩展功能',
-            key: 'description',
-            width: 200,
-            render: (h, params) => h('div', [
-              h('Checkbox', params.row.description, {
-                style: {},
-                props: {
-                },
-                on: {}
-              })
-            ]),
-          },
-          {
-            title: '功能',
-            key: '',
-            render: (h, params) => h('div', [
-              h(params.row.children.length > 0 ? 'Checkbox' : '', params.row.children.length > 0 ? params.row.children[0].description : '', {
-                style: {},
-                props: {
-                },
-                on: {}
-              })
-            ]),
-          }
-        ],
+        backupsTableData: [], // 备份表格数据
+        tableSaveData: [], // 表格修改后要保存的数据
         columns: [
           {
             title: '功能',
@@ -140,6 +176,7 @@
           },
           {
             key: 'see',
+            seeValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -147,8 +184,15 @@
                   disabled: params.row.seeDisabled,
                   value: params.row.seeValue,
                 },
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
                 on: {
-
+                  'on-change': (currentValue) => {
+                    this.rowCheckboxChange(currentValue, params);
+                  }
                 }
 
               })
@@ -156,15 +200,19 @@
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.seeValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '查看')
             ]),
           },
           {
             key: 'edit',
+            editValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -172,22 +220,32 @@
                   disabled: params.row.editDisabled,
                   value: params.row.editValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.editValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '编辑')
             ]),
           },
           {
             key: 'delete',
+            deleteValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -195,22 +253,32 @@
                   disabled: params.row.deleteDisabled,
                   value: params.row.deleteValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.deleteValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '删除')
             ]),
           },
           {
             key: 'toVoid',
+            toVoidValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -218,22 +286,32 @@
                   disabled: params.row.toVoidDisabled,
                   value: params.row.toVoidValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.toVoidValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '作废')
             ]),
           },
           {
             key: 'commit',
+            commitValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -241,22 +319,32 @@
                   disabled: params.row.commitDisabled,
                   value: params.row.commitValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.commitValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '提交')
             ]),
           },
           {
             key: 'unCommit',
+            unCommitValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -264,22 +352,32 @@
                   disabled: params.row.unCommitDisabled,
                   value: params.row.unCommitValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.unCommitValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '反提交')
             ]),
           },
           {
             key: 'export',
+            exportValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -287,22 +385,32 @@
                   disabled: params.row.exportDisabled,
                   value: params.row.exportValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.exportValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '导出')
             ]),
           },
           {
             key: 'print',
+            printValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -310,48 +418,109 @@
                   disabled: params.row.printDisabled,
                   value: params.row.printValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.printValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '打印')
             ]),
           },
           {
             key: 'extend',
+            extendValue: false,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
                 props: {
-                  disabled: params.row.actionList.length === 0,
+                  disabled: params.row.extendDisabled,
+                  value: params.row.extendValue,
                 },
-                on: {}
-
+                nativeOn: {
+                  click: (e) => {
+                    e.stopPropagation();
+                  }
+                },
+                on: {
+                  'on-change': (currentValue) => {
+                    this.extendRowCheckboxChange(currentValue, params);
+                  }
+                }
               })
             ]),
             renderHeader: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
-                props: {},
-                on: {}
-
+                props: {
+                  value: params.column.extendValue
+                },
+                on: {
+                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                }
               }),
               h('Span', '扩展')
             ]),
           }
-        ], // 表格头部
+        ], // 表格头部,
+        extendTableData: [], // 扩展功能表格数据
+        columnsBottom: [
+          {
+            title: '扩展功能',
+            key: 'extendFunction',
+            width: 200,
+            render: (h, params) => h('div', [
+              h('Checkbox', {
+                style: {},
+                props: {
+                  value: params.row.permission === 128
+                },
+                on: {
+                  'on-change': (val) => this.extendFunctionCheckboxChange(val, params)
+                }
+              }, params.row.description)
+            ]),
+          },
+          {
+            title: '功能',
+            key: 'function',
+            render: (h, params) => h('div', [
+              h(params.row.children.length > 0 ? 'Checkbox' : '', {
+                style: {},
+                props: {
+                  value: params.row.children && params.row.children.length > 0 ? params.row.children[0].permission === 128 : false
+                },
+                on: {}
+              }, params.row.children.length > 0 ? params.row.children[0].description : '',)
+            ]),
+          }
+        ], // 扩展功能表格头部
       };
     },
     components: {},
-    watch: {},
-    computed: {},
+    watch: {
+      copyPermission(val) {
+        if (val) {
+          this.getCopyPermissionData();
+        }
+      }
+    },
+    computed: {
+    },
     created() {
       this.refresh();
       this.getButtonData();
@@ -374,7 +543,8 @@
               });
             }
           })
-          .catch(() => {
+          .catch((err) => {
+            throw err;
           });
       }, // 获取按钮数据
       menuClick(index, item) {
@@ -399,8 +569,9 @@
               reject();
             }
           })
-          .catch(() => {
+          .catch((err) => {
             reject();
+            throw err;
           });
       }, // 获取树数据
       restructureTreeDada(data) {
@@ -409,6 +580,7 @@
             item.expand = true;
             item.selected = true;
             this.adSubsystemId = item.ad_subsystem_id;
+            this.adTableCateId = item.ad_tablecategory_id;
           }
           item.title = item.description;
           if (item.children && item.children.length > 0 && item.children[0].children.length > 0) {
@@ -417,7 +589,7 @@
             delete item.children;
           }
         });
-      }, //
+      }, //  整合树数据
       getMenuData(resolve, reject) {
         network.post('/p/cs/groupTreeload', urlSearchParams({}))
           .then((res) => {
@@ -430,15 +602,18 @@
               reject();
             }
           })
-          .catch(() => {
+          .catch((err) => {
             reject();
+            throw err;
           });
       }, // 获取菜单数据
       getTableData() {
+        this.tableSaveData = []; // 清空保存的数据
         let obj = {};
         if (this.adSubsystemId) {
           obj = {
             AD_SUBSYSTEM_ID: this.adSubsystemId,
+            AD_TABLECATE_ID: this.adTableCateId,
             GROUP_ID: this.groupId
           };
         } else {
@@ -486,16 +661,39 @@
                 cur.printDisabled = disabledArr[7] === '0';
                 cur.printValue = valueArr[7] === '1';
 
+                // 扩展
+                cur.extendDisabled = cur.actionList.length === 0;
+                cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
+
                 acc.push(cur);
                 return acc;
               }, []);
+              this.getExtendTableData(this.tableData[0]);
+              this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
             }
           })
-          .catch(() => {
+          .catch((err) => {
+            throw err;
           });
       }, // 获取表格数据
+      getExtendValue(data) {
+        const arr = data.reduce((acc, cur) => {
+          if (cur.permission === 0) {
+            acc.push(cur.permission);
+          }
+          if (cur.children.length > 0 && cur.children[0].permission === 0) {
+            acc.push(cur.children[0].permission);
+          }
+          return acc;
+        }, []);
+        if (arr.length > 0) {
+          return false;
+        }
+        return true;
+      }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
         this.adSubsystemId = obj.ad_subsystem_id;
+        this.adTableCateId = obj.ad_tablecategory_id;
         this.getTableData();
       }, // 树选中改变触发
       btnClick(item) {
@@ -503,18 +701,23 @@
           this.refresh();
         } else if (item.webdesc === '复制权限') {
           this.copyPerm();
+        } else if (item.webdesc === '保存') {
+          this.savePermission();
         }
       }, // 点击按钮触发
       copyPerm() {
         this.copyPermission = true;
       }, // 复制权限
       tableRowClick(row) {
+        this.getExtendTableData(row);
+      }, // 表格单击某一行
+      getExtendTableData(row) {
         if (row.actionList.length > 0) {
           this.extendTableData = row.actionList;
         } else {
           this.extendTableData = [];
         }
-      }, // 表格单击某一行
+      }, // 获取扩展功能表格的数据，也就是下边表格的数据
       toBin(intNum) {
         let answer = '';
         if (/\d+/.test(intNum)) {
@@ -525,10 +728,423 @@
           if (answer.length === 0) {
             answer = '0';
           }
+          if (answer.length < 8) {
+            return (Array(8).join('0') + answer).slice(-8);
+          }
           return answer;
         }
-        return 0;
+        return '0';
       }, // 十进制转二进制
+      modalCancel() {
+        this.copyPermission = false;
+      }, // 复制权限弹框取消按钮
+      modalConfirm() {
+        if (this.singlePermissionId === null) {
+          this.$Message.warning({
+            content: '请选择源角色！'
+          });
+          return;
+        }
+        if (this.mutlinePermissionId === null) {
+          this.$Message.warning({
+            content: '请选择目的角色！'
+          });
+          return;
+        }
+        if (this.mutlinePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
+          this.$Message.warning({
+            content: '目的角色不能包含源角色，请重新选择！'
+          });
+          return;
+        }
+        if (this.copyType === '') {
+          this.$Message.warning({
+            content: '请选择复制方式！'
+          });
+          return;
+        }
+        this.copyPermission = false;
+        const obj = {
+          sourceid: this.singlePermissionId,
+          targetids: this.mutlinePermissionId,
+          type: this.copyType
+        };
+        network.post('/p/cs/copyPermission', obj)
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.singlePermissionId = null;
+              this.mutlinePermissionId = null;
+              this.copyType = '';
+              this.getTableData();
+              this.$Message.success({
+                content: res.data.message
+              });
+            }
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }, // 复制权限弹框确定按钮
+      rowCheckboxChange(currentValue, params) {
+        // 选中该行数据
+        params.row[`${params.column.key}Value`] = currentValue;
+        this.tableData[params.index] = params.row;
+
+        // 修改要保存的数据
+        this.getSaveData(currentValue, params);
+
+        // 判断该列是否全选
+        this.tabthCheckboxSelected(params.column, params.column.key);
+
+
+        if (params.column.key === 'see') {
+          // 如果该列是查看列，当取消选中的时候将该行都取消选中
+          if (!currentValue) {
+            this.cancelRowSelected(params);
+          }
+        } else {
+          // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
+          this.selectedSeeColumn(params.index, currentValue);
+        }
+      }, // 表格单元格的checkbox改变时触发
+      cancelRowSelected(params) {
+        this.columns.reduce((acc, cur, idx) => {
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
+          .forEach((item) => {
+            params.row[`${item}Value`] = false;
+          });
+
+        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        this.tableData[findIndex] = params.row;
+      }, // 取消整行的选中
+      selectedSeeColumn(index, currentValue) {
+        if (currentValue) {
+          this.tableData[index].seeValue = currentValue;
+        }
+      }, // 选中查看列
+      getSaveData(currentValue, params) {
+        if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
+          const findIndex = this.tableSaveData.findIndex(item => item.AD_MENU_ID === params.row.ad_menu_id);
+          if (findIndex !== -1) {
+            this.tableSaveData.splice(findIndex, 1);
+          }
+        } else {
+          this.tableSaveData.push({
+            AD_MENU_ID: params.row.ad_menu_id,
+            DATA_SOURCE: params.row.data_source,
+            ID: params.row.id,
+            PERMISSION: this.getSavePermission(params.index)
+          });
+        }
+      }, // 获取上边表格的保存数据
+      getExtendTableSaveData(currentValue, row) {
+        const tableObj = this.backupsTableData.find(item => item.ad_table_id === row.ad_table_id);
+        if (tableObj.actionList && tableObj.actionList.length > 0) {
+          const val = tableObj.actionList.find(item => item.ad_action_id === row.ad_action_id).permission === 128;
+          if (currentValue === val) {
+            const findIndex = this.tableSaveData.findIndex(item => item.AD_ACTION_ID === row.ad_action_id);
+            if (findIndex !== -1) {
+              this.tableSaveData.splice(findIndex, 1);
+            }
+          } else {
+            this.tableSaveData.push({
+              AD_ACTION_ID: row.ad_action_id,
+              ID: row.id,
+              PERMISSION: currentValue === true ? 1 : 0
+            });
+          }
+        }
+      }, // 获取下边表格的保存数据
+      getSavePermission(index) {
+        const arr = this.columns.reduce((acc, cur, idx) =>{
+          if (idx > 0 && idx !== 9) {
+            if (this.tableData[index][`${cur.key}Value`]) {
+              acc.push('1');
+            } else {
+              acc.push('0');
+            }
+          }
+          return acc;
+        }, []);
+        return arr.join('');
+      }, // 获取保存数据的权限的二进制数据
+      tabthCheckboxSelected(column, columnKey) {
+        const arr = this.tableData.reduce((acc, cur, idx) => {
+          if (cur[`${columnKey}Disabled`] === false && cur[`${columnKey}Value`] === false) {
+            acc.push(idx);
+          }
+          return acc;
+        }, []);
+        if (arr.length === 0) {
+          const findIndex = this.columns.findIndex(item => item.key === columnKey);
+          column[`${columnKey}Value`] = true;
+          this.columns[findIndex] = column;
+        } else {
+          const findIndex = this.columns.findIndex(item => item.key === columnKey);
+          column[`${columnKey}Value`] = false;
+          this.columns[findIndex] = column;
+        }
+      }, // 判断是否将表头选中
+      tabthCheckboxChange(currentValue, params) {
+        // 如果点击的不是查看列，将查看列选中
+        if (params.column.key !== 'see') {
+          this.columns[1].seeValue = true;
+          this.tableData.map((item) => {
+            if (!item.seeDisabled) {
+              item.seeValue = true;
+            }
+            return item;
+          });
+        }
+        // 点击查看列的表头，并且是取消选中的状态
+        if (params.column.key === 'see' && currentValue === false) {
+          this.cancelAllSelected();
+        }
+        // 选中表头以及表体里的数据
+        params.column[`${params.column.key}Value`] = currentValue;
+        this.tableData.map((item) => {
+          if (!item[`${params.column.key}Disabled`]) {
+            item[`${params.column.key}Value`] = currentValue;
+          }
+          return item;
+        });
+      }, // 表格表头的checkbox改变时触发
+      cancelAllSelected() {
+        this.columns[1].seeValue = false;
+        this.columns[2].editValue = false;
+        this.columns[3].deleteValue = false;
+        this.columns[4].toVoidValue = false;
+        this.columns[5].commitValue = false;
+        this.columns[6].unCommitValue = false;
+        this.columns[7].exportValue = false;
+        this.columns[8].printValue = false;
+        this.columns[9].extendValue = false;
+        this.columns = this.columns.concat([]);
+        this.columns.reduce((acc, cur, idx) => {
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
+          .forEach((key) => {
+            // const columns = this.columns.map((item) => {
+            //   if (item[`${key}Value`]) {
+            //     item[`${key}Value`] = false;
+            //   }
+            //   return item;
+            // });
+            // this.columns = columns.concat([]).concat([]);
+            this.tableData.map((item) => {
+              item[`${key}Value`] = false;
+              return item;
+            });
+          });
+      }, // 取消所有选中
+      extendRowCheckboxChange(currentValue, params) {
+        if (params) {
+          params.row[`${params.column.key}Value`] = currentValue;
+          this.tableData[params.index] = params.row;
+          // 判断该列是否全部选中
+          this.tabthCheckboxSelected(params.column, 'extend');
+        }
+        this.extendTableData.map((item) => {
+          if (currentValue) {
+            item.permission = 128;
+          } else {
+            item.permission = 0;
+          }
+          if (item.children && item.children.length > 0) {
+            item.children.map((tep) => {
+              if (currentValue) {
+                tep.permission = 128;
+              } else {
+                tep.permission = 0;
+              }
+              return tep;
+            });
+          }
+          return item;
+        });
+      }, // 扩展一列的checkbox点击的时候触发
+      extendFunctionCheckboxChange(val, params) {
+        // 判断是否选中
+        if (val) {
+          params.row.permission = 128;
+        } else {
+          params.row.permission = 0;
+        }
+        this.extendTableData[params.index] = params.row;
+
+        // 判断下边表格中是否全部选中，如果有没有选中的就存到数组里
+        const arr = this.extendTableData.reduce((acc, cur) => {
+          if (cur.permission === 0) {
+            acc.push(cur.permission);
+          }
+          if (cur.children && cur.children.length > 0) {
+            cur.children.forEach((item) => {
+              if (item.permission === 0) {
+                acc.push(item.permission);
+              }
+            });
+          }
+          return acc;
+        }, []);
+
+        // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
+        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        if (arr.length > 0) {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = false;
+            this.selectedSeeColumn(findIndex, false);
+          }
+        } else {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = true;
+            this.selectedSeeColumn(findIndex, true);
+          }
+        }
+
+        // 判断扩展该列是否全选
+        this.tabthCheckboxSelected(this.columns[9], 'extend');
+
+        // 调保存修改数据的方法
+        this.getExtendTableSaveData(val, params.row);
+      }, // 下边表格扩展功能的checkbox改变时触发
+      savePermission() {
+        if (this.tableSaveData.length === 0) {
+          this.$Message.info({
+            content: '没有更改'
+          });
+        } else {
+          const obj = {
+            GROUPID: this.groupId,
+            CP_C_GROUPPERM: this.tableSaveData
+          };
+          network.post('/p/cs/savePermission', obj)
+            .then((res) => {
+              if (res.data.code === 0) {
+                this.getTableData();
+                this.$Message.success({
+                  content: res.data.message
+                });
+              }
+            })
+            .catch((err) => {
+              throw err;
+            });
+        }
+      }, // 保存数据
+      getCopyPermissionData() {
+        network.post('/p/cs/cgroupsquery', { NAME: '' })
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.backupsDropData = res.data.data;
+              this.totalRowCount = res.data.data.length;
+              this.getSingleDropSelectData(1, res.data.data);
+              this.getMutlineDropSelectData(1, res.data.data);
+            }
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }, // 获取复制权限外键的数据
+      getSingleDropSelectData(pageValue, data) {
+        const start = (pageValue - 1) * this.dropPageSize;
+        const tabth = [
+          {
+            colname: 'ID',
+            name: 'ID',
+            isak: false
+          },
+          {
+            colname: 'NAME',
+            name: '角色',
+            isak: true
+          }
+        ];
+        const row = data.slice(start, start + this.dropPageSize)
+          .reduce((acc, cur) => {
+            const obj = {
+              ID: {
+                val: cur.ID,
+              },
+              NAME: {
+                val: cur.NAME
+              }
+            };
+            acc.push(obj);
+            return acc;
+          }, []);
+        this.singleDropDownSelectFilterData = {
+          start,
+          tabth,
+          row
+        };
+      }, // 整合复制权限外键单选数据
+      getMutlineDropSelectData(pageValue, data) {
+        const start = (pageValue - 1) * this.dropPageSize;
+        const tabth = [
+          {
+            colname: 'ID',
+            name: 'ID',
+            isak: false
+          },
+          {
+            colname: 'NAME',
+            name: '角色',
+            isak: true
+          }
+        ];
+        const row = data.slice(start, start + this.dropPageSize)
+          .reduce((acc, cur) => {
+            const obj = {
+              ID: {
+                val: cur.ID,
+              },
+              NAME: {
+                val: cur.NAME
+              }
+            };
+            acc.push(obj);
+            return acc;
+          }, []);
+        this.multipleDropDownSelectFilterData = {
+          start,
+          tabth,
+          row
+        };
+      }, // 整合复制权限外键多选数据
+      singleDropSelected(val) {
+        this.singlePermissionId = val[0].ID;
+      }, // 外键单选，选中触发
+      singleDropPageChange(val) {
+        this.getSingleDropSelectData(val, this.backupsDropData);
+      }, // 外键单选分页改变触发
+      singlePopperHide() {
+        this.getSingleDropSelectData(1, this.backupsDropData);
+      }, // 外键单选popper隐藏时触发
+      singleDropClear() {
+        this.singlePermissionId = null;
+      }, // 单选清空时触发
+      mutlineDropSelected(val) {
+        this.mutlinePermissionId = val.reduce((acc, cur) =>{
+          acc.push(cur.ID);
+          return acc;
+        }, []).join(',');
+      }, // 外键单选，选中触发
+      mutlineDropPageChange(val) {
+        this.getMutlineDropSelectData(val, this.backupsDropData);
+      }, // 外键单选分页改变触发
+      mutlinePopperHide() {
+        this.getMutlineDropSelectData(1, this.backupsDropData);
+      }, // 外键多选popper隐藏时触发
+      mutlineDropClear() {
+        this.mutlinePermissionId = null;
+      }, // 多选清空时触发
     }
   };
 </script>
@@ -594,6 +1210,7 @@
                     width: 200px;
                     padding: 10px;
                     border-right: solid 1px #B4B4B4;
+                    overflow: auto;
                     .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
                         background-color: rgb(196, 226, 255);
                     }
@@ -624,6 +1241,36 @@
                         }
                     }
                 }
+            }
+        }
+    }
+    .modalContent {
+        .itemContent {
+            display: flex;
+            margin-bottom: 10px;
+            .labelContent {
+                margin-right: 4px;
+                width: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                .labelTip {
+                    font-size: 16px;
+                    height: 10px;
+                    color: red;
+                    margin-right: 4px;
+                }
+            }
+            .itemCom {
+                width: 220px;
+            }
+        }
+        .modalButton {
+            width: 324px;
+            display: flex;
+            justify-content: flex-end;
+            .Button {
+                margin-left: 10px;
             }
         }
     }
