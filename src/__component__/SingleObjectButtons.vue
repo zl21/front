@@ -566,7 +566,7 @@
               ID: this.itemId
             };
           } else { // 没有子表
-            params.ID = this.tableId;
+            params.ID = this.itemId;
           }
         } else { // 左右结构
           params[this.tableName] = {
@@ -581,12 +581,12 @@
         });
         
         promise.then(() => {
-          // const message = this.objTabActionSlientConfirmData.message;
-          // const data = {
-          //   title: '成功',
-          //   content: `${message}`
-          // };
-          // this.$Modal.fcSuccess(data);
+          const message = this.objTabActionSlientConfirmData.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
