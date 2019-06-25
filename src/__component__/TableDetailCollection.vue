@@ -554,7 +554,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
+          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange),
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
@@ -1664,4 +1664,15 @@
             }
         }
     }
+</style>
+<style lang="less">
+  .table-in {
+    flex: 1;
+    .burgeon-input-wrapper >input{
+      height: 22px;
+    }
+    .burgeon-select-selection {
+      height: 22px;
+    }
+  }
 </style>

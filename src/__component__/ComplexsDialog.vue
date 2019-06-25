@@ -122,6 +122,7 @@
         },
         tdData: {
           id: '',
+          index: -1,
           list: []
         }
       };
@@ -337,18 +338,19 @@
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
       },
-      rowclick(row) {
+      rowclick(row, rowIndex) {
         if (this.index === 0) {
-          this.clickChoose(row, 'click');
+          this.clickChoose(row, rowIndex, 'click');
         }
       },
-      clickChoose(row, type) {
+      clickChoose(row, rowIndex, type) {
         // 单击或者双击的选中id
         if (this.checkbox) {
           const checkd = this.verify(this.NOTIN, row.ID);
           if (checkd) {
             if (type === 'click') {
               this.tdData.id = row.ID;
+              this.tdData.index = rowIndex;
               this.tdData.list[0] = {
                 exclude: false,
                 id_list: row.ID,
@@ -371,6 +373,7 @@
           if (checkdIN) {
             if (type === 'click') {
               this.tdData.id = row.ID;
+              this.tdData.index = rowIndex;
               this.tdData.list[0] = {
                 exclude: true,
                 id_list: row.ID,
@@ -434,9 +437,9 @@
       // eslint-disable-next-line consistent-return
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
-        this.loading = true;
         // this.sendMessage = 
         if (this.HRORG_ID.length > 0) {
+          this.loading = true;
           if (!this.checkbox) {
             this.sendMessage.CONDITION = [];
             this.EXCLUDE = '';
@@ -486,8 +489,16 @@
         } else if (this.verify(this.IN, this.tdData.id)) {
           this.IN.push(this.tdData.id);
         }
-        this.text.result.push(this.tdData.list[0]);
-        this.multipleScreenResultCheck(this.sendMessage, 1);
+        setTimeout(() => {
+          this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
+          this.tdData.id = '';
+          this.tdData.list = [];
+          this.tdData.index = -1;
+        }, 200);
+        if (this.tdData.id !== '') {
+          this.text.result.push(this.tdData.list[0]);
+          this.multipleScreenResultCheck(this.sendMessage, 1);
+        }
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
@@ -560,27 +571,25 @@
         };
         return JSON.stringify(sendMessage);
       },
-      setvalueData(obj){
-        let data = obj;
+      setvalueData(obj) {
+        const data = obj;
         if (data) {
-                this.sendMessage = Object.assign(this.sendMessage, data.value);
-                this.text.result = data.lists.result.map((item) => {
-                  if (item.exclude) {
-                    item.exclude = false;
-                  } else {
-                    item.exclude = true;
-                  }
-                  return item;
-                });
-                this.EXCLUDE = data.value.EXCLUDE;
-                this.IN = data.value.IN;
-                this.NOTIN = data.value.NOTIN;
-                this.resultData.total = data.total;
+          this.sendMessage = Object.assign(this.sendMessage, data.value);
+          this.text.result = data.lists.result.map((item) => {
+            if (item.exclude) {
+              item.exclude = false;
+            } else {
+              item.exclude = true;
+            }
+            return item;
+          });
+          this.EXCLUDE = data.value.EXCLUDE;
+          this.IN = data.value.IN;
+          this.NOTIN = data.value.NOTIN;
+          this.resultData.total = data.total;
 
-                this.multipleScreenResultCheck(this.sendMessage,1,'result');
-              
-              }
-
+          this.multipleScreenResultCheck(this.sendMessage, 1, 'result');
+        }
       },
       saveBtn(value) {
         if (value.length < 1) {
@@ -663,6 +672,12 @@
         if (type !== 'all') {
           obj.CONDITION = '';
         }
+        // setTimeout(() =>{
+        //   this.loading = false, // z最大loading
+        //   this.tree_loading =  false, // 左边的 的loading
+        //   this.tableLoading =  false, // 中间的 的loading
+        // },300)
+        
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
@@ -679,7 +694,7 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.tableLoading = false;
-            console.log(type,'type');
+            console.log(type, 'type');
             this.dateRestructure(res.data.data, index, type);
           }
         });

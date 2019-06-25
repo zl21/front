@@ -1477,7 +1477,6 @@
       }
     },
     mounted() {
-      console.log('mounted', this._deactivate, this);
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },

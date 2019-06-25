@@ -159,7 +159,6 @@
 .openedMenuLists {
   background-color: #fff;
   border-bottom: 1px solid #dfdfdf;
-  height: 34px;
   display: flex;
   box-sizing: border-box;
   >span{

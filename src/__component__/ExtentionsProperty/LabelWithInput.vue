@@ -26,7 +26,7 @@
         this.$emit('inputValueChange', {
           key: this.item.key,
           // eslint-disable-next-line no-nested-ternary
-          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : (this.item.inputType === 'Number' ? parseInt(e.target.value, 10) : e.target.value)
+          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : (this.item.inputType === 'Number' ? parseInt(e.target.value, 10) || '' : e.target.value)
         });
       }
     },
