@@ -7,6 +7,9 @@ export default () => ({
     this.moduleComponentName = getComponentName();
   },
   computed: {
+    ...mapState('global', {
+      keepAliveLists: ({ keepAliveLists }) => keepAliveLists
+    }),
     ...mapState(getComponentName(), {
       buttonsData: ({ buttonsData }) => buttonsData,
       mainFormInfo: ({ ...mainFormInfo }) => mainFormInfo.mainFormInfo,
@@ -19,8 +22,7 @@ export default () => ({
       objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
-
-      childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
+      childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
       }, []),
@@ -68,9 +70,17 @@ export default () => ({
 
       ]),
   },
+  deactivated() {
+    if (this.$options.isKeepAliveModel) {
+      if (this.keepAliveLists.indexOf(this.moduleComponentName) === -1) {
+        console.log(`${this.moduleComponentName} deactivated.`);
+      }
+    }
+  },
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
+        console.log(`${this.moduleComponentName} before destroy`);
         store.unregisterModule(this.moduleComponentName);
       }
     } catch (e) {
