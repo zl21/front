@@ -9,7 +9,7 @@
       <LabelWithObjectGroup
         v-if="index <= currentIndex"
         :object-group-index="index"
-        :default-data="defaultData[index]"
+        :default-data="defaultData[index] || {}"
         :data="data"
         :option="option"
         :show-add-button="currentIndex === index && currentIndex !== 9"
@@ -49,17 +49,18 @@
     },
     methods: {
       objectGroupItemChange(index, { key, value }) {
-        const copyData = JSON.parse(JSON.stringify(this.defaultData || []));
+        let copyData = JSON.parse(JSON.stringify(this.defaultData || []));
         if (value === '') {
           if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
-            if (index === 0 && JSON.stringify(copyData[index]) === '{}') {
+            if (copyData.length === 1 && index === 0 && JSON.stringify(copyData[index]) === '{}') {
               copyData.splice(index, 1);
             }
           }
         } else {
           copyData[index] = Object.assign({}, copyData[index], { [key]: value });
         }
+        copyData = JSON.parse(JSON.stringify(copyData)).map(d => d || {})
         this.$emit('rootDataChange', { key: this.option.key, value: copyData.length === 0 ? '' : copyData });
       },
       addButtonClick() {
@@ -86,7 +87,7 @@
     },
     created() {
       this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[i]);
-      this.currentIndex = this.defaultData.length - 1;
+      this.currentIndex = this.defaultData.length - 1 >= 0 ? this.defaultData.length - 1 : 0;
     }
   };
 </script>

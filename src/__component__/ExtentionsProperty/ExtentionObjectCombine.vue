@@ -17,7 +17,7 @@
               v-if="index <= currentIndex"
               :key="index"
               :object-group-index="index"
-              :default-data="defaultData[o.key][index]"
+              :default-data="defaultData[o.key] ? defaultData[o.key][index] : {}"
               :data="data"
               :option="o"
               :show-add-button="currentIndex === index && currentIndex !== 9"
@@ -77,7 +77,7 @@
         if (value === '') {
           if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
-            if (index === 0 && JSON.stringify(copyData[index]) === '{}') {
+            if (copyData.length === 1 && index === 0 && JSON.stringify(copyData[index]) === '{}') {
               copyData.splice(index, 1);
             }
           }
@@ -127,10 +127,7 @@
     created() {
       const key = this.option.objectInfo.filter(d => d.type === 'object-group')[0].key;
       this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[key][i]);
-      this.currentIndex = this.defaultData[key].length - 1;
+      this.currentIndex = this.defaultData[key] ? this.defaultData[key].length - 1 : 0;
     }
   };
 </script>
-
-<style scoped>
-</style>

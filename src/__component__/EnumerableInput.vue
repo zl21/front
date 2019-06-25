@@ -1,11 +1,14 @@
 <template>
-  <div class="enumerableInput">
-    <input
+  <div
+    ref="enumerableInput"
+    class="enumerableInput"
+    @click="toggleDropdownShow"
+  >
+    <Input
       ref="input"
-      v-model="value"
+      :value="value"
       readonly
-      @click="toggleDropdownShow"
-    >
+    />
     <ul
       v-show="dropdownShow"
       class="arrow"
@@ -92,12 +95,12 @@
         }
       },
       clickEventListener(event) {
-        if (event.target !== this.$refs.input) {
+        if (event.target !== this.$refs.enumerableInput.querySelector('input')) {
           this.dropdownShow = false;
         }
       },
       toggleDropdownShow() {
-        this.style.top = this.$refs.input.offsetHeight + 7;
+        this.style.top = this.$refs.enumerableInput.querySelector('input').offsetHeight + 7;
         this.dropdownShow = !this.dropdownShow;
       },
       pickAll() {
@@ -167,7 +170,7 @@
     position: absolute;
     min-width: 210px;
     max-width: 300px;
-    border: 1px solid grey;
+    border: 1px solid #d8d8d8;
     background-color: #fff;
     z-index: 1;
     display: flex;
@@ -176,7 +179,6 @@
     li {
       list-style: none;
       margin: 2px 4px;
-      border: 1px solid green;
       padding: 5px;
       cursor: pointer;
     }
@@ -194,7 +196,7 @@
     content:'';
     border-width:7px;
     border-style:solid;
-    border-color:transparent transparent grey transparent;
+    border-color:transparent transparent #d8d8d8 transparent;
     position:absolute;
     left:45%;
     top:-14px;

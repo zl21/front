@@ -17,7 +17,7 @@ export default [
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '弹框多选',
@@ -49,7 +49,7 @@ export default [
         outputValueType: 'Array'
       },
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '模糊匹配',
@@ -68,7 +68,7 @@ export default [
         type: 'input',
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '外键下拉',
@@ -101,27 +101,27 @@ export default [
         outputValueType: 'Array'
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '输入键查询',
     key: 'ak2',
     type: 'input',
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '导出',
     key: 'DisableEXPORT',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '导入',
     key: 'smalltable',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '商品数量矩阵配置',
@@ -151,7 +151,7 @@ export default [
         inputType: 'Number'
       },
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '按钮显示',
@@ -182,7 +182,7 @@ export default [
         type: 'input',
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '只读状态',
@@ -201,27 +201,27 @@ export default [
         outputValueType: 'Array'
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '水印图片优先级',
     key: 'wkprioritys',
     type: 'input',
     outputValueType: 'Array',
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '列表样式优先级',
     key: 'status4css_priority',
     type: 'input',
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '下拉列表显示行数',
     key: 'listrange',
     type: 'input',
     inputType: 'Number',
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '列表定制查询',
@@ -234,6 +234,6 @@ export default [
         type: 'input'
       }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
 ];

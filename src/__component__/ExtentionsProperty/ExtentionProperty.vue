@@ -5,17 +5,19 @@
         <li
           v-for="(item, index) in options"
           :key="index"
+          :class="{ active: index === currentIndex }"
           @click="scrollIntoView(item, index)"
         >
           {{ item.name }}
           <br>
-          {{ item.key }}
+          {{ item.key === '__root__' ? '' : item.key }}
         </li>
       </ul>
     </div>
     <div class="middle">
       <div
         v-for="(item, index) in options"
+        v-show="index === currentIndex"
         :key="index"
         class="item-render-area"
       >
@@ -66,11 +68,11 @@
 </template>
 
 <script>
-  import ExtentionInput from './ExtentionsProperty/ExtentionInput';
-  import ExtentionRadio from './ExtentionsProperty/ExtentionRadio';
-  import ExtentionObjectGroup from './ExtentionsProperty/ExtentionObjectGroup';
-  import ExtentionObjectCombine from './ExtentionsProperty/ExtentionObjectCombine';
-  import ExtentionInputGroup from './ExtentionsProperty/ExtentionInputGroup';
+  import ExtentionInput from './ExtentionInput';
+  import ExtentionRadio from './ExtentionRadio';
+  import ExtentionObjectGroup from './ExtentionObjectGroup';
+  import ExtentionObjectCombine from './ExtentionObjectCombine';
+  import ExtentionInputGroup from './ExtentionInputGroup';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
   
@@ -102,14 +104,20 @@
     },
     computed: {
       formatedRootData() {
-        if (Object.keys(this.rootData).length === 0) { return ''; }
-        return JSON.stringify(this.rootData, null, 2);
+        let value = '';
+        if (Object.keys(this.rootData).length === 0) {
+          value = '';
+        } else {
+          value = JSON.stringify(this.rootData, null, 2);
+        }
+        this.$emit('valueChange', value);
+        return value;
       },
     },
     methods: {
       scrollIntoView(item, index) {
         this.currentIndex = index;
-        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
       updateRootData(key, value) {
         if (value === '') {
@@ -126,17 +134,20 @@
     created() {
       this.rootData = JSON.parse(JSON.stringify(this.defaultData));
     },
-    mounted() {
-    }
   };
 </script>
 
 <style lang="less">
   .extentionProperty {
+    ul, li, div {
+      box-sizing: border-box;
+    }
+    margin: 1px;
+    background-color: #fff;
+    width: 100%;
+    height: 450px;
     border: 1px solid lightgrey;
     font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
-    width: 100%;
-    height: 100%;
     display: flex;
     ul li {
       list-style: none;
@@ -147,10 +158,14 @@
     .left {
       flex: 1.5;
       display: flex;
+      border-right: 1px solid lightgrey;
       ul {
         flex: 1;
         display: flex;
         flex-direction: column;
+        li.active {
+          border-left: 2px solid orangered;
+        }
         li {
           flex: 1;
           display: flex;
@@ -160,11 +175,11 @@
         li:hover {
           opacity: 0.8;
           cursor: pointer;
+          border-left: 2px solid orangered;
         }
       }
     }
     .middle {
-      border-left: 1px solid lightgrey;
       flex: 6;
       display: flex;
       flex-direction: column;
@@ -175,10 +190,11 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
-        padding: 7px 0;
+        padding: 7px 0 7px 7px;
         .description {
           margin: 5px;
           padding: 5px;
+          background:rgba(244,246,249,1);
           .fieldName {
             color: #000;
           }
@@ -236,11 +252,27 @@
           }
         }
         .labelWithObjectGroup {
-          border-radius: 5px;
           padding: 5px;
           margin: 5px;
           border: 1px solid lightgrey;
-          box-shadow: 0 0 2px lightgrey;
+          .operate-button {
+            background-color: transparent;
+            outline: none;
+            font-size: 16px;
+            padding: 5px;
+            border: 1px solid lightgrey;
+            width: 20px;
+            display: inline-block;
+            height: 20px;
+            line-height: 8px;
+            border-radius: 13px;
+            color: grey;
+          }
+          .operate-button:hover {
+            color: #000;
+            cursor: pointer;
+            opacity: 0.8;
+          }
         }
       }
       .item-render-area:not(:last-child) {
