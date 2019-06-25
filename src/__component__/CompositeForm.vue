@@ -386,8 +386,17 @@
         setTimeout(() => {
           this.mountChecked = true;
         }, 200);
+
         this.defaultFormData = Object.assign(this.defaultFormData, value);
-        this.$emit('InitializationForm', this.defaultFormData);
+        // 去除 空字符串
+        const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
+          if (this.defaultFormData[option]) {
+            arr[option] = this.defaultFormData[option];
+          }
+          return arr;
+        }, {});
+        
+        this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
         const obj = {};
@@ -1134,6 +1143,12 @@
             item.props.AutoData = [];
             item.props.dialog = {
               model: {
+                width: 920,
+                mask: true,
+                draggable: true,
+                closable: true,
+                scrollable: true,
+                maskClosable: false,
                 title: '弹窗多选',
                 'footer-hide': false
               }

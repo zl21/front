@@ -351,9 +351,8 @@ export default {
           if (path) { // 有path的参数
             modify[tableName].ID = objId;
             parames = {
-              // ...addItemName,
               ...modify,
-              ...itemModify
+              ...itemModify,
             };
           } else {
             parames = {
@@ -361,6 +360,7 @@ export default {
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...itemModify,
+                ...modify
               }
             };
           }

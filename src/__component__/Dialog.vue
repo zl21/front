@@ -34,9 +34,6 @@
 
 <script>
 
-
-  import store from '../__config__/store.config';
-
   export default {
     // name: 'DialogComponent',
     props: {
@@ -83,7 +80,7 @@
 
       maskClosable: {
         type: Boolean,
-        default: () => true
+        default: () => false
       }, // 是否可以点击叉号关闭
       transfer: {
         type: Boolean,

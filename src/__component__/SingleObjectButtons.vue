@@ -610,11 +610,18 @@
       },
       objectEXPORT() { // 导出功能
         const { refcolid, tabledesc } = this.itemInfo;
+        const itemSelected = Object.values(this.updateData[this.itemName].delete[this.itemName]).reduce((item, obj) => {
+          item.push(obj.ID);
+          return item;
+        }, []);
+        const selectedId = {
+          ID: itemSelected
+        };
         const searchdata = {
           table: this.itemName,
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
-          fixedcolumns: { ID: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : this.updateData[this.itemName].delete[this.itemName] },
+          fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : selectedId,
           startindex: this.tablePageInfo.currentPageIndex,
           range: this.tablePageInfo.pageSize,
         };
@@ -641,7 +648,7 @@
             eleLink.click();
             document.body.removeChild(eleLink);
           }
-        });
+        }, () => {});
       },
       objectCopy() { // 按钮复制功能
         this.savaCopy = true;
@@ -1330,8 +1337,8 @@
    
         promise.then(() => {
           this.clearEditData();// 清空store update数据
-        }, () => {}).then(() => {
           this.saveAfter(type, tableName);
+        }, () => {}).then(() => {
         });
       },
       saveAfter(type, tableName) {
@@ -1477,7 +1484,6 @@
       }
     },
     mounted() {
-      console.log('mounted', this._deactivate, this);
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },

@@ -482,20 +482,24 @@
         }
       },
       transfer() {
-        if (this.checkbox) {
-          if (this.verify(this.NOTIN, this.tdData.id)) {
-            this.NOTIN.push(this.tdData.id);
+        if (this.tdData.id!=='') {
+          if (this.checkbox) {
+            if (this.verify(this.NOTIN, this.tdData.id)) {
+              this.NOTIN.push(this.tdData.id);
+            }
+          } else if (this.verify(this.IN, this.tdData.id)) {
+            this.IN.push(this.tdData.id);
           }
-        } else if (this.verify(this.IN, this.tdData.id)) {
-          this.IN.push(this.tdData.id);
         }
-        setTimeout(() => {
-          this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
-          this.tdData.id = '';
-          this.tdData.list = [];
-          this.tdData.index = -1;
-        }, 200);
+        
+       
         if (this.tdData.id !== '') {
+          setTimeout(() => {
+            this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
+            this.tdData.id = '';
+            this.tdData.list = [];
+            this.tdData.index = -1;
+          }, 200);
           this.text.result.push(this.tdData.list[0]);
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
