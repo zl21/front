@@ -45,7 +45,7 @@
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
       :module-form-type="type"
-      class="formPanel"
+      :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
       type="PanelForm"
       :default-data="panelData.data"
       :paths="formPaths"
@@ -568,6 +568,11 @@
       background-color: #F8F8F8;
     }
     .formPanel {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .verticalFormPanel {
+      margin: 10px 16px;
       flex: 1;
       overflow-y: auto;
     }

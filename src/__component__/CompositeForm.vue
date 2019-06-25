@@ -1143,6 +1143,12 @@
             item.props.AutoData = [];
             item.props.dialog = {
               model: {
+                width: 920,
+                mask: true,
+                draggable: true,
+                closable: true,
+                scrollable: true,
+                maskClosable: false,
                 title: '弹窗多选',
                 'footer-hide': false
               }
