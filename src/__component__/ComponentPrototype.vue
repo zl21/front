@@ -23,18 +23,25 @@
         />
       </div>
     </div>
+    
     <!--  拓展属性   -->
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Table</h3>
-        <ExtentionProperty :options="extentionForTable" />
+        <ExtentionInput
+          :options="extentionForTable"
+          :default-data="JSON.stringify(extentionDataForTable)"
+          @valueChange="extentionValueChange1"
+        />
       </div>
     </div>
+    
     <div class="divider" />
+    
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-        <ExtentionProperty :options="extentionForColumn" />
+        <ExtentionInput :options="extentionForColumn" />
       </div>
     </div>
     <div class="divider" />
@@ -43,7 +50,7 @@
 
 <script>
   import EnumerableInput from './EnumerableInput';
-  import ExtentionProperty from './ExtentionProperty';
+  import ExtentionInput from './ExtentionInput';
   import enumerableForColumn from '../constants/enumerateInputForColumn';
   import enumerableForTable from '../constants/enumerateInputForTable';
   import extentionForColumn from '../constants/extentionPropertyForColumn';
@@ -147,9 +154,12 @@
     }),
     components: {
       EnumerableInput,
-      ExtentionProperty
+      ExtentionInput
     },
     methods: {
+      extentionValueChange1(value) {
+        console.log('extentionValueChange1', value);
+      },
       enumerableValueChange1(value) {
         console.log('value change = ', value);
       },

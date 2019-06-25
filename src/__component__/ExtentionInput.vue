@@ -1,0 +1,140 @@
+<template>
+  <div
+    ref="extentionInput"
+    class="extentionInput"
+    @dblclick="popUp"
+  >
+    <Input
+      type="textarea"
+      :rows="rows"
+      :placeholder="''"
+      readonly
+    />
+    <Icon
+      type="md-hammer"
+      @click="popUp"
+    />
+    <div v-if="showModal">
+      <Modal
+        ref="extentionInputModal"
+        :value="showModal"
+        :closable="true"
+        :mask="true"
+        :mask-closable="false"
+        :title="'扩展属性配置'"
+        :width="80"
+        @on-ok="onOk"
+        @on-cancel="onCancel"
+      >
+        <ExtentionProperty
+          :options="options"
+          :default-data="transformedData"
+          @valueChange="valueChange"
+        />
+      </Modal>
+    </div>
+  </div>
+</template>
+
+<script>
+  import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
+  
+  export default {
+    name: 'ExtentionInput',
+    components: {
+      ExtentionProperty
+    },
+    props: {
+      options: {
+        type: Array,
+        default: () => ([]),
+      },
+      defaultData: {
+        type: [String, Object],
+        default: () => ({})
+      },
+      ctrlOptions: {
+        type: Object,
+        default: () => ({})
+      }
+    },
+    data() {
+      return {
+        currentValue: '',
+        showModal: false,
+        rows: 4,
+        transformedData: {},
+      };
+    },
+    methods: {
+      setFormatedValue() {
+        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue.replace(/"/g, '');
+      },
+      valueChange(val) {
+        this.currentValue = val;
+      },
+      popUp() {
+        this.showModal = true;
+      },
+      onOk() {
+        this.setFormatedValue();
+        if (this.currentValue === '') {
+          this.$emit('valueChange', this.currentValue);
+        } else {
+          this.$emit('valueChange', JSON.stringify(JSON.parse(this.currentValue)));
+        }
+        this.showModal = false;
+      },
+      onCancel() {
+        this.showModal = false;
+      },
+    },
+    mounted() {
+      this.rows = this.ctrlOptions.rows || this.rows;
+      if (Object.prototype.toString.call(this.defaultData) === '[object String]' && this.defaultData !== '') {
+        try {
+          this.transformedData = JSON.parse(this.defaultData);
+        } catch (e) {
+          throw e;
+        }
+      } else {
+        this.transformedData = this.defaultData || {};
+      }
+      this.currentValue = JSON.stringify(this.transformedData, null, 2);
+      setTimeout(() => {
+        this.setFormatedValue();
+      }, 10);
+    }
+  };
+</script>
+
+<style lang="less">
+  .extentionInput {
+    position: relative;
+    textarea {
+      resize: none;
+    }
+    i {
+      font-size: 16px;
+      position: absolute;
+      right: 2px;
+      bottom: 2px;
+    }
+    i:hover {
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .popUp {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      z-index: 99999;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0, 0.5);
+      top: 0;
+      left: 0;
+    }
+  }
+</style>

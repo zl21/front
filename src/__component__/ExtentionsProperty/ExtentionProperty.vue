@@ -10,7 +10,7 @@
         >
           {{ item.name }}
           <br>
-          {{ item.key }}
+          {{ item.key === '__root__' ? '' : item.key }}
         </li>
       </ul>
     </div>
@@ -68,11 +68,11 @@
 </template>
 
 <script>
-  import ExtentionInput from './ExtentionsProperty/ExtentionInput';
-  import ExtentionRadio from './ExtentionsProperty/ExtentionRadio';
-  import ExtentionObjectGroup from './ExtentionsProperty/ExtentionObjectGroup';
-  import ExtentionObjectCombine from './ExtentionsProperty/ExtentionObjectCombine';
-  import ExtentionInputGroup from './ExtentionsProperty/ExtentionInputGroup';
+  import ExtentionInput from './ExtentionInput';
+  import ExtentionRadio from './ExtentionRadio';
+  import ExtentionObjectGroup from './ExtentionObjectGroup';
+  import ExtentionObjectCombine from './ExtentionObjectCombine';
+  import ExtentionInputGroup from './ExtentionInputGroup';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
   
@@ -104,8 +104,14 @@
     },
     computed: {
       formatedRootData() {
-        if (Object.keys(this.rootData).length === 0) { return ''; }
-        return JSON.stringify(this.rootData, null, 2);
+        let value = '';
+        if (Object.keys(this.rootData).length === 0) {
+          value = '';
+        } else {
+          value = JSON.stringify(this.rootData, null, 2);
+        }
+        this.$emit('valueChange', value);
+        return value;
       },
     },
     methods: {
@@ -133,10 +139,15 @@
 
 <style lang="less">
   .extentionProperty {
+    ul, li, div {
+      box-sizing: border-box;
+    }
+    margin: 1px;
+    background-color: #fff;
+    width: 100%;
+    height: 450px;
     border: 1px solid lightgrey;
     font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
-    width: 100%;
-    height: 100%;
     display: flex;
     ul li {
       list-style: none;
@@ -147,6 +158,7 @@
     .left {
       flex: 1.5;
       display: flex;
+      border-right: 1px solid lightgrey;
       ul {
         flex: 1;
         display: flex;
@@ -168,7 +180,6 @@
       }
     }
     .middle {
-      border-left: 1px solid lightgrey;
       flex: 6;
       display: flex;
       flex-direction: column;
@@ -183,6 +194,7 @@
         .description {
           margin: 5px;
           padding: 5px;
+          background:rgba(244,246,249,1);
           .fieldName {
             color: #000;
           }
@@ -240,11 +252,9 @@
           }
         }
         .labelWithObjectGroup {
-          border-radius: 5px;
           padding: 5px;
           margin: 5px;
           border: 1px solid lightgrey;
-          box-shadow: 0 0 2px lightgrey;
           .operate-button {
             background-color: transparent;
             outline: none;

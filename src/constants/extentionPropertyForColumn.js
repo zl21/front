@@ -4,7 +4,7 @@ export default [
     key: 'ispassword',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '过滤',
@@ -28,14 +28,14 @@ export default [
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       },
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: 'HR折叠',
     key: 'hrdisplay',
     type: 'radio',
     enumerateValue: [{ text: '展开', value: 'expand' }, { text: '折叠', value: 'fold' }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '日期类型',
@@ -48,7 +48,7 @@ export default [
       { text: '之前（不含今天）', value: 'beforetoday' },
       { text: '之后（不含今天）', value: 'aftertoday' }
     ],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '外键',
@@ -75,7 +75,7 @@ export default [
       key: 'reftablename',
       type: 'input'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '虚拟字段',
@@ -95,7 +95,7 @@ export default [
       key: 'dformat',
       type: 'input'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '影响显示',
@@ -110,7 +110,7 @@ export default [
       key: 'refval',
       type: 'input'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '界面联动计算',
@@ -130,7 +130,7 @@ export default [
       type: 'input',
       key: 'computecolumn'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '状态合并查询',
@@ -146,7 +146,7 @@ export default [
       type: 'input',
       outputValueType: 'Array'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '区间配置',
@@ -161,14 +161,14 @@ export default [
       type: 'input',
       key: 'lowerlimit'
     }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '是否过滤不可用数据',
     key: 'must_be_active',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '请描述一下这个配置有啥作用'
+    description: ''
   },
   {
     name: '前端自定义参数',
