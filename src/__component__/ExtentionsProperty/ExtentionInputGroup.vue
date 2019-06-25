@@ -44,7 +44,7 @@
         if (value === '') {
           const cloneRootData = JSON.parse(JSON.stringify(this.defaultData));
           delete cloneRootData[this.option.key][key];
-          this.$emit('rootDataChange', { key: this.option.key, value: cloneRootData[this.option.key] });
+          this.$emit('rootDataChange', { key: this.option.key, value: JSON.stringify(cloneRootData[this.option.key]) === '{}' ? '' : cloneRootData[this.option.key] });
         } else {
           this.$emit('rootDataChange', { key: this.option.key, value: Object.assign(this.defaultData[this.option.key] || {}, { [key]: value }) });
         }

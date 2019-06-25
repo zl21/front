@@ -53,7 +53,7 @@
         if (value === '') {
           if (copyData[index] && copyData[index][key] !== undefined) {
             delete copyData[index][key];
-            if (index === 0 && JSON.stringify(copyData[index]) === '{}') {
+            if (copyData.length === 1 && index === 0 && JSON.stringify(copyData[index]) === '{}') {
               copyData.splice(index, 1);
             }
           }
@@ -86,7 +86,7 @@
     },
     created() {
       this.dataArray = this.dataArray.map((d, i) => d || this.defaultData[i]);
-      this.currentIndex = this.defaultData.length - 1;
+      this.currentIndex = this.defaultData.length - 1 >= 0 ? this.defaultData.length - 1 : 0;
     }
   };
 </script>

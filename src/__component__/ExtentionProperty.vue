@@ -16,6 +16,7 @@
     <div class="middle">
       <div
         v-for="(item, index) in options"
+        v-show="index === currentIndex"
         :key="index"
         class="item-render-area"
       >
@@ -109,7 +110,7 @@
     methods: {
       scrollIntoView(item, index) {
         this.currentIndex = index;
-        document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // document.querySelector(`#${item.key}-${index}-${this.guid}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
       },
       updateRootData(key, value) {
         if (value === '') {
@@ -126,8 +127,6 @@
     created() {
       this.rootData = JSON.parse(JSON.stringify(this.defaultData));
     },
-    mounted() {
-    }
   };
 </script>
 
@@ -175,7 +174,7 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
-        padding: 7px 0;
+        padding: 7px 0 7px 7px;
         .description {
           margin: 5px;
           padding: 5px;
