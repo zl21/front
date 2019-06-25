@@ -509,6 +509,7 @@
                   this.$Message.info('请选择关联表字段');
                   return false;
                 }
+                console.log(refcolval);
                 const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
 
                 searchObject = {
@@ -610,9 +611,11 @@
       },
       focusChange(value, current, index) {
         // 外键的模糊搜索
-        // if (!value) {
-        //   return false;
-        // }
+        console.log(value);
+        if (!value) {
+          this.freshDropDownSelectFilterAutoData({}, index, current,'empty');
+          return false;
+        }
         let sendData = {};
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = this.formData[current.refcolval.srccol]
@@ -1257,7 +1260,7 @@
         item[index].item.props.pageSize = res.data.data.defaultrange;
         item[index].item.props.data = res.data.data;
       },
-      freshDropDownSelectFilterAutoData(res, index, current) {
+      freshDropDownSelectFilterAutoData(res, index, current,type) {
         // 外键的模糊搜索数据更新
         let item = [];
         if (current.formIndex !== 'inpubobj') {
@@ -1267,11 +1270,16 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
-        if (res.data.data.length < 1) {
-          delete this.formData[`${current.colname}:NAME`];
-        // console.log(current.colname,this.formData);
+        if(type === 'empty'){
+          item[index].item.props.AutoData = [];
+        }else{
+          if (res.data.data.length < 1) {
+            delete this.formData[`${current.colname}:NAME`];
+          // console.log(current.colname,this.formData);
+          }
+          item[index].item.props.AutoData = res.data.data;
         }
-        item[index].item.props.AutoData = res.data.data;
+        
       },
       lowercaseToUppercase(index, current) {
         // 将字符串转化为大写

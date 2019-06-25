@@ -160,6 +160,7 @@
         :auot-data="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
+        :show="_items.props.show"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
         @input="attachFilterInput"
@@ -715,25 +716,15 @@
         ];
         console.log('valueChange');
         this.valueChange();
-        // if (
-        //   Object.prototype.hasOwnProperty.call(
-        //     this._items.event,
-        //     'popper-value'
-        //   )
-        //   && typeof this._items.event['popper-value'] === 'function'
-        // ) {
-        //   this._items.event['popper-value'](
-        //     $this,
-        //     '',
-        //     [
-        //       {
-        //         Label: '',
-        //         ID: ''
-        //       }
-        //     ],
-        //     this.index
-        //   );
-        // }
+        if (
+          Object.prototype.hasOwnProperty.call(
+            this._items.event,
+            'inputValueChange'
+          )
+          && typeof this._items.event.inputValueChange === 'function'
+        ) {
+          this._items.event.inputValueChange('', $this);
+        }
       },
       attachFilterPopperShow($this) {
         if (
