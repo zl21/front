@@ -26,14 +26,16 @@
       />
     </template>
     <button
-      v-if="showAddButton"
+      v-if="showAddButton && !currentDataIsEmpty"
       @click="addButtonClick"
+      class="operate-button"
     >
       +
     </button>
     <button
       v-if="showMinusButton"
       @click="minusButtonClick"
+      class="operate-button"
     >
       -
     </button>
@@ -47,6 +49,11 @@
   
   export default {
     name: 'LabelWithObjectGroup',
+    data() {
+      return {
+        currentData: {},
+      };
+    },
     components: {
       LabelWithInput,
       LabelWithRadio,
@@ -54,6 +61,10 @@
     },
     methods: {
       objectGroupValueChange({ key, value }) {
+        this.currentData = Object.assign({}, this.currentData, { [key]: value });
+        if (value === '') {
+          delete this.currentData[key];
+        }
         this.$emit('objectGroupItemChange', this.objectGroupIndex, { key, value, belongKey: this.option.key });
       },
       addButtonClick() {
@@ -89,6 +100,14 @@
         default: () => ({})
       }
     },
+    computed: {
+      currentDataIsEmpty() {
+        return JSON.stringify(this.currentData) === '{}';
+      }
+    },
+    mounted() {
+      this.currentData = JSON.parse(JSON.stringify(this.defaultData));
+    }
   };
 </script>
 

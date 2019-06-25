@@ -5,6 +5,7 @@
         <li
           v-for="(item, index) in options"
           :key="index"
+          :class="{ active: index === currentIndex }"
           @click="scrollIntoView(item, index)"
         >
           {{ item.name }}
@@ -150,6 +151,9 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        li.active {
+          border-left: 2px solid orangered;
+        }
         li {
           flex: 1;
           display: flex;
@@ -159,6 +163,7 @@
         li:hover {
           opacity: 0.8;
           cursor: pointer;
+          border-left: 2px solid orangered;
         }
       }
     }
@@ -240,6 +245,24 @@
           margin: 5px;
           border: 1px solid lightgrey;
           box-shadow: 0 0 2px lightgrey;
+          .operate-button {
+            background-color: transparent;
+            outline: none;
+            font-size: 16px;
+            padding: 5px;
+            border: 1px solid lightgrey;
+            width: 20px;
+            display: inline-block;
+            height: 20px;
+            line-height: 8px;
+            border-radius: 13px;
+            color: grey;
+          }
+          .operate-button:hover {
+            color: #000;
+            cursor: pointer;
+            opacity: 0.8;
+          }
         }
       }
       .item-render-area:not(:last-child) {
