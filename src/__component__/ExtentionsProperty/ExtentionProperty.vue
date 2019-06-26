@@ -222,6 +222,7 @@
               .input, .select {
                 flex: 3;
                 padding: 0 5px;
+                border: 1px solid lightgrey;
               }
               input[type="text"]::placeholder {
                 color: grey;

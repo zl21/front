@@ -200,12 +200,10 @@
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :default-value="_items.props.value"
-        :enumerable-lists="enumerableForColumn"
         @valueChange="enumerableValueChange"
       />
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
-          :options="extentionForTable"
           :default-data="JSON.stringify(_items.props.value)"
           @valueChange="extentionValueChange"
         />

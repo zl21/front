@@ -37,6 +37,8 @@
 </template>
 
 <script>
+  import extentionForColumn from '../constants/extentionPropertyForColumn';
+  import extentionForTable from '../constants/extentionPropertyForTable';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
   export default {
@@ -45,10 +47,6 @@
       ExtentionProperty
     },
     props: {
-      options: {
-        type: Array,
-        default: () => ([]),
-      },
       defaultData: {
         type: [String, Object],
         default: () => ({})
@@ -65,7 +63,8 @@
         currentValue: '',
         showModal: false,
         transformedData: {},
-        rows: 8
+        rows: 8,
+        options: {}
       };
     },
     methods: {
@@ -90,6 +89,13 @@
       onCancel() {
         this.showModal = false;
       },
+    },
+    created() {
+      if (this.$route.params.tableName === 'AD_COLUMN') {
+        this.options = extentionForColumn;
+      } else if (this.$route.params.tableName === 'AD_TABLE') {
+        this.options = extentionForTable;
+      }
     },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
