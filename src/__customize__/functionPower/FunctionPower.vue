@@ -166,7 +166,7 @@
 </template>
 
 <script>
-  /* eslint-disable arrow-parens,no-lonely-if */
+  /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
@@ -588,9 +588,8 @@
             }
           });
           return true;
-        } else {
-          return false;
         }
+        return false;
       }, // 校验是否有未保存的数据
       getButtonData() {
         network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
@@ -911,11 +910,11 @@
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 1) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
@@ -1072,11 +1071,11 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 1) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
