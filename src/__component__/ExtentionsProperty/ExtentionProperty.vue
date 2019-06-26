@@ -98,7 +98,7 @@
         default: () => ([]),
       },
       defaultData: {
-        type: Object,
+        type: [String, Object],
         default: () => ({})
       },
     },

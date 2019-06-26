@@ -133,6 +133,8 @@
         this.strictMode = this.enumerableConfig.strictMode;
       }
     },
+    watch: {
+    },
     mounted() {
       this.computeValue();
       if (this.defaultValue !== undefined) {

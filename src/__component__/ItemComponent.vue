@@ -204,7 +204,7 @@
       />
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
-          :default-data="JSON.stringify(_items.value)"
+          :default-data="_items.value"
           @valueChange="extentionValueChange"
         />
       <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">

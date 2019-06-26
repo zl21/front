@@ -114,7 +114,11 @@
       } else {
         this.transformedData = this.defaultData || {};
       }
-      this.currentValue = JSON.stringify(this.transformedData, null, 2);
+      if (this.defaultData === '') {
+        this.currentValue = '';
+      } else {
+        this.currentValue = JSON.stringify(this.transformedData, null, 2);
+      }
       setTimeout(() => {
         this.setFormatedValue();
       }, 10);
