@@ -97,9 +97,6 @@
     components: {
       compositeForm
     },
-    mounted() {
-
-    },
     created() {
       Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       const { tableName, itemId } = this.$route.params;
