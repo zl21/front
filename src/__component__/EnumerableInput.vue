@@ -15,12 +15,6 @@
       :style="{ top: `${style.top}px` }"
       @click.stop
     >
-      <span
-        class="pickedAll"
-        @click="pickAll"
-      >
-        {{ pickedAll ? '清空' : '全选' }}
-      </span>
       <li
         v-for="(item, index) in enumerableLists"
         :key="index"
@@ -28,6 +22,12 @@
         @click="itemClick(index)"
       >
         {{ item.text }}
+      </li>
+      <li
+        class="pickedAll"
+        @click="pickAll"
+      >
+        {{ pickedAll ? '清空' : '全选' }}
       </li>
     </ul>
   </div>
@@ -181,6 +181,8 @@
       margin: 2px 4px;
       padding: 5px;
       cursor: pointer;
+      border: 1px solid orangered;
+      color: orangered;
     }
     li:hover {
       opacity: 0.7;
@@ -202,14 +204,13 @@
     top:-14px;
   }
   .pickedAll {
-    display: block;
-    position: absolute;
-    right: 0;
-    bottom: 0;
     padding: 6px 7px;
     cursor: pointer;
   }
   .pickedAll:hover {
     opacity: 0.75;
+    -webkit-box-shadow: 1px 1px 1px 1px;
+    -moz-box-shadow: 1px 1px 1px 1px;
+    box-shadow: 1px 1px 1px 1px;
   }
 </style>
