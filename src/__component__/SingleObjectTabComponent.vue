@@ -1,7 +1,7 @@
 <template>
   <div class="tabComponent">
     <component
-      :is="'SingleObjectButtons'"
+      :is="objectButtonComponent"
       v-if="buttonsData.isShow"
       :object-type="type"
       class="objectButtons"
@@ -15,7 +15,7 @@
       :isreftabs="isreftabs"
     />
     <component
-      :is="'CompositeForm'"
+      :is="objectFormComponent"
       v-if="formData.isShow"
       v-show="status === 1"
       :object-type="type"
@@ -36,7 +36,7 @@
       @VerifyMessage="verifyForm"
     />
     <component
-      :is="'CompositeFormPanel'"
+      :is="objectPanelComponent"
       v-if="panelData.isShow"
       :is-main-table="isMainTable"
       :object-type="type"
@@ -56,7 +56,7 @@
       @VerifyMessage="verifyFormPanel"
     />
     <component
-      :is="'TableDetailCollection'"
+      :is="objectTableComponent"
       v-if="tableData.isShow"
       ref="objectTableRef"
       class="objectTable"
@@ -77,6 +77,8 @@
 </template>
 
 <script>
+  /* eslint-disable keyword-spacing */
+
   import Vue from 'vue';
   import { mapMutations } from 'vuex';
   import router from '../__config__/router.config';
@@ -94,7 +96,11 @@
       return {
         currentParameter: {},
         itemCurrentParameter: {},
-        isclick: true
+        isclick: true,
+        objectButtonComponent: '', // 单对象按钮组件
+        objectFormComponent: '', // 单对象表单组件
+        objectPanelComponent: '', // 单对象面板组件
+        objectTableComponent: '', // 单对象表格组件
       };
     },
     components: {
@@ -195,17 +201,41 @@
 
       // ...mapActions(getModuleName(), ['performMainTableSaveAction']),
       generateComponent() {
+        const tableComponent = `${getModuleName()}TableDetailCollection`;
+        const formComponent = `${getModuleName()}CompositeForm`;
+        const panelComponent = `${getModuleName()}CompositeFormPanel`;
+        const buttonComponent = `${getModuleName()}SingleObjectButtons`;
         if (this.type === 'vertical') {
-          Vue.component('TableDetailCollection', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
-          Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
-          Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
-          Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
+          if (Vue.component(tableComponent) === undefined) {
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
+          }
+          if (Vue.component(buttonComponent) === undefined) {
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+          }
+          if (Vue.component(panelComponent) === undefined) {
+            Vue.component(panelComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
+          }
+          if (Vue.component(formComponent) === undefined) {
+            Vue.component(formComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
+          }
         } else {
-          Vue.component('TableDetailCollection', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, tableDetailCollection)));
-          Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
-          Vue.component('CompositeFormPanel', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
-          Vue.component('CompositeForm', Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
+          if(Vue.component(tableComponent) === undefined) {
+            Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, tableDetailCollection)));
+          }
+          if (Vue.component(buttonComponent) === undefined) {
+            Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
+          }
+          if (Vue.component(panelComponent) === undefined) {
+            Vue.component(panelComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
+          }
+          if (Vue.component(formComponent) === undefined) {
+            Vue.component(formComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
+          }
         }
+        this.objectTableComponent = tableComponent;
+        this.objectButtonComponent = buttonComponent;
+        this.objectFormComponent = formComponent;
+        this.objectPanelComponent = panelComponent;
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {

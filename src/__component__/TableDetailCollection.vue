@@ -137,7 +137,6 @@
   const TABLE_SELECTED_ROW = 'tableSelectedRow';
 
   export default {
-    name: 'TableDetailCollection',
     components: {
       Dialog,
       ImportDialog, // 导入弹框
