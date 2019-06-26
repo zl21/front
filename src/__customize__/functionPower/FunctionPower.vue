@@ -451,14 +451,11 @@
                   disabled: params.row.extendDisabled,
                   value: params.row.extendValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
                 on: {
                   'on-change': (currentValue) => {
-                    this.extendRowCheckboxChange(currentValue, params);
+                    setTimeout(() => {
+                      this.extendRowCheckboxChange(currentValue, params);
+                    }, 100);
                   }
                 }
               })
@@ -791,7 +788,7 @@
         this.tableData[params.index] = params.row;
 
         // 修改要保存的数据
-        this.getSaveData(currentValue, params);
+        // this.editSaveData(currentValue, params);
 
         // 判断该列是否全选
         this.tabthCheckboxSelected(params.column, params.column.key);
@@ -826,7 +823,7 @@
           this.tableData[index].seeValue = currentValue;
         }
       }, // 选中查看列
-      getSaveData(currentValue, params) {
+      editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
           const findIndex = this.tableSaveData.findIndex(item => item.AD_MENU_ID === params.row.ad_menu_id);
           if (findIndex !== -1) {
@@ -840,7 +837,7 @@
             PERMISSION: this.getSavePermission(params.index)
           });
         }
-      }, // 获取上边表格的保存数据
+      }, // 修改上边表格的保存数据
       getExtendTableSaveData(currentValue, row) {
         const tableObj = this.backupsTableData.find(item => item.ad_table_id === row.ad_table_id);
         if (tableObj.actionList && tableObj.actionList.length > 0) {
@@ -859,6 +856,15 @@
           }
         }
       }, // 获取下边表格的保存数据
+      editTableExtendData(permission, row) {
+        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        if (tableObj.actionList && tableObj.actionList.length > 0) {
+          const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
+          tableObj.actionList[actionListIndex].permission = permission;
+          this.tableData[tableIndex] = tableObj;
+        }
+      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
       getSavePermission(index) {
         const arr = this.columns.reduce((acc, cur, idx) =>{
           if (idx > 0 && idx !== 9) {
@@ -974,8 +980,10 @@
         // 判断是否选中
         if (val) {
           params.row.permission = 128;
+          this.editTableExtendData(128, params.row);
         } else {
           params.row.permission = 0;
+          this.editTableExtendData(0, params.row);
         }
         this.extendTableData[params.index] = params.row;
 
@@ -1012,9 +1020,10 @@
         this.tabthCheckboxSelected(this.columns[9], 'extend');
 
         // 调保存修改数据的方法
-        this.getExtendTableSaveData(val, params.row);
+        // this.getExtendTableSaveData(val, params.row);
       }, // 下边表格扩展功能的checkbox改变时触发
       savePermission() {
+        this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
             content: '没有更改'
@@ -1038,6 +1047,19 @@
             });
         }
       }, // 保存数据
+      getSaveData() {
+        this.tableSaveData = this.tableData.reduce((acc, cur, idx) => {
+          if (this.getSavePermission(idx) !== this.toBin(this.backupsTableData[idx].permission)) {
+            acc.push({
+              AD_MENU_ID: cur.ad_menu_id,
+              DATA_SOURCE: cur.data_source,
+              ID: cur.id,
+              PERMISSION: this.getSavePermission(idx)
+            });
+          }
+          return acc;
+        }, []);
+      }, // 获得保存的数据
       getCopyPermissionData() {
         network.post('/p/cs/cgroupsquery', { NAME: '' })
           .then((res) => {
