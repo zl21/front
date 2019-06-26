@@ -398,16 +398,16 @@
           this.mountChecked = true;
         }, 200);
 
-        // this.defaultFormData = Object.assign(this.defaultFormData, value);
-        // // 去除 空字符串
-        // const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
-        //   if (this.defaultFormData[option]) {
-        //     arr[option] = this.defaultFormData[option];
-        //   }
-        //   return arr;
-        // }, {});
+        this.defaultFormData = Object.assign(this.defaultFormData, value);
+        // 去除 空字符串
+        const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
+          if (this.defaultFormData[option]) {
+            arr[option] = this.defaultFormData[option];
+          }
+          return arr;
+        }, {});
         
-        this.$emit('InitializationForm', this.defaultFormData);
+        this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
         const obj = {};
@@ -934,6 +934,7 @@
       propsType(current, item) {
         // 表单 props
         const obj = item;
+        
 
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
@@ -947,6 +948,19 @@
         // 去除请输入 字段
         if (item.props.readonly) {
           item.props.placeholder = '';
+        }
+
+
+        // 前端自定义标记
+        if (current.webconf) {
+          const webconf = current.webconf;
+          //  读写规则
+          // if (webconf.display === 'enumerate') {
+          //   item.type = 'EnumerableInput';
+          // } else if (webconf.display === 'jsonmaker') {
+          //   item.type = 'ExtentionInput';
+          // }
+          console.log(webconf,item);
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];

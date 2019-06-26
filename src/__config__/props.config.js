@@ -343,6 +343,26 @@ const Wangeditor = {
     height: 200
   }
 }
+// 读写规则
+const EnumerableInput = {
+  type: 'EnumerableInput', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    height: 200
+  }
+}
+// 读写规则
+const ExtentionInput = {
+  type: 'ExtentionInput', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    height: 200
+  }
+}
 
 const dataProp = {
   DropDownSelectFilter,
@@ -355,6 +375,7 @@ const dataProp = {
   input,
   AttachFilter,
   ImageUpload,
-  Wangeditor
+  Wangeditor,
+  EnumerableInput
 }
 export default dataProp

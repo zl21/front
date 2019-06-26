@@ -197,6 +197,11 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <EnumerableInput
+        v-if="_items.type === 'EnumerableInput'"
+        :default-value="_items.props.value"
+        @valueChange="enumerableValueChange"
+      />
       <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
         <component
       
@@ -1119,6 +1124,9 @@
         // 富文本change
         this._items.value = value;
         this.valueChange();
+      },
+      enumerableValueChange(value){
+        console.log(value);
       }
     },
     created() {
