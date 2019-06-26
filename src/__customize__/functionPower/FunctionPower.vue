@@ -184,11 +184,11 @@
                   disabled: params.row.seeDisabled,
                   value: params.row.seeValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => {
                     this.rowCheckboxChange(currentValue, params);
@@ -220,11 +220,11 @@
                   disabled: params.row.editDisabled,
                   value: params.row.editValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -253,11 +253,11 @@
                   disabled: params.row.deleteDisabled,
                   value: params.row.deleteValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -286,11 +286,11 @@
                   disabled: params.row.toVoidDisabled,
                   value: params.row.toVoidValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -319,11 +319,11 @@
                   disabled: params.row.commitDisabled,
                   value: params.row.commitValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -352,11 +352,11 @@
                   disabled: params.row.unCommitDisabled,
                   value: params.row.unCommitValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -385,11 +385,11 @@
                   disabled: params.row.exportDisabled,
                   value: params.row.exportValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -418,11 +418,11 @@
                   disabled: params.row.printDisabled,
                   value: params.row.printValue,
                 },
-                nativeOn: {
-                  click: (e) => {
-                    e.stopPropagation();
-                  }
-                },
+                // nativeOn: {
+                //   click: (e) => {
+                //     e.stopPropagation();
+                //   }
+                // },
                 on: {
                   'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
                 }
@@ -501,7 +501,9 @@
                 props: {
                   value: params.row.children && params.row.children.length > 0 ? params.row.children[0].permission === 128 : false
                 },
-                on: {}
+                on: {
+                  'on-change': (val) => this.functionCheckboxChange(val, params)
+                }
               }, params.row.children.length > 0 ? params.row.children[0].description : '',)
             ]),
           }
@@ -621,7 +623,6 @@
         network.post('/p/cs/queryMenuPermission', obj)
           .then((res) => {
             if (res.data.code === 0) {
-              // this.tableData = res.data.data;
               const resData = res.data.data;
               this.tableData = resData.reduce((acc, cur) => {
                 const disabledArr = cur.mask.split('');
@@ -1022,6 +1023,9 @@
         // 调保存修改数据的方法
         // this.getExtendTableSaveData(val, params.row);
       }, // 下边表格扩展功能的checkbox改变时触发
+      functionCheckboxChange(val, params) {
+        console.log(params);
+      }, // 下边表格功能列checkbox改变时触发
       savePermission() {
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
@@ -1055,6 +1059,28 @@
               DATA_SOURCE: cur.data_source,
               ID: cur.id,
               PERMISSION: this.getSavePermission(idx)
+            });
+          }
+          if (cur.actionList && cur.actionList.length > 0) {
+            cur.actionList.forEach((item, index) => {
+              if (item.permission !== this.backupsTableData[idx].actionList[index].permission) {
+                acc.push({
+                  AD_ACTION_ID: item.ad_action_id,
+                  ID: item.id,
+                  PERMISSION: item.permission === 128 ? 1 : 0
+                });
+              }
+              if (item.children && item.children.length > 0) {
+                item.children.forEach((tem, temIndex) => {
+                  if (tem.permission !== this.backupsTableData[idx].actionList[index].children[temIndex].permission) {
+                    acc.push({
+                      AD_ACTION_ID: item.ad_action_id,
+                      ID: item.id,
+                      PERMISSION: item.permission === 128 ? 1 : 0
+                    });
+                  }
+                });
+              }
             });
           }
           return acc;
