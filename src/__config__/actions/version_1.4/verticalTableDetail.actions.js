@@ -349,10 +349,10 @@ export default {
           // itemModify[itemName].push(addItem);
           const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
           itemModifyForAddAndModify.push(addItem);
-          const addAndModifyParames = {};
-          addAndModifyParames[itemName] = {
+          const addAndModifyParames = [];
+          addAndModifyParames[itemName] = [
             ...itemModifyForAddAndModify
-          };
+          ];
           modify[tableName].ID = objId;
           if (path) { // 有path的参数
             modify[tableName].ID = objId;
