@@ -346,7 +346,6 @@ export default {
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
           const addItem = Object.assign({}, add, itemAdd[itemName]);
           addItem.ID = -1;
-          // itemModify[itemName].push(addItem);
           const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
           itemModifyForAddAndModify.push(addItem);
           const addAndModifyParames = [];

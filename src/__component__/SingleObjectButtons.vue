@@ -1151,8 +1151,14 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             } else {
-              const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-              const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+              let itemModify = [];
+              let itemAdd = [];
+              if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+                itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+              }
+              if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+                itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+              }
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
                 if (this.itemTableCheckFunc()) {
