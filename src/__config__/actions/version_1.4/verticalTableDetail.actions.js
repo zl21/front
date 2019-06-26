@@ -346,20 +346,26 @@ export default {
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
           const addItem = Object.assign({}, add, itemAdd[itemName]);
           addItem.ID = -1;
-          itemModify[itemName].push(addItem);
+          // itemModify[itemName].push(addItem);
+          const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
+          itemModifyForAddAndModify.push(addItem);
+          const addAndModifyParames = {};
+          addAndModifyParames[itemName] = {
+            ...itemModifyForAddAndModify
+          };
           modify[tableName].ID = objId;
           if (path) { // 有path的参数
             modify[tableName].ID = objId;
             parames = {
               ...modify,
-              ...itemModify,
+              ...addAndModifyParames,
             };
           } else {
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...itemModify,
+                ...addAndModifyParames,
                 ...modify
               }
             };

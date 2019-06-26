@@ -168,10 +168,15 @@ export default {
               mainTabale[tableName] = {
                 ID: objId// 主表id
               };
-              itemModify[itemName].push(itemTableAdd[itemName]);
+              const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
+              itemModifyForAddAndModify.push(itemTableAdd[itemName]);
+              const addAndModifyParames = {};
+              addAndModifyParames[itemName] = {
+                ...itemModifyForAddAndModify
+              };
               parames = {
                 ...mainTabale,
-                ...itemModify
+                ...addAndModifyParames
               };
             } else if (sataTypeName === 'add') { // 子表新增
               const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
@@ -212,12 +217,17 @@ export default {
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
           itemTableAdd[itemName].ID = -1;
-          itemModify[itemName].push(itemTableAdd[itemName]);
+          const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
+          itemModifyForAddAndModify.push(itemTableAdd[itemName]);
+          const addAndModifyParames = {};
+          addAndModifyParames[itemName] = {
+            ...itemModifyForAddAndModify
+          };
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
+              ...addAndModifyParames
             }
           };
         } else if (sataTypeName === 'add') { // 子表新增
@@ -265,8 +275,6 @@ export default {
       } else {
         reject();
       }
-    }).catch(() => {
-      reject();
     });
   },
   performMainTableDeleteAction({ commit }, {

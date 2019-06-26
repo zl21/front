@@ -1,6 +1,7 @@
 <template>
   <div class="verticalTableDetail">
-    <single-object-buttons
+    <component
+      :is="currentSingleButtonComponentName"
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
       object-type="vertical"
       :item-table-check-func="itemTableCheckFunc"
@@ -59,6 +60,11 @@
 
   export default {
     // name: 'VTableDetail',
+    data() {
+      return {
+        currentSingleButtonComponentName: null
+      };
+    },
     computed: {
       tabPanels() {
         const arr = [];
@@ -98,7 +104,12 @@
       compositeForm
     },
     created() {
-      Vue.component('SingleObjectButtons', Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+      const singleButtonComponentName = `${this.moduleComponentName}.SingleObjectButtons`;
+      if (Vue.component(singleButtonComponentName) === undefined) {
+        Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
+      }
+      this.currentSingleButtonComponentName = singleButtonComponentName;
+
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex });

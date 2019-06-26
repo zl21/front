@@ -149,7 +149,6 @@
         savaCopy: false
       };
     },
-    name: 'SingleObjectButtons',
     components: {
       ButtonGroup,
       Dialog, // 定制弹框
