@@ -367,11 +367,15 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(current.item.props.field)
-        // let 
-        // if(current.item.props.fkdisplay || current.item.props.number === true){
-        //   this.formData[current.item.props.field]  = 
-        // }
+        console.log(this.formData[current.item.props.field]);
+        // let v1.4外键 及number
+        if (current.item.props.fkdisplay || current.item.props.number === true) {
+          if (this.formData[current.item.field] === '') {
+            this.formData[current.item.field] = 0;
+          }
+          
+          // this.formData[current.item.props.field]  = 
+        }
         this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {
@@ -1279,8 +1283,8 @@
         item[index].item.props.hidecolumns = ['id', 'value'];
         if (type === 'empty') {
           item[index].item.props.AutoData = [];
-          item[index].item.props.defaultSelected = []
-        }else {
+          item[index].item.props.defaultSelected = [];
+        } else {
           if (res.data.data.length < 1) {
             delete this.formData[`${current.colname}:NAME`];
           // console.log(current.colname,this.formData);
