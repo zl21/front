@@ -294,45 +294,45 @@
             if (this.isreftabs) { // 大于0 的情况下是存在子表
               const objId = itemId;
               // const sataType = 'itemSave';
-              if (this.type === 'vertical') {
-                const store = this.$store.state[getModuleName()];
-                let itemModify = [];
-                let itemAdd = [];
-                if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
-                  itemModify = store.updateData[itemName].modify[itemName];
-                }
-                if (store.updateData[itemName] && store.updateData[itemName].add[itemName]) {
-                  itemAdd = store.updateData[itemName].add[itemName];
-                }
-                if (itemModify && Object.values(itemModify).length > 0 && Object.values(itemAdd).length < 1) { // 单对象界面上下结构子表修改
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
-                if (itemAdd && Object.values(itemAdd).length > 0 && Object.values(itemModify).length < 1) { // 单对象界面上下结构子表新增
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-                }
-                if(itemAdd && Object.values(itemAdd).length > 0 && itemModify && Object.values(itemModify).length > 0) { // 单对象界面上下结构子表修改新增同时操作
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
-                }
-              } else{ // 横向结构
-                const store = this.$store.state[getModuleName()];
-                let itemModify = [];
-                let itemAdd = [];
-                if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
-                  itemModify = store.updateData[itemName].modify[itemName];
-                }
-                if (store.updateData[itemName] && store.updateData[itemName].add[itemName]) {
-                  itemAdd = store.updateData[itemName].add[itemName];
-                }
-                if (itemModify && Object.values(itemModify).length > 0 && Object.values(itemAdd).length < 1) { // 单对象界面上下结构子表修改
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
-                if (itemAdd && Object.values(itemAdd).length > 0 && Object.values(itemModify).length < 1) { // 单对象界面上下结构子表新增
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-                }
-                if(itemModify && Object.values(itemModify).length > 0 && itemAdd && Object.values(itemAdd).length > 0) { // 单对象界面上下结构子表修改新增同时操作
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
-                }
-              } 
+              // if (this.type === 'vertical') {
+              const store = this.$store.state[getModuleName()];
+              let itemModify = [];
+              let itemAdd = [];
+              if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
+                itemModify = store.updateData[itemName].modify[itemName];
+              }
+              if (store.updateData[itemName] && store.updateData[itemName].add[itemName]) {
+                itemAdd = store.updateData[itemName].add[itemName];
+              }
+              if (itemModify && Object.values(itemModify).length > 0 && Object.values(itemAdd).length < 1) { // 单对象界面上下结构子表修改
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              }
+              if (itemAdd && Object.values(itemAdd).length > 0 && Object.values(itemModify).length < 1) { // 单对象界面上下结构子表新增
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              }
+              if(itemAdd && Object.values(itemAdd).length > 0 && itemModify && Object.values(itemModify).length > 0) { // 单对象界面上下结构子表修改新增同时操作
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+              }
+              // } else{ // 横向结构
+              //   const store = this.$store.state[getModuleName()];
+              //   let itemModify = [];
+              //   let itemAdd = [];
+              //   if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
+              //     itemModify = store.updateData[itemName].modify[itemName];
+              //   }
+              //   if (store.updateData[itemName] && store.updateData[itemName].add[itemName]) {
+              //     itemAdd = store.updateData[itemName].add[itemName];
+              //   }
+              //   if (itemModify && Object.values(itemModify).length > 0 && Object.values(itemAdd).length < 1) { // 单对象界面上下结构子表修改
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              //   }
+              //   if (itemAdd && Object.values(itemAdd).length > 0 && Object.values(itemModify).length < 1) { // 单对象界面上下结构子表新增
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              //   }
+              //   if(itemModify && Object.values(itemModify).length > 0 && itemAdd && Object.values(itemAdd).length > 0) { // 单对象界面上下结构子表修改新增同时操作
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+              //   }
+              // } 
               // else { // 没有配置path
               //   debugger;
               //   const store = this.$store.state[getModuleName()];
