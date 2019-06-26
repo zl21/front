@@ -46,22 +46,22 @@
       value: '',
       dropdownShow: false,
       pickedAll: true,
-      enumerableLists: []
+      enumerableLists: [],
+      strictMode: true,
     }),
     name: 'EnumerableInput',
     props: {
       enumerableConfig: {
-        type: Array,
-        default: () => ([])
+        type: Object,
+        default: () => ({
+          enumerableLists: [],
+          strictMode: true
+        })
       },
       defaultValue: {
         type: [String, Number],
         default: ''
       },
-      strictMode: {
-        type: Boolean,
-        default: true,
-      }
     },
     methods: {
       computeValue() {
@@ -123,11 +123,14 @@
     },
     created() {
       if (this.$route.params.tableName === 'AD_COLUMN') {
-        this.enumerableLists = enumerableForColumn;
+        this.enumerableLists = enumerableForColumn.enumerableLists;
+        this.strictMode = enumerableForColumn.strictMode;
       } else if (this.$route.params.tableName === 'AD_TABLE') {
-        this.enumerableLists = enumerableForTable;
+        this.enumerableLists = enumerableForTable.enumerableLists;
+        this.strictMode = enumerableForTable.strictMode;
       } else {
-        this.enumerableLists = this.enumerableConfig;
+        this.enumerableLists = this.enumerableConfig.enumerableLists;
+        this.strictMode = this.enumerableConfig.strictMode;
       }
     },
     mounted() {
