@@ -47,6 +47,10 @@
       ExtentionProperty
     },
     props: {
+      extentionConfig: {
+        type: Array,
+        default: () => ([])
+      },
       defaultData: {
         type: [String, Object],
         default: () => ({})
@@ -95,6 +99,8 @@
         this.options = extentionForColumn;
       } else if (this.$route.params.tableName === 'AD_TABLE') {
         this.options = extentionForTable;
+      } else {
+        this.options = this.extentionConfig;
       }
     },
     mounted() {

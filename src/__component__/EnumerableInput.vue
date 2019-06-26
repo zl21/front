@@ -50,6 +50,10 @@
     }),
     name: 'EnumerableInput',
     props: {
+      enumerableConfig: {
+        type: Array,
+        default: () => ([])
+      },
       defaultValue: {
         type: [String, Number],
         default: ''
@@ -122,6 +126,8 @@
         this.enumerableLists = enumerableForColumn;
       } else if (this.$route.params.tableName === 'AD_TABLE') {
         this.enumerableLists = enumerableForTable;
+      } else {
+        this.enumerableLists = this.enumerableConfig;
       }
     },
     mounted() {

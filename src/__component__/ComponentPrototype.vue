@@ -8,7 +8,7 @@
       <div class="wrapper">
         <h3>字段读写规则应用：EnumerableInput</h3>
         <EnumerableInput
-          :enumerable-lists="enumerableForColumn"
+          :enumerable-config="enumerableForColumn"
           :default-value="`${1010101}`"
           @valueChange="enumerableValueChange1"
         />
@@ -16,7 +16,7 @@
       <div class="wrapper">
         <h3>表的读写规则应用：EnumerableInput</h3>
         <EnumerableInput
-          :enumerable-lists="enumerableForTable"
+          :enumerable-config="enumerableForTable"
           :default-value="'AMDQSVUB'"
           :strict-mode="false"
           @valueChange="enumerableValueChange2"
@@ -29,7 +29,7 @@
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Table</h3>
         <ExtentionInput
-          :options="extentionForTable"
+          :extention-config="extentionForTable"
           :default-data="JSON.stringify(extentionDataForTable)"
           @valueChange="extentionValueChange1"
         />
@@ -41,7 +41,7 @@
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-        <ExtentionInput :options="extentionForColumn" />
+        <ExtentionInput :extention-config="extentionForColumn" />
       </div>
     </div>
     <div class="divider" />
