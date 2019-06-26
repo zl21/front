@@ -77,6 +77,9 @@
       },
       valueChange(val) {
         this.currentValue = val;
+        if (val !== '') {
+          this.transformedData = JSON.parse(val);
+        }
       },
       popUp() {
         this.showModal = true;
