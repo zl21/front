@@ -1185,7 +1185,6 @@
 
   .itemComponent {
     flex: 1;
-    overflow: hidden;
   }
   .label-tip {
     color: red;
