@@ -14,8 +14,7 @@
       :isactive="isactive"
       :isreftabs="isreftabs"
     />
-    <component
-      :is="objectFormComponent"
+    <compositeForm
       v-if="formData.isShow"
       v-show="status === 1"
       :object-type="type"
@@ -35,8 +34,7 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <component
-      :is="objectPanelComponent"
+    <compositeForm
       v-if="panelData.isShow"
       :is-main-table="isMainTable"
       :object-type="type"
@@ -98,12 +96,11 @@
         itemCurrentParameter: {},
         isclick: true,
         objectButtonComponent: '', // 单对象按钮组件
-        objectFormComponent: '', // 单对象表单组件
-        objectPanelComponent: '', // 单对象面板组件
         objectTableComponent: '', // 单对象表格组件
       };
     },
     components: {
+      compositeForm
     },
     props: {
       mainFormPaths: {
@@ -201,22 +198,14 @@
 
       // ...mapActions(getModuleName(), ['performMainTableSaveAction']),
       generateComponent() {
-        const tableComponent = `${getModuleName()}TableDetailCollection`;
-        const formComponent = `${getModuleName()}CompositeForm`;
-        const panelComponent = `${getModuleName()}CompositeFormPanel`;
-        const buttonComponent = `${getModuleName()}SingleObjectButtons`;
+        const tableComponent = `${getModuleName()}.TableDetailCollection`;
+        const buttonComponent = `${getModuleName()}.SingleObjectButtons`;
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
           }
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
-          }
-          if (Vue.component(panelComponent) === undefined) {
-            Vue.component(panelComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
-          }
-          if (Vue.component(formComponent) === undefined) {
-            Vue.component(formComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, compositeForm)));
           }
         } else {
           if(Vue.component(tableComponent) === undefined) {
@@ -225,17 +214,9 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
           }
-          if (Vue.component(panelComponent) === undefined) {
-            Vue.component(panelComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
-          }
-          if (Vue.component(formComponent) === undefined) {
-            Vue.component(formComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, compositeForm)));
-          }
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
-        this.objectFormComponent = formComponent;
-        this.objectPanelComponent = panelComponent;
       },
       itemTableCheckFunc() {
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
