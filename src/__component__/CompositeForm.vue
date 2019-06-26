@@ -73,7 +73,7 @@
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
-
+  
   const {
     fkQueryList,
     fkFuzzyquerybyak,
@@ -954,12 +954,13 @@
         // 前端自定义标记
         if (current.webconf) {
           const webconf = current.webconf;
-          //  读写规则
-          // if (webconf.display === 'enumerate') {
-          //   item.type = 'EnumerableInput';
-          // } else if (webconf.display === 'jsonmaker') {
-          //   item.type = 'ExtentionInput';
-          // }
+           //读写规则
+          if (webconf.display === 'enumerate') {
+            item.type = 'EnumerableInput';
+          } else if (webconf.display === 'jsonmaker') {
+            //拓展属性
+            item.type = 'ExtentionInput';
+          }
           console.log(webconf,item);
         }
         if (item.type === 'checkbox') {

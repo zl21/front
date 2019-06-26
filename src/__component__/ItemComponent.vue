@@ -200,8 +200,15 @@
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :default-value="_items.props.value"
+        :enumerable-lists="enumerableForColumn"
         @valueChange="enumerableValueChange"
       />
+      <ExtentionInput
+        v-if="_items.type === 'ExtentionInput'"
+          :options="extentionForTable"
+          :default-data="JSON.stringify(_items.props.value)"
+          @valueChange="extentionValueChange"
+        />
       <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
         <component
       
@@ -233,6 +240,12 @@
   import WangeditorVue from './Wangeditor';
 
   import { Version } from '../constants/global';
+  import EnumerableInput from './EnumerableInput';
+  import ExtentionInput from './ExtentionInput';
+  import enumerableForColumn from '../constants/enumerateInputForColumn';
+  import enumerableForTable from '../constants/enumerateInputForTable';
+  import extentionForColumn from '../constants/extentionPropertyForColumn';
+  import extentionForTable from '../constants/extentionPropertyForTable';
 
   const {
     fkQueuploadProgressry,
@@ -243,7 +256,7 @@
 
   export default {
     name: 'ItemComponent',
-    components: {},
+    components: { EnumerableInput, ExtentionInput },
     props: {
       labelWidth: {
         type: Number,
@@ -283,6 +296,10 @@
     data() {
       return {
         filterDate: {},
+        enumerableForColumn,
+        enumerableForTable,
+        extentionForColumn,
+        extentionForTable,
         resultData: {} // 结果传值
       };
     },
@@ -526,8 +543,8 @@
       fkrpSelectedClear($this) {
         this._items.value = [
           {
-            ID:'',
-            Label:''
+            ID: '',
+            Label: ''
           }
         ];
         this.valueChange();
@@ -798,7 +815,6 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
-         
           if ($this._data.params) {
             const value = $this._data.parms.NAME.val;
             const Selected = [
@@ -1125,8 +1141,14 @@
         this._items.value = value;
         this.valueChange();
       },
-      enumerableValueChange(value){
-        console.log(value);
+      enumerableValueChange(value) {
+        // 读写
+        console.log(value,'读写');
+      },
+      extentionValueChange(value) {
+        // 扩展属性
+        this._items.value = value;
+        this.valueChange();
       }
     },
     created() {

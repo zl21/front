@@ -353,7 +353,8 @@ const EnumerableInput = {
     height: 200
   }
 }
-// 读写规则
+
+// 扩展属性 
 const ExtentionInput = {
   type: 'ExtentionInput', // 必填!
   field: '', // 必填!
@@ -376,6 +377,8 @@ const dataProp = {
   AttachFilter,
   ImageUpload,
   Wangeditor,
-  EnumerableInput
+  EnumerableInput,
+  ExtentionInput
+
 }
 export default dataProp
