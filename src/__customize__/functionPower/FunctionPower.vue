@@ -2,11 +2,11 @@
   <div class="functionPower">
     <div class="buttonGroup">
       <Button
-        v-for="(item, index) in buttonsData"
-        :key="index"
-        type="fcdefault"
-        class="Button"
-        @click="btnClick(item)"
+              v-for="(item, index) in buttonsData"
+              :key="index"
+              type="fcdefault"
+              class="Button"
+              @click="btnClick(item)"
       >
         {{ item.webdesc }}
       </Button>
@@ -14,19 +14,19 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-          placeholder="请输入用户名"
-          clearable
-          icon="ios-search"
-          @on-change="searchInputChange"
+                placeholder="请输入用户名"
+                clearable
+                @on-change="searchInputChange"
+                icon="ios-search"
         >
         <span slot="prepend">检索</span>
         </Input>
         <div class="menuContainer">
           <Tree
-            ref="menuTree"
-            :data="menuTreeData"
-            :query="menuTreeQuery"
-            @on-select-change="menuTreeChange"
+                  ref="menuTree"
+                  :data="menuTreeData"
+                  :query="menuTreeQuery"
+                  @on-select-change="menuTreeChange"
           />
         </div>
         <!--<ul class="menuContainer">-->
@@ -44,32 +44,32 @@
       <div class="contentRight">
         <div class="left-tree">
           <Tree
-            ref="tree"
-            :data="treeData"
-            @on-select-change="treeChange"
+                  ref="tree"
+                  :data="treeData"
+                  @on-select-change="treeChange"
           />
         </div>
         <div class="right-list">
           <div class="upper-part">
             <div class="upper-table">
               <Table
-                class="table"
-                :columns="columns"
-                :index="tableDefaultSelectedRowIndex"
-                highlight-row
-                :height="true"
-                :data="tableData"
-                @on-row-click="tableRowClick"
+                      class="table"
+                      :columns="columns"
+                      :index="tableDefaultSelectedRowIndex"
+                      highlight-row
+                      :height="true"
+                      :data="tableData"
+                      @on-row-click="tableRowClick"
               />
             </div>
           </div>
           <div class="bottom-part">
             <div class="bottom-table">
               <Table
-                class="table"
-                highlight-row
-                :data="extendTableData"
-                :columns="columnsBottom"
+                      class="table"
+                      highlight-row
+                      :data="extendTableData"
+                      :columns="columnsBottom"
               />
             </div>
           </div>
@@ -77,96 +77,91 @@
       </div>
     </div>
     <Modal
-      v-model="copyPermission"
-      closable
-      :width="420"
-      footer-hide
-      mask
-      title="复制权限"
+            v-model="copyPermission"
+            closable
+            :width="420"
+            footer-hide
+            mask
+            title="复制权限"
     >
       <div class="modalContent">
         <div class="itemContent">
           <div class="labelContent">
-            <div class="labelTip">
-              *
-            </div>
+            <div class="labelTip">*</div>
             <div>源角色:</div>
           </div>
-          <DropDownSelectFilter
-            class="itemCom"
-            :total-row-count="totalRowCount"
-            :page-size="dropPageSize"
-            :auto-data="singleAutoData"
-            :columns-key="['NAME']"
-            :hidecolumns="['ID']"
-            :data="singleDropDownSelectFilterData"
-            @on-fkrp-selected="singleDropSelected"
-            @on-page-change="singleDropPageChange"
-            @on-popper-hide="singlePopperHide"
-            @on-clear="singleDropClear"
-            @on-input-value-change="singleInputChange"
-          />
+          <DropDownSelectFilter class="itemCom"
+                                :totalRowCount="totalRowCount"
+                                :pageSize="dropPageSize"
+                                :AutoData="singleAutoData"
+                                :columnsKey="['NAME']"
+                                :hidecolumns="['ID']"
+                                @on-fkrp-selected="singleDropSelected"
+                                @on-page-change="singleDropPageChange"
+                                @on-popper-hide="singlePopperHide"
+                                @on-clear="singleDropClear"
+                                @on-input-value-change="singleInputChange"
+                                :data="singleDropDownSelectFilterData">
+          </DropDownSelectFilter>
         </div>
         <div class="itemContent">
           <div class="labelContent">
-            <div class="labelTip">
-              *
-            </div>
+            <div class="labelTip">*</div>
             <div>目的角色:</div>
           </div>
-          <DropDownSelectFilter
-            :single="false"
-            class="itemCom"
-            :total-row-count="totalRowCount"
-            :page-size="dropPageSize"
-            :columns-key="['NAME']"
-            :hidecolumns="['ID']"
-            :data="multipleDropDownSelectFilterData"
-            @on-fkrp-selected="multipleDropSelected"
-            @on-page-change="multipleDropPageChange"
-            @on-popper-hide="multiplePopperHide"
-            @on-clear="multipleDropClear"
-            @on-input-value-change="multipleInputChange"
-          />
+          <DropDownSelectFilter :single="false"
+                                class="itemCom"
+                                :totalRowCount="totalRowCount"
+                                :pageSize="dropPageSize"
+                                :columnsKey="['NAME']"
+                                :hidecolumns="['ID']"
+                                @on-fkrp-selected="multipleDropSelected"
+                                @on-page-change="multipleDropPageChange"
+                                @on-popper-hide="multiplePopperHide"
+                                @on-clear="multipleDropClear"
+                                @on-input-value-change="multipleInputChange"
+                                :data="multipleDropDownSelectFilterData">
+          </DropDownSelectFilter>
         </div>
         <div class="itemContent">
           <div class="labelContent">
-            <div class="labelTip">
-              *
-            </div>
+            <div class="labelTip">*</div>
             <div>复制方式:</div>
           </div>
-          <Select
-            v-model="copyType"
-            class="itemCom"
-            placeholder="请选择复制方式"
-          >
-            <Option value="cover">
-              覆盖原有权限
-            </Option>
-            <Option value="copy">
-              保留原有权限
-            </Option>
+          <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
+            <Option value="cover">覆盖原有权限</Option>
+            <Option value="copy">保留原有权限</Option>
           </Select>
         </div>
         <div class="modalButton">
           <Button
-            type="fcdefault"
-            class="Button"
-            @click="modalConfirm"
+                  type="fcdefault"
+                  class="Button"
+                  @click="modalConfirm"
           >
             确定
           </Button>
           <Button
-            type="fcdefault"
-            class="Button"
-            @click="modalCancel"
+                  type="fcdefault"
+                  class="Button"
+                  @click="modalCancel"
           >
             取消
           </Button>
         </div>
       </div>
     </Modal>
+    <Spin
+            v-show="spinShow"
+            fix
+    >
+      <Icon
+              type="ios-loading"
+              size="48"
+              class="demo-spin-icon-load"
+      />
+      <div>Loading</div>
+    </Spin>
   </div>
 </template>
 
@@ -177,6 +172,8 @@
   export default {
     data() {
       return {
+        spinShow: false, // loading是否显示
+
         copyPermission: false, // 复制权限弹框
         copyType: '', // 复制权限弹框  复制方式
         singlePermissionId: null, // 复制权限外键单选id
@@ -562,12 +559,39 @@
     },
     methods: {
       refresh() {
+        this.spinShow = true;
         const menuPromise = new Promise((resolve, reject) => { this.getMenuData(resolve, reject); });
         const treePromise = new Promise((resolve, reject) => { this.getTreeData(resolve, reject); });
         Promise.all([menuPromise, treePromise]).then(() => {
           this.getTableData();
         });
       }, // 刷新数据
+      refreshButtonClick() {
+        if (this.checkNoSaveData()) {
+        } else {
+          this.refresh();
+        }
+      }, // 刷新按钮
+      checkNoSaveData() {
+        this.getSaveData();
+        if (this.tableSaveData.length > 0) {
+          this.$Modal.fcWarning({
+            title: '提示',
+            mask: true,
+            showCancel: true,
+            content: '是否保存修改的数据！',
+            onOk: () => {
+              this.savePermission();
+            },
+            onCancel: () => {
+              this.refresh();
+            }
+          });
+          return true;
+        } else {
+          return false;
+        }
+      }, // 校验是否有未保存的数据
       getButtonData() {
         network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
           .then((res) => {
@@ -596,13 +620,17 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
-        this.groupId = item.ID;
-        const treePromise = new Promise((resolve, reject) => {
-          this.getTreeData(resolve, reject);
-        });
-        treePromise.then(() => {
-          this.getTableData();
-        });
+        if (this.checkNoSaveData()) {
+        } else {
+          this.spinShow = true;
+          this.groupId = item.ID;
+          const treePromise = new Promise((resolve, reject) => {
+            this.getTreeData(resolve, reject);
+          });
+          treePromise.then(() => {
+            this.getTableData();
+          });
+        }
       }, // 左侧树点击
       getTreeData(resolve, reject) {
         network.post('/p/cs/getMenuTree', urlSearchParams({}))
@@ -687,6 +715,7 @@
         }
         network.post('/p/cs/queryMenuPermission', obj)
           .then((res) => {
+            this.spinShow = false;
             if (res.data.code === 0) {
               const resData = res.data.data;
               this.tableData = resData.reduce((acc, cur) => {
@@ -739,6 +768,7 @@
             }
           })
           .catch((err) => {
+            this.spinShow = false;
             throw err;
           });
       }, // 获取表格数据
@@ -758,13 +788,17 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
-        this.adSubsystemId = obj.ad_subsystem_id;
-        this.adTableCateId = obj.ad_tablecategory_id;
-        this.getTableData();
+        if (this.checkNoSaveData()) {
+        } else {
+          this.spinShow = true;
+          this.adSubsystemId = obj.ad_subsystem_id;
+          this.adTableCateId = obj.ad_tablecategory_id;
+          this.getTableData();
+        }
       }, // 树选中改变触发
       btnClick(item) {
         if (item.webdesc === '刷新') {
-          this.refresh();
+          this.refreshButtonClick();
         } else if (item.webdesc === '复制权限') {
           this.copyPerm();
         } else if (item.webdesc === '保存') {
@@ -877,11 +911,11 @@
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
@@ -1038,11 +1072,11 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
@@ -1237,7 +1271,7 @@
           network.post('/p/cs/savePermission', obj)
             .then((res) => {
               if (res.data.code === 0) {
-                this.getTableData();
+                this.refresh();
                 this.$Message.success({
                   content: res.data.message
                 });
@@ -1419,138 +1453,148 @@
 </script>
 
 <style lang="less">
-    @import "../../../src/assets/theme/custom.less";
+  @import "../../../src/assets/theme/custom.less";
+  .burgeon-spin-fix{
+    .demo-spin-icon-load{
+      animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+      from { transform: rotate(0deg);}
+      50%  { transform: rotate(180deg);}
+      to   { transform: rotate(360deg);}
+    }
+  }
 
-    .functionPower {
-        position: relative;
+  .functionPower {
+    position: relative;
+    height: 100%;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    .buttonGroup {
+      display: flex;
+      .Button {
+        padding: 6px 8px;
+        border-radius:2px;
+        font-size:12px;
+        font-family:PingFangSC-Regular;
+        font-weight:400;
+        box-sizing: border-box;
+        margin-right: 10px;
+      }
+    }
+    .content {
+      flex: 1;
+      margin-top: 10px;
+      display: flex;
+      overflow-y: hidden;
+      .contentLeft {
+        width: 240px;
         height: 100%;
-        padding: 10px 0;
+        padding: 10px;
+        border: solid 1px #B4B4B4;
+        border-radius: 6px;
+        margin-right: 10px;
         display: flex;
         flex-direction: column;
-        box-sizing: border-box;
-        .buttonGroup {
-            display: flex;
-            .Button {
-                padding: 6px 8px;
-                border-radius:2px;
-                font-size:12px;
-                font-family:PingFangSC-Regular;
-                font-weight:400;
-                box-sizing: border-box;
-                margin-right: 10px;
-            }
-        }
-        .content {
-            flex: 1;
-            margin-top: 10px;
-            display: flex;
-            overflow-y: hidden;
-            .contentLeft {
-                width: 240px;
-                height: 100%;
-                padding: 10px;
-                border: solid 1px #B4B4B4;
-                border-radius: 6px;
-                margin-right: 10px;
-                display: flex;
-                flex-direction: column;
-                .menuContainer {
-                    flex: 1;
-                    margin-top: 10px;
-                    overflow-y: auto;
+        .menuContainer {
+          flex: 1;
+          margin-top: 10px;
+          overflow-y: auto;
 
-                    .burgeon-tree-title {
-                        width: 100%;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-                        background-color: rgb(196, 226, 255);
-                    }
+          .burgeon-tree-title {
+            width: 100%;
+            font-size: 12px;
+            line-height: 26px;
+          }
+          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+            background-color: rgb(196, 226, 255);
+          }
 
-                    .menuList {
-                        cursor: pointer;
-                        font-size: 12px;
-                        line-height: 26px;
-                    }
-                    .menuHighlight {
-                        background-color: rgb(196, 226, 255);
-                    }
-                }
-            }
-            .contentRight {
-                height: 100%;
-                flex: 1;
-                border: solid 1px #B4B4B4;
-                border-radius: 6px;
-                display: flex;
-                width: 100%;
-                .left-tree {
-                    width: 200px;
-                    padding: 10px;
-                    border-right: solid 1px #B4B4B4;
-                    overflow: auto;
-                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-                        background-color: rgb(196, 226, 255);
-                    }
-                }
-                .right-list {
-                    flex: 1;
-                    height: 100%;
-                    width: 10px;
-                    .upper-part {
-                        height: 60%;
-                        padding: 10px;
-                        border-bottom: solid 1px #B4B4B4;
-                        .upper-table {
-                            height: 100%;
-                            .table {
-                                border: 0;
-                            }
-                        }
-                    }
-                    .bottom-part {
-                        height: 40%;
-                        padding: 10px;
-                        .bottom-table {
-                            height: 100%;
-                            .table {
-                                border: 0;
-                            }
-                        }
-                    }
-                }
-            }
+          .menuList {
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 26px;
+          }
+          .menuHighlight {
+            background-color: rgb(196, 226, 255);
+          }
         }
+      }
+      .contentRight {
+        height: 100%;
+        flex: 1;
+        border: solid 1px #B4B4B4;
+        border-radius: 6px;
+        display: flex;
+        width: 100%;
+        .left-tree {
+          width: 200px;
+          padding: 10px;
+          border-right: solid 1px #B4B4B4;
+          overflow: auto;
+          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+            background-color: rgb(196, 226, 255);
+          }
+        }
+        .right-list {
+          flex: 1;
+          height: 100%;
+          width: 10px;
+          .upper-part {
+            height: 60%;
+            padding: 10px;
+            border-bottom: solid 1px #B4B4B4;
+            .upper-table {
+              height: 100%;
+              .table {
+                border: 0;
+              }
+            }
+          }
+          .bottom-part {
+            height: 40%;
+            padding: 10px;
+            .bottom-table {
+              height: 100%;
+              .table {
+                border: 0;
+              }
+            }
+          }
+        }
+      }
     }
-    .modalContent {
-        .itemContent {
-            display: flex;
-            margin-bottom: 10px;
-            .labelContent {
-                margin-right: 4px;
-                width: 100px;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                .labelTip {
-                    font-size: 16px;
-                    height: 10px;
-                    color: red;
-                    margin-right: 4px;
-                }
-            }
-            .itemCom {
-                width: 220px;
-            }
+  }
+  .modalContent {
+    .itemContent {
+      display: flex;
+      margin-bottom: 10px;
+      .labelContent {
+        margin-right: 4px;
+        width: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .labelTip {
+          font-size: 16px;
+          height: 10px;
+          color: red;
+          margin-right: 4px;
         }
-        .modalButton {
-            width: 324px;
-            display: flex;
-            justify-content: flex-end;
-            .Button {
-                margin-left: 10px;
-            }
-        }
+      }
+      .itemCom {
+        width: 220px;
+      }
     }
+    .modalButton {
+      width: 324px;
+      display: flex;
+      justify-content: flex-end;
+      .Button {
+        margin-left: 10px;
+      }
+    }
+  }
 </style>
