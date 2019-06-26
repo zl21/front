@@ -1169,8 +1169,14 @@
             }
           }
         } else { // 横向结构
-          const modify = Object.values(this.updateData[itemName].modify[itemName]);
-          const add = Object.keys(this.updateData[itemName].add[itemName]);
+          let modify = [];
+          let add = [];
+          if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+            modify = Object.values(this.updateData[itemName].modify[itemName]);
+          }
+          if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
+            add = Object.keys(this.updateData[itemName].add[itemName]);
+          }
           if (modify.length > 0 && add.length < 1) {
             this.itemTableValidation = true;
           } else if (modify.length > 0 && add.length > 0) {
@@ -1185,8 +1191,14 @@
               }
             }
           } else {
-            const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-            const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            let itemModify = [];
+            let itemAdd = [];
+            if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+              itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+            }
+            if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
+              itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            }
             if (itemAdd.length > 0 && itemModify.length > 0) {
               if (this.verifyRequiredInformation()) { // 横向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
