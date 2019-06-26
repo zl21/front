@@ -41,24 +41,20 @@
     </div>
     <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
        <template v-if="searchBtn === false">
-         <Poptip trigger="focus">
-            <Input  placeholder="请输入要查询的功能名" @input="searchData" style="width: auto" class="nav-search">
-            <Icon type="ios-search" slot="suffix" @click="searchBtn = true" />
-            </Input>
-            <div slot="content" v-if ="searchList.length>0">
-              <div class="Poptip-nav" style="color:#000">
-                <ul>
-                    <li v-for="(item,index) in searchList"  @click="routerNext(index)">
-                      {{item.desc}}
-                    </li>
-              </ul>
-              </div>
-              
-              
-            </div>
-        </Poptip>
-         
-
+          
+            <AutoComplete
+            ref="AutoComplete"
+            v-model="keyWord"
+            class="nav-search"
+            @on-select="routerNext"
+            icon="ios-search"
+            @click="setBtn"
+            @input="searchData" 
+            placeholder="请输入要查询的功能名"
+           >
+              <Option v-for="(item,index) in searchList" :value ="item.desc" :lable="item" :key="index" >{{item.desc}}</Option>
+            </AutoComplete>
+    
        </template>
 
 
@@ -75,11 +71,7 @@
 </template>
 
 <script>
-  import {
-    mapState,
-    mapMutations,
-    mapActions
-  } from 'vuex';
+  import { mapState, mapMutations, mapActions } from 'vuex';
   import Vue from 'vue';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
@@ -89,19 +81,17 @@
   import openedImg from '../assets/image/open@2x.png';
   import logoImg from '../assets/image/logo.png';
   import bannerImg from '../assets/image/banner.png';
-  import {
-    enableGateWay
-  } from '../constants/global';
-  import network, {
-    urlSearchParams
-  } from '../__utils__/network';
+  import { routeTo } from '../__config__/event.config';
+
+  import { enableGateWay } from '../constants/global';
+  import network, { urlSearchParams } from '../__utils__/network';
 
   export default {
     name: 'Navigator',
     components: {
       NavigatorPrimaryMenu,
       SetPanel,
-      Dialog
+      Dialog,
     },
     data() {
       return {
@@ -109,7 +99,7 @@
           closedImg,
           openedImg,
           logoImg,
-          bannerImg
+          bannerImg,
         },
         show: false,
         searchBtn: true,
@@ -118,25 +108,22 @@
           show: true,
           list: [],
         },
+        keyWord: '',
         dialogConfig: {
           title: '提示',
           mask: true,
           footerHide: false,
           contentText: '',
-          confirm: () => {}
+          confirm: () => {},
         }, // 弹框配置信息
-        dialogComponentName: null
+        dialogComponentName: null,
       };
     },
     computed: {
       ...mapState('global', {
-        collapseHistoryAndFavorite: ({
-          collapseHistoryAndFavorite
-        }) => collapseHistoryAndFavorite,
-        menuLists: ({
-          menuLists
-        }) => menuLists
-      })
+        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
+        menuLists: ({ menuLists }) => menuLists,
+      }),
     },
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
@@ -149,142 +136,166 @@
         Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
-      searchData(value) {
-        const globalServiceId = window.sessionStorage.getItem('serviceId');
-        network.post('/p/cs/SearchWords', urlSearchParams({
-          words: value,
-        })).then((r) => {
-          if (r.status === 200 && r.data.code === 0) {
-            this.searchList = r.data.data;
+      routeTo(data) {
+        const type = data.type;
+        routeTo(
+          { type, info: { tableName: data.name, tableId: data.tabid } },
+          () => {
+            this.keyWord = '';
+            this.searchList = [];
           }
-        });
+        );
       },
-      routerNext(value){
-          console.log(value);
+      searchData(value) {
+        if (value === undefined || value.length < 1) {
+          this.searchList = [];
+          return false;
+        }
+        const globalServiceId = window.sessionStorage.getItem('serviceId');
+        network
+          .post(
+            '/p/cs/SearchWords',
+            urlSearchParams({
+              words: value,
+            })
+          )
+          .then((r) => {
+            if (r.status === 200 && r.data.code === 0) {
+              this.searchList = r.data.data.concat([]);
+            }
+          });
+      },
+      setBtn() {},
+      routerNext(name) {
+        console.log(name);
+        const index = this.searchList.findIndex(x => x.desc === name);
+        const routerItem = this.searchList[index];
+        if (routerItem) {
+          this.routeTo(routerItem);
+        }
+      //
       },
       loadEnterpriseConfig() {
         const image = (window.ProjectConfig || {}).image || {
           enterpriseLogo: undefined,
-          enterpriseBanner: undefined
+          enterpriseBanner: undefined,
         };
         const enterpriseLogo = image.enterpriseLogo;
         const enterpriseBanner = image.enterpriseBanner;
         this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
         this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
-      }
+      },
     },
     mounted() {
       this.loadEnterpriseConfig();
       this.getMenuLists();
-    }
+    },
   };
 </script>
 
 <style lang="less">
-    .burgeon-drawer-content {
-        //重置BurgeonUI样式
-        border-top-left-radius: 0px !important;
-        border-top-right-radius: 0px !important;
-    }
+.burgeon-drawer-content {
+  //重置BurgeonUI样式
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
 
-    .burgeon-drawer-body {
-        //重置BurgeonUI样式
-        padding: 0px !important;
-    }
+.burgeon-drawer-body {
+  //重置BurgeonUI样式
+  padding: 0px !important;
+}
 
-    .navigator {
-        height: 100%;
-        display: flex;
-        background-color: #1f272c;
-        .left {
-            img.trigger {
-                height: 50px;
-            }
-            img.logo {
-                position: absolute;
-                width: 30px;
-                top: 10px;
-                left: 18px;
-            }
-            img.banner {
-                width: 76px;
-                height: 30px;
-                position: absolute;
-                top: 11px;
-                left: 64px;
-            }
-            img:hover {
-                cursor: pointer;
-            }
-        }
-        .middle {
-            margin-left: 10px;
-            position: relative;
-            display: flex;
-            flex: 1 1 1px;
-        }
-        .nav-search {
-            input {
-                display: inline-block;
-                width: 100%;
-                padding: 0 8px;
-                border: solid 1px #fff;
-                border-radius: 15px;
-                background: #4f5356;
-                height: 28px;
-                line-height: 28px;
-                color: #fff;
-                font-size: 13px;
-            }
-            i {
-                color: #C0C4CC;
-                padding-top: 2px;
-            }
-           
-        }
-        .tag {
-            width: 50px;
-            float: left;
-            font-size: 24px;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-            color: #fff;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            i {
-                font-size: 22px;
-            }
-        }
-        .tag-search {
-            width: 192px;
-            line-height: 40px;
-        }
-        .tag:hover {
-            background: #2e373c;
-        }
+.navigator {
+  height: 100%;
+  display: flex;
+  background-color: #1f272c;
+  .left {
+    img.trigger {
+      height: 50px;
     }
-    .Poptip-nav {
-       ul{
-         li{
-           &:hover{
-                  background: #f4f4f4;
-            }
-              padding: 0 20px;
-              text-align: left;
-              margin: 0;
-              line-height: 34px;
-              cursor: pointer;
-              color: #606266;
-              font-size: 14px;
-              list-style: none;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-            
-       }
-     }
+    img.logo {
+      position: absolute;
+      width: 30px;
+      top: 10px;
+      left: 18px;
+    }
+    img.banner {
+      width: 76px;
+      height: 30px;
+      position: absolute;
+      top: 11px;
+      left: 64px;
+    }
+    img:hover {
+      cursor: pointer;
+    }
+  }
+  .middle {
+    margin-left: 10px;
+    position: relative;
+    display: flex;
+    flex: 1 1 1px;
+  }
+  .nav-search {
+    input {
+      display: inline-block;
+      width: 100%;
+      padding: 0 8px;
+      border: solid 1px #fff;
+      border-radius: 15px;
+      background: #4f5356;
+      height: 28px;
+      line-height: 28px;
+      color: #fff;
+      font-size: 13px;
+    }
+    i {
+      color: #c0c4cc;
+      padding-top: 2px;
+    }
+  }
+  .tag {
+    width: 50px;
+    float: left;
+    font-size: 24px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    color: #fff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    i {
+      font-size: 22px;
+    }
+  }
+  .tag-search {
+    width: 192px;
+    line-height: 40px;
+  }
+  .tag:hover {
+    background: #2e373c;
+  }
+}
+.Poptip-nav {
+  ul {
+    li {
+      &:hover {
+        background: #f4f4f4;
+      }
+      padding: 0 20px;
+      text-align: left;
+      margin: 0;
+      line-height: 34px;
+      cursor: pointer;
+      color: #606266;
+      font-size: 14px;
+      list-style: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
 </style>

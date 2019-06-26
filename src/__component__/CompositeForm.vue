@@ -331,6 +331,7 @@
 
         // console.log(data, setdefval);
         //  console.log(this.mountChecked,this.conditiontype);
+        console.log(data, this.mountChecked);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -348,7 +349,7 @@
         } else {
           delete this.formData[current.item.inputname];
         }
-
+        console.log(this.formData);
         this.VerificationForm.forEach((item) => {
           Object.keys(this.formData).forEach((option) => {
             if (item.key === option.split(':')[0]) {
@@ -356,8 +357,9 @@
             }
           });
         });
-
         const message = this.setVerifiy();
+        console.log(this.VerificationForm, message);
+
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
@@ -365,6 +367,11 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
+        console.log(current.item.props.field)
+        // let 
+        // if(current.item.props.fkdisplay || current.item.props.number === true){
+        //   this.formData[current.item.props.field]  = 
+        // }
         this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value) {
@@ -387,16 +394,16 @@
           this.mountChecked = true;
         }, 200);
 
-        this.defaultFormData = Object.assign(this.defaultFormData, value);
-        // 去除 空字符串
-        const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
-          if (this.defaultFormData[option]) {
-            arr[option] = this.defaultFormData[option];
-          }
-          return arr;
-        }, {});
+        // this.defaultFormData = Object.assign(this.defaultFormData, value);
+        // // 去除 空字符串
+        // const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
+        //   if (this.defaultFormData[option]) {
+        //     arr[option] = this.defaultFormData[option];
+        //   }
+        //   return arr;
+        // }, {});
         
-        this.$emit('InitializationForm', defaultFormData);
+        this.$emit('InitializationForm', this.defaultFormData);
       },
       reduceForm(array, current, index) {
         const obj = {};
@@ -613,7 +620,7 @@
         // 外键的模糊搜索
         console.log(value);
         if (!value) {
-          this.freshDropDownSelectFilterAutoData({}, index, current,'empty');
+          this.freshDropDownSelectFilterAutoData({}, index, current, 'empty');
           return false;
         }
         let sendData = {};
@@ -1260,7 +1267,7 @@
         item[index].item.props.pageSize = res.data.data.defaultrange;
         item[index].item.props.data = res.data.data;
       },
-      freshDropDownSelectFilterAutoData(res, index, current,type) {
+      freshDropDownSelectFilterAutoData(res, index, current, type) {
         // 外键的模糊搜索数据更新
         let item = [];
         if (current.formIndex !== 'inpubobj') {
@@ -1270,16 +1277,16 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
-        if(type === 'empty'){
+        if (type === 'empty') {
           item[index].item.props.AutoData = [];
-        }else{
+          item[index].item.props.defaultSelected = []
+        }else {
           if (res.data.data.length < 1) {
             delete this.formData[`${current.colname}:NAME`];
           // console.log(current.colname,this.formData);
           }
           item[index].item.props.AutoData = res.data.data;
         }
-        
       },
       lowercaseToUppercase(index, current) {
         // 将字符串转化为大写

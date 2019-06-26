@@ -415,10 +415,13 @@
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
-            } else if (this.condition) {
+            } else if (this.condition !== '') {
               // 模糊查询
               delete obj[current.item.field];
               obj[current.item.inputname] = current.item.value;
+            } else {
+              delete obj[current.item.inputname];
+              obj[current.item.field] = current.item.value;          
             }
           //  else {
           //   // 否则为输入项
@@ -455,10 +458,10 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else {
-                console.log(typeof current.item.value , current.item.value);
+                console.log(typeof current.item.value, current.item.value);
                 if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
                   obj[current.item.field] = current.item.value;
-                }else {
+                } else {
                   const value = current.item.value
                     ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
                     : '';
@@ -473,8 +476,6 @@
             } else {
               obj[current.item.field] = current.item.value;
             }
-          } else if (Version === '1.4') {
-            obj[current.item.field] = current.item.props.empty;
           } else {
             obj[current.item.field] = current.item.value;
           }

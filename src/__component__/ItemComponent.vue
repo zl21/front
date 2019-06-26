@@ -519,7 +519,12 @@
         }
       },
       fkrpSelectedClear($this) {
-        this._items.value = undefined;
+        this._items.value = [
+          {
+            ID:'',
+            Label:''
+          }
+        ];
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
