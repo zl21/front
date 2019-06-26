@@ -30,7 +30,7 @@
         <h3>Extention For Table</h3>
         <ExtentionInput
           :extention-config="extentionForTable"
-          :default-data="''"
+          :default-data="extentionDataForTable"
           @valueChange="extentionValueChange1"
         />
       </div>

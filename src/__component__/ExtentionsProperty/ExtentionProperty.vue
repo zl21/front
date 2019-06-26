@@ -169,7 +169,7 @@
           flex: 1;
           display: flex;
           align-items: center;
-          padding-left: 10px;
+          padding: 2px 10px;
         }
         li:hover {
           opacity: 0.8;
@@ -278,9 +278,6 @@
             opacity: 0.8;
           }
         }
-      }
-      .item-render-area:not(:last-child) {
-        border-bottom: 1px solid lightgrey;
       }
     }
     .right {
