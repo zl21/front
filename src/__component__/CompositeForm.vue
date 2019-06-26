@@ -73,7 +73,7 @@
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
-
+  
   const {
     fkQueryList,
     fkFuzzyquerybyak,
@@ -331,6 +331,7 @@
 
         // console.log(data, setdefval);
         //  console.log(this.mountChecked,this.conditiontype);
+        console.log(data, this.mountChecked);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -348,7 +349,7 @@
         } else {
           delete this.formData[current.item.inputname];
         }
-
+        console.log(this.formData);
         this.VerificationForm.forEach((item) => {
           Object.keys(this.formData).forEach((option) => {
             if (item.key === option.split(':')[0]) {
@@ -356,14 +357,24 @@
             }
           });
         });
-
         const message = this.setVerifiy();
+        console.log(this.VerificationForm, message);
+
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
           this.$emit('VerifyMessage', message);
         } else {
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
+        }
+        console.log(this.formData[current.item.props.field]);
+        // let v1.4外键 及number
+        if (current.item.props.fkdisplay || current.item.props.number === true) {
+          if (this.formData[current.item.field] === '') {
+            this.formData[current.item.field] = 0;
+          }
+          
+          // this.formData[current.item.props.field]  = 
         }
         this.$emit('formChange', this.formData, this.formDataDef);
       },
@@ -613,7 +624,7 @@
         // 外键的模糊搜索
         console.log(value);
         if (!value) {
-          this.freshDropDownSelectFilterAutoData({}, index, current,'empty');
+          this.freshDropDownSelectFilterAutoData({}, index, current, 'empty');
           return false;
         }
         let sendData = {};
@@ -923,6 +934,7 @@
       propsType(current, item) {
         // 表单 props
         const obj = item;
+        
 
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
@@ -936,6 +948,20 @@
         // 去除请输入 字段
         if (item.props.readonly) {
           item.props.placeholder = '';
+        }
+
+
+        // 前端自定义标记
+        if (current.webconf) {
+          const webconf = current.webconf;
+           //读写规则
+          if (webconf.display === 'enumerate') {
+            item.type = 'EnumerableInput';
+          } else if (webconf.display === 'jsonmaker') {
+            //拓展属性
+            item.type = 'ExtentionInput';
+          }
+          console.log(webconf,item);
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -1260,7 +1286,7 @@
         item[index].item.props.pageSize = res.data.data.defaultrange;
         item[index].item.props.data = res.data.data;
       },
-      freshDropDownSelectFilterAutoData(res, index, current,type) {
+      freshDropDownSelectFilterAutoData(res, index, current, type) {
         // 外键的模糊搜索数据更新
         let item = [];
         if (current.formIndex !== 'inpubobj') {
@@ -1270,16 +1296,16 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.props.hidecolumns = ['id', 'value'];
-        if(type === 'empty'){
+        if (type === 'empty') {
           item[index].item.props.AutoData = [];
-        }else{
+          item[index].item.props.defaultSelected = [];
+        } else {
           if (res.data.data.length < 1) {
             delete this.formData[`${current.colname}:NAME`];
           // console.log(current.colname,this.formData);
           }
           item[index].item.props.AutoData = res.data.data;
         }
-        
       },
       lowercaseToUppercase(index, current) {
         // 将字符串转化为大写

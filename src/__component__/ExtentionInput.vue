@@ -37,6 +37,8 @@
 </template>
 
 <script>
+  import extentionForColumn from '../constants/extentionPropertyForColumn';
+  import extentionForTable from '../constants/extentionPropertyForTable';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
   export default {
@@ -45,9 +47,9 @@
       ExtentionProperty
     },
     props: {
-      options: {
+      extentionConfig: {
         type: Array,
-        default: () => ([]),
+        default: () => ([])
       },
       defaultData: {
         type: [String, Object],
@@ -65,12 +67,13 @@
         currentValue: '',
         showModal: false,
         transformedData: {},
-        rows: 8
+        rows: 8,
+        options: {}
       };
     },
     methods: {
       setFormatedValue() {
-        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue.replace(/"/g, '');
+        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
       valueChange(val) {
         this.currentValue = val;
@@ -91,6 +94,15 @@
         this.showModal = false;
       },
     },
+    created() {
+      if (this.$route.params.tableName === 'AD_COLUMN') {
+        this.options = extentionForColumn;
+      } else if (this.$route.params.tableName === 'AD_TABLE') {
+        this.options = extentionForTable;
+      } else {
+        this.options = this.extentionConfig;
+      }
+    },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
       if (Object.prototype.toString.call(this.defaultData) === '[object String]' && this.defaultData !== '') {
@@ -102,7 +114,11 @@
       } else {
         this.transformedData = this.defaultData || {};
       }
-      this.currentValue = JSON.stringify(this.transformedData, null, 2);
+      if (this.defaultData === '') {
+        this.currentValue = '';
+      } else {
+        this.currentValue = JSON.stringify(this.transformedData, null, 2);
+      }
       setTimeout(() => {
         this.setFormatedValue();
       }, 10);

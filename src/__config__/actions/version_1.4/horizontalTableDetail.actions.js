@@ -170,10 +170,10 @@ export default {
               };
               const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
               itemModifyForAddAndModify.push(itemTableAdd[itemName]);
-              const addAndModifyParames = {};
-              addAndModifyParames[itemName] = {
+              const addAndModifyParames = [];
+              addAndModifyParames[itemName] = [
                 ...itemModifyForAddAndModify
-              };
+              ];
               parames = {
                 ...mainTabale,
                 ...addAndModifyParames
@@ -219,10 +219,10 @@ export default {
           itemTableAdd[itemName].ID = -1;
           const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
           itemModifyForAddAndModify.push(itemTableAdd[itemName]);
-          const addAndModifyParames = {};
-          addAndModifyParames[itemName] = {
+          const addAndModifyParames = [];
+          addAndModifyParames[itemName] = [
             ...itemModifyForAddAndModify
-          };
+          ];
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id

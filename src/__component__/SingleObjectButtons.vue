@@ -620,7 +620,7 @@
           table: this.itemName,
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
-          fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : selectedId,
+          fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? { ID: null } : selectedId,
           startindex: this.tablePageInfo.currentPageIndex,
           range: this.tablePageInfo.pageSize,
         };
@@ -646,6 +646,7 @@
             document.body.appendChild(eleLink);
             eleLink.click();
             document.body.removeChild(eleLink);
+            this.upData();
           }
         }, () => {});
       },
@@ -1150,8 +1151,14 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             } else {
-              const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-              const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+              let itemModify = [];
+              let itemAdd = [];
+              if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+                itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+              }
+              if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+                itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+              }
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
                 if (this.itemTableCheckFunc()) {
@@ -1168,8 +1175,14 @@
             }
           }
         } else { // 横向结构
-          const modify = Object.values(this.updateData[itemName].modify[itemName]);
-          const add = Object.keys(this.updateData[itemName].add[itemName]);
+          let modify = [];
+          let add = [];
+          if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+            modify = Object.values(this.updateData[itemName].modify[itemName]);
+          }
+          if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
+            add = Object.keys(this.updateData[itemName].add[itemName]);
+          }
           if (modify.length > 0 && add.length < 1) {
             this.itemTableValidation = true;
           } else if (modify.length > 0 && add.length > 0) {
@@ -1184,8 +1197,14 @@
               }
             }
           } else {
-            const itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-            const itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            let itemModify = [];
+            let itemAdd = [];
+            if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+              itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+            }
+            if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
+              itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            }
             if (itemAdd.length > 0 && itemModify.length > 0) {
               if (this.verifyRequiredInformation()) { // 横向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });

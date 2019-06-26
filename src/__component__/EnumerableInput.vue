@@ -34,6 +34,9 @@
 </template>
 
 <script>
+  import enumerableForColumn from '../constants/enumerateInputForColumn';
+  import enumerableForTable from '../constants/enumerateInputForTable';
+  
   export default {
     data: () => ({
       style: {
@@ -42,23 +45,23 @@
       itemPicked: {},
       value: '',
       dropdownShow: false,
-      pickedAll: true
+      pickedAll: true,
+      enumerableLists: [],
+      strictMode: true,
     }),
     name: 'EnumerableInput',
     props: {
-      enumerableLists: {
-        type: Array,
-        required: true,
-        default: () => ([])
+      enumerableConfig: {
+        type: Object,
+        default: () => ({
+          enumerableLists: [],
+          strictMode: true
+        })
       },
       defaultValue: {
         type: [String, Number],
         default: ''
       },
-      strictMode: {
-        type: Boolean,
-        default: true,
-      }
     },
     methods: {
       computeValue() {
@@ -118,6 +121,20 @@
         return !this.enumerableLists.some((d, i) => !this.itemPicked[i]);
       }
     },
+    created() {
+      if (this.$route.params.tableName === 'AD_COLUMN') {
+        this.enumerableLists = enumerableForColumn.enumerableLists;
+        this.strictMode = enumerableForColumn.strictMode;
+      } else if (this.$route.params.tableName === 'AD_TABLE') {
+        this.enumerableLists = enumerableForTable.enumerableLists;
+        this.strictMode = enumerableForTable.strictMode;
+      } else {
+        this.enumerableLists = this.enumerableConfig.enumerableLists;
+        this.strictMode = this.enumerableConfig.strictMode;
+      }
+    },
+    watch: {
+    },
     mounted() {
       this.computeValue();
       if (this.defaultValue !== undefined) {
@@ -172,7 +189,7 @@
     max-width: 300px;
     border: 1px solid #d8d8d8;
     background-color: #fff;
-    z-index: 1;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;

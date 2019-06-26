@@ -98,7 +98,7 @@
         default: () => ([]),
       },
       defaultData: {
-        type: Object,
+        type: [String, Object],
         default: () => ({})
       },
     },
@@ -156,7 +156,6 @@
       border-bottom: 1px solid lightgrey;
     }
     .left {
-      flex: 1.5;
       display: flex;
       border-right: 1px solid lightgrey;
       ul {
@@ -170,7 +169,7 @@
           flex: 1;
           display: flex;
           align-items: center;
-          padding-left: 10px;
+          padding: 2px 10px;
         }
         li:hover {
           opacity: 0.8;
@@ -198,6 +197,10 @@
           .fieldName {
             color: #000;
           }
+          .content {
+            font-style: italic;
+            padding: 5px 5px 0 15px;
+          }
         }
         .content {
           flex: 1;
@@ -222,6 +225,7 @@
               .input, .select {
                 flex: 3;
                 padding: 0 5px;
+                border: 1px solid lightgrey;
               }
               input[type="text"]::placeholder {
                 color: grey;
@@ -274,9 +278,6 @@
             opacity: 0.8;
           }
         }
-      }
-      .item-render-area:not(:last-child) {
-        border-bottom: 1px solid lightgrey;
       }
     }
     .right {

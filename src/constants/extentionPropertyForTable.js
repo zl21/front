@@ -17,7 +17,7 @@ export default [
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       }
     ],
-    description: ''
+    description: '进入列表界面之后，列表中的数据默认排序方式配置'
   },
   {
     name: '弹框多选',
@@ -27,20 +27,31 @@ export default [
       {
         name: '全局检索自动匹配字段',
         key: 'multiCenter',
-        type: 'input',
-        outputValueType: 'Array'
+        type: 'input'
       },
       {
         name: '全局检索字段',
         key: 'multiIndex',
-        type: 'input',
-        outputValueType: 'Array'
+        type: 'object-group',
+        enableIncrease: true,
+        objectInfo: [
+          {
+            name: '字段名称',
+            key: 'colName',
+            type: 'input'
+          },
+          {
+            name: '模糊匹配方式',
+            key: 'matchType',
+            type: 'radio',
+            enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
+          }
+        ]
       },
       {
         name: '中间展示字段',
         key: 'multiColumn',
-        type: 'input',
-        outputValueType: 'Array'
+        type: 'input'
       },
       {
         name: '左侧字段',
@@ -49,7 +60,7 @@ export default [
         outputValueType: 'Array'
       },
     ],
-    description: ''
+    description: '复杂弹窗多选的配置'
   },
   {
     name: '模糊匹配',
@@ -65,13 +76,14 @@ export default [
       {
         name: '模糊匹配方式',
         key: 'matchType',
-        type: 'input',
+        type: 'radio',
+        enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
       }
     ],
-    description: ''
+    description: '用户手工输入进行模糊匹配，模糊匹配的列按照顺序配置'
   },
   {
-    name: '外键下拉',
+    name: '外键下拉列表',
     key: 'fkdrplist',
     type: 'object-combine',
     objectInfo: [
@@ -95,66 +107,36 @@ export default [
         ]
       },
       {
-        name: '下拉弹出显示列',
+        name: '下拉列表显示列',
         key: 'searchcols',
         type: 'input',
         outputValueType: 'Array'
       }
     ],
-    description: ''
+    description: '外键关联字段，下拉窗口，指定显示的列、指定用于数据排序的列'
   },
   {
-    name: '输入键查询',
+    name: '输入键查询字段',
     key: 'ak2',
     type: 'input',
-    description: ''
+    description: '指定为AK2的字段可用于在列名界面进行查询'
   },
   {
-    name: '导出',
+    name: '明细表不显示导出按钮',
     key: 'DisableEXPORT',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: ''
+    description: '表的数据由定制服务查询写入，而非标准的数据，不支持导出，则可隐藏导出按钮'
   },
   {
     name: '导入',
     key: 'smalltable',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: ''
+    description: '配置后导入模板中外键关联字段可根据关联表中的记录下拉选择'
   },
   {
-    name: '商品数量矩阵配置',
-    key: '__root__',
-    type: 'input-group',
-    inputLists: [
-      {
-        name: '对应字段名1',
-        key: 'pdtcol',
-        type: 'input'
-      },
-      {
-        name: '对应字段名2',
-        key: 'qtycol',
-        type: 'input'
-      },
-      {
-        name: '是否显示数量',
-        key: 'qtyisshow',
-        type: 'radio',
-        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-      },
-      {
-        name: '扫描数量',
-        key: 'defnum',
-        type: 'input',
-        inputType: 'Number'
-      },
-    ],
-    description: ''
-  },
-  {
-    name: '按钮显示',
+    name: '单对象按钮显示',
     key: 'filteracshow',
     type: 'object-group',
     objectInfo: [
@@ -182,7 +164,7 @@ export default [
         type: 'input',
       }
     ],
-    description: ''
+    description: '单对象支持指定按钮在不同场景下是否显示'
   },
   {
     name: '只读状态',
@@ -201,27 +183,27 @@ export default [
         outputValueType: 'Array'
       }
     ],
-    description: ''
+    description: '表的某一字段的值控制数据只读，不可以编辑'
   },
   {
     name: '水印图片优先级',
     key: 'wkprioritys',
     type: 'input',
     outputValueType: 'Array',
-    description: ''
+    description: '直接配置字段名，中越往后的字段优先级越高'
   },
   {
     name: '列表样式优先级',
     key: 'status4css_priority',
     type: 'input',
-    description: ''
+    description: '直接配置a>b>c，其中a,b,c为字段名'
   },
   {
     name: '下拉列表显示行数',
     key: 'listrange',
     type: 'input',
     inputType: 'Number',
-    description: ''
+    description: '外键关联下拉列表每页显示行数'
   },
   {
     name: '列表定制查询',
@@ -234,6 +216,6 @@ export default [
         type: 'input'
       }
     ],
-    description: ''
+    description: '表的数据由定制服务查询写入，而非标准的数据'
   },
 ];

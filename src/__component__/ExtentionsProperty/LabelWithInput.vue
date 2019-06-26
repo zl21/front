@@ -23,10 +23,23 @@
     },
     methods: {
       inputChange(e) {
+        let value = '';
+        if (this.item.outputValueType === 'Array' && e.target.value !== '') {
+          value = e.target.value.split(',');
+        } else if (this.item.outputValueType === 'JSON' && e.target.value !== '') {
+          try {
+            value = JSON.parse(e.target.value);
+          } catch {
+            return;
+          }
+        } else if (this.item.inputType === 'Number') {
+          value = parseInt(e.target.value, 10);
+        } else {
+          value = e.target.value;
+        }
         this.$emit('inputValueChange', {
           key: this.item.key,
-          // eslint-disable-next-line no-nested-ternary
-          value: this.item.outputValueType === 'Array' && e.target.value !== '' ? e.target.value.split(',') : (this.item.inputType === 'Number' ? parseInt(e.target.value, 10) || '' : e.target.value)
+          value
         });
       }
     },
@@ -36,7 +49,7 @@
         default: () => ({})
       },
       defaultData: {
-        type: [String, Number, Array],
+        type: [String, Number, Array, Object],
         default: ''
       }
     },
