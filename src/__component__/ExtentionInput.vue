@@ -73,7 +73,7 @@
     },
     methods: {
       setFormatedValue() {
-        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue.replace(/"/g, '');
+        this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
       valueChange(val) {
         this.currentValue = val;

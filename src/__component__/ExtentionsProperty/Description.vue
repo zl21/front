@@ -3,7 +3,7 @@
     <span class="fieldName">
        {{ option.name }} ：
     </span>
-    {{ option.description }}
+    <span class="content">{{ option.description }}</span>
   </div>
 </template>
 

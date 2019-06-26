@@ -30,7 +30,7 @@
         <h3>Extention For Table</h3>
         <ExtentionInput
           :extention-config="extentionForTable"
-          :default-data="JSON.stringify(extentionDataForTable)"
+          :default-data="''"
           @valueChange="extentionValueChange1"
         />
       </div>
@@ -41,7 +41,7 @@
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-        <ExtentionInput :extention-config="extentionForColumn" />
+        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />
       </div>
     </div>
     <div class="divider" />
@@ -157,6 +157,9 @@
       ExtentionInput
     },
     methods: {
+      extentionValueChange2(value) {
+        console.log('extentionValueChange2', value);
+      },
       extentionValueChange1(value) {
         console.log('extentionValueChange1', value);
       },
