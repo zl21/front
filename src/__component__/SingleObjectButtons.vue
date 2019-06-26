@@ -620,7 +620,7 @@
           table: this.itemName,
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
-          fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? null : selectedId,
+          fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? { ID: null } : selectedId,
           startindex: this.tablePageInfo.currentPageIndex,
           range: this.tablePageInfo.pageSize,
         };
