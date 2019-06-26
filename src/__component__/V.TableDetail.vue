@@ -52,6 +52,7 @@
 
 
   import Vue from 'vue';
+  import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
@@ -104,7 +105,7 @@
       compositeForm
     },
     created() {
-      const singleButtonComponentName = `${this.moduleComponentName}.SingleObjectButtons`;
+      const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       }
