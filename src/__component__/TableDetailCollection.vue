@@ -1674,5 +1674,8 @@
     .burgeon-select-selection {
       height: 22px;
     }
+    .burgeon-table th, .burgeon-table td {
+      height: 26px;
+    }
   }
 </style>
