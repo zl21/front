@@ -25,7 +25,7 @@
     </div>
     
     <!--  拓展属性   -->
-    <div clss="container">
+    <div class="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Table</h3>
         <ExtentionInput
