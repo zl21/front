@@ -1,145 +1,177 @@
 <template>
-    <div class="functionPower">
-        <div class="buttonGroup">
-            <Button
-                    v-for="(item, index) in buttonsData"
-                    :key="index"
-                    type="fcdefault"
-                    class="Button"
-                    @click="btnClick(item)"
-            >
-                {{ item.webdesc }}
-            </Button>
-        </div>
-        <div class="content">
-            <div class="contentLeft">
-                <Input
-                        placeholder="请输入用户名"
-                        clearable
-                        icon="ios-search"
-                >
-                <span slot="prepend">检索</span>
-                </Input>
-                <ul class="menuContainer">
-                    <li
-                            v-for="(item, index) in menuList"
-                            :key="index"
-                            class="menuList"
-                            :class="index === menuHighlightIndex? 'menuHighlight':''"
-                            @click="menuClick(index, item)"
-                    >
-                        {{ item.NAME }}
-                    </li>
-                </ul>
-            </div>
-            <div class="contentRight">
-                <div class="left-tree">
-                    <Tree
-                            ref="tree"
-                            :data="treeData"
-                            @on-select-change="treeChange"
-                    />
-                </div>
-                <div class="right-list">
-                    <div class="upper-part">
-                        <div class="upper-table">
-                            <Table
-                                    class="table"
-                                    :columns="columns"
-                                    :index="tableDefaultSelectedRowIndex"
-                                    highlight-row
-                                    :height="true"
-                                    :data="tableData"
-                                    @on-row-click="tableRowClick"
-                            />
-                        </div>
-                    </div>
-                    <div class="bottom-part">
-                        <div class="bottom-table">
-                            <Table
-                                    class="table"
-                                    highlight-row
-                                    :data="extendTableData"
-                                    :columns="columnsBottom"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <Modal
-                v-model="copyPermission"
-                closable
-                :width="420"
-                footer-hide
-                mask
-                title="复制权限"
-        >
-            <div class="modalContent">
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>源角色:</div>
-                    </div>
-                    <DropDownSelectFilter class="itemCom"
-                                          :totalRowCount="totalRowCount"
-                                          :pageSize="dropPageSize"
-                                          @on-fkrp-selected="singleDropSelected"
-                                          @on-page-change="singleDropPageChange"
-                                          @on-popper-hide="singlePopperHide"
-                                          @on-clear="singleDropClear"
-                                          :data="singleDropDownSelectFilterData">
-                    </DropDownSelectFilter>
-                </div>
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>目的角色:</div>
-                    </div>
-                    <DropDownSelectFilter :single="false"
-                                          class="itemCom"
-                                          :totalRowCount="totalRowCount"
-                                          :pageSize="dropPageSize"
-                                          @on-fkrp-selected="mutlineDropSelected"
-                                          @on-page-change="mutlineDropPageChange"
-                                          @on-popper-hide="mutlinePopperHide"
-                                          @on-clear="mutlineDropClear"
-                                          :data="multipleDropDownSelectFilterData">
-                    </DropDownSelectFilter>
-                </div>
-                <div class="itemContent">
-                    <div class="labelContent">
-                        <div class="labelTip">*</div>
-                        <div>复制方式:</div>
-                    </div>
-                    <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
-                        <Option value="cover">覆盖原有权限</Option>
-                        <Option value="copy">保留原有权限</Option>
-                    </Select>
-                </div>
-                <div class="modalButton">
-                    <Button
-                            type="fcdefault"
-                            class="Button"
-                            @click="modalConfirm"
-                    >
-                        确定
-                    </Button>
-                    <Button
-                            type="fcdefault"
-                            class="Button"
-                            @click="modalCancel"
-                    >
-                        取消
-                    </Button>
-                </div>
-            </div>
-        </Modal>
+  <div class="functionPower">
+    <div class="buttonGroup">
+      <Button
+        v-for="(item, index) in buttonsData"
+        :key="index"
+        type="fcdefault"
+        class="Button"
+        @click="btnClick(item)"
+      >
+        {{ item.webdesc }}
+      </Button>
     </div>
+    <div class="content">
+      <div class="contentLeft">
+        <Input
+          placeholder="请输入用户名"
+          clearable
+          icon="ios-search"
+          @on-change="searchInputChange"
+        >
+        <span slot="prepend">检索</span>
+        </Input>
+        <div class="menuContainer">
+          <Tree
+            ref="menuTree"
+            :data="menuTreeData"
+            :query="menuTreeQuery"
+            @on-select-change="menuTreeChange"
+          />
+        </div>
+        <!--<ul class="menuContainer">-->
+        <!--<li-->
+        <!--v-for="(item, index) in menuList"-->
+        <!--:key="index"-->
+        <!--class="menuList"-->
+        <!--:class="index === menuHighlightIndex? 'menuHighlight':''"-->
+        <!--@click="menuClick(index, item)"-->
+        <!--&gt;-->
+        <!--{{ item.NAME }}-->
+        <!--</li>-->
+        <!--</ul>-->
+      </div>
+      <div class="contentRight">
+        <div class="left-tree">
+          <Tree
+            ref="tree"
+            :data="treeData"
+            @on-select-change="treeChange"
+          />
+        </div>
+        <div class="right-list">
+          <div class="upper-part">
+            <div class="upper-table">
+              <Table
+                class="table"
+                :columns="columns"
+                :index="tableDefaultSelectedRowIndex"
+                highlight-row
+                :height="true"
+                :data="tableData"
+                @on-row-click="tableRowClick"
+              />
+            </div>
+          </div>
+          <div class="bottom-part">
+            <div class="bottom-table">
+              <Table
+                class="table"
+                highlight-row
+                :data="extendTableData"
+                :columns="columnsBottom"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <Modal
+      v-model="copyPermission"
+      closable
+      :width="420"
+      footer-hide
+      mask
+      title="复制权限"
+    >
+      <div class="modalContent">
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>源角色:</div>
+          </div>
+          <DropDownSelectFilter
+            class="itemCom"
+            :total-row-count="totalRowCount"
+            :page-size="dropPageSize"
+            :auto-data="singleAutoData"
+            :columns-key="['NAME']"
+            :hidecolumns="['ID']"
+            :data="singleDropDownSelectFilterData"
+            @on-fkrp-selected="singleDropSelected"
+            @on-page-change="singleDropPageChange"
+            @on-popper-hide="singlePopperHide"
+            @on-clear="singleDropClear"
+            @on-input-value-change="singleInputChange"
+          />
+        </div>
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>目的角色:</div>
+          </div>
+          <DropDownSelectFilter
+            :single="false"
+            class="itemCom"
+            :total-row-count="totalRowCount"
+            :page-size="dropPageSize"
+            :columns-key="['NAME']"
+            :hidecolumns="['ID']"
+            :data="multipleDropDownSelectFilterData"
+            @on-fkrp-selected="multipleDropSelected"
+            @on-page-change="multipleDropPageChange"
+            @on-popper-hide="multiplePopperHide"
+            @on-clear="multipleDropClear"
+            @on-input-value-change="multipleInputChange"
+          />
+        </div>
+        <div class="itemContent">
+          <div class="labelContent">
+            <div class="labelTip">
+              *
+            </div>
+            <div>复制方式:</div>
+          </div>
+          <Select
+            v-model="copyType"
+            class="itemCom"
+            placeholder="请选择复制方式"
+          >
+            <Option value="cover">
+              覆盖原有权限
+            </Option>
+            <Option value="copy">
+              保留原有权限
+            </Option>
+          </Select>
+        </div>
+        <div class="modalButton">
+          <Button
+            type="fcdefault"
+            class="Button"
+            @click="modalConfirm"
+          >
+            确定
+          </Button>
+          <Button
+            type="fcdefault"
+            class="Button"
+            @click="modalCancel"
+          >
+            取消
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  </div>
 </template>
 
 <script>
-  /* eslint-disable arrow-parens */
+  /* eslint-disable arrow-parens,no-lonely-if */
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
@@ -148,10 +180,12 @@
         copyPermission: false, // 复制权限弹框
         copyType: '', // 复制权限弹框  复制方式
         singlePermissionId: null, // 复制权限外键单选id
-        mutlinePermissionId: null, // 复制权限外键多选id
+        multiplePermissionId: null, // 复制权限外键多选id
         backupsDropData: [], // 备份复制权限外键数据
         singleDropDownSelectFilterData: {}, // 复制权限外键单选数据
+        singleAutoData: [], // 复制权限外键单选模糊搜索数据
         multipleDropDownSelectFilterData: {}, // 复制权限外键多选数据
+        multipleAutoData: [], // 复制权限外键多选模糊搜索数据
         totalRowCount: 0, // 复制权限外键数据的totalRowCount
         dropPageSize: 10, // 复制权限外键数据的pageSize
 
@@ -160,6 +194,8 @@
         menuList: [], // 菜单数据
         groupId: '', // 菜单id
 
+        menuTreeData: [], // 菜单树数据
+        menuTreeQuery: '', // 菜单树检索的值
 
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
@@ -556,6 +592,18 @@
           this.getTableData();
         });
       }, // 点击左侧的菜单
+      searchInputChange(e) {
+        this.menuTreeQuery = e.target.value;
+      }, // 检索输入框值改变
+      menuTreeChange(val, item) {
+        this.groupId = item.ID;
+        const treePromise = new Promise((resolve, reject) => {
+          this.getTreeData(resolve, reject);
+        });
+        treePromise.then(() => {
+          this.getTableData();
+        });
+      }, // 左侧树点击
       getTreeData(resolve, reject) {
         network.post('/p/cs/getMenuTree', urlSearchParams({}))
           .then((res) => {
@@ -587,6 +635,7 @@
           } else {
             delete item.children;
           }
+          return item;
         });
       }, //  整合树数据
       getMenuData(resolve, reject) {
@@ -594,9 +643,25 @@
           .then((res) => {
             if (res.data.code === 0) {
               resolve();
-              this.menuHighlightIndex = 0;
-              this.menuList = res.data.data;
-              this.groupId = this.menuList[this.menuHighlightIndex].ID;
+              // this.menuHighlightIndex = 0;
+              // this.menuList = res.data.data;
+              // this.groupId = this.menuList[this.menuHighlightIndex].ID;
+
+
+              this.groupId = res.data.data[0].ID;
+              this.menuTreeData = res.data.data.map((item, index) => {
+                if (index === 0) {
+                  item.selected = true;
+                }
+                item.title = item.NAME ? item.NAME : '';
+                if (item.children && item.children.length > 0) {
+                  item.children.map((tem) => {
+                    tem.title = tem.NAME ? tem.NAME : '';
+                    return tem;
+                  });
+                }
+                return item;
+              });
             } else {
               reject();
             }
@@ -668,6 +733,9 @@
               }, []);
               this.getExtendTableData(this.tableData[0]);
               this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
+              this.tableDefaultSelectedRowIndex = 0;
+
+              this.allTabthSelected();
             }
           })
           .catch((err) => {
@@ -706,11 +774,12 @@
       copyPerm() {
         this.copyPermission = true;
       }, // 复制权限
-      tableRowClick(row) {
-        this.getExtendTableData(row);
+      tableRowClick(row, index) {
+        this.tableDefaultSelectedRowIndex = index;
+        this.getExtendTableData(this.tableData[index]);
       }, // 表格单击某一行
       getExtendTableData(row) {
-        if (row.actionList.length > 0) {
+        if (row && row.actionList && row.actionList.length > 0) {
           this.extendTableData = row.actionList;
         } else {
           this.extendTableData = [];
@@ -743,13 +812,13 @@
           });
           return;
         }
-        if (this.mutlinePermissionId === null) {
+        if (this.multiplePermissionId === null) {
           this.$Message.warning({
             content: '请选择目的角色！'
           });
           return;
         }
-        if (this.mutlinePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
+        if (this.multiplePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
           this.$Message.warning({
             content: '目的角色不能包含源角色，请重新选择！'
           });
@@ -764,14 +833,14 @@
         this.copyPermission = false;
         const obj = {
           sourceid: this.singlePermissionId,
-          targetids: this.mutlinePermissionId,
+          targetids: this.multiplePermissionId,
           type: this.copyType
         };
         network.post('/p/cs/copyPermission', obj)
           .then((res) => {
             if (res.data.code === 0) {
               this.singlePermissionId = null;
-              this.mutlinePermissionId = null;
+              this.multiplePermissionId = null;
               this.copyType = '';
               this.getTableData();
               this.$Message.success({
@@ -806,16 +875,30 @@
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
+        // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 1) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
-
+        // 如果该行有扩展功能的表格的数据，取消下边表格的选中状态
+        if (params.row.actionList && params.row.actionList.length > 0) {
+          params.row.actionList.map((item) => {
+            item.permission = 0;
+            if (item.children && item.children.length > 0) {
+              item.children.map((tem) => {
+                tem.permission = 0;
+                return tem;
+              });
+            }
+            return item;
+          });
+          this.cancelExtendTableAllSelected();
+        }
         const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
         this.tableData[findIndex] = params.row;
       }, // 取消整行的选中
@@ -866,8 +949,17 @@
           this.tableData[tableIndex] = tableObj;
         }
       }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
+      editTableDataForFunction(permission, row) {
+        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        if (tableObj.actionList && tableObj.actionList.length > 0) {
+          const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
+          tableObj.actionList[actionListIndex].children[0].permission = permission;
+          this.tableData[tableIndex] = tableObj;
+        }
+      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
       getSavePermission(index) {
-        const arr = this.columns.reduce((acc, cur, idx) =>{
+        const arr = this.columns.reduce((acc, cur, idx) => {
           if (idx > 0 && idx !== 9) {
             if (this.tableData[index][`${cur.key}Value`]) {
               acc.push('1');
@@ -879,21 +971,40 @@
         }, []);
         return arr.join('');
       }, // 获取保存数据的权限的二进制数据
+      allTabthSelected() {
+        this.columns.forEach((item) => {
+          this.tabthCheckboxSelected(item, item.key);
+        });
+      }, // 判断所有表头是不是应该选中
       tabthCheckboxSelected(column, columnKey) {
-        const arr = this.tableData.reduce((acc, cur, idx) => {
-          if (cur[`${columnKey}Disabled`] === false && cur[`${columnKey}Value`] === false) {
-            acc.push(idx);
+        if (this.tableData.length > 0) {
+          const disabledArr = [];
+          const arr = this.tableData.reduce((acc, cur, idx) => {
+            if (cur[`${columnKey}Disabled`]) {
+              disabledArr.push(idx);
+            }
+            if (cur[`${columnKey}Disabled`] === false && cur[`${columnKey}Value`] === false) {
+              acc.push(idx);
+            }
+            return acc;
+          }, []);
+          if (arr.length === 0) {
+            if (disabledArr.length === this.tableData.length) {
+              column[`${columnKey}Value`] = false;
+            } else {
+              const findIndex = this.columns.findIndex(item => item.key === columnKey);
+              if (!column[`${columnKey}Value`]) {
+                column[`${columnKey}Value`] = true;
+                this.columns[findIndex] = column;
+              }
+            }
+          } else {
+            const findIndex = this.columns.findIndex(item => item.key === columnKey);
+            if (column[`${columnKey}Value`]) {
+              column[`${columnKey}Value`] = false;
+              this.columns[findIndex] = column;
+            }
           }
-          return acc;
-        }, []);
-        if (arr.length === 0) {
-          const findIndex = this.columns.findIndex(item => item.key === columnKey);
-          column[`${columnKey}Value`] = true;
-          this.columns[findIndex] = column;
-        } else {
-          const findIndex = this.columns.findIndex(item => item.key === columnKey);
-          column[`${columnKey}Value`] = false;
-          this.columns[findIndex] = column;
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {
@@ -919,24 +1030,19 @@
           }
           return item;
         });
+
+        // 选中扩展的表头
+        if (params.column.key === 'extend') {
+          this.selectedExtendTabth(currentValue);
+        }
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
-        this.columns[1].seeValue = false;
-        this.columns[2].editValue = false;
-        this.columns[3].deleteValue = false;
-        this.columns[4].toVoidValue = false;
-        this.columns[5].commitValue = false;
-        this.columns[6].unCommitValue = false;
-        this.columns[7].exportValue = false;
-        this.columns[8].printValue = false;
-        this.columns[9].extendValue = false;
-        this.columns = this.columns.concat([]);
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
-              acc.push(cur.key);
-            }
-            return acc;
-          }, [])
+          if (idx > 1) {
+            acc.push(cur.key);
+          }
+          return acc;
+        }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
@@ -947,36 +1053,119 @@
             // this.columns = columns.concat([]).concat([]);
             this.tableData.map((item) => {
               item[`${key}Value`] = false;
+              if (item.actionList && item.actionList.length > 0) {
+                item.actionList.map((tem) => {
+                  tem.permission = 0;
+                  if (tem.children && tem.children.length > 0) {
+                    tem.children.map((cur) => {
+                      cur.permission = 0;
+                      return cur;
+                    });
+                  }
+                  return tem;
+                });
+              }
               return item;
             });
           });
+        this.allTabthSelected();
+        // 下边表格取消选中
+        this.cancelExtendTableAllSelected();
       }, // 取消所有选中
-      extendRowCheckboxChange(currentValue, params) {
-        if (params) {
-          params.row[`${params.column.key}Value`] = currentValue;
-          this.tableData[params.index] = params.row;
-          // 判断该列是否全部选中
-          this.tabthCheckboxSelected(params.column, 'extend');
-        }
+      cancelExtendTableAllSelected() {
         this.extendTableData.map((item) => {
-          if (currentValue) {
-            item.permission = 128;
-          } else {
-            item.permission = 0;
-          }
+          item.permission = 0;
           if (item.children && item.children.length > 0) {
-            item.children.map((tep) => {
-              if (currentValue) {
-                tep.permission = 128;
-              } else {
-                tep.permission = 0;
-              }
-              return tep;
+            item.children.forEach((tem) => {
+              tem.permission = 0;
+              return tem;
             });
           }
           return item;
         });
+      }, // 取消下边表格所有选中状态
+      selectedExtendTabth(currentValue) {
+        this.editExtendTableData(currentValue);
+        this.tableData.map((cur) => {
+          if (cur.actionList && cur.actionList.length > 0) {
+            cur.actionList.map((item) => {
+              if (currentValue) {
+                item.permission = 128;
+              } else {
+                item.permission = 0;
+              }
+              if (item.children && item.children.length > 0) {
+                item.children.map((tem) => {
+                  if (currentValue) {
+                    tem.permission = 128;
+                  } else {
+                    tem.permission = 0;
+                  }
+                  return tem;
+                });
+              }
+              return item;
+            });
+          }
+          return cur;
+        });
+      }, // 选中扩展列表头
+      extendRowCheckboxChange(currentValue, params) {
+        if (params) {
+          params.row[`${params.column.key}Value`] = currentValue;
+          if (params.row.actionList && params.row.actionList.length > 0) {
+            params.row.actionList.map((item) => {
+              if (currentValue) {
+                item.permission = 128;
+              } else {
+                item.permission = 0;
+              }
+              if (item.children && item.children.length > 0) {
+                item.children.map((tem) => {
+                  if (currentValue) {
+                    tem.permission = 128;
+                  } else {
+                    tem.permission = 0;
+                  }
+                  return tem;
+                });
+              }
+              return item;
+            });
+          }
+          this.tableData[params.index] = params.row;
+          // 判断该列是否全部选中
+          this.tabthCheckboxSelected(params.column, 'extend');
+        }
+
+        // 判断下边表格选中还是不选中
+        this.editExtendTableData(currentValue);
+
+        // 将查看列选中
+        this.selectedSeeColumn(params.index, currentValue);
       }, // 扩展一列的checkbox点击的时候触发
+      editExtendTableData(currentValue) {
+        if (this.extendTableData.length > 0) {
+          this.extendTableData.map((item) => {
+            if (currentValue) {
+              item.permission = 128;
+            } else {
+              item.permission = 0;
+            }
+            if (item.children && item.children.length > 0) {
+              item.children.map((tep) => {
+                if (currentValue) {
+                  tep.permission = 128;
+                } else {
+                  tep.permission = 0;
+                }
+                return tep;
+              });
+            }
+            return item;
+          });
+        }
+      }, // 根据传入的值判断下边的表格是否全部选中或者不选中
       extendFunctionCheckboxChange(val, params) {
         // 判断是否选中
         if (val) {
@@ -1024,7 +1213,15 @@
         // this.getExtendTableSaveData(val, params.row);
       }, // 下边表格扩展功能的checkbox改变时触发
       functionCheckboxChange(val, params) {
-        console.log(params);
+        // 判断是否选中
+        if (val) {
+          params.row.children[0].permission = 128;
+          this.editTableDataForFunction(128, params.row);
+        } else {
+          params.row.children[0].permission = 0;
+          this.editTableDataForFunction(0, params.row);
+        }
+        this.extendTableData[params.index] = params.row;
       }, // 下边表格功能列checkbox改变时触发
       savePermission() {
         this.getSaveData();
@@ -1074,9 +1271,9 @@
                 item.children.forEach((tem, temIndex) => {
                   if (tem.permission !== this.backupsTableData[idx].actionList[index].children[temIndex].permission) {
                     acc.push({
-                      AD_ACTION_ID: item.ad_action_id,
-                      ID: item.id,
-                      PERMISSION: item.permission === 128 ? 1 : 0
+                      AD_ACTION_ID: tem.ad_action_id,
+                      ID: tem.id,
+                      PERMISSION: tem.permission === 128 ? 1 : 0
                     });
                   }
                 });
@@ -1093,7 +1290,7 @@
               this.backupsDropData = res.data.data;
               this.totalRowCount = res.data.data.length;
               this.getSingleDropSelectData(1, res.data.data);
-              this.getMutlineDropSelectData(1, res.data.data);
+              this.getMultipleDropSelectData(1, res.data.data);
             }
           })
           .catch((err) => {
@@ -1133,7 +1330,7 @@
           row
         };
       }, // 整合复制权限外键单选数据
-      getMutlineDropSelectData(pageValue, data) {
+      getMultipleDropSelectData(pageValue, data) {
         const start = (pageValue - 1) * this.dropPageSize;
         const tabth = [
           {
@@ -1178,21 +1375,45 @@
       singleDropClear() {
         this.singlePermissionId = null;
       }, // 单选清空时触发
-      mutlineDropSelected(val) {
-        this.mutlinePermissionId = val.reduce((acc, cur) =>{
+      singleInputChange(val) {
+        if (val) {
+          this.singleAutoData = this.backupsDropData.reduce((acc, cur) => {
+            if (cur.NAME && cur.NAME.indexOf(val) !== -1) {
+              acc.push({ ID: cur.ID, NAME: cur.NAME });
+            }
+            return acc;
+          }, []);
+        } else {
+          this.singleAutoData = [];
+        }
+      }, // 外键单选输入框值改变时触发
+      multipleDropSelected(val) {
+        this.multiplePermissionId = val.reduce((acc, cur) => {
           acc.push(cur.ID);
           return acc;
         }, []).join(',');
-      }, // 外键单选，选中触发
-      mutlineDropPageChange(val) {
-        this.getMutlineDropSelectData(val, this.backupsDropData);
-      }, // 外键单选分页改变触发
-      mutlinePopperHide() {
-        this.getMutlineDropSelectData(1, this.backupsDropData);
+      }, // 外键多选，选中触发
+      multipleDropPageChange(val) {
+        this.getMultipleDropSelectData(val, this.backupsDropData);
+      }, // 外键多选分页改变触发
+      multiplePopperHide() {
+        this.getMultipleDropSelectData(1, this.backupsDropData);
       }, // 外键多选popper隐藏时触发
-      mutlineDropClear() {
-        this.mutlinePermissionId = null;
+      multipleDropClear() {
+        this.multiplePermissionId = null;
       }, // 多选清空时触发
+      multipleInputChange(val) {
+        if (val) {
+          this.multipleAutoData = this.backupsDropData.reduce((acc, cur) => {
+            if (cur.NAME && cur.NAME.indexOf(val) !== -1) {
+              acc.push({ ID: cur.ID, NAME: cur.NAME });
+            }
+            return acc;
+          }, []);
+        } else {
+          this.multipleAutoData = [];
+        }
+      }, // 复制权限外键多选输入时触发
     }
   };
 </script>
@@ -1237,6 +1458,16 @@
                     flex: 1;
                     margin-top: 10px;
                     overflow-y: auto;
+
+                    .burgeon-tree-title {
+                        width: 100%;
+                        font-size: 12px;
+                        line-height: 26px;
+                    }
+                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                        background-color: rgb(196, 226, 255);
+                    }
+
                     .menuList {
                         cursor: pointer;
                         font-size: 12px;
