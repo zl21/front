@@ -315,43 +315,45 @@
           return [];
         }
         const buttonGroupShow = [];
-        if (tabcmd.cmds) {
-          // 取主表path用于子表
-          this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
-            this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-              if (index === i) {
-                this.buttonPath[cmd] = path;
-              }
+        if (!this.readonly) {
+          if (tabcmd.cmds) {
+            // 取主表path用于子表
+            this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
+              this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                if (index === i) {
+                  this.buttonPath[cmd] = path;
+                }
+              });
             });
-          });
 
-          tabcmd.cmds.map((item, index) => {
-            if (this.status === 2) {
-              tabcmd.prem[index] = false;
-            } else if (tabcmd.prem[index]) {
-              const type = item.split('action');
-              const str = `CMD_${type[1].toUpperCase()}`;
-              if (str !== 'CMD_MODIFY') { // 保存不显示
-                let buttonConfigInfo = buttonmap[str];
-                if (this.buttonsData.submitData) {
-                  // this.buttonsData.submitData.oK = true;
-                } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
-                  buttonConfigInfo = buttonmap.CMD_REF_DELETE;
+            tabcmd.cmds.map((item, index) => {
+              if (this.status === 2) {
+                tabcmd.prem[index] = false;
+              } else if (tabcmd.prem[index]) {
+                const type = item.split('action');
+                const str = `CMD_${type[1].toUpperCase()}`;
+                if (str !== 'CMD_MODIFY') { // 保存不显示
+                  let buttonConfigInfo = buttonmap[str];
+                  if (this.buttonsData.submitData) {
+                    // this.buttonsData.submitData.oK = true;
+                  } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                    buttonConfigInfo = buttonmap.CMD_REF_DELETE;
+                  }
+                  if (tabcmd.paths) {
+                    buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  }
+                  buttonConfigInfo.path = this.buttonPath[item];
+                  buttonConfigInfo.eName = item;
+                  buttonGroupShow.push(
+                    buttonConfigInfo
+                  );
                 }
-                if (tabcmd.paths) {
-                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-                }
-                buttonConfigInfo.path = this.buttonPath[item];
-                buttonConfigInfo.eName = item;
-                buttonGroupShow.push(
-                  buttonConfigInfo
-                );
               }
-            }
 
-            return item;
-          });
+              return item;
+            });
+          }
         }
         buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出

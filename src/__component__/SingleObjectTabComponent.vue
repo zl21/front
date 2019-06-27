@@ -63,7 +63,7 @@
       :data-source="tableData.data"
       :type="type"
       :item-info="itemInfo"
-      :readonly="buttonsData.data.objreadonly"
+      :readonly="objreadonly"
       :status="status"
       :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
@@ -332,7 +332,7 @@
               //   if(itemModify && Object.values(itemModify).length > 0 && itemAdd && Object.values(itemAdd).length > 0) { // 单对象界面上下结构子表修改新增同时操作
               //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               //   }
-              // } 
+              // }
               // else { // 没有配置path
               //   debugger;
               //   const store = this.$store.state[getModuleName()];
@@ -374,7 +374,7 @@
         });
 
         // this.performMainTableSaveAction(parame);
-      
+
         promise.then(() => {
           if (this.type === 'vertical') {
             this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
