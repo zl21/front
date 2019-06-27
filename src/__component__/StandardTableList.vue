@@ -430,9 +430,9 @@
                 },
                 inputValueChange: (value) => {
                   // 外键的模糊搜索
-                  if(!value){
-                      this.freshDropDownSelectFilterAutoData({}, itemIndex,'empty');
-                      return false;
+                  if (!value) {
+                    this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    return false;
                   }
                   fkFuzzyquerybyak({
                     searchObject: {
@@ -649,12 +649,18 @@
         this.formItemsLists[index].item.props.pageSize = res.data.data.defaultrange;
         this.formItemsLists = this.formItemsLists.concat([]);
       },
-      freshDropDownSelectFilterAutoData(res, index,type) {
+      freshDropDownSelectFilterAutoData(res, index, type) {
         // 外键的模糊搜索数据更新
         this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
-        if(type === 'empty'){
+        if (type === 'empty') {
+          this.formItemsLists[index].item.value = [
+            {
+              ID: '',
+              Label: ''
+            }
+          ];
           this.formItemsLists[index].item.props.AutoData = [];
-        } else{
+        } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }
         this.formItemsLists = this.formItemsLists.concat([]);

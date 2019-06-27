@@ -805,7 +805,7 @@
         }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
-          console.log('ddd', item.valuedata);
+          
           return item.defval || item.valuedata || '';
         }
         // 设置表单的默认值
@@ -888,9 +888,12 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
-        if (this.objreadonly === true) {  
-          console.log(' item.valuedata ');
-          return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
+        if (this.objreadonly === true) {
+          if (item.valuedata && /total/.test(item.valuedata) && item.fkdisplay === 'mop') {
+            const valuedata = JSON.parse(item.valuedata);
+            return `已经选中${valuedata.total}条` || '';
+          }
+          return item.default || item.defval || item.valuedata || this.defaultSetValue[item.colname] || '';
         }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
@@ -910,7 +913,6 @@
               arr.push(`已经选中${valuedata.total}条` || '');
             }
           } else if (item.fkdisplay === 'pop') {
-            console.log(arr);
             arr.push(fkdisplayValue && fkdisplayValue.label || '');
           }
           if (fkdisplayValue) {
@@ -954,14 +956,14 @@
         // 前端自定义标记
         if (current.webconf) {
           const webconf = current.webconf;
-           //读写规则
+          // 读写规则
           if (webconf.display === 'enumerate') {
             item.type = 'EnumerableInput';
           } else if (webconf.display === 'jsonmaker') {
-            //拓展属性
+            // 拓展属性
             item.type = 'ExtentionInput';
           }
-          console.log(webconf,item);
+          console.log(webconf, item);
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
@@ -1157,12 +1159,10 @@
               };
               item.props.datalist = [];
               item.props.Selected = [];
-              if (!item.props.readonly) {
+              if (!item.props.readonly && !this.objreadonly) {
                 item.props.Selected.push(this.defaultValue(current)[0]);
-                item.value = this.defaultValue(current)[1];
-              } else {
-                item.value = this.defaultValue(current);
-              }
+                item.value = this.defaultValue(current)[0].Label;
+              } 
             }
 
             break;
@@ -1195,12 +1195,10 @@
             item.props.datalist = [];
             item.props.Selected = [];
             item.props.filterDate = {};
-            if (!item.props.readonly) {
+            if (!item.props.readonly && !this.objreadonly) {
               item.value = this.defaultValue(current)[1];
               item.props.Selected.push(this.defaultValue(current)[0]);
-            } else {
-              item.value = this.defaultValue(current);
-            }
+            } 
             
             break;
           default:
