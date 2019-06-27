@@ -201,7 +201,10 @@
             if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
               if (current.item.value instanceof Array) { // 结果为数组则为选中项
                 delete obj[current.item.inputname];
-                obj[current.item.field] = current.item.value.reduce((sum, temp) => { sum.push(temp.ID); return sum; }, []);
+                const value = current.item.value.reduce((sum, temp) => { sum.push(temp.ID); return sum; }, []);
+                if (value.length > 0 && value[0] !== '') {
+                  obj[current.item.field] = value;
+                }
               } else { // 否则为输入项
                 delete obj[current.item.field];
                 obj[current.item.inputname] = current.item.value;
