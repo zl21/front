@@ -367,15 +367,23 @@
       ...mapMutations('global', ['tabHref', 'tabOpen']),
       routerNext() {
         // 路由跳转
-        // const props = this._items.props;
-        // const type = 'tableDetailAction';
+        const props = this._items.props;
+        const type = 'tableDetailAction';
         // console.log(this._items.props);
-        // this.tabOpen({
-        //   type,
-        //   tableName: props.reftable,
-        //   tableId: props.reftableid,
-        //   tableName: props.tableName
-        // });
+        let customizedModuleName = props.reftable;
+        let tableName = props.reftable;
+        let customizedModuleId = props.reftableid;
+        let label = this._items.title;
+        let id = props.refobjid;
+        console.log(type,customizedModuleName,id);
+        this.tabOpen({
+          type,
+          customizedModuleName,
+          customizedModuleId,
+          id,
+          label
+
+        });
       },
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
@@ -564,12 +572,7 @@
         }
       },
       fkrpSelectedClear($this) {
-        this._items.value = [
-          {
-            ID: '',
-            Label: ''
-          }
-        ];
+        this._items.value = undefined;
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
@@ -584,7 +587,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          this._items.event.inputValueChange('', $this);
+          //this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {
@@ -764,7 +767,6 @@
             ID: ''
           }
         ];
-        console.log('valueChange');
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
@@ -773,7 +775,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          this._items.event.inputValueChange('', $this);
+          //this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterPopperShow($this) {
