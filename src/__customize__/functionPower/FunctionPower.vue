@@ -675,7 +675,7 @@
               // this.groupId = this.menuList[this.menuHighlightIndex].ID;
 
               this.groupId = res.data.data[0].ID;
-              this.menuTreeData = this.restructureMenuTreeData(res.data.data);
+              this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
             }
@@ -685,9 +685,12 @@
             throw err;
           });
       }, // 获取菜单数据
-      restructureMenuTreeData(data) {
-        return data.map((item) => {
+      restructureMenuTreeData(data, first) {
+        return data.map((item, idx) => {
           item.title = item.NAME;
+          if (first && idx === 0) {
+            item.selected = true;
+          }
           if (item.children && item.children.length > 0) {
             this.restructureMenuTreeData(item.children);
           }
@@ -1456,6 +1459,7 @@
 </script>
 
 <style lang="less">
+  @import "../../../src/assets/theme/custom.less";
   .burgeon-spin-fix{
     z-index: 999;
     .demo-spin-icon-load{
