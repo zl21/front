@@ -103,7 +103,9 @@
         }
       },
       toggleDropdownShow() {
-        this.style.top = this.$refs.enumerableInput.querySelector('input').offsetHeight + 7;
+        const inputElement = this.$refs.enumerableInput.querySelector('input');
+        const { top } = inputElement.getBoundingClientRect();
+        this.style.top = top + inputElement.offsetHeight + 7;
         this.dropdownShow = !this.dropdownShow;
       },
       pickAll() {
@@ -132,8 +134,6 @@
         this.enumerableLists = this.enumerableConfig.enumerableLists;
         this.strictMode = this.enumerableConfig.strictMode;
       }
-    },
-    watch: {
     },
     mounted() {
       this.computeValue();
@@ -184,7 +184,7 @@
   }
   ul {
     padding: 5px;
-    position: absolute;
+    position: fixed;
     min-width: 210px;
     max-width: 300px;
     border: 1px solid #d8d8d8;
