@@ -147,7 +147,11 @@ export default {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath) {
           if (openedMenuLists.length > 0) {
-            state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            if (index === 0) {
+              state.activeTab = openedMenuLists[index]; // 关闭当前tab时始终打开的是最后一个tab
+            } else {
+              state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
+            }
             router.push({
               path: state.activeTab.routeFullPath,
             });
