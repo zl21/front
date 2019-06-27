@@ -26,14 +26,10 @@ export default [
     type: 'input-group',
     inputLists: [
       {
-        name: '全局检索自动匹配字段',
-        key: 'multiCenter',
-        type: 'input'
-      },
-      {
         name: '全局检索字段',
         key: 'multiIndex',
         type: 'object-group',
+        showLabel: true,
         enableIncrease: true,
         objectInfo: [
           {
@@ -48,6 +44,11 @@ export default [
             enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
           }
         ]
+      },
+      {
+        name: '全局检索自动匹配字段',
+        key: 'multiCenter',
+        type: 'input'
       },
       {
         name: '中间展示字段',
@@ -86,8 +87,8 @@ export default [
   {
     name: '外键下拉列表',
     key: 'fkdrplist',
-    type: 'object-combine',
-    objectInfo: [
+    type: 'input-group',
+    inputLists: [
       {
         name: '排序信息',
         key: 'orderby',

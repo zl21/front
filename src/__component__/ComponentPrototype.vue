@@ -30,7 +30,7 @@
         <h3>Extention For Table</h3>
         <ExtentionInput
           :extention-config="extentionForTable"
-          :default-data="extentionDataForTable"
+          :default-data="''"
           @valueChange="extentionValueChange1"
         />
       </div>
@@ -41,7 +41,7 @@
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />
+<!--        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />-->
       </div>
     </div>
     <div class="divider" />
@@ -88,9 +88,6 @@
     ],
     multiCenter: [
       '3-1'
-    ],
-    multiIndex: [
-      '3-2'
     ],
     multiColumn: [
       '3-3'

@@ -242,11 +242,13 @@
       },
       formDataObject: {
         handler(val, old) {
-          // if (this.indexItem === -1) {
-          //   return;
-          // }
+          if (this.indexItem === -1) {
+            return;
+          }
           // console.log(val,'this.indexItem',this.indexItem);
-          val = Object.assign(val, this.formValueItem);
+          //val = Object.assign(val, this.formValueItem);
+          val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
@@ -271,7 +273,7 @@
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
-
+              //console.log(checkVal,checkShow,_refval ,val,_refcolumn,val[_refcolumn].toString().trim(),);
               if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
               }
@@ -472,7 +474,6 @@
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
-        this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
       },

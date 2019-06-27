@@ -353,7 +353,6 @@
         } else {
           delete this.formData[current.item.inputname];
         }
-        console.log(this.formData);
         this.VerificationForm.forEach((item) => {
           Object.keys(this.formData).forEach((option) => {
             if (item.key === option.split(':')[0]) {
