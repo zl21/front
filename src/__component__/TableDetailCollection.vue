@@ -384,6 +384,7 @@
       },
       dataSource: {
         handler(val) {
+          this.afterSendData = {};
           this.verifyTipObj = {};
           this.fkSelectedChangeData = [];
           if (val.row) {
@@ -1317,17 +1318,17 @@
         const params = {
           table: this.tableName,
           objid: itemId,
-          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          refcolid: this.itemInfo.refcolid,
           searchdata: {
             column_include_uicontroller: true,
-            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            startindex: (Number(this.pageInfo.currentPageIndex)) * Number(this.pageInfo.pageSize),
             range: this.pageInfo.pageSize,
             fixedcolumns
           },
           tabIndex: this.tabCurrentIndex
         };
         this.getObjectTableItemForTableData(params);
-        this.searchInfo = '';
+        // this.searchInfo = '';
       },
       getFKList(params, cellData) {
         // 获取外键关联的数据  TODO 2019/4/23 发现点击分页弹框自动消失，必须要注释初始化数据的代码才不会关闭弹框

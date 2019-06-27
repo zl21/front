@@ -653,6 +653,12 @@
         // 外键的模糊搜索数据更新
         this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
         if (type === 'empty') {
+          this.formItemsLists[index].item.value = [
+            {
+              ID: '',
+              Label: ''
+            }
+          ];
           this.formItemsLists[index].item.props.AutoData = [];
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;

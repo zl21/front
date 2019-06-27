@@ -47147,8 +47147,8 @@
       if(false) {
         // When the styles change, update the <style> tags
         if(!content.locals) {
-          module.hot.accept("!!../../../css-loader/index.js!./ag-theme-balham.css", function() {
-            var newContent = require("!!../../../css-loader/index.js!./css/ag-theme-balham.css");
+          module.hot.accept("!!../../../css-loader/index.js!./ag-theme-balham.less", function() {
+            var newContent = require("!!../../../css-loader/index.js!./css/ag-theme-balham.less");
             if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
             update(newContent);
           });

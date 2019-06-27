@@ -674,21 +674,8 @@
               // this.menuList = res.data.data;
               // this.groupId = this.menuList[this.menuHighlightIndex].ID;
 
-
               this.groupId = res.data.data[0].ID;
-              this.menuTreeData = res.data.data.map((item, index) => {
-                if (index === 0) {
-                  item.selected = true;
-                }
-                item.title = item.NAME ? item.NAME : '';
-                if (item.children && item.children.length > 0) {
-                  item.children.map((tem) => {
-                    tem.title = tem.NAME ? tem.NAME : '';
-                    return tem;
-                  });
-                }
-                return item;
-              });
+              this.menuTreeData = this.restructureMenuTreeData(res.data.data);
             } else {
               reject();
             }
@@ -698,8 +685,16 @@
             throw err;
           });
       }, // 获取菜单数据
+      restructureMenuTreeData(data) {
+        return data.map((item) => {
+          item.title = item.NAME;
+          if (item.children && item.children.length > 0) {
+            this.restructureMenuTreeData(item.children);
+          }
+          return item;
+        });
+      }, // 重构树数据
       getTableData() {
-        this.spinShow = true;
         this.tableSaveData = []; // 清空保存的数据
         let obj = {};
         if (this.adSubsystemId) {
@@ -717,54 +712,62 @@
           .then((res) => {
             this.spinShow = false;
             if (res.data.code === 0) {
-              const resData = res.data.data;
-              this.tableData = resData.reduce((acc, cur) => {
-                const disabledArr = cur.mask.split('');
-                const valueArr = this.toBin(cur.permission).split('');
-                // 查看
-                cur.seeDisabled = disabledArr[0] === '0';
-                cur.seeValue = valueArr[0] === '1';
+              if (res.data.data) {
+                const resData = res.data.data;
+                this.tableData = resData.reduce((acc, cur) => {
+                  const disabledArr = cur.mask.split('');
+                  const valueArr = this.toBin(cur.permission).split('');
+                  // 查看
+                  cur.seeDisabled = disabledArr[0] === '0';
+                  cur.seeValue = valueArr[0] === '1';
 
-                // 编辑
-                cur.editDisabled = disabledArr[1] === '0';
-                cur.editValue = valueArr[1] === '1';
+                  // 编辑
+                  cur.editDisabled = disabledArr[1] === '0';
+                  cur.editValue = valueArr[1] === '1';
 
-                // 删除
-                cur.deleteDisabled = disabledArr[2] === '0';
-                cur.deleteValue = valueArr[2] === '1';
+                  // 删除
+                  cur.deleteDisabled = disabledArr[2] === '0';
+                  cur.deleteValue = valueArr[2] === '1';
 
-                // 作废
-                cur.toVoidDisabled = disabledArr[3] === '0';
-                cur.toVoidValue = valueArr[3] === '1';
+                  // 作废
+                  cur.toVoidDisabled = disabledArr[3] === '0';
+                  cur.toVoidValue = valueArr[3] === '1';
 
-                // 提交
-                cur.commitDisabled = disabledArr[4] === '0';
-                cur.commitValue = valueArr[4] === '1';
+                  // 提交
+                  cur.commitDisabled = disabledArr[4] === '0';
+                  cur.commitValue = valueArr[4] === '1';
 
-                // 反提交
-                cur.unCommitDisabled = disabledArr[5] === '0';
-                cur.unCommitValue = valueArr[5] === '1';
+                  // 反提交
+                  cur.unCommitDisabled = disabledArr[5] === '0';
+                  cur.unCommitValue = valueArr[5] === '1';
 
-                // 导出
-                cur.exportDisabled = disabledArr[6] === '0';
-                cur.exportValue = valueArr[6] === '1';
+                  // 导出
+                  cur.exportDisabled = disabledArr[6] === '0';
+                  cur.exportValue = valueArr[6] === '1';
 
-                // 打印
-                cur.printDisabled = disabledArr[7] === '0';
-                cur.printValue = valueArr[7] === '1';
+                  // 打印
+                  cur.printDisabled = disabledArr[7] === '0';
+                  cur.printValue = valueArr[7] === '1';
 
-                // 扩展
-                cur.extendDisabled = cur.actionList.length === 0;
-                cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
+                  // 扩展
+                  cur.extendDisabled = cur.actionList.length === 0;
+                  cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
 
-                acc.push(cur);
-                return acc;
-              }, []);
-              this.getExtendTableData(this.tableData[0]);
-              this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
-              this.tableDefaultSelectedRowIndex = 0;
+                  acc.push(cur);
+                  return acc;
+                }, []);
+                this.getExtendTableData(this.tableData[0]);
+                this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
+                this.tableDefaultSelectedRowIndex = 0;
 
-              this.allTabthSelected();
+                this.allTabthSelected();
+              } else {
+                this.$Modal.fcWarning({
+                  title: '提示',
+                  mask: true,
+                  content: res.data.message,
+                });
+              }
             }
           })
           .catch((err) => {

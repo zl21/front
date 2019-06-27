@@ -2,6 +2,7 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
@@ -22,7 +23,7 @@ module.exports = env => ({
     vuex: 'Vuex',
     'vue-router': 'VueRouter',
     axios: 'axios',
-    'ag-grid': 'agGrid',
+    // 'ag-grid': 'agGrid',
     'burgeon-ui': 'Ark'
   },
   devServer: {
@@ -74,17 +75,14 @@ module.exports = env => ({
         },
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.less$/,
+        test: /\.(sa|sc|c|le)ss$/,
         use: [{
-          loader: 'style-loader', // creates style nodes from JS strings
+          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+          loader: MiniCssExtractPlugin.loader,
         }, {
-          loader: 'css-loader', // translates CSS into CommonJS
+          loader: 'css-loader',
         }, {
-          loader: 'less-loader', // compiles Less to CSS
+          loader: 'less-loader',
           options: { javascriptEnabled: true }
         }],
       },
@@ -115,6 +113,11 @@ module.exports = env => ({
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      // filename: env && env.production ? '[name].[hash].css' : '[name].css',
+      // chunkFilename: env && env.production ? '[id].[hash].css' : '[id].css',
+      filename: '[name].css',
+    }),
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

@@ -7,6 +7,8 @@ import store from './src/__config__/store.config';
 import App from './src/App';
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
 import './src/assets/theme/custom.less';
+import './node_modules/ag-grid/dist/styles/ag-grid.css';
+import './src/assets/css/ag-theme-balham.less';
 import './src/constants/dateApi';
 
 import network from './src/__utils__/network';
