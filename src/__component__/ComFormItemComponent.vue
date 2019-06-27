@@ -188,6 +188,12 @@
         default() {
           return '';
         }
+      },
+      refcolvalData: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     data() {
@@ -228,6 +234,7 @@
     },
     watch: {
       mountedType() {
+        console.log('mountedType');
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -289,7 +296,7 @@
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
-            this.verifymessageform(this.VerificationForm , this.formIndex);
+            this.verifymessageform(this.VerificationForm, this.formIndex);
           }
         }, 0);
       }
@@ -358,6 +365,7 @@
           // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') {
             // 若为外键则要处理输入还是选中
+            console.log(current);
             if (current.item.value instanceof Array) {
               // 结果为数组则为选中项
               delete obj[current.item.inputname];
@@ -414,9 +422,7 @@
             if (current.item.props.number) {
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
-              } else {
-                console.log(typeof current.item.value, current.item.value);
-                if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
+              } else if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
                   obj[current.item.field] = current.item.value;
                 } else {
                   const value = current.item.value
@@ -425,7 +431,6 @@
 
                   obj[current.item.field] = Number(value);
                 }
-              }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value
                 ? current.item.value.replace(/^\s+|\s+$/g, '')
@@ -466,7 +471,6 @@
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
-          console.log(current.item.value);
         }
         this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
@@ -491,8 +495,9 @@
       refcolval(items, json, index) {
         if (interlocks === true) {
           const srccol = items.validate.refcolval.srccol;
+          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.refcolvalData)));
 
-          if (json[srccol] === undefined) {
+          if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
               this.newFormItemLists[index].item.value = '';
