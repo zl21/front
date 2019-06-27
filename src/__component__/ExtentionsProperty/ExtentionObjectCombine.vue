@@ -43,7 +43,7 @@
 
 <script>
   import Description from './Description';
-  import LabelWithObjectGroup from './LabelWithObjectGroup';
+  import LabelWithObjectGroup from './ObjectGroupItem';
   import LabelWithInput from './LabelWithInput';
 
   const generateObjectArray = (length) => {
@@ -91,7 +91,7 @@
             delete emitData[k];
           }
         });
-        this.$emit('rootDataChange', { key: this.option.key, value: JSON.stringify(emitData) === '{}' ? '' : emitData });
+        this.$emit('dataChange', { key: this.option.key, value: JSON.stringify(emitData) === '{}' ? '' : emitData });
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }
@@ -102,7 +102,7 @@
         this.currentIndex = this.currentIndex - 1;
         const copyData = this.cloneObject(this.defaultData[belongKey] ? this.defaultData[belongKey] || [] : []);
         copyData.pop();
-        this.$emit('rootDataChange', { key: this.option.key, value: Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData })) });
+        this.$emit('dataChange', { key: this.option.key, value: Object.assign({}, Object.assign({}, this.defaultData, { [belongKey]: copyData })) });
       },
       inputValueChange({ key, value }) {
         let copyData = this.cloneObject(this.defaultData || {});
@@ -111,7 +111,7 @@
         } else {
           copyData = Object.assign({}, copyData, { [key]: value });
         }
-        this.$emit('rootDataChange', { key: this.option.key, value: copyData });
+        this.$emit('dataChange', { key: this.option.key, value: copyData });
       }
     },
     props: {

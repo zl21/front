@@ -26,35 +26,35 @@
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
           :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @rootDataChange="rootDataChange"
+          @dataChange="rootDataChange"
         />
         <ExtentionRadio
           v-if="item.type === 'radio'"
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
           :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @rootDataChange="rootDataChange"
+          @dataChange="rootDataChange"
         />
         <ExtentionInputGroup
           v-if="item.type === 'input-group'"
           :id="`${item.key}-${index}-${guid}`"
           :default-data="JSON.parse(JSON.stringify(rootData))"
           :option="item"
-          @rootDataChange="rootDataChange"
+          @dataChange="rootDataChange"
         />
         <ExtentionObjectGroup
           v-if="item.type === 'object-group'"
           :id="`${item.key}-${index}-${guid}`"
           :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
           :option="item"
-          @rootDataChange="rootDataChange"
+          @dataChange="rootDataChange"
         />
         <ExtentionObjectCombine
           v-if="item.type === 'object-combine'"
           :id="`${item.key}-${index}-${guid}`"
           :option="item"
           :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @rootDataChange="rootDataChange"
+          @dataChange="rootDataChange"
         />
       </div>
     </div>
@@ -200,6 +200,24 @@
           .content {
             font-style: italic;
             padding: 5px 5px 0 15px;
+          }
+        }
+        .content-row {
+          display: flex;
+          .left {
+            border: none;
+            label {
+              padding-top: 15px;
+            }
+            label:first-child {
+              writing-mode: vertical-lr;
+            }
+            label:last-child {
+              writing-mode: vertical-rl;
+            }
+          }
+          .right {
+            border: none;
           }
         }
         .content {

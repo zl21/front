@@ -48,7 +48,7 @@
   import LabelWithSelect from './LabelWithSelect';
   
   export default {
-    name: 'LabelWithObjectGroup',
+    name: 'ObjectGroupItem',
     data() {
       return {
         currentData: {},

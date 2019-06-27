@@ -1,30 +1,38 @@
 <template>
   <div class="extentionObjectGroup">
     <Description :option="option" />
-    <div
-      v-for="(data, index) in dataArray"
-      :key="index"
-      class="content"
-    >
-      <LabelWithObjectGroup
-        v-if="index <= currentIndex"
-        :object-group-index="index"
-        :default-data="defaultData[index] || {}"
-        :data="data"
-        :option="option"
-        :show-add-button="currentIndex === index && currentIndex !== 9"
-        :show-minus-button="currentIndex === index && currentIndex !== 0"
-        @objectGroupItemChange="objectGroupItemChange"
-        @addButtonClick="addButtonClick"
-        @minusButtonClick="minusButtonClick"
-      />
+    <div class="content-row">
+      <div class="left" v-if="option.showLabel">
+        <label>{{ option.name }}</label>
+        <label>{{ option.key }}</label>
+      </div>
+      <div class="right">
+        <div
+          v-for="(data, index) in dataArray"
+          :key="index"
+          class="content"
+        >
+          <ObjectGroupItem
+            v-if="index <= currentIndex"
+            :object-group-index="index"
+            :default-data="defaultData[index] || {}"
+            :data="data"
+            :option="option"
+            :show-add-button="currentIndex === index && currentIndex !== 9"
+            :show-minus-button="currentIndex === index && currentIndex !== 0"
+            @objectGroupItemChange="objectGroupItemChange"
+            @addButtonClick="addButtonClick"
+            @minusButtonClick="minusButtonClick"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import Description from './Description';
-  import LabelWithObjectGroup from './LabelWithObjectGroup';
+  import ObjectGroupItem from './ObjectGroupItem';
   
   const generateObjectArray = (length) => {
     const temp = [];
@@ -45,7 +53,7 @@
     },
     components: {
       Description,
-      LabelWithObjectGroup,
+      ObjectGroupItem,
     },
     methods: {
       objectGroupItemChange(index, { key, value }) {
@@ -60,8 +68,8 @@
         } else {
           copyData[index] = Object.assign({}, copyData[index], { [key]: value });
         }
-        copyData = JSON.parse(JSON.stringify(copyData)).map(d => d || {})
-        this.$emit('rootDataChange', { key: this.option.key, value: copyData.length === 0 ? '' : copyData });
+        copyData = JSON.parse(JSON.stringify(copyData)).map(d => d || {});
+        this.$emit('dataChange', { key: this.option.key, value: copyData.length === 0 ? '' : copyData });
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }
@@ -72,7 +80,7 @@
         this.currentIndex = this.currentIndex - 1;
         const copyData = JSON.parse(JSON.stringify(this.defaultData || []));
         copyData.pop();
-        this.$emit('rootDataChange', { key: this.option.key, value: copyData });
+        this.$emit('dataChange', { key: this.option.key, value: copyData });
       }
     },
     props: {

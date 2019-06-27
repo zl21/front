@@ -23,7 +23,7 @@
     },
     methods: {
       radioValueChange({ key, value }) {
-        this.$emit('rootDataChange', { key, value });
+        this.$emit('dataChange', { key, value });
       }
     },
     props: {

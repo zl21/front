@@ -3,6 +3,7 @@ export default [
     name: '列表默认排序',
     key: 'orderby',
     type: 'object-group',
+    showLabel: false,
     enableIncrease: true,
     objectInfo: [
       {
