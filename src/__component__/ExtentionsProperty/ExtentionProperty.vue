@@ -49,13 +49,6 @@
           :option="item"
           @dataChange="rootDataChange"
         />
-        <ExtentionObjectCombine
-          v-if="item.type === 'object-combine'"
-          :id="`${item.key}-${index}-${guid}`"
-          :option="item"
-          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @dataChange="rootDataChange"
-        />
       </div>
     </div>
     <div class="right">
@@ -71,7 +64,6 @@
   import ExtentionInput from './ExtentionInput';
   import ExtentionRadio from './ExtentionRadio';
   import ExtentionObjectGroup from './ExtentionObjectGroup';
-  import ExtentionObjectCombine from './ExtentionObjectCombine';
   import ExtentionInputGroup from './ExtentionInputGroup';
 
   const getGuid = () => Math.round(Math.random() * 10000000000);
@@ -89,7 +81,6 @@
       ExtentionInput,
       ExtentionRadio,
       ExtentionObjectGroup,
-      ExtentionObjectCombine,
       ExtentionInputGroup
     },
     props: {

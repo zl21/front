@@ -1,6 +1,6 @@
 <template>
   <div class="extentionObjectGroup">
-    <Description :option="option" />
+    <Description :option="option" v-if="showDescription" />
     <div class="content-row">
       <div class="left" v-if="option.showLabel">
         <label>{{ option.name }}</label>
@@ -69,7 +69,7 @@
           copyData[index] = Object.assign({}, copyData[index], { [key]: value });
         }
         copyData = JSON.parse(JSON.stringify(copyData)).map(d => d || {});
-        this.$emit('dataChange', { key: this.option.key, value: copyData.length === 0 ? '' : copyData });
+        this.$emit('dataChange', { key: this.option.key, value: copyData.length === 0 ? '' : copyData }, index);
       },
       addButtonClick() {
         if (this.currentIndex >= 9) { return; }
@@ -84,6 +84,10 @@
       }
     },
     props: {
+      showDescription: {
+        type: Boolean,
+        default: true
+      },
       option: {
         type: Object,
         default: () => ({})
