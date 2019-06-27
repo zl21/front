@@ -394,6 +394,7 @@
           this.afterSendData = {};
           this.verifyTipObj = {};
           this.fkSelectedChangeData = [];
+          this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -561,7 +562,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange),
+          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
@@ -1316,6 +1317,9 @@
       },
       getTabelList() {
         // 搜索事件
+
+        console.log(this.pageInfo);
+
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
@@ -1328,7 +1332,7 @@
           refcolid: this.itemInfo.refcolid,
           searchdata: {
             column_include_uicontroller: true,
-            startindex: (Number(this.pageInfo.currentPageIndex)) * Number(this.pageInfo.pageSize),
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
             range: this.pageInfo.pageSize,
             fixedcolumns
           },

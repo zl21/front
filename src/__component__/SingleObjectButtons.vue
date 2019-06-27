@@ -594,6 +594,7 @@
         promise.then(() => {
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
+            mask: true,
             title: '成功',
             content: `${message}`
           };

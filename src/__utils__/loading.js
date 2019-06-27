@@ -1,6 +1,3 @@
-import '../assets/css/loading.css';
- 
-
 const Loading = {};
 
 // 避免重复install，设立flag

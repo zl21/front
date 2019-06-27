@@ -1551,7 +1551,6 @@
 </script>
 
 <style lang="less">
-  @import url('../assets/css/custom-ext.less');
 .StandardTableListRootDiv {
   width: 100%;
   height: 100%;
