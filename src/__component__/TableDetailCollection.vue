@@ -1693,5 +1693,11 @@
     .burgeon-table th, .burgeon-table td {
       height: 26px;
     }
+    .burgeon-fkrp-select-icon {
+      top: 2px;
+    }
+    .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
+      top: -1px;
+    }
   }
 </style>
