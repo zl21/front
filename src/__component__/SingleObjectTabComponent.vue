@@ -374,17 +374,15 @@
         });
 
         // this.performMainTableSaveAction(parame);
-        if (this.type === 'vertical') {
-          // this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
-
-          // this.updateChangeData({ tableName: this.itemName, value: {} });
-        }
+      
         promise.then(() => {
+          if (this.type === 'vertical') {
+            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+          } else {
+            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+          }
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;
           let id = '';
@@ -415,8 +413,6 @@
             this.$store.commit('global/tabHref', tab);
             this.decreasekeepAliveLists(getModuleName());
           }
-
-
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
