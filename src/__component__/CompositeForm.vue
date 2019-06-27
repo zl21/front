@@ -373,11 +373,9 @@
         console.log(this.formData[current.item.props.field]);
         // let v1.4外键 及number
         if (current.item.props.fkdisplay || current.item.props.number === true) {
-          // if (this.formData[current.item.field] === '') {
-          //   this.formData[current.item.field] = 0;
-          // }
-          
-          // this.formData[current.item.props.field]  = 
+          if (this.formData[current.item.field] === '') {
+            this.formData[current.item.field] = 0;
+          }
         }
         this.$emit('formChange', this.formData, this.formDataDef);
       },

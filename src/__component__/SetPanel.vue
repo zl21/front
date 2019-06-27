@@ -101,9 +101,10 @@
     },
     mounted() {
       const showFavorites = JSON.parse(window.sessionStorage.getItem('showFavorites'));
-      this.showFavorites = showFavorites;
-      this.operationFavorites(showFavorites);
-
+      if (showFavorites !== null) {
+        this.showFavorites = showFavorites;
+        this.operationFavorites(showFavorites);
+      }
       this.setDefaultSearchFoldnum();
     },
     methods: {
