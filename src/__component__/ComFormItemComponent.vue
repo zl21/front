@@ -253,7 +253,6 @@
               // this.formDataChange();
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-              console.log('ddd');
               const _refcolumn = item.validate.hidecolumn.refcolumn;
               const _refval = item.validate.hidecolumn.refval.toString().trim();
               if (val[_refcolumn] === undefined) {
@@ -290,7 +289,6 @@
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
-            console.log(this.formIndex,'this.formIndex')
             this.verifymessageform(this.VerificationForm , this.formIndex);
           }
         }, 0);
@@ -523,7 +521,6 @@
       },
       hidecolumn(items, index) {
         // 隐藏
-        console.log('his');
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段

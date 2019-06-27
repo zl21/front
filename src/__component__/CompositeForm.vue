@@ -387,9 +387,7 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
-        this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => {
-          return arr.concat(item);
-        }, []);
+        this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
           this.verifyMessItem = data;
@@ -905,10 +903,42 @@
           const arr = [];
           
           const ID = item.refobjid ? item.refobjid : '';
+          if (item.fkdisplay === 'mrp' && fkdisplayValue) {
+            console.log(fkdisplayValue);
+            // 多选change
+            const refobjid = fkdisplayValue.ID.split(',');
+            const valuedata = fkdisplayValue.Label.split(',');
+            const option = refobjid.reduce((currty, item, index) => {
+              currty.push({
+                ID: item || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+            // arr = [...option];
+            return option;
+          }else if (item.fkdisplay === 'mrp' && item.refobjid) {
+            // 多选默认值
+            const refobjid = item.refobjid.split(',');
+            const valuedata = item.valuedata.split(',');
+            const option = refobjid.reduce((currty, item, index) => {
+              currty.push({
+                ID: item || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+            // arr = [...option];
+            return option;
+            
+          }
+          
+          
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
+          
           if (item.fkdisplay === 'mop') {
             arr[0].ID = item.valuedata || item.defval || '';
             if (item.valuedata && /total/.test(item.valuedata)) {
@@ -967,7 +997,6 @@
             // 拓展属性
             item.type = 'ExtentionInput';
           }
-          console.log(webconf, item);
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
