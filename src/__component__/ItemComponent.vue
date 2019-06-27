@@ -687,7 +687,7 @@
         ];
         const selected = [
           {
-            label: row.label,
+            Label: row.label,
             ID: row.value
           }
         ];
@@ -881,7 +881,6 @@
               ];
               this._items.props.selected = Select;
               this._items.event['popper-value']($this, value, Select, this.index);
-              console.log(this._items.props.selected);
             }
           } else {
             this._items.value = '';
@@ -1168,6 +1167,8 @@
       },
       enumerableValueChange(value) {
         // 读写
+        this._items.value = value;
+        this.valueChange();
         console.log(value, '读写');
       },
       extentionValueChange(value) {

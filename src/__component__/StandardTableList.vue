@@ -431,7 +431,7 @@
                 inputValueChange: (value) => {
                   // 外键的模糊搜索
                   if (!value) {
-                    this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    //this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
                   fkFuzzyquerybyak({
