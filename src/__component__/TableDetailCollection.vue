@@ -6,6 +6,7 @@
           <Page
             :total="dataSource.totalRowCount"
             :page-size-opts="dataSource.selectrange"
+            :current="currentPage"
             class="table-page"
             size="small"
             show-elevator
@@ -59,11 +60,11 @@
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
-              @on-search="getTabelList"
+              @on-search="searTabelList"
             >
             <Button
               slot="prepend"
-              @click="getTabelList"
+              @click="searTabelList"
             >
               搜索
             </Button>
@@ -143,6 +144,8 @@
     },
     data() {
       return {
+        currentPage: 1, // 当前页码
+
         fkSelectedChangeData: [], // 保存外键修改的数据
         verifyTipObj: {}, // 保存校验对象
         isTableRender: false, // 表格是否重新渲染
@@ -1315,11 +1318,14 @@
         // 表单验证
         this.verifyMessage();
       },
-      getTabelList() {
+      searTabelList() {
+        setTimeout(() =>{
+          this.currentPage = 1;
+        }, 100);
+        this.getTabelList(1);
+      },
+      getTabelList(index) {
         // 搜索事件
-
-        console.log(this.pageInfo);
-
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
@@ -1332,14 +1338,13 @@
           refcolid: this.itemInfo.refcolid,
           searchdata: {
             column_include_uicontroller: true,
-            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            startindex: (index - 1) * this.pageInfo.pageSize,
             range: this.pageInfo.pageSize,
             fixedcolumns
           },
           tabIndex: this.tabCurrentIndex
         };
         this.getObjectTableItemForTableData(params);
-        // this.searchInfo = '';
       },
       getFKList(params, cellData) {
         // 获取外键关联的数据  TODO 2019/4/23 发现点击分页弹框自动消失，必须要注释初始化数据的代码才不会关闭弹框
@@ -1482,12 +1487,13 @@
         // if (index === this.pageInfo.currentPageIndex) {
         //   return;
         // }
+        this.currentPage = index;
         this.updateTablePageInfo({
           currentPageIndex: index,
           pageSize: this.pageInfo.pageSize
         });
         // this.pageInfo.currentPageIndex = index;
-        this.getTabelList();
+        this.getTabelList(index);
       },
       pageSizeChangeEvent(index) {
         // 分页 切换每页条数时的回调
@@ -1542,8 +1548,9 @@
       closeImportDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
-      importsuccess() { // 导入成功
-        this.getTabelList();
+      importsuccess() { //
+        this.currentPage = 1;
+        this.getTabelList(1);
       },
       isJsonString(str) {
         if (typeof JSON.parse(str) === 'object') {
