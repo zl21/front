@@ -18,6 +18,15 @@
           :default-data="defaultData[item.key]"
           @radioValueChange="inputGroupValueChange"
         />
+        <ExtentionObjectGroup
+          v-if="item.type === 'object-group'"
+          :key="index"
+          :show-description="false"
+          :option="item"
+          :index="index"
+          :default-data="option.key === '__root__' ? defaultData[item.key] : (defaultData[option.key] || {})[item.key]"
+          @dataChange="objectGroupValueChange"
+        />
       </template>
     </div>
   </div>
@@ -27,6 +36,7 @@
   import Description from './Description';
   import LabelWithInput from './LabelWithInput';
   import LabelWithRadio from './LabelWithRadio';
+  import ExtentionObjectGroup from './ExtentionObjectGroup';
   
   export default {
     name: 'ExtentionInputGroup',
@@ -34,8 +44,19 @@
       Description,
       LabelWithInput,
       LabelWithRadio,
+      ExtentionObjectGroup
     },
     methods: {
+      objectGroupValueChange({ key, value }) {
+        if (this.option.key === '__root__') {
+          this.$emit('dataChange', { key, value });
+        } else {
+          this.$emit('dataChange', {
+            key: this.option.key,
+            value: Object.assign(this.defaultData[this.option.key] || {}, { [key]: value })
+          });
+        }
+      },
       inputGroupValueChange({ key, value }) {
         if (this.option.key === '__root__') {
           this.$emit('dataChange', { key, value });
