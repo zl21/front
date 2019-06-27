@@ -218,6 +218,11 @@
         type: Boolean,
         default: true
       },
+      objreadonly: {
+        // 主表按钮的
+        type: Boolean,
+        default: true
+      },
       tableHeight: {
         // 表格高度 默认300px
         type: Number,
@@ -315,7 +320,7 @@
           return [];
         }
         const buttonGroupShow = [];
-        if (!this.readonly) {
+        if (!this.objreadonly) {
           if (tabcmd.cmds) {
             // 取主表path用于子表
             this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
