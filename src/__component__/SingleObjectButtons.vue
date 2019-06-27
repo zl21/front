@@ -160,16 +160,6 @@
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
-              if (this.itemName !== this.tableName) { // 子表
-                const { tabrelation } = this.itemInfo;
-                if (tabrelation === '1:m') { // 子表
-                  val.cmds.forEach((item, index) => {
-                    if (item === 'actionEXPORT') {
-                      val.prem[index] = true;
-                    }
-                  });
-                }
-              }
               this.tabPanel.forEach((item) => {
                 const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
                 if (objreadonly) {
@@ -180,6 +170,16 @@
                   });
                 }
               });
+              if (this.itemName !== this.tableName) { // 子表
+                const { tabrelation } = this.itemInfo;
+                if (tabrelation === '1:m') { // 子表
+                  val.cmds.forEach((item, index) => {
+                    if (item === 'actionEXPORT') {
+                      val.prem[index] = true;
+                    }
+                  });
+                }
+              }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
@@ -1516,6 +1516,22 @@
       }
     },
     mounted() {
+      if (this.objectType === 'horizontal') { // 横向布局
+        this.tabPanel.forEach((item) => {
+          if (item.tablename === this.tableName) {
+            const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
+            if (objreadonly) {
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+          }
+        });
+      }
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },
