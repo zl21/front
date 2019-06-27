@@ -1319,11 +1319,9 @@
         this.verifyMessage();
       },
       searTabelList() {
-        setTimeout(() =>{
-          this.currentPage = 1;
-        }, 100);
+        this.currentPage = 1;
         this.getTabelList(1);
-      },
+      }, // 输入框搜索触发
       getTabelList(index) {
         // 搜索事件
         const fixedcolumns = {};
