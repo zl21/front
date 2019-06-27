@@ -1,19 +1,21 @@
 import Vue from 'vue';
 import BurgeonUi from 'burgeon-ui';
-import './src/assets/iconfont-r3/iconfont.css';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App';
-import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
-import './src/assets/theme/custom.less';
-import './node_modules/ag-grid/dist/styles/ag-grid.css';
-import './src/assets/css/ag-theme-balham.less';
 import './src/constants/dateApi';
-
 import network from './src/__utils__/network';
 import { enableGateWay } from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
+// css import
+import './node_modules/ag-grid/dist/styles/ag-grid.css';
+import './src/assets/iconfont-r3/iconfont.css';
+import './src/assets/css/ag-theme-balham.less';
+import './src/assets/theme/custom.less';
+import './src/assets/css/loading.css';
+import './src/assets/css/custom-ext.less';
+
 
 Vue.component('CompositeForm', CompositeForm);
 Vue.use(BurgeonUi);

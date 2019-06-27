@@ -31,6 +31,7 @@
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
+                :refcolvalData="formData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
@@ -53,6 +54,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :formIndex ="0"
+          :refcolvalData="formData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -334,7 +336,6 @@
 
         // console.log(data, setdefval);
         //  console.log(this.mountChecked,this.conditiontype);
-        console.log(data, this.mountChecked);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -361,7 +362,6 @@
           });
         });
         const message = this.setVerifiy();
-        console.log(this.VerificationForm, message);
 
         if (message.messageTip.length > 0) {
           this.verifyMessItem = message;
@@ -373,9 +373,9 @@
         console.log(this.formData[current.item.props.field]);
         // let v1.4外键 及number
         if (current.item.props.fkdisplay || current.item.props.number === true) {
-          if (this.formData[current.item.field] === '') {
-            this.formData[current.item.field] = 0;
-          }
+          // if (this.formData[current.item.field] === '') {
+          //   this.formData[current.item.field] = 0;
+          // }
           
           // this.formData[current.item.props.field]  = 
         }
@@ -904,7 +904,6 @@
           
           const ID = item.refobjid ? item.refobjid : '';
           if (item.fkdisplay === 'mrp' && fkdisplayValue) {
-            console.log(fkdisplayValue);
             // 多选change
             const refobjid = fkdisplayValue.ID.split(',');
             const valuedata = fkdisplayValue.Label.split(',');
