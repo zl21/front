@@ -1,14 +1,13 @@
 /* eslint-disable */
-import * as agGrid  from 'ag-grid';
-// import '../../../node_modules/ag-grid/dist/styles/ag-grid.css';
-// import '../../../node_modules/ag-grid/dist/styles/ag-theme-balham.css';
+import { Grid }  from 'ag-grid';
+// import * as agGrid  from 'ag-grid';
 // import 'ag-grid-enterprise/main';
-// import { LicenseManager } from 'ag-grid-enterprise/main';
+import { LicenseManager } from 'ag-grid-enterprise/main';
 import { agGridEnterpriseLicenseKey } from './constant';
 import loadingSVG from '../image/loading.svg';
 
 // 设置enterprise key
-const { Grid, LicenseManager } = agGrid;
+// const { Grid, LicenseManager } = agGrid;
 LicenseManager.setLicenseKey(agGridEnterpriseLicenseKey);
 const cssFeatures = {
   hover: 'ag-syman-hover',
@@ -107,9 +106,46 @@ const localeText = {
   ctrlV: 'ctrl+V',
 };
 
+/*
 const setCommonStyles = (options) => {
   const commonStyles = document.createElement('style');
   const styleArray = [
+    // modify on 2019/06/27 based on the optimization by LiYue.
+    '.ag-theme-balham .ag-floating-filter-button { float: right; line-height: 16px; margin-top: 8px; }',
+    `.ag-theme-balham .ag-floating-filter-body {
+      float: left;
+      height: 100%;
+      margin-right: 0;
+      width: calc(100% - 20px);
+    }`,
+    // `.ag-theme-balham .ag-ltr .ag-cell-last-left-pinned {
+    //   border-right: 0px solid #BDC3C7;
+    // }`,
+    `.ag-theme-balham .ag-row-selected {
+      background-color:#e6eaef ;
+      border-bottom-color: #d9dcde;
+    }`,
+    `.ag-floating-filter-body input {
+      height: 22px;
+      margin: 0;
+      width: 100%;
+      border: 1px solid #d8d8d8;
+      border-radius: 2px;
+    }`,
+    '.ag-floating-filter-input:read-only { background-color: #fff; }',
+    `.ag-theme-balham .ag-header-cell::after, .ag-theme-balham .ag-header-group-cell::after {
+      border-right: 1px solid #BDC3C7;
+      content: "";
+      height: 16px;
+      margin-top: 8px;
+      position: absolute;
+      right: 0;
+      text-indent: -2000px;
+      top: 0;
+      opacity: 0;
+    }
+`,
+    '', // modify end
     '.ag-bl-overlay { pointer-events: auto; user-select: none; }',
     '.ag-body-viewport::-webkit-scrollbar, .ag-column-container::-webkit-scrollbar { width: 8px; height: 8px; }',
     '.ag-body-viewport::-webkit-scrollbar-thumb, .ag-column-container::-webkit-scrollbar-thumb { background-color: #c5c2c2; border-radius: 5px; }',
@@ -221,6 +257,7 @@ const setCommonStyles = (options) => {
   commonStyles.innerHTML = styleArray.join('\r\n');
   return commonStyles;
 };
+ */
 
 // for image
 const imageComponent = function () {
@@ -646,7 +683,7 @@ const initializeAgTable = (container, opt) => {
     agGridDiv.classList.add('fc-ag-table-container');
     agGridTableContainer.appendChild(agGridDiv);
     // 设置通用样式
-    agGridDiv.appendChild(setCommonStyles(agTable.customizeOptions));
+    // agGridDiv.appendChild(setCommonStyles(agTable.customizeOptions));
 
     // 列组件筛选器
     const componentPicker = (columnItem) => {
