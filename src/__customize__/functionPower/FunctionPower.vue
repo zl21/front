@@ -699,6 +699,7 @@
           });
       }, // 获取菜单数据
       getTableData() {
+        this.spinShow = true;
         this.tableSaveData = []; // 清空保存的数据
         let obj = {};
         if (this.adSubsystemId) {
@@ -1270,7 +1271,7 @@
           network.post('/p/cs/savePermission', obj)
             .then((res) => {
               if (res.data.code === 0) {
-                this.refresh();
+                this.getTableData();
                 this.$Message.success({
                   content: res.data.message
                 });
@@ -1454,6 +1455,7 @@
 <style lang="less">
   @import "../../../src/assets/theme/custom.less";
   .burgeon-spin-fix{
+    z-index: 999;
     .demo-spin-icon-load{
       animation: ani-demo-spin 1s linear infinite;
     }
