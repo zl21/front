@@ -64,6 +64,7 @@
       :type="type"
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
+      :objreadonly="objreadonly"
       :status="status"
       :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
@@ -332,7 +333,7 @@
               //   if(itemModify && Object.values(itemModify).length > 0 && itemAdd && Object.values(itemAdd).length > 0) { // 单对象界面上下结构子表修改新增同时操作
               //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               //   }
-              // } 
+              // }
               // else { // 没有配置path
               //   debugger;
               //   const store = this.$store.state[getModuleName()];
@@ -374,17 +375,15 @@
         });
 
         // this.performMainTableSaveAction(parame);
-        if (this.type === 'vertical') {
-          // this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
 
-          // this.updateChangeData({ tableName: this.itemName, value: {} });
-        }
         promise.then(() => {
+          if (this.type === 'vertical') {
+            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+          } else {
+            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+          }
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid } = this.itemInfo;
           let id = '';
@@ -415,8 +414,6 @@
             this.$store.commit('global/tabHref', tab);
             this.decreasekeepAliveLists(getModuleName());
           }
-
-
           // console.log(this.$store.state[getModuleName()].buttonsData);
           // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {

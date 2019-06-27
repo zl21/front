@@ -27,6 +27,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
+                :formIndex ="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
@@ -51,6 +52,7 @@
           ref="FormComponent_0"
           :path="path"
           :isreftabs="isreftabsForm"
+          :formIndex ="0"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -169,6 +171,7 @@
         formData: {}, // 监听form变化
         formDataDef: {}, // 监听form 变化有value 和 文字
         VerificationForm: [], // 校验form
+        VerificationFormItem: [],
         defaultFormData: {}, // form 默认值
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
@@ -378,19 +381,18 @@
         }
         this.$emit('formChange', this.formData, this.formDataDef);
       },
-      VerifyMessageForm(value) {
+      VerifyMessageForm(value, type) {
         // 获取需要校验的表单
         // 初始化form 校验
         this.mountChecked = true;
-        this.VerificationForm = this.VerificationForm.concat(value);
-
+        this.VerificationFormItem[type] = [];
+        this.VerificationFormItem[type].push(...value);
+        this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
         const data = this.setVerifiy();
         if (data.messageTip.length > 0) {
           this.verifyMessItem = data;
         }
         this.$emit('VerifyMessage', data);
-      // console.log(value,this.VerificationForm,'VerificationForm');
-      // console.log(this.VerificationForm);
       },
       mountdataForm(value) {
         // 获取表单默认值
@@ -901,10 +903,42 @@
           const arr = [];
           
           const ID = item.refobjid ? item.refobjid : '';
+          if (item.fkdisplay === 'mrp' && fkdisplayValue) {
+            console.log(fkdisplayValue);
+            // 多选change
+            const refobjid = fkdisplayValue.ID.split(',');
+            const valuedata = fkdisplayValue.Label.split(',');
+            const option = refobjid.reduce((currty, item, index) => {
+              currty.push({
+                ID: item || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+            // arr = [...option];
+            return option;
+          }else if (item.fkdisplay === 'mrp' && item.refobjid) {
+            // 多选默认值
+            const refobjid = item.refobjid.split(',');
+            const valuedata = item.valuedata.split(',');
+            const option = refobjid.reduce((currty, item, index) => {
+              currty.push({
+                ID: item || '',
+                Label: valuedata[index] || ''
+              });
+              return currty;
+            }, []);
+            // arr = [...option];
+            return option;
+            
+          }
+          
+          
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
+          
           if (item.fkdisplay === 'mop') {
             arr[0].ID = item.valuedata || item.defval || '';
             if (item.valuedata && /total/.test(item.valuedata)) {
@@ -963,7 +997,6 @@
             // 拓展属性
             item.type = 'ExtentionInput';
           }
-          console.log(webconf, item);
         }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];

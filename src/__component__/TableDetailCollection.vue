@@ -218,6 +218,11 @@
         type: Boolean,
         default: true
       },
+      objreadonly: {
+        // 主表按钮的
+        type: Boolean,
+        default: true
+      },
       tableHeight: {
         // 表格高度 默认300px
         type: Number,
@@ -315,43 +320,45 @@
           return [];
         }
         const buttonGroupShow = [];
-        if (tabcmd.cmds) {
-          // 取主表path用于子表
-          this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
-            this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-              // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-              if (index === i) {
-                this.buttonPath[cmd] = path;
-              }
+        if (!this.objreadonly) {
+          if (tabcmd.cmds) {
+            // 取主表path用于子表
+            this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
+              this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                if (index === i) {
+                  this.buttonPath[cmd] = path;
+                }
+              });
             });
-          });
 
-          tabcmd.cmds.map((item, index) => {
-            if (this.status === 2) {
-              tabcmd.prem[index] = false;
-            } else if (tabcmd.prem[index]) {
-              const type = item.split('action');
-              const str = `CMD_${type[1].toUpperCase()}`;
-              if (str !== 'CMD_MODIFY') { // 保存不显示
-                let buttonConfigInfo = buttonmap[str];
-                if (this.buttonsData.submitData) {
-                  // this.buttonsData.submitData.oK = true;
-                } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
-                  buttonConfigInfo = buttonmap.CMD_REF_DELETE;
+            tabcmd.cmds.map((item, index) => {
+              if (this.status === 2) {
+                tabcmd.prem[index] = false;
+              } else if (tabcmd.prem[index]) {
+                const type = item.split('action');
+                const str = `CMD_${type[1].toUpperCase()}`;
+                if (str !== 'CMD_MODIFY') { // 保存不显示
+                  let buttonConfigInfo = buttonmap[str];
+                  if (this.buttonsData.submitData) {
+                    // this.buttonsData.submitData.oK = true;
+                  } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                    buttonConfigInfo = buttonmap.CMD_REF_DELETE;
+                  }
+                  if (tabcmd.paths) {
+                    buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
+                  }
+                  buttonConfigInfo.path = this.buttonPath[item];
+                  buttonConfigInfo.eName = item;
+                  buttonGroupShow.push(
+                    buttonConfigInfo
+                  );
                 }
-                if (tabcmd.paths) {
-                  buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
-                }
-                buttonConfigInfo.path = this.buttonPath[item];
-                buttonConfigInfo.eName = item;
-                buttonGroupShow.push(
-                  buttonConfigInfo
-                );
               }
-            }
 
-            return item;
-          });
+              return item;
+            });
+          }
         }
         buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
         buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
@@ -387,6 +394,7 @@
           this.afterSendData = {};
           this.verifyTipObj = {};
           this.fkSelectedChangeData = [];
+          this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
           }
@@ -554,7 +562,7 @@
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
-          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange),
+          currentPageIndex: (this.dataSource.start / this.dataSource.defaultrange) + 1,
           pageSize: this.dataSource.defaultrange
         });
         // 组装beforeData
@@ -1309,6 +1317,9 @@
       },
       getTabelList() {
         // 搜索事件
+
+        console.log(this.pageInfo);
+
         const fixedcolumns = {};
         if (this.searchCondition) {
           fixedcolumns[this.searchCondition] = this.searchInfo;
@@ -1321,7 +1332,7 @@
           refcolid: this.itemInfo.refcolid,
           searchdata: {
             column_include_uicontroller: true,
-            startindex: (Number(this.pageInfo.currentPageIndex)) * Number(this.pageInfo.pageSize),
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
             range: this.pageInfo.pageSize,
             fixedcolumns
           },

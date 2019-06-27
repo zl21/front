@@ -40,34 +40,39 @@
       />
     </div>
     <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
-       <template v-if="searchBtn === false">
-          
-            <AutoComplete
-            ref="AutoComplete"
-            v-model="keyWord"
-            class="nav-search"
+      <template v-if="searchBtn === false">
+<AutoComplete
+          ref="AutoComplete"
+          v-model="keyWord"
+          class="nav-search"
+          icon="ios-search"
             @on-select="routerNext"
-            icon="ios-search"
-            @click="setBtn"
-            @input="searchData" 
-            placeholder="请输入要查询的功能名"
-           >
-              <Option v-for="(item,index) in searchList" :value ="item.desc" :lable="item" :key="index" >{{item.desc}}</Option>
-            </AutoComplete>
-    
-       </template>
+          @click="setBtn"
+          placeholder="请输入要查询的功能名" 
+            @input="searchData"
+        >
+          <Option v-for="(item,index) in searchList"
+:value="item.desc" :key="index" :lable="item">
+{{ item.desc }}
+</Option>
+        </AutoComplete>
+</template>
 
 
-<i v-if="searchBtn === true" class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
-</div>
-<div class="tag right">
-    <i class="iconfont icon-yonghu-" @click="show = true" />
-</div>
-<Drawer v-model="show">
-    <SetPanel :panel="setPanel" @changePwdBox="changePwdBox" />
-</Drawer>
-<Dialog ref="dialogRef" :title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText" :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm" :dialog-component-name="dialogComponentName" />
-</div>
+      <i v-if="searchBtn === true"
+class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
+    </div>
+    <div class="tag right">
+      <i class="iconfont icon-yonghu-"
+@click="show = true" />
+    </div>
+    <Drawer v-model="show">
+      <SetPanel :panel="setPanel"
+@changePwdBox="changePwdBox" />
+    </Drawer>
+    <Dialog ref="dialogRef"
+:title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText" :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm" :dialog-component-name="dialogComponentName" />
+  </div>
 </template>
 
 <script>

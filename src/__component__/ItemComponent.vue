@@ -160,7 +160,6 @@
         :auot-data="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
-        :show="_items.props.show"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
         @input="attachFilterInput"

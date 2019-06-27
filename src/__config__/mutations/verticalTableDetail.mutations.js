@@ -99,7 +99,11 @@ export default {
     state.updateData[data.tableName].addDefault = data.value;
   },
   updateDeleteData(state, data) {
-    state.updateData[data.tableName].delete = data.value;
+    if (Object.values(data.value).length === 0) {
+      state.updateData[data.tableName].delete[data.tableName] = data.value;
+    } else {
+      state.updateData[data.tableName].delete = data.value;
+    }
   },
   updateChangeData(state, data) {
     state.updateData[data.tableName].changeData = data.value;

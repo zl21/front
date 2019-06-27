@@ -15,6 +15,17 @@
       </div>
       <div class="panel-item">
         <p>
+          <i class="iconfont icon-liebiao-shoucang left-icon" />
+          <span>是否展开收藏夹</span>
+          <i-switch
+            v-model="showFavorites"
+            class="switch"
+            @on-change="operationFavorites(showFavorites)"
+          />
+        </p>
+      </div>
+      <div class="panel-item">
+        <p>
           <i class="iconfont icon-zhankaichaxuntiaojian" />
           <span>折叠查询条件</span>
           <i-switch
@@ -50,16 +61,20 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
+
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
+  import moduleName from '../__utils__/getModuleName';
+
 
   export default {
     name: 'SetPanel',
     props: ['panel'],
     computed: {
       ...mapState('global', {
-        userInfo: ({ userInfo }) => userInfo
+        userInfo: ({ userInfo }) => userInfo,
+        collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
       })
     },
     watch: {
@@ -80,32 +95,42 @@
         setPanel: {
           show: false,
           list: []
-        }
+        },
+        showFavorites: false
       };
     },
     mounted() {
-      network
-        .post('/p/cs/getParamList')
-        .then((res) => {
-          if (res.data.code === 0) {
-            if (res.data.data.length > 0) {
-              res.data.data.forEach((param) => {
-                if (param.name === 'isFoldCond') {
-                  this.switchValue = JSON.parse(param.value);
-                } else if (param.name === 'queryDisNumber') {
-                  this.num7 = Number(param.value);
-                  this.$store.state.queryDisNumber = param.value;
-                }
-              });
-            }
-          }
-        });
+      const showFavorites = JSON.parse(window.sessionStorage.getItem('showFavorites'));
+      this.showFavorites = showFavorites;
+      this.operationFavorites(showFavorites);
+
+      this.setDefaultSearchFoldnum();
     },
     methods: {
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
+      setDefaultSearchFoldnum() {
+        network
+          .post('/p/cs/getParamList')
+          .then((res) => {
+            if (res.data.code === 0) {
+              if (res.data.data.length > 0) {
+                res.data.data.forEach((param) => {
+                  if (param.name === 'isFoldCond') {
+                    this.switchValue = JSON.parse(param.value);
+                  } else if (param.name === 'queryDisNumber') {
+                    this.num7 = Number(param.value);
+                    if (moduleName().indexOf('S', 0) === 0) {
+                      this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
+                    } 
+                  }
+                });
+              }
+            }
+          });
+      },
       changePwd() {
         this.$emit('changePwdBox');
       },
-      closeMessage() {},
       switchChange() {
         const param = {
           name: 'isFoldCond',
@@ -117,6 +142,10 @@
             
           });
       },
+      operationFavorites(showFavorites) {
+        window.sessionStorage.setItem('showFavorites', showFavorites);
+        this.doCollapseHistoryAndFavorite({ showFavorites });
+      },
       changeNum() {
         const param = {
           name: 'queryDisNumber',
@@ -126,7 +155,7 @@
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then((res) => {
             if (res.data.code === 0) {
-              this.$store.state.queryDisNumber = Number(this.num7);
+              this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
             }
           });
       },
@@ -179,10 +208,10 @@
       }
     }
   }
-   .burgeon-switch {
-      border: 1px solid#19be6b !important;
+  .burgeon-switch-checked {
+        border: 1px solid#19be6b !important;
     background-color: #19be6b !important;
-    }
+}
     .burgeon-input-number-handler-wrap {
     opacity: 1 !important;
     background :red  !important;

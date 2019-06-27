@@ -264,6 +264,10 @@ export default {
                   ...itemTableAdd,
                 }
               };
+            } else { // 子表没有form
+              parames = {
+                ...add
+              };
             }
           } else if (Object.values(itemAdd[itemName]).length > 0) {
             const itemTableAdd = Object.assign({}, itemAdd);

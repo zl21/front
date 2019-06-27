@@ -153,6 +153,7 @@ export default {
   },
   updateButtonsExport({ buttons }, data) { // 导出
     buttons.exportdata = data;
-  }
+  },
+  
  
 };

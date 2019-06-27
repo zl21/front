@@ -15,7 +15,11 @@ export default {
   hideMenu(state) {
     state.primaryMenuIndex = -1;
   },
-  doCollapseHistoryAndFavorite(state) {
+  doCollapseHistoryAndFavorite(state, { showFavorites }) {
+    state.showFavoritesList = showFavorites;
+    if (showFavorites) {
+      state.collapseHistoryAndFavorite = showFavorites;
+    }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
   },
   updateHistoryAndFavorite(state, {

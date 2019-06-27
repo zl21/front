@@ -42,54 +42,6 @@
           return temp;
         }, []);
       },
-      VerificationForm() {
-        let obj = {}; // 当前form 需要校验的key
-        obj = this.newFormItemLists.reduce((option, items, index) => {
-          if (Array.isArray(items.item.value)) {
-            if (
-              items.item.value[0]
-              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
-            ) {
-              if (items.item.required === true) {
-                // 赋值 需要校验的 值
-                // 判断必须输入的值是否为空
-                option.push({
-                  index,
-                  type: items.item.props.display,
-                  eq: this.formIndex,
-                  value: items.item.value[0].ID,
-                  key: items.item.field,
-                  label: items.item.title
-                });
-              }
-            } else if (items.item.required === true) {
-              // 赋值 需要校验的 值
-              // 判断必须输入的值是否为空
-              option.push({
-                index,
-                type: items.item.props.display,
-                eq: this.formIndex,
-                value: items.item.value[0],
-                key: items.item.field,
-                label: items.item.title
-              });
-            }
-          } else if (items.item.required === true) {
-            // 赋值 需要校验的 值
-            option.push({
-              index,
-              eq: this.formIndex,
-              type: items.item.props.display,
-              value: items.item.value,
-              key: items.item.field,
-              label: items.item.title
-            });
-          }
-
-          return option;
-        }, []);
-        return obj;
-      },
       // 计算属性的 后台传值
       formDataObject() {
         let obj = {};
@@ -248,6 +200,7 @@
         formValueItem: {}, // 当前字段
         changeNumber: 0, // 更改次数
         checkMounted: false, // 是否初始化
+        VerificationForm: [], // 需要校验的
         mountedTypeName: '',
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34
@@ -263,7 +216,9 @@
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
+        // this.VerificationForm = this.VerificationMap();
         this.VerificationFormInt();
+        this.mountdataFormInt();
       }, 500);
 
     // this.VerificationFormInt();
@@ -275,6 +230,7 @@
       mountedType() {
         setTimeout(() => {
           this.VerificationFormInt();
+          this.mountdataFormInt();
         }, 500);
       },
       formDataObject: {
@@ -329,52 +285,53 @@
         },
         deep: true
       },
-      changeNumber() {
-        console.log('changeNumber', this.changeNumber);
-      }
-    },
-    methods: {
-      VerificationFormInt() {
-        //  form 计算 校验
-        // 传值默认data
-        setTimeout(() => {
-          //  传form 默认值
-          this.mountdataForm(this.formDataObject);
-        }, 200);
-        if (this.VerificationForm.length < 1) {
-          return false;
-        }
-        const VerificationForm = this.VerificationForm.reduce((item, current) => {
-          // 判断必须输入的值是否为空
-          const elDiv = this.$refs[`component_${current.index}`][0]
-            && this.$refs[`component_${current.index}`][0].$el;
-
-          if (!elDiv) {
-            return [];
-          }
-          let onfousInput = {};
-          if (current.type === 'textarea') {
-            onfousInput = elDiv.querySelector('textarea');
-          } else {
-            onfousInput = elDiv.querySelector('input');
-          }
-          if (current && onfousInput) {
-            item.push({
-              ...current,
-              onfousInput
-            });
-          }
-
-          return item;
-        }, []);
-
+      VerificationForm() {
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
-            this.verifymessageform(VerificationForm);
+            this.verifymessageform(this.VerificationForm , this.formIndex);
           }
+        }, 0);
+      }
+    },
+    methods: {
+      mountdataFormInt() {
+        setTimeout(() => {
+          //  传form 默认值
           this.mountdataForm(this.formDataObject);
         }, 200);
+      },
+      VerificationFormInt() {
+        //  form 计算 校验
+        this.VerificationForm = [];
+        this.newFormItemLists.forEach((item, index) => {
+          if (item.item.required && item.show) {
+            this.verificationMap(this.formIndex, index, item);
+          }
+        });
+      },
+      verificationMap(formIndex, index, items) {
+        const elDiv = this.$refs[`component_${index}`][0]
+          && this.$refs[`component_${index}`][0].$el;
+        if (!elDiv) {
+          return false;
+        }
+        let onfousInput = {};
+        if (items.item.type === 'textarea') {
+          onfousInput = elDiv.querySelector('textarea');
+        } else {
+          onfousInput = elDiv.querySelector('input');
+        }
+        const valueData = this.formDataObject[items.item.field] || '';
+        this.VerificationForm.push({
+          index,
+          eq: formIndex,
+          type: items.item.props.display,
+          value: valueData,
+          key: items.item.field,
+          label: items.item.title,
+          onfousInput
+        });
       },
       setMapping(data) {
         //  获取映射关系
@@ -509,6 +466,7 @@
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
+          console.log(current.item.value);
         }
         this.formValueItem = obj;
         // 向父组件抛出整个数据对象以及当前修改的字段
@@ -578,6 +536,9 @@
               } else {
                 this.newFormItemLists[index].show = false;
               }
+              this.VerificationFormInt();
+              // this.VerificationForm = this.VerificationMap();
+              // this.VerificationFormInt();
             }
           }
           return option;
