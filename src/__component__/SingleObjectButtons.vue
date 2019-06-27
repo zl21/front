@@ -157,12 +157,10 @@
     watch: {
       tabcmd: {
         handler(val, oldval) {
-          // if (JSON.stringify(val) !== JSON.stringify(oldval)) {
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-            // setTimeout(() => {
             if (this.objectType === 'horizontal') { // 横向布局
-              if (this.itemName !== this.tableName) {
+              if (this.itemName !== this.tableName) { // 子表
                 const { tabrelation } = this.itemInfo;
                 if (tabrelation === '1:m') { // 子表
                   val.cmds.forEach((item, index) => {
@@ -172,11 +170,25 @@
                   });
                 }
               }
+              this.tabPanel.forEach((item) => {
+                const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
+                if (objreadonly) {
+                  val.cmds.forEach((item, index) => {
+                    if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                      val.prem[index] = false;
+                    }
+                  });
+                }
+              });
+            } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+              val.cmds.forEach((item, index) => {
+                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                  val.prem[index] = false;
+                }
+              });
             }
             this.buttonsReorganization(val);
-            // }, 300);
           }
-          // }
         },
         deep: true
       },
