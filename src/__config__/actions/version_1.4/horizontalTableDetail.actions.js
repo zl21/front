@@ -250,7 +250,6 @@ export default {
             }
           };
         } else if (sataTypeName === 'modify') { // 子表编辑
-          alert(1);
           const { modify } = parame;
           parames = {
             table: tableName, // 主表表名
