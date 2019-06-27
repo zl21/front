@@ -151,9 +151,11 @@ export default {
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+
         if (path) { // 有path的参数
           const { modify } = parame;
           // const itmValues = itemModify[itemName];
+
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
             // itemModify[itemName].ID = objId;
             // const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
@@ -248,6 +250,15 @@ export default {
             }
           };
         } else if (sataTypeName === 'modify') { // 子表编辑
+          const { modify } = parame;
+          parames = {
+            table: tableName, // 主表表名
+            objId, // 明细id
+            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...modify
+            }
+          };
+        } else {
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id

@@ -16,6 +16,18 @@
       >
         <i class="iconfont icon-tishi1" />
       </Poptip>
+       <template v-if=" _items.props.fkdisplay === 'pop'">
+         <!-- 路由跳转 -->
+          <template v-if=" !!_items.value">
+            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
+          </template>
+       </template>
+       <template v-if=" _items.props.fkdisplay === 'drp'">
+         <!-- 路由跳转 -->
+          <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
+            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
+          </template>
+       </template>
       <span
         v-if="_items.required"
         class="label-tip"
@@ -219,7 +231,7 @@
 
       </template>
       <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
-        <div v-html="_items.value"></div>
+        <div v-html="_items.value" class="Wangeditor-disabled"></div>
 
       </template>
       
@@ -243,6 +255,7 @@
   import enumerableForTable from '../constants/enumerateInputForTable';
   import extentionForColumn from '../constants/extentionPropertyForColumn';
   import extentionForTable from '../constants/extentionPropertyForTable';
+  import { mapActions, mapState, mapMutations } from 'vuex';
 
   const {
     fkQueuploadProgressry,
@@ -351,6 +364,27 @@
       }
     },
     methods: {
+      ...mapMutations('global', ['tabHref', 'tabOpen']),
+      routerNext() {
+        // 路由跳转
+        const props = this._items.props;
+        const type = 'tableDetailAction';
+        // console.log(this._items.props);
+        let customizedModuleName = props.reftable;
+        let tableName = props.reftable;
+        let customizedModuleId = props.reftableid;
+        let label = this._items.title;
+        let id = props.refobjid;
+        console.log(type,customizedModuleName,id);
+        this.tabOpen({
+          type,
+          customizedModuleName,
+          customizedModuleId,
+          id,
+          label
+
+        });
+      },
       valueChange() {
         // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
         this.$emit('inputChange', this._items.value, this._items, this.index);
@@ -538,12 +572,7 @@
         }
       },
       fkrpSelectedClear($this) {
-        this._items.value = [
-          {
-            ID: '',
-            Label: ''
-          }
-        ];
+        this._items.value = undefined;
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
@@ -558,7 +587,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          this._items.event.inputValueChange('', $this);
+          //this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {
@@ -738,7 +767,6 @@
             ID: ''
           }
         ];
-        console.log('valueChange');
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
@@ -747,7 +775,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          this._items.event.inputValueChange('', $this);
+          //this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterPopperShow($this) {
@@ -1140,7 +1168,7 @@
       },
       enumerableValueChange(value) {
         // 读写
-        console.log(value,'读写');
+        console.log(value, '读写');
       },
       extentionValueChange(value) {
         // 扩展属性
@@ -1182,6 +1210,7 @@
 
   .itemComponent {
     flex: 1;
+    // overflow: hidden;
   }
   .label-tip {
     color: red;
@@ -1199,5 +1228,12 @@
   .icon-bj_tcduo {
     padding-top: 2px;
   }
+}
+.Wangeditor-disabled{
+  border:1px solid #d8d8d8;
+  background-color: #f4f4f4;
+  overflow: auto;
+  padding: 2px 5px;
+  height: 100%;
 }
 </style>

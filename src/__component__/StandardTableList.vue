@@ -652,14 +652,13 @@
       freshDropDownSelectFilterAutoData(res, index, type) {
         // 外键的模糊搜索数据更新
         this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
+        console.log(this.formItemsLists[index].item);
         if (type === 'empty') {
-          this.formItemsLists[index].item.value = [
-            {
-              ID: '',
-              Label: ''
-            }
-          ];
-          this.formItemsLists[index].item.props.AutoData = [];
+          this.formItemsLists[index].item.props.defaultSelected = [];
+
+          //this.formItemsLists[index].item.props.AutoData = [];
+                    console.log(this.formItemsLists[index].item.props)
+
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }
