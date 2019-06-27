@@ -647,6 +647,7 @@
             eleLink.click();
             document.body.removeChild(eleLink);
             this.upData();
+            this.updateDeleteData({ tableName: this.itemName, value: {} });
           }
         }, () => {});
       },
