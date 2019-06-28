@@ -1372,8 +1372,11 @@
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
             const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
             if (obj) {
+              // 有修改过的，取修改过的。
               fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
             } else {
+              // ，没有修改过的取默认的
+              // this.$Message.info('请选择关联的表字段');
               fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
             }
             // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
