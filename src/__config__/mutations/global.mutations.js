@@ -125,6 +125,7 @@ export default {
     state.openedMenuLists = [];
     state.keepAliveLists = [];
     state.activeTab = {};
+    router.push('/');
   },
   againClickOpenedMenuLists(state, {
     label,

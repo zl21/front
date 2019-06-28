@@ -631,7 +631,7 @@
         // 给cell赋render
         if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
           // 不可编辑状态 显示label
-          if (cellData.isfk) {
+          if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
@@ -768,6 +768,9 @@
                 this.fkDropPageInfo.currentPageIndex = 1;
                 this.fkAutoData = [];
                 this.getFKList(params, cellData);
+              },
+              'on-popper-hide': () => {
+                this.fkData = {};
               },
               'on-page-change': (value) => {
                 // debugger;
@@ -1549,6 +1552,8 @@
             eleLink.click();
             document.body.removeChild(eleLink);
             this.getTabelList(1);
+            this.searchCondition = null;
+            this.searchInfo = '';
           }
         });
       },

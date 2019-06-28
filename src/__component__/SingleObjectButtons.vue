@@ -599,6 +599,7 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
+          this.upData();
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1415,6 +1416,8 @@
           } else {
             this.clearMainEditData();
           }
+        } else if (this.itemName === this.tableName) {
+          this.clearMainEditData();
         } else {
           this.clearItemEditData();
         }
