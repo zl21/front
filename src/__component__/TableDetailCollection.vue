@@ -1369,7 +1369,14 @@
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
             // 左右结构取行内的colid
-            fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
+            const express = cellData.refcolval.expre === 'equal' ? '=' : '';
+            const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+            if (obj) {
+              fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+            } else {
+              fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+            }
+            // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
           } else {
             // 先判断主表是否有关联字段  没有则取行的colid
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
