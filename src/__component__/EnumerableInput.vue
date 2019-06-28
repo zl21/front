@@ -109,6 +109,7 @@
         }
       },
       scrollEventListener() {
+        if (!this.dropdownShow) { return; }
         this.scrollTimeoutTick = setTimeout(() => {
           clearTimeout(this.scrollTimeoutTick);
           this.fixPosition();
