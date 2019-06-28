@@ -275,7 +275,7 @@
             }
           });
         }
-        //this.getList();
+        // this.getList();
       },
       checkForm(data, item) {
         // 校验select
@@ -289,14 +289,14 @@
             this.formList.inpubobj[index].display === 'OBJ_SELECT'
             || this.formList.inpubobj[index].display === 'select'
           ) {
-            if(Array.isArray(data[item])){
-              let arr = data[item].reduce((cuurent,item) =>{
-                cuurent.push(`=${item}`.toString().replace(/=/g, '='));
+            if (Array.isArray(data[item])) {
+              const arr = data[item].reduce((cuurent, item) => {
+                const string = `${item}`.toString().replace(/=/g, '');
+                cuurent.push(`=${string}`.toString());
                 return cuurent;
-              },[]);
+              }, []);
               data[item] = [...arr];
-
-            }else{
+            } else{
               data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
             }
             // console.log(data[item]);
@@ -311,7 +311,6 @@
             // }
 
             // },)
-            
           }
         }
         return data;
