@@ -23,12 +23,13 @@
         v-for="(tag, index) in openedMenuLists"
         :key="index"
         ref="tabBox"
-        :class="{active:tag.isActive === true}"
+        
         class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
       >
         <div
+          :class="{active:tag.isActive === true}"
           class="openedMenuListsItem"
         >
           {{ tag.label }}
@@ -52,18 +53,16 @@
         alt=""
       >
     </span>
-    <router-link to="/">
-      <span
-        class="emptying"
-        @click="emptyClick"
+    <span
+      class="emptying"
+      @click="emptyClick"
+    >
+      <img
+        src="../assets/image/delete.png"
+        alt=""
       >
-        <img
-          src="../assets/image/delete.png"
-          alt=""
-        >
       
-      </span>
-    </router-link>
+    </span>
   </div>
 </template>
 
@@ -155,16 +154,21 @@
 </script>
 
 <style scoped lang="less">
-
+.active {
+    border-top: 2px solid #fd6442 !important;
+    border-bottom: 1px solid white !important;
+      color: #fd6442 !important;
+  }
 .openedMenuLists {
   background-color: #fff;
   border-bottom: 1px solid #dfdfdf;
   display: flex;
   box-sizing: border-box;
+  height: 34px;
   >span{
     display: inline-block;
     width: 20px;
-    height: 33px;
+    height:100%;
     margin: 0;
     box-sizing: border-box;
     vertical-align: middle;
@@ -181,20 +185,12 @@
       border-right: 1px solid #dfdfdf;
     }
   }
-  .active {
-    border-top: 2px solid #fd6442;
-    border-bottom: 1px solid white;
-      color: #fd6442 !important;
-
-    // .burgeon-tag-text {
-    // }
-  }
+  
   .tab-list{
     margin: 0px;
     padding: 0;
     display: inline-block;
     flex: 1;
-    height: 34px;
     position: relative;
     z-index: 0;
     display: flex;
@@ -207,7 +203,7 @@
       color: #000;
     
       .openedMenuListsItem{
-        height: 31px;
+        height: 100%;
         width: 81px;
         display: block;
         padding-left: 20px;
@@ -217,14 +213,14 @@
         box-sizing: content-box;
         text-align: center;
         border: none;
-        border-top: 2px solid #fff;
+        // border-top: 2px solid #fff;
         border-right: 1px solid #dfdfdf;
         border-radius: 0;
         position: relative;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        border-bottom: 1px solid #dfdfdf;
+        // border-bottom: 1px solid #dfdfdf;
         margin: 0;
         .close{
           position: absolute!important;
@@ -262,18 +258,13 @@
       
     
   } 
-  >a{
-    color: black;
-    width: 34px;
-    height: 33px;
-    border-left: 1px solid #dfdfdf;
-    text-align: center;
-    line-height: 44px;
-    text-decoration: none;
+    
     .emptying{
-      width: 35px;
-      height: 33px;
-      display: inline-block;
+    width: 34px;
+    border-left: 1px solid #dfdfdf;
+display: flex;
+ justify-content: center;
+            align-items: center;
       
       img{
         width: 17px;
@@ -283,6 +274,5 @@
    .emptying:hover{
      opacity: 0.6;
    }
-  }
 }
 </style>

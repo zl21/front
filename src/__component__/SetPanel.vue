@@ -120,7 +120,7 @@
                     this.switchValue = JSON.parse(param.value);
                   } else if (param.name === 'queryDisNumber') {
                     this.num7 = Number(param.value);
-                    if (moduleName().indexOf('S', 0) === 0) {
+                    if (moduleName() && moduleName().indexOf('S', 0) === 0) {
                       this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
                     } 
                   }
@@ -156,7 +156,11 @@
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then((res) => {
             if (res.data.code === 0) {
-              this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+              if (moduleName()) {
+                if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                  this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+                }
+              }
             }
           });
       },
@@ -187,6 +191,7 @@
          position: absolute;
         right: 15px;
         top: 15px;
+        width:50px;
       }
       cursor: pointer;
       p {
