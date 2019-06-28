@@ -372,6 +372,8 @@
           if (this.mainFormInfo.buttonsData) {
             return this.mainFormInfo.buttonsData.data.objreadonly;
           }
+        } else {
+          return this.objreadonly;
         }
         return false;
       },
@@ -1369,7 +1371,17 @@
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
             // 左右结构取行内的colid
-            fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
+            const express = cellData.refcolval.expre === 'equal' ? '=' : '';
+            const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+            if (obj) {
+              // 有修改过的，取修改过的。
+              fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+            } else {
+              // ，没有修改过的取默认的
+              // this.$Message.info('请选择关联的表字段');
+              fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+            }
+            // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
           } else {
             // 先判断主表是否有关联字段  没有则取行的colid
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
@@ -1536,6 +1548,7 @@
             document.body.appendChild(eleLink);
             eleLink.click();
             document.body.removeChild(eleLink);
+            this.getTabelList(1);
           }
         });
       },
