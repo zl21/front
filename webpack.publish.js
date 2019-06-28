@@ -2,6 +2,9 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = () => ({
   entry: {
@@ -41,12 +44,12 @@ module.exports = () => ({
       amd: 'axios',
       root: 'axios'
     },
-    'ag-grid': {
-      commonjs: 'ag-grid',
-      commonjs2: 'ag-grid',
-      amd: 'ag-grid',
-      root: 'agGrid'
-    },
+    // 'ag-grid': {
+    //   commonjs: 'ag-grid',
+    //   commonjs2: 'ag-grid',
+    //   amd: 'ag-grid',
+    //   root: 'agGrid'
+    // },
     'burgeon-ui': {
       commonjs: 'burgeon-ui',
       commonjs2: 'burgeon-ui',
@@ -72,17 +75,14 @@ module.exports = () => ({
         },
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.less$/,
+        test: /\.(sa|sc|c|le)ss$/,
         use: [{
-          loader: 'style-loader', // creates style nodes from JS strings
+          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+          loader: MiniCssExtractPlugin.loader,
         }, {
-          loader: 'css-loader', // translates CSS into CommonJS
+          loader: 'css-loader',
         }, {
-          loader: 'less-loader', // compiles Less to CSS
+          loader: 'less-loader',
           options: { javascriptEnabled: true }
         }],
       },
@@ -113,11 +113,17 @@ module.exports = () => ({
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'r3.min.css',
+    }),
     new CleanWebpackPlugin(['publish']),
     new VueLoaderPlugin(),
   ],
   mode: 'production',
   resolve: {
     extensions: ['.js', '.json', '.vue', '.css'],
+  },
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
 });
