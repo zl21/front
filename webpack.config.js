@@ -114,7 +114,7 @@ module.exports = env => ({
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'burgeon-r3.min.css',
+      filename: 'r3.css',
     }),
     new CleanWebpackPlugin([env && env.production ? 'dist' : 'devDist']),
     new VueLoaderPlugin(),
@@ -140,14 +140,6 @@ module.exports = env => ({
   optimization: {
     splitChunks: {
       chunks: 'all',
-      cacheGroups: {
-        styles: {
-          name: 'styles',
-          test: /\.(sa|sc|c|le)ss$/,
-          chunks: 'all',
-          enforce: true
-        }
-      }
     }
   },
 });

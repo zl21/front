@@ -21,6 +21,18 @@ export default {
     }, {
       text: '批量修改可见',
       value: 1,
+    }, {
+      text: '',
+      value: 0,
+      hide: true,
+    }, {
+      text: '',
+      value: 0,
+      hide: true,
+    }, {
+      text: '',
+      value: 0,
+      hide: true,
     },
   ],
   strictMode: true,
