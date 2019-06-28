@@ -1536,6 +1536,7 @@
             document.body.appendChild(eleLink);
             eleLink.click();
             document.body.removeChild(eleLink);
+            this.getTabelList(1);
           }
         });
       },
