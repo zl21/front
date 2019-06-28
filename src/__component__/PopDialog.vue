@@ -249,6 +249,7 @@
         });
       },
       searchForm() {
+        this.selectOperation.startindex = 0;
         this.getList();
       },
       saveData() {},
@@ -288,15 +289,29 @@
             this.formList.inpubobj[index].display === 'OBJ_SELECT'
             || this.formList.inpubobj[index].display === 'select'
           ) {
-            console.log(data[item]);
-            if (/=/.test(data[item][0]) !== true) {
-              // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
-              if (data[item][0]) {
-                data[item] = [`=${data[item]}`.toString()];
-              } else {
-                delete data[item];
-              }
+            if(Array.isArray(data[item])){
+              let arr = data[item].reduce((cuurent,item) =>{
+                cuurent.push(`=${item}`.toString().replace(/=/g, '='));
+                return cuurent;
+              },[]);
+              data[item] = [...arr];
+
+            }else{
+              data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
             }
+            // console.log(data[item]);
+            // data[item].forEach((item) =>{
+            //   if (/=/.test(data[item][0]) !== true) {
+            //   // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
+            //   if (data[item][0]) {
+            //     data[item] = [`=${data[item]}`.toString()];
+            //   } else {
+            //     delete data[item];
+            //   }
+            // }
+
+            // },)
+            
           }
         }
         return data;
@@ -308,6 +323,7 @@
             if (data[item] !== undefined) {
               const dataSelect = this.checkForm(data, item);
               console.log(dataSelect);
+
               this.formChangeData = data;
             }
           });
