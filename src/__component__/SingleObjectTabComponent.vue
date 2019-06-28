@@ -419,7 +419,7 @@
           if (this.type === 'horizontal') {
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: this.$store.state[getModuleName()].tablePageInfo.currentPageIndex,
+              startindex: this.$store.state[getModuleName()].tablePageInfo.currentPageIndex - 1,
               range: this.$store.state[getModuleName()].tablePageInfo.pageSize,
             };
 
