@@ -629,7 +629,7 @@
         // 给cell赋render
         if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
           // 不可编辑状态 显示label
-          if (cellData.isfk) {
+          if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
