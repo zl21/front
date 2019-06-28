@@ -93,6 +93,7 @@ export default [
         name: '排序信息',
         key: 'orderby',
         type: 'object-group',
+        showLabel: true,
         enableIncrease: true,
         objectInfo: [
           {

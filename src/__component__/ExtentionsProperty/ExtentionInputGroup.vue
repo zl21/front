@@ -1,6 +1,9 @@
 <template>
   <div class="extentionInputGroup">
-    <Description :option="option" />
+    <Description
+      :option="option"
+      @removeOption="removeOption"
+    />
     <div class="content">
       <template v-for="(item, index) in option.inputLists">
         <LabelWithInput
@@ -47,14 +50,26 @@
       ExtentionObjectGroup
     },
     methods: {
+      removeOption(keyArray) {
+        this.$emit('removeOption', keyArray || []);
+      },
       objectGroupValueChange({ key, value }) {
         if (this.option.key === '__root__') {
           this.$emit('dataChange', { key, value });
-        } else {
-          this.$emit('dataChange', {
-            key: this.option.key,
-            value: Object.assign(this.defaultData[this.option.key] || {}, { [key]: value })
-          });
+        } else if (this.option.key !== '__root__') {
+          if (value !== '') {
+            this.$emit('dataChange', {
+              key: this.option.key,
+              value: Object.assign(this.defaultData[this.option.key] || {}, { [key]: value })
+            });
+          } else {
+            const copyData = this.defaultData[this.option.key];
+            delete copyData[key];
+            this.$emit('dataChange', {
+              key: this.option.key,
+              value: JSON.stringify(copyData) === '{}' ? '' : copyData
+            });
+          }
         }
       },
       inputGroupValueChange({ key, value }) {

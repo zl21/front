@@ -27,6 +27,7 @@
         @on-cancel="onCancel"
       >
         <ExtentionProperty
+          v-if="showModal"
           :options="options"
           :default-data="transformedData"
           @valueChange="valueChange"
@@ -77,9 +78,6 @@
       },
       valueChange(val) {
         this.currentValue = val;
-        if (val !== '') {
-          this.transformedData = JSON.parse(val);
-        }
       },
       popUp() {
         this.showModal = true;
@@ -88,8 +86,10 @@
         this.setFormatedValue();
         if (this.currentValue === '') {
           this.$emit('valueChange', this.currentValue);
+          this.transformedData = {};
         } else {
           this.$emit('valueChange', JSON.stringify(JSON.parse(this.currentValue)));
+          this.transformedData = JSON.parse(this.currentValue);
         }
         this.showModal = false;
       },

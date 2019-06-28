@@ -1,6 +1,9 @@
 <template>
-  <div class="extentionInput">
-    <Description :option="option" />
+  <div class="extentionCellInput">
+    <Description
+      :option="option"
+      @removeOption="removeOption"
+    />
     <div class="content">
       <LabelWithInput
         :item="option"
@@ -22,6 +25,9 @@
       LabelWithInput
     },
     methods: {
+      removeOption(keyArray) {
+        this.$emit('removeOption', keyArray || []);
+      },
       inputValueChange({ key, value }) {
         this.$emit('dataChange', { key, value });
       }
@@ -40,7 +46,7 @@
 </script>
 
 <style lang="less">
-  .extentionInput {
+  .extentionCellInput {
     display: flex;
     flex-direction: column;
   }

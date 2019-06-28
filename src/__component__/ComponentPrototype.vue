@@ -41,7 +41,7 @@
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-<!--        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />-->
+        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />
       </div>
     </div>
     <div class="divider" />

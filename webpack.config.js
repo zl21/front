@@ -77,8 +77,8 @@ module.exports = env => ({
       {
         test: /\.(sa|sc|c|le)ss$/,
         use: [{
-          // loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
-          loader: MiniCssExtractPlugin.loader,
+          loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+          // loader: MiniCssExtractPlugin.loader,
         }, {
           loader: 'css-loader',
         }, {

@@ -1,6 +1,9 @@
 <template>
   <div class="extentionObjectGroup">
-    <Description :option="option" v-if="showDescription" />
+    <Description
+      :option="option" v-if="showDescription"
+      @removeOption="removeOption"
+    />
     <div class="content-row">
       <div class="left" v-if="option.showLabel">
         <label>{{ option.name }}</label>
@@ -56,6 +59,9 @@
       ObjectGroupItem,
     },
     methods: {
+      removeOption(keyArray) {
+        this.$emit('removeOption', keyArray || []);
+      },
       objectGroupItemChange(index, { key, value }) {
         let copyData = JSON.parse(JSON.stringify(this.defaultData || []));
         if (value === '') {
