@@ -240,6 +240,7 @@
 </template>
 
 <script>
+  import { mapActions, mapState, mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   import Dialog from './ComplexsDialog';
@@ -255,7 +256,6 @@
   import enumerableForTable from '../constants/enumerateInputForTable';
   import extentionForColumn from '../constants/extentionPropertyForColumn';
   import extentionForTable from '../constants/extentionPropertyForTable';
-  import { mapActions, mapState, mapMutations } from 'vuex';
 
   const {
     fkQueuploadProgressry,
@@ -368,18 +368,17 @@
       routerNext() {
         // 路由跳转
         const props = this._items.props;
-        const type = 'tableDetailAction';
+        const type = 'tableDetailVertical';
         // console.log(this._items.props);
-        let customizedModuleName = props.reftable;
-        let tableName = props.reftable;
-        let customizedModuleId = props.reftableid;
-        let label = this._items.title;
-        let id = props.refobjid;
-        console.log(type,customizedModuleName,id);
+        const tableName = props.reftable;
+        const tableId = props.reftableid;
+        const label = this._items.title;
+        const id = props.refobjid;
+        console.log(type, id);
         this.tabOpen({
           type,
-          customizedModuleName,
-          customizedModuleId,
+          tableName,
+          tableId,
           id,
           label
 
@@ -587,7 +586,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          //this._items.event.inputValueChange('', $this);
+          // this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {
@@ -775,7 +774,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          //this._items.event.inputValueChange('', $this);
+          // this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterPopperShow($this) {
@@ -841,7 +840,8 @@
           && typeof this._items.event['popper-value'] === 'function'
         ) {
           if ($this._data.params) {
-            const value = $this._data.parms.NAME.val;
+            const value = $this._data.parms[this._items.inputname.split(':')[1]].val;
+
             const Selected = [
               {
                 Label: value,

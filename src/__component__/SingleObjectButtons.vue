@@ -342,7 +342,7 @@
           
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: this.tablePageInfo.currentPageIndex,
+              startindex: this.tablePageInfo.currentPageIndex - 1,
               range: this.tablePageInfo.pageSize,
             };
             this.getObjectTableItemForTableData({
@@ -418,7 +418,7 @@
         const tabIndex = this.tabCurrentIndex;
         const searchdata = {
           column_include_uicontroller: true,
-          startindex: this.tablePageInfo.currentPageIndex,
+          startindex: this.tablePageInfo.currentPageIndex - 1,
           range: this.tablePageInfo.pageSize,
         };
         this.getObjectTableItemForTableData({
@@ -634,7 +634,7 @@
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
           fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? { ID: null } : selectedId,
-          startindex: this.tablePageInfo.currentPageIndex,
+          startindex: this.tablePageInfo.currentPageIndex - 1,
           range: this.tablePageInfo.pageSize,
         };
 
@@ -925,7 +925,7 @@
                         const { tablename, refcolid } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: this.tablePageInfo.currentPageIndex,
+                          startindex: this.tablePageInfo.currentPageIndex - 1,
                           range: this.tablePageInfo.pageSize,
                         };
                         this.getObjectTableItemForTableData({
