@@ -372,6 +372,8 @@
           if (this.mainFormInfo.buttonsData) {
             return this.mainFormInfo.buttonsData.data.objreadonly;
           }
+        } else {
+          return this.objreadonly;
         }
         return false;
       },
@@ -629,7 +631,7 @@
         // 给cell赋render
         if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
           // 不可编辑状态 显示label
-          if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
+          if (cellData.isfk) {
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
