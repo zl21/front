@@ -373,8 +373,8 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
-        const id = props.refobjid;
-        console.log(type, id);
+        const id = props.refobjid || props.colid;
+        console.log(props, id);
         this.tabOpen({
           type,
           tableName,

@@ -335,7 +335,9 @@
         // 表单数据修改  判断vuex 里面是否有input name
 
         // console.log(data, setdefval);
-        //  console.log(this.mountChecked,this.conditiontype);
+        if(current.item.props.isuppercase){
+            data[current.item.field] = data[current.item.field].toUpperCase();
+        }
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -369,6 +371,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
+        console.log(data)
         // let v1.4外键 及number
         if (current.item.props.fkdisplay || current.item.props.number === true) {
           if (!this.formData[current.item.field]) {
