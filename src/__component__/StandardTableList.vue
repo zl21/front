@@ -393,6 +393,13 @@
                   this.formItemsLists[index].item.value = value;
                   if (Selected !== 'change') {
                     this.formItemsLists[index].item.props.Selected = Selected;
+                  } else {
+                    this.formItemsLists[index].item.props.Selected = [
+                      {
+                        Lable: '',
+                        ID: ''
+                      }
+                    ];
                   }
                   this.formItemsLists = this.formItemsLists.concat([]);
                 },
@@ -431,7 +438,7 @@
                 inputValueChange: (value) => {
                   // 外键的模糊搜索
                   if (!value) {
-                    //this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
+                    // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
                   fkFuzzyquerybyak({
@@ -656,9 +663,8 @@
         if (type === 'empty') {
           this.formItemsLists[index].item.props.defaultSelected = [];
 
-          //this.formItemsLists[index].item.props.AutoData = [];
-                    console.log(this.formItemsLists[index].item.props)
-
+          // this.formItemsLists[index].item.props.AutoData = [];
+          console.log(this.formItemsLists[index].item.props);
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }

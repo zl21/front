@@ -27,16 +27,16 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :formIndex ="index"
+                :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
-                :refcolvalData="formData"
+                :refcolval-data="formData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
-                :mountedType ="mountNumber"
+                :mounted-type="mountNumber"
                 :type="type"
                 :default-column="defaultColumnCol"
                 @formDataChange="formDataChange"
@@ -53,14 +53,14 @@
           ref="FormComponent_0"
           :path="path"
           :isreftabs="isreftabsForm"
-          :formIndex ="0"
-          :refcolvalData="formData"
+          :form-index="0"
+          :refcolval-data="formData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
-          :mountedType ="mountNumber"
+          :mounted-type="mountNumber"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -335,8 +335,8 @@
         // 表单数据修改  判断vuex 里面是否有input name
 
         // console.log(data, setdefval);
-        if(current.item.props.isuppercase){
-            data[current.item.field] = data[current.item.field].toUpperCase();
+        if (current.item.props.isuppercase) {
+          data[current.item.field] = data[current.item.field].toUpperCase();
         }
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
@@ -371,7 +371,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(data)
+        console.log(data);
         // let v1.4外键 及number
         if (current.item.props.fkdisplay || current.item.props.number === true) {
           if (!this.formData[current.item.field]) {
@@ -466,6 +466,7 @@
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
+              console.log(Selected, 'Selected');
               let item = [];
               if (current.formIndex !== 'inpubobj') {
                 item = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -913,7 +914,7 @@
             }, []);
             // arr = [...option];
             return option;
-          }else if (item.fkdisplay === 'mrp' && item.refobjid) {
+          }if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');

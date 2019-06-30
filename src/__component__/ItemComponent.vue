@@ -4,7 +4,6 @@
     <span
       class="itemLabel"
       :style="labelStyle"
-     
     >
       <Poptip
         v-if="_items.props.comment"
@@ -16,23 +15,33 @@
       >
         <i class="iconfont icon-tishi1" />
       </Poptip>
-       <template v-if=" _items.props.fkdisplay === 'pop'">
-         <!-- 路由跳转 -->
-          <template v-if=" !!_items.value">
-            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
-          </template>
-       </template>
-       <template v-if=" _items.props.fkdisplay === 'drp'">
-         <!-- 路由跳转 -->
-          <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
-            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
-          </template>
-       </template>
+      <template v-if=" _items.props.fkdisplay === 'pop'">
+        <!-- 路由跳转 -->
+        <template v-if=" !!_items.value">
+          <i
+            class="iconfont"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.Selected)"
+          ></i>
+        </template>
+      </template>
+      <template v-if=" _items.props.fkdisplay === 'drp'">
+        <!-- 路由跳转 -->
+        <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
+          <i
+            class="iconfont"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.value)"
+          ></i>
+        </template>
+      </template>
       <span
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <span  :title="_items.title">{{ _items.title }}:</span>
+      <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div class="itemComponent">
       <Input
@@ -82,7 +91,7 @@
         :placeholder="_items.props.placeholder"
         :not-found-text="_items.props['not-found-text']"
         :label-in-value="_items.props['label-in-value']"
-        :chooseAll="items.props.chooseAll"
+        :choose-all="items.props.chooseAll"
         :placement="_items.props.placement"
         :transfer="_items.props.transfer"
         :options-visible="_items.props.optionsVisible"
@@ -159,7 +168,7 @@
         @on-keyup="fkrpSelectedInputKeyup"
         @on-keydown="fkrpSelectedInputKeydown"
         @on-popper-show="fkrpSelectedPopperShow"
-        @on-popper-hide ="fkrPopperHide"
+        @on-popper-hide="fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
       <AttachFilter
@@ -172,6 +181,8 @@
         :auot-data="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
+        :show="_items.props.show"
+        :default-selected="_items.props.Selected"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
         @input="attachFilterInput"
@@ -215,26 +226,25 @@
       />
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
-          :default-data="_items.value"
-          @valueChange="extentionValueChange"
-        />
+        :default-data="_items.value"
+        @valueChange="extentionValueChange"
+      />
       <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
         <component
-      
-        :is="_items.componentType"
-        v-if="_items.type === 'Wangeditor'"
-        :key="index"
-        :valuedata="_items.value"
-        :item="_items.props"
-        @getChangeItem="getWangeditorChangeItem"
-      />
-
+          :is="_items.componentType"
+          v-if="_items.type === 'Wangeditor'"
+          :key="index"
+          :valuedata="_items.value"
+          :item="_items.props"
+          @getChangeItem="getWangeditorChangeItem"
+        />
       </template>
       <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
-        <div v-html="_items.value" class="Wangeditor-disabled"></div>
-
+        <div
+          class="Wangeditor-disabled"
+          v-html="_items.value"
+        />
       </template>
-      
     </div>
   </div>
 </template>
@@ -365,7 +375,7 @@
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'tabOpen']),
-      routerNext() {
+      routerNext(value) {
         // 路由跳转
         const props = this._items.props;
         const type = 'tableDetailVertical';
@@ -373,8 +383,12 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
-        const id = props.refobjid || props.colid;
-        console.log(props, id);
+        let id = 0;
+        if (!props.readonly) {
+          id = value[0].ID;
+        } else {
+          id = props.refobjid;
+        }
         this.tabOpen({
           type,
           tableName,
@@ -586,7 +600,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          // this._items.event.inputValueChange('', $this);
+        // this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {
@@ -774,7 +788,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          // this._items.event.inputValueChange('', $this);
+        // this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterPopperShow($this) {
@@ -826,7 +840,7 @@
           if (/选中/.test(this._items.value)) {
             this.filterDate = this.resultData;
           // this.$refs.complex = Object.assign(this.$refs.complex.$data,this.resultData);
-          } 
+          }
           $this.complexs = false;
         }
       },
@@ -1230,8 +1244,8 @@
     padding-top: 2px;
   }
 }
-.Wangeditor-disabled{
-  border:1px solid #d8d8d8;
+.Wangeditor-disabled {
+  border: 1px solid #d8d8d8;
   background-color: #f4f4f4;
   overflow: auto;
   padding: 2px 5px;

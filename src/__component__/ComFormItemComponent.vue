@@ -29,6 +29,7 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
+  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     name: 'FormItemComponent',
@@ -246,7 +247,7 @@
             return;
           }
           // console.log(val,'this.indexItem',this.indexItem);
-          //val = Object.assign(val, this.formValueItem);
+          // val = Object.assign(val, this.formValueItem);
           val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
 
           // this.formDatadefObject = val;
@@ -273,7 +274,7 @@
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
-              //console.log(checkVal,checkShow,_refval ,val,_refcolumn,val[_refcolumn].toString().trim(),);
+              // console.log(checkVal,checkShow,_refval ,val,_refcolumn,val[_refcolumn].toString().trim(),);
               if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
               }
@@ -425,14 +426,14 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
-                  obj[current.item.field] = current.item.value;
-                } else {
-                  const value = current.item.value
-                    ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
-                    : '';
+                obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value
+                  ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
+                  : '';
 
-                  obj[current.item.field] = Number(value);
-                }
+                obj[current.item.field] = Number(value);
+              }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value
                 ? current.item.value.replace(/^\s+|\s+$/g, '')
