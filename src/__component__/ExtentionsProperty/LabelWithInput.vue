@@ -30,6 +30,7 @@
         } else if (this.item.outputValueType === 'JSON' && e.target.value !== '') {
           try {
             value = JSON.parse(e.target.value);
+            this.logInfo = '';
           } catch (exception) {
             this.logInfo = `JSON格式错误：${exception}`;
             return;
@@ -61,7 +62,11 @@
       }
     },
     mounted() {
-      this.$refs.input.value = this.defaultData;
+      if (this.item.outputValueType === 'JSON' && this.defaultData !== '') {
+        this.$refs.input.value = JSON.stringify(this.defaultData);
+      } else {
+        this.$refs.input.value = this.defaultData;
+      }
     }
   };
 </script>
