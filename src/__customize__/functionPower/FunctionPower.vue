@@ -859,7 +859,7 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择源角色！'
+            content: '请选择原角色！'
           });
           return;
         }
