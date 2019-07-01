@@ -318,7 +318,7 @@
         return this.type === pageType.Horizontal;
       },
       buttonGroups() { // 按钮组的数据组合
-        const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        const { tabcmd, DisableEXPORT } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
@@ -363,8 +363,12 @@
             });
           }
         }
-        buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
-        buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+
+        // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
+        if (!DisableEXPORT) {
+          buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
+          buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        }
         return buttonGroupShow;
       },
       isMainTableReadonly() {
