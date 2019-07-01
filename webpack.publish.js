@@ -44,12 +44,6 @@ module.exports = () => ({
       amd: 'axios',
       root: 'axios'
     },
-    // 'ag-grid': {
-    //   commonjs: 'ag-grid',
-    //   commonjs2: 'ag-grid',
-    //   amd: 'ag-grid',
-    //   root: 'agGrid'
-    // },
     'burgeon-ui': {
       commonjs: 'burgeon-ui',
       commonjs2: 'burgeon-ui',
@@ -69,7 +63,6 @@ module.exports = () => ({
       },
       {
         test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader'
         },

@@ -70,7 +70,7 @@ const input = {
     // 添加正则后，校验出错的时候触发
     regxCheck: (value, $this, errorValue) => {}
   }
-}
+};
 // 下拉框
 const select = {
   type: 'select', // 必填!
@@ -110,7 +110,7 @@ const select = {
     transfer: true,
     optionsVisible: true
   }
-}
+};
 // 复选框组件
 // const checkboxGroup = {
 //   type: 'checkboxGroup', // 必填!
@@ -145,7 +145,7 @@ const radiobox = {
     // 是否禁用当前项
     disabled: false
   }
-}
+};
 // 复选框
 const checkbox = {
   type: 'checkbox', // 必填!
@@ -169,7 +169,7 @@ const checkbox = {
   event: {
     change: (event, $this) => {}
   }
-}
+};
 // 日期选择
 const DatePicker = {
   type: 'DatePicker', // 必填!
@@ -205,7 +205,7 @@ const DatePicker = {
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
     transfer: true
   }
-}
+};
 
 // 时间点选择
 const TimePicker = {
@@ -239,7 +239,7 @@ const TimePicker = {
     editable: false,
     transfer: true
   }
-}
+};
 // 下拉框
 const DropDownSelectFilter = {
   type: 'DropDownSelectFilter', // 必填!
@@ -266,7 +266,7 @@ const DropDownSelectFilter = {
     // 是否将弹层放置于 body 内
     transfer: true
   }
-}
+};
 
 // 弹框多选
 const AttachFilter = {
@@ -313,7 +313,7 @@ const AttachFilter = {
       }
     ]
   }
-}
+};
 // 弹框多选
 const ImageUpload = {
   type: 'ImageUpload', // 必填!
@@ -331,7 +331,7 @@ const ImageUpload = {
       valuedata: []
     }
   }
-}
+};
 
 // 文本编辑器
 const Wangeditor = {
@@ -342,7 +342,7 @@ const Wangeditor = {
   props: {
     height: 200
   }
-}
+};
 // 读写规则
 const EnumerableInput = {
   type: 'EnumerableInput', // 必填!
@@ -352,7 +352,7 @@ const EnumerableInput = {
   props: {
     height: 200
   }
-}
+};
 
 // 扩展属性 
 const ExtentionInput = {
@@ -363,7 +363,7 @@ const ExtentionInput = {
   props: {
     height: 200
   }
-}
+};
 
 const dataProp = {
   DropDownSelectFilter,
@@ -380,5 +380,5 @@ const dataProp = {
   EnumerableInput,
   ExtentionInput
 
-}
-export default dataProp
+};
+export default dataProp;

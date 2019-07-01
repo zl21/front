@@ -156,7 +156,7 @@
     },
     watch: {
       tabcmd: {
-        handler(val, oldval) {
+        handler(val) {
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -176,6 +176,15 @@
                   val.cmds.forEach((item, index) => {
                     if (item === 'actionEXPORT') {
                       val.prem[index] = true;
+                    }
+                  });
+                }
+              }
+              if (this.disableExport) {
+                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                  this.tabcmd.cmds.forEach((item, index) => {
+                    if (item === 'actionEXPORT') {
+                      this.tabcmd.prem[index] = false;
                     }
                   });
                 }
@@ -240,6 +249,9 @@
         type: String,
         default: ''
       },
+      disableExport: {
+        type: Boolean,
+      }, 
       isactive: {
         type: Boolean,
         default: false
@@ -452,7 +464,7 @@
             promise.then(() => {
               const message = this.buttonsData.unSubmitData.message;
               if (message) {
-                this.upData(`${message}`);
+                this.upData(`${message}`); 
               }
             });
           }
@@ -475,6 +487,7 @@
       },
       webactionClick(tab) { // 动作定义执行
         this.activeTabAction = tab;
+        // console.log('action',tab)
         switch (tab.vuedisplay) {
         case 'native': // 跳转url
           // eslint-disable-next-line no-restricted-globals
@@ -588,9 +601,11 @@
           this.getObjTabActionSlientConfirm({
             params, path: tab.action, resolve, reject 
           });
+          this.$loading.show();
         });
         
         promise.then(() => {
+          this.$loading.hide();
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -599,6 +614,8 @@
           };
           this.$Modal.fcSuccess(data);
           this.upData();
+        }, () => {
+          this.$loading.hide();
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1526,6 +1543,15 @@
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+            if (this.disableExport) {
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item === 'actionEXPORT') {
                     this.tabcmd.prem[index] = false;
                   }
                 });

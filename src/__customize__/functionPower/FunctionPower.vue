@@ -1470,7 +1470,6 @@
 </script>
 
 <style lang="less">
-  @import "../../../src/assets/theme/custom.less";
   .burgeon-spin-fix{
     z-index: 999;
     .demo-spin-icon-load{

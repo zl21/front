@@ -31,7 +31,7 @@
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
-                :refcolval-data="formData"
+                :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
@@ -54,7 +54,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
-          :refcolval-data="formData"
+          :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -71,13 +71,15 @@
 </template>
 
 <script>
+  import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
   import { Version } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
-  
+  import getModuleName from '../__utils__/getModuleName';
+
   const {
     fkQueryList,
     fkFuzzyquerybyak,
@@ -181,6 +183,8 @@
         mountNumber: 0, // 页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
+        refcolvaData: {},
+        refcolvalAll: {},
         conditiontype: '',
         childFormData: [],
         computdefaultData: [], // form
@@ -338,6 +342,7 @@
         if (current.item.props.isuppercase) {
           data[current.item.field] = data[current.item.field].toUpperCase();
         }
+        this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -373,11 +378,14 @@
         }
         console.log(data);
         // let v1.4外键 及number
-        if (current.item.props.fkdisplay || current.item.props.number === true) {
-          if (!this.formData[current.item.field]) {
+        if (!this.formData[current.item.field]) {
+          if (current.item.props.number === true) {
             this.formData[current.item.field] = 0;
+          } else {
+            this.formData[current.item.field] = '';
           }
         }
+        this.getStateData();
         this.$emit('formChange', this.formData, this.formDataDef);
       },
       VerifyMessageForm(value, type) {
@@ -398,7 +406,7 @@
         setTimeout(() => {
           this.mountChecked = true;
         }, 200);
-
+        this.refcolvaData = {};
         this.defaultFormData = Object.assign(this.defaultFormData, value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -407,7 +415,16 @@
           }
           return arr;
         }, {});
-        
+        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
+          if (defaultFormData[option]) {
+            arr[option] = defaultFormData[option];
+          }
+          return arr;
+        }, {});
+        if (this.moduleFormType === 'horizontal') {
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+        }
+        this.getStateData();
         this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
@@ -500,7 +517,8 @@
             },
             'on-show': ($this) => {
               // 当外键下拉站开始去请求数据
-
+              this.getStateData(); // 获取主表信息
+              console.log(this.refcolvalAll, 'refcolvalAll');
               let Fitem = [];
               if (current.formIndex !== 'inpubobj') {
                 Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -512,10 +530,10 @@
               Fitem[index].item.props.data = {};
               let searchObject = {};
               if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                let refcolval = this.formData[current.refcolval.srccol]
-                  ? this.formData[current.refcolval.srccol]
+                let refcolval = this.refcolvalAll[current.refcolval.srccol]
+                  ? this.refcolvalAll[current.refcolval.srccol]
                   : '';
-                if (this.formData[current.refcolval.srccol] === undefined) {
+                if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
                 if (!refcolval) {
@@ -1162,6 +1180,8 @@
               item.props.type = 'AttachFilter';
               item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.show = false;
+
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1197,6 +1217,7 @@
           case 'mop':
             item.props.type = 'AttachFilter';
             item.props.empty = 0;
+            item.props.show = true;
             item.props.AutoData = [];
             item.props.dialog = {
               model: {
@@ -1402,7 +1423,33 @@
         } else {
           this.defaultColumnCol = this.defaultData.objviewcol;
         }
-      }
+      },
+      getStateData() {
+        // 获取 主子表的状态值
+        setTimeout(() => { }, 100);
+
+        console.log(this.masterName, this.isreftabs, this.moduleFormType, this.childTableName);
+        this.refcolvalAll = {};
+        const state = this.$store.state[getModuleName()];
+        if (this.condition === 'list' || !this.isreftabs) {
+          const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
+          this.refcolvalAll = Object.assign(defaultMain, this.formData);
+        
+          // console.log(this.refcolvalAll);
+          return this.refcolvalAll;
+        }
+        if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+          const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
+          const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
+          this.refcolvalAll = Object.assign(defaultMain, modifyMain);
+        } else {
+          const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
+          const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
+          this.refcolvalAll = Object.assign(defaultMain, addMain);
+        }
+        console.log(this.refcolvalAll);         
+        return this.refcolvalAll;
+      },
     },
     mounted() {
       this.Comparison();
