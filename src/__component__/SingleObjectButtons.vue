@@ -292,6 +292,10 @@
         type: Function,
         default: () => {}
       },
+      clearItemTableSearchValue: {
+        type: Function,
+        default: () => {}
+      },
     },
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
@@ -646,7 +650,7 @@
         const selectedId = {
           ID: itemSelected
         };
-        const searchdata = {
+        const searchdatas = {
           table: this.itemName,
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
@@ -656,7 +660,7 @@
         };
 
         const OBJ = {
-          searchdata: JSON.stringify(searchdata),
+          searchdata: JSON.stringify(searchdatas),
           filename: tabledesc,
           menu: tabledesc,
           filetype: '.xlsx',
@@ -676,7 +680,20 @@
             document.body.appendChild(eleLink);
             eleLink.click();
             document.body.removeChild(eleLink);
-            this.upData();
+            this.clearItemTableSearchValue();// 清除子表搜索框值
+            if (this.objectType === 'horizontal') { // 横向布局
+              const { tablename } = this.itemInfo;
+              const tabIndex = this.tabCurrentIndex;
+              const searchdata = {
+                column_include_uicontroller: true,
+                startindex: 0,
+                range: this.tablePageInfo.pageSize,
+              };
+              this.getObjectTableItemForTableData({
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+              });
+            }
+      
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           }
         }, () => {});
