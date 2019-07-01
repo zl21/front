@@ -1073,11 +1073,12 @@
             return h('div', [
               h('Poptip', {
                 style: {
-                  width: '60px'
+                  width: '60px',
                 },
                 props: {
                   trigger: 'hover',
                   transfer: true,
+                  wordWrap: true,
                   content: 'content',
                   placement: 'right'
 
@@ -1451,9 +1452,9 @@
         const data = this.afterSendData[this.tableName] ? JSON.parse(JSON.stringify(this.afterSendData[this.tableName])) : [];
         const tabthData = JSON.parse(JSON.stringify(this.dataSource.tabth)).reverse();
         data.map((ele) => {
-          tabthData.forEach((col) =>{
-            if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME) {
-              if (ele[col.colname] === '') {
+          tabthData.forEach((col) => {
+            if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME && ele[col.colname] !== undefined) {
+              if (ele[col.colname] === '' || ele[col.colname] === 0) {
                 this.verifyTipObj[ele.ID] = `${col.name}不能为空，请输入！`;
               }
             }
