@@ -235,7 +235,6 @@
     },
     watch: {
       mountedType() {
-        console.log('mountedType');
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -247,8 +246,9 @@
             return;
           }
           // console.log(val,'this.indexItem',this.indexItem);
-          // val = Object.assign(val, this.formValueItem);
           val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          console.log(val, this.formValueItem);
+          // val = Object.assign(val, this.formValueItem);
 
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
