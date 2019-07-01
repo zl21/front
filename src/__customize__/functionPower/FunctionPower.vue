@@ -14,7 +14,7 @@
     <div class="content">
       <div class="contentLeft">
         <Input
-                placeholder="请输入用户名"
+                placeholder="请输入角色"
                 clearable
                 @on-change="searchInputChange"
                 icon="ios-search"
@@ -512,7 +512,7 @@
           {
             title: '扩展功能',
             key: 'extendFunction',
-            width: 200,
+            width: 100,
             render: (h, params) => h('div', [
               h('Checkbox', {
                 style: {},
@@ -528,6 +528,7 @@
           {
             title: '功能',
             key: 'function',
+            width: 200,
             render: (h, params) => h('div', [
               h(params.row.children.length > 0 ? 'Checkbox' : '', {
                 style: {},
@@ -595,7 +596,7 @@
         network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
           .then((res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data.reverse();
+              this.buttonsData = res.data.data;
               this.buttonsData.push({
                 webdesc: '刷新'
               });
