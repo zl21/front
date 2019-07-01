@@ -436,7 +436,7 @@
                 this.searchClickData();
               }
             },
-            change: () => {
+            change: (event) => {
               if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
@@ -624,7 +624,6 @@
       focusChange(value, current, index) {
         // 外键的模糊搜索
         if (!value) {
-          this.freshDropDownSelectFilterAutoData({}, index, current, 'empty');
           return false;
         }
         let sendData = {};
@@ -914,7 +913,7 @@
             }, []);
             // arr = [...option];
             return option;
-          }if (item.fkdisplay === 'mrp' && item.refobjid) {
+          } if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
@@ -927,7 +926,6 @@
             }, []);
             // arr = [...option];
             return option;
-            
           }
           
           
