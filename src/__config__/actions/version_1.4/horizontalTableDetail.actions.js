@@ -413,6 +413,8 @@ export default {
         const invalidData = res.data;
         resolve();
         commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
       }
     });
   },

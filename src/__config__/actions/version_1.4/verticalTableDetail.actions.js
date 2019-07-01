@@ -615,9 +615,8 @@ export default {
   }, {
     params,
     path,
-    resolve,
-    reject
-  }) { // 获取作废数据
+    resolve, reject
+  }) { 
     network.post(path || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
@@ -626,7 +625,7 @@ export default {
         commit('updateObjTabActionSlientConfirm', invalidData);
       } else {
         reject();
-      }
+      }  
     });
   },
 };

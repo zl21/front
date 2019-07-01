@@ -27,6 +27,7 @@
 </template>
 
 <script>
+  import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
   import getModuleName from '../__utils__/getModuleName';
@@ -199,6 +200,12 @@
         default() {
           return {};
         }
+      },
+      moduleFormType: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     data() {
@@ -213,6 +220,7 @@
         checkMounted: false, // 是否初始化
         VerificationForm: [], // 需要校验的
         mountedTypeName: '',
+        LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
         setHeight: 34,
         actived: false
@@ -224,6 +232,8 @@
           this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
       });
+      this.formValueItem = {};
+
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
@@ -250,16 +260,14 @@
           if (this.indexItem === -1) {
             return;
           }
+          //   拦截默认值
           if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
             return;
           }
-          // return false;
-          // console.log(val,'this.indexItem',this.indexItem);
-          val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-          //  console.log(val, this.formValueItem);
-          // val = Object.assign(val, this.formValueItem);
+          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          val = Object.assign(allValue, this.formValueItem);
 
-          // this.formDatadefObject = val;
+          // console.log(val, this.formValueItem);
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
@@ -314,40 +322,62 @@
       }
     },
     methods: {
+      inputget(formIndex, index, items) {
+        const elDiv = this.$refs[`component_${index}`][0]
+          && this.$refs[`component_${index}`][0].$el;
+        if (!elDiv) {
+          return false;
+        }
+        let onfousInput = {};
+        if (items.item.type === 'textarea') {
+          onfousInput = elDiv.querySelector('textarea');
+        } else {
+          onfousInput = elDiv.querySelector('input');
+        }
+        return onfousInput;
+      },  
       formInit() {
-        this.$nextTick(() => {
-          const val = this.refcolvalData;
-          this.newFormItemLists.map((items, i) => {
-            const item = items.item;
-            if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              // this.dynamicforcompute(item, val, i);
-            } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-              const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
-              if (val[_refcolumn] === undefined) {
-                if (_refval === 'Y') {
-                  val[_refcolumn] = 'N';
-                }
-                if (_refval === '1') {
-                  val[_refcolumn] = '0';
-                }
-                if (_refval === true) {
-                  val[_refcolumn] = 'false';
-                }
+        const val = this.refcolvalData;
+        this.newFormItemLists.map((items, i) => {
+          const item = items.item;
+          if (this.type === 'PanelForm') {
+            this.LinkageForm.push({
+              key: items.item.field,
+              name: items.item.title,
+              input: this.inputget(this.formIndex, i, items)
+            });
+          }
+          
+          if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+            // this.dynamicforcompute(item, val, i);
+          } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
+            const _refcolumn = item.validate.hidecolumn.refcolumn;
+            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+            if (val[_refcolumn] === undefined) {
+              if (_refval === 'Y') {
+                val[_refcolumn] = 'N';
               }
-              const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
-              const checkShow = items.show ? 1 : 0;
-              if (checkVal !== checkShow) {
-                this.hidecolumn(item, i);
+              if (_refval === '1') {
+                val[_refcolumn] = '0';
               }
-            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
-              this.refcolval(item, val, i);
-              // this.formDataChange();
+              if (_refval === true) {
+                val[_refcolumn] = 'false';
+              }
             }
-            return items;
-          });
-          // this.$store.commit(`${getModuleName()}/updateLinkageForm`, this.LinkageForm);
+            const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
+            const checkShow = items.show ? 1 : 0;
+            if (checkVal !== checkShow) {
+              this.hidecolumn(item, i);
+            }
+          } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+            this.refcolval(item, val, i);
+            // this.formDataChange();
+          }
+          return items;
         });
+        if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+          this.$store.commit(`${getModuleName()}/updateLinkageForm`, this.LinkageForm);
+        }
       },  
       mountdataFormInt() {
         this.actived = false;
@@ -523,6 +553,9 @@
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
+        // checkbox
+        this.formValueItem = Object.assign(this.formValueItem, obj);
+
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
       },
