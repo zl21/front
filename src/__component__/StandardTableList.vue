@@ -101,17 +101,13 @@
   import modifyDialog from './ModifyModal';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import moduleName from '../__utils__/getModuleName';
   import CustomizeModule from '../__config__/customizeDialog.config';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
-  // import ModuleName from '../__utils__/getModuleName.js';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  // const importCustom = file => require(`../__component__/${file}.vue`).default;
   export default {
     components: {
       ButtonGroup,
@@ -870,7 +866,6 @@
         }
       },
       webActionSlient(item) {
-        // this.actionLoading = true;
         const obj = {
           tableid: this.buttons.tableId,
           ids: this.buttons.selectIdArr,
@@ -1027,15 +1022,30 @@
         });
         this.$refs.dialogRefs.open();
       },
+      AddDetailClick(obj) { // 动作定义执行
+        this.activeTabAction = tab;
+        switch (tab.vuedisplay) {
+        case 'native': // 跳转url
+          location.href = tab.action;
+          break;
+        case 'slient':
+          this.objTabActionSlient(tab);
+          break;
+        case 'dialog':
+          this.objTabActionDialog(tab);
+          break;
+        case 'navbar':
+          this.objTabActionNavbar(tab);
+          break;
+        default:
+          break;
+        }
+      },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
-        // 双击条状判断
-        const objTableUrl = this.ag.datas.tableurl;
-        // this.buttons.errorData = [];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
           const id = 'New';
-
           const label = `${this.activeTab.label}新增`;
           if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
             const type = 'tableDetailHorizontal';
@@ -1047,13 +1057,8 @@
               label,
               id
             });
-          } else if (objTableUrl) {
-            // 跳转的是单对象
-            // const query = urlParse(objTableUrl);
-            // alert('暂未增加自定义跳转逻辑');
           } else {
             const type = 'tableDetailVertical'; // 左右结构的单对项页面
-            // routeTo({ type, info: { tableName, tableId, itemId: id } });
             this.tabHref({
               type,
               tableName,
@@ -1167,7 +1172,6 @@
               }行),是否确定继续操作?`,
               showCancel: true,
               onOk: () => {
-                console.log(this);
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
