@@ -417,7 +417,11 @@
 
       ...mapMutations('global', ['tabHref']),
       //   ...mapActions('global', ['getMenuLists']),
-
+      clearSearchData() {
+        this.searchCondition = null;
+        this.searchInfo = '';
+        this.currentPage = 1;
+      }, // 清空搜索框里的值
       buttonClick(obj) {
         switch (obj.eName) {
         case 'actionIMPORT': // 导入
