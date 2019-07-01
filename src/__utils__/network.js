@@ -62,6 +62,7 @@ axios.interceptors.response.use(
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
+        mask: true,
         title: '错误',
         content: response.data.message || 'No Error Message.'
       });
@@ -74,7 +75,7 @@ axios.interceptors.response.use(
     });
     return response;
   },
-  (error) => {
+  (error) => { 
     if (error.response) {
       const { status, config } = error.response;
       const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
@@ -85,6 +86,11 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
+        window.vm.$Modal.fcError({
+          mask: true,
+          title: '错误',
+          content: '已超时'
+        });
         router.push('/login');
       } else if (status === 500) {
       // 如果http状态码正常，则直接返回数据
