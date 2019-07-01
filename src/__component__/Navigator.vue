@@ -60,10 +60,10 @@
 
 
       <i v-if="searchBtn === true"
-class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
+class="iconfont iconbj_search" @click="searchBtn = false" />
     </div>
     <div class="tag right">
-      <i class="iconfont icon-yonghu-"
+      <i class="iconfont iconmd-person"
 @click="show = true" />
     </div>
     <Drawer v-model="show">

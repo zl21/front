@@ -3,19 +3,19 @@
     <div class="panel-main">
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-yonghu-" />
+          <i class="iconfont iconmd-person" />
           <span>欢迎: {{ userInfo.ename }}</span>
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <i class="iconfont icon-xiugaimima" />
+          <i class="iconfont iconbj_password" />
           <span>修改密码</span>
         </p>
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-liebiao-shoucang left-icon" />
+          <i class="iconfont iconbj_col left-icon" />
           <span>是否展开收藏夹</span>
           <i-switch
             v-model="showFavorites"
@@ -26,7 +26,7 @@
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-zhankaichaxuntiaojian" />
+          <i class="iconfont iconios-expand" />
           <span>折叠查询条件</span>
           <i-switch
             v-model="switchValue"
@@ -40,7 +40,7 @@
         class="panel-item"
       >
         <p>
-          <i class="iconfont icon-xiugaimima" />
+          <i class="iconfont iconbj_shrink" />
           <span>查询条件默认显示行数</span>
           <InputNumber
             v-model="num7"
@@ -52,7 +52,7 @@
       </div>
       <div class="panel-item">
         <p @click="signout">
-          <i class="iconfont icon-tuichu" />
+          <i class="iconfont iconbj_exit" />
           <span>退出</span>
         </p>
       </div>
