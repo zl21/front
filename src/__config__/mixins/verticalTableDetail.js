@@ -70,17 +70,9 @@ export default () => ({
 
       ]),
   },
-  deactivated() {
-    if (this.$options.isKeepAliveModel) {
-      if (this.keepAliveLists.indexOf(this.moduleComponentName) === -1) {
-        console.log(`${this.moduleComponentName} deactivated.`);
-      }
-    }
-  },
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
-        console.log(`${this.moduleComponentName} before destroy`);
         store.unregisterModule(this.moduleComponentName);
       }
     } catch (e) {

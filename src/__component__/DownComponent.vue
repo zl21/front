@@ -69,7 +69,7 @@
     },
     computed: {
       className() {
-        return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
+        return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       },
       downComponent() {
         return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;

@@ -325,7 +325,7 @@ fkComponent.prototype.init = function (params) {
   const { value } = params;
   // 设置fk icon 的样式
   const template = value !== null && value !== ''
-    ? `<i class="iconfont ${cssFeatures.hover}" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px">&#xe625;</i> ${params.value || ''}`
+    ? `<i class="iconfont ${cssFeatures.hover} iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px"></i> ${params.value || ''}`
     : '';
 
   if (params.data && params.data.ID.val !== '合计' && params.data.ID.val !== '总计') {

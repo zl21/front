@@ -19,22 +19,24 @@
         <!-- 路由跳转 -->
         <template v-if=" !!_items.value">
           <i
-            class="iconfont"
+            class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.props.Selected)"
-          ></i>
+          >
+          </i>
         </template>
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
         <!-- 路由跳转 -->
         <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
           <i
-            class="iconfont"
+            class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.value)"
-          ></i>
+          >
+          </i>
         </template>
       </template>
       <span
