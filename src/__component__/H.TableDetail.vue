@@ -42,8 +42,8 @@
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
             obj.componentAttribute.type = 'horizontal';
-            Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
-            obj.component = `${item.tablename}_TapComponent`;
+            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+            obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
           });

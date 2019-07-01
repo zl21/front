@@ -13,6 +13,7 @@
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
+      :clearItemTableSearchValue="clearItemTableSearchValue"
       :isreftabs="isreftabs"
     />
     <compositeForm
@@ -226,6 +227,11 @@
         }
         return true;
       }, // 传给按钮组件的回调方法，用来调表格组件的校验
+      clearItemTableSearchValue() {
+        if (this.$refs.objectTableRef) {
+          this.$refs.objectTableRef.clearSearchData();
+        }
+      }, // 清空表格搜索框的值
       formEnter() {
         this.isclick = false;
         let savePath = '';
