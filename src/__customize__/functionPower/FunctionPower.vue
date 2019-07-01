@@ -1589,6 +1589,7 @@
     .itemContent {
       display: flex;
       margin-bottom: 10px;
+      overflow: hidden;
       .labelContent {
         margin-right: 4px;
         width: 100px;
