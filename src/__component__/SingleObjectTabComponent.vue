@@ -9,7 +9,7 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
-      :DisableEXPORT="buttonsData.data.DisableEXPORT"
+      :disable-export="buttonsData.data.DisableEXPORT"
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
