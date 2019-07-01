@@ -475,7 +475,6 @@
       },
       webactionClick(tab) { // 动作定义执行
         this.activeTabAction = tab;
-        // console.log('action',tab)
         switch (tab.vuedisplay) {
         case 'native': // 跳转url
           // eslint-disable-next-line no-restricted-globals
