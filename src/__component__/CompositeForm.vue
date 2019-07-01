@@ -1173,6 +1173,8 @@
               item.props.type = 'AttachFilter';
               item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.show = false;
+
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1208,6 +1210,7 @@
           case 'mop':
             item.props.type = 'AttachFilter';
             item.props.empty = 0;
+            item.props.show = true;
             item.props.AutoData = [];
             item.props.dialog = {
               model: {
