@@ -60,12 +60,12 @@
         <span>
           <i
             v-if="!dataArray.collectiImg"
-            class="iconfont"
-          >&#xe62e;</i>
+            class="iconfont iconbj_col"
+          ></i>
           <i
             v-else
-            class="iconfont"
-          >&#xe62b;</i>
+            class="iconfont iconbj_alrcol"
+          ></i>
         </span>
       </Button>
       <Button
