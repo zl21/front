@@ -21,7 +21,8 @@ export default () => ({
       currentPageIndex: 0,
       pageSize: 10
     },
-    objTabActionSlientConfirmData: {}
+    objTabActionSlientConfirmData: {},
+    LinkageForm: [] // form 校验
   },
   actions,
   mutations
