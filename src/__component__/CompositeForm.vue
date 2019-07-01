@@ -34,6 +34,7 @@
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
+                :module-form-type="moduleFormType"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :mounted-type="mountNumber"
@@ -58,6 +59,7 @@
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
+          :module-form-type="moduleFormType"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
@@ -505,6 +507,7 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
+              console.log('6666');
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
@@ -518,7 +521,6 @@
             'on-show': ($this) => {
               // 当外键下拉站开始去请求数据
               this.getStateData(); // 获取主表信息
-              console.log(this.refcolvalAll, 'refcolvalAll');
               let Fitem = [];
               if (current.formIndex !== 'inpubobj') {
                 Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -536,8 +538,19 @@
                 if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
+                const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
+                const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
+                console.log(Index);
                 if (!refcolval) {
-                  this.$Message.info('请选择关联表字段');
+                  if (Index !== -1) {
+                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
+                    if (LinkageForm[Index].input) {
+                      LinkageForm[Index].input.focus();
+                      return false;
+                    }
+                  } else {
+                    this.$Message.info('请先选择关联的表');
+                  }
                   return false;
                 }
                 const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
@@ -935,7 +948,7 @@
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
-            const option = refobjid.reduce((currty, item, index) => {
+            const option = refobjid.reduce((currty, index) => {
               currty.push({
                 ID: item || '',
                 Label: valuedata[index] || ''
@@ -1426,9 +1439,6 @@
       },
       getStateData() {
         // 获取 主子表的状态值
-        setTimeout(() => { }, 100);
-
-        console.log(this.masterName, this.isreftabs, this.moduleFormType, this.childTableName);
         this.refcolvalAll = {};
         const state = this.$store.state[getModuleName()];
         if (this.condition === 'list' || !this.isreftabs) {

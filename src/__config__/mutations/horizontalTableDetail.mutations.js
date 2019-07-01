@@ -209,6 +209,11 @@ export default {
   },
   updateObjTabActionSlientConfirm(state, data) { // 动作定义类型接口返回值
     state.objTabActionSlientConfirmData = data;
+  },
+  updateLinkageForm(state, data) {
+    // form 联动校验 存值
+
+    state.LinkageForm = state.LinkageForm.concat(data);
   }
   
 };
