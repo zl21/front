@@ -89,7 +89,7 @@ axios.interceptors.response.use(
         window.vm.$Modal.fcError({
           mask: true,
           title: '错误',
-          content: '已超时'
+          content: '当前登陆已过期'
         });
         router.push('/login');
       } else if (status === 500) {

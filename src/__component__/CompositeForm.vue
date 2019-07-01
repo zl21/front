@@ -34,6 +34,7 @@
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
+                :module-form-type="moduleFormType"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :mounted-type="mountNumber"
@@ -58,6 +59,7 @@
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
+          :module-form-type="moduleFormType"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
@@ -453,12 +455,15 @@
                 this.searchClickData();
               }
             },
-            change: (event) => {
+            change: (value) => {
               if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
               if (current.fkdisplay) {
-                this.focusChange(event.target.value, current, index);
+                this.focusChange(value, current, index);
+              }
+              if (current.display === 'check') {
+                // this.changeItem(index, current, value);
               }
             },
             'on-delete': ($this, item, key) => {
@@ -505,6 +510,7 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
+              console.log('6666');
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
@@ -518,7 +524,6 @@
             'on-show': ($this) => {
               // 当外键下拉站开始去请求数据
               this.getStateData(); // 获取主表信息
-              console.log(this.refcolvalAll, 'refcolvalAll');
               let Fitem = [];
               if (current.formIndex !== 'inpubobj') {
                 Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -536,8 +541,19 @@
                 if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
+                const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
+                const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
+                console.log(Index);
                 if (!refcolval) {
-                  this.$Message.info('请选择关联表字段');
+                  if (Index !== -1) {
+                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
+                    if (LinkageForm[Index].input) {
+                      LinkageForm[Index].input.focus();
+                      return false;
+                    }
+                  } else {
+                    this.$Message.info('请先选择关联的表');
+                  }
                   return false;
                 }
                 const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
@@ -935,7 +951,7 @@
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
-            const option = refobjid.reduce((currty, item, index) => {
+            const option = refobjid.reduce((currty, index) => {
               currty.push({
                 ID: item || '',
                 Label: valuedata[index] || ''
@@ -1365,6 +1381,17 @@
         }
         item[index].item.value = item[index].item.value.toUpperCase();
       },
+      changeItem(index, current, value) {
+        // check
+        let item = [];
+        if (current.formIndex !== 'inpubobj') {
+          item = this.$refs[`FormComponent_${current.formIndex}`][0]
+            .newFormItemLists;
+        } else {
+          item = this.$refs.FormComponent_0.newFormItemLists;
+        }
+        item[index].item.value = value;
+      },
       setVerifiy() {
         // 校验提示
         const VerificationMessage = {
@@ -1426,9 +1453,6 @@
       },
       getStateData() {
         // 获取 主子表的状态值
-        setTimeout(() => { }, 100);
-
-        console.log(this.masterName, this.isreftabs, this.moduleFormType, this.childTableName);
         this.refcolvalAll = {};
         const state = this.$store.state[getModuleName()];
         if (this.condition === 'list' || !this.isreftabs) {

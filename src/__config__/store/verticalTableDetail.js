@@ -32,7 +32,8 @@ export default () => ({
       currentPageIndex: 0,
       pageSize: 10
     },
-    objTabActionSlientConfirmData: {}
+    objTabActionSlientConfirmData: {},
+    LinkageForm: [] // 所有form
   },
   actions,
   mutations
