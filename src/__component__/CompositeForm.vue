@@ -1182,6 +1182,33 @@
             item.props.empty = 0;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
+            // item.props.isShowPopTip = () => {
+            //   that.getStateData(); // 获取主表信息
+            //   if (Object.hasOwnProperty.call(current, 'refcolval')) {
+            //     let refcolval = that.refcolvalAll[current.refcolval.srccol]
+            //       ? that.refcolvalAll[current.refcolval.srccol]
+            //       : '';
+            //     if (that.refcolvalAll[current.refcolval.srccol] === undefined) {
+            //       refcolval = that.defaultFormData[current.refcolval.srccol];
+            //     }
+            //     const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
+            //     const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
+            //     if (!refcolval) {
+            //       if (Index !== -1) {
+            //         this.$Message.info(`请先选择${LinkageForm[Index].name}`);
+            //         if (LinkageForm[Index].input) {
+            //           LinkageForm[Index].input.focus();
+            //           return false;
+            //         }
+            //       } else {
+            //         this.$Message.info('请先选择关联的表');
+            //       }
+            //       return false;
+            //     }
+            //   } else {
+            //     return true;
+            //   }
+            // };
             break;
           case 'mrp':
             item.props.single = false;
