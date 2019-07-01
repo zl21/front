@@ -229,7 +229,7 @@
       }),
       watermarkImg() { // 匹配水印图片路径
         if (this.watermarkimg.includes('/static/img/')) {
-          return this.watermarkimg.replace('/static/img/', '/src/assets/image/');
+          return this.watermarkimg.replace('/static/img/', '/src/assets/image/watermark/');
         }
         return this.watermarkimg;
       },
