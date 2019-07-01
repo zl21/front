@@ -29,6 +29,7 @@
 <script>
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks } from '../constants/global';
+  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     name: 'FormItemComponent',
@@ -78,11 +79,15 @@
 
             if (items.item.props.number) {
               if (option[items.item.field]) {
-                option[items.item.field] = Number(
-                  option[items.item.field]
-                    .replace(/^\s+|\s+$/g, '')
-                    .replace(/-/g, '')
-                );
+                if (/-/.test(option[items.item.field])) {
+                  option[items.item.field] = Number(
+                    option[items.item.field]
+                      .replace(/^\s+|\s+$/g, '')
+                      .replace(/-/g, '')
+                  );
+                } else {
+                  option[items.item.field] = Number(option[items.item.field]);
+                }
               }
             } else if (typeof option[items.item.field] === 'string') {
               option[items.item.field] = option[items.item.field].replace(
@@ -209,7 +214,8 @@
         VerificationForm: [], // 需要校验的
         mountedTypeName: '',
         formDatadefObject: {}, // 获取form默认值
-        setHeight: 34
+        setHeight: 34,
+        actived: false
       };
     },
     mounted() {
@@ -234,7 +240,6 @@
     },
     watch: {
       mountedType() {
-        console.log('mountedType');
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -245,9 +250,14 @@
           if (this.indexItem === -1) {
             return;
           }
+          if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
+            return;
+          }
+          // return false;
           // console.log(val,'this.indexItem',this.indexItem);
-          //val = Object.assign(val, this.formValueItem);
           val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          //  console.log(val, this.formValueItem);
+          // val = Object.assign(val, this.formValueItem);
 
           // this.formDatadefObject = val;
           this.newFormItemLists.map((items, i) => {
@@ -263,17 +273,17 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval.toString().trim();
+              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
               if (val[_refcolumn] === undefined) {
                 return false;
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
 
-              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
+              const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
-              //console.log(checkVal,checkShow,_refval ,val,_refcolumn,val[_refcolumn].toString().trim(),);
+              // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
               if (checkVal !== checkShow) {
                 this.hidecolumn(item, i);
               }
@@ -304,11 +314,51 @@
       }
     },
     methods: {
+      formInit() {
+        this.$nextTick(() => {
+          const val = this.refcolvalData;
+          this.newFormItemLists.map((items, i) => {
+            const item = items.item;
+            if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+              // this.dynamicforcompute(item, val, i);
+            } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
+              const _refcolumn = item.validate.hidecolumn.refcolumn;
+              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+              if (val[_refcolumn] === undefined) {
+                if (_refval === 'Y') {
+                  val[_refcolumn] = 'N';
+                }
+                if (_refval === '1') {
+                  val[_refcolumn] = '0';
+                }
+                if (_refval === true) {
+                  val[_refcolumn] = 'false';
+                }
+              }
+              const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
+              const checkShow = items.show ? 1 : 0;
+              if (checkVal !== checkShow) {
+                this.hidecolumn(item, i);
+              }
+            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+              this.refcolval(item, val, i);
+              // this.formDataChange();
+            }
+            return items;
+          });
+          // this.$store.commit(`${getModuleName()}/updateLinkageForm`, this.LinkageForm);
+        });
+      },  
       mountdataFormInt() {
+        this.actived = false;
         setTimeout(() => {
           //  传form 默认值
           this.mountdataForm(this.formDataObject);
-        }, 200);
+          this.formInit();
+          setTimeout(() => {
+            this.actived = true;
+          }, 300);
+        }, 100);
       },
       VerificationFormInt() {
         //  form 计算 校验
@@ -367,7 +417,6 @@
           // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') {
             // 若为外键则要处理输入还是选中
-            console.log(current);
             if (current.item.value instanceof Array) {
               // 结果为数组则为选中项
               delete obj[current.item.inputname];
@@ -425,14 +474,14 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
-                  obj[current.item.field] = current.item.value;
-                } else {
-                  const value = current.item.value
-                    ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
-                    : '';
+                obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value
+                  ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
+                  : '';
 
-                  obj[current.item.field] = Number(value);
-                }
+                obj[current.item.field] = Number(value);
+              }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value
                 ? current.item.value.replace(/^\s+|\s+$/g, '')
@@ -498,15 +547,15 @@
           const srccol = items.validate.refcolval.srccol;
           const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.refcolvalData)));
 
-          if (!jsonArr[srccol]) {
-            if (items.type === 'DropDownSelectFilter') {
-              // console.log(items.props.defaultSelected, index, items);
-              this.newFormItemLists[index].item.value = '';
-              this.newFormItemLists[index].item.props.defaultSelected = [];
-            } else {
-              this.newFormItemLists[index].item.value = '';
-            }
-          }
+        //   if (!jsonArr[srccol]) {
+        //     if (items.type === 'DropDownSelectFilter') {
+        //       // console.log(items.props.defaultSelected, index, items);
+        //       this.newFormItemLists[index].item.value = '';
+        //       this.newFormItemLists[index].item.props.defaultSelected = [];
+        //     } else {
+        //       this.newFormItemLists[index].item.value = '';
+        //     }
+        //   }
         }
       },
       dynamicforcompute(items, json) {

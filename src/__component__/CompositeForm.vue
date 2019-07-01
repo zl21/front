@@ -27,16 +27,16 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :formIndex ="index"
+                :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
-                :refcolvalData="formData"
+                :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
-                :mountedType ="mountNumber"
+                :mounted-type="mountNumber"
                 :type="type"
                 :default-column="defaultColumnCol"
                 @formDataChange="formDataChange"
@@ -53,14 +53,14 @@
           ref="FormComponent_0"
           :path="path"
           :isreftabs="isreftabsForm"
-          :formIndex ="0"
-          :refcolvalData="formData"
+          :form-index="0"
+          :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
-          :mountedType ="mountNumber"
+          :mounted-type="mountNumber"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -181,6 +181,7 @@
         mountNumber: 0, // 页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
+        refcolvaData: {},
         conditiontype: '',
         childFormData: [],
         computdefaultData: [], // form
@@ -335,7 +336,10 @@
         // 表单数据修改  判断vuex 里面是否有input name
 
         // console.log(data, setdefval);
-        //  console.log(this.mountChecked,this.conditiontype);
+        if (current.item.props.isuppercase) {
+          data[current.item.field] = data[current.item.field].toUpperCase();
+        }
+        this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -369,6 +373,7 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
+        console.log(data);
         // let v1.4外键 及number
         if (current.item.props.fkdisplay || current.item.props.number === true) {
           if (!this.formData[current.item.field]) {
@@ -395,7 +400,7 @@
         setTimeout(() => {
           this.mountChecked = true;
         }, 200);
-
+        this.refcolvaData = {};
         this.defaultFormData = Object.assign(this.defaultFormData, value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -404,6 +409,15 @@
           }
           return arr;
         }, {});
+        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
+          if (defaultFormData[option]) {
+            arr[option] = defaultFormData[option];
+          }
+          return arr;
+        }, {});
+        if (this.moduleFormType === 'horizontal') {
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+        }
         
         this.$emit('InitializationForm', defaultFormData);
       },
@@ -433,7 +447,7 @@
                 this.searchClickData();
               }
             },
-            change: () => {
+            change: (event) => {
               if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
@@ -463,6 +477,7 @@
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
+              console.log(Selected, 'Selected');
               let item = [];
               if (current.formIndex !== 'inpubobj') {
                 item = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -620,7 +635,6 @@
       focusChange(value, current, index) {
         // 外键的模糊搜索
         if (!value) {
-          this.freshDropDownSelectFilterAutoData({}, index, current, 'empty');
           return false;
         }
         let sendData = {};
@@ -910,7 +924,7 @@
             }, []);
             // arr = [...option];
             return option;
-          }else if (item.fkdisplay === 'mrp' && item.refobjid) {
+          } if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
@@ -923,7 +937,6 @@
             }, []);
             // arr = [...option];
             return option;
-            
           }
           
           
@@ -1160,6 +1173,8 @@
               item.props.type = 'AttachFilter';
               item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.show = false;
+
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1195,6 +1210,7 @@
           case 'mop':
             item.props.type = 'AttachFilter';
             item.props.empty = 0;
+            item.props.show = true;
             item.props.AutoData = [];
             item.props.dialog = {
               model: {

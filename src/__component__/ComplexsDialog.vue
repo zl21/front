@@ -492,16 +492,18 @@
           }
         }
         
-       
+            
         if (this.tdData.id !== '') {
           setTimeout(() => {
+            console.log(this.$refs.dialog.$refs.Table[0])
             this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
-            this.tdData.id = '';
-            this.tdData.list = [];
-            this.tdData.index = -1;
+            
           }, 200);
           this.text.result.push(this.tdData.list[0]);
           this.multipleScreenResultCheck(this.sendMessage, 1);
+          this.tdData.id = '';
+          this.tdData.list = [];
+            //this.tdData.index = -1;
         }
       },
       deleteLi(index, row, type) {

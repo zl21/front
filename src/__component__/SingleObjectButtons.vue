@@ -180,6 +180,15 @@
                   });
                 }
               }
+              if (this.disableExport) {
+                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                  this.tabcmd.cmds.forEach((item, index) => {
+                    if (item === 'actionEXPORT') {
+                      this.tabcmd.prem[index] = false;
+                    }
+                  });
+                }
+              }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
@@ -240,6 +249,9 @@
         type: String,
         default: ''
       },
+      disableExport: {
+        type: Boolean,
+      }, 
       isactive: {
         type: Boolean,
         default: false
@@ -452,7 +464,7 @@
             promise.then(() => {
               const message = this.buttonsData.unSubmitData.message;
               if (message) {
-                this.upData(`${message}`);
+                this.upData(`${message}`); 
               }
             });
           }
@@ -1527,6 +1539,15 @@
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+            if (this.disableExport) {
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item === 'actionEXPORT') {
                     this.tabcmd.prem[index] = false;
                   }
                 });

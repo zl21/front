@@ -88,7 +88,7 @@
         <div class="itemContent">
           <div class="labelContent">
             <div class="labelTip">*</div>
-            <div>源角色:</div>
+            <div>原角色:</div>
           </div>
           <DropDownSelectFilter class="itemCom"
                                 :totalRowCount="totalRowCount"
@@ -96,6 +96,7 @@
                                 :AutoData="singleAutoData"
                                 :columnsKey="['NAME']"
                                 :hidecolumns="['ID']"
+                                :defaultSelected="singleDefaultSelected"
                                 @on-fkrp-selected="singleDropSelected"
                                 @on-page-change="singleDropPageChange"
                                 @on-popper-hide="singlePopperHide"
@@ -115,6 +116,8 @@
                                 :pageSize="dropPageSize"
                                 :columnsKey="['NAME']"
                                 :hidecolumns="['ID']"
+                                :defaultSelected="multipleDefaultSelected"
+                                :AutoData="multipleAutoData"
                                 @on-fkrp-selected="multipleDropSelected"
                                 @on-page-change="multipleDropPageChange"
                                 @on-popper-hide="multiplePopperHide"
@@ -181,6 +184,8 @@
         backupsDropData: [], // 备份复制权限外键数据
         singleDropDownSelectFilterData: {}, // 复制权限外键单选数据
         singleAutoData: [], // 复制权限外键单选模糊搜索数据
+        singleDefaultSelected: [], // 复制权限单选默认数据
+        multipleDefaultSelected: [], // 复制权限多选默认数据
         multipleDropDownSelectFilterData: {}, // 复制权限外键多选数据
         multipleAutoData: [], // 复制权限外键多选模糊搜索数据
         totalRowCount: 0, // 复制权限外键数据的totalRowCount
@@ -548,6 +553,12 @@
       copyPermission(val) {
         if (val) {
           this.getCopyPermissionData();
+        } else {
+          this.singleDefaultSelected = [];
+          this.multipleDefaultSelected = [];
+          this.singleAutoData = [];
+          this.multipleAutoData = [];
+          this.copyType = '';
         }
       }
     },
@@ -595,7 +606,7 @@
         network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
           .then((res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data.reverse();
+              this.buttonsData = res.data.data;
               this.buttonsData.push({
                 webdesc: '刷新'
               });
@@ -848,7 +859,7 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择源角色！'
+            content: '请选择原角色！'
           });
           return;
         }
@@ -917,11 +928,11 @@
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
@@ -1078,11 +1089,11 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
@@ -1577,6 +1588,7 @@
     .itemContent {
       display: flex;
       margin-bottom: 10px;
+      overflow: hidden;
       .labelContent {
         margin-right: 4px;
         width: 100px;
