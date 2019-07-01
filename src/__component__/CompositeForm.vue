@@ -455,12 +455,15 @@
                 this.searchClickData();
               }
             },
-            change: (event) => {
+            change: (value) => {
               if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
               if (current.fkdisplay) {
-                this.focusChange(event.target.value, current, index);
+                this.focusChange(value, current, index);
+              }
+              if (current.display === 'check') {
+                // this.changeItem(index, current, value);
               }
             },
             'on-delete': ($this, item, key) => {
@@ -1377,6 +1380,17 @@
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
         item[index].item.value = item[index].item.value.toUpperCase();
+      },
+      changeItem(index, current, value) {
+        // check
+        let item = [];
+        if (current.formIndex !== 'inpubobj') {
+          item = this.$refs[`FormComponent_${current.formIndex}`][0]
+            .newFormItemLists;
+        } else {
+          item = this.$refs.FormComponent_0.newFormItemLists;
+        }
+        item[index].item.value = value;
       },
       setVerifiy() {
         // 校验提示

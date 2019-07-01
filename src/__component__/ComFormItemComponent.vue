@@ -232,6 +232,8 @@
           this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
         }
       });
+      this.formValueItem = {};
+
       this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
@@ -258,16 +260,14 @@
           if (this.indexItem === -1) {
             return;
           }
+          //   拦截默认值
           if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
             return;
           }
-          // return false;
-          // console.log(val,'this.indexItem',this.indexItem);
-          val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-          //  console.log(val, this.formValueItem);
-          // val = Object.assign(val, this.formValueItem);
+          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          val = Object.assign(allValue, this.formValueItem);
 
-          // this.formDatadefObject = val;
+          // console.log(val, this.formValueItem);
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
@@ -553,6 +553,9 @@
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
+        // checkbox
+        this.formValueItem = Object.assign(this.formValueItem, obj);
+
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
       },
