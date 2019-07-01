@@ -31,7 +31,7 @@
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
                 :child-table-name="childTableName"
-                :refcolval-data="formData"
+                :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :verifymessageform="VerifyMessageForm"
@@ -54,7 +54,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
-          :refcolval-data="formData"
+          :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
           :mapp-status="setMapping"
@@ -181,6 +181,7 @@
         mountNumber: 0, // 页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
+        refcolvaData: {},
         conditiontype: '',
         childFormData: [],
         computdefaultData: [], // form
@@ -338,6 +339,7 @@
         if (current.item.props.isuppercase) {
           data[current.item.field] = data[current.item.field].toUpperCase();
         }
+        this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截 
           return false;
@@ -398,7 +400,7 @@
         setTimeout(() => {
           this.mountChecked = true;
         }, 200);
-
+        this.refcolvaData = {};
         this.defaultFormData = Object.assign(this.defaultFormData, value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -407,6 +409,15 @@
           }
           return arr;
         }, {});
+        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
+          if (defaultFormData[option]) {
+            arr[option] = defaultFormData[option];
+          }
+          return arr;
+        }, {});
+        if (this.moduleFormType === 'horizontal') {
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+        }
         
         this.$emit('InitializationForm', defaultFormData);
       },
