@@ -675,7 +675,7 @@
             },
             on: {
               'on-change': (event, data) => {
-                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
               // 'on-focus': (event) => {
               //   event.stopPropagation();
@@ -712,7 +712,7 @@
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
 
-                this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -737,7 +737,7 @@
               },
               on: {
                 'on-change': (event, data) => {
-                  this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                  this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 }
               }
             },
@@ -837,11 +837,11 @@
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': (value) => {
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -921,12 +921,12 @@
                 if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
                   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
                 }
-                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': () => {
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [];
-                this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-popclick': (event, row, targName, $this) => {
                 if (targName !== 'I' && event !== 1) {
@@ -980,13 +980,13 @@
                 if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
                   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
                 }
-                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-select': (data) => {
                 this.fkAutoData = [];
                 this.copyDataSource.row[params.index][cellData.colname].val = data.label;
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [data.value];
-                this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           }, [
@@ -1033,7 +1033,7 @@
                     value = value.replace(/\-/g, '');
                   }
                 }
-                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -1058,7 +1058,7 @@
             },
             on: {
               'on-change': (event, dateType, data) => {
-                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -1286,8 +1286,15 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue) {
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type) {
         // 组装数据 存入store
+        if (!currentValue && type === 'NUMBER') {
+          currentValue = 0;
+        }
+        if (!currentValue && type !== 'NUMBER') {
+          currentValue = '';
+        }
+
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           if (rowDatas.length > 0) {
