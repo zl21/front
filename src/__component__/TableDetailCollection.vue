@@ -1548,6 +1548,9 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
+            this.searchCondition = null;
+            this.searchInfo = '';
+            this.currentPage = 1;
             const eleLink = document.createElement('a');
             const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
             eleLink.setAttribute('href', path);
@@ -1556,8 +1559,6 @@
             eleLink.click();
             document.body.removeChild(eleLink);
             this.getTabelList(1);
-            this.searchCondition = null;
-            this.searchInfo = '';
           }
         });
       },
