@@ -250,12 +250,11 @@ export default {
             }
           };
         } else if (sataTypeName === 'modify') { // 子表编辑
-          const { modify } = parame;
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...modify
+              ...itemModify
             }
           };
         } else {
