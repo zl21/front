@@ -156,7 +156,7 @@
     },
     watch: {
       tabcmd: {
-        handler(val, oldval) {
+        handler(val) {
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -601,9 +601,11 @@
           this.getObjTabActionSlientConfirm({
             params, path: tab.action, resolve, reject 
           });
+          this.$loading.show();
         });
         
         promise.then(() => {
+          this.$loading.hide();
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -612,6 +614,8 @@
           };
           this.$Modal.fcSuccess(data);
           this.upData();
+        }, () => {
+          this.$loading.hide();
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
