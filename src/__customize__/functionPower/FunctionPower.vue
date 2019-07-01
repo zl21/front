@@ -859,7 +859,7 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择源角色！'
+            content: '请选择原角色！'
           });
           return;
         }
@@ -1589,6 +1589,7 @@
     .itemContent {
       display: flex;
       margin-bottom: 10px;
+      overflow: hidden;
       .labelContent {
         margin-right: 4px;
         width: 100px;

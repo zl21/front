@@ -552,22 +552,23 @@
         );
 
         // 处理默认数据，然后进行查询
-        if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
-          this.formDefaultComplete = true;
-          this.searchClickData();
-        }
-        if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
-          this.formDataChange(
-            items.reduce((obj, current) => {
-              obj[current.item.field] = current.item.value;
-              return obj;
-            }, {})
-          );
+        
+        // if (Object.keys(this.formItems.data).length === 0 && !this.formDefaultComplete) {
+        //   this.formDefaultComplete = true;
+        //   this.searchClickData();
+        // }
+        // if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
+        //   this.formDataChange(
+        //     items.reduce((obj, current) => {
+        //       obj[current.item.field] = current.item.value;
+        //       return obj;
+        //     }, {})
+        //   );
 
-          setTimeout(() => {
-            this.searchClickData();
-          }, 200);
-        }
+        //   setTimeout(() => {
+        //     this.searchClickData();
+        //   }, 200);
+        // }
         return items;
       },
       defaultValue(item) {
@@ -940,12 +941,16 @@
       },
 
       dataProcessing() { // 查询数据处理
-        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
-            obj[item] = this.formItems.data[item];
-          }
-          return obj;
-        }, {});
+        let jsonData = {};
+        if (this.formItems) {
+          jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
+            if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
+              obj[item] = this.formItems.data[item];
+            }
+            return obj;
+          }, {});
+        }
+        
   
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
@@ -1543,6 +1548,14 @@
       });
       promise.then(() => {
         this.getbuttonGroupdata();
+      });
+
+      window.addEventListener('network', (event) => {
+        if (event.detail.url === '/p/cs/getTableQuery' && !this._inactive) {
+          setTimeout(() => {
+            this.searchClickData();
+          }, 300);
+        }
       });
     },
     activated() {
