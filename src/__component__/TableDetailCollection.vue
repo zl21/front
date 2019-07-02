@@ -750,7 +750,24 @@
             this.getSelectValueCombobox(h, cellData))
         ]);
       },
-
+      dropDownIsShowPopTip(cellData) {
+        const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
+        const defaultValue = mainTablePanelData.default;
+        const modifyValue = mainTablePanelData.modify;
+        // 先从修改里找 如果修改的里面没有 就从默认值里取
+        if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
+          return true;
+        } else if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '') {
+          return false;
+        } else {
+          // 默认值取
+          const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
+          if (colname) {
+            return true;
+          }
+        }
+        return false;
+      }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
         return (h, params) => h('div', [
           h(tag, {
@@ -764,6 +781,16 @@
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
+              isShowPopTip: () => {
+                if (this.type === pageType.Vertical) {
+                  if (!this.dropDownIsShowPopTip(cellData)) {
+                    const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol)
+                    this.$Message.info(`请选择${obj.name}`);
+                  }
+                  return this.dropDownIsShowPopTip(cellData);
+                }
+                return true;
+              },
               transfer: true,
               enterType: true,
               AutoData: this.fkAutoData,
