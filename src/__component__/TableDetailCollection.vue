@@ -1129,7 +1129,7 @@
                 tableName: data.reftablename,
                 tableId: data.reftableid,
                 label: data.reftabdesc,
-                id: this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
+                id: data.refobjid
               });
               event.stopPropagation();
             }
