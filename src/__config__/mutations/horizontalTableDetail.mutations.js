@@ -48,6 +48,10 @@ export default {
           data: {}
         }
       };
+      obj.tableSearchData = {
+        selectedValue: '',
+        inputValue: ''
+      }; // 表格搜索的数据
       arr.push(obj);
     });
     arr.forEach((item) => {
@@ -212,8 +216,15 @@ export default {
   },
   updateLinkageForm(state, data) {
     // form 联动校验 存值
-
-    state.LinkageForm = state.LinkageForm.concat(data);
-  }
-  
+    if (data.length > 0) {
+      state.LinkageForm = state.LinkageForm.concat(data);
+    } else {
+      state.LinkageForm = [];
+    }
+  },
+  updateTableSearchData(state, data) {
+    const { tableSearchData } = state.tabPanels[state.tabCurrentIndex];
+    tableSearchData.selectedValue = data.selectedValue;
+    tableSearchData.inputValue = data.inputValue;
+  }, // 修改单对象表格搜索的值
 };

@@ -51,6 +51,10 @@ export default {
         checkedInfo: {},
         changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
+      obj.tableSearchData = {
+        selectedValue: '',
+        inputValue: ''
+      }; // 表格搜索的数据
       arr.push(obj);
     });
     state.tabPanels = arr;
@@ -234,9 +238,18 @@ export default {
   updateLinkageForm(state, data) {
     // form 联动校验 存值
     //  LinkageForm.push([...data]);
-
-    state.LinkageForm = state.LinkageForm.concat(data);
-  }
+    // form 联动校验 存值
+    if (data.length > 0) {
+      state.LinkageForm = state.LinkageForm.concat(data);
+    } else {
+      state.LinkageForm = [];
+    }
+  },
+  updateTableSearchData(state, data) {
+    const { tableSearchData } = state.tabPanels[state.tabCurrentIndex];
+    tableSearchData.selectedValue = data.selectedValue;
+    tableSearchData.inputValue = data.inputValue;
+  }, // 修改单对象表格搜索的值
   // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
   //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {
   //     addcolums.childs.forEach((expand) => {

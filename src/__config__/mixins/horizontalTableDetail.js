@@ -58,8 +58,8 @@ export default () => ({
         'updateAddDefaultData',
         'updateAddData',
         'updateDeleteData',
-        'updateObjTabActionSlientConfirm'
-
+        'updateObjTabActionSlientConfirm',
+        'updateTableSearchData'
       ]),
   },
   beforeDestroy() {

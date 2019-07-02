@@ -62,10 +62,19 @@
               this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index });
             }
             const { tableName, itemId } = this.$route.params;
-            const { tablename, refcolid } = this.tabPanel[index];
+            const { tablename, refcolid, tableSearchData } = this.tabPanel[index];
             this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
             this.getObjectTableItemForTableData({
-              table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }, tabIndex: index
+              table: tablename,
+              objid: itemId,
+              refcolid,
+              searchdata: {
+                column_include_uicontroller: true,
+                startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                range: this.tablePageInfo.pageSize,
+                fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
+              },
+              tabIndex: index
             });
           } else if (this.tabPanel[index].tabrelation === '1:1') {
             const { tableName, itemId } = this.$route.params;

@@ -44,6 +44,7 @@
             v-model="searchCondition"
             clearable
             placeholder="查询条件"
+            @on-change="selectedChange"
             @on-clear="searchCondition=null"
           >
             <Option
@@ -60,6 +61,7 @@
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
+              @on-change="onInputChange"
               @on-search="searTabelList"
             >
             <Button
@@ -637,7 +639,7 @@
       },
       collectionCellRender(cellData) {
         // 给cell赋render
-        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
+        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
           // 不可编辑状态 显示label
           if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon
@@ -763,6 +765,7 @@
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
               transfer: true,
+              enterType: true,
               AutoData: this.fkAutoData,
               hidecolumns: ['id', 'value']
             },
@@ -866,6 +869,8 @@
               // 是否显示筛选提示弹窗 true、false
               filterTip: true,
               // 是否选中后禁止编辑 true、false
+              enterType: true,
+              // 是否回车选中第一行
               disabled: false,
               // 默认提示框
               placeholder: null,
@@ -884,7 +889,9 @@
               datalist: this.popFilterDataList,
               ...cellData,
               // 模糊查询的文字信息，支持多列
-              AuotData: this.fkAutoData
+              AuotData: this.fkAutoData,
+              // 选中的数据
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected: []
             },
             nativeOn: {
               click: (e) => {
@@ -917,14 +924,21 @@
                   this.copyDataSource.row[params.index][cellData.colname].val = value;
                   this.copyDataSource.row[params.index][cellData.colname].Selected = $this._data.IN;
                   this.copyDataSource.row[params.index][cellData.colname].inputComponent.InputVale = value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = $this._data.IN.reduce((acc, cur) => {
+                    acc.push({
+                      Label: value,
+                      ID: cur
+                    });
+                    return acc;
+                  }, []);
                 } else {
                   this.copyDataSource.row[params.index][cellData.colname].val = '';
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                 }
-                let ids = null;
-                if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
-                  ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
-                }
+                // if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
+                //   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
+                // }
+                const ids = $this.savObjemessage();
                 this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': () => {
@@ -1092,7 +1106,7 @@
                     style: {},
                     domProps: {
                       innerHTML: `<span>${index}</span>
-                            <i class="iconfont icon-jinggao" style="margin-left:5px; color: red" />`
+                            <i class="iconfont iconios-warning-outlin" style="margin-left:5px; color: red" />`
                     }
                   }),
                   content: () => h('div', {
@@ -1129,7 +1143,7 @@
                 tableName: data.reftablename,
                 tableId: data.reftableid,
                 label: data.reftabdesc,
-                id: this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
+                id: data.refobjid
               });
               event.stopPropagation();
             }
@@ -1339,6 +1353,18 @@
         // 表单验证
         this.verifyMessage();
       },
+      selectedChange(val) {
+        this.updateTableSearchData({
+          selectedValue: val,
+          inputValue: this.searchInfo
+        });
+      }, // 查询条件下拉框改变时触发
+      onInputChange(e) {
+        this.updateTableSearchData({
+          selectedValue: this.searchCondition,
+          inputValue: e.target.value
+        });
+      }, // 输入框值改变时触发
       searTabelList() {
         this.currentPage = 1;
         this.getTabelList(1);

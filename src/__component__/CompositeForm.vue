@@ -378,10 +378,9 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(data);
         // let v1.4外键 及number
         if (!this.formData[current.item.field]) {
-          if (current.item.props.number === true) {
+          if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
           } else {
             this.formData[current.item.field] = '';
@@ -427,6 +426,7 @@
           this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
+        this.defaultFormData = defaultFormData;
         this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
@@ -543,7 +543,6 @@
                 }
                 const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
-                console.log(Index);
                 if (!refcolval) {
                   if (Index !== -1) {
                     this.$Message.info(`请先选择${LinkageForm[Index].name}`);
@@ -705,7 +704,7 @@
           const refcolumn = current.hidecolumn.refcolumn;
           const refval = current.hidecolumn.refval;
           check = array.some((option) => {
-            const value = option.item.props.defval || option.item.props.valuedata;
+            const value = option.item.props.valuedata || option.item.props.defval;
             return (
               option.item.field === refcolumn
               && JSON.stringify(value) === JSON.stringify(refval)
@@ -839,7 +838,7 @@
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         // 设置表单的默认值
         if (
@@ -849,7 +848,7 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
           // 日期控件
@@ -857,14 +856,14 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         // 设置表单的默认值
 
@@ -926,7 +925,7 @@
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
           }
-          return item.default || item.defval || item.valuedata || this.defaultSetValue[item.colname] || '';
+          return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
@@ -951,7 +950,7 @@
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
-            const option = refobjid.reduce((currty, index) => {
+            const option = refobjid.reduce((currty, item, index) => {
               currty.push({
                 ID: item || '',
                 Label: valuedata[index] || ''
@@ -993,7 +992,7 @@
         }
       
         
-        return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
+        return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },
       propsType(current, item) {
@@ -1179,50 +1178,53 @@
           case 'drp':
             item.props.single = true;
             item.props.data = {};
-            item.props.empty = 0;
+            item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
-            // item.props.isShowPopTip = () => {
-            //   that.getStateData(); // 获取主表信息
-            //   if (Object.hasOwnProperty.call(current, 'refcolval')) {
-            //     let refcolval = that.refcolvalAll[current.refcolval.srccol]
-            //       ? that.refcolvalAll[current.refcolval.srccol]
-            //       : '';
-            //     if (that.refcolvalAll[current.refcolval.srccol] === undefined) {
-            //       refcolval = that.defaultFormData[current.refcolval.srccol];
-            //     }
-            //     const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
-            //     const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
-            //     if (!refcolval) {
-            //       if (Index !== -1) {
-            //         this.$Message.info(`请先选择${LinkageForm[Index].name}`);
-            //         if (LinkageForm[Index].input) {
-            //           LinkageForm[Index].input.focus();
-            //           return false;
-            //         }
-            //       } else {
-            //         this.$Message.info('请先选择关联的表');
-            //       }
-            //       return false;
-            //     }
-            //   } else {
-            //     return true;
-            //   }
-            // };
+            // eslint-disable-next-line no-case-declarations
+            const that = this;
+            // eslint-disable-next-line no-case-declarations
+            const currentThat = current;
+            item.props.isShowPopTip = () => {
+              that.getStateData(); // 获取主表信息
+              if (Object.hasOwnProperty.call(currentThat, 'refcolval')) {
+                let refcolval = that.refcolvalAll[currentThat.refcolval.srccol]
+                  ? that.refcolvalAll[currentThat.refcolval.srccol]
+                  : '';
+                if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
+                  refcolval = that.defaultFormData[currentThat.refcolval.srccol];
+                }
+                const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
+                const Index = LinkageForm.findIndex(item => item.key === currentThat.refcolval.srccol);
+                if (!refcolval) {
+                  if (Index !== -1) {
+                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
+                    if (LinkageForm[Index].input) {
+                      LinkageForm[Index].input.focus();
+                      return false;
+                    }
+                  } else {
+                    this.$Message.info('请先选择关联的表');
+                  }
+                  return false;
+                }
+                return true;
+              } 
+              return true;
+            };
             break;
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
-            item.props.empty = 0;
-            
+            item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             if (!item.props.disabled) {
               item.props.type = 'AttachFilter';
-              item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.enterType = true;
               item.props.show = false;
 
               item.props.dialog = {
@@ -1259,7 +1261,7 @@
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
-            item.props.empty = 0;
+            item.props.enterType = true;
             item.props.show = true;
             item.props.AutoData = [];
             item.props.dialog = {
@@ -1482,23 +1484,27 @@
         // 获取 主子表的状态值
         this.refcolvalAll = {};
         const state = this.$store.state[getModuleName()];
-        if (this.condition === 'list' || !this.isreftabs) {
-          const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, this.formData);
-        
-          // console.log(this.refcolvalAll);
-          return this.refcolvalAll;
+        if (this.condition === 'list') {
+          return {};
         }
+       
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+          if (this.isreftabs) {
+            const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
+            const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
+            this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
+        
+            return this.refcolvalAll;
+          }
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
           this.refcolvalAll = Object.assign(defaultMain, modifyMain);
         } else {
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
+          const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain);
+          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData, modifyMain);
         }
-        console.log(this.refcolvalAll);         
         return this.refcolvalAll;
       },
     },
@@ -1520,6 +1526,11 @@
     created() {
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
+    },
+    deactivated() {
+      if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
+        this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+      }  
     }
   };
 </script>

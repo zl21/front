@@ -23,8 +23,7 @@
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.props.Selected)"
-          >
-          </i>
+          />
         </template>
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
@@ -35,8 +34,7 @@
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.value)"
-          >
-          </i>
+          />
         </template>
       </template>
       <span
@@ -158,6 +156,8 @@
         :page-size="_items.props.pageSize"
         :auto-data="_items.props.AutoData"
         :disabled="_items.props.disabled"
+        :is-show-pop-tip="_items.props.isShowPopTip"
+        :enter-type="_items.props.enterType"
         :hidecolumns="_items.props.hidecolumns"
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"
@@ -178,6 +178,7 @@
         v-model="_items.value"
         :option-tip="_items.props.optionTip"
         :filter-tip="_items.props.filterTip"
+        :enter-type="_items.props.enterType"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
         :auot-data="_items.props.AutoData"
