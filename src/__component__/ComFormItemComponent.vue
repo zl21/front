@@ -73,9 +73,13 @@
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
-              option[items.item.field] = items.item.value 
-                || items.item.props.valuedata
-                || items.item.props.defval;
+              if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
+                option[items.item.field] = items.item.props.Selected[0].ID;
+              } else {
+                option[items.item.field] = items.item.value 
+                  || items.item.props.valuedata
+                  || items.item.props.defval;
+              }
             }
 
             if (items.item.props.number) {

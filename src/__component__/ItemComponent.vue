@@ -156,6 +156,7 @@
         :page-size="_items.props.pageSize"
         :auto-data="_items.props.AutoData"
         :disabled="_items.props.disabled"
+        :is-show-pop-tip="_items.props.isShowPopTip"
         :hidecolumns="_items.props.hidecolumns"
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"

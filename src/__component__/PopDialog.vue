@@ -21,7 +21,7 @@
       :default-data="formList"
       :default-column-col="formList.objviewcol"
       class="formPanel"
-      :condition = "Condition"
+      :condition="Condition"
       @InitializationForm="InitializationForm"
       @formChange="formChange"
       @on-formEnter="searchForm"
@@ -63,9 +63,9 @@
         :highlight-row="true"
         :height="200"
         border
-         @on-row-dblclick="rowdblclick"
         :columns="SelectionData.thead"
         :data="SelectionData.row"
+        @on-row-dblclick="rowdblclick"
       />
     </div>
   </div>
@@ -190,7 +190,6 @@
         };
         const fixedcolumns = Object.keys(this.formChangeData).reduce(
           (arr, item) => {
-            console.log(this.formChangeData[item][0]);
             if (Array.isArray(this.formChangeData[item])) {
               if (this.formChangeData[item][0] !== undefined) {
                 arr[item] = this.formChangeData[item];
@@ -296,7 +295,7 @@
                 return cuurent;
               }, []);
               data[item] = [...arr];
-            } else{
+            } else {
               data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
             }
             // console.log(data[item]);
@@ -320,9 +319,8 @@
         if (Object.keys(data).length > 0) {
           Object.keys(data).forEach((item) => {
             if (data[item] !== undefined) {
+              // eslint-disable-next-line no-unused-vars
               const dataSelect = this.checkForm(data, item);
-              console.log(dataSelect);
-
               this.formChangeData = data;
             }
           });
