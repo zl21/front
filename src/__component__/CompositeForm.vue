@@ -1178,7 +1178,7 @@
           case 'drp':
             item.props.single = true;
             item.props.data = {};
-            item.props.empty = 0;
+            item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             // eslint-disable-next-line no-case-declarations
@@ -1187,7 +1187,6 @@
             const currentThat = current;
             item.props.isShowPopTip = () => {
               that.getStateData(); // 获取主表信息
-              console.log(that.refcolvalAll);
               if (Object.hasOwnProperty.call(currentThat, 'refcolval')) {
                 let refcolval = that.refcolvalAll[currentThat.refcolval.srccol]
                   ? that.refcolvalAll[currentThat.refcolval.srccol]
@@ -1217,16 +1216,15 @@
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
-            item.props.empty = 0;
-            
+            item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             break;
           case 'pop':
             if (!item.props.disabled) {
               item.props.type = 'AttachFilter';
-              item.props.empty = 0;
               item.props.optionTip = false;
+              item.props.enterType = true;
               item.props.show = false;
 
               item.props.dialog = {
@@ -1263,7 +1261,7 @@
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
-            item.props.empty = 0;
+            item.props.enterType = true;
             item.props.show = true;
             item.props.AutoData = [];
             item.props.dialog = {

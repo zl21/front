@@ -265,7 +265,9 @@ const DropDownSelectFilter = {
     // 下拉多选 默认选中数据
     defaultSelected: [],
     // 是否将弹层放置于 body 内
-    transfer: true
+    transfer: true,
+    // 是否开启回车默认选中第一条
+    enterType: false
   }
 };
 
@@ -290,6 +292,8 @@ const AttachFilter = {
     hideColumnsKey: ['id'],
     //
     disabled: false,
+    // 是否开启回车默认选中第一条
+    enterType: false,
     filterDate: {},
     // 配置弹窗的配置项 model
     dialog: {
