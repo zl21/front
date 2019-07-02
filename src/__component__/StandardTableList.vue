@@ -552,23 +552,22 @@
         );
 
         // 处理默认数据，然后进行查询
-        
-        // if (Object.keys(this.formItems.data).length === 0 && !this.formDefaultComplete) {
-        //   this.formDefaultComplete = true;
-        //   this.searchClickData();
-        // }
-        // if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
-        //   this.formDataChange(
-        //     items.reduce((obj, current) => {
-        //       obj[current.item.field] = current.item.value;
-        //       return obj;
-        //     }, {})
-        //   );
+        if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
+          this.formDefaultComplete = true;
+          this.searchClickData();
+        }
+        if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
+          this.formDataChange(
+            items.reduce((obj, current) => {
+              obj[current.item.field] = current.item.value;
+              return obj;
+            }, {})
+          );
 
-        //   setTimeout(() => {
-        //     this.searchClickData();
-        //   }, 200);
-        // }
+          setTimeout(() => {
+            this.searchClickData();
+          }, 200);
+        }
         return items;
       },
       defaultValue(item) {
@@ -873,16 +872,17 @@
           menu: this.buttons.tabledesc
         };
         let promise = new Promise((resolve, reject) => {
+          this.$loading.show();
           this.getExeActionDataForButtons({
             item, obj, resolve, reject 
           });
         });
-       
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
           const nextOperate = JSON.parse(// 配置信息
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
+            this.$loading.hide();
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -909,6 +909,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
+            this.$loading.hide();
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -929,6 +930,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then(() => {
+            this.$loading.hide();
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -936,21 +938,18 @@
               content: `${message}`
             };
             this.$Modal.fcSuccess(data);
+          }, () => {
           });
         }
       },
 
       dataProcessing() { // 查询数据处理
-        let jsonData = {};
-        if (this.formItems) {
-          jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
-            if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
-              obj[item] = this.formItems.data[item];
-            }
-            return obj;
-          }, {});
-        }
-        
+        const jsonData = Object.keys(this.formItems.data).reduce((obj, item) => {
+          if (this.formItems.data[item] && JSON.stringify(this.formItems.data[item]).indexOf('bSelect-all') < 0) {
+            obj[item] = this.formItems.data[item];
+          }
+          return obj;
+        }, {});
   
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
@@ -1027,25 +1026,6 @@
         });
         this.$refs.dialogRefs.open();
       },
-      AddDetailClick(obj) { // 动作定义执行
-        this.activeTabAction = tab;
-        switch (tab.vuedisplay) {
-        case 'native': // 跳转url
-          location.href = tab.action;
-          break;
-        case 'slient':
-          this.objTabActionSlient(tab);
-          break;
-        case 'dialog':
-          this.objTabActionDialog(tab);
-          break;
-        case 'navbar':
-          this.objTabActionNavbar(tab);
-          break;
-        default:
-          break;
-        }
-      },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
         if (obj.name === this.buttonMap.CMD_ADD.name) {
@@ -1054,7 +1034,6 @@
           const label = `${this.activeTab.label}新增`;
           if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
             const type = 'tableDetailHorizontal';
-            // routeTo({ type, info: { tableName, tableId, itemId: id } });
             this.tabHref({
               type,
               tableName,
@@ -1231,14 +1210,12 @@
       deleteTableList() { // 删除方法
         const tableName = this.buttons.tableName;
         const selectIdArr = this.buttons.selectIdArr;
-        // this.$loading.show();
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
             tableName, selectIdArr, resolve, reject 
           });
         });
         promise.then(() => {
-          // this.$loading.hide();
           const message = this.buttons.batchDeleteData.message;
           const data = {
             mask: true,
@@ -1548,14 +1525,6 @@
       });
       promise.then(() => {
         this.getbuttonGroupdata();
-      });
-
-      window.addEventListener('network', (event) => {
-        if (event.detail.url === '/p/cs/getTableQuery' && !this._inactive) {
-          setTimeout(() => {
-            this.searchClickData();
-          }, 300);
-        }
       });
     },
     activated() {
