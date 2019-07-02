@@ -325,7 +325,7 @@
           return [];
         }
         const buttonGroupShow = [];
-        if (!this.objreadonly) {
+        if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
           if (tabcmd.cmds) {
             // 取主表path用于子表
             this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
