@@ -13,7 +13,7 @@
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
-      :clearItemTableSearchValue="clearItemTableSearchValue"
+      :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
     />
     <compositeForm
@@ -392,7 +392,7 @@
             this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
           }
           const { tableId, itemId } = this.$route.params;
-          const { tablename, refcolid } = this.itemInfo;
+          const { tablename, refcolid, tabinlinemode } = this.itemInfo;
           let id = '';
           if (this.$store.state[getModuleName()].buttonsData.newMainTableSaveData) {
             id = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId;
@@ -429,11 +429,10 @@
               startindex: this.$store.state[getModuleName()].tablePageInfo.currentPageIndex - 1,
               range: this.$store.state[getModuleName()].tablePageInfo.pageSize,
             };
-
             this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata, tabIndex
             });
-            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex });
+            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex, tabinlinemode });
             // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
 
             // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
