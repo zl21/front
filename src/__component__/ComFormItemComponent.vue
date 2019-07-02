@@ -73,9 +73,9 @@
                 option[items.item.field] = items.item.value[0];
               }
             } else if (items.item.value) {
-              option[items.item.field] = items.item.props.defval
-                || items.item.value
-                || items.item.props.valuedata;
+              option[items.item.field] = items.item.value 
+                || items.item.props.valuedata
+                || items.item.props.defval;
             }
 
             if (items.item.props.number) {
@@ -267,7 +267,6 @@
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
 
-          // console.log(val, this.formValueItem);
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
@@ -340,13 +339,11 @@
         const val = this.refcolvalData;
         this.newFormItemLists.map((items, i) => {
           const item = items.item;
-          if (this.type === 'PanelForm') {
-            this.LinkageForm.push({
-              key: items.item.field,
-              name: items.item.title,
-              input: this.inputget(this.formIndex, i, items)
-            });
-          }
+          this.LinkageForm.push({
+            key: items.item.field,
+            name: items.item.title,
+            input: this.inputget(this.formIndex, i, items)
+          });
           
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // this.dynamicforcompute(item, val, i);

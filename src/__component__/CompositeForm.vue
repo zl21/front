@@ -378,7 +378,6 @@
           this.verifyMessItem = {};
           this.$emit('VerifyMessage', {});
         }
-        console.log(data);
         // let v1.4外键 及number
         if (!this.formData[current.item.field]) {
           if (current.item.props.number === true) {
@@ -427,6 +426,7 @@
           this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
+        this.defaultFormData = defaultFormData;
         this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
@@ -705,7 +705,7 @@
           const refcolumn = current.hidecolumn.refcolumn;
           const refval = current.hidecolumn.refval;
           check = array.some((option) => {
-            const value = option.item.props.defval || option.item.props.valuedata;
+            const value = option.item.props.valuedata || option.item.props.defval;
             return (
               option.item.field === refcolumn
               && JSON.stringify(value) === JSON.stringify(refval)
@@ -839,7 +839,7 @@
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         // 设置表单的默认值
         if (
@@ -849,7 +849,7 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
           // 日期控件
@@ -857,14 +857,14 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         if (item.display === 'OBJ_TIME') {
           // 保存change 之前的默认值
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.defval || item.valuedata || '';
+          return item.valuedata || item.defval || '';
         }
         // 设置表单的默认值
 
@@ -926,7 +926,7 @@
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
           }
-          return item.default || item.defval || item.valuedata || this.defaultSetValue[item.colname] || '';
+          return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
@@ -993,7 +993,7 @@
         }
       
         
-        return item.defval || item.valuedata || item.default || this.defaultSetValue[item.colname] || '';
+        return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },
       propsType(current, item) {
