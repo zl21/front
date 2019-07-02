@@ -23,8 +23,7 @@
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.props.Selected)"
-          >
-          </i>
+          />
         </template>
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
@@ -35,8 +34,7 @@
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.value)"
-          >
-          </i>
+          />
         </template>
       </template>
       <span
