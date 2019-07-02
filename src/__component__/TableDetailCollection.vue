@@ -637,7 +637,7 @@
       },
       collectionCellRender(cellData) {
         // 给cell赋render
-        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
+        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
           // 不可编辑状态 显示label
           if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon
@@ -884,7 +884,9 @@
               datalist: this.popFilterDataList,
               ...cellData,
               // 模糊查询的文字信息，支持多列
-              AuotData: this.fkAutoData
+              AuotData: this.fkAutoData,
+              // 选中的数据
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected: []
             },
             nativeOn: {
               click: (e) => {
@@ -917,6 +919,13 @@
                   this.copyDataSource.row[params.index][cellData.colname].val = value;
                   this.copyDataSource.row[params.index][cellData.colname].Selected = $this._data.IN;
                   this.copyDataSource.row[params.index][cellData.colname].inputComponent.InputVale = value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = $this._data.IN.reduce((acc, cur) => {
+                    acc.push({
+                      Label: value,
+                      ID: cur
+                    });
+                    return acc;
+                  }, []);
                 } else {
                   this.copyDataSource.row[params.index][cellData.colname].val = '';
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
