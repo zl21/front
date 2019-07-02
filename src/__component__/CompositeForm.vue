@@ -1528,7 +1528,7 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {
-      if (getModuleName()) {
+      if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
         this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
       }  
     }
