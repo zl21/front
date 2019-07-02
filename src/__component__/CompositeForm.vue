@@ -543,7 +543,6 @@
                 }
                 const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
-                console.log(Index);
                 if (!refcolval) {
                   if (Index !== -1) {
                     this.$Message.info(`请先选择${LinkageForm[Index].name}`);
@@ -1182,33 +1181,38 @@
             item.props.empty = 0;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
-            // item.props.isShowPopTip = () => {
-            //   that.getStateData(); // 获取主表信息
-            //   if (Object.hasOwnProperty.call(current, 'refcolval')) {
-            //     let refcolval = that.refcolvalAll[current.refcolval.srccol]
-            //       ? that.refcolvalAll[current.refcolval.srccol]
-            //       : '';
-            //     if (that.refcolvalAll[current.refcolval.srccol] === undefined) {
-            //       refcolval = that.defaultFormData[current.refcolval.srccol];
-            //     }
-            //     const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
-            //     const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
-            //     if (!refcolval) {
-            //       if (Index !== -1) {
-            //         this.$Message.info(`请先选择${LinkageForm[Index].name}`);
-            //         if (LinkageForm[Index].input) {
-            //           LinkageForm[Index].input.focus();
-            //           return false;
-            //         }
-            //       } else {
-            //         this.$Message.info('请先选择关联的表');
-            //       }
-            //       return false;
-            //     }
-            //   } else {
-            //     return true;
-            //   }
-            // };
+            // eslint-disable-next-line no-case-declarations
+            const that = this;
+            // eslint-disable-next-line no-case-declarations
+            const currentThat = current;
+            item.props.isShowPopTip = () => {
+              that.getStateData(); // 获取主表信息
+              console.log(that.refcolvalAll);
+              if (Object.hasOwnProperty.call(currentThat, 'refcolval')) {
+                let refcolval = that.refcolvalAll[currentThat.refcolval.srccol]
+                  ? that.refcolvalAll[currentThat.refcolval.srccol]
+                  : '';
+                if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
+                  refcolval = that.defaultFormData[currentThat.refcolval.srccol];
+                }
+                const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
+                const Index = LinkageForm.findIndex(item => item.key === currentThat.refcolval.srccol);
+                if (!refcolval) {
+                  if (Index !== -1) {
+                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
+                    if (LinkageForm[Index].input) {
+                      LinkageForm[Index].input.focus();
+                      return false;
+                    }
+                  } else {
+                    this.$Message.info('请先选择关联的表');
+                  }
+                  return false;
+                }
+                return true;
+              } 
+              return true;
+            };
             break;
           case 'mrp':
             item.props.single = false;
@@ -1482,11 +1486,15 @@
         // 获取 主子表的状态值
         this.refcolvalAll = {};
         const state = this.$store.state[getModuleName()];
-        if (this.condition === 'list' || !this.isreftabs) {
+        console.log(this.condition);
+        if (this.condition === 'list') {
+          return {};
+        }
+        if (this.isreftabs) {
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, this.formData);
+          const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
+          this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
         
-          // console.log(this.refcolvalAll);
           return this.refcolvalAll;
         }
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
@@ -1496,9 +1504,8 @@
         } else {
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain);
+          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData);
         }
-        console.log(this.refcolvalAll);         
         return this.refcolvalAll;
       },
     },
