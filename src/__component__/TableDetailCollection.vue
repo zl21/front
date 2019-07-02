@@ -921,10 +921,10 @@
                   this.copyDataSource.row[params.index][cellData.colname].val = '';
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                 }
-                let ids = null;
-                if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
-                  ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
-                }
+                // if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
+                //   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
+                // }
+                const ids = $this.savObjemessage();
                 this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': () => {
@@ -1092,7 +1092,7 @@
                     style: {},
                     domProps: {
                       innerHTML: `<span>${index}</span>
-                            <i class="iconfont icon-jinggao" style="margin-left:5px; color: red" />`
+                            <i class="iconfont iconios-warning-outlin" style="margin-left:5px; color: red" />`
                     }
                   }),
                   content: () => h('div', {
