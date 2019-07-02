@@ -20,7 +20,8 @@ export default {
     keepAliveLabelMaps: {},
     activeTab: {},
     userInfo: {},
-    showFavoritesList: ''
+    showFavoritesList: '',
+    serviceIdMap: {}
   },
   mutations,
   actions,

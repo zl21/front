@@ -77,7 +77,7 @@ axios.interceptors.response.use(
   },
   (error) => { 
     if (error.response) {
-      const { status, config, data } = error.response;
+      const { status, config } = error.response;
       const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
       const requestMd5 = md5(JSON.stringify({
         data: isJson ? JSON.parse(config.data) : config.data,
@@ -86,12 +86,9 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        window.vm.$Modal.fcError({
-          mask: true,
-          title: '错误',
-          content: data.message
-        });
-        router.push('/login');
+        if (router.currentRoute.path !== '/login') {
+          router.push('/login');
+        }
       } else if (status === 500) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message;

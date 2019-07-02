@@ -146,21 +146,15 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
-      // const { sataType } = parame;
       if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-
         if (path) { // 有path的参数
           const { modify } = parame;
-          // const itmValues = itemModify[itemName];
-
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
-            // itemModify[itemName].ID = objId;
-            // const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
             if (sataTypeName === 'addAndModify') {
-              const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
               // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
@@ -181,9 +175,8 @@ export default {
                 ...addAndModifyParames
               };
             } else if (sataTypeName === 'add') { // 子表新增
-              const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
-              // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
 
               itemTableAdd[itemName].ID = -1;
@@ -215,7 +208,7 @@ export default {
             };
           }
         } else if (sataTypeName === 'addAndModify') {
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
           itemTableAdd[itemName].ID = -1;
@@ -233,9 +226,8 @@ export default {
             }
           };
         } else if (sataTypeName === 'add') { // 子表新增
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
-          // modify[tableName].ID = objId;// 主表id
           const itemTableAdd = Object.assign({}, itemAdd);
 
           itemTableAdd[itemName].ID = -1;
@@ -292,20 +284,26 @@ export default {
   }) { // 主表删除
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
-      const mainTable = currentParameter.delete;
-      mainTable[table].ID = objId;
-      mainTable[table].isdelmtable = false;
       const itemDelete = itemCurrentParameter.delete;
       if (path) {
-        parames = {
-          ...mainTable,
+        if (currentParameter && currentParameter.delete) {
+          const mainTable = currentParameter.delete;
+          mainTable[table].ID = objId;
+          mainTable[table].isdelmtable = false;
+          parames = {
+            ...mainTable,
+            ...itemDelete
+          };
+        }
+      } else {
+        const tabItem = {
           ...itemDelete
         };
-      } else {
         parames = {
           table, // 主表表名
           objId,
-          delMTable: true
+          delMTable: false,
+          tabItem
         };
       }
     } else if (path) {

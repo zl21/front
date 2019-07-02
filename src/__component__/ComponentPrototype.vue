@@ -11,6 +11,7 @@
           :enumerable-config="enumerableForColumn"
           :default-value="`${1010101}`"
           @valueChange="enumerableValueChange1"
+          @keydown="onKeydown"
         />
       </div>
       <div class="wrapper">
@@ -20,6 +21,7 @@
           :default-value="'AMDQSVUB'"
           :strict-mode="false"
           @valueChange="enumerableValueChange2"
+          @keydown="onKeydown"
         />
       </div>
     </div>
@@ -32,6 +34,7 @@
           :extention-config="extentionForTable"
           :default-data="''"
           @valueChange="extentionValueChange1"
+          @keydown="onKeydown"
         />
       </div>
     </div>
@@ -41,7 +44,11 @@
     <div clss="container">
       <div style="width: 90%; height: 500px; margin: 0 auto;">
         <h3>Extention For Column</h3>
-        <ExtentionInput :extention-config="extentionForColumn" @valueChange="extentionValueChange2" />
+        <ExtentionInput
+          :extention-config="extentionForColumn"
+          @valueChange="extentionValueChange2"
+          @keydown="onKeydown"
+        />
       </div>
     </div>
     <div class="divider" />
@@ -154,6 +161,9 @@
       ExtentionInput
     },
     methods: {
+      onKeydown(e) {
+        console.log(e);
+      },
       extentionValueChange2(value) {
         console.log('extentionValueChange2', value);
       },

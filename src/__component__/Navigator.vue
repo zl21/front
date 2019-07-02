@@ -41,37 +41,39 @@
     </div>
     <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
       <template v-if="searchBtn === false">
-<AutoComplete
+        <AutoComplete
           ref="AutoComplete"
           v-model="keyWord"
           class="nav-search"
           icon="ios-search"
-            @on-select="routerNext"
+          @on-select="routerNext"
           @click="setBtn"
-          placeholder="请输入要查询的功能名" 
-            @input="searchData"
+          placeholder="请输入要查询的功能名"
+          @input="searchData"
         >
           <Option v-for="(item,index) in searchList"
-:value="item.desc" :key="index" :lable="item">
-{{ item.desc }}
-</Option>
+                  :value="item.desc" :key="index" :lable="item">
+            {{ item.desc }}
+          </Option>
         </AutoComplete>
-</template>
-
-
+      </template>
+      
+      
       <i v-if="searchBtn === true"
-class="iconfont iconbj_search" @click="searchBtn = false" />
+         class="iconfont iconbj_search" @click="searchBtn = false" />
     </div>
     <div class="tag right">
       <i class="iconfont iconmd-person"
-@click="show = true" />
+         @click="show = true" />
     </div>
     <Drawer v-model="show">
       <SetPanel :panel="setPanel"
-@changePwdBox="changePwdBox" />
+                @changePwdBox="changePwdBox" />
     </Drawer>
     <Dialog ref="dialogRef"
-:title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText" :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm" :dialog-component-name="dialogComponentName" />
+            :title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText"
+            :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm"
+            :dialog-component-name="dialogComponentName" />
   </div>
 </template>
 
@@ -87,8 +89,6 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
   import logoImg from '../assets/image/logo.png';
   import bannerImg from '../assets/image/banner.png';
   import { routeTo } from '../__config__/event.config';
-
-  import { enableGateWay } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
 
   export default {
@@ -119,7 +119,8 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
           mask: true,
           footerHide: false,
           contentText: '',
-          confirm: () => {},
+          confirm: () => {
+          },
         }, // 弹框配置信息
         dialogComponentName: null,
       };
@@ -132,7 +133,6 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
     },
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
-      ...mapActions('global', ['getMenuLists']),
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
@@ -154,9 +154,8 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
       searchData(value) {
         if (value === undefined || value.length < 1) {
           this.searchList = [];
-          return false;
+          return;
         }
-        const globalServiceId = window.sessionStorage.getItem('serviceId');
         network
           .post(
             '/p/cs/SearchWords',
@@ -170,15 +169,15 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
             }
           });
       },
-      setBtn() {},
+      setBtn() {
+      },
       routerNext(name) {
-        console.log(name);
         const index = this.searchList.findIndex(x => x.desc === name);
         const routerItem = this.searchList[index];
         if (routerItem) {
           this.routeTo(routerItem);
         }
-      //
+        //
       },
       loadEnterpriseConfig() {
         const image = (window.ProjectConfig || {}).image || {
@@ -193,114 +192,126 @@ class="iconfont iconbj_search" @click="searchBtn = false" />
     },
     mounted() {
       this.loadEnterpriseConfig();
-      this.getMenuLists();
     },
   };
 </script>
 
 <style lang="less">
-.burgeon-drawer-content {
-  //重置BurgeonUI样式
-  border-top-left-radius: 0px !important;
-  border-top-right-radius: 0px !important;
-}
-
-.burgeon-drawer-body {
-  //重置BurgeonUI样式
-  padding: 0px !important;
-}
-
-.navigator {
-  height: 100%;
-  display: flex;
-  background-color: #1f272c;
-  .left {
-    img.trigger {
-      height: 50px;
-    }
-    img.logo {
-      position: absolute;
-      width: 30px;
-      top: 10px;
-      left: 18px;
-    }
-    img.banner {
-      width: 76px;
-      height: 30px;
-      position: absolute;
-      top: 11px;
-      left: 64px;
-    }
-    img:hover {
-      cursor: pointer;
-    }
+  .burgeon-drawer-content {
+    //重置BurgeonUI样式
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
   }
-  .middle {
-    margin-left: 10px;
-    position: relative;
+  
+  .burgeon-drawer-body {
+    //重置BurgeonUI样式
+    padding: 0px !important;
+  }
+  
+  .navigator {
+    height: 100%;
     display: flex;
-    flex: 1 1 1px;
-  }
-  .nav-search {
-    input {
-      display: inline-block;
-      width: 100%;
-      padding: 0 8px;
-      border: solid 1px #fff;
-      border-radius: 15px;
-      background: #4f5356;
-      height: 28px;
-      line-height: 28px;
-      color: #fff;
-      font-size: 13px;
-    }
-    i {
-      color: #c0c4cc;
-      padding-top: 2px;
-    }
-  }
-  .tag {
-    width: 50px;
-    float: left;
-    font-size: 24px;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-    color: #fff;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    i {
-      font-size: 22px;
-    }
-  }
-  .tag-search {
-    width: 192px;
-    line-height: 40px;
-  }
-  .tag:hover {
-    background: #2e373c;
-  }
-}
-.Poptip-nav {
-  ul {
-    li {
-      &:hover {
-        background: #f4f4f4;
+    background-color: #1f272c;
+    
+    .left {
+      img.trigger {
+        height: 50px;
       }
-      padding: 0 20px;
-      text-align: left;
-      margin: 0;
-      line-height: 34px;
+      
+      img.logo {
+        position: absolute;
+        width: 30px;
+        top: 10px;
+        left: 18px;
+      }
+      
+      img.banner {
+        width: 76px;
+        height: 30px;
+        position: absolute;
+        top: 11px;
+        left: 64px;
+      }
+      
+      img:hover {
+        cursor: pointer;
+      }
+    }
+    
+    .middle {
+      margin-left: 10px;
+      position: relative;
+      display: flex;
+      flex: 1 1 1px;
+    }
+    
+    .nav-search {
+      input {
+        display: inline-block;
+        width: 100%;
+        padding: 0 8px;
+        border: solid 1px #fff;
+        border-radius: 15px;
+        background: #4f5356;
+        height: 28px;
+        line-height: 28px;
+        color: #fff;
+        font-size: 13px;
+      }
+      
+      i {
+        color: #c0c4cc;
+        padding-top: 2px;
+      }
+    }
+    
+    .tag {
+      width: 50px;
+      float: left;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
       cursor: pointer;
-      color: #606266;
-      font-size: 14px;
-      list-style: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: #fff;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      
+      i {
+        font-size: 22px;
+      }
+    }
+    
+    .tag-search {
+      width: 192px;
+      line-height: 40px;
+    }
+    
+    .tag:hover {
+      background: #2e373c;
     }
   }
-}
+  
+  .Poptip-nav {
+    ul {
+      li {
+        &:hover {
+          background: #f4f4f4;
+        }
+        
+        padding: 0 20px;
+        text-align: left;
+        margin: 0;
+        line-height: 34px;
+        cursor: pointer;
+        color: #606266;
+        font-size: 14px;
+        list-style: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 </style>
