@@ -44,6 +44,7 @@
             v-model="searchCondition"
             clearable
             placeholder="查询条件"
+            @on-change="selectedChange"
             @on-clear="searchCondition=null"
           >
             <Option
@@ -60,6 +61,7 @@
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
+              @on-change="onInputChange"
               @on-search="searTabelList"
             >
             <Button
@@ -1348,6 +1350,18 @@
         // 表单验证
         this.verifyMessage();
       },
+      selectedChange(val) {
+        this.updateTableSearchData({
+          selectedValue: val,
+          inputValue: this.searchInfo
+        });
+      }, // 查询条件下拉框改变时触发
+      onInputChange(e) {
+        this.updateTableSearchData({
+          selectedValue: this.searchCondition,
+          inputValue: e.target.value
+        });
+      }, // 输入框值改变时触发
       searTabelList() {
         this.currentPage = 1;
         this.getTabelList(1);

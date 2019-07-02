@@ -165,7 +165,16 @@
         }
         if (refTab.tabrelation === '1:m') {
           this.getObjectTableItemForTableData({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }, tabIndex: index
+            table: refTab.tablename,
+            objid: itemId,
+            refcolid: refTab.refcolid,
+            searchdata: {
+              column_include_uicontroller: true,
+              startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+              range: this.tablePageInfo.pageSize,
+              fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : {}
+            },
+            tabIndex: index
           });
         } else if (refTab.tabrelation === '1:1') {
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });

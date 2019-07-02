@@ -65,7 +65,8 @@ export default () => ({
         'updateTableListForRefTable',
         'updateTablePageInfo',
         'updateAddDefaultData',
-        'updateObjTabActionSlientConfirm'
+        'updateObjTabActionSlientConfirm',
+        'updateTableSearchData'
         // 'resetFormReadOnlyAttribute'
 
       ]),
