@@ -234,8 +234,12 @@ export default {
   updateLinkageForm(state, data) {
     // form 联动校验 存值
     //  LinkageForm.push([...data]);
-
-    state.LinkageForm = state.LinkageForm.concat(data);
+    // form 联动校验 存值
+    if (data.length > 0) {
+      state.LinkageForm = state.LinkageForm.concat(data);
+    } else {
+      state.LinkageForm = [];
+    }
   }
   // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
   //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {
