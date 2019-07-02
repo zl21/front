@@ -491,7 +491,6 @@
       },
       webactionClick(tab) { // 动作定义执行
         this.activeTabAction = tab;
-        // console.log('action',tab)
         switch (tab.vuedisplay) {
         case 'native': // 跳转url
           // eslint-disable-next-line no-restricted-globals
@@ -921,7 +920,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        this.clickButtonsBack();
+                        // this.clickButtonsBack();
                       }
                     }, 1000);
                   }
@@ -943,6 +942,7 @@
                 };
               }
             } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) { // 子表删除
+              this.saveParameters();// 调用获取参数方法
               if (obj.requestUrlPath) { // 有path
                 this.$refs.dialogRef.open();
                 this.saveParameters();// 调用获取参数方法
@@ -978,12 +978,24 @@
                 this.dialogConfig = {
                   contentText: '确认执行删除?',
                   confirm: () => {
-                    this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
+                    this.performMainTableDeleteAction({
+                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
+                    });
                     setTimeout(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
-                      this.getQueryListForAg(searchData);
+                      // this.clickButtonsBack();
+                      // this.getQueryListForAg(searchData);
+                      const { tablename, refcolid } = this.itemInfo;
+                      const searchdata = {
+                        column_include_uicontroller: true,
+                        startindex: this.tablePageInfo.currentPageIndex - 1,
+                        range: this.tablePageInfo.pageSize,
+                      };
+                      this.getObjectTableItemForTableData({
+                        table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                      });
+                      this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
                     }, 1000);
                   }
                 };
