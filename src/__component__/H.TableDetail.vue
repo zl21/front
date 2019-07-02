@@ -58,11 +58,11 @@
           this.getMainTable(index, true);
         } else {
           if (this.tabPanel[index].tabrelation === '1:m') {
-            if (this.tabPanel[index].refcolid !== -1) {
-              this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index });
-            }
             const { tableName, itemId } = this.$route.params;
-            const { tablename, refcolid, tableSearchData } = this.tabPanel[index];
+            const { tablename, refcolid, tableSearchData, tabinlinemode } = this.tabPanel[index];
+            if (this.tabPanel[index].refcolid !== -1) {
+              this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
+            }
             this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
             this.getObjectTableItemForTableData({
               table: tablename,
