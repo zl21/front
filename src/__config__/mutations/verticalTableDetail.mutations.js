@@ -238,8 +238,12 @@ export default {
   updateLinkageForm(state, data) {
     // form 联动校验 存值
     //  LinkageForm.push([...data]);
-
-    state.LinkageForm = state.LinkageForm.concat(data);
+    // form 联动校验 存值
+    if (data.length > 0) {
+      state.LinkageForm = state.LinkageForm.concat(data);
+    } else {
+      state.LinkageForm = [];
+    }
   },
   updateTableSearchData(state, data) {
     const { tableSearchData } = state.tabPanels[state.tabCurrentIndex];

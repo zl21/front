@@ -1486,25 +1486,26 @@
         // 获取 主子表的状态值
         this.refcolvalAll = {};
         const state = this.$store.state[getModuleName()];
-        console.log(this.condition);
         if (this.condition === 'list') {
           return {};
         }
-        if (this.isreftabs) {
-          const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
-        
-          return this.refcolvalAll;
-        }
+       
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
+          if (this.isreftabs) {
+            const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
+            const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
+            this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
+        
+            return this.refcolvalAll;
+          }
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
           this.refcolvalAll = Object.assign(defaultMain, modifyMain);
         } else {
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
+          const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData);
+          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData, modifyMain);
         }
         return this.refcolvalAll;
       },
@@ -1527,6 +1528,11 @@
     created() {
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
+    },
+    deactivated() {
+      if (getModuleName()) {
+        this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+      }  
     }
   };
 </script>
