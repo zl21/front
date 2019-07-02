@@ -358,7 +358,7 @@
           
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: this.tablePageInfo.currentPageIndex - 1,
+              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
               range: this.tablePageInfo.pageSize,
             };
             this.getObjectTableItemForTableData({
@@ -655,7 +655,7 @@
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
           fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? { ID: null } : selectedId,
-          startindex: this.tablePageInfo.currentPageIndex - 1,
+          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
           range: this.tablePageInfo.pageSize,
         };
 
