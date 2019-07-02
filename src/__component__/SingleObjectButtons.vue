@@ -189,6 +189,16 @@
                   });
                 }
               }
+              const { tabinlinemode } = this.itemInfo;
+              if (tabinlinemode === 'N') {
+                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                  this.tabcmd.cmds.forEach((item, index) => {
+                    if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
+                      this.tabcmd.prem[index] = false;
+                    }
+                  });
+                }
+              }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
@@ -345,13 +355,15 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
-        const { tablename, refcolid, tabrelation } = this.itemInfo;
+        const {
+          tablename, refcolid, tabrelation, tabinlinemode 
+        } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
             this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
-            this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
             this.getObjectTabForChildTableButtons({
               maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
             });
@@ -956,7 +968,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        const { tablename, refcolid } = this.itemInfo;
+                        const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
                           startindex: this.tablePageInfo.currentPageIndex - 1,
@@ -965,7 +977,7 @@
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
@@ -986,7 +998,7 @@
                       this.$Message.success(`${deleteMessage}`);
                       // this.clickButtonsBack();
                       // this.getQueryListForAg(searchData);
-                      const { tablename, refcolid } = this.itemInfo;
+                      const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                       const searchdata = {
                         column_include_uicontroller: true,
                         startindex: this.tablePageInfo.currentPageIndex - 1,
@@ -995,7 +1007,7 @@
                       this.getObjectTableItemForTableData({
                         table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                       });
-                      this.getInputForitemForChildTableForm({ table: tablename, tabIndex });
+                      this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                     }, 1000);
                   }
                 };
@@ -1572,6 +1584,16 @@
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+            const { tabinlinemode } = this.itemInfo;
+            if (tabinlinemode === 'N') {
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
                     this.tabcmd.prem[index] = false;
                   }
                 });

@@ -68,11 +68,11 @@ export default {
   updateObjectForMainTableForm({ commit }) {
     commit('updateFormDataForRefshow');
   },
-  getInputForitemForChildTableForm({ commit }, { table, tabIndex }) {
+  getInputForitemForChildTableForm({ commit }, { table, tabIndex, tabinlinemode }) {
     // 参数说明 table 子表表名
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
-      inlinemode: 'Y'
+      inlinemode: tabinlinemode
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
