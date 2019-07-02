@@ -765,6 +765,7 @@
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
               transfer: true,
+              enterType: true,
               AutoData: this.fkAutoData,
               hidecolumns: ['id', 'value']
             },
@@ -868,6 +869,8 @@
               // 是否显示筛选提示弹窗 true、false
               filterTip: true,
               // 是否选中后禁止编辑 true、false
+              enterType: true,
+              // 是否回车选中第一行
               disabled: false,
               // 默认提示框
               placeholder: null,
