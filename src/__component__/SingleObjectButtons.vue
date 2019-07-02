@@ -932,6 +932,8 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
+                        this.clickButtonsBack();
+                        this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
                     }, 1000);
@@ -948,7 +950,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      this.getQueryListForAg(searchData);
+                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }, 1000);
                   }
                 };
@@ -978,6 +980,8 @@
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.updateDeleteData({ tableName: this.itemName, value: {} });
+                        this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
@@ -1008,6 +1012,7 @@
                         table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                       });
                       this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                      this.updateDeleteData({ tableName: this.itemName, value: {} });
                     }, 1000);
                   }
                 };
