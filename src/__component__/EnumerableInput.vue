@@ -8,6 +8,7 @@
       ref="input"
       :value="value"
       readonly
+      @on-keydown="onKeydown"
     />
     <ul
       v-show="dropdownShow"
@@ -69,6 +70,9 @@
       },
     },
     methods: {
+      onKeydown(e) {
+        this.$emit('keydown', e);
+      },
       fixPosition() {
         const inputElement = this.$refs.enumerableInput.querySelector('input');
         const { top } = inputElement.getBoundingClientRect();

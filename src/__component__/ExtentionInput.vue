@@ -9,6 +9,7 @@
       :rows="rows"
       :placeholder="''"
       readonly
+      @on-keydown="onKeydown"
     />
     <Icon
       type="md-hammer"
@@ -73,6 +74,9 @@
       };
     },
     methods: {
+      onKeydown(e) {
+        this.$emit('keydown', e);
+      },
       setFormatedValue() {
         this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
