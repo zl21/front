@@ -380,7 +380,7 @@
         }
         // let v1.4外键 及number
         if (!this.formData[current.item.field]) {
-          if (current.item.props.number === true) {
+          if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
           } else {
             this.formData[current.item.field] = '';
@@ -950,7 +950,7 @@
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
-            const option = refobjid.reduce((currty, index) => {
+            const option = refobjid.reduce((currty, item, index) => {
               currty.push({
                 ID: item || '',
                 Label: valuedata[index] || ''
