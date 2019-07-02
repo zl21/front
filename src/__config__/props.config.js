@@ -249,6 +249,7 @@ const DropDownSelectFilter = {
   props: {
     // 是否是单选，可选值为 true、false
     single: true,
+    isShowPopTip: () => true, // form 不展示
     // 下拉气泡表格里数据
     data: {},
     // 数据总条数
@@ -283,8 +284,8 @@ const AttachFilter = {
     filterTip: true,
     // 是否选中后禁止编辑 true、false
     placeholder: null,
-    // 模糊查询的文字信息，支持多列
-    AuotData: [],
+    // 模糊查询的文字信息，支持多列              item.props.AutoData = [];
+    AutoData: [],
     // 定义选中展示的文字的key
     hideColumnsKey: ['id'],
     //

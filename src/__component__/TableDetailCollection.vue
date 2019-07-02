@@ -1410,7 +1410,7 @@
               const defaultValue = mainTablePanelData.default;
               const modifyValue = mainTablePanelData.modify;
               // 先从修改里找 如果修改的里面没有 就从默认值里取
-              if (modifyValue[cellData.refcolval.srccol] && modifyValue[cellData.refcolval.srccol].length > 0) {
+              if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
                 const colname = modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
