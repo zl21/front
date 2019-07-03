@@ -904,7 +904,7 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -914,7 +914,7 @@
                 }
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               }
             }
           })
@@ -1434,13 +1434,18 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type) {
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
         // 组装数据 存入store
-        if (!currentValue && type === 'NUMBER') {
-          currentValue = 0;
-        }
-        if (!currentValue && type !== 'NUMBER') {
-          currentValue = '';
+        if (!currentValue) {
+          if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
+            currentValue = '';
+          } else if (fkdisplay === 'drp' || fkdisplay === 'pop') {
+            currentValue = 0;
+          } else if (type === 'NUMBER') {
+            currentValue = 0;
+          } else if (type !== 'NUMBER') {
+            currentValue = '';
+          }
         }
 
         if (this.afterSendData[this.tableName]) {
