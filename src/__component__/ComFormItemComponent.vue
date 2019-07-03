@@ -169,6 +169,12 @@
           return function () {};
         }
       },
+      getStateData: {
+        type: Function,
+        default() {
+          return function () {};
+        }
+      },
       path: {
         type: String,
         default() {
@@ -231,14 +237,15 @@
       };
     },
     mounted() {
-      this.newFormItemLists.map((item) => {
-        if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
-          this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
-        }
-      });
-      this.formValueItem = {};
+      //   this.newFormItemLists.map((item) => {
+      //     if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
+      //       this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
+      //     }
+      //   });
+      //   this.formValueItem = {};
 
-      this.mapData = this.setMapping(this.Mapping);
+      //   this.mapData = this.setMapping(this.Mapping);
+      
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -346,6 +353,7 @@
           this.LinkageForm.push({
             key: items.item.field,
             name: items.item.title,
+            srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
             input: this.inputget(this.formIndex, i, items)
           });
           
@@ -579,17 +587,18 @@
       refcolval(items, json, index) {
         if (interlocks === true) {
           const srccol = items.validate.refcolval.srccol;
-          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          
+          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
 
-        //   if (!jsonArr[srccol]) {
-        //     if (items.type === 'DropDownSelectFilter') {
-        //       // console.log(items.props.defaultSelected, index, items);
-        //       this.newFormItemLists[index].item.value = '';
-        //       this.newFormItemLists[index].item.props.defaultSelected = [];
-        //     } else {
-        //       this.newFormItemLists[index].item.value = '';
-        //     }
-        //   }
+          if (!jsonArr[srccol]) {
+            if (items.type === 'DropDownSelectFilter') {
+              // console.log(items.props.defaultSelected, index, items);
+              this.newFormItemLists[index].item.value = '';
+              this.newFormItemLists[index].item.props.defaultSelected = [];
+            } else {
+              this.newFormItemLists[index].item.value = '';
+            }
+          }
         }
       },
       dynamicforcompute(items, json) {

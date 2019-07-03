@@ -684,6 +684,14 @@
             item.selected
           );
         }
+        if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+          && typeof this._items.event.clear === 'function'
+        ) {
+          if (!item.value && !item.selected[0].ID) {
+            this._items.event.clear($this);
+          }
+        }
         // if (
         //   Object.prototype.hasOwnProperty.call(
         //     this._items.event,

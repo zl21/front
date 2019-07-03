@@ -215,12 +215,35 @@ export default {
     state.objTabActionSlientConfirmData = data;
   },
   updateLinkageForm(state, data) {
-    // form 联动校验 存值
+    let mappStatus = {};
     if (data.length > 0) {
+      mappStatus = data.reduce((arry, item) => {
+        if (item.srccol) {
+          arry[item.key] = item.srccol;
+        }  
+        return arry;
+      }, {});
       state.LinkageForm = state.LinkageForm.concat(data);
+      state.mappStatus = Object.assign(state.mappStatus, mappStatus);
     } else {
       state.LinkageForm = [];
+      state.mappStatus = {};
     }
+  },
+  updateMaping(state, data) {
+    // form 联动校验map 图
+  //  获取映射关系
+    const temp = Object.keys(data).reduce((a, c) => {
+      const f = (key) => {
+        if (!data[key]) {
+          return [];
+        }
+        return [data[key]].concat(f(data[key]));
+      };
+      a[c] = f(c);
+      return a;
+    }, {});
+    return temp;
   },
   updateTableSearchData(state, data) {
     const { tableSearchData } = state.tabPanels[state.tabCurrentIndex];

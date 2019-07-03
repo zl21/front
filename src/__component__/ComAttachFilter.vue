@@ -111,8 +111,9 @@
     },
     methods: {
       valueChange() {
-        console.log('valueChange');  
+        // console.log('valueChange');  
         this.$emit('valuechange', { value: this.value, selected: this.selected });
+        this.$emit('on-change', { value: this.value, selected: this.selected });
       }, 
       attachFilterInput(value) {
         this.value = value;
@@ -318,8 +319,13 @@
     created() {
       this.propsData = this.propstype;
       this.value = this.defaultValue;
-      console.log(this);
       this.selected = this.defaultSelected;
+      if (!this.selected[0]) {
+        this.selected = [{
+          Label: '',
+          ID: ''
+        }];
+      }
       if (this.propstype.fkdisplay === 'pop') {
         this.propstype.show = false;  
         this.propsData.componentType = myPopDialog;
@@ -330,7 +336,7 @@
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
       }
-    // console.log(this.type,this.formIndex);
+      console.log(this.propstype, this.formIndex);
     }
   };
 </script>

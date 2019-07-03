@@ -239,10 +239,19 @@ export default {
     // form 联动校验 存值
     //  LinkageForm.push([...data]);
     // form 联动校验 存值
+    let mappStatus = {};
     if (data.length > 0) {
+      mappStatus = data.reduce((arry, item) => {
+        if (item.srccol) {
+          arry[item.key] = item.srccol;
+        }  
+        return arry;
+      }, {});
       state.LinkageForm = state.LinkageForm.concat(data);
+      state.mappStatus = Object.assign(state.mappStatus, mappStatus);
     } else {
       state.LinkageForm = [];
+      state.mappStatus = {};
     }
   },
   updateTableSearchData(state, data) {
