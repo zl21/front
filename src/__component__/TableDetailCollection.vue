@@ -793,29 +793,32 @@
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
               isShowPopTip: () => {
-                if (cellData.refcolval.maintable) {
-                  if (this.type === pageType.Vertical) {
-                    if (!this.dropDownIsShowPopTip(cellData, params)) {
-                      const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
+                    } else {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                          }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
                     }
-                  } else {
-                    if (!this.dropDownIsShowPopTip(cellData, params)) {
-                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
-                        return acc;
-                      }, [])
-                        .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
-                    }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
                   }
-                } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                  const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
-                  this.$Message.info(`请选择${obj.name}`);
+                  return this.dropDownIsShowPopTip(cellData, params);
                 }
-                return this.dropDownIsShowPopTip(cellData, params);
+                return true;
               },
               transfer: true,
               enterType: true,
