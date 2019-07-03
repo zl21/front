@@ -111,6 +111,7 @@
     },
     methods: {
       valueChange() {
+        console.log('valueChange');  
         this.$emit('valuechange', { value: this.value, selected: this.selected });
       }, 
       attachFilterInput(value) {
@@ -155,7 +156,16 @@
         
       },
       attachFilterInputBlur() {
-        
+        if (!this.selected[0]) {
+          this.value = '';
+          this.selected = [
+            {
+              Label: '',
+              ID: ''
+            }
+          ];
+        }
+        this.valueChange();
       },
       attachFilterInputKeyup() {
         
@@ -317,7 +327,7 @@
         this.propsData.componentType = Dialog;
         this.propstype.show = true;  
       }
-      if (this.selected[0].ID) {
+      if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
       }
     // console.log(this.type,this.formIndex);

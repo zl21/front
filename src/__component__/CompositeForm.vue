@@ -408,7 +408,7 @@
           this.mountChecked = true;
         }, 200);
         this.refcolvaData = {};
-        this.defaultFormData = Object.assign(this.defaultFormData, value);
+        this.defaultFormData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
           if (this.defaultFormData[option]) {

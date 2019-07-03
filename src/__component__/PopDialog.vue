@@ -15,7 +15,7 @@
       />
     </Spin>
     <component
-      :is="'CompositeForm'"
+      :is="'CompositeFormpop'"
       v-if="formList.show"
       ref="CompositeForm"
       :default-data="formList"
