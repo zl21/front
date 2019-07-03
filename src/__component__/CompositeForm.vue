@@ -466,7 +466,7 @@
                 if (!this.refcolvalAll[mappStatus[item]]) {
                   const Index = LinkageForm.findIndex(option => option.key === item);
                   if (LinkageForm[Index].input) {
-                    console.log(LinkageForm[Index].input);  
+                    // console.log(LinkageForm[Index].input);  
                     // LinkageForm[Index].input.value = '';
                   }
                 }
@@ -1480,7 +1480,9 @@
           } else if (item[_index].$el.querySelector('textarea')) {
             item[_index].$el.querySelector('textarea').focus();
           }
-        }
+          return false;
+        } 
+        this.focusItem(_index, current, arry);
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;

@@ -12,7 +12,7 @@
       @on-focus="attachFilterInputFocus"
       @on-blur="attachFilterInputBlur"
       @on-keyup="attachFilterInputKeyup"
-      @on-keydown="attachFilterInputKeydown"
+      @on-enter="attachFilterInputKeydown"
       @on-ok="attachFilterOk"
       @on-cancel="attachFilterCancel"
       @on-popclick="attachFilterPopclick"
@@ -113,7 +113,6 @@
       valueChange() {
         // console.log('valueChange');  
         this.$emit('valuechange', { value: this.value, selected: this.selected });
-        this.$emit('on-change', { value: this.value, selected: this.selected });
       }, 
       attachFilterInput(value) {
         this.value = value;
@@ -171,11 +170,10 @@
       attachFilterInputKeyup() {
         
       },
-      attachFilterInputKeydown(event, $this) {
+      attachFilterInputKeydown(value, event, $this) {
         this.$emit('keydown', event, $this);
       },
       attachFilterPopclick(event, row, targName, $this) {
-        console.log(event, row, targName, $this); 
         if (targName !== 'I' && event !== 1) {
           // 打开弹窗
           $this.complexs = false;

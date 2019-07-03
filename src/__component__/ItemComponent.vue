@@ -178,6 +178,7 @@
         :default-value="_items.value"
         :default-selected="_items.props.Selected"
         :propstype="_items.props"
+        @keydown="attachFilterInputKeydown"
         @valuechange="attachFilterInput"
       />
       <!-- <AttachFilter
@@ -667,6 +668,9 @@
         ) {
           this._items.event['on-show']($this);
         }
+      },
+      ComAttachFilterkeydown() {
+
       },
       attachFilterInput(item, $this) {
         this._items.value = item.value;
