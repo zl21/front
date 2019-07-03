@@ -1,10 +1,10 @@
 <template>
   <div class="dialog">
     <Complexs-dialog
-      :treedata="Tree"
-      :loading="loading"
-      :tree-loading="tree_loading"   
       ref="dialog"
+      :treedata="Tree"
+      :loading="loading"   
+      :tree-loading="tree_loading"
       :table-loading="tableLoading"
       :component-data="componentData"
       :result-data="resultData"
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+  import { fips } from 'crypto';
   import { Version } from '../constants/global';
 
   // eslint-disable-next-line import/no-dynamic-require
@@ -76,7 +77,7 @@
             pageSize: 10,
             total: 0,
             pageNum: 1,
-            height: 340,
+            height: true,
             searchName: '全局检索',
             checked: false
           },
@@ -87,7 +88,7 @@
             pageSize: 10,
             total: 0,
             pageNum: 1,
-            height: 340,
+            height: true,
             pageOptions: [10, 20, 50, 100],
             search: '',
             searchName: '查询结果'
@@ -184,21 +185,22 @@
         }
         if (name !== 'clear') {
           if (type !== 'search') {
-            this.IN = data.ids || [];
+            // this.IN = data.ids || [];
           }
           if (index === 1 && type !== 'search') {
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
+            console.log(this.resultData);
             this.resultData.list.map((item) => {
-              if (item.exclude) {
-                item.exclude = false;
-              } else {
-                item.exclude = true;
-              }
+              //   if (item.exclude) {
+              //     item.exclude = false;
+              //   } else {
+              //     item.exclude = true;
+              //   }
                 
               
-              item.string = item.screen_string;
-              item.ID = item.id_list;
+              //   item.string = item.screen_string;
+              item.ID = item.id_list[0] ? item.id_list[0] : item.id_list;
               return item;
             });
             this.resultData.total = data.data.total;
@@ -241,30 +243,30 @@
               key: option,
               title: columns[option]
             });
-            if (index === 1 && (Object.keys(columns).length - 2) === key) {
-              item.push({
-                title: '操作',
-                key: 'action',
-                render: h => h('div', {
-                  domProps: {
-                    innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
-                  },
-                  on: {
-                    click: () => {
-                      const row = this.componentData[1].list[key - 1];
-                      this.NOTIN.push(row.ID);
-                      this.text.result.push({
-                        exclude: false,
-                        id_list: row.ID,
-                        screen: row.ID,
-                        screen_string: this.toStringName(row, this.akname)
-                      });
-                      this.deleteLi(key - 1, row, 'td');
-                    }
-                  }
-                })
-              });
-            }
+            // if (index === 1 && (Object.keys(columns).length - 2) === key) {
+            //   item.push({
+            //     title: '操作',
+            //     key: 'action',
+            //     render: h => h('div', {
+            //       domProps: {
+            //         innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
+            //       },
+            //       on: {
+            //         click: () => {
+            //           const row = this.componentData[1].list[key - 1];
+            //           this.NOTIN.push(row.ID);
+            //           this.text.result.push({
+            //             exclude: true, // 排除
+            //             id_list: [row.ID],
+            //             screen: row.ID,
+            //             screen_string: this.toStringName(row, this.akname)
+            //           });
+            //           this.deleteLi(key - 1, row, 'td');
+            //         }
+            //       }
+            //     })
+            //   });
+            // }
           }
           return item;
         }, []);
@@ -298,7 +300,6 @@
           this.sendMessage.CONDITION = '';
         }
         this.tableLoading = true;
-       
         this.multipleSelectionTable(this.sendMessage, 0);
       },
       clickTab(index) {
@@ -308,6 +309,9 @@
       changePage(index) {
         // 点击页面
         this.tableLoading = true;
+        if (!this.sendMessage.PAGENUM) {
+          this.sendMessage.PAGENUM = 1;
+        }
         if (index === this.sendMessage.PAGENUM) {
           return false;
         }
@@ -352,8 +356,8 @@
               this.tdData.id = row.ID;
               this.tdData.index = rowIndex;
               this.tdData.list[0] = {
-                exclude: false,
-                id_list: row.ID,
+                exclude: true,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
 
@@ -361,8 +365,8 @@
             } else {
               this.NOTIN.push(row.ID);
               this.text.result.push({
-                exclude: false,
-                id_list: row.ID,
+                exclude: true,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
@@ -375,8 +379,8 @@
               this.tdData.id = row.ID;
               this.tdData.index = rowIndex;
               this.tdData.list[0] = {
-                exclude: true,
-                id_list: row.ID,
+                exclude: false,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
 
@@ -384,8 +388,8 @@
             } else {
               this.IN.push(row.ID);
               this.text.result.push({
-                exclude: true,
-                id_list: row.ID,
+                exclude: false,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
@@ -449,8 +453,8 @@
               });
             });
             this.text.result.push({
-              exclude: true,
-              id_list: this.HRORG_ID,
+              exclude: false,
+              id_list: [this.HRORG_ID],
               screen: this.sendMessage.CONDITION,
               screen_string: this.HRORG_STRING.join(',')
             });
@@ -465,8 +469,8 @@
               });
             });
             this.text.result.push({
-              exclude: false,
-              id_list: this.HRORG_ID,
+              exclude: true,
+              id_list: [this.HRORG_ID],
               screen: this.EXCLUDE,
               screen_string: this.HRORG_STRING.join(',')
             });
@@ -482,35 +486,33 @@
         }
       },
       transfer() {
-        if (this.tdData.id!=='') {
+        if (this.tdData.id !== '') {
           if (this.checkbox) {
             if (this.verify(this.NOTIN, this.tdData.id)) {
               this.NOTIN.push(this.tdData.id);
+              this.tdData.list[0].exclude = true;
             }
           } else if (this.verify(this.IN, this.tdData.id)) {
             this.IN.push(this.tdData.id);
+            this.tdData.list[0].exclude = false;
           }
-        }
-        
-            
+        }            
         if (this.tdData.id !== '') {
           setTimeout(() => {
-            console.log(this.$refs.dialog.$refs.Table[0])
             this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
-            
-          }, 200);
+          }, 100);
           this.text.result.push(this.tdData.list[0]);
           this.multipleScreenResultCheck(this.sendMessage, 1);
           this.tdData.id = '';
           this.tdData.list = [];
-            //this.tdData.index = -1;
+          // this.tdData.index = -1;
         }
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
           this.text.result.splice(index, 1);
         }
-        if (!row.exclude) {
+        if (row.exclude) {
           const indexI = this.IN.findIndex(x => x === row.ID);
           if (indexI !== -1) {
             this.IN.splice(indexI, 1);
@@ -581,14 +583,7 @@
         const data = obj;
         if (data) {
           this.sendMessage = Object.assign(this.sendMessage, data.value);
-          this.text.result = data.lists.result.map((item) => {
-            if (item.exclude) {
-              item.exclude = false;
-            } else {
-              item.exclude = true;
-            }
-            return item;
-          });
+          this.text.result = data.lists.result;
           this.EXCLUDE = data.value.EXCLUDE;
           this.IN = data.value.IN;
           this.NOTIN = data.value.NOTIN;
@@ -597,6 +592,7 @@
           this.multipleScreenResultCheck(this.sendMessage, 1, 'result');
         }
       },
+      // eslint-disable-next-line consistent-return
       saveBtn(value) {
         if (value.length < 1) {
           this.$Message.info('模板名称不能为空');
@@ -661,8 +657,8 @@
               TABLENAME: this.sendMessage.reftable,
               CONDITION: obj.CONDITION,
               GLOBAL: obj.GLOBAL,
-              PAGENUM: obj.PAGENUM,
-              PAGESIZE: obj.PAGESIZE
+              PAGENUM: obj.PAGENUM || 1,
+              PAGESIZE: obj.PAGESIZE || 10
             }
           },
           serviceId: this.fkobj.serviceId,
@@ -700,7 +696,6 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.tableLoading = false;
-            console.log(type, 'type');
             this.dateRestructure(res.data.data, index, type);
           }
         });
@@ -729,6 +724,7 @@
       },
       init() {
         this.multipleSelectionTree(this.fkobj);
+        this.sendMessage.reftable = this.fkobj.reftable;
         const tableData = Object.assign(this.sendMessage, this.fkobj);
         this.sendMessage = tableData;
         this.multipleSelectionTable(tableData, 0);
@@ -738,9 +734,11 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = this.filter.value;
-          
-          this.multipleScreenResultCheckFiter(this.filter.value, 1);
+          this.sendMessage = { ...this.filter.value };    
+          this.sendMessage.PAGENUM = 1;
+          this.sendMessage.PAGESIZE = 10;
+          this.sendMessage.TABLENAME = this.fkobj.reftable;
+          this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
       }
 
@@ -777,7 +775,7 @@
   }
   .burgeon--dialog .dialog_center .table{
          margin-bottom: 10px;
-         height: 338px;
+         height: 340px!important;
   }
 </style>
 <style lang="less" scoped>

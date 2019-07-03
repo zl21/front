@@ -173,7 +173,14 @@
         @on-popper-hide="fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
-      <AttachFilter
+      <ComAttachFilter 
+        v-if="_items.type === 'AttachFilter'"
+        :default-value="_items.value"
+        :default-selected="_items.props.Selected"
+        :propstype="_items.props"
+        @valuechange="attachFilterInput"
+      />
+      <!-- <AttachFilter
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
         :option-tip="_items.props.optionTip"
@@ -213,7 +220,7 @@
           />
         </div>
       </AttachFilter>
-
+ -->
       <ImageUpload
         v-if="_items.type === 'ImageUpload'"
         :dataitem="_items.props.itemdata"
@@ -225,11 +232,13 @@
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :default-value="_items.value"
+        @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :default-data="_items.value"
+        @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
       <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
@@ -261,14 +270,12 @@
   import myPopDialog from './PopDialog';
   // 富文本编辑
   import WangeditorVue from './Wangeditor';
+  import ComAttachFilter from './ComAttachFilter';
+
 
   import { Version } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
-  import enumerableForColumn from '../constants/enumerateInputForColumn';
-  import enumerableForTable from '../constants/enumerateInputForTable';
-  import extentionForColumn from '../constants/extentionPropertyForColumn';
-  import extentionForTable from '../constants/extentionPropertyForTable';
 
   const {
     fkQueuploadProgressry,
@@ -279,7 +286,7 @@
 
   export default {
     name: 'ItemComponent',
-    components: { EnumerableInput, ExtentionInput },
+    components: { EnumerableInput, ExtentionInput, ComAttachFilter },
     props: {
       labelWidth: {
         type: Number,
@@ -319,10 +326,6 @@
     data() {
       return {
         filterDate: {},
-        enumerableForColumn,
-        enumerableForTable,
-        extentionForColumn,
-        extentionForTable,
         resultData: {} // 结果传值
       };
     },
@@ -344,23 +347,23 @@
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
-            item.componentType = myPopDialog;
+            // item.componentType = myPopDialog;
             item.props.fkobj.show = false;
           } else {
-            item.componentType = Dialog;
+            // item.componentType = Dialog;
             item.props.fkobj.show = true;
             item.props.datalist = dataProp[item.type].props.datalist.concat(
               item.props.datalist
             );
             item.props.dialog.model['footer-hide'] = false;
-            item.props.datalist.forEach((option, i) => {
-              if (option.value === '导入') {
-                item.props.datalist[i].url = item.props.fkobj.url;
-                item.props.datalist[i].sendData = {
-                  table: item.props.fkobj.reftable
-                };
-              }
-            });
+            // item.props.datalist.forEach((option, i) => {
+            //   if (option.value === '导入') {
+            //     item.props.datalist[i].url = item.props.fkobj.url;
+            //     item.props.datalist[i].sendData = {
+            //       table: item.props.fkobj.reftable
+            //     };
+            //   }
+            // });
           }
         }
         // eslint-disable-next-line no-empty
@@ -665,8 +668,8 @@
           this._items.event['on-show']($this);
         }
       },
-      attachFilterInput(value, $this) {
-        this._items.value = value;
+      attachFilterInput(item, $this) {
+        this._items.value = item.value;
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
@@ -675,17 +678,30 @@
           )
           && typeof this._items.event['popper-value'] === 'function'
         ) {
-          this._items.event['popper-value']($this, value, 'change', this.index);
+          this._items.event['popper-value'](
+            $this,
+            item.value,
+            item.selected
+          );
         }
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'inputValueChange'
-          )
-          && typeof this._items.event.inputValueChange === 'function'
-        ) {
-          this._items.event.inputValueChange(value, $this);
-        }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        //   this._items.event['popper-value']($this, value, 'change', this.index);
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'inputValueChange'
+        //   )
+        //   && typeof this._items.event.inputValueChange === 'function'
+        // ) {
+        //   this._items.event.inputValueChange(item.value, $this);
+        // }
       },
 
       // AttachFilter event
@@ -921,7 +937,7 @@
       },
       deleteImg(item, index) {
         const that = this;
-        this.$Modal.info({
+        this.$Modal.warning({
           mask: true,
           showCancel: true,
           title: '提示',
@@ -1192,6 +1208,15 @@
         // 扩展属性
         this._items.value = value;
         this.valueChange();
+      },
+      enumerKeydown(event) {
+        // 扩展属性
+        if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
+          && typeof this._items.event.keydown === 'function'
+        ) {
+          this._items.event.keydown(event);
+        }
       }
     },
     created() {

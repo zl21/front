@@ -498,14 +498,7 @@
               }
 
               // 
-              if (Selected !== 'change') {
-                item[index].item.props.Selected = Selected;
-              } else {
-                item[index].item.props.Selected = [{
-                  Lable: '',
-                  ID: ''
-                }];
-              }
+              item[index].item.props.Selected = Selected;
               item[index].item.value = value;
             },
             'popper-show': ($this, item) => {

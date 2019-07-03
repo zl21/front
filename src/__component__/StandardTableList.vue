@@ -384,19 +384,10 @@
                     }
                   });
                 },
-                'popper-value': ($this, value, Selected, index) => {
+                'popper-value': ($this, value, Selected) => {
                   // 当外键下拉展开时去请求数据
-                  this.formItemsLists[index].item.value = value;
-                  if (Selected !== 'change') {
-                    this.formItemsLists[index].item.props.Selected = Selected;
-                  } else {
-                    this.formItemsLists[index].item.props.Selected = [
-                      {
-                        Lable: '',
-                        ID: ''
-                      }
-                    ];
-                  }
+                  this.formItemsLists[itemIndex].item.value = value;
+                  this.formItemsLists[itemIndex].item.props.Selected = Selected;
                   this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'popper-show': ($this, item, index) => {
@@ -522,18 +513,22 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
+                obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'mrp':
                 obj.item.props.single = false;
+                obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'pop':
                 obj.item.props.fkobj = current.fkobj;
+                obj.item.props.fkobj.colid = current.colid;
                 obj.item.props.Selected = [];
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
+                obj.item.props.fkobj.colid = current.colid;
                 obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
