@@ -754,23 +754,29 @@
             this.getSelectValueCombobox(h, cellData))
         ]);
       },
-      dropDownIsShowPopTip(cellData) {
-        const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
-        const defaultValue = mainTablePanelData.default;
-        const modifyValue = mainTablePanelData.modify;
-        // 先从修改里找 如果修改的里面没有 就从默认值里取
-        if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
-          return true;
-        } if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '') {
+      dropDownIsShowPopTip(cellData, params) {
+        if (this.type === pageType.Vertical) {
+          const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
+          const defaultValue = mainTablePanelData.default;
+          const modifyValue = mainTablePanelData.modify;
+          // 先从修改里找 如果修改的里面没有 就从默认值里取
+          if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
+            return true;
+          } if (modifyValue[this.mainFormInfo.tablename]) {
+            if (modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '' || modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === 0) {
+              return false;
+            }
+          } else {
+            // 默认值取
+            const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
+            if (colname) {
+              return true;
+            }
+          }
+        } else if (cellData.refcolval && this.copyDataSource.row[params.index][cellData.refcolval.srccol].val === '') {
           return false;
-        } 
-        // 默认值取
-        const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
-        if (colname) {
-          return true;
         }
-        
-        return false;
+        return true;
       }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
         return (h, params) => h('div', [
@@ -787,13 +793,15 @@
               data: this.fkData,
               isShowPopTip: () => {
                 if (this.type === pageType.Vertical) {
-                  if (!this.dropDownIsShowPopTip(cellData)) {
+                  if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                     this.$Message.info(`请选择${obj.name}`);
                   }
-                  return this.dropDownIsShowPopTip(cellData);
+                } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                  const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                  this.$Message.info(`请选择${obj.name}`);
                 }
-                return true;
+                return this.dropDownIsShowPopTip(cellData, params);
               },
               transfer: true,
               enterType: true,
@@ -875,9 +883,19 @@
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
+                this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
+                  acc.push(cur.Label);
+                  return acc;
+                }, []).join(',');
                 this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': (value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: '', ID: '' }] });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: '', ID: '' }] });
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
                 this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
@@ -1509,16 +1527,18 @@
         const row = this.dataSource.row[params.index][cellData.colname];
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
-            // 左右结构取行内的colid
-            const express = cellData.refcolval.expre === 'equal' ? '=' : '';
-            const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
-            if (obj) {
-              // 有修改过的，取修改过的。
-              fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
-            } else {
-              // ，没有修改过的取默认的
-              // this.$Message.info('请选择关联的表字段');
-              fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+            if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
+              // 左右结构取行内的colid
+              const express = cellData.refcolval.expre === 'equal' ? '=' : '';
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
             }
             // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
           } else {

@@ -946,7 +946,7 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                         this.clickButtonsBack();
-                        this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
                     }, () => {
@@ -972,7 +972,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }, () => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
@@ -1114,7 +1114,7 @@
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }
                   }, () => {
                     const deleteMessage = this.buttonsData.deleteData;
@@ -1140,7 +1140,7 @@
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }
                   }, () => {
                     const deleteMessage = this.buttonsData.deleteData;
@@ -1167,7 +1167,7 @@
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
-                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                 }
               }, () => {
                 const deleteMessage = this.buttonsData.deleteData;
@@ -1193,7 +1193,7 @@
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
-                  this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                 }
               }, () => {
                 const deleteMessage = this.buttonsData.deleteData;
