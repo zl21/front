@@ -925,10 +925,23 @@
                 this.dialogConfig = {
                   contentText: '确认执行删除?',
                   confirm: () => {
-                    this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
+                    const promise = new Promise((resolve, reject) => {
+                      this.performMainTableDeleteAction({
+                        path: obj.requestUrlPath, 
+                        table: this.tableName, 
+                        objId: this.itemId,
+                        currentParameter: this.currentParameter, 
+                        itemName: this.itemName,
+                        isreftabs: this.isreftabs,
+                        itemNameGroup: this.itemNameGroup, 
+                        itemCurrentParameter: this.itemCurrentParameter, 
+                        tabIndex,
+                        resolve,
+                        reject
+                      });
                     });
-                    setTimeout(() => {
+   
+                    promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
@@ -936,7 +949,12 @@
                         this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
-                    }, 1000);
+                    }, () => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                      }
+                    });
                   }
                 };
               } else { // 没有path
@@ -945,13 +963,22 @@
                 this.dialogConfig = {
                   contentText: '确认执行删除?',
                   confirm: () => {
-                    this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-                    setTimeout(() => {
+                    const promise = new Promise((resolve, reject) => {
+                      this.performMainTableDeleteAction({
+                        table: this.tableName, objId: this.itemId, resolve, reject 
+                      });
+                    });
+                    promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
                       this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
-                    }, 1000);
+                    }, () => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                      }
+                    });
                   }
                 };
               }
@@ -963,10 +990,22 @@
                 this.dialogConfig = {
                   contentText: '确认执行删除?',
                   confirm: () => {
-                    this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
+                    const promise = new Promise((resolve, reject) => {
+                      this.performMainTableDeleteAction({
+                        path: obj.requestUrlPath,
+                        table: this.tableName, 
+                        objId: this.itemId,
+                        currentParameter: this.currentParameter,
+                        itemName: this.itemName,
+                        isreftabs: this.isreftabs, 
+                        itemNameGroup: this.itemNameGroup,
+                        itemCurrentParameter: this.itemCurrentParameter,
+                        tabIndex,
+                        resolve, 
+                        reject 
+                      });
                     });
-                    setTimeout(() => {
+                    promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
@@ -985,7 +1024,12 @@
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                       }
-                    }, 1000);
+                    }, () => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                      }
+                    });
                   }
                 };
               } else { // 没有path
@@ -994,26 +1038,45 @@
                 this.dialogConfig = {
                   contentText: '确认执行删除?',
                   confirm: () => {
-                    this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter, tabIndex
-                    });
-                    setTimeout(() => {
-                      const deleteMessage = this.buttonsData.deleteData;
-                      this.$Message.success(`${deleteMessage}`);
-                      // this.clickButtonsBack();
-                      // this.getQueryListForAg(searchData);
-                      const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                      const searchdata = {
-                        column_include_uicontroller: true,
-                        startindex: this.tablePageInfo.currentPageIndex - 1,
-                        range: this.tablePageInfo.pageSize,
-                      };
-                      this.getObjectTableItemForTableData({
-                        table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                    const promise = new Promise((resolve, reject) => {
+                      this.performMainTableDeleteAction({
+                        path: obj.requestUrlPath,
+                        table: this.tableName,
+                        objId: this.itemId,
+                        currentParameter: this.currentParameter,
+                        itemName: this.itemName, 
+                        isreftabs: this.isreftabs,
+                        itemNameGroup: this.itemNameGroup, 
+                        itemCurrentParameter: this.itemCurrentParameter, 
+                        tabIndex,
+                        resolve,
+                        reject
                       });
-                      this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
-                      this.updateDeleteData({ tableName: this.itemName, value: {} });
-                    }, 1000);
+                    });
+                    promise.then(() => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                        // this.clickButtonsBack();
+                        // this.getQueryListForAg(searchData);
+                        const { tablename, refcolid, tabinlinemode } = this.itemInfo;
+                        const searchdata = {
+                          column_include_uicontroller: true,
+                          startindex: this.tablePageInfo.currentPageIndex - 1,
+                          range: this.tablePageInfo.pageSize,
+                        };
+                        this.getObjectTableItemForTableData({
+                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                        });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.updateDeleteData({ tableName: this.itemName, value: {} });
+                      }
+                    }, () => {
+                      const deleteMessage = this.buttonsData.deleteData;
+                      if (deleteMessage) {
+                        this.$Message.success(`${deleteMessage}`);
+                      }
+                    });
                   }
                 };
               }
@@ -1032,32 +1095,33 @@
               this.dialogConfig = {
                 contentText: '确认执行删除?',
                 confirm: () => {
-                  this.performMainTableDeleteAction({
-                    path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, currentParameter: this.currentParameter, itemName: this.itemName, isreftabs: this.isreftabs, itemNameGroup: this.itemNameGroup, itemCurrentParameter: this.itemCurrentParameter
+                  const promise = new Promise((resolve, reject) => {
+                    this.performMainTableDeleteAction({
+                      path: obj.requestUrlPath, 
+                      table: this.tableName, 
+                      objId: this.itemId, 
+                      currentParameter: this.currentParameter,
+                      itemName: this.itemName, 
+                      isreftabs: this.isreftabs,
+                      itemNameGroup: this.itemNameGroup,
+                      itemCurrentParameter: this.itemCurrentParameter,
+                      resolve, 
+                      reject
+                    });
                   });
-                  setTimeout(() => {
+                  promise.then(() => {
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
-                      // this.getObjectTableItemForTableData({
-                      //   table: tablename,
-                      //   objid: this.itemId,
-                      //   refcolid, 
-                      //   searchdata: {
-                      //     column_include_uicontroller: true,
-                      //     startindex: 0,
-                      //     range: 10,
-                      //   }
-                      // });
-                      // const { tablename, refcolid } = this.itemInfo;
-                      // this.getObjectTableItemForTableData({
-                      //   table: tablename, objid: this.itemId, refcolid, searchdata: { column_include_uicontroller: true, startindex: 0, range: 10, } 
-                      // });
-                      // this.getInputForitemForChildTableForm({ table: tablename });
                       this.clickButtonsBack();
                       this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                     }
-                  }, 1000);
+                  }, () => {
+                    const deleteMessage = this.buttonsData.deleteData;
+                    if (deleteMessage) {
+                      this.$Message.success(`${deleteMessage}`);
+                    }
+                  });
                 }
               };
             } else { // 没有path
@@ -1066,13 +1130,24 @@
               this.dialogConfig = {
                 contentText: '确认执行删除?',
                 confirm: () => {
-                  this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-                  setTimeout(() => {
+                  const promise = new Promise((resolve, reject) => {
+                    this.performMainTableDeleteAction({
+                      table: this.tableName, objId: this.itemId, resolve, reject 
+                    });
+                  });
+                  promise.then(() => {
                     const deleteMessage = this.buttonsData.deleteData;
-                    this.$Message.success(`${deleteMessage}`);
-                    this.clickButtonsBack();
-                    this.getQueryListForAg(searchData);
-                  }, 1000);
+                    if (deleteMessage) {
+                      this.$Message.success(`${deleteMessage}`);
+                      this.clickButtonsBack();
+                      this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                    }
+                  }, () => {
+                    const deleteMessage = this.buttonsData.deleteData;
+                    if (deleteMessage) {
+                      this.$Message.success(`${deleteMessage}`);
+                    }
+                  });
                 }
               };
             }
@@ -1082,15 +1157,24 @@
           this.dialogConfig = {
             contentText: '确认执行删除?',
             confirm: () => {
-              this.performMainTableDeleteAction({ path: obj.requestUrlPath, table: this.tableName, objId: this.itemId });
-              setTimeout(() => {
+              const promise = new Promise((resolve, reject) => {
+                this.performMainTableDeleteAction({
+                  path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, resolve, reject
+                });
+              });
+              promise.then(() => {
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
                   this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                 }
-              }, 1000);
+              }, () => {
+                const deleteMessage = this.buttonsData.deleteData;
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                }
+              });
             }
           };
         } else {
@@ -1099,15 +1183,24 @@
           this.dialogConfig = {
             contentText: '确认执行删除?',
             confirm: () => {
-              this.performMainTableDeleteAction({ table: this.tableName, objId: this.itemId });
-              setTimeout(() => {
+              const promise = new Promise((resolve, reject) => {
+                this.performMainTableDeleteAction({
+                  table: this.tableName, objId: this.itemId, resolve, reject
+                });
+              });
+              promise.then(() => {
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
                   this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
                 }
-              }, 1000);
+              }, () => {
+                const deleteMessage = this.buttonsData.deleteData;
+                if (deleteMessage) {
+                  this.$Message.success(`${deleteMessage}`);
+                }
+              });
             }
           };
         }
