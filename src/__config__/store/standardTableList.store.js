@@ -37,7 +37,8 @@ export default () => ({
           return self.buttonClick(type, item);
         }
       },
-
+      ishide: '', // 控制自定义类型按钮是否显示
+      isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
       tabcmd: {},
       // waListButtons: [],
       query: {// 页面跳转参数
