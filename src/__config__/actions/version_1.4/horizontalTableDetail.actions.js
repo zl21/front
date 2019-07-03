@@ -285,7 +285,7 @@ export default {
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
       const itemDelete = itemCurrentParameter.delete;
-      if (itemName) {
+      if (itemName !== table) {
         if (path) {
           if (currentParameter && currentParameter.delete) {
             const mainTable = currentParameter.delete;
