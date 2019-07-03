@@ -317,6 +317,9 @@
         this.propsData.componentType = Dialog;
         this.propstype.show = true;  
       }
+      if (this.selected[0].ID) {
+        this.propsData.disabled = true;
+      }
     // console.log(this.type,this.formIndex);
     }
   };
