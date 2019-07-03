@@ -758,8 +758,10 @@
           // 先从修改里找 如果修改的里面没有 就从默认值里取
           if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
             return true;
-          } else if (modifyValue[this.mainFormInfo.tablename] && !modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
-            return false;
+          } else if (modifyValue[this.mainFormInfo.tablename]) {
+            if (modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '' || modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === 0) {
+              return false;
+            }
           } else {
             // 默认值取
             const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
