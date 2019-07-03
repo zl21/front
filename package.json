@@ -1,6 +1,6 @@
 {
   "name": "burgeon-r3",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A Project for R3 Erp.",
   "main": "publish/r3.min.js",
   "files": [
