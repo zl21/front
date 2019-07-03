@@ -22,7 +22,8 @@ export default () => ({
       pageSize: 10
     },
     objTabActionSlientConfirmData: {},
-    LinkageForm: [] // form 校验
+    LinkageForm: [], // form 校验
+    mappStatus: {} // 校验联动图
   },
   actions,
   mutations

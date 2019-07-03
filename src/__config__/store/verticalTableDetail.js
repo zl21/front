@@ -33,7 +33,8 @@ export default () => ({
       pageSize: 10
     },
     objTabActionSlientConfirmData: {},
-    LinkageForm: [] // 所有form
+    LinkageForm: [], // 所有form
+    mappStatus: {}
   },
   actions,
   mutations

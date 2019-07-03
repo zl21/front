@@ -35,6 +35,7 @@
                 :mapp-status="setMapping"
                 :condition="conditiontype"
                 :module-form-type="moduleFormType"
+                :get-state-data="getStateData"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :mounted-type="mountNumber"
@@ -63,6 +64,7 @@
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
+          :get-state-data="getStateData"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
           @formDataChange="formDataChange"
@@ -353,8 +355,7 @@
           data = data[0];
         }
         const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
-        this.formData = Object.assign(this.formData, data);
-
+        this.formData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
         this.formDataDef = Object.assign(formData, setdefval);
         const key = Object.keys(data)[0];
         if (key && key.split(':').length > 1) {
@@ -379,6 +380,7 @@
           this.$emit('VerifyMessage', {});
         }
         // let v1.4外键 及number
+
         if (!this.formData[current.item.field]) {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
@@ -386,8 +388,9 @@
             this.formData[current.item.field] = '';
           }
         }
-        this.getStateData();
+
         this.$emit('formChange', this.formData, this.formDataDef);
+        this.getStateData();
       },
       VerifyMessageForm(value, type) {
         // 获取需要校验的表单
@@ -454,6 +457,20 @@
                 }
                 this.searchClickData();
               }
+            },
+            clear: () => {
+              const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
+              const mappStatus = this.$store.state[getModuleName()].mappStatus || [];
+              this.getStateData(); // 获取主表信息
+              Object.keys(mappStatus).forEach((item) => {
+                if (!this.refcolvalAll[mappStatus[item]]) {
+                  const Index = LinkageForm.findIndex(option => option.key === item);
+                  if (LinkageForm[Index].input) {
+                    console.log(LinkageForm[Index].input);  
+                    // LinkageForm[Index].input.value = '';
+                  }
+                }
+              });
             },
             change: (value) => {
               if (current.isuppercase) {

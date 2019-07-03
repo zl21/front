@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -112,6 +112,7 @@
 
 <script>
   /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return */
+  import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
   import regExp from '../constants/regExp';
@@ -122,6 +123,9 @@
   import ImportDialog from './ImportDialog';
   import router from '../__config__/router.config';
   import { getGateway } from '../__utils__/network';
+  import ComAttachFilter from './ComAttachFilter';
+
+  Vue.component('ComAttachFilter', ComAttachFilter);
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
@@ -184,7 +188,7 @@
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mop: { tag: 'AttachFilter', event: this.attachFilterRender },
+          mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
@@ -757,15 +761,15 @@
         // 先从修改里找 如果修改的里面没有 就从默认值里取
         if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
           return true;
-        } else if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '') {
+        } if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol] === '') {
           return false;
-        } else {
-          // 默认值取
-          const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
-          if (colname) {
-            return true;
-          }
+        } 
+        // 默认值取
+        const colname = defaultValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
+        if (colname) {
+          return true;
         }
+        
         return false;
       }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
@@ -784,7 +788,7 @@
               isShowPopTip: () => {
                 if (this.type === pageType.Vertical) {
                   if (!this.dropDownIsShowPopTip(cellData)) {
-                    const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol)
+                    const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                     this.$Message.info(`请选择${obj.name}`);
                   }
                   return this.dropDownIsShowPopTip(cellData);
@@ -881,6 +885,69 @@
           })
         ]);
       },
+      comAttachFilterRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              propstype: {
+                optionTip: true,
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: '弹窗多选',
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
+                  show: true,
+                  url: 'ad-app/p/cs/menuimport'
+
+                },
+                datalist: this.popFilterDataList,
+                ...cellData,
+              // 模糊查询的文字信息，支持多列
+              },
+
+            },
+            on: {
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].Selected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                }
+              }
+            }
+          })
+        ]);
+      },
       attachFilterRender(cellData, tag) {
         return (h, params) => h('div', [
           h(tag, {
@@ -918,7 +985,7 @@
               // 模糊查询的文字信息，支持多列
               AuotData: this.fkAutoData,
               // 选中的数据
-              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected: []
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : []
             },
             nativeOn: {
               click: (e) => {
