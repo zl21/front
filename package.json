@@ -1,11 +1,12 @@
 {
   "name": "burgeon-r3",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A Project for R3 Erp.",
   "main": "publish/r3.min.js",
   "files": [
     "publish/r3.min.js",
-    "publish/r3.min.js.map"
+    "publish/r3.min.js.map",
+    "publish/r3.min.css"
   ],
   "scripts": {
     "start": "webpack-dev-server --progress --env.develop",
@@ -45,7 +46,7 @@
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.7.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "url-loader": "^2.0.0",
@@ -61,7 +62,7 @@
     "ag-grid": "^17.1.1",
     "ag-grid-enterprise": "^17.1.1",
     "axios": "^0.18.0",
-    "burgeon-ui": "^1.0.13",
+    "burgeon-ui": "^1.0.15",
     "md5": "^2.2.1",
     "terser-webpack-plugin": "^1.3.0",
     "vue": "^2.6.8",
