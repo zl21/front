@@ -955,7 +955,7 @@
             on: {
               valuechange: (item) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = item.value;
-                this.copyDataSource.row[params.index][cellData.colname].Selected = item.selected;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
                 if (item.selected[0]) {
                   this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 } else {
