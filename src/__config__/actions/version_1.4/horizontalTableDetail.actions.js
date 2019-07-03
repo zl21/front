@@ -280,16 +280,38 @@ export default {
     });
   },
   performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter
+    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
   }) { // 主表删除
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
       const itemDelete = itemCurrentParameter.delete;
-      if (path) {
+      if (itemName) {
+        if (path) {
+          if (currentParameter && currentParameter.delete) {
+            const mainTable = currentParameter.delete;
+            mainTable[table].ID = objId;
+            mainTable[table].isdelmtable = false;
+            parames = {
+              ...mainTable,
+              ...itemDelete
+            };
+          }
+        } else {
+          const tabItem = {
+            ...itemDelete
+          };
+          parames = {
+            table, // 主表表名
+            objId,
+            delMTable: false,
+            tabItem
+          };
+        }
+      } else if (path) {
         if (currentParameter && currentParameter.delete) {
           const mainTable = currentParameter.delete;
           mainTable[table].ID = objId;
-          mainTable[table].isdelmtable = false;
+          mainTable[table].isdelmtable = true;
           parames = {
             ...mainTable,
             ...itemDelete
@@ -302,7 +324,7 @@ export default {
         parames = {
           table, // 主表表名
           objId,
-          delMTable: false,
+          delMTable: true,
           tabItem
         };
       }
@@ -322,9 +344,11 @@ export default {
    
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
+        resolve();
         const data = res.data;
         commit('updateNewMainTableDeleteData', data);
       } else if (res.data.code === -1) {
+        reject();
         const data = res.data.data;
         commit('updatetooltipForItemTableData', data);
       }

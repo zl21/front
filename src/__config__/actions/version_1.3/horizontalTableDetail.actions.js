@@ -24,7 +24,9 @@ export default {
       }
     });
   }, // 获取主表按钮和子表信息
-  getObjectTabForChildTableButtons({ commit }, { maintable, table, objid, tabIndex }) {
+  getObjectTabForChildTableButtons({ commit }, {
+ maintable, table, objid, tabIndex 
+}) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -67,7 +69,9 @@ export default {
       }
     });
   }, // 获取子表表单信息
-  getItemObjForChildTableForm({ commit }, { table, objid, refcolid, tabIndex }) {
+  getItemObjForChildTableForm({ commit }, {
+ table, objid, refcolid, tabIndex 
+}) {
     // 参数说明  table 子表表名，objid列表界面该行数据的id也就是rowid，refcolid子表id
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/itemObj', urlSearchParams({

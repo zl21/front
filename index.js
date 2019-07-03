@@ -18,7 +18,7 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 
 
-Vue.component('CompositeForm', CompositeForm);
+Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
 const createDOM = () => {
   const div = document.createElement('div');

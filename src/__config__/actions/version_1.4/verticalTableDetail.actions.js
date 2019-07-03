@@ -472,7 +472,8 @@ export default {
     objId,
     currentParameter,
     itemName,
-    isreftabs
+    isreftabs,
+    resolve, reject
   }) { // 主表删除
     let parames = {};
 
@@ -507,8 +508,11 @@ export default {
 
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
+        resolve();
         const data = res.data;
         commit('updateNewMainTableDeleteData', data);
+      } else {
+        reject();
       }
     });
   },
