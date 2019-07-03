@@ -1575,6 +1575,7 @@
             padding: 10px;
             .bottom-table {
               height: 100%;
+              overflow: auto;
               .table {
                 border: 0;
               }
