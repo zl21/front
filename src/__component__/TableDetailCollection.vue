@@ -1812,12 +1812,20 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          if (params.row[cellData.colname]) {
-            const result = cellData.combobox.filter(
-              ele => ele.limitdesc === params.row[cellData.colname]
-            );
-            if (result.length > 0) {
-              return result[0].limitval;
+          if (this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined) {
+            if (!this.afterSendData[this.tableName][params.index][cellData.colname]) {
+              return null;
+            } else {
+              return this.afterSendData[this.tableName][params.index][cellData.colname]
+            }
+          } else {
+            if (params.row[cellData.colname]) {
+              const result = cellData.combobox.filter(
+                ele => ele.limitdesc === params.row[cellData.colname]
+              );
+              if (result.length > 0) {
+                return result[0].limitval;
+              }
             }
           }
         }
