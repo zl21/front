@@ -2956,112 +2956,116 @@
     padding-left: 4px
   }
 
-  .ag-syman-hover {
-    cursor: pointer;
-  }
+}
 
-  .image-preview-box {
-    width: 150px;
-    height: 150px;
-    border: 0 solid black;
-    position: absolute;
-    bottom: 0;
-    right: 10000px;
-    background-color: #fff;
-    z-index: 999999;
-    box-shadow: 0 0 1px gray;
-    transition-duration: 0.3s;
-  }
+// styles for project with ag-grid
+// modify on 2019/07/04
 
-  .tooltip-box {
-    pointer-events: none;
-    background-color: black;
-    position: absolute;
-    z-index: 99999;
-    color: #fff;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: block;
-    border: 1px solid black;
-    max-width: 200px;
-    word-break: break-all;
-    text-align: left;
-    left: -10000px;
-  }
+.ag-syman-hover {
+  cursor: pointer;
+}
 
-  .tooltip-box::before {
-    pointer-events: none;
-    display: block;
-    content: '';
-    top: 8px;
-    float: left;
-    position: absolute;
-    left: -11px;
-    border-right: 5px solid black;
-    border-left: 5px solid transparent;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-  }
+.image-preview-box {
+  width: 150px;
+  height: 150px;
+  border: 0 solid black;
+  position: absolute;
+  bottom: 0;
+  right: 10000px;
+  background-color: #fff;
+  z-index: 999999;
+  box-shadow: 0 0 1px gray;
+  transition-duration: 0.3s;
+}
 
-  .tooltip-top-box {
-    pointer-events: none;
-    background-color: #fff;
-    position: absolute;
-    z-index: 99999;
-    color: #575757;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: block;
-    box-shadow: 0 2px 2px lightgrey;
-    max-width: 200px;
-    word-break: break-all;
-    text-align: center;
-    left: -10000px;
-  }
+.tooltip-box {
+  pointer-events: none;
+  background-color: black;
+  position: absolute;
+  z-index: 99999;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: block;
+  border: 1px solid black;
+  max-width: 200px;
+  word-break: break-all;
+  text-align: left;
+  left: -10000px;
+}
 
-  .arrow-down:before, .arrow-down:after {
-    pointer-events: none;
-    display: block;
-    content: '';
-    width: 0;
-    height: 0;
-    position: absolute;
-    border: 6px solid transparent;
-  }
+.tooltip-box::before {
+  pointer-events: none;
+  display: block;
+  content: '';
+  top: 8px;
+  float: left;
+  position: absolute;
+  left: -11px;
+  border-right: 5px solid black;
+  border-left: 5px solid transparent;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
 
-  .arrow-down:before {
-    top: 100%;
-    left: 48%;
-    border-top-color: lightgray;
-  }
+.tooltip-top-box {
+  pointer-events: none;
+  background-color: #fff;
+  position: absolute;
+  z-index: 99999;
+  color: #575757;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: block;
+  box-shadow: 0 2px 2px lightgrey;
+  max-width: 200px;
+  word-break: break-all;
+  text-align: center;
+  left: -10000px;
+}
 
-  .arrow-down:after {
-    top: calc(100% - 1px);
-    left: 48%;
-    border-top-color: #fff;
-  }
+.arrow-down:before, .arrow-down:after {
+  pointer-events: none;
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  border: 6px solid transparent;
+}
 
-  .text-right {
-    text-align: right
-  }
+.arrow-down:before {
+  top: 100%;
+  left: 48%;
+  border-top-color: lightgray;
+}
 
-  .attachment-wrapper {
-    display: inline-block;
-    margin-right: 5px;
-  }
+.arrow-down:after {
+  top: calc(100% - 1px);
+  left: 48%;
+  border-top-color: #fff;
+}
 
-  a.attachment {
-    text-decoration: none;
-    color: inherit
-  }
+.text-right {
+  text-align: right
+}
 
-  a.attachment:hover {
-    border-bottom: 1px solid black;
-  }
+.attachment-wrapper {
+  display: inline-block;
+  margin-right: 5px;
+}
 
-  a.attachment i {
-    color: rgb(32, 160, 255);
-  }
+a.attachment {
+  text-decoration: none;
+  color: inherit
+}
+
+a.attachment:hover {
+  border-bottom: 1px solid black;
+}
+
+a.attachment i {
+  color: rgb(32, 160, 255);
 }

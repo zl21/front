@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -793,29 +793,32 @@
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
               isShowPopTip: () => {
-                if (cellData.refcolval.maintable) {
-                  if (this.type === pageType.Vertical) {
-                    if (!this.dropDownIsShowPopTip(cellData, params)) {
-                      const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
+                    } else {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                          }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
                     }
-                  } else {
-                    if (!this.dropDownIsShowPopTip(cellData, params)) {
-                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
-                        return acc;
-                      }, [])
-                        .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
-                    }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
                   }
-                } else if (!this.dropDownIsShowPopTip(cellData, params)) {
-                  const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
-                  this.$Message.info(`请选择${obj.name}`);
+                  return this.dropDownIsShowPopTip(cellData, params);
                 }
-                return this.dropDownIsShowPopTip(cellData, params);
+                return true;
               },
               transfer: true,
               enterType: true,
@@ -901,7 +904,7 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -911,7 +914,7 @@
                 }
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               }
             }
           })
@@ -1431,13 +1434,18 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue, type) {
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
         // 组装数据 存入store
-        if (!currentValue && type === 'NUMBER') {
-          currentValue = 0;
-        }
-        if (!currentValue && type !== 'NUMBER') {
-          currentValue = '';
+        if (!currentValue) {
+          if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
+            currentValue = '';
+          } else if (fkdisplay === 'drp' || fkdisplay === 'pop') {
+            currentValue = 0;
+          } else if (type === 'NUMBER') {
+            currentValue = 0;
+          } else if (type !== 'NUMBER') {
+            currentValue = '';
+          }
         }
 
         if (this.afterSendData[this.tableName]) {
@@ -1804,12 +1812,20 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          if (params.row[cellData.colname]) {
-            const result = cellData.combobox.filter(
-              ele => ele.limitdesc === params.row[cellData.colname]
-            );
-            if (result.length > 0) {
-              return result[0].limitval;
+          if (this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined) {
+            if (!this.afterSendData[this.tableName][params.index][cellData.colname]) {
+              return null;
+            } else {
+              return this.afterSendData[this.tableName][params.index][cellData.colname]
+            }
+          } else {
+            if (params.row[cellData.colname]) {
+              const result = cellData.combobox.filter(
+                ele => ele.limitdesc === params.row[cellData.colname]
+              );
+              if (result.length > 0) {
+                return result[0].limitval;
+              }
             }
           }
         }

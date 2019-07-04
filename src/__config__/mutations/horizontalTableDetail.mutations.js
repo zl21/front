@@ -116,6 +116,7 @@ export default {
     }
   },
   updateChangeData(state, data) {
+    data = JSON.parse(JSON.stringify(data));
     state.updateData[data.tableName].changeData = Object.assign(data.value, {});
     state.updateData = Object.assign({}, state.updateData);
   },
@@ -220,7 +221,7 @@ export default {
       mappStatus = data.reduce((arry, item) => {
         if (item.srccol) {
           arry[item.key] = item.srccol;
-        }  
+        }
         return arry;
       }, {});
       state.LinkageForm = state.LinkageForm.concat(data);
