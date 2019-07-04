@@ -845,6 +845,11 @@
                 this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: data, ID:''}] });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: data, ID:''}] });
+                }
                 if (!value.inputValue) {
                   value.transferDefaultSelected = [];
                 }
