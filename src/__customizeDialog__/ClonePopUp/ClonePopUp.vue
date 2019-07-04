@@ -143,8 +143,7 @@
         };
         network.post('/p/cs/clone', searchdata)
           .then((res) => {
-            const res_data = res.data;
-            if (res_data.code !== 0) {
+            if (res.data.code !== 0) {
               return;
             }
             const data = {

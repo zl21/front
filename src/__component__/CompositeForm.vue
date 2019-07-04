@@ -341,7 +341,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-
+        
         // console.log(data, setdefval);
         if (current.item.props.isuppercase) {
           data[current.item.field] = data[current.item.field].toUpperCase();
@@ -414,11 +414,12 @@
         this.defaultFormData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
-          if (this.defaultFormData[option]) {
+          if (this.defaultFormData[option] !== '' && this.defaultFormData[option] !== undefined && this.defaultFormData[option] !== null) {
             arr[option] = this.defaultFormData[option];
           }
           return arr;
         }, {});
+        // 外部change的值
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
             arr[option] = defaultFormData[option];
@@ -1089,13 +1090,8 @@
 
         if (!item.display || item.display === 'text') {
           item.props.type = 'text';
-          item.props.empty = '';
           if (item.display === 'textarea') {
             item.props.type = 'textarea';
-          }
-          if (item.props.number) {
-            // item.props.type = 'number';
-            item.props.empty = 0;
           }
           if (current.isnotnull === true) {
             item.required = true;
@@ -1450,7 +1446,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value === 0 || item.value === '') {
+          if (item.value === undefined || item.value === '' || item.value === null) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -1551,7 +1547,7 @@
     },
     deactivated() {     
       if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
-        if (this.moduleFormType !== 'horizontal' && !this.isreftabs) {
+        if (this.moduleFormType !== 'horizontal' || !this.isreftabs) {
           this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
         }
       }  

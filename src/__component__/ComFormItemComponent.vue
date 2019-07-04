@@ -420,7 +420,7 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        const valueData = this.formDataObject[items.item.field] || '';
+        const valueData = this.formDataObject[items.item.field];
         this.VerificationForm.push({
           index,
           eq: formIndex,
