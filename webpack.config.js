@@ -2,7 +2,9 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const projectConfig = require('./project.config');
 
@@ -78,7 +80,6 @@ module.exports = env => ({
         test: /\.(sa|sc|c|le)ss$/,
         use: [{
           loader: env && env.production ? MiniCssExtractPlugin.loader : 'style-loader',
-          // loader: MiniCssExtractPlugin.loader,
         }, {
           loader: 'css-loader',
         }, {
@@ -138,6 +139,7 @@ module.exports = env => ({
     extensions: ['.js', '.json', '.vue', '.css'],
   },
   optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
     splitChunks: {
       chunks: 'all',
     }
