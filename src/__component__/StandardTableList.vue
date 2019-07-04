@@ -370,6 +370,10 @@
                     }, 50);
                   }
                 },
+                fkrpSelected: () => {
+                  this.formItemsLists[itemIndex].item.props.AutoData = [];
+                  this.formItemsLists = this.formItemsLists.concat([]);
+                },
                 'on-delete': ($this, item, key, index) => {
                   fkDelMultiQuery({
                     searchObject: {

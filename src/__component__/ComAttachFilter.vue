@@ -150,6 +150,7 @@
             ID: row.value
           }
         ];
+        this.propsData.AutoData = [];
         this.valueChange();
       },
       attachFilterInputFocus() {

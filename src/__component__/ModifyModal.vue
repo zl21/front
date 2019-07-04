@@ -27,11 +27,11 @@
           已选中批量修改记录数：{{ ids }}行
         </div>
         <component 
-          :is="'CompositeForm'"
+          :is="'CompositeFormpop'"
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
           class="formPanel"
-          :condition = "Condition"
+          :condition="Condition"
           type="PanelForm"
           @formChange="formChange"
         />
@@ -60,7 +60,7 @@
         newformList: {},
         formChangeData: {},
         fixedcolumns: {},
-        Condition:'list',
+        Condition: 'list',
         objids: [],
         loading: false,
         type: false, // 判断是勾选 还是批量
@@ -146,13 +146,13 @@
         const localdata = {
           table: this.router.tableName, // 表名
           column_include_uicontroller: true, //
-          reffixedcolumns:{}, // 左边树
+          reffixedcolumns: {}, // 左边树
         };
         if (!this.type) {
           localdata.objids = this.objids;
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
-        };
+        }
         const searchObject = {
           fixedData: this.formChangeData,
           searchdata: localdata
