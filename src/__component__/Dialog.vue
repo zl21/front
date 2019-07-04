@@ -156,7 +156,7 @@
       },
       closeActionDialog(value) {
         this.showModal = false;
-        if (value === false) {
+        if (value === true) {
           this.$emit('dialogComponentSaveSuccess');
         }
       },

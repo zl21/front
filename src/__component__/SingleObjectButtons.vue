@@ -27,6 +27,7 @@
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -71,7 +72,6 @@
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
-      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- @confirmImport="" -->
   </div>

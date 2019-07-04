@@ -882,6 +882,7 @@
                 });
               },
               'on-blur': () => {
+                this.fkAutoData = [];
                 // if (value.notAutoData) {
                 //   // autodata中没有 清空输入框 及上次选中的值
                 //   value.inputValue = '';
@@ -895,7 +896,6 @@
                 //     Label: autoData[0].value
                 //   }];
                 // }
-                // this.fkAutoData = [];
                 // let ids = null;
                 // if (value.transferDefaultSelected.length > 0) {
                 //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
@@ -1824,11 +1824,15 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          if (this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined) {
-            if (!this.afterSendData[this.tableName][params.index][cellData.colname]) {
-              return null;
-            } else {
-              return this.afterSendData[this.tableName][params.index][cellData.colname]
+          if (this.afterSendData[this.tableName]) {
+            const dataArry = this.afterSendData[this.tableName];
+            const findIndex = dataArry.findIndex(item => item.ID === params.row.ID);
+            if (findIndex > -1 && dataArry[findIndex] && dataArry[findIndex][cellData.colname] !== undefined) {
+              if (!dataArry[findIndex][cellData.colname]) {
+                return null;
+              } else {
+                return dataArry[findIndex][cellData.colname];
+              }
             }
           } else {
             if (params.row[cellData.colname]) {
