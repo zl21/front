@@ -375,9 +375,7 @@ export default {
           }
         } else if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            // if (enter) {
             modify[tableName].ID = objId;
-            // }
             parames = {
               ...modify,
               ...itemModify
@@ -387,6 +385,7 @@ export default {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
                 ...itemModify
               }
             };
@@ -394,15 +393,12 @@ export default {
         } else if (sataTypeName === 'add') { // 子表新增保存
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
           const addItem = Object.assign({}, add, itemAdd[itemName]);
-
-
           addItem.ID = -1;
           const addItemName = {};
           addItemName[itemName] = itemName;
           addItemName[itemName] = [
             addItem
           ];
-          modify[tableName].ID = objId;
           if (path) {
             parames = {
               ...modify,
@@ -424,10 +420,6 @@ export default {
             ...modify
           };
         } else { // 带子表的没有path的主表保存
-          // const itmValues = modify[itemName];
-          // modify[itemName] = [
-          //   itmValues
-          // ];
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
