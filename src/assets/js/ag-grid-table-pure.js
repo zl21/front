@@ -352,7 +352,7 @@ customHeader.prototype.init = function (params) {
       tooltipTopBox.style.left = `${offsetLeft - (tooltipTopBox.offsetWidth / 2)}px`;
     };
     this.eComment.onmouseleave = () => {
-      // tooltipTopBox.style.display = 'none';
+      tooltipTopBox.style.display = 'none';
     };
   }
 
