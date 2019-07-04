@@ -503,6 +503,16 @@
                 }
               });
             },
+            fkrpSelected: () => {
+              let item = [];
+              if (current.formIndex !== 'inpubobj') {
+                item = this.$refs[`FormComponent_${current.formIndex}`][0]
+                  .newFormItemLists;
+              } else {
+                item = this.$refs.FormComponent_0.newFormItemLists;
+              }
+              item[index].item.props.AutoData = [];
+            },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
               console.log(Selected, 'Selected');
@@ -1539,9 +1549,11 @@
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
-    deactivated() {
+    deactivated() {     
       if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
-        this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+        if (this.moduleFormType !== 'horizontal' && !this.isreftabs) {
+          this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+        }
       }  
     }
   };

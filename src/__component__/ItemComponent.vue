@@ -567,6 +567,7 @@
       // fkrpSelected event
       fkrpSelected(value, $this) {
         this._items.value = value;
+        console.log('fkrpSelected');
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
