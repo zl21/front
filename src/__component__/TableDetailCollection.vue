@@ -1824,11 +1824,15 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          if (this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined) {
-            if (!this.afterSendData[this.tableName][params.index][cellData.colname]) {
-              return null;
-            } else {
-              return this.afterSendData[this.tableName][params.index][cellData.colname]
+          if (this.afterSendData[this.tableName]) {
+            const dataArry = this.afterSendData[this.tableName];
+            const findIndex = dataArry.findIndex(item => item.ID === params.row.ID);
+            if (findIndex > -1 && dataArry[findIndex] && dataArry[findIndex][cellData.colname] !== undefined) {
+              if (!dataArry[findIndex][cellData.colname]) {
+                return null;
+              } else {
+                return dataArry[findIndex][cellData.colname];
+              }
             }
           } else {
             if (params.row[cellData.colname]) {
