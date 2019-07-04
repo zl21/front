@@ -25,7 +25,13 @@ export default {
    *      key-1: VueComponent-1
    *      key-2: VueComponent-2
    *      ...
-   *   }
+   *   },
+   *   projectRoutes: [
+   *     {
+   *       path: '/XXX',
+   *       component: VueComponent-For-XXX
+   *     }
+   *   ]
    * }
    */
   launchApplication(projectConfig) {

@@ -6,6 +6,7 @@ import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
+import './constants/dateApi';
 import network from './__utils__/network';
 import { enableGateWay } from './constants/global';
 import CompositeForm from './__component__/CompositeForm';
@@ -64,8 +65,9 @@ const getGateWayServiceId = () => {
   });
 };
 
-export default (projectConfig = { globalComponent: undefined, Login: undefined }) => {
+export default (projectConfig = { globalComponent: undefined, projectRoutes: undefined }) => {
   const globalComponent = projectConfig.globalComponent || {};
+  const projectRoutes = projectConfig.projectRoutes || [];
   routerPrototype.forEach((d) => {
     if (d.children) {
       d.children.forEach((c) => {
@@ -78,7 +80,11 @@ export default (projectConfig = { globalComponent: undefined, Login: undefined }
       d.component = globalComponent.Login;
     }
   });
-  router.matcher = createRouter(routerPrototype).matcher;
+  if (Object.prototype.toString.call(projectRoutes) === '[object Array]') {
+    router.matcher = createRouter(routerPrototype.concat(projectRoutes)).matcher;
+  } else {
+    router.matcher = createRouter(routerPrototype).matcher;
+  }
   if (enableGateWay) {
     getGateWayServiceId();
   } else {
