@@ -74,6 +74,7 @@
       :footer-hide="dialogComponentNameConfig.footerHide"
       :confirm="dialogComponentNameConfig.confirm"
       :dialog-component-name="dialogComponentName"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 批量 -->
     <modifyDialog
@@ -189,6 +190,11 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapMutations('global', ['tabHref', 'tabOpen']),
+      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+        if (this.buttons.isrefrsh) {
+          this.searchClickData();
+        }
+      },
       closeDialog() {
         this.closeImportDialog();
       },
@@ -703,7 +709,6 @@
         if (type === 'fix') {
           this.AddDetailClick(obj);
         } else if (type === 'custom') {
-          // this.webaction(type, obj);
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
@@ -933,6 +938,9 @@
               content: `${message}`
             };
             this.$Modal.fcSuccess(data);
+            if (this.buttons.isrefrsh) {
+              this.searchClickData();
+            }
           }, () => {
           });
         }
@@ -1238,7 +1246,6 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          // this.getQueryListForAg(this.searchData);
         }, () => {});
       },
       batchSubmit() {
@@ -1259,7 +1266,6 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          // this.getQueryListForAg(this.searchData);
         }, () => {});
       },
       batchUnSubmit() {
@@ -1391,60 +1397,15 @@
                 if (JSON.parse(this.buttons.activeTabAction.confirm).isradio) {
                   // 单选
                   if (this.buttons.selectIdArr.length === 1) {
-                    // const obj = this.buttons.activeTabAction;
-                    //   this.setActionDialog(obj);
-
-                    //   const componentName = obj.action
-                    //     .split('?')[0]
-                    //     .replace(/\//g, '_');
-                    //   Vue.component(
-                    //     componentName,
-                    //     Vue.extend(importCustom(obj.action.split('?')[0]))
-                    //   );
-                    //   this.dialogComponent = componentName;
-                    // }
                     this.objTabActionDialog(this.buttons.activeTabAction);
                   } 
                 } else if (this.buttons.selectIdArr.length > 0) {
-                  // const obj = this.buttons.activeTabAction;
-                  // this.setActionDialog(obj);
-
-                  // const componentName = obj.action
-                  //   .split('?')[0]
-                  //   .replace(/\//g, '_');
-                  // Vue.component(
-                  //   componentName,
-                  //   Vue.extend(importCustom(obj.action.split('?')[0]))
-                  // );
-                  // this.dialogComponent = componentName;
                   this.objTabActionDialog(this.buttons.activeTabAction);
                 } 
               } else {
-                // const obj = this.buttons.activeTabAction;
-                // this.setActionDialog(obj);
-
-                // const componentName = obj.action
-                //   .split('?')[0]
-                //   .replace(/\//g, '_');
-                // Vue.component(
-                //   componentName,
-                //   Vue.extend(importCustom(obj.action.split('?')[0]))
-                // );
-                // this.dialogComponent = componentName;
                 this.objTabActionDialog(this.buttons.activeTabAction);
               }
             } else {
-              // const obj = this.buttons.activeTabAction;
-              // this.setActionDialog(obj);
-
-              // const componentName = obj.action
-              //   .split('?')[0]
-              //   .replace(/\//g, '_');
-              // Vue.component(
-              //   componentName,
-              //   Vue.extend(importCustom(obj.action.split('?')[0]))
-              // );
-              // this.dialogComponent = componentName;
               this.objTabActionDialog(this.buttons.activeTabAction);
             }
           }

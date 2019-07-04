@@ -138,15 +138,15 @@
         }
       },
       open() {
+        this.$emit('dialogComponentSaveSuccess'); 
+
         this.showModal = true;
       },
-
       // 确定
       onOk() {
         if (typeof this.confirm === 'function') {
           this.confirm();
         }
-        // this.$emit('confirm');
       },
       // 取消
       onCancel() {
@@ -154,8 +154,11 @@
           this.cancelFun();
         }
       },
-      closeActionDialog() {
+      closeActionDialog(value) {
         this.showModal = false;
+        if (value === false) {
+          this.$emit('dialogComponentSaveSuccess');
+        }
       },
    
     }
