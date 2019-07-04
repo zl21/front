@@ -388,7 +388,7 @@
             this.formData[current.item.field] = '';
           }
         }
-
+        // 获取需要校验的表单
         this.$emit('formChange', this.formData, this.formDataDef);
         this.getStateData();
       },
