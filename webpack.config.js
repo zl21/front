@@ -139,7 +139,14 @@ module.exports = env => ({
     extensions: ['.js', '.json', '.vue', '.css'],
   },
   optimization: {
-    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [new TerserJSPlugin({
+      sourceMap: true,
+      terserOptions: {
+        compress: {
+          pure_funcs: ['console.log']
+        }
+      }
+    }), new OptimizeCSSAssetsPlugin({})],
     splitChunks: {
       chunks: 'all',
     }
