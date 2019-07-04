@@ -90,6 +90,8 @@
   import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
+
 
   export default {
     data() {
@@ -312,7 +314,7 @@
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
-        if (this.buttons.isrefrsh) {
+        if (this.isrefrsh) {
           this.searchClickData();
         }
       },
@@ -362,6 +364,10 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
+        // DispatchEvent('AAAA', { a: 1 });
+        // window.dispatchEvent(new Event('AAAA'));
+        // // window.addEventListener('AAAA', window.AAAA());
+        // console.log(window);
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
@@ -374,7 +380,6 @@
             this.getObjectTabForChildTableButtons({
               maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
             });
-          
             const searchdata = {
               column_include_uicontroller: true,
               startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
@@ -1688,6 +1693,7 @@
       }
     },
     mounted() {
+      console.log(window);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
           if (item.tablename === this.tableName) {
