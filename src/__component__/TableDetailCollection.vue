@@ -882,6 +882,7 @@
                 });
               },
               'on-blur': () => {
+                this.fkAutoData = [];
                 // if (value.notAutoData) {
                 //   // autodata中没有 清空输入框 及上次选中的值
                 //   value.inputValue = '';
@@ -895,7 +896,6 @@
                 //     Label: autoData[0].value
                 //   }];
                 // }
-                // this.fkAutoData = [];
                 // let ids = null;
                 // if (value.transferDefaultSelected.length > 0) {
                 //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
