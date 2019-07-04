@@ -21,12 +21,17 @@ export default {
    *     Login: '',  // 登录页
    *     WelcomePage: '', // 欢迎页
    *   },
-   *   externalModules: {
-   *      key-1: VueComponent-1
-   *      key-2: VueComponent-2
+   *   externalModules: { // 项目自定义界面组件入口
+   *      key-1: VueComponent-1,
+   *      key-2: VueComponent-2,
    *      ...
    *   },
-   *   projectRoutes: [
+   *   externalModals: {  // 项目自定义弹框（模态框）组件
+   *     key-1: VueComponent-1,
+   *     key-2: VueComponent-2,
+   *     ...
+   *   },
+   *   projectRoutes: [  // 项目自定义路由
    *     {
    *       path: '/XXX',
    *       component: VueComponent-For-XXX

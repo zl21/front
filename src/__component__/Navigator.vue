@@ -138,7 +138,7 @@
         this.$refs.dialogRef.open();
         this.dialogConfig.title = '修改密码';
         this.dialogConfig.footerHide = true;
-        Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
+        // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
       routeTo(data) {
