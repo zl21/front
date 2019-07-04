@@ -71,6 +71,7 @@
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- @confirmImport="" -->
   </div>
@@ -146,7 +147,8 @@
         saveButtonPath: '', // 类型为保存的按钮path
         saveEventAfter: '', // 保存事件执行完成后的操作
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
-        savaCopy: false
+        savaCopy: false,
+        isrefrsh: ''// 控制自定义类型按钮执行后是否刷新
       };
     },
     components: {
@@ -309,6 +311,11 @@
     },
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
+      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+        if (this.buttons.isrefrsh) {
+          this.searchClickData();
+        }
+      },
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
       },
@@ -628,7 +635,9 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          this.upData();
+          if (this.isrefrsh) {
+            this.upData();
+          }
         }, () => {
           this.$loading.hide();
         });
@@ -886,8 +895,13 @@
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
         if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          tabwebact.objbutton.forEach((item) => {
+          tabwebact.objbutton.forEach((item, index) => {
+            if (item.ishide) {
+              tabwebact.objbutton.splice(index);
+            }
+            
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
+            this.isrefrsh = item.isrefrsh;
           });
         }
       },
@@ -910,11 +924,11 @@
         });
       },
       objectTryDelete(obj) { // 删除
-        const searchData = {
-          table: this.tableName,
-          startIndex: 0,
-          range: 10
-        };
+        // const searchData = {
+        //   table: this.tableName,
+        //   startIndex: 0,
+        //   range: 10
+        // };
         const tabIndex = this.tabCurrentIndex;
         if (this.isreftabs) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
