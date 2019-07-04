@@ -74,7 +74,9 @@ export default {
   }, // 更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.formData.isShow = true;
+    if (data.inpubobj) {
+      componentAttribute.formData.isShow = true;
+    }
     componentAttribute.formData.data = data;
   }, //
 

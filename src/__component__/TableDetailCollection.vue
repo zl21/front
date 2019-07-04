@@ -797,7 +797,14 @@
                   if (cellData.refcolval.maintable) {
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
-                        const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
                       }
                     } else {
@@ -807,7 +814,7 @@
                             acc.push(item);
                           });
                           return acc;
-                          }, [])
+                        }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
                       }
