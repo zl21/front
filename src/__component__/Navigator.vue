@@ -46,34 +46,51 @@
           v-model="keyWord"
           class="nav-search"
           icon="ios-search"
-          @on-select="routerNext"
-          @click="setBtn"
           placeholder="请输入要查询的功能名"
+          @on-select="routerNext"
+          @on-click="searchBtn = true"
+          @click="setBtn"
           @input="searchData"
         >
-          <Option v-for="(item,index) in searchList"
-                  :value="item.desc" :key="index" :lable="item">
+          <Option
+            v-for="(item,index) in searchList"
+            :key="index"
+            :value="item.desc"
+:lable="item"
+          >
             {{ item.desc }}
           </Option>
         </AutoComplete>
       </template>
       
       
-      <i v-if="searchBtn === true"
-         class="iconfont iconbj_search" @click="searchBtn = false" />
+      <i
+        v-if="searchBtn === true"
+        class="iconfont iconbj_search"
+        @click="searchBtn = false"
+      />
     </div>
     <div class="tag right">
-      <i class="iconfont iconmd-person"
-         @click="show = true" />
+      <i
+        class="iconfont iconmd-person"
+        @click="show = true"
+      />
     </div>
     <Drawer v-model="show">
-      <SetPanel :panel="setPanel"
-                @changePwdBox="changePwdBox" />
+      <SetPanel
+        :panel="setPanel"
+        @changePwdBox="changePwdBox"
+      />
     </Drawer>
-    <Dialog ref="dialogRef"
-            :title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText"
-            :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm"
-            :dialog-component-name="dialogComponentName" />
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+    />
   </div>
 </template>
 
@@ -138,7 +155,7 @@
         this.$refs.dialogRef.open();
         this.dialogConfig.title = '修改密码';
         this.dialogConfig.footerHide = true;
-        Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
+        // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
       routeTo(data) {

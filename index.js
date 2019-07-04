@@ -8,6 +8,7 @@ import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import { enableGateWay } from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
+import customizedModalConfig from './src/__config__/customizeDialog.config';
 // css import
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -17,6 +18,13 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 
+// 注册自定义模态框组件
+const registerCustomizedModal = () => {
+  Object.keys(customizedModalConfig).forEach((modalName) => {
+    Vue.component(modalName, ((customizedModalConfig[modalName] || {}).component) || {});
+  });
+};
+registerCustomizedModal();
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
 const createDOM = () => {

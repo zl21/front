@@ -662,7 +662,7 @@
           const url = tab.action;
           const index = url.lastIndexOf('\/');
           const filePath = url.substring(index + 1, url.length);
-          Vue.component(filePath, CustomizeModule[filePath].component);
+          // Vue.component(filePath, CustomizeModule[filePath].component);
           this.dialogComponentName = filePath;
         }
       },

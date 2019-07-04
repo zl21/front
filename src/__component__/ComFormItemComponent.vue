@@ -420,7 +420,7 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        const valueData = this.formDataObject[items.item.field] || '';
+        const valueData = this.formDataObject[items.item.field];
         this.VerificationForm.push({
           index,
           eq: formIndex,
@@ -558,6 +558,11 @@
         if (Object.keys(obj)[0]) {
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
+          } else if (current.item.type === 'DropDownSelectFilter' && !current.item.value) {
+            valueItem[Object.keys(obj)[0]] = [{
+              Label: '',
+              ID: ''
+            }];
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
