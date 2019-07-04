@@ -68,6 +68,7 @@
               <Table
                       class="table"
                       highlight-row
+                      :height="true"
                       :data="extendTableData"
                       :columns="columnsBottom"
               />
@@ -1576,6 +1577,7 @@
             .bottom-table {
               height: 100%;
               .table {
+                height: 100%;
                 border: 0;
               }
             }
