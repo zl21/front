@@ -221,4 +221,11 @@ export default [
     ],
     description: '表的数据由定制服务查询写入，而非标准的数据'
   },
+  {
+    name: '前端自定义参数',
+    key: 'webconf',
+    type: 'input',
+    outputValueType: 'JSON',
+    description: '自定义参数格式及内容'
+  }
 ];
