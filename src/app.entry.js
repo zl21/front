@@ -73,7 +73,7 @@ export default (projectConfig = {
 }) => {
   const globalComponent = projectConfig.globalComponent || {};
   const projectRoutes = projectConfig.projectRoutes || [];
-  const externalModals = projectRoutes.externalModals || {};
+  const externalModals = projectConfig.externalModals || {};
   // 替换登录页 | 欢迎页
   routerPrototype.forEach((d) => {
     if (d.children) {
@@ -96,8 +96,9 @@ export default (projectConfig = {
   }
 
   // 注册自定义全局弹框（模态框）组件
-  Object.keys(Object.assign({}, customizedModalConfig, externalModals)).forEach((modalName) => {
-    Vue.component(modalName, ((customizedModalConfig[modalName] || {}).component) || {});
+  const modalConfig = Object.assign({}, customizedModalConfig, externalModals);
+  Object.keys(modalConfig).forEach((modalName) => {
+    Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
   });
 
   // 启动
