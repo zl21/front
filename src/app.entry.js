@@ -6,8 +6,10 @@ import router from './__config__/router.config';
 import routerPrototype from './__config__/router.prototype';
 import store from './__config__/store.config';
 import App from './App';
+import './constants/dateApi';
 import network from './__utils__/network';
 import { enableGateWay } from './constants/global';
+import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
@@ -64,8 +66,15 @@ const getGateWayServiceId = () => {
   });
 };
 
-export default (projectConfig = { globalComponent: undefined, Login: undefined }) => {
+export default (projectConfig = {
+  globalComponent: undefined,
+  projectRoutes: undefined,
+  externalModals: undefined
+}) => {
   const globalComponent = projectConfig.globalComponent || {};
+  const projectRoutes = projectConfig.projectRoutes || [];
+  const externalModals = projectConfig.externalModals || {};
+  // 替换登录页 | 欢迎页
   routerPrototype.forEach((d) => {
     if (d.children) {
       d.children.forEach((c) => {
@@ -78,7 +87,21 @@ export default (projectConfig = { globalComponent: undefined, Login: undefined }
       d.component = globalComponent.Login;
     }
   });
-  router.matcher = createRouter(routerPrototype).matcher;
+
+  // 挂载外部路由
+  if (Object.prototype.toString.call(projectRoutes) === '[object Array]') {
+    router.matcher = createRouter(routerPrototype.concat(projectRoutes)).matcher;
+  } else {
+    router.matcher = createRouter(routerPrototype).matcher;
+  }
+
+  // 注册自定义全局弹框（模态框）组件
+  const modalConfig = Object.assign({}, customizedModalConfig, externalModals);
+  Object.keys(modalConfig).forEach((modalName) => {
+    Vue.component(modalName, ((modalConfig[modalName] || {}).component) || {});
+  });
+
+  // 启动
   if (enableGateWay) {
     getGateWayServiceId();
   } else {

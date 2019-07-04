@@ -15,6 +15,10 @@
       >
         <i class="iconfont icon-tishi1" />
       </Poptip>
+      <span
+        v-if="_items.required"
+        class="label-tip"
+      >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop'">
         <!-- 路由跳转 -->
         <template v-if=" !!_items.value">
@@ -37,10 +41,7 @@
           />
         </template>
       </template>
-      <span
-        v-if="_items.required"
-        class="label-tip"
-      >*</span>
+      
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div class="itemComponent">
@@ -608,7 +609,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-        // this._items.event.inputValueChange('', $this);
+          this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {

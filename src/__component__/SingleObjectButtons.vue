@@ -27,6 +27,7 @@
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -71,7 +72,6 @@
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
-      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
     />
     <!-- @confirmImport="" -->
   </div>
@@ -657,7 +657,7 @@
           const url = tab.action;
           const index = url.lastIndexOf('\/');
           const filePath = url.substring(index + 1, url.length);
-          Vue.component(filePath, CustomizeModule[filePath].component);
+          // Vue.component(filePath, CustomizeModule[filePath].component);
           this.dialogComponentName = filePath;
         }
       },
