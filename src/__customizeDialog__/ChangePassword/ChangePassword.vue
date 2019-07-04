@@ -73,7 +73,7 @@
           >确认</span>
           <span
             class="cancel-btn"
-            @click="()=>{this.$emit('closeActionDialog')}"
+            @click="()=>{this.$emit('closeActionDialog',false)}"
           >取消</span>
         </div>
       </div>
@@ -208,7 +208,7 @@
             this.$Modal.fcSuccess(message);
             this.newpaswd = '';
             this.againpaswd = '';
-            this.$emit('closeActionDialog', false);
+            this.$emit('closeActionDialog', true);
           }
         });
       }

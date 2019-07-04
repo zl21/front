@@ -152,11 +152,11 @@
               content: '克隆成功'
             };
             this.$Modal.fcWarning(data);
-            this.$emit('closeActionDialog'); // 关闭弹框
+            this.$emit('closeActionDialog', true); // 关闭弹框
           });
       }, // 确定
       cancel() {
-        this.$emit('closeActionDialog'); // 关闭弹框
+        this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
       findName(data, name, val) {
         for (const i of data) {
