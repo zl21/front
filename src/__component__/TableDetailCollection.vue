@@ -1336,7 +1336,7 @@
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
           } else if (this.dataSource.row[params.index][cellData.colname]) {
             const data = {
-              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+              ID: this.dataSource.row[params.index][cellData.colname].refobjid.toString(),
               Label: params.row[cellData.colname]
             };
             defaultData.push(data);
@@ -1356,7 +1356,7 @@
                 val.split(',').map((item, ind) => {
                   if (index === ind) {
                     defaultData.push({
-                      ID: ele,
+                      ID: ele.toString(),
                       Label: item
                     });
                   }
