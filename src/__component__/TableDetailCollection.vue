@@ -845,6 +845,11 @@
                 this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: data, ID:''}] });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: data, ID:''}] });
+                }
                 if (!value.inputValue) {
                   value.transferDefaultSelected = [];
                 }
@@ -1336,7 +1341,7 @@
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
           } else if (this.dataSource.row[params.index][cellData.colname]) {
             const data = {
-              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+              ID: this.dataSource.row[params.index][cellData.colname].refobjid.toString(),
               Label: params.row[cellData.colname]
             };
             defaultData.push(data);
@@ -1356,7 +1361,7 @@
                 val.split(',').map((item, ind) => {
                   if (index === ind) {
                     defaultData.push({
-                      ID: ele,
+                      ID: ele.toString(),
                       Label: item
                     });
                   }
