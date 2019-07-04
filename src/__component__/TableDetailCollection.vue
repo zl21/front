@@ -151,6 +151,7 @@
     data() {
       return {
         currentPage: 1, // 当前页码
+        isRefreshClick: false, // 是否点击了刷新
 
         fkSelectedChangeData: [], // 保存外键修改的数据
         verifyTipObj: {}, // 保存校验对象
@@ -406,9 +407,11 @@
       },
       dataSource: {
         handler(val) {
-          this.afterSendData = {};
-          this.verifyTipObj = {};
-          this.fkSelectedChangeData = [];
+          if (this.isRefreshClick) {
+            this.afterSendData = {};
+            this.verifyTipObj = {};
+            this.fkSelectedChangeData = [];
+          }
           this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
@@ -1850,7 +1853,13 @@
 
     },
     mounted() {
+      window.addEventListener('tabRefreshClick', ()=> {
+        this.isRefreshClick = true;
+      });
     },
+    activated() {
+      this.isRefreshClick = false;
+    }
   };
 </script>
 
