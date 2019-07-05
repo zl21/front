@@ -42,3 +42,8 @@ export const globalGateWay = [
 export const ignoreGateWay = [
   '/p/c/get_service_id'
 ];
+
+//
+export const defaultQuietRoutes = [
+  '/login'
+];

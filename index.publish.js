@@ -36,6 +36,9 @@ export default {
    *       path: '/XXX',
    *       component: VueComponent-For-XXX
    *     }
+   *   ],
+   *   quietRoutes: [  // 项目中针对403的请求，都会默认跳转到登录页面。处于静默路由列表的路由界面则不进行跳转。
+   *     '/register'
    *   ]
    * }
    */
