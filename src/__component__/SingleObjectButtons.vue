@@ -359,7 +359,6 @@
       },
 
       clickButtonsRefresh() { // 按钮刷新事件
-        DispatchEvent('tabRefreshClick');
         // DispatchEvent('tabRefreshClick', {
         //   detail: {
         //     a: 'ddddd'
@@ -373,6 +372,7 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
+        DispatchEvent('tabRefreshClick');
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
