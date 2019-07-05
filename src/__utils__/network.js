@@ -2,10 +2,15 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
-import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
+import { ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes } from '../constants/global';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
+
+const getProjectQuietRoutes = () => {
+  const { quietRoutes } = window.ProjectConfig || {};
+  return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
+};
 
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
@@ -86,7 +91,7 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        if (router.currentRoute.path !== '/login') {
+        if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           router.push('/login');
         }
       } else if (status === 500) {
