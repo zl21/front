@@ -1853,8 +1853,10 @@
 
     },
     mounted() {
-      window.addEventListener('tabRefreshClick', ()=> {
-        this.isRefreshClick = true;
+      window.addEventListener('tabRefreshClick', () => {
+        if (!this._inactive) {
+          this.isRefreshClick = true;
+        }
       });
     },
     activated() {
