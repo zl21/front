@@ -315,7 +315,7 @@
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
-          this.searchClickData();
+          this.upData();
         }
       },
       closeActionDialog() { // 关闭导入弹框
@@ -364,18 +364,6 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
-        DispatchEvent('click', {
-          bubbles: '小猪佩奇',
-          cancelable: '小猪佩奇',
-          detail: '小猪佩奇' 
-        });
-        window.addEventListener('click', (event) => {
-          console.log(event.bubbles);
-          console.log(event.cancelable);
-          console.log(event.detail);
-        }, false);
-     
-
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
