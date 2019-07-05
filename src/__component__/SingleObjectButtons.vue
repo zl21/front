@@ -359,14 +359,15 @@
       },
 
       clickButtonsRefresh() { // 按钮刷新事件
-        DispatchEvent('tabRefreshClick', {
-          detail: {
-            a: 'ddddd'
-          }
-        });
-        window.addEventListener('tabRefreshClick', (event) => {
-          console.log(event.detail);
-        }, false);
+        DispatchEvent('tabRefreshClick');
+        // DispatchEvent('tabRefreshClick', {
+        //   detail: {
+        //     a: 'ddddd'
+        //   }
+        // });
+        // window.addEventListener('tabRefreshClick', (event) => {
+        //   console.log(event.detail);
+        // }, false);
         this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
