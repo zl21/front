@@ -1,5 +1,6 @@
 import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
+import getModuleName from './src/__utils__/getModuleName';
 
 const validateConfig = (config) => {
   return {
@@ -9,7 +10,7 @@ const validateConfig = (config) => {
 };
 
 export default {
-  version: '0.0.4',
+  version: '0.0.9',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -61,5 +62,6 @@ export default {
     launchApp(projectConfig);
   },
   urlSearchParams,
+  getModuleName,
   network,
 };
