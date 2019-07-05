@@ -359,11 +359,20 @@
       },
 
       clickButtonsRefresh() { // 按钮刷新事件
+        // DispatchEvent('tabRefreshClick', {
+        //   detail: {
+        //     a: 'ddddd'
+        //   }
+        // });
+        // window.addEventListener('tabRefreshClick', (event) => {
+        //   console.log(event.detail);
+        // }, false);
         this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
+        DispatchEvent('tabRefreshClick');
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
