@@ -364,10 +364,18 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
-        // DispatchEvent('AAAA', { a: 1 });
-        // window.dispatchEvent(new Event('AAAA'));
-        // // window.addEventListener('AAAA', window.AAAA());
-        // console.log(window);
+        DispatchEvent('click', {
+          bubbles: '小猪佩奇',
+          cancelable: '小猪佩奇',
+          detail: '小猪佩奇' 
+        });
+        window.addEventListener('click', (event) => {
+          console.log(event.bubbles);
+          console.log(event.cancelable);
+          console.log(event.detail);
+        }, false);
+     
+
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
@@ -662,7 +670,7 @@
           const url = tab.action;
           const index = url.lastIndexOf('\/');
           const filePath = url.substring(index + 1, url.length);
-          // Vue.component(filePath, CustomizeModule[filePath].component);
+          Vue.component(filePath, CustomizeModule[filePath].component);
           this.dialogComponentName = filePath;
         }
       },
