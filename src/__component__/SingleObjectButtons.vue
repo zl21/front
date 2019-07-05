@@ -315,7 +315,7 @@
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
-          this.searchClickData();
+          this.upData();
         }
       },
       closeActionDialog() { // 关闭导入弹框
@@ -364,10 +364,6 @@
         this.upData(`${message}`);
       },
       upData(message) { // 页面刷新判断逻辑 
-        // DispatchEvent('AAAA', { a: 1 });
-        // window.dispatchEvent(new Event('AAAA'));
-        // // window.addEventListener('AAAA', window.AAAA());
-        // console.log(window);
         const {
           tablename, refcolid, tabrelation, tabinlinemode 
         } = this.itemInfo;
@@ -662,7 +658,7 @@
           const url = tab.action;
           const index = url.lastIndexOf('\/');
           const filePath = url.substring(index + 1, url.length);
-          // Vue.component(filePath, CustomizeModule[filePath].component);
+          Vue.component(filePath, CustomizeModule[filePath].component);
           this.dialogComponentName = filePath;
         }
       },
