@@ -87,7 +87,6 @@
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog';
-  import CustomizeModule from '../__config__/customizeDialog.config';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
@@ -661,15 +660,12 @@
         this.dialogConfig.footerHide = true;
         // this.actionDialog.show = true;
         // this.actionDialog.title = tab.webdesc;
-        if (tab.action.indexOf('?') >= 0) {
-          this.dialogComponent = this.getCustomizeComponent(tab.action.split('/')[0]);
-        } else {
-          const url = tab.action;
-          const index = url.lastIndexOf('\/');
-          const filePath = url.substring(index + 1, url.length);
-          Vue.component(filePath, CustomizeModule[filePath].component);
-          this.dialogComponentName = filePath;
-        }
+        const url = tab.action;
+        const index = url.lastIndexOf('/');
+        const filePath = url.substring(index + 1, url.length);
+        // Vue.component(filePath, CustomizeModule[filePath].component);
+        this.dialogComponentName = filePath;
+        // }
       },
       objectEXPORT() { // 导出功能
         const { refcolid, tabledesc } = this.itemInfo;
