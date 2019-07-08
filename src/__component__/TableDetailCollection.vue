@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1890,7 +1890,7 @@
             if (findIndex > -1 && dataArry[findIndex] && dataArry[findIndex][cellData.colname] !== undefined) {
               if (!dataArry[findIndex][cellData.colname]) {
                 return null;
-              } 
+              }
               return dataArry[findIndex][cellData.colname];
             }
           } else if (params.row[cellData.colname]) {
