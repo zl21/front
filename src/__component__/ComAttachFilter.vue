@@ -280,7 +280,8 @@
       attachFilterOk($this) {
         this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const value = $this._data.parms[this.propsData.inputname.split(':')[1]].val;
+          const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
+          const value = $this._data.parms[type].val;
           this.selected = [
             {
               Label: value,
@@ -302,7 +303,6 @@
         
           this.value = value;
           if (this.propsData.fkobj.saveType) {
-            console.log('saveType');
           } else {
             const Select = [
               {
@@ -345,7 +345,6 @@
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
       }
-      console.log(this.propstype, this.formIndex);
     }
   };
 </script>
