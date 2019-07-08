@@ -1694,7 +1694,6 @@
       }
     },
     mounted() {
-      console.log(window);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
           if (item.tablename === this.tableName) {

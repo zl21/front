@@ -406,7 +406,7 @@ export default {
               ...addItemName
             };
           } else if (Object.values(modify[tableName]).length > 0) {
-            modify[tableName].ID = objId;
+            // modify[tableName].ID = objId;
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
