@@ -37,6 +37,7 @@
 <script>
   // 弹窗多选面板
   import { type } from 'os';
+  import { setTimeout } from 'timers';
   import Dialog from './ComplexsDialog';
   // 弹窗单选
   import myPopDialog from './PopDialog';
@@ -99,7 +100,8 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
-        this.propsData = JSON.parse(JSON.stringify(this.propstype));
+        
+        this.propsData = JSON.parse(JSON.stringify(this.propstype));        
         if (this.propstype.fkdisplay === 'pop') {
           this.propstype.show = false;  
           this.propsData.componentType = myPopDialog;
@@ -231,7 +233,7 @@
         ];
         this.valueChange();
       },
-      attachFilterPopperShow() {
+      attachFilterPopperShow(value, instance) {
         if (
           this.propsData.fkobj.saveType
           && this.selected[0].ID
@@ -244,6 +246,14 @@
               this.$refs.complex.setvalueData(data, 1);
             }
           }, 500);
+        } else {
+          instance.complexs = false;
+          this.filterDate = {};
+          this.resultData = {};
+          setTimeout(() => {
+            // 打开弹窗
+            instance.complexs = true;
+          }, 100);
         }    
         fkGetMultiQuery({
           searchObject: {

@@ -581,7 +581,8 @@
       },
       setvalueData(obj) {
         const data = obj;
-        if (data) {
+        console.log(Object.keys(data).length);
+        if (Object.keys(data).length > 1) {
           this.sendMessage = Object.assign(this.sendMessage, data.value);
           this.text.result = data.lists.result;
           this.EXCLUDE = data.value.EXCLUDE;
@@ -590,6 +591,8 @@
           this.resultData.total = data.total;
 
           this.multipleScreenResultCheck(this.sendMessage, 1, 'result');
+        } else {
+          this.deleBtn();
         }
       },
       // eslint-disable-next-line consistent-return
