@@ -16,6 +16,9 @@ import horizontalTableDetailModule from './store/horizontalTableDetail';
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
+    if (router.getMatchedComponents(to.path).length === 0) {
+      next('/');
+    }
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
