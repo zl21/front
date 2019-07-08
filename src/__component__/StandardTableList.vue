@@ -102,7 +102,6 @@
   import modifyDialog from './ModifyModal';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import CustomizeModule from '../__config__/customizeDialog.config';
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
