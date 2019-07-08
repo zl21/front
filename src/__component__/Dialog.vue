@@ -138,8 +138,6 @@
         }
       },
       open() {
-        this.$emit('dialogComponentSaveSuccess'); 
-
         this.showModal = true;
       },
       // 确定
