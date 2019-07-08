@@ -1,6 +1,9 @@
 const ProjectConfig = window.ProjectConfig || require('../../project.config');
 
 export const Version = ProjectConfig.Version;
+console.log(Version);
+
+
 export const interlocks = ProjectConfig.interlocks;
 export const enableGateWay = ProjectConfig.enableGateWay;
 

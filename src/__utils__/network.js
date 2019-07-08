@@ -2,7 +2,9 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
-import { ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes } from '../constants/global';
+import {
+  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes 
+} from '../constants/global';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
