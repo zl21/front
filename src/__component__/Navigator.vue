@@ -47,16 +47,16 @@
           class="nav-search"
           icon="ios-search"
           placeholder="请输入要查询的功能名"
-          @on-select="routerNext"
           @on-click="searchBtn = true"
           @click="setBtn"
-          @input="searchData"
+          @on-change="searchData"
         >
           <Option
             v-for="(item,index) in searchList"
             :key="index"
-            :value="item.desc"
-:lable="item"
+            :value="index"
+            :lable="item.desc"
+            @on-select-selected="routerNext"
           >
             {{ item.desc }}
           </Option>
@@ -160,8 +160,14 @@
       },
       routeTo(data) {
         const type = data.type;
+        let tabid = 0;
+        if (type === 'table') {
+          tabid = data.tabid;
+        } else {
+          tabid = data.actid;
+        }
         routeTo(
-          { type, info: { tableName: data.name, tableId: data.tabid } },
+          { type, info: { tableName: data.name, tableId: tabid } },
           () => {
             this.keyWord = '';
             this.searchList = [];
@@ -169,8 +175,9 @@
         );
       },
       searchData(value) {
+        this.searchList = [];
+
         if (value === undefined || value.length < 1) {
-          this.searchList = [];
           return;
         }
         network
@@ -182,14 +189,14 @@
           )
           .then((r) => {
             if (r.status === 200 && r.data.code === 0) {
-              this.searchList = r.data.data.concat([]);
+              this.searchList = r.data.data;
             }
           });
       },
       setBtn() {
       },
       routerNext(name) {
-        const index = this.searchList.findIndex(x => x.desc === name);
+        const index = name.value;
         const routerItem = this.searchList[index];
         if (routerItem) {
           this.routeTo(routerItem);

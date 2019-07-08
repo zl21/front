@@ -88,7 +88,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
   import { mapActions, mapState, mapMutations } from 'vuex';
   import ButtonGroup from './ButtonComponent';
   import AgTable from './AgTable';

@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -190,6 +190,7 @@
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
+          pop: { tag: 'ComAttachFilter', event: this.comAttachFilterpopRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
@@ -810,17 +811,15 @@
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
                       }
-                    } else {
-                      if (!this.dropDownIsShowPopTip(cellData, params)) {
-                        const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
-                          return acc;
-                        }, [])
-                          .find(item => item.colname === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
-                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
@@ -856,9 +855,9 @@
               },
               'on-input-value-change': (data, value) => {
                 if (this.fkSelectedChangeData[params.index]) {
-                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: data, ID:''}] });
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: data, ID: '' }] });
                 } else {
-                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: data, ID:''}] });
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: data, ID: '' }] });
                 }
                 if (!value.inputValue) {
                   value.transferDefaultSelected = [];
@@ -975,10 +974,70 @@
                   reftableid: cellData.reftableid,
                   saveType: 'object',
                   show: true,
-                  url: 'ad-app/p/cs/menuimport'
+                  url: `${cellData.serviceId ? +'/' + cellData.serviceId : ''}/p/cs/menuimport`
 
                 },
                 datalist: this.popFilterDataList,
+                ...cellData,
+              // 模糊查询的文字信息，支持多列
+              },
+
+            },
+            on: {
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                }
+              }
+            }
+          })
+        ]);
+      },
+      comAttachFilterpopRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              propstype: {
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: cellData.fkdesc,
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    'footer-hide': true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
+                  show: true,
+                },
                 ...cellData,
               // 模糊查询的文字信息，支持多列
               },
@@ -1588,18 +1647,16 @@
               if (colname && mainTablePanelData.isfk) {
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
-            } else {
-              if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
-                // 左右结构取行内的colid
-                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
-                if (obj) {
-                  // 有修改过的，取修改过的。
-                  fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
-                } else {
-                  // ，没有修改过的取默认的
-                  // this.$Message.info('请选择关联的表字段');
-                  fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
-                }
+            } else if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
               }
             }
             // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
@@ -1833,18 +1890,15 @@
             if (findIndex > -1 && dataArry[findIndex] && dataArry[findIndex][cellData.colname] !== undefined) {
               if (!dataArry[findIndex][cellData.colname]) {
                 return null;
-              } else {
-                return dataArry[findIndex][cellData.colname];
-              }
+              } 
+              return dataArry[findIndex][cellData.colname];
             }
-          } else {
-            if (params.row[cellData.colname]) {
-              const result = cellData.combobox.filter(
-                ele => ele.limitdesc === params.row[cellData.colname]
-              );
-              if (result.length > 0) {
-                return result[0].limitval;
-              }
+          } else if (params.row[cellData.colname]) {
+            const result = cellData.combobox.filter(
+              ele => ele.limitdesc === params.row[cellData.colname]
+            );
+            if (result.length > 0) {
+              return result[0].limitval;
             }
           }
         }
@@ -1954,7 +2008,16 @@
       top: 2px;
     }
     .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
-      top: -1px;
+      top: -2px;
+    }
+    .burgeon-fkrp-poptip .fkrp-poptip-text {
+      top: 2px;
+    }
+    .fkrp-poptip-two .burgeon-icon-ios-close-circle {
+      top: -2px;
+    }
+    .burgeon-input-icon {
+      top: -2px;
     }
   }
 </style>

@@ -400,16 +400,26 @@ export default {
             addItem
           ];
           if (path) {
+            modify[tableName].ID = objId;
             parames = {
               ...modify,
               ...addItemName
+            };
+          } else if (Object.values(modify[tableName]).length > 0) {
+            modify[tableName].ID = objId;
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
+                ...addItemName
+              }
             };
           } else {
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...modify,
                 ...addItemName
               }
             };

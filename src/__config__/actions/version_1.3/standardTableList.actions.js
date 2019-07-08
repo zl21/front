@@ -1,10 +1,18 @@
 /* eslint-disable camelcase */
-
 import network, { urlSearchParams } from '../../../__utils__/network';
 
 export default {
+  setColHide(store, data) {
+    network.post('/p/cs/setHideColumn', urlSearchParams(data));
+  },
+  setColPosition(store, data) {
+    network.post('/p/cs/setColPosition', urlSearchParams(data));
+  },
+  setColPin(store, data) {
+    network.post('/p/cs/setFixedColumn', urlSearchParams(data));
+  },
   getQueryListForAg({ commit }, {
-    table, startIndex, range, fixedcolumns, column_include_uicontroller = true
+    table, startIndex, range, fixedcolumns, column_include_uicontroller = true, orderby, merge = false
   }) {
     network.post('/p/cs/QueryList', urlSearchParams({
       searchdata: {
@@ -13,20 +21,25 @@ export default {
         range: range || 10,
         fixedcolumns,
         column_include_uicontroller,
+        orderby
       }
     })).then((res) => {
-      const updateTableData = res.data.datas;
-      commit('updateTableData', updateTableData);
+      const updateTableData = res.data.data;
+      if (merge) {
+        commit('updateTableDataWithMerge', updateTableData);
+      } else {
+        commit('updateTableData', updateTableData);
+      }
     });
   },
-  getTableQueryForForm({ commit }, { table, resolve }) {
+  getTableQueryForForm({ commit }, { searchData, resolve }) {
     network.post('/p/cs/getTableQuery', urlSearchParams({
-      table,
+      table: searchData.table,
       getcmd: 'y'
     })).then((res) => {
       if (res.data.code === 0) {
-        resolve();
         const queryData = res.data;
+        resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
         commit('updateTableStatus4css', queryData.datas.status4css);
@@ -44,38 +57,60 @@ export default {
       if (res.data.code === 0) {
         resolve();
         const data = res.data.data;
-        commit('updateButtonsExport', data,);
+        commit('updateButtonsExport', data);
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
-  getBatchDeleteForButtons({ commit }, { tableName, selectIdArr }) { // 调用删除明细接口
-    const objids = selectIdArr.join(',');
-    network.post('/p/cs/batchDelete', 
+  getBatchDeleteForButtons({ commit }, {
+    tableName, selectIdArr, resolve, reject 
+  }) { // 调用删除明细接口
+    const ids = selectIdArr.map(d => parseInt(d));
+    network.post('/p/cs/batchDelete',
       {
-        table: tableName,
-        objids
+        tableName,
+        ids
       }).then((res) => {
       const deleteTableData = res.data;
-      commit('updateButtonDeleteData', deleteTableData);
-    }); 
+      if (res.data.code === 0) {
+        resolve();
+       
+        commit('updateButtonDeleteData', deleteTableData);
+        // commit('updateButtonsExport', deleteTableData);
+      } else {
+        commit('updateButtonDeleteData', deleteTableData);
+        reject();
+
+        // this.dispatch(`${getComponentName()}/getQueryListForAg`).then(() => {
+        //   commit('updateButtonDeleteData', deleteTableData);
+        // });
+      }
+    });
   },
-  getExeActionDataForButtons({ commit }, { item, obj }) {
+  getExeActionDataForButtons({ commit }, {
+    item, obj, resolve, reject 
+  }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
-      commit('updateButtonExeActionData', res.data);
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonExeActionData', res.data.message);
+      } else if (res.data.code === -1) {
+        commit('updateButtonExeActionData', res.data.message);
+        reject();
+      }
     });
   },
-  getActionDataForButtons({ commit }, { successAction }) {
-    network.post('/p/cs/getAction', urlSearchParams({
-      actionid: 0,
-      webaction: successAction,
-    })).then((res) => {
+  getActionDataForButtons({ commit }, { param, resolve }) {
+    network.post('/p/cs/getAction', urlSearchParams(param)).then((res) => {
       commit('updateButtonGetActionData', res.data);
+      resolve();
     });
   },
   getToFavoriteDataForButtons({ commit }, { id, type }) { // 收藏
@@ -96,14 +131,14 @@ export default {
       commit('updateButtonSetFavoriteData', data);
     });
   },
-  // importGetUploadParametersForButtons({ commit }) {
-  //   network.post('/p/cs/settings', urlSearchParams({
-  //     configNames: JSON.stringify(['upload.import.max-file-size'])
-  //   })).then((res) => {
-  //     const data = res.data;
-  //     commit('updateButtonImportGetUploadParameters', data);
-  //   });
-  // },
+  importGetUploadParametersForButtons({ commit }) {
+    network.post('/p/cs/settings', urlSearchParams({
+      configNames: JSON.stringify(['upload.import.max-file-size'])
+    })).then((res) => {
+      const data = res.data;
+      commit('updateButtonImportGetUploadParameters', data);
+    });
+  },
   downloadImportTemplateForButtons({ commit }, tableName) {
     network.post('/p/cs/downloadImportTemplate', urlSearchParams({
       searchdata: {
@@ -114,37 +149,64 @@ export default {
       commit('updateButtonDownloadImportTemplate', data);
     });
   },
-  batchVoidForButtons({ commit }, { tableName, ids }) { // 调用作废接口
+  batchVoidForButtons({ commit }, {
+    tableName, ids, resolve, reject 
+  }) { // 调用作废接口
     network.post('/p/cs/batchVoid', 
       { tableName, ids }).then((res) => {
-      const messageData = res.data.message;
-      commit('batchVoidForButtonsData', messageData);
+      const data = res.data;
+      if (res.data.code === 0) {
+        resolve();
+        commit('batchVoidForButtonsData', data);
+        commit('onSelectionChangedAssignment', {});
+      } else {
+        reject();
+        commit('batchVoidForButtonsData', data.data);
+        commit('onSelectionChangedAssignment', {});
+      }
     });
   },
-  
-  batchSubmitForButtons({ commit }, { url, tableName, ids }) { // 调用调接口
+  batchSubmitForButtons({ commit }, {
+    url, tableName, ids, resolve, reject 
+  }) { // 调用提交接口
     network.post(url || '/p/cs/batchSubmit', {
       tableName, 
       ids
     }).then((res) => {
-      commit('updateButtonbatchSubmitData', res.data);
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonbatchSubmitData', res.data);
+        commit('onSelectionChangedAssignment', {});
+      } else {
+        reject();
+        commit('updateButtonbatchSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
+      }
     });
   },
+ 
   batchUnSubmitForButtons({ commit }, 
     { obj, resolve, reject }) {
     network.post('/p/cs/batchUnSubmit',
       obj).then((res) => {
       if (res.data.code === 0) {
-        resolve();
-        commit('updateButtonbatchUnSubmitData', res.data.data);
+        resolve(res);
+        commit('updateButtonbatchUnSubmitData', res.data.message);
+        commit('onSelectionChangedAssignment', {});
       } else {
         reject();
+        commit('updateButtonbatchUnSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
       }
+    }).catch((err) => {
+      reject(err);
     });
   },
   updateUserConfig({ commit }, { type, id }) {
     network.post('/p/cs/getUserConfig', urlSearchParams({ type, id })).then((res) => {
-      commit('updateUserConfig', { userConfig: res.data.data });
+      setTimeout(() => {
+        commit('updateUserConfig', { userConfig: res.data.data });
+      }, 100);
     });
   }
 };

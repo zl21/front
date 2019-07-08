@@ -1,5 +1,7 @@
 <template>
-  <div class="comAttachFilter">
+  <div
+    :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
+  >
     <AttachFilter
       v-model="value"
       v-bind="propsData"
@@ -37,6 +39,7 @@
 <script>
   // 弹窗多选面板
   import { type } from 'os';
+  import { setTimeout } from 'timers';
   import Dialog from './ComplexsDialog';
   // 弹窗单选
   import myPopDialog from './PopDialog';
@@ -99,7 +102,8 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
-        this.propsData = JSON.parse(JSON.stringify(this.propstype));
+        
+        this.propsData = JSON.parse(JSON.stringify(this.propstype));        
         if (this.propstype.fkdisplay === 'pop') {
           this.propstype.show = false;  
           this.propsData.componentType = myPopDialog;
@@ -231,7 +235,7 @@
         ];
         this.valueChange();
       },
-      attachFilterPopperShow() {
+      attachFilterPopperShow(value, instance) {
         if (
           this.propsData.fkobj.saveType
           && this.selected[0].ID
@@ -244,6 +248,14 @@
               this.$refs.complex.setvalueData(data, 1);
             }
           }, 500);
+        } else {
+          instance.complexs = false;
+          this.filterDate = {};
+          this.resultData = {};
+          setTimeout(() => {
+            // 打开弹窗
+            instance.complexs = true;
+          }, 100);
         }    
         fkGetMultiQuery({
           searchObject: {
@@ -270,7 +282,8 @@
       attachFilterOk($this) {
         this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const value = $this._data.parms[this.propsData.inputname.split(':')[1]].val;
+          const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
+          const value = $this._data.parms[type].val;
           this.selected = [
             {
               Label: value,
@@ -292,7 +305,6 @@
         
           this.value = value;
           if (this.propsData.fkobj.saveType) {
-            console.log('saveType');
           } else {
             const Select = [
               {
@@ -335,7 +347,16 @@
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
       }
-      console.log(this.propstype, this.formIndex);
     }
   };
 </script>
+<style lang="less">
+.AttachFilter-pop {
+  .iconbj_tcduo:before {
+    content: "\e6b1";
+  }
+  .iconbj_tcduo {
+    padding-top: 2px;
+  }
+}
+</style>
