@@ -1,5 +1,7 @@
 <template>
-  <div class="comAttachFilter">
+  <div
+    :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
+  >
     <AttachFilter
       v-model="value"
       v-bind="propsData"
@@ -348,3 +350,13 @@
     }
   };
 </script>
+<style lang="less">
+.AttachFilter-pop {
+  .iconbj_tcduo:before {
+    content: "\e6b1";
+  }
+  .iconbj_tcduo {
+    padding-top: 2px;
+  }
+}
+</style>
