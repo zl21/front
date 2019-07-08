@@ -1,5 +1,7 @@
 <template>
-  <div class="comAttachFilter">
+  <div
+    :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
+  >
     <AttachFilter
       v-model="value"
       v-bind="propsData"
@@ -280,7 +282,8 @@
       attachFilterOk($this) {
         this.resultData = Object.assign({}, this.$refs.complex);
         if ($this._data.params) {
-          const value = $this._data.parms[this.propsData.inputname.split(':')[1]].val;
+          const type = this.propsData.inputname.split(':').length > 1 ? this.propsData.inputname.split(':')[1] : 'ENAME';
+          const value = $this._data.parms[type].val;
           this.selected = [
             {
               Label: value,
@@ -302,7 +305,6 @@
         
           this.value = value;
           if (this.propsData.fkobj.saveType) {
-            console.log('saveType');
           } else {
             const Select = [
               {
@@ -345,7 +347,16 @@
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
       }
-      console.log(this.propstype, this.formIndex);
     }
   };
 </script>
+<style lang="less">
+.AttachFilter-pop {
+  .iconbj_tcduo:before {
+    content: "\e6b1";
+  }
+  .iconbj_tcduo {
+    padding-top: 2px;
+  }
+}
+</style>

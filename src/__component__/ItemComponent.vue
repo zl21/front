@@ -354,9 +354,12 @@
           } else {
             // item.componentType = Dialog;
             item.props.fkobj.show = true;
-            item.props.datalist = dataProp[item.type].props.datalist.concat(
-              item.props.datalist
-            );
+            if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+              item.props.datalist = dataProp[item.type].props.datalist.concat(
+                item.props.datalist
+              );
+            }
+            
             item.props.dialog.model['footer-hide'] = false;
             // item.props.datalist.forEach((option, i) => {
             //   if (option.value === '导入') {
@@ -568,7 +571,6 @@
       // fkrpSelected event
       fkrpSelected(value, $this) {
         this._items.value = value;
-        console.log('fkrpSelected');
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
@@ -974,11 +976,7 @@
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             // 判断是否有path
             const parms = this.pathsCheckout(data, HEADIMG);
-            console.log(
-              parms,
-              this.$parent.pathcheck,
-              this.$parent.childTableName
-            );
+            
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
@@ -1216,7 +1214,6 @@
         // 读写
         this._items.value = value;
         this.valueChange();
-        console.log(value, '读写');
       },
       extentionValueChange(value) {
         // 扩展属性
@@ -1292,5 +1289,32 @@
   overflow: auto;
   padding: 2px 5px;
   height: 100%;
+}
+.attachfiter-pop{
+    .burgeon-select-item{
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        .iconbj_delete2{
+            display: none;
+            width: 12px;
+            height: 12px;
+            font-size: 12px;
+            line-height: 12px;
+        }
+        &:hover{
+          .iconbj_delete2{
+           border-radius: 100%;
+           overflow: hidden;
+           display: block;
+           background-color: #e6502f;
+           color: #fff
+        }
+
+        }
+        
+
+    }
 }
 </style>

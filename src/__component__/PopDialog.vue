@@ -212,7 +212,7 @@
               this.selectOperation.totalRowCount = data.totalRowCount;
               this.selectOperation.selectrange = data.selectrange;
               this.selectOperation.defaultrange = data.defaultrange;
-              // this.selectOperation.startindex = data.start;
+              this.selectOperation.startindex = data.start;
               this.SelectionData.thead = data.tabth.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname)
                   .name;
@@ -253,13 +253,18 @@
       },
       saveData() {},
       pageChange(index) {
+        if (index === this.selectOperation.currentPageIndex) {
+          return false;
+        }
+        this.selectOperation.currentPageIndex = index;
         this.selectOperation.startindex = (index - 1) * this.selectOperation.pageSize;
 
         this.getList();
       },
       pageSizeChange(index) {
-        this.selectOperation.startindex = index * this.selectOperation.pageSize;
         this.selectOperation.defaultrange = index;
+        this.selectOperation.pageSize = index;
+        this.selectOperation.startindex = (this.selectOperation.currentPageIndex - 1) * this.selectOperation.pageSize;
         this.getList();
       },
       InitializationForm(data) {
