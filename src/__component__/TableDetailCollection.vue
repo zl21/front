@@ -1954,7 +1954,16 @@
       top: 2px;
     }
     .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
-      top: -1px;
+      top: -2px;
+    }
+    .burgeon-fkrp-poptip .fkrp-poptip-text {
+      top: 2px;
+    }
+    .fkrp-poptip-two .burgeon-icon-ios-close-circle {
+      top: -2px;
+    }
+    .burgeon-input-icon {
+      top: -2px;
     }
   }
 </style>
