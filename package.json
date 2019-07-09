@@ -63,10 +63,12 @@
     "ag-grid": "^17.1.1",
     "ag-grid-enterprise": "^17.1.1",
     "axios": "^0.18.0",
-    "burgeon-ui": "^1.0.16",
     "md5": "^2.2.1",
     "vue": "^2.6.8",
     "vue-router": "^3.0.2",
     "vuex": "^3.1.0"
+  },
+  "peerDependencies": {
+    "burgeon-ui": "^1.0.16"
   }
 }
