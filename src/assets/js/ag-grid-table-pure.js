@@ -546,7 +546,7 @@ const initializeAgTable = (container, opt) => {
         if (columnItem.fkdisplay === 'mop') {
 
           return 'mopFkComponent';
-        } else if(columnItem.fkdisplay === 'drp') {
+        } else if(columnItem.fkdisplay === 'drp' || columnItem.fkdisplay === 'pop') {
           return 'fkComponent';
         }
       }
