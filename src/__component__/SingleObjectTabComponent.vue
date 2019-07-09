@@ -18,7 +18,7 @@
     />
     <compositeForm
       v-if="formData.isShow"
-      v-show="status === 1"
+      v-show="status === 1 && !objreadonly"
       :object-type="type"
       :is-main-table="isMainTable"
       :objreadonly="objreadonly"
