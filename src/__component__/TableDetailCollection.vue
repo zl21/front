@@ -1344,13 +1344,23 @@
             click: (event) => {
               // TODO 外键关联跳转
               const data = this.dataSource.row[params.index][cellData.colname];
-              this.tabHref({
-                type: 'tableDetailVertical',
-                tableName: data.reftablename,
-                tableId: data.reftableid,
-                label: data.reftabdesc,
-                id: data.refobjid
-              });
+              if (cellData.objdistype === 'object') {
+                this.tabHref({
+                  type: 'tableDetailVertical',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: data.refobjid
+                });
+              } else if (cellData.objdistype === 'tabpanle') {
+                this.tabHref({
+                  type: 'tableDetailHorizontal',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: data.refobjid
+                });
+              }
               event.stopPropagation();
             }
           }
