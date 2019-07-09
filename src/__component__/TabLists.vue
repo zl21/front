@@ -161,7 +161,6 @@
   }
 .openedMenuLists {
   background-color: #fff;
-  border-bottom: 1px solid #dfdfdf;
   display: flex;
   box-sizing: border-box;
   height: 34px;
@@ -194,7 +193,9 @@
     position: relative;
     z-index: 0;
     display: flex;
-    overflow: hidden;
+    // overflow: hidden;
+  border-bottom: 1px solid #dfdfdf;
+
     a{
       display: inline-block;
       text-decoration: none;
