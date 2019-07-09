@@ -111,7 +111,7 @@
 </template>
 
 <script>
-  /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return */
+  /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return,no-else-return */
   import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
@@ -678,7 +678,8 @@
               width: '100px'
             },
             props: {
-              value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
+              // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
+              value: this.copyDataSource.row[params.index][cellData.colname].val,
               regx: this.inputRegx(cellData, params),
               maxlength: cellData.length
             },
@@ -689,6 +690,7 @@
             },
             on: {
               'on-change': (event, data) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
                 this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
               // 'on-focus': (event) => {
@@ -1893,6 +1895,13 @@
                 return null;
               }
               return dataArry[findIndex][cellData.colname];
+            } else if (params.row[cellData.colname]) {
+              const result = cellData.combobox.filter(
+                ele => ele.limitdesc === params.row[cellData.colname]
+              );
+              if (result.length > 0) {
+                return result[0].limitval;
+              }
             }
           } else if (params.row[cellData.colname]) {
             const result = cellData.combobox.filter(
