@@ -555,22 +555,22 @@
         );
 
         // 处理默认数据，然后进行查询
-        if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
-          this.formDefaultComplete = true;
-          this.searchClickData();
-        }
-        if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
-          this.formDataChange(
-            items.reduce((obj, current) => {
-              obj[current.item.field] = current.item.value;
-              return obj;
-            }, {})
-          );
+        // if (defaultFormItemsLists.length === 0 && !this.formDefaultComplete) {
+        //   this.formDefaultComplete = true;
+        //   this.searchClickData();
+        // }
+        // if (Object.keys(this.formItems.data).length === 0 && defaultFormItemsLists.length !== 0) {
+        //   this.formDataChange(
+        //     items.reduce((obj, current) => {
+        //       obj[current.item.field] = current.item.value;
+        //       return obj;
+        //     }, {})
+        //   );
 
-          setTimeout(() => {
-            this.searchClickData();
-          }, 200);
-        }
+        //   setTimeout(() => {
+        //     this.searchClickData();
+        //   }, 200);
+        // }
         return items;
       },
       defaultValue(item) {
@@ -1473,6 +1473,15 @@
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
+      },
+
+      // getTableQuery监听,做第一次数据查询
+      networkGetTableQuery(event) {
+        if (this._inactive) { return; }
+        const { detail } = event;
+        if (detail.url === '/p/cs/getTableQuery') {
+          this.searchClickData();
+        }
       }
     },
     mounted() {
@@ -1485,6 +1494,8 @@
       promise.then(() => {
         this.getbuttonGroupdata();
       });
+
+      window.addEventListener('network', this.networkGetTableQuery);
     },
     activated() {
       const { tableId } = this.$route.params;
@@ -1496,6 +1507,7 @@
     },
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
+      window.removeEventListener('network', this.networkGetTableQuery);
     }
   };
 </script>
