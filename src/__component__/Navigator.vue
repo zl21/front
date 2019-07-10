@@ -284,6 +284,13 @@
         line-height: 28px;
         color: #fff;
         font-size: 13px;
+        transition: all 0.25s;
+
+        &:hover{
+            font-size: 12px;
+            padding: 0px 14px;
+            transition: all 0.25s;
+        }
       }
       
       i {
