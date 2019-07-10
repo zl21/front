@@ -13,4 +13,11 @@ export default {
       '../__customizeDialog__/ClonePopUp/ClonePopUp.vue'
     )
   },
+  Publish: {
+    component: () => import(
+      /* webpackChunkName: 'ChangePassword' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/Publish/Publish.vue'
+    )
+  },
 };
