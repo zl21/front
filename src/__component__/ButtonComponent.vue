@@ -61,11 +61,11 @@
           <i
             v-if="!dataArray.collectiImg"
             class="iconfont iconbj_col"
-          ></i>
+          />
           <i
             v-else
             class="iconfont iconbj_alrcol"
-          ></i>
+          />
         </span>
       </Button>
       <Button
