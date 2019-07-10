@@ -3,20 +3,19 @@
     <div class="panel-main">
       <div class="panel-item">
         <p>
-          <i class="iconfont iconmd-person" />
-          <span>欢迎: {{ userInfo.ename }}</span>
+          <i class="iconfont iconmd-contact explanatory" />
+          欢迎: {{ userInfo.ename }}
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <i class="iconfont iconbj_password" />
-          <span>修改密码</span>
+          <i class="iconfont iconmd-key explanatory" />修改密码
         </p>
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont iconbj_col left-icon" />
-          <span>是否展开收藏夹</span>
+          <i class="iconfont iconmd-book explanatory" />
+          是否展开收藏夹
           <i-switch
             v-model="showFavorites"
             class="switch"
@@ -26,8 +25,8 @@
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont iconios-expand" />
-          <span>折叠查询条件</span>
+          <i class="iconfont iconmd-apps explanatory" />
+          折叠查询条件
           <i-switch
             v-model="switchValue"
             class="switch"
@@ -40,8 +39,8 @@
         class="panel-item"
       >
         <p>
-          <i class="iconfont iconbj_shrink" />
-          <span>查询条件默认显示行数</span>
+          <i class="iconfont iconmd-list explanatory" />
+          查询条件默认显示行数
           <InputNumber
             v-model="num7"
             :max="10"
@@ -52,8 +51,8 @@
       </div>
       <div class="panel-item">
         <p @click="signout">
-          <i class="iconfont iconbj_exit" />
-          <span>退出</span>
+          <i class="iconfont iconmd-exit explanatory" />
+          退出
         </p>
       </div>
     </div>
@@ -187,6 +186,10 @@
       line-height: 49px;
       border-bottom: solid 1px #d8d8d8;
       position: relative;
+      .explanatory{
+         position: relative;
+         top: 2px;
+      }
       .set-panel-number{
          position: absolute;
         right: 15px;

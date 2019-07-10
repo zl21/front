@@ -55,6 +55,13 @@ const getCategory = () => {
     }
   });
 };
+const getSubSystems = () => {
+  network.post('/p/cs/getSubSystems').then((res) => {
+    if (res.data.data) {
+      store.commit('global/updateMenuLists', res.data.data);
+    }
+  });
+};
 const getGateWayServiceId = () => {
   network.get('/p/c/get_service_id').then((res) => {
     window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
@@ -68,5 +75,6 @@ const getGateWayServiceId = () => {
 if (enableGateWay) {
   getGateWayServiceId();
 } else {
+  getSubSystems();
   init();
 }

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import { enableGateWay } from '../constants/global';
+  import { enableGateWay, Version } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
   
   export default {
@@ -78,7 +78,11 @@
               rememberMe: false,
               lang: 'zh_CN',
             })).then((r) => {
-              if (r.status === 200 && r.data.code === 0) {
+              if (Version === '1.3') {
+                if (r.status === 200 && r.data.code === 1) {
+                  window.location.href = window.location.origin;
+                }
+              } else if (r.status === 200 && r.data.code === 0) {
                 window.location.href = window.location.origin;
               }
             });

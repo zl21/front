@@ -2,15 +2,13 @@ import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
 
-const validateConfig = (config) => {
-  return {
-    isQualified: true,
-    message: 'xxx'
-  };
-};
+const validateConfig = config => ({
+  isQualified: true,
+  message: 'xxx'
+});
 
 export default {
-  version: '0.0.9',
+  version: '1.0.1',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {

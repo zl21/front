@@ -110,7 +110,7 @@ export default {
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-        const tableData = res.data.data;
+        const tableData = res.data.datas;
         tableData.tabIndex = tabIndex;
         commit('updateTableData', tableData);
       }
@@ -131,20 +131,23 @@ export default {
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-      if (path) { // 没有子表    有path的参数
-        add[tableName].ID = objId;
-        parames = {
+     
+      parames = {
+        table: tableName, // 主表表名
+        objid: objId, // 固定传值-1 表示新增
+        data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
           ...add
-        };
-      } else {
-        parames = {
-          table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...add
-          }
-        };
-      }
+        }
+      };
+      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+        if (res.data.code === 0) {
+          const data = res.data;
+          resolve();
+          commit('updateNewMainTableAddSaveData', { data, itemName });
+        } else {
+          reject();
+        }
+      });
     } else if (type === 'modify') { // 编辑保存参数
       if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;
@@ -268,16 +271,16 @@ export default {
           }
         };
       }
+      network.post('/p/cs/objectSave', parames).then((res) => {
+        if (res.data.code === 0) {
+          const data = res.data;
+          resolve();
+          commit('updateNewMainTableAddSaveData', { data, itemName });
+        } else {
+          reject();
+        }
+      });
     }
-    network.post(path || '/p/cs/objectSave', parames).then((res) => {
-      if (res.data.code === 0) {
-        const data = res.data;
-        resolve();
-        commit('updateNewMainTableAddSaveData', { data, itemName });
-      } else {
-        reject();
-      }
-    });
   },
   performMainTableDeleteAction({ commit }, {
     path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject

@@ -79,7 +79,6 @@
 
 <script>
 
-  import Vue from 'vue';
   import { mapMutations, mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
@@ -1636,30 +1635,30 @@
               objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
             });
           });
-          let message = '';
+          // let message = '';
           promise.then(() => {
-            message = this.buttonsData.submitData.message;
+            const message = this.buttonsData.submitData.message;
+            if (message) {
+              this.upData(`${message}`);
+            } else {
+              this.upData();
+            }
           });
-          if (message) {
-            this.upData(`${message}`);
-          } else {
-            this.upData();
-          }
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
             this.getObjectTryInvalid({
               objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
             });
           });
-          let message = '';
+          // let message = '';
           promise.then(() => {
-            message = this.buttonsData.invalidData.message;
+            const message = this.buttonsData.invalidData.message;
+            if (message) {
+              this.upData(`${message}`);
+            } else {
+              this.upData();
+            }
           });
-          if (message) {
-            this.upData(`${message}`);
-          } else {
-            this.upData();
-          }
         } else { // 保存后的保存成功提示信息
           const message = this.buttonsData.message;
           if (message) {

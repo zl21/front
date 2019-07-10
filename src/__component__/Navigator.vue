@@ -76,7 +76,10 @@
         @click="show = true"
       />
     </div>
-    <Drawer v-model="show">
+    <Drawer
+      v-model="show"
+      :closable="false"
+    >
       <SetPanel
         :panel="setPanel"
         @changePwdBox="changePwdBox"

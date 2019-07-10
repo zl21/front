@@ -40,7 +40,10 @@ export default () => ({
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
         'getExportQueryForButtons',
-        'getObjTabActionSlientConfirm'
+        'getObjTabActionSlientConfirm',
+        'getObjectTrySubmit',
+        'getObjectTryUnSubmit',
+        'getObjectTryInvalid'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -59,7 +62,7 @@ export default () => ({
         'updateAddData',
         'updateDeleteData',
         'updateObjTabActionSlientConfirm',
-        'updateTableSearchData'
+        'updateTableSearchData',
       ]),
   },
   beforeDestroy() {
