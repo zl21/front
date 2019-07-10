@@ -1480,6 +1480,7 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
+          this.updateFormData(this.$refs.FormItemComponent.formDataObject);
           this.searchClickData();
         }
       }
