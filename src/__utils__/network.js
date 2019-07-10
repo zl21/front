@@ -96,7 +96,7 @@ axios.interceptors.response.use(
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
           router.push('/login');
         }
-      } else if (status === 500) {
+      } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message;
         let formatJsonEmg = null;
