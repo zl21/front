@@ -106,6 +106,8 @@ export default {
         commit('updateButtonExeActionData', res.data.message);
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   getActionDataForButtons({ commit }, { param, resolve }) {

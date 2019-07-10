@@ -441,6 +441,8 @@ export default {
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
 };

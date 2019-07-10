@@ -944,6 +944,7 @@
               this.searchClickData();
             }
           }, () => {
+            this.$loading.hide();
           });
         }
       },
