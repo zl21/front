@@ -83,17 +83,20 @@
           env: this.envValue, 
           objId: itemId, 
         };
-        network.post('/p/cs/release', searchdata)
+        network.post('/p/cs/release', urlSearchParams(searchdata))
           .then((res) => {
             if (res.data.code !== 0) {
               return;
             }
-            const data = {
-              title: 'success',
-              content: '提交成功'
-            };
-            this.$Modal.fcWarning(data);
-            this.$emit('closeActionDialog', true); // 关闭弹框
+            if (res.data.code === 0) {
+              const message = res.data.message;
+              const data = {
+                title: 'success',
+                content: message
+              };
+              this.$Modal.fcWarning(data);
+              this.$emit('closeActionDialog', true); // 关闭弹框
+            }
           });
       }, // 确定
       cancel() {
