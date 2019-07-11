@@ -6,8 +6,8 @@ node_modules
 # files
 package-lock.json
 __test_script__/
+r3.publish/
 dist/
 *.tgz
-publish/
 # project.config.js
 burgeon-r3-*/

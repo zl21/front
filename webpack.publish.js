@@ -12,7 +12,7 @@ module.exports = () => ({
   },
   output: {
     filename: 'r3.min.js',
-    path: path.join(__dirname, './publish'),
+    path: path.join(__dirname, './r3.publish'),
     globalObject: 'this',
     library: 'R3',
     libraryTarget: 'umd',
@@ -109,7 +109,7 @@ module.exports = () => ({
     new MiniCssExtractPlugin({
       filename: 'r3.min.css',
     }),
-    new CleanWebpackPlugin(['publish']),
+    new CleanWebpackPlugin(['r3.publish']),
     new VueLoaderPlugin(),
   ],
   mode: 'production',
