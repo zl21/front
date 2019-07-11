@@ -65,22 +65,22 @@
           .get('/p/cs/getEnvs')
           .then((res) => {
             if (res.data.code === 0) {
-              this.objID = res.data.data;
+              this.env = res.data.data;
             }
           });
       },
       save() {
-        if (!this.model1 || !this.env) {
+        if (!this.envValue) {
           const data = {
             title: 'warning',
-            content: '请输入env'
+            content: '请选择env'
           };
           this.$Modal.fcWarning(data);
           return;
         }
         const { itemId } = router.currentRoute.params;
         const searchdata = {
-          env: this.env, 
+          env: this.envValue, 
           objid: itemId, 
         };
         network.post('/p/cs/release', searchdata)
