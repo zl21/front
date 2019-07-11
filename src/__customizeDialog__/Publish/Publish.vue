@@ -4,7 +4,7 @@
       <div class="pop-input">
         <ul>
           <li class="resTop">
-            <span>env:</span>
+            <span>环境:</span>
             <Select
               v-model="envValue"
               style="width:228px"
@@ -81,7 +81,7 @@
         const { itemId } = router.currentRoute.params;
         const searchdata = {
           env: this.envValue, 
-          objid: itemId, 
+          objId: itemId, 
         };
         network.post('/p/cs/release', searchdata)
           .then((res) => {
@@ -108,7 +108,7 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
-      this.$emit('setTitle', '环境'); // 关闭弹框
+      // this.$emit('setTitle', '环境'); // 关闭弹框
 
       this.getEnvs();
     }
