@@ -33,7 +33,6 @@ const createDOM = () => {
 };
 
 const init = () => {
-  debugger;
   const rootDom = createDOM();
   window.vm = new Vue({
     router,
