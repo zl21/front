@@ -1,29 +1,22 @@
 <template>
-  <div class="clonePopUp">
+  <div class="publishContent">
     <div class="pop-title">
       <div class="pop-input">
         <ul>
           <li class="resTop">
-            <span>objID:</span>
+            <span>env:</span>
             <Select
-              v-model="model1"
+              v-model="envValue"
               style="width:228px"
             >
               <Option
-                v-for="(item,index) in objID"
+                v-for="(item,index) in env"
                 :key="index"
                 :value="item"
               >
                 {{ item }}
               </Option>
             </Select>
-          </li>
-          <li>
-            <span>env:</span>
-            <input
-              v-model="env"
-              type="text"
-            >
           </li>
         </ul>
       </div>
@@ -48,6 +41,8 @@
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import router from '../../__config__/router.config';
+
 
   export default {
     name: 'ClonePopUp',
@@ -59,9 +54,8 @@
     },
     data() {
       return {
-        objID: [],
-        model1: '',
-        env: ''
+        env: [],
+        envValue: ''
       };
     },
     components: {},
@@ -79,14 +73,15 @@
         if (!this.model1 || !this.env) {
           const data = {
             title: 'warning',
-            content: '请输入objID名或env'
+            content: '请输入env'
           };
           this.$Modal.fcWarning(data);
           return;
         }
+        const { itemId } = router.currentRoute.params;
         const searchdata = {
-          env: this.env, // 源表表名
-          objid: this.model1, // 目标表名
+          env: this.env, 
+          objid: itemId, 
         };
         network.post('/p/cs/release', searchdata)
           .then((res) => {
@@ -113,14 +108,16 @@
       this.chineseName = ChineseDictionary;
     },
     mounted() {
+      this.$emit('setTitle', '环境'); // 关闭弹框
+
       this.getEnvs();
     }
   };
 </script>
 <style lang="less" scoped type="text/less">
-.clonePopUp {
+.publishContent {
   font-size: 12px;
-  height: 174px;
+  height: 98px;
   .pop-title {
     // width: 400px;
     height: 152px;

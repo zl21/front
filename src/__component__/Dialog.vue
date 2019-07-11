@@ -2,7 +2,7 @@
 <template>
   <Modal
     v-model="showModal"
-    :title="title"
+    :title="titleName"
     :title-align="titleAlign"
     :scrollable="scrollable"
     :closable="closable"
@@ -26,6 +26,7 @@
         v-if="showModal"
         ref="modalComponent"
         :obj-list="objList"
+        @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
       />
     </div>
@@ -115,7 +116,16 @@
       return {
         showModal: false,
         modalWidth: 520,
+        setTitleName: ''
       };
+    },
+    computed: {
+      titleName() {
+        if (this.setTitleName) {
+          return this.setTitleName;
+        }
+        return this.title;
+      }
     },
     watch: {
       dialogComponentName(val) {
@@ -127,6 +137,9 @@
     mounted() {
     },
     methods: {
+      setTitle(value) {
+        this.setTitleName = value;
+      },
       getModalWidth() {
         const self = this;
         if (this.$refs.modalComponent) {
