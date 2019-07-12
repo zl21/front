@@ -71,7 +71,7 @@ axios.interceptors.response.use(
       window.vm.$Modal.fcError({
         mask: true,
         title: '错误',
-        content: response.data.message || 'No Error Message.'
+        content: response.data.message || response.data.msg || 'No Error Message.'
       });
     }
     dispatchR3Event({
