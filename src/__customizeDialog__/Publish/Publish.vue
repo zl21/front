@@ -72,6 +72,7 @@
       save() {
         if (!this.envValue) {
           const data = {
+            mask: true,
             title: 'warning',
             content: '请选择环境'
           };
