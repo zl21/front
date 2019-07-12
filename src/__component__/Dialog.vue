@@ -166,11 +166,13 @@
         }
       },
       closeActionDialog(value) {
+        this.$emit('clearDialogComponentName');
         this.showModal = false;
         if (value === true) {
           this.$emit('dialogComponentSaveSuccess');
         }
       },
+      
    
     }
   };

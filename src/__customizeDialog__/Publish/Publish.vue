@@ -73,7 +73,7 @@
         if (!this.envValue) {
           const data = {
             title: 'warning',
-            content: '请选择env'
+            content: '请选择环境'
           };
           this.$Modal.fcWarning(data);
           return;
@@ -94,7 +94,7 @@
                 title: 'success',
                 content: message
               };
-              this.$Modal.fcWarning(data);
+              this.$Modal.fcSuccess(data);
               this.$emit('closeActionDialog', true); // 关闭弹框
             }
           });
@@ -102,10 +102,6 @@
       cancel() {
         this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
-    
-      errorDialogClose() {
-        this.errorDialog = false;
-      } // 关闭弹框
     },
     created() {
       this.chineseName = ChineseDictionary;
@@ -114,7 +110,8 @@
       // this.$emit('setTitle', '环境'); // 关闭弹框
 
       this.getEnvs();
-    }
+    },
+   
   };
 </script>
 <style lang="less" scoped type="text/less">

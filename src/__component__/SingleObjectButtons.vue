@@ -28,6 +28,7 @@
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
+      @clearDialogComponentName="clearDialogComponentName"
     />
     <!-- 动作定义弹框定制界面 -->
     <!-- <Dialog
@@ -315,6 +316,9 @@
         if (this.isrefrsh) {
           this.upData();
         }
+      },
+      clearDialogComponentName() {
+        this.dialogComponentName = null;
       },
       closeActionDialog() { // 关闭导入弹框
         this.importData.importDialog = false;
