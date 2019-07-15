@@ -335,12 +335,14 @@
           if (tabcmd.cmds) {
             // 取主表path用于子表
             this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
-              this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                if (index === i) {
-                  this.buttonPath[cmd] = path;
-                }
-              });
+              if (this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+                this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                  if (index === i) {
+                    this.buttonPath[cmd] = path;
+                  }
+                });
+              }
             });
 
             tabcmd.cmds.map((item, index) => {

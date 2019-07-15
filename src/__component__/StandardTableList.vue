@@ -172,6 +172,7 @@
           temp.labelWidth = 90;
           return temp;
         });
+
         if (JSON.stringify(arr) !== JSON.stringify(this.formItemsLists)) {
           this.formItemsLists = arr;
         }
@@ -368,8 +369,9 @@
                     }, 50);
                   }
                 },
-                fkrpSelected: () => {
+                fkrpSelected: (value) => {
                   this.formItemsLists[itemIndex].item.props.AutoData = [];
+                  this.formItemsLists[itemIndex].item.value = value;
                   this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'on-delete': ($this, item, key, index) => {

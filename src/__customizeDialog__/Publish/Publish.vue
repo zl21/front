@@ -72,6 +72,7 @@
       save() {
         if (!this.envValue) {
           const data = {
+            mask: true,
             title: 'warning',
             content: '请选择环境'
           };
@@ -91,6 +92,7 @@
             if (res.data.code === 0) {
               const message = res.data.message;
               const data = {
+                mask: true,
                 title: 'success',
                 content: message
               };
