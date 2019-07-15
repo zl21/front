@@ -164,7 +164,6 @@ export default {
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-        debugger;
         const resData = res.data.data;
         resData.tabIndex = tabIndex;
         commit('updateTableListForRefTable', resData);

@@ -149,129 +149,41 @@ export default {
         }
       });
     } else if (type === 'modify') { // 编辑保存参数
-      if (isreftabs) {
-        const itemModify = itemCurrentParameter.modify;
-        const itemAdd = itemCurrentParameter.add;// 子表新增
-        const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-        if (path) { // 有path的参数
-          const { modify } = parame;
-          if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
-            if (sataTypeName === 'addAndModify') {
-              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-              Object.assign(itemAdd[itemName], add);
-              // modify[tableName].ID = objId;// 主表id
-              const itemTableAdd = Object.assign({}, itemAdd);
-
-              itemTableAdd[itemName].ID = -1;
-              const mainTabale = {};
-              mainTabale[tableName] = {
-                ID: objId// 主表id
-              };
-              const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
-              itemModifyForAddAndModify.push(itemTableAdd[itemName]);
-              const addAndModifyParames = [];
-              addAndModifyParames[itemName] = [
-                ...itemModifyForAddAndModify
-              ];
-              parames = {
-                ...mainTabale,
-                ...addAndModifyParames
-              };
-            } else if (sataTypeName === 'add') { // 子表新增
-              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-              Object.assign(itemAdd[itemName], add);
-              const itemTableAdd = Object.assign({}, itemAdd);
-
-              itemTableAdd[itemName].ID = -1;
-              itemTableAdd[itemName] = [
-                itemTableAdd[itemName]
-              ];
-              const mainTabale = {};
-              mainTabale[tableName] = {
-                ID: objId// 主表id
-              };
-              parames = {
-                ...mainTabale,
-                ...itemTableAdd
-              };
-            } else if (sataTypeName === 'modify') { // 子表编辑
-              const mainTabale = {};
-              mainTabale[tableName] = {
-                ID: objId// 主表id
-              };
-              parames = {
-                ...mainTabale,
-                ...itemModify
-              };
+      const { modify } = parame;
+      if (tableName) { // 主表修改
+        const dufault = parame.default;
+        const dufaultData = dufault[tableName];
+        const defaultForSave = {};
+        const dufaultDataForSave = {};
+        Object.keys(dufaultData).reduce((obj, item) => { // sh
+          const modifyData = modify[tableName];
+          Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
+            if (item === modifyDataItem) {
+              defaultForSave[modifyDataItem] = dufaultData[item];
             }
-          } else {
-            modify[tableName].Id = objId;
-            parames = {
-              ...modify,
-            };
-          }
-        } else if (sataTypeName === 'addAndModify') {
-          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          const itemTableAdd = Object.assign({}, itemAdd);
-          itemTableAdd[itemName].ID = -1;
-          const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
-          itemModifyForAddAndModify.push(itemTableAdd[itemName]);
-          const addAndModifyParames = [];
-          addAndModifyParames[itemName] = [
-            ...itemModifyForAddAndModify
-          ];
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...addAndModifyParames
-            }
-          };
-        } else if (sataTypeName === 'add') { // 子表新增
-          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          const itemTableAdd = Object.assign({}, itemAdd);
-
-          itemTableAdd[itemName].ID = -1;
-          itemTableAdd[itemName] = [
-            itemTableAdd[itemName]
-          ];
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemTableAdd
-            }
-          };
-        } else if (sataTypeName === 'modify') { // 子表编辑
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
-            }
-          };
-        } else {
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemModify
-            }
-          };
-        }
-      } else { // 没有子表
-        const { modify } = parame;
+            return modifyDataObj;
+          }, {});
+          return obj;
+        }, {});
+        dufaultDataForSave[tableName] = defaultForSave;
         parames = {
-          table: tableName, // 主表表名
-          objId, // 明细id
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...modify
-          }
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modify },
+          before: dufaultDataForSave
+        };
+      } else if (sataTypeName === 'add') { // 子表新增
+        const addData = [];
+        addData[itemName] = [...modify];
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...addData },
         };
       }
-      network.post('/p/cs/objectSave', parames).then((res) => {
+    
+      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
