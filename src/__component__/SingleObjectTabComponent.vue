@@ -222,6 +222,7 @@
         this.objectButtonComponent = buttonComponent;
       },
       itemTableCheckFunc() {
+        debugger;
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
           return false;
         }
@@ -319,7 +320,9 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
               }
               if(itemAdd && Object.values(itemAdd).length > 0 && itemModify && Object.values(itemModify).length > 0) { // 单对象界面上下结构子表修改新增同时操作
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                if(this.itemTableCheckFunc()) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                }
               }
               // } else{ // 横向结构
               //   const store = this.$store.state[getModuleName()];
