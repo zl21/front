@@ -164,8 +164,11 @@ export default {
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
-        resData.tabIndex = tabIndex;
+        let resData = res.data.datas;
+        const obj = {
+          tabIndex
+        };
+        resData = Object.assign(obj, resData);
         commit('updateTableListForRefTable', resData);
       }
     });
@@ -613,7 +616,7 @@ export default {
     params,
     path,
     resolve, reject
-  }) { 
+  }) {
     network.post(path || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
@@ -622,7 +625,7 @@ export default {
         commit('updateObjTabActionSlientConfirm', invalidData);
       } else {
         reject();
-      }  
+      }
     }).catch(() => {
       reject();
     });
