@@ -118,7 +118,6 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
-    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
