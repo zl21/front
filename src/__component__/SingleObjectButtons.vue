@@ -1336,7 +1336,6 @@
       },
       
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
-        debugger;
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
         const path = obj.requestUrlPath;
@@ -1415,9 +1414,9 @@
               }
             }
             if (itemAdd.length > 0 && itemModify.length < 1) {
-              if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
-              }
+              // if (this.verifyRequiredInformation()) { // 横向结构保存校验
+              this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
+              // }
             }
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // this.itemTableCheckFunc();// 校验子表表格必填项

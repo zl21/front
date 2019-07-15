@@ -11,7 +11,7 @@
     >
       <img
         src="../assets/image/leftArrow.png"
-        alt=""
+        alt
         @click="prevClick"
       >
     </span>
@@ -23,7 +23,6 @@
         v-for="(tag, index) in openedMenuLists"
         :key="index"
         ref="tabBox"
-        
         class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
@@ -36,10 +35,12 @@
           <span
             class="close"
             @click.stop="handleClose(tag,index)"
-          ><img
-            src="../assets/image/iconX.png"
-            alt=""
-          ></span>
+          >
+            <img
+              src="../assets/image/iconX.png"
+              alt
+            >
+          </span>
         </div>
       </a>
     </ul>
@@ -50,7 +51,7 @@
     >
       <img
         src="../assets/image/rightArrow.png"
-        alt=""
+        alt
       >
     </span>
     <span
@@ -59,9 +60,8 @@
     >
       <img
         src="../assets/image/delete.png"
-        alt=""
+        alt
       >
-      
     </span>
   </div>
 </template>
@@ -76,13 +76,13 @@
     data() {
       return {
         clickShow: true,
-        tagIndex: 0,
+        tagIndex: 0
       };
     },
     computed: {
       ...mapState('global', {
-        openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
-      }),
+        openedMenuLists: ({ openedMenuLists }) => openedMenuLists
+      })
     },
     watch: {
       openedMenuLists: {
@@ -90,28 +90,35 @@
           this.$nextTick(() => {
             const tabOpenedMenuLists = this.$refs.openedMenuLists;
             if (tabOpenedMenuLists) {
-              const length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122); 
+              const length = Math.floor(
+                (tabOpenedMenuLists.offsetWidth - 75) / 122
+              );
               const width = tabOpenedMenuLists.offsetWidth - 75;
               const tagWidth = this.openedMenuLists.length * 122;
               const left = Math.abs(tagWidth - width);
               if (val.length > length) {
                 this.clickShow = true;
-                this.$refs.tabBox.forEach((item) => { 
-                  item.style.left = `-${left}px`; 
+                this.$refs.tabBox.forEach((item) => {
+                  item.style.left = `-${left}px`;
                 });
               } else {
                 this.clickShow = false;
-                this.$refs.tabBox.forEach((item) => { 
+                this.$refs.tabBox.forEach((item) => {
                   item.style.left = '0px';
                 });
               }
             }
           });
-        },
-      },
+        }
+      }
     },
     methods: {
-      ...mapMutations('global', ['tabCloseAppoint', 'addExcludedComponents', 'emptyTabs', 'switchTabForActiveTab']),
+      ...mapMutations('global', [
+        'tabCloseAppoint',
+        'addExcludedComponents',
+        'emptyTabs',
+        'switchTabForActiveTab'
+      ]),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
         router.push({ path: tag.routeFullPath });
@@ -126,7 +133,7 @@
       },
 
       prevClick() {
-        this.$refs.tabBox.forEach((item) => { 
+        this.$refs.tabBox.forEach((item) => {
           const tabBoxRight = Number(item.style.left.replace('px', '').replace('-', '')) - 122;
           if (tabBoxRight < 0) {
             item.style.left = '0px';
@@ -141,33 +148,32 @@
         const tabWidth = this.openedMenuLists.length * 122;
         tabBoxs.forEach((item) => {
           const tabBoxLeft = Number(item.style.left.replace('px', '').replace('-', '')) + 122;
-          if (tabBoxLeft >= (tabWidth - domWidth)) {
+          if (tabBoxLeft >= tabWidth - domWidth) {
             item.style.left = `-${tabWidth - domWidth}px`;
           } else {
             item.style.left = `-${tabBoxLeft}px`;
           }
         });
-      },
-    },
-  
+      }
+    }
   };
 </script>
 
 <style scoped lang="less">
 .active {
-    border-top: 2px solid #fd6442 !important;
-    border-bottom: 1px solid white !important;
-      color: #fd6442 !important;
-  }
+  border-top: 2px solid #fd6442 !important;
+  border-bottom: 1px solid white !important;
+  color: #fd6442 !important;
+}
 .openedMenuLists {
   background-color: #fff;
   display: flex;
   box-sizing: border-box;
   height: 34px;
-  >span{
+  > span {
     display: inline-block;
     width: 20px;
-    height:100%;
+    height: 100%;
     margin: 0;
     box-sizing: border-box;
     vertical-align: middle;
@@ -177,15 +183,15 @@
     z-index: 22;
     position: relative;
     cursor: pointer;
-    .next{
-       border-left: 1px solid #dfdfdf;
+    .next {
+      border-left: 1px solid #dfdfdf;
     }
-    .prev{
+    .prev {
       border-right: 1px solid #dfdfdf;
     }
   }
-  
-  .tab-list{
+
+  .tab-list {
     margin: 0px;
     padding: 0;
     display: inline-block;
@@ -194,16 +200,16 @@
     z-index: 0;
     display: flex;
     // overflow: hidden;
-  border-bottom: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
 
-    a{
+    a {
       display: inline-block;
       text-decoration: none;
       position: relative;
       cursor: pointer;
       color: #000;
-    
-      .openedMenuListsItem{
+
+      .openedMenuListsItem {
         height: 100%;
         width: 81px;
         display: block;
@@ -223,10 +229,10 @@
         white-space: nowrap;
         // border-bottom: 1px solid #dfdfdf;
         margin: 0;
-        .close{
-          position: absolute!important;
-          top: 7px!important;
-          right: 2px!important;
+        .close {
+          position: absolute !important;
+          top: 7px !important;
+          right: 2px !important;
           line-height: 16px;
           border-radius: 2px;
           opacity: 0;
@@ -236,44 +242,43 @@
           font-size: 12px;
           height: 16px;
           width: 16px;
-          >img{
+          > img {
             position: relative;
             left: -2px;
             top: -2px;
             width: 19px;
           }
         }
-        .close:hover{
-              opacity: 1;
-              background-color: #d4d4d4;
-              color: #000000;
-            }
-      } 
+        .close:hover {
+          opacity: 1;
+          background-color: #d4d4d4;
+          color: #000000;
+        }
+      }
     }
-     .tabBox:hover{
-          .close{
-              opacity: 1;
-              color: #000000;
-            }
-       }
-      
-    
-  } 
-    
-    .emptying{
+    .tabBox:hover {
+      .close {
+        opacity: 1;
+        color: #000000;
+      }
+    }
+  }
+
+  .emptying {
     width: 34px;
     border-left: 1px solid #dfdfdf;
-display: flex;
- justify-content: center;
-            align-items: center;
-      
-      img{
-        width: 17px;
-        height: 20px;
-      }
-   }
-   .emptying:hover{
-     opacity: 0.6;
-   }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #dfdfdf;
+
+    img {
+      width: 17px;
+      height: 20px;
+    }
+  }
+  .emptying:hover {
+    opacity: 0.6;
+  }
 }
 </style>

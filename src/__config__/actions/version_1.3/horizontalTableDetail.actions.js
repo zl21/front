@@ -118,6 +118,7 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
+    debugger;
     const { tableName } = parame;
     const { objId } = parame;
     const { path } = parame;
@@ -150,12 +151,12 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      if (tableName) { // 主表修改
+      if (tableName === itemName) { // 主表修改
         const dufault = parame.default;
         const dufaultData = dufault[tableName];
         const defaultForSave = {};
         const dufaultDataForSave = {};
-        Object.keys(dufaultData).reduce((obj, item) => { // sh
+        Object.keys(dufaultData).reduce((obj, item) => { 
           const modifyData = modify[tableName];
           Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
             if (item === modifyDataItem) {
@@ -174,12 +175,24 @@ export default {
           before: dufaultDataForSave
         };
       } else if (sataTypeName === 'add') { // 子表新增
-        const addData = [];
-        addData[itemName] = [...modify];
+        const itemModify = itemCurrentParameter.modify;
+        const itemAdd = itemCurrentParameter.add;// 子表新增
+        const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+
+        const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+        Object.assign(itemAdd[itemName], add);
+        const itemTableAdd = Object.assign({}, itemAdd);
+
+        itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = [
+          itemTableAdd[itemName]
+        ];
         parames = {
-          table: tableName,
-          objid: objId,
-          data: { ...addData },
+          table: tableName, // 主表表名
+          objId, // 明细id
+          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            ...itemTableAdd
+          }
         };
       }
     
