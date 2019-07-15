@@ -192,7 +192,7 @@
           )
           .then((r) => {
             if (r.status === 200 && r.data.code === 0) {
-              this.searchList = r.data.data;
+              this.searchList = r.data.data || r.data.datas;
             }
           });
       },

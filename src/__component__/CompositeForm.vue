@@ -226,6 +226,9 @@
         return this.paths[1] || '';
       },
       isreftabsForm() {
+        if (this.masterName.length > 0 && this.childTableName.length > 0 && Version === '1.3') {
+          return true;
+        } 
         return this.isreftabs;
       },
       childTableNameForm() {
@@ -1507,7 +1510,7 @@
         }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
-          if (this.isreftabs) {
+          if (this.isreftabsForm) {
             const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
             const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
             this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
@@ -1547,7 +1550,7 @@
     },
     deactivated() {     
       if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
-        if (this.moduleFormType !== 'horizontal' || !this.isreftabs) {
+        if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
           this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
         }
       }  
