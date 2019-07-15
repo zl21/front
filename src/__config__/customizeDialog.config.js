@@ -8,14 +8,14 @@ export default {
   },
   clonePopUp: {
     component: () => import(
-      /* webpackChunkName: 'ChangePassword' */
+      /* webpackChunkName: 'clonePopUp' */
       /* webpackMode: 'eager' */
       '../__customizeDialog__/ClonePopUp/ClonePopUp.vue'
     )
   },
   Publish: {
     component: () => import(
-      /* webpackChunkName: 'ChangePassword' */
+      /* webpackChunkName: 'Publish' */
       /* webpackMode: 'eager' */
       '../__customizeDialog__/Publish/Publish.vue'
     )
