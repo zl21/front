@@ -18,7 +18,7 @@
           :key="index"
           :item="item"
           :index="index"
-          :default-data="defaultData[item.key]"
+          :default-data="option.key === '__root__' ? defaultData[item.key] : (defaultData[option.key] ? defaultData[option.key][item.key] : '__empty__')"
           @radioValueChange="inputGroupValueChange"
         />
         <ExtentionObjectGroup
