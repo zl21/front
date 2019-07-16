@@ -199,7 +199,7 @@
     position: relative;
     z-index: 0;
     display: flex;
-    // overflow: hidden;
+    overflow: hidden;
     border-bottom: 1px solid #dfdfdf;
 
     a {

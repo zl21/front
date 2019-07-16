@@ -236,18 +236,23 @@
 
               })
             ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.seeValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '查看')
-            ]),
+            renderHeader: (h, params) => {
+              return h('div', [
+                h('Checkbox', {
+                  style: {},
+                  attrs: {
+                    dataChecked: params.column.seeValue
+                  },
+                  props: {
+                    value: params.column.seeValue
+                  },
+                  on: {
+                    'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                  }
+                }),
+                h('Span', '查看')
+              ]);
+            },
           },
           {
             key: 'edit',
@@ -1025,7 +1030,9 @@
       }, // 获取保存数据的权限的二进制数据
       allTabthSelected() {
         this.columns.forEach((item) => {
-          this.tabthCheckboxSelected(item, item.key);
+          if (item.key !== 'see') {
+            this.tabthCheckboxSelected(item, item.key);
+          }
         });
       }, // 判断所有表头是不是应该选中
       tabthCheckboxSelected(column, columnKey) {
@@ -1048,6 +1055,7 @@
               if (!column[`${columnKey}Value`]) {
                 column[`${columnKey}Value`] = true;
                 this.columns[findIndex] = column;
+                // this.columns[findIndex][`${columnKey}Value`] = true;
               }
             }
           } else {
@@ -1055,6 +1063,7 @@
             if (column[`${columnKey}Value`]) {
               column[`${columnKey}Value`] = false;
               this.columns[findIndex] = column;
+              // this.columns[findIndex][`${columnKey}Value`] = false;
             }
           }
         }
@@ -1069,11 +1078,21 @@
             }
             return item;
           });
+          const findColumnIndex = this.columns.findIndex((item) => item.key === params.column.key);
+          this.columns[findColumnIndex][`${params.column.key}Value`] = currentValue;
         }
         // 点击查看列的表头，并且是取消选中的状态
         if (params.column.key === 'see' && currentValue === false) {
+          this.columns[1].seeValue = false;
+          this.columns = [].concat(this.columns);
           this.cancelAllSelected();
         }
+
+        // 点击查看列的表头，并且是选中的状态
+        if (params.column.key === 'see' && currentValue === true) {
+          this.columns[1].seeValue = true;
+        }
+
         // 选中表头以及表体里的数据
         params.column[`${params.column.key}Value`] = currentValue;
         this.tableData.map((item) => {
@@ -1082,6 +1101,7 @@
           }
           return item;
         });
+
 
         // 选中扩展的表头
         if (params.column.key === 'extend') {

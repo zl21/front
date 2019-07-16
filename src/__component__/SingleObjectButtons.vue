@@ -1346,6 +1346,7 @@
           // } else {
           //   this.itemTableValidation = true;
           // }
+        
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
               if (obj.requestUrlPath) { // 配置path
@@ -1373,7 +1374,9 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                if (this.itemTableCheckFunc()) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                }
               }
             }
           }

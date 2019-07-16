@@ -150,6 +150,11 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
+      const itemModify = itemCurrentParameter.modify;// 子表修改
+      const itemDefault = itemCurrentParameter.default;
+      const itemAdd = itemCurrentParameter.add;// 子表新增
+      // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
+      const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
         const dufault = parame.default;
         const dufaultData = dufault[tableName];
@@ -173,37 +178,151 @@ export default {
           after: { ...modify },
           before: dufaultDataForSave
         };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
       } else if (sataTypeName === 'add') { // 子表新增
-        const itemModify = itemCurrentParameter.modify;
-        const itemAdd = itemCurrentParameter.add;// 子表新增
-        const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-
-        const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+        const addDefault = itemCurrentParameter.addDefault;
+        const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         Object.assign(itemAdd[itemName], add);
         const itemTableAdd = Object.assign({}, itemAdd);
-
         itemTableAdd[itemName].ID = -1;
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
         parames = {
           table: tableName, // 主表表名
-          objId, // 明细id
+          objid: objId, // 明细id
           data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
             ...itemTableAdd
           }
         };
-      }
-    
-      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-        if (res.data.code === 0) {
-          const data = res.data;
-          resolve();
-          commit('updateNewMainTableAddSaveData', { data, itemName });
-        } else {
-          reject();
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
+      } else if (sataTypeName === 'modify') {
+        const defaultData = [];
+        const defaultForSaveArray = [];
+        const defaultForSave = {};
+        const dufaultDataForSave = {};
+        itemModify[itemName].forEach((modifyItem) => {
+          itemDefault[itemName].forEach((defaultItem) => {
+            if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+              Object.keys(defaultItem).reduce((obj, item) => { 
+                Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+                  if (item === modifyDataItem) {
+                    let itemDefault = {};
+                    defaultForSave[modifyDataItem] = defaultItem[item];
+                    itemDefault = Object.assign(modifyItem, defaultForSave);  
+                    defaultForSaveArray.push(itemDefault);
+                  }
+                  return modifyDataObj;
+                }, {});
+                return obj;
+              }, {});
+              defaultData.push(defaultItem);
+            }
+          });
+        });
+        dufaultDataForSave[tableName] = defaultForSave;
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...itemModify },
+          after: { ...itemModify },
+          before: { defaultForSaveArray }
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
+      } else if (sataTypeName === 'addAndModify') {
+        if (Object.values(itemAdd[itemName]).length > 0) {
+          const addDefault = itemCurrentParameter.addDefault;
+          const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+          Object.assign(itemAdd[itemName], add);
+          const itemTableAdd = Object.assign({}, itemAdd);
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, // 明细id
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...itemTableAdd
+            }
+          };
+          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+            if (res.data.code === 0) {
+              const data = res.data;
+              resolve();
+              commit('updateNewMainTableAddSaveData', { data, itemName });
+            } else {
+              reject();
+            }
+          });
+        } 
+        if (Object.values(itemModify[itemName]).length > 0) {
+          const defaultData = [];
+          const defaultForSaveArray = [];
+          const defaultForSave = {};
+          const dufaultDataForSave = {};
+          itemModify[itemName].forEach((modifyItem) => {
+            itemDefault[itemName].forEach((defaultItem) => {
+              if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+                Object.keys(defaultItem).reduce((obj, item) => { 
+                  Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+                    if (item === modifyDataItem) {
+                      let itemDefault = {};
+                      defaultForSave[modifyDataItem] = defaultItem[item];
+                      itemDefault = Object.assign(modifyItem, defaultForSave);  
+                      defaultForSaveArray.push(itemDefault);
+                    }
+                    return modifyDataObj;
+                  }, {});
+                  return obj;
+                }, {});
+                defaultData.push(defaultItem);
+              }
+            });
+          });
+          dufaultDataForSave[tableName] = defaultForSave;
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...itemModify },
+            after: { ...itemModify },
+            before: { defaultForSaveArray }
+          };
+          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+            if (res.data.code === 0) {
+              const data = res.data;
+              resolve();
+              commit('updateNewMainTableAddSaveData', { data, itemName });
+            } else {
+              reject();
+            }
+          });
         }
-      });
+      }
     }
   },
   performMainTableDeleteAction({ commit }, {

@@ -13,7 +13,7 @@
         width="200"
         :content="_items.props.comment"
       >
-        <i class="iconfont icon-tishi1" />
+        <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
         v-if="_items.required"
