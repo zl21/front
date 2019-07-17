@@ -2,9 +2,7 @@ import project from '../../project.config';
 
 const ProjectConfig = window.ProjectConfig;
 export const Version = () => ProjectConfig.Version || project.Version;
-
-
-export const interlocks = ProjectConfig.interlocks;
+export const interlocks = () => ProjectConfig.interlocks || project.interlocks;
 export const enableGateWay = () => ProjectConfig.enableGateWay || project.enableGateWay;
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';

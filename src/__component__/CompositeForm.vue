@@ -346,7 +346,7 @@
         // 表单数据修改  判断vuex 里面是否有input name
         
         // console.log(data, setdefval);
-        if (current.item.props.isuppercase) {
+        if (current.item.props.isuppercase && data[current.item.field]) {
           data[current.item.field] = data[current.item.field].toUpperCase();
         }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
@@ -1151,14 +1151,14 @@
           item.props.options = {
             disabledDate(date) {
               // 之前 含今天
-              return date && date.valueOf() < new Date().valueOf();
+              return date && date.valueOf() > new Date().valueOf();
             }
           };
         } else if (current.datelimit === 'after') {
           // 之后 含今天
           item.props.options = {
             disabledDate(date) {
-              return date && date.valueOf() > new Date().valueOf();
+              return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
             }
           };
         } else if (current.datelimit === 'beforetoday') {
@@ -1167,7 +1167,7 @@
             disabledDate(date) {
               return (
                 date
-                && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
               );
             }
           };
@@ -1177,7 +1177,7 @@
             disabledDate(date) {
               return (
                 date
-                && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() < new Date().valueOf()
               );
             }
           };
