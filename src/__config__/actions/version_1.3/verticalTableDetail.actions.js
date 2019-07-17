@@ -164,16 +164,8 @@ export default {
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-<<<<<<< HEAD
-        let resData = res.data.datas;
-        const obj = {
-          tabIndex
-        };
-        resData = Object.assign(obj, resData);
-=======
         const resData = res.data.datas;
         resData.tabIndex = tabIndex;
->>>>>>> 93b14bdfe6b95d133322b5599462cd97751193a1
         commit('updateTableListForRefTable', resData);
       }
     });
