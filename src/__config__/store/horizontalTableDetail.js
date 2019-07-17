@@ -3,8 +3,8 @@
 // import mutations from '../mutations/horizontalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const mutations = require(`../mutations/version_${Version}/horizontalTableDetail.mutations`).default;
-const actions = require(`../actions/version_${Version}/horizontalTableDetail.actions`).default;
+const mutations = require(`../mutations/version_${Version()}/horizontalTableDetail.mutations`).default;
+const actions = require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
 
 
 export default () => ({

@@ -53,7 +53,7 @@
     fkGetMultiQuery,
     fkDelMultiQuery
   // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ComAttachFilter',

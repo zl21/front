@@ -19,7 +19,7 @@ const matchGateWay = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   // eslint-disable-next-line no-empty
-  if (!enableGateWay) {
+  if (!enableGateWay()) {
     return undefined;
   }
   if (ignoreGateWay.includes(url)) {
@@ -143,7 +143,7 @@ export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.serviceIdMap;
   const serviceName = store.state.activeTab.tableName;
-  if (!enableGateWay) {
+  if (!(enableGateWay())) {
     return url;
   }
   if (ignoreGateWay.includes(url)) {
