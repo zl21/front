@@ -71,8 +71,7 @@ const getGateWayServiceId = () => {
     }, 0);
   });
 };
-
-if (enableGateWay) {
+if (enableGateWay()) {
   getGateWayServiceId();
 } else {
   getSubSystems();

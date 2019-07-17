@@ -90,7 +90,7 @@
     fkGetMultiQuery,
     fkDelMultiQuery
   // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   export default {
     name: 'CompositeForm',
     components: {},
@@ -226,6 +226,9 @@
         return this.paths[1] || '';
       },
       isreftabsForm() {
+        if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
+          return true;
+        } 
         return this.isreftabs;
       },
       childTableNameForm() {
@@ -343,7 +346,7 @@
         // 表单数据修改  判断vuex 里面是否有input name
         
         // console.log(data, setdefval);
-        if (current.item.props.isuppercase) {
+        if (current.item.props.isuppercase && data[current.item.field]) {
           data[current.item.field] = data[current.item.field].toUpperCase();
         }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
@@ -1148,14 +1151,14 @@
           item.props.options = {
             disabledDate(date) {
               // 之前 含今天
-              return date && date.valueOf() < new Date().valueOf();
+              return date && date.valueOf() > new Date().valueOf();
             }
           };
         } else if (current.datelimit === 'after') {
           // 之后 含今天
           item.props.options = {
             disabledDate(date) {
-              return date && date.valueOf() > new Date().valueOf();
+              return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
             }
           };
         } else if (current.datelimit === 'beforetoday') {
@@ -1164,7 +1167,7 @@
             disabledDate(date) {
               return (
                 date
-                && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
               );
             }
           };
@@ -1174,7 +1177,7 @@
             disabledDate(date) {
               return (
                 date
-                && date.valueOf() > new Date().valueOf() - 1 * 24 * 60 * 60 * 1000
+                && date.valueOf() < new Date().valueOf()
               );
             }
           };
@@ -1507,7 +1510,7 @@
         }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
-          if (this.isreftabs) {
+          if (this.isreftabsForm) {
             const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
             const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
             this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
@@ -1547,7 +1550,7 @@
     },
     deactivated() {     
       if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
-        if (this.moduleFormType !== 'horizontal' || !this.isreftabs) {
+        if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
           this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
         }
       }  

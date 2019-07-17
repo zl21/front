@@ -1,8 +1,10 @@
+/* eslint-disable import/no-dynamic-require */
 // import actions from '../actions/verticalTableDetail.actions';
-import mutations from '../mutations/verticalTableDetail.mutations';
+// import mutations from '../mutations/verticalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const actions = require(`../actions/version_${Version}/verticalTableDetail.actions`).default;
+const mutations = require(`../mutations/version_${Version()}/verticalTableDetail.mutations`).default;
+const actions = require(`../actions/version_${Version()}/verticalTableDetail.actions`).default;
 
 export default () => ({
   namespaced: true,

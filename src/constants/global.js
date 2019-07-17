@@ -1,9 +1,8 @@
-const ProjectConfig = window.ProjectConfig || require('../../project.config');
+import project from '../../project.config';
 
-export const Version = ProjectConfig.Version;
-
-export const interlocks = ProjectConfig.interlocks;
-export const enableGateWay = ProjectConfig.enableGateWay;
+export const Version = () => (window.ProjectConfig ? window.ProjectConfig.Version : project.Version);
+export const interlocks = () => (window.ProjectConfig ? window.ProjectConfig.interlocks : project.interlocks);
+export const enableGateWay = () => (window.ProjectConfig ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
