@@ -1,8 +1,6 @@
 import project from '../../project.config';
 
 export const Version = () => (window.ProjectConfig ? window.ProjectConfig.Version : project.Version);
-console.log(Version());
-
 export const interlocks = () => (window.ProjectConfig ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 
