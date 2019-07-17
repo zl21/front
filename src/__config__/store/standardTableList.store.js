@@ -3,7 +3,7 @@ import mutations from '../mutations/standardTableList.mutations';
 import { Version } from '../../constants/global';
 
 // eslint-disable-next-line import/no-dynamic-require
-const actions = require(`../actions/version_${Version}/standardTableList.actions`).default;
+const actions = require(`../actions/version_${Version()}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
   state: {

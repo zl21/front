@@ -70,15 +70,15 @@
           this.$Modal.fcError(message);
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
           const globalServiceId = window.sessionStorage.getItem('serviceId');
-          network.post(enableGateWay ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
-            network.post(enableGateWay ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
+          network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
+            network.post(enableGateWay() ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
               username: this.$refs.username.value,
               password: this.$refs.password.value,
               captcha: res.data.captcha,
               rememberMe: false,
               lang: 'zh_CN',
             })).then((r) => {
-              if (Version === '1.3') {
+              if (Version() === '1.3') {
                 if (r.status === 200 && r.data.code === 1) {
                   window.location.href = window.location.origin;
                 }

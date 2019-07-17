@@ -234,7 +234,7 @@
       },
       isreftabs: {
         handler(val) {
-          if (Version === 1.4) {
+          if (Version() === 1.4) {
             this.subtables = val;
           } else if (this.itemNameGroup.length > 0) {
             this.subtables = true;
@@ -1748,7 +1748,7 @@
       }
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
-      if (Version === 1.4) {
+      if (Version() === 1.4) {
         this.subtables = this.isreftabs;
       } else if (this.itemNameGroup.length > 0) {
         this.subtables = true;

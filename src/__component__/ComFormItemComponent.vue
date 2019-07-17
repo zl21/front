@@ -466,7 +466,7 @@
                   return sum;
                 }, [])
                 .join(',');
-              if (Version === '1.3') {
+              if (Version() === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
@@ -492,7 +492,7 @@
             // 若为外键则要处理输入还是选中
             if (current.item.props.Selected[0] && this.condition === '') {
               obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
-              if (Version === '1.3') {
+              if (Version() === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
@@ -590,7 +590,7 @@
         this.dataProcessing(this.newFormItemLists[index], index);
       },
       refcolval(items, json, index) {
-        if (interlocks === true) {
+        if (interlocks() === true) {
           const srccol = items.validate.refcolval.srccol;
           
           const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));

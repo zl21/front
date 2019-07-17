@@ -2,7 +2,7 @@
 import mutations from '../mutations/horizontalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const actions = require(`../actions/version_${Version}/horizontalTableDetail.actions`).default;
+const actions = require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
 
 
 export default () => ({

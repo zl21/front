@@ -90,7 +90,7 @@
     fkGetMultiQuery,
     fkDelMultiQuery
   // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   export default {
     name: 'CompositeForm',
     components: {},
@@ -226,7 +226,7 @@
         return this.paths[1] || '';
       },
       isreftabsForm() {
-        if (this.masterName.length > 0 && this.childTableName.length > 0 && Version === '1.3') {
+        if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
           return true;
         } 
         return this.isreftabs;
