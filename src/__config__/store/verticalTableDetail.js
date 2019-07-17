@@ -2,7 +2,7 @@
 import mutations from '../mutations/verticalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const actions = require(`../actions/version_${Version}/verticalTableDetail.actions`).default;
+const actions = require(`../actions/version_${Version()}/verticalTableDetail.actions`).default;
 
 export default () => ({
   namespaced: true,

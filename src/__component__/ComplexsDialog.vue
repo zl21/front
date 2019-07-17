@@ -31,7 +31,7 @@
   import { Version } from '../constants/global';
 
   // eslint-disable-next-line import/no-dynamic-require
-  const multipleComple = require(`../__config__/actions/version_${Version}/formHttpRequest/compleHttpRequest.js`).default;
+  const multipleComple = require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
 
   export default {
     name: 'ComplexSelect',
