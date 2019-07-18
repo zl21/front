@@ -10,9 +10,19 @@
     />
     <div
       ref="agGridTableContainer"
+      v-if="!isCommonTable"
       class="detailTable"
     />
-
+    <div class="common-table" v-if="isCommonTable">
+      <Table
+              :columns="columns"
+              :height="true"
+              :data="tableData"
+              @on-selection-change="tableSelectionChange"
+              @on-row-dblclick="tableRowDbclick"
+              @on-row-click="tableRowClick"
+      />
+    </div>
     <div class="queryDesc">
       <div
         v-if="legend.length > 0 & isLegendShow"
@@ -47,7 +57,52 @@
 
   export default {
     name: 'AgTable',
+    data() {
+      return {
+        isCommonTable: true, // 是否显示普通表格
+        // isCommonTable: false, // 是否显示普通表格
+      };
+    },
     components: {},
+    computed: {
+      columns() {
+        const defaultColumns = [{
+          type: 'selection',
+          width: 40,
+          align: 'center'
+        }];
+        if (Object.keys(this.datas).length > 0) {
+          return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
+            if (cur.name === 'ID') {
+              acc.push({
+                title: '序号',
+                type: 'index',
+              });
+            } else {
+              acc.push({
+                title: cur.name,
+                key: cur.colname
+              });
+            }
+            return acc;
+          }, []));
+        }
+        return [];
+      },
+      tableData() {
+        if (Object.keys(this.datas).length > 0) {
+          return this.datas.row.reduce((acc, cur) => {
+            const obj = {};
+            Object.keys(cur).forEach((item) => {
+              obj[item] = cur[item].val;
+            });
+            acc.push(obj);
+            return acc;
+          }, []);
+        }
+        return [];
+      }
+    },
     props: {
       userConfigForAgTable: {
         type: Object,
@@ -165,23 +220,43 @@
     },
     watch: {
       userConfigForAgTable(val) {
-        const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+        if (!this.isCommonTable) {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+          }
         }
       },
       datas(val) {
-        this.agGridTable(val.tabth, val.row, val);
-        setTimeout(() => {
-          const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer && agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.fixContainerHeight();
-            agGridTableContainer.agTable.emptyAllFilters();
-          }
-        }, 30);
+        if (!this.isCommonTable) {
+          this.agGridTable(val.tabth, val.row, val);
+          setTimeout(() => {
+            const { agGridTableContainer } = this.$refs;
+            if (agGridTableContainer && agGridTableContainer.agTable) {
+              agGridTableContainer.agTable.fixContainerHeight();
+              agGridTableContainer.agTable.emptyAllFilters();
+            }
+          }, 30);
+        }
       },
     },
     methods: {
+      tableRowClick() {
+
+      }, // 普通表格单击
+      tableSelectionChange(val) {
+        const self = this;
+        const rowIdArray = val.reduce((acc, cur) => {
+          acc.push(cur.ID);
+          return acc;
+        }, []);
+        if (typeof self.onSelectionChanged === 'function') {
+          self.onSelectionChanged(rowIdArray, val);
+        }
+      }, // 普通表格选中事件
+      tableRowDbclick(val) {
+        console.log(val);
+      }, // 普通表格双击事件
       agGridTable(th, row, data) { // agGrid
         const self = this;
         const arr = [];
@@ -274,17 +349,21 @@
         }
       }, // 每页条数改变
       showAgLoading() {
-        const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.showLoading();
+        if (!this.isCommonTable) {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.showLoading();
+          }
         }
       },
     },
     activated() {
-      const { agGridTableContainer } = this.$refs;
-      if (agGridTableContainer.agTable) {
-        agGridTableContainer.agTable.fixAgRenderChoke();
-        agGridTableContainer.agTable.fixContainerHeight();
+      if (!this.isCommonTable) {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.fixAgRenderChoke();
+          agGridTableContainer.agTable.fixContainerHeight();
+        }
       }
     }
   };
@@ -296,6 +375,11 @@
    display: flex;
    flex: 1;
    flex-direction: column;
+   .common-table {
+     margin-top: 10px;
+     overflow-y: hidden;
+     flex: 1;
+   }
  }
   .detailTable {
     border: 1px solid #d8d8d8;
