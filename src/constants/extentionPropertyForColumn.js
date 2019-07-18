@@ -145,22 +145,6 @@ export default [
     description: '随着A字段、B字段输入的值，即时变化显示C字段的值，C为联动字段'
   },
   {
-    name: '状态合并查询',
-    key: 'integrationstatus',
-    type: 'input-group',
-    inputLists: [{
-      name: '合并后的查询字段名称',
-      type: 'input',
-      key: 'name'
-    }, {
-      name: '合并字段',
-      key: 'status',
-      type: 'input',
-      outputValueType: 'Array'
-    }],
-    description: '在列表界面将多个下拉选项状态字段的值合并到一个查询字段中显示'
-  },
-  {
     name: '区间配置',
     key: 'rangecolumn',
     type: 'input-group',

@@ -26,6 +26,11 @@ export default [
     type: 'input-group',
     inputLists: [
       {
+        name: '全局检索自动匹配字段',
+        key: 'multiCenter',
+        type: 'input'
+      },
+      {
         name: '全局检索字段',
         key: 'multiIndex',
         type: 'object-group',
@@ -44,11 +49,6 @@ export default [
             enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
           }
         ]
-      },
-      {
-        name: '全局检索自动匹配字段',
-        key: 'multiCenter',
-        type: 'input'
       },
       {
         name: '中间展示字段',
@@ -194,6 +194,22 @@ export default [
     type: 'input',
     outputValueType: 'Array',
     description: '直接配置字段名，中越往后的字段优先级越高'
+  },
+  {
+    name: '状态合并查询',
+    key: 'integrationstatus',
+    type: 'input-group',
+    inputLists: [{
+      name: '合并后的查询字段名称',
+      type: 'input',
+      key: 'name'
+    }, {
+      name: '合并字段',
+      key: 'status',
+      type: 'input',
+      outputValueType: 'Array'
+    }],
+    description: '在列表界面将多个下拉选项状态字段的值合并到一个查询字段中显示'
   },
   {
     name: '列表样式优先级',
