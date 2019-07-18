@@ -11,7 +11,6 @@ import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 // css import
 import 'burgeon-ui/src/styles/common/iconfont/bjIconfonts/iconfont';
-import 'burgeon-ui/src/styles/common/iconfont/ionicons-font.less';
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
 import './src/assets/css/ag-theme-balham.less';
