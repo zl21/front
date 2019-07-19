@@ -15,6 +15,7 @@
     />
     <div class="common-table" v-if="isCommonTable">
       <CommonTable :datas="datas"
+                   ref="commonTable"
                    :cssStatus="cssStatus"
                    :errorArr="errorArr"
                    :onRowDoubleClick="onRowDoubleClick"
@@ -302,6 +303,8 @@
           if (agGridTableContainer.agTable) {
             agGridTableContainer.agTable.showLoading();
           }
+        } else {
+          this.$refs.commonTable.spinShow = true;
         }
       },
     },

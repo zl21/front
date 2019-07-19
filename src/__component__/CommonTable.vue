@@ -11,6 +11,17 @@
       @on-sort-change="tableSortChange"
       @on-select-all="tableSelectionChange"
     />
+    <Spin
+      v-show="spinShow"
+      fix
+    >
+      <Icon
+        type="ios-loading"
+        size="48"
+        class="demo-spin-icon-load"
+      />
+      <div>Loading</div>
+    </Spin>
   </div>
 </template>
 
@@ -20,7 +31,7 @@
   export default {
     data() {
       return {
-
+        spinShow: false
       };
     },
     name: 'CommonTable',
@@ -121,7 +132,7 @@
       }, // 表头
       tableData() {
         if (Object.keys(this.datas).length > 0) {
-          return this.datas.row.reduce((acc, cur) => {
+          const data = this.datas.row.reduce((acc, cur) => {
             const obj = {};
             Object.keys(cur).forEach((item) => {
               obj[item] = cur[item].val;
@@ -129,7 +140,10 @@
             acc.push(obj);
             return acc;
           }, []);
+          this.spinShow = false;
+          return data;
         }
+        this.spinShow = false;
         return [];
       }, // 表体
     },
@@ -308,8 +322,20 @@
 </script>
 
 <style lang="less">
+    .burgeon-spin-fix{
+        z-index: 999;
+        .demo-spin-icon-load{
+            animation: ani-demo-spin 1s linear infinite;
+        }
+        @keyframes ani-demo-spin {
+            from { transform: rotate(0deg);}
+            50%  { transform: rotate(180deg);}
+            to   { transform: rotate(360deg);}
+        }
+    }
     .commonTable {
         height: 100%;
         overflow-y: hidden;
+        position: relative;
     }
 </style>
