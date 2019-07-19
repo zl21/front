@@ -190,7 +190,6 @@
           if (index === 1 && type !== 'search') {
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
-            console.log(this.resultData);
             this.resultData.list.map((item) => {
               //   if (item.exclude) {
               //     item.exclude = false;
@@ -283,12 +282,12 @@
         }, []);
       },
       toStringName(row, akname) {
-        const aknameArr = akname.split(',');
-        const items = aknameArr.reduce((arr, item) => {
-          arr.push(row[item]);
-          return arr;
-        }, []);
-        return items.join('');
+        const aknameArr = akname.split(',')[0];
+        // const items = aknameArr.reduce((arr, item) => {
+        //   arr.push(row[item]);
+        //   return arr;
+        // }, []);
+        return row[aknameArr];
       },
       changeTtree(obj) {
         this.treeId(obj);
@@ -337,7 +336,7 @@
       rowdbclick(row) {
         // 表格双击
         if (this.index === 0) {
-          this.clickChoose(row);
+          this.clickChoose(row, '', 'rowdbclick');
           row.string = this.toStringName(row, this.akname);
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
@@ -370,6 +369,8 @@
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
+              this.tdData.id = '';
+              this.tdData.list = [];
             }
           }
         } else {
@@ -393,6 +394,8 @@
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
+              this.tdData.id = '';
+              this.tdData.list = [];
             }
           }
         }
@@ -497,6 +500,7 @@
             this.tdData.list[0].exclude = false;
           }
         }            
+        
         if (this.tdData.id !== '') {
           setTimeout(() => {
             this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
@@ -581,7 +585,6 @@
       },
       setvalueData(obj) {
         const data = obj;
-        console.log(Object.keys(data).length);
         if (Object.keys(data).length > 1) {
           this.sendMessage = Object.assign(this.sendMessage, data.value);
           this.text.result = data.lists.result;
@@ -750,7 +753,6 @@
     },
     mounted() {
       /**/
-      console.log('激活');
     },
     created() {
       this.loading = true;
