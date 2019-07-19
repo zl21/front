@@ -156,7 +156,6 @@ export default {
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
-        const dufault = parame.default;
         const dufaultData = dufault[tableName];
         const defaultForSave = {};
         const dufaultDataForSave = {};
@@ -225,7 +224,7 @@ export default {
                   if (item === modifyDataItem) {
                     let itemDefault = {};
                     defaultForSave[modifyDataItem] = defaultItem[item];
-                    itemDefault = Object.assign(modifyItem, defaultForSave);  
+                    itemDefault = Object.assign({}, modifyItem, defaultForSave);  
                     defaultForSaveArray.push(itemDefault);
                   }
                   return modifyDataObj;
@@ -293,7 +292,7 @@ export default {
                     if (item === modifyDataItem) {
                       let itemDefault = {};
                       defaultForSave[modifyDataItem] = defaultItem[item];
-                      itemDefault = Object.assign(modifyItem, defaultForSave);  
+                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
                       defaultForSaveArray.push(itemDefault);
                     }
                     return modifyDataObj;

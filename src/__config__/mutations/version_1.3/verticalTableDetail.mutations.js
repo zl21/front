@@ -124,8 +124,26 @@ export default {
   },
 
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
-    state.buttonsData.newMainTableSaveData = data.data;
+    if (data.data) {
+      const NewObject = Object.keys(data.data).reduce((newData, key) => {
+        if (key === 'objid') {
+          const keys = 'objId';
+          newData[keys] = data.data[key];
+        } else {
+          newData[key] = data.data[key];
+        }
+        // newData = 'objId';
+        // newData[objid] = state.buttonsData.newMainTableSaveData[key];
+        return newData;
+      }, {});
+      state.buttonsData.newMainTableSaveData = NewObject;
+    }
+   
     state.buttonsData.message = data.message;
+
+
+    // state.buttonsData.newMainTableSaveData = data.data;
+    // state.buttonsData.message = data.message;
   },
   updateNewMainTableDeleteData(state, data) { // 删除返回信息
     state.buttonsData.deleteData = data.message;
