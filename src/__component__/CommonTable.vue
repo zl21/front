@@ -9,6 +9,7 @@
       @on-row-dblclick="tableRowDbclick"
       @on-row-click="tableRowClick"
       @on-sort-change="tableSortChange"
+      @on-select-all="tableSelectionChange"
     />
   </div>
 </template>
