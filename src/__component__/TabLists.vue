@@ -169,7 +169,7 @@
   background-color: #fff;
   display: flex;
   box-sizing: border-box;
-  height: 34px;
+  height: 36px;
   > span {
     display: inline-block;
     width: 20px;
@@ -199,7 +199,7 @@
     position: relative;
     z-index: 0;
     display: flex;
-    overflow: hidden;
+    // overflow: hidden;
     border-bottom: 1px solid #dfdfdf;
 
     a {
@@ -210,7 +210,7 @@
       color: #000;
 
       .openedMenuListsItem {
-        height: 100%;
+        height: 96%;
         width: 81px;
         display: block;
         padding-left: 20px;
@@ -271,7 +271,6 @@
     justify-content: center;
     align-items: center;
     border-bottom: 1px solid #dfdfdf;
-
     img {
       width: 17px;
       height: 20px;

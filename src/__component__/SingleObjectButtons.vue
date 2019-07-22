@@ -963,7 +963,7 @@
         //   range: 10
         // };
         const tabIndex = this.tabCurrentIndex;
-        if (this.setSubtables()) { // 存在子表
+        if (this.subtables()) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
               if (obj.requestUrlPath) { // 有path

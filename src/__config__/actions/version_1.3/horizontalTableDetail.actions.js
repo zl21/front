@@ -330,64 +330,29 @@ export default {
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
       const itemDelete = itemCurrentParameter.delete;
-      if (itemName !== table) {
-        if (path) {
-          if (currentParameter && currentParameter.delete) {
-            const mainTable = currentParameter.delete;
-            mainTable[table].ID = objId;
-            mainTable[table].isdelmtable = false;
-            parames = {
-              ...mainTable,
-              ...itemDelete
-            };
-          }
-        } else {
-          const tabItem = {
-            ...itemDelete
-          };
-          parames = {
-            table, // 主表表名
-            objId,
-            delMTable: false,
-            tabItem
-          };
-        }
-      } else if (path) {
-        if (currentParameter && currentParameter.delete) {
-          const mainTable = currentParameter.delete;
-          mainTable[table].ID = objId;
-          mainTable[table].isdelmtable = true;
-          parames = {
-            ...mainTable,
-            ...itemDelete
-          };
-        }
-      } else {
-        const tabItem = {
-          ...itemDelete
-        };
+      if (itemName !== table) { // 子表删除
+        const idArray = [];
+        itemDelete[itemName].forEach((item) => {
+          idArray.push(item.ID);
+        });
+        const tabItem = { }; 
+        tabItem[itemName] = idArray;
         parames = {
-          table, // 主表表名
-          objId,
-          delMTable: true,
-          tabItem
+          table,
+          objid: objId,
+          isdelmtable: false,
+          data: { ...tabItem }
         };
-      }
-    } else if (path) {
-      parames = {
-        // table, // 主表表名
-        ID: objId,
-        isdelmtable: true
-      };
+      } 
     } else {
       parames = {
         table, // 主表表名
-        objId,
+        objid: objId,
         delMTable: true
       };
     }
    
-    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
+    network.post(path || '/p/cs/objectDelete', urlSearchParams(parames)).then((res) => {
       if (res.data.code === 0) {
         resolve();
         const data = res.data;
