@@ -89,7 +89,7 @@
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import getModuleName from '../__utils__/getModuleName';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version } from '../constants/global';
 
   export default {
 
@@ -236,24 +236,36 @@
         this.isclick = false;
         let savePath = '';
         const { itemId } = router.currentRoute.params;
-
-        if (this.type === 'horizontal') {
-          this.$store.state[getModuleName()].tabPanels.forEach((item) => {
-            if (item.tablename === this.tableName) {
-              if (itemId === 'New') { // 主表新增保存和编辑新增保存
-                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
-              } else {
-                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+        if(Version() === '1.4') {
+          if (this.type === 'horizontal') {
+            this.$store.state[getModuleName()].tabPanels.forEach((item) => {
+              if (item.tablename === this.tableName) {
+                if (itemId === 'New') { // 主表新增保存和编辑新增保存
+                  savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+                } else {
+                  savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+                }
               }
-            }
-          });
-        } else if (itemId === 'New') { // 主表新增保存和编辑新增保存
-          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
-        } else {
-          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+            });
+          } else if (itemId === 'New') { // 主表新增保存和编辑新增保存
+            savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+          } else {
+            savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+          }
         }
         this.determineSaveType(savePath);
       }, // 表单回车触发
+      subtables() {
+        if (Version() === 1.4) {
+          if (this.isreftabs) {
+            return true;
+          }
+          return false;
+        } if (this.childTableNames.length > 0) {
+          return true;
+        }
+        return false;
+      },
       determineSaveType(savePath) { // 回车保存
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
@@ -266,7 +278,7 @@
             const path = savePath;
             const objId = -1;
 
-            if (!this.isreftabs) { // 为0的情况下是没有子表
+            if (!this.subtables()) { // 为0的情况下是没有子表
               // console.log('没有子表');
               if (path) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -275,7 +287,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.subtables()) { // 大于0 的情况下是存在子表
               // console.log('有子表');
               if (path) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -287,7 +299,7 @@
             // console.log('主表编辑保存');
             const path = savePath;
             const type = 'modify';
-            if (!this.isreftabs) { // 为0的情况下是没有子表
+            if (!this.subtables()) { // 为0的情况下是没有子表
               // console.log('没有子表',);
 
               if (savePath) { // 配置path
@@ -299,7 +311,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.subtables()) { // 大于0 的情况下是存在子表
               const objId = itemId;
               // const sataType = 'itemSave';
               // if (this.type === 'vertical') {
