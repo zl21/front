@@ -164,7 +164,7 @@ export default {
       searchdata
     })).then((res) => {
       if (res.data.code === 0) {
-        const resData = res.data.data;
+        const resData = res.data.datas;
         resData.tabIndex = tabIndex;
         commit('updateTableListForRefTable', resData);
       }
@@ -225,237 +225,206 @@ export default {
     const {
       itemNameGroup
     } = parame;
+    const { sataType } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
-      const {
-        add
-      } = parame;
-      if (isreftabs) { // 存在子表
-        if (itemNameGroup.length > 0) {
-          const itemAdd = itemCurrentParameter.add;
-          const {
-            addDefault
-          } = itemCurrentParameter;
-
-          if (path) { // 有path的参数
-            add[tableName].ID = objId;
-            add[tableName].ISACTIVE = 'Y';
-            if (Object.values(itemAdd[itemName]).length > 0) {
-              itemAdd[itemName].ID = objId;
-              const itemTableAdd = Object.assign({}, itemAdd);
-              itemTableAdd[itemName] = [
-                itemTableAdd[itemName]
-              ];
-              parames = {
-                ...add,
-                ...itemTableAdd
-              };
-            } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
-              const itemTableAdd = Object.assign({}, addDefault);
-              itemTableAdd[itemName].ID = objId;
-              itemTableAdd[itemName] = [
-                itemTableAdd[itemName]
-              ];
-              parames = {
-                table: tableName, // 主表表名
-                objId, // 固定传值-1 表示新增
-                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                  ...add,
-                  ...itemTableAdd,
-                }
-              };
-            } else { // 子表没有form
-              parames = {
-                ...add
-              };
-            }
-          } else if (Object.values(itemAdd[itemName]).length > 0) {
-            const itemTableAdd = Object.assign({}, itemAdd);
-            itemTableAdd[itemName].ID = objId;
-            itemTableAdd[itemName] = [
-              itemTableAdd[itemName]
-            ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
-          } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
-            const itemTableAdd = Object.assign({}, addDefault);
-            itemTableAdd[itemName].ID = objId;
-            itemTableAdd[itemName] = [
-              itemTableAdd[itemName]
-            ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
-          } else {
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-              }
-            };
-          }
-        } else if (path) { // 有path的参数
-          add[tableName].ID = objId;
-          parames = {
-            ...add,
-          };
+      const { add } = parame;
+      parames = {
+        table: tableName, // 主表表名
+        objid: objId, // 固定传值-1 表示新增
+        data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+          ...add
+        }
+      };
+      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+        if (res.data.code === 0) {
+          const data = res.data;
+          resolve();
+          commit('updateNewMainTableAddSaveData', {
+            data,
+            itemName
+          });
         } else {
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 固定传值-1 表示新增
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...add,
-            }
-          };
+          reject();
         }
-      } else if (path) { // 没有子表    有path的参数
-        add[tableName].ID = objId;
-        parames = {
-          ...add[tableName]
-        };
-      } else {
-        parames = {
-          table: tableName, // 主表表名
-          objId, // 固定传值-1 表示新增
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...add
-          }
-        };
-      }
+      });
     } else if (type === 'modify') { // 编辑保存参数
-      const {
-        modify
-      } = parame;
-      const {
-        sataType
-      } = parame;
+      const { modify } = parame;
+      const itemModify = itemCurrentParameter.modify;// 子表修改
+
+      const itemDefault = itemCurrentParameter.default;
+      const itemAdd = itemCurrentParameter.add;// 子表新增
+      // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       const sataTypeName = sataType ? sataType.sataType : '';
-      if (isreftabs) {
-        const itemModify = itemCurrentParameter.modify; // 子表修改
-        const itemAdd = itemCurrentParameter.add; // 子表新增
-        const itemDefault = itemCurrentParameter.addDefault; // 子表新增
-        if (sataTypeName === 'addAndModify') {
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
-          const addItem = Object.assign({}, add, itemAdd[itemName]);
-          addItem.ID = -1;
-          const itemModifyForAddAndModify = Object.assign([], itemModify[itemName]);
-          itemModifyForAddAndModify.push(addItem);
-          const addAndModifyParames = [];
-          addAndModifyParames[itemName] = [
-            ...itemModifyForAddAndModify
-          ];
-          modify[tableName].ID = objId;
-          if (path) { // 有path的参数
-            modify[tableName].ID = objId;
-            parames = {
-              ...modify,
-              ...addAndModifyParames,
-            };
-          } else {
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 明细id
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...addAndModifyParames,
-                ...modify
-              }
-            };
-          }
-        } else if (sataTypeName === 'modify') { // 子表修改保存
-          if (path) { // 有path的参数
-            modify[tableName].ID = objId;
-            parames = {
-              ...modify,
-              ...itemModify
-            };
-          } else {
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 明细id
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...modify,
-                ...itemModify
-              }
-            };
-          }
-        } else if (sataTypeName === 'add') { // 子表新增保存
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
-          const addItem = Object.assign({}, add, itemAdd[itemName]);
-          addItem.ID = -1;
-          const addItemName = {};
-          addItemName[itemName] = itemName;
-          addItemName[itemName] = [
-            addItem
-          ];
-          if (path) {
-            parames = {
-              ...modify,
-              ...addItemName
-            };
-          } else {
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 明细id
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...modify,
-                ...addItemName
-              }
-            };
-          }
-        } else if (path) { // 主表保存有path的参数
-          modify[tableName].ID = objId; // 主表id
-          parames = {
-            ...modify
-          };
-        } else { // 带子表的没有path的主表保存
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...modify
-            }
-          };
-        }
-      } else if (path) { // 测试提出bug:单表通用保存服务（无path）传参格式不对（公司修改）
-        const modifys = modify[tableName];
-        modifys.ID = objId;
-        parames = {
-          ...modifys
-        };
-      } else {
+      const dufault = parame.default;
+      if (sataTypeName === 'add') { // 子表新增
+        const addDefault = itemCurrentParameter.addDefault;
+        const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+        Object.assign(itemAdd[itemName], add);
+        const itemTableAdd = Object.assign({}, itemAdd);
+        itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = [
+          itemTableAdd[itemName]
+        ];
         parames = {
           table: tableName, // 主表表名
-          objId, // 明细id
-          fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...modify
+          objid: objId, // 明细id
+          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            ...itemTableAdd
           }
         };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
+      } else if (sataTypeName === 'modify') {
+        const defaultData = [];
+        const defaultForSaveArray = [];
+        const defaultForSave = {};
+        const dufaultDataForSave = {};
+        itemModify[itemName].forEach((modifyItem) => {
+          itemDefault[itemName].forEach((defaultItem) => {
+            if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+              Object.keys(defaultItem).reduce((obj, item) => { 
+                Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+                  if (item === modifyDataItem) {
+                    let itemDefault = {};
+                    defaultForSave[modifyDataItem] = defaultItem[item];
+                    itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+                    defaultForSaveArray.push(itemDefault);
+                  }
+                  return modifyDataObj;
+                }, {});
+                return obj;
+              }, {});
+              defaultData.push(defaultItem);
+            }
+          });
+        });
+        dufaultDataForSave[tableName] = defaultForSave;
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...itemModify },
+          after: { ...itemModify },
+          before: { defaultForSaveArray }
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
+      } else if (sataTypeName === 'addAndModify') {
+        if (Object.values(itemAdd[itemName]).length > 0) {
+          const addDefault = itemCurrentParameter.addDefault;
+          const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+          Object.assign(itemAdd[itemName], add);
+          const itemTableAdd = Object.assign({}, itemAdd);
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, // 明细id
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...itemTableAdd
+            }
+          };
+          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+            if (res.data.code === 0) {
+              const data = res.data;
+              resolve();
+              commit('updateNewMainTableAddSaveData', { data, itemName });
+            } else {
+              reject();
+            }
+          });
+        } 
+        if (Object.values(itemModify[itemName]).length > 0) {
+          const defaultData = [];
+          const defaultForSaveArray = [];
+          const defaultForSave = {};
+          const dufaultDataForSave = {};
+          itemModify[itemName].forEach((modifyItem) => {
+            itemDefault[itemName].forEach((defaultItem) => {
+              if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+                Object.keys(defaultItem).reduce((obj, item) => { 
+                  Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+                    if (item === modifyDataItem) {
+                      let itemDefault = {};
+                      defaultForSave[modifyDataItem] = defaultItem[item];
+                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+                      defaultForSaveArray.push(itemDefault);
+                    }
+                    return modifyDataObj;
+                  }, {});
+                  return obj;
+                }, {});
+                defaultData.push(defaultItem);
+              }
+            });
+          });
+          dufaultDataForSave[tableName] = defaultForSave;
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...itemModify },
+            after: { ...itemModify },
+            before: { defaultForSaveArray }
+          };
+          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+            if (res.data.code === 0) {
+              const data = res.data;
+              resolve();
+              commit('updateNewMainTableAddSaveData', { data, itemName });
+            } else {
+              reject();
+            }
+          });
+        }
+      } else {
+        const dufaultData = dufault[tableName];
+        const defaultForSave = {};
+        const dufaultDataForSave = {};
+        Object.keys(dufaultData).reduce((obj, item) => { 
+          const modifyData = modify[tableName];
+          Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
+            if (item === modifyDataItem) {
+              defaultForSave[modifyDataItem] = dufaultData[item];
+            }
+            return modifyDataObj;
+          }, {});
+          return obj;
+        }, {});
+        dufaultDataForSave[tableName] = defaultForSave;
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modify },
+          before: dufaultDataForSave
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
       }
     }
-    network.post(path || '/p/cs/objectSave', parames).then((res) => {
-      if (res.data.code === 0) {
-        const data = res.data;
-        resolve();
-        commit('updateNewMainTableAddSaveData', {
-          data,
-          itemName
-        });
-      } else {
-        reject();
-      }
-    });
   },
   performMainTableDeleteAction({
     commit
@@ -469,37 +438,21 @@ export default {
     resolve, reject
   }) { // 主表删除
     let parames = {};
-
+    debugger;
     if (isreftabs) {
-      if (path) {
-        const mainTable = currentParameter.delete;
-        mainTable[table].ID = objId;
-        mainTable[table].isdelmtable = true;
-        parames = {
-          ...mainTable
-        };
-      } else {
-        parames = {
-          table, // 主表表名
-          objId,
-          delMTable: true
-        };
-      }
-    } else if (path) {
       parames = {
-        // table, // 主表表名
-        ID: objId,
-        isdelmtable: true
+        table, // 主表表名
+        objid: objId,
+        delMTable: true
       };
     } else {
       parames = {
         table, // 主表表名
-        objId,
+        objid: objId,
         delMTable: true
       };
     }
-
-    network.post(path || '/p/cs/objectDelete', parames).then((res) => {
+    network.post(path || '/p/cs/objectDelete', urlSearchParams(parames)).then((res) => {
       if (res.data.code === 0) {
         resolve();
         const data = res.data;

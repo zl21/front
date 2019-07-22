@@ -262,9 +262,9 @@ sequenceComponent.prototype.init = function (params) {
   // for tooltip icon
   if (failIds && failIds.indexOf(`${value}`) > -1) {
     const toolTipIcon = document.createElement('i');
-    toolTipIcon.setAttribute('class', `iconfont ${cssFeatures.hover}`);
+    toolTipIcon.setAttribute('class', `iconfont iconbj_listwarning ${cssFeatures.hover}`);
     toolTipIcon.style.color = 'red';
-    toolTipIcon.innerHTML = '&#xe61b;';
+    // toolTipIcon.innerHTML = '&#xe61b;';
     toolTipIcon.onmouseenter = function (e) {
       const { target } = e;
       const offsetLeft = target.getBoundingClientRect().left - agGridDiv.getBoundingClientRect().left;

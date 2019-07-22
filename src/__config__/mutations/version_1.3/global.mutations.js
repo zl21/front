@@ -5,8 +5,8 @@ import {
   STANDARD_TABLE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
-} from '../../constants/global';
-import router from '../router.config';
+} from '../../../constants/global';
+import router from '../../router.config';
 
 export default {
   changeSelectedPrimaryMenu(state, index) {

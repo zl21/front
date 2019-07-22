@@ -1,7 +1,9 @@
+/* eslint-disable import/no-dynamic-require */
 // import actions from '../actions/horizontalTableDetail.actions';
-import mutations from '../mutations/horizontalTableDetail.mutations';
+// import mutations from '../mutations/horizontalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
+const mutations = require(`../mutations/version_${Version()}/horizontalTableDetail.mutations`).default;
 const actions = require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
 
 
