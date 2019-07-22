@@ -95,7 +95,6 @@
   export default {
     data() {
       return {
-        subtables: false,
         ready: false,
         loading: true,
         importData: {
@@ -232,16 +231,6 @@
         },
         deep: true
       },
-      isreftabs: {
-        handler(val) {
-          if (Version() === 1.4) {
-            this.subtables = val;
-          } else if (this.itemNameGroup.length > 0) {
-            this.subtables = true;
-          }
-        },
-        deep: true
-      }
     },
     computed: {
       ...mapState('global', {
@@ -327,6 +316,30 @@
         if (this.isrefrsh) {
           this.upData();
         }
+      },
+      // subtables() {
+      //   if (Version() === 1.4) {
+      //     if (this.isreftabs) {
+      //       return true;
+      //     }
+      //     return false;
+      //   } if (Version() === 1.3) {
+      //     if (this.itemNameGroup.length > 0) {
+      //       return true;
+      //     }
+      //     return false;
+      //   }
+      // },
+      subtables() {
+        if (Version() === 1.4) {
+          if (this.isreftabs) {
+            return true;
+          }
+          return false;
+        } if (this.itemNameGroup.length > 0) {
+          return true;
+        }
+        return false;
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
@@ -623,7 +636,7 @@
         const params = {};
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
-          if (this.subtables) { // 有子表
+          if (this.setSubtables()) { // 有子表
             if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
               childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
               params[this.itemName] = {
@@ -950,7 +963,7 @@
         //   range: 10
         // };
         const tabIndex = this.tabCurrentIndex;
-        if (this.subtables) { // 存在子表
+        if (this.subtables()) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
               if (obj.requestUrlPath) { // 有path
@@ -966,7 +979,7 @@
                         objId: this.itemId,
                         currentParameter: this.currentParameter, 
                         itemName: this.itemName,
-                        isreftabs: this.subtables,
+                        isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup, 
                         itemCurrentParameter: this.itemCurrentParameter, 
                         tabIndex,
@@ -1031,7 +1044,7 @@
                         objId: this.itemId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
-                        isreftabs: this.subtables, 
+                        isreftabs: this.subtables(), 
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
                         tabIndex,
@@ -1079,7 +1092,7 @@
                         objId: this.itemId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName, 
-                        isreftabs: this.subtables,
+                        isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup, 
                         itemCurrentParameter: this.itemCurrentParameter, 
                         tabIndex,
@@ -1136,7 +1149,7 @@
                       objId: this.itemId, 
                       currentParameter: this.currentParameter,
                       itemName: this.itemName, 
-                      isreftabs: this.subtables,
+                      isreftabs: this.subtables(),
                       itemNameGroup: this.itemNameGroup,
                       itemCurrentParameter: this.itemCurrentParameter,
                       resolve, 
@@ -1292,7 +1305,7 @@
         const path = this.dynamic.requestUrlPath;
         const objId = -1;
 
-        if (!this.subtables) { // 为false的情况下是没有子表
+        if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
             // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -1301,7 +1314,7 @@
             this.savaNewTable(type, path, objId);
           }
         }
-        if (this.subtables) { // 存在子表
+        if (this.subtables()) { // 存在子表
           // console.log('有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
             this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -1317,7 +1330,7 @@
         // const itemCurrentParameter = this.itemCurrentParameter;
         const path = obj.requestUrlPath;
         const type = 'modify';
-        if (!this.subtables) { // 为false的情况下是没有子表
+        if (!this.subtables()) { // 为false的情况下是没有子表
           // console.log('没有子表',);
           if (this.verifyRequiredInformation()) {
             if (obj.requestUrlPath) { // 配置path
@@ -1330,7 +1343,7 @@
             }
           }
         }
-        if (this.subtables) { // 为true的情况下是存在子表
+        if (this.subtables()) { // 为true的情况下是存在子表
           this.mainTableEditorSaveIsreftabs(obj);
         }
       },
@@ -1346,7 +1359,6 @@
           // } else {
           //   this.itemTableValidation = true;
           // }
-        
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             if (Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
               if (obj.requestUrlPath) { // 配置path
@@ -1448,7 +1460,7 @@
         }
         // if (this.objectType === 'vertical') { // 纵向结构
 
-        if (this.subtables) { // 存在子表时
+        if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
             if (item.tablename === this.itemName) {
@@ -1539,7 +1551,7 @@
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
         const tableName = this.tableName;
         const objectType = this.objectType;
-        const isreftabs = this.subtables;
+        const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
         const parame = {
           ...this.currentParameter, // 主表信息
@@ -1602,7 +1614,7 @@
       },
       clearEditData() {
         if (this.objectType === 'vertical') {
-          if (this.subtables && this.itemNameGroup.length > 0) {
+          if (this.subtables() && this.itemNameGroup.length > 0) {
             this.clearMainEditData();
             this.clearItemEditData();
           } else {
@@ -1629,7 +1641,7 @@
         this.updateDeleteData({ tableName: this.itemName, value: {} });
       },
       saveParameters() { // 筛选按钮保存参数逻辑
-        if (this.subtables) { // 有子表
+        if (this.subtables()) { // 有子表
           Object.keys(this.updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.itemName) {
               this.itemCurrentParameter = this.updateData[current];
@@ -1748,11 +1760,6 @@
       }
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
-      if (Version() === 1.4) {
-        this.subtables = this.isreftabs;
-      } else if (this.itemNameGroup.length > 0) {
-        this.subtables = true;
-      }
     },
     created() {
       const { tableName, tableId, itemId } = router.currentRoute.params;
