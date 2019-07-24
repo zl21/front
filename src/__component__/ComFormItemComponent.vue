@@ -567,6 +567,14 @@
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
+        // data
+        if (current.item.type === 'DatePicker' && current.item.props.rangecolumn) {
+          const start = current.item.props.rangecolumn.upperlimit;
+          const end = current.item.props.rangecolumn.lowerlimit;
+          delete obj[current.item.field];
+          obj[start.colname] = current.item.value[0];
+          obj[end.colname] = current.item.value[1];
+        }
         // checkbox
         this.formValueItem = Object.assign(this.formValueItem, obj);
 

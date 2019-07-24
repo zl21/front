@@ -877,6 +877,12 @@
         if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
           // 日期控件
           // 保存change 之前的默认值
+          if (item.rangecolumn) {
+            const start = item.rangecolumn.upperlimit;
+            const end = item.rangecolumn.lowerlimit;
+            return [start.defval || start.valuedata, end.defval || end.valuedata];
+          }
+
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
@@ -1099,6 +1105,9 @@
           if (current.isnotnull === true) {
             item.required = true;
           }
+          if (current.ispassword) {
+            item.props.type = 'password';
+          }
         }
         // 外键的单选多选判断
 
@@ -1147,21 +1156,23 @@
         if (current.display === 'textarea') {
           item.props.type = 'textarea';
         }
-        if (current.datelimit === 'before') {
+        //  const start = item.rangecolumn.upperlimit;
+        //     const end = item.rangecolumn.lowerlimit;
+        if (current.datelimit === 'before' || (current.rangecolumn && current.rangecolumn.datelimit === 'before')) {
           item.props.options = {
             disabledDate(date) {
               // 之前 含今天
               return date && date.valueOf() > new Date().valueOf();
             }
           };
-        } else if (current.datelimit === 'after') {
+        } else if (current.datelimit === 'after' || (current.rangecolumn && current.rangecolumn.datelimit === 'after')) {
           // 之后 含今天
           item.props.options = {
             disabledDate(date) {
               return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
             }
           };
-        } else if (current.datelimit === 'beforetoday') {
+        } else if (current.datelimit === 'beforetoday' || (current.rangecolumn && current.rangecolumn.datelimit === 'beforetoday')) {
           // 之前 不含今天
           item.props.options = {
             disabledDate(date) {
@@ -1171,7 +1182,7 @@
               );
             }
           };
-        } else if (current.datelimit === 'aftertoday') {
+        } else if (current.datelimit === 'aftertoday' || (current.rangecolumn && current.rangecolumn.datelimit === 'aftertoday')) {
           // 之后 不含今天
           item.props.options = {
             disabledDate(date) {
@@ -1189,7 +1200,11 @@
           item.props.type = 'time';
         }
         if (current.display === 'OBJ_DATE') {
-          item.props.type = 'datetime';
+          if (current.rangecolumn) {
+            item.props.type = 'datetimerange';
+          } else {
+            item.props.type = 'datetime';
+          }  
         }
 
         if (current.display === 'text' || current.display === 'xml') {
