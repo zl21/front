@@ -322,7 +322,8 @@
         },
         deep: true
       },
-      VerificationForm() {
+      VerificationForm(val) {
+        console.log(val);  
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
@@ -428,6 +429,7 @@
           value: valueData,
           key: items.item.field,
           label: items.item.title,
+          fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
       },
@@ -602,7 +604,6 @@
           const srccol = items.validate.refcolval.srccol;
           
           const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-
           if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
