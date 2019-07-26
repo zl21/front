@@ -93,7 +93,7 @@ module.exports = env => ({
           {
             loader: 'url-loader',
             options: {
-              limit: 0,
+              limit: 8192,
               name: '[path][name].[ext]'
             }
           }
