@@ -438,7 +438,6 @@ export default {
     resolve, reject
   }) { // 主表删除
     let parames = {};
-    debugger;
     if (isreftabs) {
       parames = {
         table, // 主表表名
