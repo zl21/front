@@ -29,7 +29,8 @@ module.exports = {
     'vue/script-indent': ["error", 2, { "baseIndent": 1 }],
     'vue/order-in-components': 'off',
     'no-extend-native':'off',
-    'no-eval':'off'
+    'no-eval':'off',
+    'import/no-dynamic-require':'off'
   },
   overrides: [
     {
