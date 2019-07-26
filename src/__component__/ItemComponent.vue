@@ -1091,6 +1091,10 @@
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
+        if (Version() !== '1.4') {
+          this.pathsCheckoutolder(parms, data);
+          return false;
+        }
         const pathcheck = this.$parent.pathcheck;
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
@@ -1171,6 +1175,18 @@
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
+      },
+      pathsCheckoutolder(parms, data) {
+        //   1.3 后台拼数据
+        const fixedData = {
+          objid: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName,
+          data: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          after: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          before: { [this._items.field]: this._items.props.valuedata ? this._items.props.valuedata : '' }
+        };
+
+        return Object.assign({}, fixedData);
       },
       upSaveImg(obj, fixedData, path, index) {
         fkObjectSave({

@@ -1464,7 +1464,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value === '' || item.value === null) {
+          if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay)) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
