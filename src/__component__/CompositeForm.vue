@@ -430,6 +430,7 @@
           return arr;
         }, {});
         if (this.moduleFormType === 'horizontal') {
+          this.formData = Object.assign({}, defaultSetValue);
           this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
@@ -519,7 +520,6 @@
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
-              console.log(Selected, 'Selected');
               let item = [];
               if (current.formIndex !== 'inpubobj') {
                 item = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -534,7 +534,6 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
-              console.log('6666');
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
