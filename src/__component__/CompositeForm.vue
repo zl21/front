@@ -478,9 +478,6 @@
               });
             },
             change: (value) => {
-              if (current.isuppercase) {
-                this.lowercaseToUppercase(index, current);
-              }
               if (current.fkdisplay) {
                 this.focusChange(value, current, index);
               }
@@ -613,6 +610,9 @@
                   .newFormItemLists;
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
+              }
+               if (current.isuppercase) {
+                this.lowercaseToUppercase(index, current);
               }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
                 if (item.type === 'AttachFilter') {

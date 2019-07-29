@@ -565,7 +565,11 @@
               ID: ''
             }];
           } else {
-            valueItem[Object.keys(obj)[0]] = current.item.value;
+            if (current.item.props.isuppercase){
+              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+            }else {
+              valueItem[Object.keys(obj)[0]] = current.item.value;
+            } 
           }
         }
         // data
