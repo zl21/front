@@ -323,7 +323,6 @@
         deep: true
       },
       VerificationForm(val) {
-        console.log(val);  
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {

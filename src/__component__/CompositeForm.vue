@@ -1523,6 +1523,9 @@
         if (this.condition === 'list') {
           return {};
         }
+        if (this.$route.params.itemId === undefined) {
+          return false;
+        }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
           if (this.isreftabsForm) {
