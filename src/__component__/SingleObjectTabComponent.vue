@@ -532,34 +532,48 @@
       formChange(val, changeVal) {
         const { tableName } = this;
         const obj = {};
+        const { itemId } = this.$route.params;
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
+          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        }
       },
       initForm(val) {
         const { tableName } = this;
+        const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateAddDefaultData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateAddDefaultData`, { tableName, value: obj });
+        }
       },
       verifyForm(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        }
       },
       verifyFormPanel(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        }
       },
       formPanelChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
+          if (itemId === 'New') {
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+          } else {
+            this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+          }
         }
       },
       initFormPanel(val) {
@@ -567,22 +581,33 @@
         const obj = {};
         obj[tableName] = val;
         const { itemId } = this.$route.params;
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        if (itemId) {
+          if (itemId === 'New') {
+            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+          }
+          this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
         }
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
       tableBeforeData(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: data });
+        }
       },
       tableDataChange(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
+        }
       },
       tableSelectedRow(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
+        }
       },
       tableVerifyMessage(data) {
         // const { tableName } = this;
