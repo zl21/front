@@ -323,7 +323,6 @@
         deep: true
       },
       VerificationForm(val) {
-        console.log(val);  
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
@@ -566,7 +565,11 @@
               ID: ''
             }];
           } else {
-            valueItem[Object.keys(obj)[0]] = current.item.value;
+            if (current.item.props.isuppercase){
+              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+            }else {
+              valueItem[Object.keys(obj)[0]] = current.item.value;
+            } 
           }
         }
         // data

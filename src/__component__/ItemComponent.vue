@@ -61,7 +61,7 @@
         :icon="_items.props.icon"
         :regx="_items.props.regx"
         on-click="inputClick"
-        on-blur="inputBlur"
+        @on-blur="inputBlur"
         @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"

@@ -430,6 +430,7 @@
           return arr;
         }, {});
         if (this.moduleFormType === 'horizontal') {
+          this.formData = Object.assign({}, defaultSetValue);
           this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
@@ -477,9 +478,6 @@
               });
             },
             change: (value) => {
-              if (current.isuppercase) {
-                this.lowercaseToUppercase(index, current);
-              }
               if (current.fkdisplay) {
                 this.focusChange(value, current, index);
               }
@@ -519,7 +517,6 @@
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
-              console.log(Selected, 'Selected');
               let item = [];
               if (current.formIndex !== 'inpubobj') {
                 item = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -534,7 +531,6 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
-              console.log('6666');
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
@@ -614,6 +610,9 @@
                   .newFormItemLists;
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
+              }
+               if (current.isuppercase) {
+                this.lowercaseToUppercase(index, current);
               }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
                 if (item.type === 'AttachFilter') {
@@ -1522,6 +1521,9 @@
         const state = this.$store.state[getModuleName()];
         if (this.condition === 'list') {
           return {};
+        }
+        if (this.$route.params.itemId === undefined) {
+          return false;
         }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
