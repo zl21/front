@@ -201,7 +201,7 @@
     display: flex;
     // overflow: hidden;
     border-bottom: 1px solid #dfdfdf;
-
+    user-select: none;
     a {
       display: inline-block;
       text-decoration: none;
