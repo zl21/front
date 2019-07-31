@@ -22,7 +22,8 @@ export default {
     activeTab: {},
     userInfo: {},
     showFavoritesList: '',
-    serviceIdMap: {}
+    serviceIdMap: {},
+    navigatorSetting: []
   },
   mutations,
   actions,
