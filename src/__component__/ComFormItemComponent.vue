@@ -29,7 +29,7 @@
 <script>
   import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import { Version, interlocks } from '../constants/global';
+  import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
   import getModuleName from '../__utils__/getModuleName';
 
   export default {
@@ -218,6 +218,7 @@
         }
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         indexItem: -1,
@@ -385,7 +386,7 @@
           return items;
         });
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
-          this.$store.commit(`${getModuleName()}/updateLinkageForm`, this.LinkageForm);
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
         }
       },  
       mountdataFormInt() {
