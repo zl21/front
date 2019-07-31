@@ -564,12 +564,12 @@
               Label: '',
               ID: ''
             }];
-          } else {
-            if (current.item.props.isuppercase){
+          } else if (current.item.props.isuppercase) {
+            if (valueItem[Object.keys(obj)[0]]) {
               valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
-            }else {
-              valueItem[Object.keys(obj)[0]] = current.item.value;
-            } 
+            }
+          } else {
+            valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
         // data
