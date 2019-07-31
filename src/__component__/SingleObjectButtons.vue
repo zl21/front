@@ -83,11 +83,10 @@
   import { mapMutations, mapState } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
-  import moduleName from '../__utils__/getModuleName';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version } from '../constants/global';
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
@@ -312,6 +311,7 @@
         default: () => {}
       },
     },
+    inject: [MODULE_COMPONENT_NAME],
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
@@ -805,12 +805,12 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.savaCopy = false;
 
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
+        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.savaCopy = false;
 
-        this.$store.commit(`${moduleName()}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
+        this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
@@ -995,7 +995,7 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                         this.clickButtonsBack();
-                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                        // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
                     }, () => {
@@ -1021,7 +1021,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }, () => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
@@ -1071,7 +1071,7 @@
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
-                        // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                        // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                       }
                     }, () => {
                       const deleteMessage = this.buttonsData.deleteData;
@@ -1163,7 +1163,7 @@
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
                     const deleteMessage = this.buttonsData.deleteData;
@@ -1189,7 +1189,7 @@
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
                       this.clickButtonsBack();
-                      // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                      // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
                     const deleteMessage = this.buttonsData.deleteData;
@@ -1216,7 +1216,7 @@
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
-                  // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
                 const deleteMessage = this.buttonsData.deleteData;
@@ -1242,7 +1242,7 @@
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
                   this.clickButtonsBack();
-                  // this.$store.dispatch(`${moduleName()}/getQueryListForAg`, searchData);
+                  // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
                 const deleteMessage = this.buttonsData.deleteData;
@@ -1278,7 +1278,7 @@
           });
         }
         setTimeout(() => {
-          this.$store.commit(`${moduleName()}/emptyChangeData`, this.tableName);
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyChangeData`, this.tableName);
         }, 2000);
         // setTimeout(() => {
         //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
@@ -1608,7 +1608,7 @@
           if (message) {
             this.$Message.success(data);
           }
-          this.decreasekeepAliveLists(moduleName());
+          this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
           this.clearEditData();// 清空store update数据
           this.saveEventAfterClick();// 保存成功后执行的事件

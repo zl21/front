@@ -30,7 +30,6 @@
   import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
-  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     name: 'FormItemComponent',

@@ -6,8 +6,8 @@ import { MODULE_COMPONENT_NAME } from '../../constants/global';
 
 export default () => ({
   provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
-  mounted() {
-    this.moduleComponentName = getComponentName();
+  created() {
+    this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   computed: {
     ...mapState(getComponentName(), {
