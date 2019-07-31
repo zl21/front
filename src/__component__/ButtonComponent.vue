@@ -24,13 +24,14 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
+      
       <Dropdown
         v-if="dataArray.printValue"
         trigger="click"
         placement="bottom-start"
         split-button
         type="primary"
-        @click="webaction(printList[0])"
+        @on-click='print'
       >
         <Button type="fcdefault">
           打印
@@ -39,16 +40,17 @@
         <DropdownMenu slot="list">
           <DropdownItem
             v-for="(item) of printList"
+            :name='item.webid'
             :key="item.webid"
           >
             {{ item.webdesc }}
           </DropdownItem>
-          <DropdownItem>
+          <!-- <DropdownItem>
             <a
               href="http://up.ffvos.cn/FinePrint.exe"
               target="_blank"
             >打印插件</a>
-          </DropdownItem>
+          </DropdownItem> -->
         </DropdownMenu>
       </Dropdown>
       <Button
@@ -80,6 +82,18 @@
         @click="btnclick('back')"
         v-text="back"
       />
+       <!-- <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+      :obj-list="dialogComponentName?objList:[]"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
+      @clearDialogComponentName="clearDialogComponentName"
+    /> -->
     </div>
   </div>
 </template>
@@ -121,19 +135,6 @@
           // 打印列表
           {
             vuedisplay: 'dialog',
-            confirm: '{"isselect":true,"nodesc":"请先选择需要打印的记录！"}',
-            actiontype: 'url',
-            isrefrsh: false,
-            webid: 2527,
-            webdesc: '打印rrr',
-            webname: 'OutPrint',
-            webicon: null,
-            action: 'custompage/redirect?print',
-            cuscomponent: null,
-            ishide: false
-          },
-          {
-            vuedisplay: 'dialog',
             confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
             actiontype: 'url',
             isrefrsh: false,
@@ -167,9 +168,31 @@
       };
     },
     methods: {
+      print(id) {
+        if(id==='2530'){//打印预览
+             
+        }else{
+           this.objTabActionDialog()
+        }
+      },
+      objTabActionDialog(tab) { // 动作定义弹出框
+        this.$refs.dialogRef.open();
+        const title = `${tab.webdesc}`;
+        this.dialogConfig = {
+          title,
+        };
+        this.dialogConfig.footerHide = true;
+        const url = tab.action;
+        const index = url.lastIndexOf('/');
+        const filePath = url.substring(index + 1, url.length);
+        // Vue.component(filePath, CustomizeModule[filePath].component);
+        this.dialogComponentName = filePath;
+        // }
+      },
       btnclick(type, item) {
         this.$emit('buttonClick', type, item);
       },
+        
     },
    
   };
@@ -222,6 +245,10 @@
     }
     .collection,.burgeon-btn-fcdefault{
       min-width: auto !important;
+    }
+
+    .burgeon-select-dropdown{
+      top: 58px !important;
     }
   }
 

@@ -117,7 +117,7 @@
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
-          printValue: false, // 是否显示打印
+          printValue: true, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮
@@ -638,7 +638,7 @@
         const params = {};
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
-          if (this.setSubtables()) { // 有子表
+          if (this.subtables()) { // 有子表
             if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
               childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
               params[this.itemName] = {
