@@ -81,8 +81,9 @@
           :height="tableHeight? tableHeight :true"
           border
           :columns="columns"
-          :data="data"
-          :total-data="totalData"
+          :loading="loading"
+          :data="tabledata"
+          :total-data="totalDataNumber"
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
         />
@@ -115,6 +116,7 @@
   import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
+  import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
@@ -156,11 +158,12 @@
         fkSelectedChangeData: [], // 保存外键修改的数据
         verifyTipObj: {}, // 保存校验对象
         isTableRender: false, // 表格是否重新渲染
-
+        loading: true,
         buttonPath: {},
         tableRowSelectedIds: [], // 表格选中的ID
-        // columns: [],
-        // data: [],
+        columns: [],
+        tabledata: [],
+        totalDataNumber: [],
         searchInfo: '', // 输入框搜索内容
         searchCondition: null, // 查询条件
         // pageInfo: { // 列表的分页
@@ -272,55 +275,21 @@
       },
       data() {
         // this.filterBeforeData();
-        return this.filterData(this.dataSource.row); // 每列的数据
+        // return this.filterData(this.dataSource.row); // 每列的数据
       },
       copyDataSource() {
         return JSON.parse(JSON.stringify(this.dataSource));
       },
-      columns() {
-        const isTableRender = this.isTableRender;
-        return this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
-      },
+      //   columns() {
+      //     const isTableRender = this.isTableRender;
+      //     console.log(this.filterColumns(this.dataSource.tabth, isTableRender));
+      //     return this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+      //   },
       isFullRangeSubTotalEnabled() { // 是否显示总计
         return this.dataSource.isFullRangeSubTotalEnabled;
       },
       isSubTotalEnabled() { // 是否显示合计
         return this.dataSource.isSubTotalEnabled;
-      },
-      totalData() {
-        const total = [];
-        if (this.dataSource.isSubTotalEnabled) {
-          const cell = {
-            COLLECTION_INDEX: '合计'
-          };
-          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          needSubtotalList.map((ele) => {
-            const needSubtotalDatas = [];
-            this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-            cell[ele.colname] = `${totalNumber}`;
-            return ele;
-          });
-          total.push(cell);
-        }
-        // if (this.isHorizontal) {
-        if (this.dataSource.isFullRangeSubTotalEnabled) {
-          // 总计
-          const cell = {
-            COLLECTION_INDEX: '总计',
-          };
-          if (this.dataSource.fullRangeSubTotalRow) {
-            for (const key in this.dataSource.fullRangeSubTotalRow) {
-              if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = this.dataSource.fullRangeSubTotalRow[key];
-                cell[key] = element.val;
-              }
-            }
-          }
-          total.push(cell);
-        }
-        // }
-        return total;
       },
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
@@ -415,6 +384,13 @@
             this.verifyTipObj = {};
             this.fkSelectedChangeData = [];
           }
+          const isTableRender = this.isTableRender;
+          this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          setTimeout(() => {
+            this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
+            this.totalDataNumber = this.totalData();
+          }, 50);
+         
           this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
@@ -434,6 +410,41 @@
         this.searchInfo = '';
         this.currentPage = 1;
       }, // 清空搜索框里的值
+      totalData() {
+        const total = [];
+        if (this.dataSource.isSubTotalEnabled) {
+          const cell = {
+            COLLECTION_INDEX: '合计'
+          };
+          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          needSubtotalList.map((ele) => {
+            const needSubtotalDatas = [];
+            this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            cell[ele.colname] = `${totalNumber}`;
+            return ele;
+          });
+          total.push(cell);
+        }
+        // if (this.isHorizontal) {
+        if (this.dataSource.isFullRangeSubTotalEnabled) {
+          // 总计
+          const cell = {
+            COLLECTION_INDEX: '总计',
+          };
+          if (this.dataSource.fullRangeSubTotalRow) {
+            for (const key in this.dataSource.fullRangeSubTotalRow) {
+              if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = element.val;
+              }
+            }
+          }
+          total.push(cell);
+        }
+        // }
+        return total;
+      },
       buttonClick(obj) {
         switch (obj.eName) {
         case 'actionIMPORT': // 导入
@@ -582,6 +593,9 @@
           }
           return item;
         });
+        setTimeout(() => {
+          this.loading = false;
+        }, 200);
         return data;
       },
       filterBeforeData() {
