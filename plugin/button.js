@@ -12,29 +12,33 @@ function CreateButton(obj, buttons, id,store) {
         // 3, "转派"
         // 4, "保存单据修改" 这个按钮不展示
         // 5,"详情页面"
-        let jflowPluginDataArray=obj.buttons;
-                window.addEventListener("jflowPlugin",(e)=>{
-                    console.log(e.detail,"传递的数据")
-                    let item=e.detail;
-                    if (!(item.button === '4')) {
-                    if(item.button === '-1' || item.button === '2'){
-                        mutipleOperate(item.url,obj.instanceId, buttons, id);
-                    }else {
-                        if (item.button === '1') {
-                                window.jflowPlugin.open({ control: true, type: item.button, url: item.url, instanceId:obj.instanceId,returnOption: obj.backNodeIds, buttons: buttons, id: id });
-                        } else {
-                            if(item.button==='5'){
-                                window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`,'_blank','width=800,height=800')
-                            }else{
-                                    window.jflowPlugin.open({ control: true, type: item.button, url: item.url,instanceId:obj.instanceId, buttons: buttons, id: id });
-                            }
+        if(obj.instanceId!==null&&obj.buttons && obj.buttons!==null&&obj.buttons.length > 0){
+            let jflowPluginDataArray=obj.buttons;
+            store.commit('')
+            window.addEventListener("jflowPlugin",(e)=>{
+                console.log(e.detail,"传递的数据")
+                let item=e.detail;
+                if (!(item.button === '4')) {
+                if(item.button === '-1' || item.button === '2'){
+                    mutipleOperate(item.url,obj.instanceId, buttons, id);
+                }else {
+                    if (item.button === '1') {
+                            window.jflowPlugin.open({ control: true, type: item.button, url: item.url, instanceId:obj.instanceId,returnOption: obj.backNodeIds, buttons: buttons, id: id });
+                    } else {
+                        if(item.button==='5'){
+                            window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`,'_blank','width=800,height=800')
+                        }else{
+                                window.jflowPlugin.open({ control: true, type: item.button, url: item.url,instanceId:obj.instanceId, buttons: buttons, id: id });
                         }
                     }
                 }
+            }
 
-                },false)
-}
-//操作store数据的方法
+            },false)
+        }else{
+
+        }
+    }
 
 //撤销/结束/详情
 function mutipleOperate(url, instanceId,buttons, id) {
