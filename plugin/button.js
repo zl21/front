@@ -1,4 +1,4 @@
-var store={};//vuex实例
+let MODULE_COMPONENT_NAME=window.location.pathname.split('/').slice(3).join('.');
 // 这里主要是按钮的逻辑
 //创建按钮
 //obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
@@ -13,8 +13,7 @@ function CreateButton(obj, buttons, id,store) {
         // 4, "保存单据修改" 这个按钮不展示
         // 5,"详情页面"
         if(obj.instanceId!==null&&obj.buttons && obj.buttons!==null&&obj.buttons.length > 0){
-            let jflowPluginDataArray=obj.buttons;
-            store.commit('')
+            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,obj);
             window.addEventListener("jflowPlugin",(e)=>{
                 console.log(e.detail,"传递的数据")
                 let item=e.detail;
@@ -36,7 +35,7 @@ function CreateButton(obj, buttons, id,store) {
 
             },false)
         }else{
-
+            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{});
         }
     }
 

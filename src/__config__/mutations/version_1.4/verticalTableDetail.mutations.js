@@ -267,6 +267,17 @@ export default {
   //   });
   // }
   jflowPlugin(state, data) { // jflowPlugin按钮逻辑
-    state.jflowPluginDataArray=data
+    state.anotherData=state.mainFormInfo.buttonsData.data.tabcmd.prem;
+    if(data.instanceId!==null&&data.buttons && data.buttons!==null&&data.buttons.length > 0){
+      state.mainFormInfo.buttonsData.data.tabcmd.prem.map(item=>{item=false;})
+       state.jflowPluginDataArray=data.buttons;
+       if (data.modifiableFieldName !== null && data.modifiableFieldName.length > 0) {
+        state.mainFormInfo.buttonsData.data.tabcmd.prem[1]=true;
+       }else{
+        state.mainFormInfo.buttonsData.data.tabcmd.prem[1]=false;
+       }
+     }else{
+      state.mainFormInfo.buttonsData.data.tabcmd.prem=state.anotherData;
+     }
   }
 };
