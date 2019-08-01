@@ -782,7 +782,6 @@
               label,
               id
             });
-            window.addEventListener('network', this.networkEventListener);// 监听接口
           }
         } else { // 纵向布局
           const copyData = { ...this.mainFormInfo.formData };
@@ -798,18 +797,17 @@
             label,
             id
           });
-          window.addEventListener('network', this.networkEventListener);// 监听接口
         }
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.savaCopy = false;
-
+        console.log('copyForHorizontal this = ', this);
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.savaCopy = false;
-
+        console.log('copyForVertical = ', this[MODULE_COMPONENT_NAME]);
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       clickButtonsBack() { // 按钮返回事件
@@ -1703,15 +1701,8 @@
       networkEventListener(event) {
         const { detail } = event;
         const { response } = detail;
-        // let urlArr = [];
-        let url = '';
-        url = '/p/cs/getObject';
-        // if (this.objectType === 'vertical') {
-        //   urlArr = ['/p/cs/objectTab', '/p/cs/getObject', '/p/cs/inputForitem'];
-        // } else {
-        //   urlArr = ['/p/cs/objectTab', '/p/cs/getObject'];
-        // }
-        if (url === detail.url) {
+        const url = '/p/cs/getObject';
+        if (!this._inactive && url === detail.url) {
           if (response && response.data && response.data.code === 0) {
             if (this.savaCopy === true) {
               if (this.objectType === 'vertical') {
@@ -1763,7 +1754,10 @@
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
     },
+    beforeCreate() {
+    },
     created() {
+      window.addEventListener('network', this.networkEventListener);// 监听接口
       const { tableName, tableId, itemId } = router.currentRoute.params;
       this.tableName = tableName;
       this.tableId = tableId;
