@@ -1,8 +1,9 @@
-
+var store={};//vuex实例
 // 这里主要是按钮的逻辑
 //创建按钮
 //obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
 function CreateButton(obj, buttons, id,store) {
+    store=store;
     console.log(store,"store实例")
         // -1, "撤销"
         // 0, "同意"
@@ -33,6 +34,8 @@ function CreateButton(obj, buttons, id,store) {
 
                 },false)
 }
+//操作store数据的方法
+
 //撤销/结束/详情
 function mutipleOperate(url, instanceId,buttons, id) {
     let param = {};
