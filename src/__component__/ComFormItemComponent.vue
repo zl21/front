@@ -30,7 +30,6 @@
   import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
-  import getModuleName from '../__utils__/getModuleName';
 
   export default {
     name: 'FormItemComponent',
@@ -39,7 +38,9 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          // console.log(list[current].item.value, 'item');
+          if (list[current].item.type === 'Wangeditor') {
+            list[current].col = this.defaultColumn;
+          }
           temp.push(list[current]);
           return temp;
         }, []);

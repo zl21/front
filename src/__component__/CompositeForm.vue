@@ -77,12 +77,11 @@
 <script>
   import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
-  import { Version } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
-  import getModuleName from '../__utils__/getModuleName';
 
   const {
     fkQueryList,
@@ -173,6 +172,7 @@
         }
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         newdefaultData: [], // 初始化form
@@ -464,8 +464,8 @@
               }
             },
             clear: () => {
-              const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
-              const mappStatus = this.$store.state[getModuleName()].mappStatus || [];
+              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
+              const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
               this.getStateData(); // 获取主表信息
               Object.keys(mappStatus).forEach((item) => {
                 if (!this.refcolvalAll[mappStatus[item]]) {
@@ -561,7 +561,7 @@
                 if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
-                const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
+                const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
                 if (!refcolval) {
                   if (Index !== -1) {
@@ -611,7 +611,7 @@
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
-               if (current.isuppercase) {
+              if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
@@ -643,13 +643,32 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
-              fkQueryList({
-                searchObject: {
+              
+              let searchObject = {};
+              if (current.refcolval && current.refcolval.srccol) {
+                const refcolval = this.refcolvalAll[current.refcolval.srccol]
+                  ? this.refcolvalAll[current.refcolval.srccol]
+                  : '';
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                  range: $this.pageSize,
+                  fixedcolumns: {
+                    [current.refcolval.fixcolumn]: query
+                  },
+                };
+              } else {
+                searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
-                },
+                };
+              }
+              fkQueryList({
+                searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
@@ -1055,6 +1074,27 @@
             item.type = 'ExtentionInput';
           }
         }
+        // 上传文件插件
+        if (item.props.display === 'doc') {
+          item.type = 'docfile';
+          const valuedata = this.defaultValue(current);
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          let readonly = ImageSize
+            ? ImageSize > valuedata.length
+            : current.readonly;
+          readonly = this.objreadonly ? true : readonly;
+          item.props.itemdata = {
+            colname: current.colname,
+            readonly,
+            masterName: this.masterName,
+            objId: this.masterId,
+            sendData: {
+              path: `${this.masterName}/${this.masterId}/`
+            },
+            url: '/pc/cs/batchUpload',
+            valuedata
+          };
+        }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
@@ -1227,7 +1267,7 @@
                 if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
                   refcolval = that.defaultFormData[currentThat.refcolval.srccol];
                 }
-                const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
+                const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === currentThat.refcolval.srccol);
                 if (!refcolval) {
                   if (Index !== -1) {
@@ -1343,8 +1383,8 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: 140,
-            height: 140,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 550 * (current.col / this.defaultColumnCol),
+            height: 120,
             readonly,
             masterName: this.masterName,
             objId: this.masterId,
@@ -1518,7 +1558,7 @@
       getStateData() {
         // 获取 主子表的状态值
         this.refcolvalAll = {};
-        const state = this.$store.state[getModuleName()];
+        const state = this.$store.state[this[MODULE_COMPONENT_NAME]];
         if (this.condition === 'list') {
           return {};
         }
@@ -1566,9 +1606,9 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {     
-      if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
+      if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
         if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
-          this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
         }
       }  
     }
