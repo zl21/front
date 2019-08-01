@@ -218,7 +218,7 @@ function jflowButtons(id) { // jflow按钮逻辑处理
         }
         modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
         instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
-        CreateButton(res.data.data, jflowButtons, id);
+        CreateButton(res.data.data, jflowButtons, id, store);
       }
     });
 }
