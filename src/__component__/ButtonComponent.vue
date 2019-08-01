@@ -25,7 +25,7 @@
         v-text="item.webdesc" 
       />
       <Button
-        v-for="(item,index) in NewdataArray"
+        v-for="(item,index) in jflowPluginDataArray"
         :key="index"
         :ref="item"
         type="fcdefault"
