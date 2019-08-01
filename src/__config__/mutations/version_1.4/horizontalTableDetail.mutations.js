@@ -253,4 +253,7 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+  jflowPlugin(state, data) { // jflowPlugin按钮逻辑
+
+  }
 };
