@@ -156,6 +156,13 @@
       ImportDialog, // 导入弹框
     },
     watch: {
+      jflowPluginDataArray: {
+        handler(val) {
+          if (val) {
+            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+          }
+        }
+      },
       tabcmd: {
         handler(val) {
           if (Object.keys(val).length > 0) {
@@ -1759,6 +1766,9 @@
       }
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
+      if (this.jflowPluginDataArray) {
+        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      }
     },
     beforeCreate() {
     },

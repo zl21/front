@@ -267,6 +267,6 @@ export default {
   //   });
   // }
   jflowPlugin(state, data) { // jflowPlugin按钮逻辑
-
+    state.jflowPluginDataArray=data
   }
 };
