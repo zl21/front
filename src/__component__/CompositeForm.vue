@@ -1383,8 +1383,8 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: 200,
-            height: 140,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 550 * (current.col / this.defaultColumnCol),
+            height: 120,
             readonly,
             masterName: this.masterName,
             objId: this.masterId,

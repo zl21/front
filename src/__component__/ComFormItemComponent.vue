@@ -38,7 +38,9 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          // console.log(list[current].item.value, 'item');
+          if (list[current].item.type === 'Wangeditor') {
+            list[current].col = this.defaultColumn;
+          }
           temp.push(list[current]);
           return temp;
         }, []);

@@ -44,7 +44,7 @@
       
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div class="itemComponent">
+    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
       <Input
         v-if="_items.type === 'input'"
         v-model="_items.value"
@@ -243,22 +243,23 @@
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
-      <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
+      <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
           v-if="_items.type === 'Wangeditor'"
           :key="index"
+          :is-actives="_items.props.readonly"
           :valuedata="_items.value"
           :item="_items.props"
           @getChangeItem="getWangeditorChangeItem"
         />
       </template>
-      <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
+      <!-- <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
         <div
           class="Wangeditor-disabled"
           v-html="_items.value"
         />
-      </template>
+      </template> -->
       <!-- 上传文件 -->
        
       <!-- <Docfile
@@ -1301,6 +1302,15 @@
     top: 3px;
     right: 3px;
   }
+}
+textarea.burgeon-input{
+    height: 100%!important;
+}
+.height100{
+    height: 100%!important;
+    .burgeon-input-wrapper{
+    height: 100%!important;
+    }
 }
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
