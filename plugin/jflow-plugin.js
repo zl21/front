@@ -32,19 +32,9 @@ const install = function install(Vue, options = {}) {
 };
 
 
-function getComponent(route) { // 获取vue实例
-  const type = route.path.split('/')[2];
-  const tableName = route.query.tableName;
-  const id = route.query.id;
-  const currentComponent = `${type}_${tableName}_${id}`;
-
-  const MyComponent = new Vue(Vue.component(currentComponent));
-}
-
 function RoutingGuard(router) { // 路由守卫
   router.beforeEach((to, from, next) => {
     const type = to.path.split('/')[3];// 获取组件类型
-    console.log(to);
     if (type === 'H' || type === 'V') {
       configurationFlag = false;
       moduleId = null;
@@ -61,16 +51,7 @@ function RoutingGuard(router) { // 路由守卫
       } else if (((type === 'H' || type === 'V') && from.path === '/') || checkFlowChart(to.params.tableId)) { // 直接访问单对象界面 或者配置了流程图
         next();
         configurationFlag = true;
-        jflowButtons(to.query.itemId);
-        // const time = setInterval(() => {
-        //   // if (document.getElementsByClassName('operate-btn')[0] && !document.getElementsByClassName('operate-btn')[0].getAttribute('data-control')) {
-        //   //   clearInterval(time);
-        //   //   jflowButtons(to.query.itemId);
-        //   // } else if (document.getElementsByClassName('operate-btn')[0].getAttribute('data-control')) {
-        //   //   clearInterval(time);
-        //   // }
-        //   jflowButtons(to.query.itemId);
-        // }, 1000);
+        jflowButtons(to.params.itemId);
       } else {
         next();
       }
@@ -86,18 +67,19 @@ function AxiosGuard(axios) { // axios拦截
       config.headers.accessToken = accessToken;
     }
     const type = router.currentRoute.path.split('/')[3];// 获取组件类型
-
-    if ((type === 'v' || type === 'h') && configurationFlag && !instanceId) { // 配置了流程图并判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
+    if ((type === 'V' || type === 'H') && configurationFlag && !instanceId) { // 配置了流程图并判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
       let launchConfig = [];
       configMap.map((item) => {
-        if (item.businessType === router.currentRoute.query.pid) {
+        if (item.businessType === router.currentRoute.params.tableId) {
           launchConfig = item.action;
         }
         return item;
       });
-
-      if (launchConfig.indexOf(config.url) >= 0) {
-        const jflowRes = await jflowsave(true, config);
+      const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
+      for (let i = 0; i < launchConfig.length; i++) {
+        if (`/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0) {
+          const jflowRes = await jflowsave(true, config);
+        }
       }
     }
 
@@ -113,7 +95,6 @@ function AxiosGuard(axios) { // axios拦截
         response.data.data = modifyFieldConfiguration(response.data.data);
       }
       if (response.config.url.indexOf('/p/cs/objectTab') >= 0 && configurationFlag && instanceId) {
-        // btnChange(response.data.data)
         response.data.data.objreadonly = false;
       }
 
@@ -130,19 +111,7 @@ function AxiosGuard(axios) { // axios拦截
     return response;
   });
 }
-function btnChange(data) {
-  data.tabcmd.cmds.map((item, index) => {
-    if (instanceId) {
-      data.tabcmd.prem[index] = false;
-      data.tabwebact.objbutton = [];
-      if (item === 'actionMODIFY' && modifiableFieldName.length > 0) {
-        data.tabcmd.prem[index] = true;
-      } else {
-        data.tabcmd.prem[index] = false;
-      }
-    }
-  });
-}
+
 async function jflowsave(flag, response) {
   await new Promise((resolve, reject) => {
     const needbody = {};
@@ -154,13 +123,13 @@ async function jflowsave(flag, response) {
         changeDetail[pair[0]] = pair[1];
       }
       Temparam.append('table', changeDetail.table);
-      Temparam.append('objid', changeDetail.objid);
+      Temparam.append('objid', changeDetail.objId);
     } else {
-      Temparam.append('table', router.currentRoute.query.tableName);
-      Temparam.append('objid', router.currentRoute.query.id);
+      Temparam.append('table', router.currentRoute.params.tableName);
+      Temparam.append('objid', router.currentRoute.params.itemId);
     }
-
-    axios.post('/p/cs/getObject', Temparam).then(async (res) => {
+    const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
+    axios.post(`/${serviceId}/p/cs/getObject`, Temparam).then(async (res) => {
       if (res.data.code === 0) {
         res.data.data.addcolums.forEach((element) => {
           if (element.childs) {
@@ -182,22 +151,23 @@ async function jflowsave(flag, response) {
           response = changeDetail;
           let allPath = window.location.pathname;
           const temSearch = new URLSearchParams(window.location.search);
-          temSearch.set('id', response.objid);
+          temSearch.set('id', response.objId);
           allPath += `?${temSearch.toString()}`;
 
           axios.post('/jflow/p/cs/process/launch', {
-            businessBody: needbody, businessCode: parseInt(response.objid), businessType: router.currentRoute.query.pid, initiator: userInfo.id, initiatorName: userInfo.name, moduleId, businessUrl: '/p/cs/objectSubmit', formUrl: allPath 
+            businessBody: needbody, businessCode: parseInt(response.objId), businessType: router.currentRoute.params.tableId, initiator: userInfo.id, initiatorName: userInfo.name, moduleId, businessUrl: '/p/cs/objectSubmit', formUrl: allPath 
           }).then((res) => {
             if (res.data.notice) {
               window.vm.$Modal.fcError({
                 title: '错误',
                 content: res.data.notice
               });
+              reject(response);
             }
-            if (res.data.resultCode === 0 && res.data.data.instanceId) {
+            if (res.data.resultCode === 0 && res.data.data.instanceId && !res.data.notice) {
               instanceId = res.data.data.instanceId;
 
-              jflowButtons(response.objid);
+              jflowButtons(response.objId);
 
               for (const i of document.getElementsByClassName('el-loading-mask')) {
                 i.style.display = 'none';
@@ -213,9 +183,9 @@ async function jflowsave(flag, response) {
           for (const pair of params.entries()) {
             changeDetail[pair[0]] = pair[1];
           }
-          const id = changeDetail.objid;
+          const id = changeDetail.objId;
           delete changeDetail.table;
-          delete changeDetail.objid;
+          delete changeDetail.objId;
           axios.post('/jflow/p/cs/process/business/save', {
             businessBody: needbody, businessCode: parseInt(id), changeDetail, instanceId, changeUser: userInfo.id, userName: userInfo.name 
           }).then((res) => {
