@@ -259,6 +259,12 @@
           v-html="_items.value"
         />
       </template>
+      <!-- 上传文件 -->
+       
+      <!-- <Docfile
+        v-if="_items.type === 'docfile'"
+        :dataitem="_items.props.itemdata"
+      /> -->
     </div>
   </div>
 </template>
@@ -267,12 +273,15 @@
   import { mapActions, mapState, mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
-  import Dialog from './ComplexsDialog';
+  // import Dialog from './ComplexsDialog';
   // 弹窗单选
-  import myPopDialog from './PopDialog';
+  // import myPopDialog from './PopDialog';
   // 富文本编辑
   import WangeditorVue from './Wangeditor';
+  //   弹窗单选 弹窗多选
   import ComAttachFilter from './ComAttachFilter';
+  //   上传文件
+  import Docfile from './docfile/DocFileComponent';
 
 
   import { Version } from '../constants/global';
@@ -288,7 +297,9 @@
 
   export default {
     name: 'ItemComponent',
-    components: { EnumerableInput, ExtentionInput, ComAttachFilter },
+    components: {
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile 
+    },
     props: {
       labelWidth: {
         type: Number,
@@ -343,7 +354,7 @@
         // const item = this.items;
         item.props = Object.assign(
           {},
-          item.type ? dataProp[item.type].props : {},
+          item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
         if (item.type === 'AttachFilter') {
