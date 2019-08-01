@@ -238,6 +238,7 @@
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         copyDatas: ({ copyDatas }) => copyDatas,
         modifyData: ({ modifyData }) => modifyData,
+
       }),
       watermarkImg() { // 匹配水印图片路径
         if (this.watermarkimg.includes('/static/img/')) {
@@ -754,7 +755,6 @@
         }, () => {});
       },
       objectCopy() { // 按钮复制功能
-        this.savaCopy = true;
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
        
@@ -801,13 +801,9 @@
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
-        this.savaCopy = false;
-        console.log('copyForHorizontal this = ', this);
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
-        this.savaCopy = false;
-        console.log('copyForVertical = ', this[MODULE_COMPONENT_NAME]);
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
       },
       clickButtonsBack() { // 按钮返回事件
@@ -1704,7 +1700,7 @@
         const url = '/p/cs/getObject';
         if (!this._inactive && url === detail.url) {
           if (response && response.data && response.data.code === 0) {
-            if (this.savaCopy === true) {
+            if (this.copyDatas) {
               if (this.objectType === 'vertical') {
                 this.copyForVertical();
               } else {
