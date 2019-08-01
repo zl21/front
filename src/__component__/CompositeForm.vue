@@ -643,13 +643,32 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
-              fkQueryList({
-                searchObject: {
+              
+              let searchObject = {};
+              if (current.refcolval && current.refcolval.srccol) {
+                const refcolval = this.refcolvalAll[current.refcolval.srccol]
+                  ? this.refcolvalAll[current.refcolval.srccol]
+                  : '';
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                  range: $this.pageSize,
+                  fixedcolumns: {
+                    [current.refcolval.fixcolumn]: query
+                  },
+                };
+              } else {
+                searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
-                },
+                };
+              }
+              fkQueryList({
+                searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
