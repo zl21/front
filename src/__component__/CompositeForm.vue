@@ -611,7 +611,7 @@
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
-               if (current.isuppercase) {
+              if (current.isuppercase) {
                 this.lowercaseToUppercase(index, current);
               }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
@@ -1055,6 +1055,27 @@
             item.type = 'ExtentionInput';
           }
         }
+        // 上传文件插件
+        if (item.props.display === 'doc') {
+          item.type = 'docfile';
+          const valuedata = this.defaultValue(current);
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          let readonly = ImageSize
+            ? ImageSize > valuedata.length
+            : current.readonly;
+          readonly = this.objreadonly ? true : readonly;
+          item.props.itemdata = {
+            colname: current.colname,
+            readonly,
+            masterName: this.masterName,
+            objId: this.masterId,
+            sendData: {
+              path: `${this.masterName}/${this.masterId}/`
+            },
+            url: '/pc/cs/batchUpload',
+            valuedata
+          };
+        }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
@@ -1343,7 +1364,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: 140,
+            width: 200,
             height: 140,
             readonly,
             masterName: this.masterName,
