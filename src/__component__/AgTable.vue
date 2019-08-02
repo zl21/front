@@ -216,7 +216,7 @@
             obj.colId = item.colname;
           }); // 排序
         }
-        const datas = self.datas;
+        const datas = Object.assign({}, self.datas);
         datas.deleteFailInfo = self.datas.deleteFailInfo ? self.datas.deleteFailInfo : [];
         datas.hideColumn = self.userConfigForAgTable.hideColumn; // 隐藏列
         datas.colPosition = self.userConfigForAgTable.colPosition; // 移动列

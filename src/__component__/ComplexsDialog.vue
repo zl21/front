@@ -76,6 +76,41 @@
             pageOptions: [10, 20, 50, 100],
             pageSize: 10,
             total: 0,
+            tableprops: {
+              tabindex: true,
+              ctrlAdd: (obj) => {
+                this.listData.list = [];
+                this.listData.id = [];
+                this.tdData.list = [];
+                this.tdData.id = '';
+                obj.forEach((item) => {
+                  this.listData.list.push({
+                    exclude: !this.checkbox,
+                    id_list: [item.ID],
+                    screen: item.ID,
+                    screen_string: this.toStringName(item, this.akname)
+                  });
+                  this.listData.id.push(item.ID);
+                });
+               
+                console.log('ctrlAdd', this.listData);
+              },
+              shiftAdd: (obj) => {
+                this.listData.list = [];
+                this.listData.id = [];
+                this.tdData.list = [];
+                this.tdData.id = '';
+                obj.forEach((item) => {
+                  this.listData.list.push({
+                    exclude: !this.checkbox,
+                    id_list: [item.ID],
+                    screen: item.ID,
+                    screen_string: this.toStringName(item, this.akname)
+                  });
+                  this.listData.id.push(item.ID);
+                });
+              }
+            },
             pageNum: 1,
             height: true,
             searchName: '全局检索',
@@ -88,6 +123,9 @@
             pageSize: 10,
             total: 0,
             pageNum: 1,
+            tableprops: {
+              tabindex: false,
+            },  
             height: true,
             pageOptions: [10, 20, 50, 100],
             search: '',
@@ -125,6 +163,10 @@
           id: '',
           index: -1,
           list: []
+        },
+        listData: {
+          id: [],
+          list: [] 
         }
       };
     },
@@ -191,21 +233,12 @@
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
             this.resultData.list.map((item) => {
-              //   if (item.exclude) {
-              //     item.exclude = false;
-              //   } else {
-              //     item.exclude = true;
-              //   }
-                
-              
-              //   item.string = item.screen_string;
               item.ID = item.id_list[0] ? item.id_list[0] : item.id_list;
               return item;
             });
             this.resultData.total = data.data.total;
           }
         }
-        // console.log(type,this.resultData.total);
         if (type !== 'search') {
           this.componentData[index] = Object.assign(this.componentData[index], data.data);
         } else if (index === 1) {
@@ -336,20 +369,27 @@
       rowdbclick(row) {
         // 表格双击
         if (this.index === 0) {
+          this.listData.list = [];
+          this.listData.id = [];
           this.clickChoose(row, '', 'rowdbclick');
           row.string = this.toStringName(row, this.akname);
+          this.componentData[0].list = this.componentData[0].list.concat([]);
+
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
       },
       rowclick(row, rowIndex) {
         if (this.index === 0) {
+          this.listData.list = [];
+          this.listData.id = [];
           this.clickChoose(row, rowIndex, 'click');
         }
       },
       clickChoose(row, rowIndex, type) {
         // 单击或者双击的选中id
+        const tip = type !== 'click' ? 'tip' : '';  
         if (this.checkbox) {
-          const checkd = this.verify(this.NOTIN, row.ID);
+          const checkd = this.verify(this.NOTIN, row.ID, tip);
           if (checkd) {
             if (type === 'click') {
               this.tdData.id = row.ID;
@@ -374,7 +414,7 @@
             }
           }
         } else {
-          const checkdIN = this.verify(this.IN, row.ID);
+          const checkdIN = this.verify(this.IN, row.ID, tip);
           if (checkdIN) {
             if (type === 'click') {
               this.tdData.id = row.ID;
@@ -406,11 +446,13 @@
         }
         return false;
       },
-      verify(arr, id) {
+      verify(arr, id, type) {
         if (!arr.some(x => x === id)) {
           return true;
         }
-        this.$Message.info('该记录已在已选中列表中');
+        if (type === 'tip') {
+          this.$Message.info('该记录已在已选中列表中');
+        }
         return false;
       },
       inputsearch(event) {
@@ -461,6 +503,7 @@
               screen: this.sendMessage.CONDITION,
               screen_string: this.HRORG_STRING.join(',')
             });
+            
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
             this.clearTree();
           } else {
@@ -490,27 +533,57 @@
       },
       transfer() {
         if (this.tdData.id !== '') {
-          if (this.checkbox) {
-            if (this.verify(this.NOTIN, this.tdData.id)) {
-              this.NOTIN.push(this.tdData.id);
-              this.tdData.list[0].exclude = true;
-            }
-          } else if (this.verify(this.IN, this.tdData.id)) {
-            this.IN.push(this.tdData.id);
-            this.tdData.list[0].exclude = false;
-          }
-        }            
-        
-        if (this.tdData.id !== '') {
-          setTimeout(() => {
-            this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
-          }, 100);
-          this.text.result.push(this.tdData.list[0]);
-          this.multipleScreenResultCheck(this.sendMessage, 1);
-          this.tdData.id = '';
-          this.tdData.list = [];
-          // this.tdData.index = -1;
+          this.tdresultdata('tip');
         }
+        if (this.listData.id !== '') {
+          this.listtdata('tip');
+        }
+      },
+      listtdata() {
+        if (this.checkbox) {
+          this.listData.id.forEach((id, i) => {
+            const index = this.NOTIN.findIndex(x => x === id);
+            if (index === -1) {
+              this.NOTIN.push(id);
+              this.listData.list[i].exclude = true;
+              this.text.result.push(this.listData.list[i]);
+            }
+          });  
+        } else {
+          this.listData.id.forEach((id, i) => {
+            const eq = this.IN.findIndex(x => x === id);
+            if (eq === -1) {
+              this.IN.push(id);
+              this.listData.list[i].exclude = false;
+              this.text.result.push(this.listData.list[i]);
+            }
+          });
+          setTimeout(() => {
+            this.componentData[0].list = this.componentData[0].list.concat([]);
+          }, 50);
+        }
+        this.multipleScreenResultCheck(this.sendMessage, 1);
+
+        this.listData.list = [];
+        this.listData.id = [];
+      },
+      tdresultdata(type) {
+        if (this.checkbox) {
+          if (this.verify(this.NOTIN, this.tdData.id, type)) {
+            this.NOTIN.push(this.tdData.id);
+            this.tdData.list[0].exclude = true;
+          }
+        } else if (this.verify(this.IN, this.tdData.id, type)) {
+          this.IN.push(this.tdData.id);
+          this.tdData.list[0].exclude = false;
+        }
+        setTimeout(() => {
+          this.componentData[0].list = this.componentData[0].list.concat([]);
+        }, 100);
+        this.text.result.push(this.tdData.list[0]);
+        this.multipleScreenResultCheck(this.sendMessage, 1);
+        this.tdData.id = '';
+        this.tdData.list = [];
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
@@ -752,10 +825,13 @@
     activated() {
     },
     mounted() {
+      this.$refs.dialog.$refs.Table[0].$el.focus();
+      console.log(this.$refs.dialog.$refs.Table[0].$el);
       /**/
     },
     created() {
       this.loading = true;
+     
       this.init();
     }
 

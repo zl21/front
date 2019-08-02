@@ -44,7 +44,7 @@
       
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div class="itemComponent">
+    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
       <Input
         v-if="_items.type === 'input'"
         v-model="_items.value"
@@ -61,7 +61,7 @@
         :icon="_items.props.icon"
         :regx="_items.props.regx"
         on-click="inputClick"
-        on-blur="inputBlur"
+        @on-blur="inputBlur"
         @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
@@ -243,22 +243,29 @@
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
-      <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
+      <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
           v-if="_items.type === 'Wangeditor'"
           :key="index"
+          :is-actives="_items.props.readonly"
           :valuedata="_items.value"
           :item="_items.props"
           @getChangeItem="getWangeditorChangeItem"
         />
       </template>
-      <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
+      <!-- <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
         <div
           class="Wangeditor-disabled"
           v-html="_items.value"
         />
-      </template>
+      </template> -->
+      <!-- 上传文件 -->
+       
+      <!-- <Docfile
+        v-if="_items.type === 'docfile'"
+        :dataitem="_items.props.itemdata"
+      /> -->
     </div>
   </div>
 </template>
@@ -267,12 +274,15 @@
   import { mapActions, mapState, mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
-  import Dialog from './ComplexsDialog';
+  // import Dialog from './ComplexsDialog';
   // 弹窗单选
-  import myPopDialog from './PopDialog';
+  // import myPopDialog from './PopDialog';
   // 富文本编辑
   import WangeditorVue from './Wangeditor';
+  //   弹窗单选 弹窗多选
   import ComAttachFilter from './ComAttachFilter';
+  //   上传文件
+  import Docfile from './docfile/DocFileComponent';
 
 
   import { Version } from '../constants/global';
@@ -288,7 +298,9 @@
 
   export default {
     name: 'ItemComponent',
-    components: { EnumerableInput, ExtentionInput, ComAttachFilter },
+    components: {
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile 
+    },
     props: {
       labelWidth: {
         type: Number,
@@ -343,7 +355,7 @@
         // const item = this.items;
         item.props = Object.assign(
           {},
-          item.type ? dataProp[item.type].props : {},
+          item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
         if (item.type === 'AttachFilter') {
@@ -1091,6 +1103,10 @@
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
+        if (Version() !== '1.4') {
+          this.pathsCheckoutolder(parms, data);
+          return false;
+        }
         const pathcheck = this.$parent.pathcheck;
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
@@ -1171,6 +1187,18 @@
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
+      },
+      pathsCheckoutolder(parms, data) {
+        //   1.3 后台拼数据
+        const fixedData = {
+          objid: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName,
+          data: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          after: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          before: { [this._items.field]: this._items.props.valuedata ? this._items.props.valuedata : '' }
+        };
+
+        return Object.assign({}, fixedData);
       },
       upSaveImg(obj, fixedData, path, index) {
         fkObjectSave({
@@ -1274,6 +1302,15 @@
     top: 3px;
     right: 3px;
   }
+}
+textarea.burgeon-input{
+    height: 100%!important;
+}
+.height100{
+    height: 100%!important;
+    .burgeon-input-wrapper{
+    height: 100%!important;
+    }
 }
 .AttachFilter-pop {
   .icon-bj_tcduo:before {

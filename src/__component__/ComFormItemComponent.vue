@@ -29,8 +29,7 @@
 <script>
   import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import { Version, interlocks } from '../constants/global';
-  import getModuleName from '../__utils__/getModuleName';
+  import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
     name: 'FormItemComponent',
@@ -39,7 +38,9 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          // console.log(list[current].item.value, 'item');
+          if (list[current].item.type === 'Wangeditor') {
+            list[current].col = this.defaultColumn;
+          }
           temp.push(list[current]);
           return temp;
         }, []);
@@ -218,6 +219,7 @@
         }
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         indexItem: -1,
@@ -322,7 +324,7 @@
         },
         deep: true
       },
-      VerificationForm() {
+      VerificationForm(val) {
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
@@ -385,7 +387,7 @@
           return items;
         });
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
-          this.$store.commit(`${getModuleName()}/updateLinkageForm`, this.LinkageForm);
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
         }
       },  
       mountdataFormInt() {
@@ -428,6 +430,7 @@
           value: valueData,
           key: items.item.field,
           label: items.item.title,
+          fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
       },
@@ -563,9 +566,21 @@
               Label: '',
               ID: ''
             }];
+          } else if (current.item.props.isuppercase) {
+            if (valueItem[Object.keys(obj)[0]]) {
+              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+            }
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
+        }
+        // data
+        if (current.item.type === 'DatePicker' && current.item.props.rangecolumn) {
+          const start = current.item.props.rangecolumn.upperlimit;
+          const end = current.item.props.rangecolumn.lowerlimit;
+          delete obj[current.item.field];
+          obj[start.colname] = current.item.value[0];
+          obj[end.colname] = current.item.value[1];
         }
         // checkbox
         this.formValueItem = Object.assign(this.formValueItem, obj);
@@ -594,7 +609,6 @@
           const srccol = items.validate.refcolval.srccol;
           
           const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-
           if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);

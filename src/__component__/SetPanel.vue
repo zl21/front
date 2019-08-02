@@ -99,7 +99,7 @@
       };
     },
     mounted() {
-      const showFavorites = JSON.parse(window.sessionStorage.getItem('showFavorites'));
+      const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
         this.operationFavorites(showFavorites);
@@ -143,7 +143,7 @@
           });
       },
       operationFavorites(showFavorites) {
-        window.sessionStorage.setItem('showFavorites', showFavorites);
+        window.localStorage.setItem('showFavorites', showFavorites);
         this.doCollapseHistoryAndFavorite({ showFavorites });
       },
       changeNum() {

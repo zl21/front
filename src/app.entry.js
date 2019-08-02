@@ -102,7 +102,7 @@ export default (projectConfig = {
   });
 
   // 启动
-  if (enableGateWay) {
+  if (enableGateWay()) {
     getGateWayServiceId();
   } else {
     init();

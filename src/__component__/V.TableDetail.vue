@@ -125,25 +125,31 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === 'New') {
-          this.updateAddData({ tableName, value: obj });
+        if (itemId) {
+          if (itemId === 'New') {
+            this.updateAddData({ tableName, value: obj });
+          }
+          this.updateDefaultData({ tableName, value: obj });
         }
-        this.updateDefaultData({ tableName, value: obj });
       },
       formChange(val, changeVal) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.updateChangeData({ tableName, value: changeVal });
-        if (itemId === 'New') {
-          this.updateAddData({ tableName, value: obj });
-        } else {
-          this.updateModifyData({ tableName, value: obj });
+        if (itemId) {
+          this.updateChangeData({ tableName, value: changeVal });
+          if (itemId === 'New') {
+            this.updateAddData({ tableName, value: obj });
+          } else {
+            this.updateModifyData({ tableName, value: obj });
+          }
         }
       },
       verifyFormPanelMain(data) {
-        const { tableName } = this.$route.params;
-        this.updateCheckedInfoData({ tableName, value: data });
+        const { tableName, itemId } = this.$route.params;
+        if (itemId) {
+          this.updateCheckedInfoData({ tableName, value: data });
+        }
       },
       tabClick(index) {
         // tab点击

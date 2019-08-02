@@ -88,8 +88,7 @@
   import compositeForm from './CompositeForm';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
-  import getModuleName from '../__utils__/getModuleName';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY } from '../constants/global';
+  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
 
@@ -174,6 +173,7 @@
         default: () => []
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     watch: {},
     computed: {
       formPaths() {
@@ -199,10 +199,10 @@
     methods: {
       ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
 
-      // ...mapActions(getModuleName(), ['performMainTableSaveAction']),
+      // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
-        const tableComponent = `${getModuleName()}.TableDetailCollection`;
-        const buttonComponent = `${getModuleName()}.SingleObjectButtons`;
+        const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
+        const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         if (this.type === 'vertical') {
           if (Vue.component(tableComponent) === undefined) {
             Vue.component(tableComponent, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, tableDetailCollection)));
@@ -222,7 +222,6 @@
         this.objectButtonComponent = buttonComponent;
       },
       itemTableCheckFunc() {
-        debugger;
         if (this.$refs.objectTableRef && Object.keys(this.$refs.objectTableRef.tableFormVerify()).length > 0) {
           return false;
         }
@@ -237,24 +236,36 @@
         this.isclick = false;
         let savePath = '';
         const { itemId } = router.currentRoute.params;
-
-        if (this.type === 'horizontal') {
-          this.$store.state[getModuleName()].tabPanels.forEach((item) => {
-            if (item.tablename === this.tableName) {
-              if (itemId === 'New') { // 主表新增保存和编辑新增保存
-                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
-              } else {
-                savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+        if(Version() === '1.4') {
+          if (this.type === 'horizontal') {
+            this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels.forEach((item) => {
+              if (item.tablename === this.tableName) {
+                if (itemId === 'New') { // 主表新增保存和编辑新增保存
+                  savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+                } else {
+                  savePath = item.componentAttribute.buttonsData.data.tabcmd.paths[0];
+                }
               }
-            }
-          });
-        } else if (itemId === 'New') { // 主表新增保存和编辑新增保存
-          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[0];
-        } else {
-          savePath = this.$store.state[getModuleName()].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+            });
+          } else if (itemId === 'New') { // 主表新增保存和编辑新增保存
+            savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+          } else {
+            savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+          }
         }
         this.determineSaveType(savePath);
       }, // 表单回车触发
+      subtables() {
+        if (Version() === 1.4) {
+          if (this.isreftabs) {
+            return true;
+          }
+          return false;
+        } if (this.childTableNames.length > 0) {
+          return true;
+        }
+        return false;
+      },
       determineSaveType(savePath) { // 回车保存
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
@@ -267,7 +278,7 @@
             const path = savePath;
             const objId = -1;
 
-            if (!this.isreftabs) { // 为0的情况下是没有子表
+            if (!this.subtables()) { // 为0的情况下是没有子表
               // console.log('没有子表');
               if (path) { // 配置path
                 // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
@@ -276,7 +287,7 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.subtables()) { // 大于0 的情况下是存在子表
               // console.log('有子表');
               if (path) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
@@ -288,7 +299,7 @@
             // console.log('主表编辑保存');
             const path = savePath;
             const type = 'modify';
-            if (!this.isreftabs) { // 为0的情况下是没有子表
+            if (!this.subtables()) { // 为0的情况下是没有子表
               // console.log('没有子表',);
 
               if (savePath) { // 配置path
@@ -300,11 +311,11 @@
                 this.savaNewTable(type, path, objId);
               }
             }
-            if (this.isreftabs) { // 大于0 的情况下是存在子表
+            if (this.subtables()) { // 大于0 的情况下是存在子表
               const objId = itemId;
               // const sataType = 'itemSave';
               // if (this.type === 'vertical') {
-              const store = this.$store.state[getModuleName()];
+              const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
               let itemModify = [];
               let itemAdd = [];
               if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
@@ -325,7 +336,7 @@
                 }
               }
               // } else{ // 横向结构
-              //   const store = this.$store.state[getModuleName()];
+              //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
               //   let itemModify = [];
               //   let itemAdd = [];
               //   if (store.updateData[itemName].modify && store.updateData[itemName].modify[itemName]) {
@@ -346,7 +357,7 @@
               // }
               // else { // 没有配置path
               //   debugger;
-              //   const store = this.$store.state[getModuleName()];
+              //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
               //   if (store.updateData[itemName].modify[itemName] && Object.values(store.updateData[itemName].modify[itemName]).length > 0) {
               //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               //   }
@@ -360,7 +371,7 @@
         }
       },
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType, enter) { // 主表新增保存方法
-        const tabIndex = this.$store.state[getModuleName()].tabCurrentIndex;
+        const tabIndex = this.$store.state[this[MODULE_COMPONENT_NAME]].tabCurrentIndex;
         const objectType = this.type;
         const Id = objId === 'New' ? '-1' : objId;
 
@@ -381,28 +392,28 @@
           isreftabs: this.verifyForm
         };
         const promise = new Promise((resolve, reject) => {
-          this.$store.dispatch(`${getModuleName()}/performMainTableSaveAction`, { parame, resolve, reject });
+          this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/performMainTableSaveAction`, { parame, resolve, reject });
         });
 
         // this.performMainTableSaveAction(parame);
 
         promise.then(() => {
           if (this.type === 'vertical') {
-            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName: this.tableName, value: {} });
           } else {
-            this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName: this.tableName, value: {} });
-            this.$store.commit(`${getModuleName()}/updateAddData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName: this.tableName, value: {} });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName: this.tableName, value: {} });
           }
           const { tableId, itemId } = this.$route.params;
           const { tablename, refcolid, tabinlinemode } = this.itemInfo;
           let id = '';
-          if (this.$store.state[getModuleName()].buttonsData.newMainTableSaveData) {
-            id = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId;
+          if (this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData) {
+            id = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId;
           } else {
             id = itemId;
           }
-          const message = this.$store.state[getModuleName()].buttonsData.message;
+          const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
 
           // 保存成功后路由跳转到编辑界面
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
@@ -418,40 +429,40 @@
               tableName,
               tableId,
               label,
-              id: this.$store.state[getModuleName()].buttonsData.newMainTableSaveData ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId
+              id: this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId
             };
             // this.updateChangeData({ tableName: this.tableName, value: {} });
             this.$store.commit('global/tabHref', tab);
-            this.decreasekeepAliveLists(getModuleName());
+            this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
           }
-          // console.log(this.$store.state[getModuleName()].buttonsData);
-          // const objIdSave = this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId ? this.$store.state[getModuleName()].buttonsData.newMainTableSaveData.objId : itemId;
+          // console.log(this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData);
+          // const objIdSave = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId;
           if (this.type === 'horizontal') {
             const searchdata = {
               column_include_uicontroller: true,
-              startindex: this.$store.state[getModuleName()].tablePageInfo.currentPageIndex - 1,
-              range: this.$store.state[getModuleName()].tablePageInfo.pageSize,
+              startindex: this.$store.state[this[MODULE_COMPONENT_NAME]].tablePageInfo.currentPageIndex - 1,
+              range: this.$store.state[this[MODULE_COMPONENT_NAME]].tablePageInfo.pageSize,
             };
-            this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTableItemForTableData`, {
               table: tablename, objid: itemId, refcolid, searchdata, tabIndex
             });
-            this.$store.dispatch(`${getModuleName()}/getInputForitemForChildTableForm`, { table: tablename, tabIndex, tabinlinemode });
-            // this.$store.dispatch(`${getModuleName()}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getInputForitemForChildTableForm`, { table: tablename, tabIndex, tabinlinemode });
+            // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForChildTableButtons`, { maintable: tableName, table: tableName, objid: itemId });
 
-            // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+            // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTableItemForTableData`, {
             //   table: tablename, objid: itemId, refcolid, searchdata: { column_include_uicontroller: true }
             // });
           } else if (itemId === 'New') {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: id, tabIndex });
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: id, tabIndex });
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, { table: tableName, objid: id, tabIndex });
           } else {
-            this.$store.dispatch(`${getModuleName()}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
-            this.$store.dispatch(`${getModuleName()}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
+            this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
           }
           this.$Message.success(message);
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
-          // this.$store.dispatch(`${getModuleName()}/getObjectTableItemForTableData`, {
+          // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTableItemForTableData`, {
           //   table: this.tableName,
           //   objid: itemId,
           //   refcolid,
@@ -489,7 +500,7 @@
             this.saveParameters();
             if (this.type === 'vertical') {
               if (this.itemId === 'New') {
-                const addInfo = this.$store.state[getModuleName()].updateData[this.tableName].itemCurrentParameter.add[this.itemName];
+                const addInfo = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[this.tableName].itemCurrentParameter.add[this.itemName];
                 if (Object.values(addInfo).length < 1) {
                   this.$Message.warning('个人信息不能为空!');
                   return false;
@@ -503,17 +514,17 @@
       },
       saveParameters() {
         if (this.verifyForm) { // 有子表
-          Object.keys(this.$store.state[getModuleName()].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+          Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
             if (current === this.tableName) {
-              this.itemCurrentParameter = this.$store.state[getModuleName()].updateData[current];
+              this.itemCurrentParameter = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[current];
             }
             return obj;
           }, {});
         }
-        Object.keys(this.$store.state[getModuleName()].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
+        Object.keys(this.$store.state[this[MODULE_COMPONENT_NAME]].updateData).reduce((obj, current) => { // 获取store储存的新增修改保存需要的参数信息
           const { tableName } = router.currentRoute.params;
           if (current === tableName) {
-            this.currentParameter = this.$store.state[getModuleName()].updateData[current];
+            this.currentParameter = this.$store.state[this[MODULE_COMPONENT_NAME]].updateData[current];
           }
           return obj;
         }, {});
@@ -521,34 +532,48 @@
       formChange(val, changeVal) {
         const { tableName } = this;
         const obj = {};
+        const { itemId } = this.$route.params;
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: changeVal });
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
+        }
       },
       initForm(val) {
         const { tableName } = this;
+        const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateAddDefaultData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddDefaultData`, { tableName, value: obj });
+        }
       },
       verifyForm(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
+        }
       },
       verifyFormPanel(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
+        }
       },
       formPanelChange(val, changeVal) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.$store.commit(`${getModuleName()}/updateChangeData`, { tableName, value: changeVal });
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
-        } else {
-          this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: obj });
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: changeVal });
+          if (itemId === 'New') {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
+          } else {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName, value: obj });
+          }
         }
       },
       initFormPanel(val) {
@@ -556,26 +581,37 @@
         const obj = {};
         obj[tableName] = val;
         const { itemId } = this.$route.params;
-        if (itemId === 'New') {
-          this.$store.commit(`${getModuleName()}/updateAddData`, { tableName, value: obj });
+        if (itemId) {
+          if (itemId === 'New') {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
+          }
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: obj });
         }
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: obj });
       },
       tableBeforeData(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateDefaultData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: data });
+        }
       },
       tableDataChange(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateModifyData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName, value: data });
+        }
       },
       tableSelectedRow(data) {
         const { tableName } = this;
-        this.$store.commit(`${getModuleName()}/updateDeleteData`, { tableName, value: data });
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDeleteData`, { tableName, value: data });
+        }
       },
       tableVerifyMessage(data) {
         // const { tableName } = this;
-        // this.$store.commit(`${getModuleName()}/updateCheckedInfoData`, { tableName, value: data });
+        // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
       }
     }
   };

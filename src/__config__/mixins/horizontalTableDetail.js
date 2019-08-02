@@ -2,10 +2,12 @@
 import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
+import { MODULE_COMPONENT_NAME } from '../../constants/global';
 
 export default () => ({
-  mounted() {
-    this.moduleComponentName = getComponentName();
+  provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
+  created() {
+    this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   computed: {
     ...mapState(getComponentName(), {

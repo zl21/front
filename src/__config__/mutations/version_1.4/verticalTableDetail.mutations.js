@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
-import router from '../router.config';
+import router from '../../router.config';
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -266,4 +266,7 @@ export default {
   //     });
   //   });
   // }
+  jflowPlugin(state, data) { // jflowPlugin按钮逻辑
+
+  }
 };

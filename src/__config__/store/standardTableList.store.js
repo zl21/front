@@ -1,8 +1,11 @@
+/* eslint-disable import/no-dynamic-require */
 // import actions from '../actions/standardTableList.actions';
-import mutations from '../mutations/standardTableList.mutations';
+// import mutations from '../mutations/standardTableList.mutations';
 import { Version } from '../../constants/global';
 
+
 // eslint-disable-next-line import/no-dynamic-require
+const mutations = require(`../mutations/version_${Version()}/standardTableList.mutations`).default;
 const actions = require(`../actions/version_${Version()}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,

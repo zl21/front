@@ -1,6 +1,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
-import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
+import { STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME } from '../../constants/global';
 import store from '../store.config';
 
 const getComponentName = () => {
@@ -10,6 +10,7 @@ const getComponentName = () => {
 
 
 export default () => ({
+  provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
   mounted() {
     this.moduleComponentName = getComponentName();
   },

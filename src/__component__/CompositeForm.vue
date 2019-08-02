@@ -77,12 +77,11 @@
 <script>
   import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
-  import { Version } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
-  import getModuleName from '../__utils__/getModuleName';
 
   const {
     fkQueryList,
@@ -173,6 +172,7 @@
         }
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         newdefaultData: [], // 初始化form
@@ -430,6 +430,7 @@
           return arr;
         }, {});
         if (this.moduleFormType === 'horizontal') {
+          this.formData = Object.assign({}, defaultSetValue);
           this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
@@ -463,8 +464,8 @@
               }
             },
             clear: () => {
-              const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
-              const mappStatus = this.$store.state[getModuleName()].mappStatus || [];
+              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
+              const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
               this.getStateData(); // 获取主表信息
               Object.keys(mappStatus).forEach((item) => {
                 if (!this.refcolvalAll[mappStatus[item]]) {
@@ -477,9 +478,6 @@
               });
             },
             change: (value) => {
-              if (current.isuppercase) {
-                this.lowercaseToUppercase(index, current);
-              }
               if (current.fkdisplay) {
                 this.focusChange(value, current, index);
               }
@@ -519,7 +517,6 @@
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
-              console.log(Selected, 'Selected');
               let item = [];
               if (current.formIndex !== 'inpubobj') {
                 item = this.$refs[`FormComponent_${current.formIndex}`][0]
@@ -534,7 +531,6 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
-              console.log('6666');
               fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
@@ -565,7 +561,7 @@
                 if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
-                const LinkageForm = this.$store.state[getModuleName()].LinkageForm || [];
+                const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
                 if (!refcolval) {
                   if (Index !== -1) {
@@ -615,6 +611,9 @@
               } else {
                 Fitem = this.$refs.FormComponent_0.newFormItemLists;
               }
+              if (current.isuppercase) {
+                this.lowercaseToUppercase(index, current);
+              }
               if (item.props.fkdisplay && this.conditiontype !== 'list') {
                 if (item.type === 'AttachFilter') {
                   if (item.props.Selected[0] && item.props.Selected[0].ID === '') {
@@ -644,13 +643,32 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
-              fkQueryList({
-                searchObject: {
+              
+              let searchObject = {};
+              if (current.refcolval && current.refcolval.srccol) {
+                const refcolval = this.refcolvalAll[current.refcolval.srccol]
+                  ? this.refcolvalAll[current.refcolval.srccol]
+                  : '';
+                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                  range: $this.pageSize,
+                  fixedcolumns: {
+                    [current.refcolval.fixcolumn]: query
+                  },
+                };
+              } else {
+                searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
-                },
+                };
+              }
+              fkQueryList({
+                searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
                   this.freshDropDownSelectFilterData(res, index, current);
@@ -877,6 +895,12 @@
         if (item.display === 'OBJ_DATENUMBER' || item.display === 'OBJ_DATE') {
           // 日期控件
           // 保存change 之前的默认值
+          if (item.rangecolumn) {
+            const start = item.rangecolumn.upperlimit;
+            const end = item.rangecolumn.lowerlimit;
+            return [start.defval || start.valuedata, end.defval || end.valuedata];
+          }
+
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
@@ -1050,6 +1074,27 @@
             item.type = 'ExtentionInput';
           }
         }
+        // 上传文件插件
+        if (item.props.display === 'doc') {
+          item.type = 'docfile';
+          const valuedata = this.defaultValue(current);
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          let readonly = ImageSize
+            ? ImageSize > valuedata.length
+            : current.readonly;
+          readonly = this.objreadonly ? true : readonly;
+          item.props.itemdata = {
+            colname: current.colname,
+            readonly,
+            masterName: this.masterName,
+            objId: this.masterId,
+            sendData: {
+              path: `${this.masterName}/${this.masterId}/`
+            },
+            url: '/pc/cs/batchUpload',
+            valuedata
+          };
+        }
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
@@ -1099,6 +1144,9 @@
           if (current.isnotnull === true) {
             item.required = true;
           }
+          if (current.ispassword) {
+            item.props.type = 'password';
+          }
         }
         // 外键的单选多选判断
 
@@ -1147,21 +1195,23 @@
         if (current.display === 'textarea') {
           item.props.type = 'textarea';
         }
-        if (current.datelimit === 'before') {
+        //  const start = item.rangecolumn.upperlimit;
+        //     const end = item.rangecolumn.lowerlimit;
+        if (current.datelimit === 'before' || (current.rangecolumn && current.rangecolumn.datelimit === 'before')) {
           item.props.options = {
             disabledDate(date) {
               // 之前 含今天
               return date && date.valueOf() > new Date().valueOf();
             }
           };
-        } else if (current.datelimit === 'after') {
+        } else if (current.datelimit === 'after' || (current.rangecolumn && current.rangecolumn.datelimit === 'after')) {
           // 之后 含今天
           item.props.options = {
             disabledDate(date) {
               return date && date.valueOf() < new Date().valueOf() - 1 * 24 * 60 * 60 * 1000;
             }
           };
-        } else if (current.datelimit === 'beforetoday') {
+        } else if (current.datelimit === 'beforetoday' || (current.rangecolumn && current.rangecolumn.datelimit === 'beforetoday')) {
           // 之前 不含今天
           item.props.options = {
             disabledDate(date) {
@@ -1171,7 +1221,7 @@
               );
             }
           };
-        } else if (current.datelimit === 'aftertoday') {
+        } else if (current.datelimit === 'aftertoday' || (current.rangecolumn && current.rangecolumn.datelimit === 'aftertoday')) {
           // 之后 不含今天
           item.props.options = {
             disabledDate(date) {
@@ -1189,7 +1239,11 @@
           item.props.type = 'time';
         }
         if (current.display === 'OBJ_DATE') {
-          item.props.type = 'datetime';
+          if (current.rangecolumn) {
+            item.props.type = 'datetimerange';
+          } else {
+            item.props.type = 'datetime';
+          }  
         }
 
         if (current.display === 'text' || current.display === 'xml') {
@@ -1213,7 +1267,7 @@
                 if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
                   refcolval = that.defaultFormData[currentThat.refcolval.srccol];
                 }
-                const LinkageForm = that.$store.state[getModuleName()].LinkageForm || [];
+                const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
                 const Index = LinkageForm.findIndex(item => item.key === currentThat.refcolval.srccol);
                 if (!refcolval) {
                   if (Index !== -1) {
@@ -1329,8 +1383,8 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: 140,
-            height: 140,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 550 * (current.col / this.defaultColumnCol),
+            height: 120,
             readonly,
             masterName: this.masterName,
             objId: this.masterId,
@@ -1449,7 +1503,7 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value === '' || item.value === null) {
+          if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay)) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -1504,9 +1558,12 @@
       getStateData() {
         // 获取 主子表的状态值
         this.refcolvalAll = {};
-        const state = this.$store.state[getModuleName()];
+        const state = this.$store.state[this[MODULE_COMPONENT_NAME]];
         if (this.condition === 'list') {
           return {};
+        }
+        if (this.$route.params.itemId === undefined) {
+          return false;
         }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
@@ -1549,9 +1606,9 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {     
-      if (this.$store._mutations[`${getModuleName()}/updateLinkageForm`]) {
+      if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
         if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
-          this.$store.commit(`${getModuleName()}/updateLinkageForm`, []);
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
         }
       }  
     }

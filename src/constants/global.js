@@ -1,8 +1,8 @@
 import project from '../../project.config';
 
-export const Version = () => (window.ProjectConfig ? window.ProjectConfig.Version : project.Version);
-export const interlocks = () => (window.ProjectConfig ? window.ProjectConfig.interlocks : project.interlocks);
-export const enableGateWay = () => (window.ProjectConfig ? window.ProjectConfig.enableGateWay : project.enableGateWay);
+export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
+export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks ? window.ProjectConfig.interlocks : project.interlocks);
+export const enableGateWay = () => (window.ProjectConfig && window.ProjectConfig.enableGateWay ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
@@ -17,6 +17,8 @@ export const CUSTOMIZED_MODULE_COMPONENT_PREFIX = 'C';
 
 export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜单时如何显示已经打开的模块
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必填项点击保存时是否必须填写子表信息
+
+export const MODULE_COMPONENT_NAME = 'moduleComponentName';
 
 
 // 需要走全局公共网关的接口
