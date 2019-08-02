@@ -6,6 +6,7 @@
                 :height="true"
                 :data="tableData"
                 :row-class-name="rowClassName"
+                :total-data="tableTotalData"
                 @on-selection-change="tableSelectionChange"
                 @on-row-dblclick="tableRowDbclick"
                 @on-row-click="tableRowClick"
@@ -101,6 +102,7 @@
                   title: '序号',
                   align: 'left',
                   fixed: 'left',
+                  key: 'ID',
                   width: 60,
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
@@ -143,6 +145,7 @@
                   title: '序号',
                   align: 'left',
                   fixed: 'left',
+                  key: 'ID',
                   width: 60,
                   render: this.collectionIndexRender()
                 }, cur));
@@ -196,6 +199,41 @@
         this.spinShow = false;
         return [];
       }, // 表体
+      tableTotalData() {
+        const total = [];
+        if (this.datas.isSubTotalEnabled) {
+          const cell = {
+            ID: '合计'
+          };
+          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          needSubtotalList.map((ele) => {
+            const needSubtotalDatas = [];
+            this.tableData.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            cell[ele.colname] = `${totalNumber}`;
+            return ele;
+          });
+          total.push(cell);
+        }
+        // if (this.isHorizontal) {
+        if (this.datas.isFullRangeSubTotalEnabled) {
+          // 总计
+          const cell = {
+            ID: '总计',
+          };
+          if (this.datas.fullRangeSubTotalRow) {
+            for (const key in this.datas.fullRangeSubTotalRow) {
+              if (Object.prototype.hasOwnProperty.call(this.datas.fullRangeSubTotalRow, key)) {
+                const element = this.datas.fullRangeSubTotalRow[key];
+                cell[key] = element.val;
+              }
+            }
+          }
+          total.push(cell);
+        }
+        // }
+        return total;
+      }, // 总计和合计
     },
     watch: {},
     methods: {
