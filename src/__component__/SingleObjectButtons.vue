@@ -381,19 +381,11 @@
           this.clickButtonsBack();
         } else if (type === 'refresh') {
           this.clickButtonsRefresh();
-        } else if (type === 'extraposition') {
-          this.extraposition(obj);
         } else {
           this.searchClickData();
         }
       },
-      extraposition(obj) {
-        DispatchEvent('jflowPlugin', {
-          detail: {
-            obj
-          }
-        });
-      },
+     
       clickButtonsRefresh() { // 按钮刷新事件
         // DispatchEvent('tabRefreshClick', {
         //   detail: {

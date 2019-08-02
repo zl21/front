@@ -24,14 +24,6 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
-      <Button
-        v-for="(item,index) in NewdataArray"
-        :key="index"
-        :ref="item"
-        type="fcdefault"
-        @click="btnclick('extraposition', item)"
-        v-text="item.name" 
-      />
       <Dropdown
         v-if="dataArray.printValue"
         trigger="click"
