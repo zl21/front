@@ -1,32 +1,33 @@
 <template>
-  <div class="commonTable">
-    <Table
-      :columns="columns"
-      :height="true"
-      :data="tableData"
-      :row-class-name="rowClassName"
-      @on-selection-change="tableSelectionChange"
-      @on-row-dblclick="tableRowDbclick"
-      @on-row-click="tableRowClick"
-      @on-sort-change="tableSortChange"
-      @on-select-all="tableSelectionChange"
-    />
-    <Spin
-      v-show="spinShow"
-      fix
-    >
-      <Icon
-        type="ios-loading"
-        size="48"
-        class="demo-spin-icon-load"
-      />
-      <div>Loading</div>
-    </Spin>
-  </div>
+    <div class="commonTable">
+        <Table
+                :columns="columns"
+                class="table"
+                :height="true"
+                :data="tableData"
+                :row-class-name="rowClassName"
+                @on-selection-change="tableSelectionChange"
+                @on-row-dblclick="tableRowDbclick"
+                @on-row-click="tableRowClick"
+                @on-sort-change="tableSortChange"
+                @on-select-all="tableSelectionChange"
+        />
+        <Spin
+                v-show="spinShow"
+                fix
+        >
+            <Icon
+                    type="ios-loading"
+                    size="48"
+                    class="demo-spin-icon-load"
+            />
+            <div>Loading</div>
+        </Spin>
+    </div>
 </template>
 
 <script>
-  import { mapMutations } from 'vuex';
+  import {mapMutations} from 'vuex';
 
   export default {
     data() {
@@ -166,7 +167,7 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i>${params.row[cellData.colname]}` : ''
+            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i> ${params.row[cellData.colname]}` : ''
           },
           on: {
             click: (event) => {
@@ -201,8 +202,7 @@
           }
           return h('div', [
             h('Poptip', {
-              style: {
-              },
+              style: {},
               props: {
                 trigger: 'hover',
                 transfer: true,
@@ -312,7 +312,7 @@
       }, // 普通表格双击事件
       tableSortChange(val) {
         const self = this;
-        const arrayOfSortInfo = [{ colId: val.key, sort: val.order }];
+        const arrayOfSortInfo = [{colId: val.key, sort: val.order}];
         if (typeof self.onSortChanged === 'function') {
           self.onSortChanged(arrayOfSortInfo);
         }
@@ -322,20 +322,41 @@
 </script>
 
 <style lang="less">
-    .burgeon-spin-fix{
+    .burgeon-spin-fix {
         z-index: 999;
-        .demo-spin-icon-load{
+        .demo-spin-icon-load {
             animation: ani-demo-spin 1s linear infinite;
         }
         @keyframes ani-demo-spin {
-            from { transform: rotate(0deg);}
-            50%  { transform: rotate(180deg);}
-            to   { transform: rotate(360deg);}
+            from {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     }
+
     .commonTable {
         height: 100%;
         overflow-y: hidden;
         position: relative;
+        .table {
+            table th {
+                font-weight: 400;
+            }
+            table tr {
+                height: 28px;
+            }
+            table tr td:hover {
+                /*background-color: #d2d2d2 !important;*/
+            }
+            table tr.burgeon-table-row-hover td{
+                background-color: #ecf0f1;
+            }
+        }
     }
 </style>
