@@ -44,7 +44,7 @@
       
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div class="itemComponent">
+    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
       <Input
         v-if="_items.type === 'input'"
         v-model="_items.value"
@@ -243,22 +243,29 @@
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
-      <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
+      <template v-if="_items.type === 'Wangeditor'">
         <component
           :is="_items.componentType"
           v-if="_items.type === 'Wangeditor'"
           :key="index"
+          :is-actives="_items.props.readonly"
           :valuedata="_items.value"
           :item="_items.props"
           @getChangeItem="getWangeditorChangeItem"
         />
       </template>
-      <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
+      <!-- <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
         <div
           class="Wangeditor-disabled"
           v-html="_items.value"
         />
-      </template>
+      </template> -->
+      <!-- 上传文件 -->
+       
+      <!-- <Docfile
+        v-if="_items.type === 'docfile'"
+        :dataitem="_items.props.itemdata"
+      /> -->
     </div>
   </div>
 </template>
@@ -267,12 +274,15 @@
   import { mapActions, mapState, mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
-  import Dialog from './ComplexsDialog';
+  // import Dialog from './ComplexsDialog';
   // 弹窗单选
-  import myPopDialog from './PopDialog';
+  // import myPopDialog from './PopDialog';
   // 富文本编辑
   import WangeditorVue from './Wangeditor';
+  //   弹窗单选 弹窗多选
   import ComAttachFilter from './ComAttachFilter';
+  //   上传文件
+  import Docfile from './docfile/DocFileComponent';
 
 
   import { Version } from '../constants/global';
@@ -288,7 +298,9 @@
 
   export default {
     name: 'ItemComponent',
-    components: { EnumerableInput, ExtentionInput, ComAttachFilter },
+    components: {
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile 
+    },
     props: {
       labelWidth: {
         type: Number,
@@ -343,7 +355,7 @@
         // const item = this.items;
         item.props = Object.assign(
           {},
-          item.type ? dataProp[item.type].props : {},
+          item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
         if (item.type === 'AttachFilter') {
@@ -1290,6 +1302,15 @@
     top: 3px;
     right: 3px;
   }
+}
+textarea.burgeon-input{
+    height: 100%!important;
+}
+.height100{
+    height: 100%!important;
+    .burgeon-input-wrapper{
+    height: 100%!important;
+    }
 }
 .AttachFilter-pop {
   .icon-bj_tcduo:before {

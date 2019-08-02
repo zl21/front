@@ -24,7 +24,7 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
-      
+     
       <Dropdown
         v-if="dataArray.printValue"
         trigger="click"

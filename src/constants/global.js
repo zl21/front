@@ -1,8 +1,8 @@
 import project from '../../project.config';
 
-export const Version = () => (window.ProjectConfig ? window.ProjectConfig.Version : project.Version);
-export const interlocks = () => (window.ProjectConfig ? window.ProjectConfig.interlocks : project.interlocks);
-export const enableGateWay = () => (window.ProjectConfig ? window.ProjectConfig.enableGateWay : project.enableGateWay);
+export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
+export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks ? window.ProjectConfig.interlocks : project.interlocks);
+export const enableGateWay = () => (window.ProjectConfig && window.ProjectConfig.enableGateWay ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
