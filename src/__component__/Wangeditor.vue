@@ -77,7 +77,6 @@
         // 使用 base64 保存图片
         this.editor.customConfig.uploadImgShowBase64 = true; 
         this.editor.customConfig.customUploadImg = function (files, insert) {
-          console.log('ddddd', files);
           // files 是 input 中选中的文件列表
           // insert 是获取图片 url 后，插入到编辑器的方法
           // $("#editor"+self.itemdata.colid).children("img").css("display","block")
@@ -118,9 +117,16 @@
         this.$nextTick(() => { 
           // 默认值
           self.value = this.textHtml;
-          console.log('self.value', self.value);
           this.editor.txt.html(this.textHtml);
           // 是否可编辑，需要在初始化之后 true是可编辑，传过来的是false，取反
+          if (this.isActives) {
+            const _htmlMask = document.createElement('div');
+            _htmlMask.setAttribute('id', 'editor_layer_mask');
+            _htmlMask.style.display = 'block';
+            editorSelector.appendChild(_htmlMask);
+          }
+
+
           this.editor.$textElem.attr('contenteditable', !this.tabAction); 
           const _block = !this.tabAction ? 'none' : 'block';
           const _html = document.createElement('div');
@@ -314,5 +320,14 @@
     .fullscreen-editor .w-e-text-container {
     width: 100% !important;
     height: 95% !important;
+    }
+    #editor_layer_mask{
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        z-index: 999;
+        background: rgba(0,0,0,0.01);
     }
   </style>
