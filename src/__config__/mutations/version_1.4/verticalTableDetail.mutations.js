@@ -266,18 +266,15 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, data) { // jflowPlugin按钮逻辑
-    state.anotherData=state.mainFormInfo.buttonsData.data.tabcmd.prem;
-    if(data.instanceId!==null&&data.buttons && data.buttons!==null&&data.buttons.length > 0){
-      state.mainFormInfo.buttonsData.data.tabcmd.prem.map(item=>{item=false;})
-       state.jflowPluginDataArray=data.buttons;
-       if (data.modifiableFieldName !== null && data.modifiableFieldName.length > 0) {
-        state.mainFormInfo.buttonsData.data.tabcmd.prem[1]=true;
-       }else{
-        state.mainFormInfo.buttonsData.data.tabcmd.prem[1]=false;
-       }
-     }else{
-      state.mainFormInfo.buttonsData.data.tabcmd.prem=state.anotherData;
-     }
+  jflowPlugin(state, {buttonsData,newButtons,buttonAnother}) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    console.log(buttonsData,newButtons,buttonAnother,"数据")
+    if (buttonAnother) { 
+      state.mainFormInfo.buttonsData = buttonsData;
+      state.anotherData = buttonAnother;
+    } else {
+      state.mainFormInfo.buttonsData = state.anotherData;
+    }
+      
   }
 };

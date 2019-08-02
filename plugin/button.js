@@ -1,10 +1,8 @@
-let MODULE_COMPONENT_NAME=window.location.pathname.split('/').slice(3).join('.');
 // 这里主要是按钮的逻辑
 //创建按钮
 //obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
 function CreateButton(obj, buttons, id,store) {
-    store=store;
-    console.log(store,"store实例")
+    const MODULE_COMPONENT_NAME=window.location.pathname.split('/').slice(3).join('.');
         // -1, "撤销"
         // 0, "同意"
         // 1, "驳回"
@@ -13,7 +11,31 @@ function CreateButton(obj, buttons, id,store) {
         // 4, "保存单据修改" 这个按钮不展示
         // 5,"详情页面"
         if(obj.instanceId!==null&&obj.buttons && obj.buttons!==null&&obj.buttons.length > 0){
-            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,obj);
+            let buttonAnother={};
+            let operateData={};
+            if(window.location.pathname.split('/')[3]==='V'){
+                buttonAnother=Object.assign({},store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
+                operateData=Object.assign({},store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
+                operateData.data.tabcmd.prem.map(item=>{item=false;})
+                if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
+                    operateData.data.tabcmd.prem[1]=true;
+                   }else{
+                    operateData.data.tabcmd.prem[1]=false;
+                   }
+            }else{
+                buttonAnother=Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
+                operateData=Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
+                operateData.data.tabcmd.prem.map(item=>{item=false;})
+                store.state[MODULE_COMPONENT_NAME].jflowPluginDataArray=obj.buttons;
+                if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
+                    operateData.data.tabcmd.prem[1]=true;
+                }else{
+                    operateData.data.tabcmd.prem[1]=false;
+                }
+            }
+            let buttonsData=operateData;
+            let newButtons=obj.buttons
+            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{buttonsData,newButtons,buttonAnother});
             window.addEventListener("jflowPlugin",(e)=>{
                 console.log(e.detail,"传递的数据")
                 let item=e.detail;
@@ -35,7 +57,11 @@ function CreateButton(obj, buttons, id,store) {
 
             },false)
         }else{
-            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{});
+            let buttonsData={}
+            window.location.pathname.split('/')[3]==='V'? Object.assign({},buttonsData=store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData):Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
+           
+            let newButtons=[];
+            store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{buttonsData,newButtons});
         }
     }
 

@@ -37,7 +37,7 @@ export default () => ({
     objTabActionSlientConfirmData: {},
     LinkageForm: [], // 所有form
     mappStatus: {},
-    anotherData:[]//按钮显示的备份数据
+    anotherData:{}//按钮显示的备份数据
   },
   actions,
   mutations
