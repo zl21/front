@@ -13,28 +13,30 @@ function CreateButton(obj, buttons, id,store) {
         if(obj.instanceId!==null&&obj.buttons && obj.buttons!==null&&obj.buttons.length > 0){
             let buttonAnother={};
             let operateData={};
+            let buttonsData=[];
             if(window.location.pathname.split('/')[3]==='V'){
                 buttonAnother=Object.assign({},store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
                 operateData=Object.assign({},store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
-                operateData.data.tabcmd.prem.map(item=>{item=false;})
+                buttonsData=operateData.data.tabcmd.prem.map(item=>{
+                    return false
+                })
                 if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
-                    operateData.data.tabcmd.prem[1]=true;
+                    buttonsData[1]=true;
                    }else{
-                    operateData.data.tabcmd.prem[1]=false;
+                    buttonsData[1]=false;
                    }
             }else{
                 buttonAnother=Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
                 operateData=Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
-                operateData.data.tabcmd.prem.map(item=>{item=false;})
-                store.state[MODULE_COMPONENT_NAME].jflowPluginDataArray=obj.buttons;
+                buttonsData=operateData.data.tabcmd.prem.map(item=>{return false;})
                 if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
-                    operateData.data.tabcmd.prem[1]=true;
+                    buttonsData[1]=true;
                 }else{
-                    operateData.data.tabcmd.prem[1]=false;
+                    buttonsData[1]=false;
                 }
             }
-            let buttonsData=operateData;
             let newButtons=obj.buttons
+            console.log(buttonsData,"改过的数据")
             store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{buttonsData,newButtons,buttonAnother});
             window.addEventListener("jflowPlugin",(e)=>{
                 console.log(e.detail,"传递的数据")
@@ -57,9 +59,13 @@ function CreateButton(obj, buttons, id,store) {
 
             },false)
         }else{
-            let buttonsData={}
-            window.location.pathname.split('/')[3]==='V'? Object.assign({},buttonsData=store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData):Object.assign({},store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
-           
+            let buttonsData=[]
+            if(window.location.pathname.split('/')[3]==='V'){
+                console.log(store.state[MODULE_COMPONENT_NAME],"store等数据1")
+                buttonsData=store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem
+            }else{
+                buttonsData=store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem
+            }
             let newButtons=[];
             store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`,{buttonsData,newButtons});
         }
