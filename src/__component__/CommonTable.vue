@@ -88,7 +88,8 @@
         const defaultColumns = [{
           type: 'selection',
           width: 40,
-          align: 'right'
+          align: 'right',
+          fixed: 'left'
         }];
         if (Object.keys(this.datas).length > 0) {
           return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
@@ -96,6 +97,8 @@
               acc.push(Object.assign({
                 title: '序号',
                 align: 'left',
+                fixed: 'left',
+                width: 60,
                 render: this.collectionIndexRender()
               }, cur));
             } else if (cur.display === 'image') {
@@ -348,13 +351,13 @@
             table th {
                 font-weight: 400;
             }
-            table tr {
+            thead tr{
                 height: 28px;
             }
-            table tr td:hover {
-                /*background-color: #d2d2d2 !important;*/
+            tbody tr{
+                height: 28px;
             }
-            table tr.burgeon-table-row-hover td{
+            tbody tr.burgeon-table-row-hover td{
                 background-color: #ecf0f1;
             }
         }
