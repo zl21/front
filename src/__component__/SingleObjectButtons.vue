@@ -115,7 +115,7 @@
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
-          printValue: true, // 是否显示打印
+          printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮

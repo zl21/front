@@ -256,13 +256,13 @@ export default {
   jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     if (buttonAnother) { 
-      state.tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
     } else {
-      if(Object.keys(state.anotherData).length>0){
-        state.tabPanel[0].componentAttribute.buttonsData = state.anotherData;
+      if(state.anotherData.length>0){
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
       }else{
-        state.tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       }
     }
   }
