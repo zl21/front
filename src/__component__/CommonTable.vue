@@ -27,6 +27,8 @@
 </template>
 
 <script>
+  /* eslint-disable no-lonely-if */
+
   import {mapMutations} from 'vuex';
 
   export default {
@@ -93,41 +95,85 @@
         }];
         if (Object.keys(this.datas).length > 0) {
           return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
-            if (cur.name === 'ID') {
-              acc.push(Object.assign({
-                title: '序号',
-                align: 'left',
-                fixed: 'left',
-                width: 60,
-                render: this.collectionIndexRender()
-              }, cur));
-            } else if (cur.display === 'image') {
-              acc.push(Object.assign({
-                title: cur.name,
-                key: cur.colname,
-                sortable: cur.isorder ? 'custom' : false,
-                render: this.imageRender(cur.colname)
-              }, cur));
-            } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
-              acc.push(Object.assign({
-                title: cur.name,
-                key: cur.colname,
-                sortable: cur.isorder ? 'custom' : false,
-                render: this.fkIconRender(cur)
-              }, cur));
-            } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
-              acc.push(Object.assign({
-                title: cur.name,
-                key: cur.colname,
-                sortable: cur.isorder ? 'custom' : false,
-                sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
-              }, cur));
+            if (cur.comment) {
+              if (cur.name === 'ID') {
+                acc.push(Object.assign({
+                  title: '序号',
+                  align: 'left',
+                  fixed: 'left',
+                  width: 60,
+                  render: this.collectionIndexRender(),
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              } else if (cur.display === 'image') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.imageRender(cur.colname),
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.fkIconRender(cur),
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              } else {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              }
             } else {
-              acc.push(Object.assign({
-                title: cur.name,
-                key: cur.colname,
-                sortable: cur.isorder ? 'custom' : false
-              }, cur));
+              if (cur.name === 'ID') {
+                acc.push(Object.assign({
+                  title: '序号',
+                  align: 'left',
+                  fixed: 'left',
+                  width: 60,
+                  render: this.collectionIndexRender()
+                }, cur));
+              } else if (cur.display === 'image') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.imageRender(cur.colname)
+                }, cur));
+              } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.fkIconRender(cur)
+                }, cur));
+              } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
+                }, cur));
+              } else {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false
+                }, cur));
+              }
             }
             return acc;
           }, []));
@@ -166,6 +212,37 @@
         });
         return cssStr;
       }, // 行样式
+      tooltipRenderHeader() {
+        return (h, params) => {
+          return h('span', [
+            h('Poptip', {
+              style: {},
+              props: {
+                trigger: 'hover',
+                transfer: true,
+                wordWrap: true,
+                content: 'content',
+                placement: 'top'
+
+              },
+              scopedSlots: {
+                default: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i> <span>${params.column.name}</span>`
+                  }
+                }),
+                content: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<span>${params.column.comment}</span>`
+                  }
+                }),
+              },
+            })
+          ]);
+        };
+      }, // 表头提示的render
       fkIconRender(cellData) {
         // 外键关联到icon
         return (h, params) => h('div', {
@@ -348,7 +425,7 @@
         overflow-y: hidden;
         position: relative;
         .table {
-            table th {
+            thead th {
                 font-weight: 400;
             }
             thead tr{
