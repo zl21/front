@@ -40,20 +40,13 @@
       />
     </div>
     <div class="tag right">
-      <!-- <i
-        v-for="(item,index) in navigatorSetting"
-        :key="index"
-        class="iconfont"
-        :class="item.icon"
-        @click="item.callback"
-      /> -->
       <Badge 
         v-for="(item,index) in navigatorSetting" 
         :key="index"
-        style="height:22px;"
+        style="width:50px;"
         :offset="['6px','-8px']"
         :count="item.count"
-        @click="item.callback"
+        @click.native="item.callback"
       >
         <i 
           class="iconfont"

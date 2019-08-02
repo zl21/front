@@ -35,7 +35,7 @@ const install = function install(Vue, options = {}) {
 function RoutingGuard(router) { // 路由守卫
   router.beforeEach((to, from, next) => {
     const type = to.path.split('/')[3];// 获取组件类型
-    if (type === 'H' || type === 'V') {
+    if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       moduleId = null;
       instanceId = null;
