@@ -267,9 +267,7 @@ export default {
   //   });
   // }
   jflowPlugin(state, {buttonsData,newButtons,buttonAnother}) { // jflowPlugin按钮逻辑
-    console.log(state,"状态的")
     state.jflowPluginDataArray = newButtons;
-    console.log(buttonsData,newButtons,buttonAnother,"数据")
     if (buttonAnother) { 
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;

@@ -15,9 +15,9 @@ function CreateButton(obj, buttons, id, store) {
         let operateData = {};
         let buttonsData = [];
         let hasDataTime = setInterval(function () {
-            if (store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem || store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem) {
-                clearInterval(hasDataTime)
                 if (window.location.pathname.split('/')[3] === 'V') {
+                    if(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem){
+                        clearInterval(hasDataTime)
                     buttonAnother = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem;
                     operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
                     buttonsData = operateData.data.tabcmd.prem.map(item => {
@@ -28,25 +28,31 @@ function CreateButton(obj, buttons, id, store) {
                     } else {
                         buttonsData[1] = false;
                     }
+                    let newButtons = obj.buttons
+                    store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
+    
+                }
                 } else {
-                    buttonAnother = store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem;
-                    operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData);
+                    if(store.state[MODULE_COMPONENT_NAME].tabPanels&&store.state[MODULE_COMPONENT_NAME].tabPanels.length>0&&store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute&&store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem){
+                    clearInterval(hasDataTime)
+                    buttonAnother = store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem;
+                    operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData);
                     buttonsData = operateData.data.tabcmd.prem.map(item => { return false; })
                     if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
                         buttonsData[1] = true;
                     } else {
                         buttonsData[1] = false;
                     }
+                    let newButtons = obj.buttons
+                    store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
+    
                 }
-                let newButtons = obj.buttons
-                store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
-            }
-
+                }
+               
         }, 300)
 
         window.addEventListener("jflowPlugin", (e) => {
-            console.log(e.detail, "传递的数据")
-            let item = e.detail;
+            let item = e.detail.obj;
             if (!(item.button === '4')) {
                 if (item.button === '-1' || item.button === '2') {
                     mutipleOperate(item.url, obj.instanceId, buttons, id);
@@ -67,20 +73,23 @@ function CreateButton(obj, buttons, id, store) {
     } else {
         let buttonsData = []
         let hasDataTime = setInterval(function () {
-            if (store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem || store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem) {
-                clearInterval(hasDataTime)
                 if (window.location.pathname.split('/')[3] === 'V') {
-                    console.log(store.state[MODULE_COMPONENT_NAME], "store等数据1")
-                    buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem
+                    if(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem){
+                        clearInterval(hasDataTime)
+                        buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem
+                        let newButtons = [];
+                        store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons });
+                    }
+                    
                 } else {
-                    buttonsData = store.state[MODULE_COMPONENT_NAME].tabPanel[0].componentAttribute.buttonsData.data.tabcmd.prem
+                    if(store.state[MODULE_COMPONENT_NAME].tabPanels&&store.state[MODULE_COMPONENT_NAME].tabPanels.length>0&&store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute&&store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem){
+                        clearInterval(hasDataTime)
+                        buttonsData = store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem
+                        let newButtons = [];
+                        store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons });
+                    }
                 }
-                let newButtons = [];
-                store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons });
-            }
-
         }, 300)
-
     }
 }
 
