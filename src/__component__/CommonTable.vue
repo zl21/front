@@ -552,6 +552,9 @@
             tbody tr.burgeon-table-row-hover td{
                 background-color: #ecf0f1;
             }
+            tfoot tr {
+                height: 28px;
+            }
         }
     }
 </style>
