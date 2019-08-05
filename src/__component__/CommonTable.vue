@@ -176,12 +176,22 @@
                   render: this.imageRender(cur.colname)
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
-                  render: this.fkIconRender(cur)
-                }, cur));
+                if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    sortable: cur.isorder ? 'custom' : false,
+                    sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                    render: this.fkIconRender(cur)
+                  }, cur));
+                } else {
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    sortable: cur.isorder ? 'custom' : false,
+                    render: this.fkIconRender(cur)
+                  }, cur));
+                }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
                 acc.push(Object.assign({
                   title: cur.name,
