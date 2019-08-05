@@ -16,6 +16,7 @@
     <div class="common-table" v-if="isCommonTable">
       <CommonTable :datas="datas"
                    ref="commonTable"
+                   @CustomizedDialog="customizedDialog"
                    :cssStatus="cssStatus"
                    :errorArr="errorArr"
                    :onRowDoubleClick="onRowDoubleClick"
@@ -307,6 +308,9 @@
           this.$refs.commonTable.spinShow = true;
         }
       },
+      customizedDialog(params) {
+        this.$emit('CommonTableCustomizedDialog', params);
+      }
     },
     activated() {
       if (!this.isCommonTable) {

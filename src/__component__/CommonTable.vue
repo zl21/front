@@ -116,19 +116,38 @@
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
-                  render: this.fkIconRender(cur),
-                  renderHeader: this.tooltipRenderHeader()
-                }, cur));
+                if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    sortable: cur.isorder ? 'custom' : false,
+                    sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                    render: this.fkIconRender(cur),
+                    renderHeader: this.tooltipRenderHeader()
+                  }, cur));
+                } else {
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    sortable: cur.isorder ? 'custom' : false,
+                    render: this.fkIconRender(cur),
+                    renderHeader: this.tooltipRenderHeader()
+                  }, cur));
+                }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
                   sortable: cur.isorder ? 'custom' : false,
                   sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
+              } else if (cur.customerurl) {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.customerUrlRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else {
@@ -169,6 +188,13 @@
                   key: cur.colname,
                   sortable: cur.isorder ? 'custom' : false,
                   sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
+                }, cur));
+              } else if (cur.customerurl) {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.customerUrlRender()
                 }, cur));
               } else {
                 acc.push(Object.assign({
@@ -237,8 +263,7 @@
     },
     watch: {},
     methods: {
-
-      ...mapMutations('global', ['tabHref']),
+      ...mapMutations('global', ['tabOpen', 'tabHref']),
       rowClassName(row) {
         let cssStr = '';
         this.cssStatus.forEach((item) => {
@@ -250,6 +275,58 @@
         });
         return cssStr;
       }, // 行样式
+      customerUrlRender() {
+        return (h, params) => {
+          return h('span', {
+            style: {
+              color: '#0f8ee9',
+              'text-decoration': 'underline',
+              cursor: 'pointer'
+            },
+            on: {
+              click: () => {
+                const objdistype = params.column.customerurl.objdistype;
+                if (objdistype === 'popwin') {
+                  // 自定义弹窗
+                  this.$emit('CustomizedDialog', params);
+                } else if (objdistype === 'tabpanle') {
+                  // 左右结构单对象界面
+                  const type = 'tableDetailHorizontal';
+                  const tab = {
+                    type,
+                    tableName: params.column.customerurl.reftablename,
+                    tableId: params.column.customerurl.reftableid,
+                    label: params.column.customerurl.reftabdesc,
+                    id: params.row[params.column.customerurl.refobjid]
+                  };
+                  this.tabOpen(tab);
+                } else if (objdistype === 'object') {
+                  // 上下结构单对象界面
+                  const type = 'tableDetailVertical';
+                  const tab = {
+                    type,
+                    tableName: params.column.customerurl.reftablename,
+                    tableId: params.column.customerurl.reftableid,
+                    label: params.column.customerurl.reftabdesc,
+                    id: params.row[params.column.customerurl.refobjid]
+                  };
+                  this.tabOpen(tab);
+                } else if (objdistype === 'customized') {
+                  // 自定义界面
+                  const type = 'tableDetailAction';
+                  const tab = {
+                    type,
+                    label: params.column.customerurl.reftabdesc,
+                    customizedModuleName: params.column.customerurl.tableurl,
+                    customizedModuleId: params.column.customerurl.reftableid
+                  };
+                  this.tabOpen(tab);
+                }
+              }
+            },
+          }, params.row[params.column.colname]);
+        };
+      }, // 外键连接定制界面
       tooltipRenderHeader() {
         return (h, params) => {
           return h('span', [
