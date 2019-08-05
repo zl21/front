@@ -258,10 +258,18 @@
       }, // ag表格行双击回调
       onSortChange(sortArr) {
         const { tableName } = this.$route.params;
-        this.searchData.orderby = sortArr.map(d => ({
-          column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
-          asc: d.sort === 'asc'
-        }));
+        this.searchData.orderby = sortArr.map((d) => {
+          if (d.sort ==='normal') {
+            return {
+              column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+              // asc: d.sort === 'asc'
+            }
+          }
+          return {
+            column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+            asc: d.sort === 'asc'
+          }
+        });
         this.getQueryList();
       },
       onColumnMoved(cols) {
