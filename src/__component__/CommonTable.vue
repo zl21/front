@@ -565,6 +565,9 @@
             tfoot tr {
                 height: 28px;
             }
+            .burgeon-table-fixed tfoot td {
+                border-bottom: 1px solid #e8eaec;
+            }
         }
     }
 </style>
