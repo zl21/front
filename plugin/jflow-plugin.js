@@ -104,7 +104,7 @@ function AxiosGuard(axios) { // axios拦截
       }
 
       if (response.config.url.indexOf('/p/cs/getSubSystems') >= 0) { // 获取完菜单，添加待办列表菜单
-        todoList(store);
+        todoList(store, router);
       }
     }
 
@@ -225,13 +225,25 @@ function jflowButtons(id) { // jflow按钮逻辑处理
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
   if (instanceId) {
-    data.addcolums.map(item => item.childs.map((temp) => {
-      temp.readonly = true;
-      if (modifiableFieldName.indexOf(String(temp.colid)) >= 0) {
-        temp.readonly = false;
+    console.log(data.addcolums);
+    data.addcolums.map((item) => {
+      if (item.childs) {
+        item.childs.map((temp) => {
+          temp.readonly = true;
+          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0) {
+            temp.readonly = false;
+          }
+          return temp;
+        });
+      } else {
+        item.child.readonly = true;
+        if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0) {
+          item.child.readonly = false;
+        }
       }
-      return temp;
-    }));
+      
+      return item;
+    });
   }
   return data;
 }

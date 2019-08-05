@@ -1,88 +1,80 @@
 <template>
-    <div class="InstanceManagementList">
+  <div class="InstanceManagementList">
     <div class="content">
-      <Tabs :value="tabalive" @on-click="onClick">
-          <TabPane label="待办流程" name="待办流程"><todoProcess></todoProcess></TabPane>
-          <TabPane label="历史流程" name="历史流程"><HistoricalProcess></HistoricalProcess></TabPane>
+      <Tabs
+        :value="tabalive"
+        @on-click="onClick"
+      >
+        <TabPane
+          label="待办流程"
+          name="待办流程"
+        >
+          <todoProcess />
+        </TabPane>
+        <TabPane
+          label="历史流程"
+          name="历史流程"
+        >
+          <HistoricalProcess />
+        </TabPane>
       </Tabs>
-      <i class="iconfont iconmd-close InstanceManagementListDelete" @click="closeLists"></i>
     </div>
-
-
-    </div>
+  </div>
 </template>
 // <script>
-import todoProcess from './TodoProcess';
-import HistoricalProcess from './HistoricalProcess';
-export default {
-    name:'InstanceManagementList',
-    components:{todoProcess,HistoricalProcess},
-    data(){
-        return{
-            tabalive:"待办流程",//tab切换默认值
-            tabConfig:[{
-                label:'待办流程',
-                name:'待办流程'
-            },{
-                label:'历史流程',
-                name:'历史流程'
-            }]
-        }
-    },
-    methods:{
-        routeClick(val){
-            if(val === 1){
-                this.tabalive = '待办流程';
-            } else if (val === 2) {
-                this.tabalive = '历史流程';
-            }
-        },
-        //tab切换点击事件
-        onClick(val){
-            this.tabalive=val;
-            // if(val==='历史流程'){
-            //  window.history.replaceState({}, '', "/InstanceManagementList?type=2");
-            // }else{
-            //  window.history.replaceState({}, '', "/InstanceManagementList?type=1");
-            // }
+  import todoProcess from './TodoProcess';
+  import HistoricalProcess from './HistoricalProcess';
 
-        },
-        closeLists () {  //关闭待办列表
-          window.jflowPlugin.todoListsFun(false)
-        }
+  export default {
+    name: 'InstanceManagementList',
+    components: { todoProcess, HistoricalProcess },
+    data() {
+      return {
+        tabalive: '待办流程', // tab切换默认值
+        tabConfig: [{
+          label: '待办流程',
+          name: '待办流程'
+        }, {
+          label: '历史流程',
+          name: '历史流程'
+        }]
+      };
     },
-    created(){
-        let path=window.location.pathname;
-       this.routeClick(path.split('=')[1]);
+    methods: {
+      routeClick(val) {
+        if (val === 1) {
+          this.tabalive = '待办流程';
+        } else if (val === 2) {
+          this.tabalive = '历史流程';
+        }
+      },
+      // tab切换点击事件
+      onClick(val) {
+        this.tabalive = val;
+        // if(val==='历史流程'){
+        //  window.history.replaceState({}, '', "/InstanceManagementList?type=2");
+        // }else{
+        //  window.history.replaceState({}, '', "/InstanceManagementList?type=1");
+        // }
+      }
+    },
+    created() {
+      const path = window.location.pathname;
+      this.routeClick(path.split('=')[1]);
     }
 
-}
+  };
 </script>
 <style lang="less" >
-@keyframes myfirst
-{
-  from {
-    height:0%;
-    top: 100%;
-  }
-  to {
-    height:100%;
-    top:0;
-  }
-}
+
 .InstanceManagementList{
-    position: fixed;
-    top: 0;
-    left: 0;
+
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     z-index: 2000;
-    background: rgba(0,0,0,0.3);
-    padding: 60px 10px 10px 10px;
     display: flex;
     flex-direction: column;
-
 
 
     .content{
@@ -91,7 +83,6 @@ export default {
       background: white;
       padding: 10px;
       position: relative;
-      animation:myfirst 1s ease;
 
       .InstanceManagementListDelete{
         width: 12px;
@@ -129,4 +120,3 @@ export default {
 
 }
 </style>
-

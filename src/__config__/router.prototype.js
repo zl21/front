@@ -2,6 +2,7 @@ import Login from '../__component__/Login';
 import Content from '../__component__/Content';
 import WelcomePage from '../__component__/WelcomePage';
 import ComponentProtoType from '../__component__/ComponentPrototype';
+import InstanceManagementList from '../../plugin/component/InstanceManagementList';
 import {
   CUSTOMIZED_MODULE_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
@@ -49,6 +50,10 @@ const routes = [
           '../__component__/C.TableKeepAlive'
         ), // 定制界面
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
+      },
+      {
+        path: '/InstanceManagementList',
+        component: InstanceManagementList
       }]
   },
   {
@@ -59,6 +64,7 @@ const routes = [
     path: '/ComponentPrototype',
     component: ComponentProtoType
   }
+  
 ];
 
 export default routes;
