@@ -1,6 +1,7 @@
 import Login from '../__component__/Login';
 import Content from '../__component__/Content';
 import WelcomePage from '../__component__/WelcomePage';
+import NetworkMonitor from '../__component__/NetworkMonitor';
 import ComponentProtoType from '../__component__/ComponentPrototype';
 import {
   CUSTOMIZED_MODULE_PREFIX,
@@ -49,6 +50,9 @@ const routes = [
           '../__component__/C.TableKeepAlive'
         ), // 定制界面
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
+      }, {
+        path: '/NetworkMonitor',
+        component: NetworkMonitor
       }]
   },
   {
@@ -58,7 +62,7 @@ const routes = [
   {
     path: '/ComponentPrototype',
     component: ComponentProtoType
-  }
+  },
 ];
 
 export default routes;

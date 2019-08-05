@@ -19,7 +19,8 @@ export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜�
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必填项点击保存时是否必须填写子表信息
 
 export const MODULE_COMPONENT_NAME = 'moduleComponentName';
-
+export const DB_NAME = 'R3';
+export const DB_SCHEMA_NETWORK = 'Network';
 
 // 需要走全局公共网关的接口
 export const globalGateWay = [
