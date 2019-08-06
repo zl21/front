@@ -362,7 +362,6 @@
               //   }
               // }
               // else { // 没有配置path
-              //   debugger;
               //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
               //   if (store.updateData[itemName].modify[itemName] && Object.values(store.updateData[itemName].modify[itemName]).length > 0) {
               //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
