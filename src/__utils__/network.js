@@ -3,8 +3,9 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes 
+  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes,
 } from '../constants/global';
+import { addNetwork } from './indexedDB';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
@@ -66,6 +67,15 @@ axios.interceptors.response.use(
       url: config.url,
       method: config.method
     }));
+    // 记录每次网络请求的时间
+    addNetwork([{
+      timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
+      url: config.url,
+      data: isJson ? JSON.parse(config.data) : config.data,
+      method: config.method,
+      isJson,
+      reqTimeString: pendingRequestMap[requestMd5].reqTimeString
+    }]);
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
@@ -196,8 +206,10 @@ function NetworkConstructor() {
       console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
+    const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
+      reqTime: now.getTime()
     };
     return axios.post(matchedUrl, config);
   };
@@ -215,8 +227,10 @@ function NetworkConstructor() {
       console.warn(`request: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
+    const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
+      reqTime: now.getTime()
     };
     return axios.get(matchedUrl, config);
   };
@@ -224,7 +238,6 @@ function NetworkConstructor() {
   // make axios available
   this.axios = axios;
 }
-
 
 const network = new NetworkConstructor();
 

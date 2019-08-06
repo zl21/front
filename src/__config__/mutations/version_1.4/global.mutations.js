@@ -185,7 +185,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, label, customizedModuleName, customizedModuleId
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
