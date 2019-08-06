@@ -587,8 +587,8 @@
             return Date().minusDays(item.default).toIsoDateString();
           }
           const timeRange = [
-            new Date().toIsoDateString(),
-            new Date().minusDays(Number(item.daterange)).toIsoDateString()
+            new Date().minusDays(Number(item.daterange)).toIsoDateString(),
+            new Date().toIsoDateString()
           ];
           return timeRange;
         }
