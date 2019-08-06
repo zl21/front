@@ -222,7 +222,6 @@
 
         columnEditElementId: {}, // 保存每列的可编辑元素的id
         editElementId: [], // 表格可编辑元素id 用于回车键使用
-        currentFocusElementId: null, // 当前聚焦元素的id
       };
     },
     props: {
@@ -427,7 +426,6 @@
             }
           });
         });
-        // console.log(this.editElementId);
       }, // 获取表格里可编辑元素的id
       tableCellFocusByEnter(elementId) {
         const findIndex = this.editElementId.findIndex(item => item === elementId);
@@ -443,6 +441,25 @@
         }
         // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
       }, // 回车的时候聚焦下一个可编辑的输入框
+      tableCellFocusByUpOrDown(elementId, currentColumn, type) {
+        const findIndex = this.columnEditElementId[currentColumn].findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (type === 'up') {
+          if (findIndex === 0) {
+            elementIndex = this.columnEditElementId[currentColumn].length - 1;
+          } else {
+            elementIndex = findIndex - 1;
+          }
+        } else if (type === 'down') {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.columnEditElementId[currentColumn][elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+        } else {
+          this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn,type);
+        }
+      }, // 按下上键或者下键的时候聚焦下一个可编辑的输入框
       clearSearchData() {
         this.searchCondition = null;
         this.searchInfo = '';
@@ -754,8 +771,19 @@
               },
               'on-keydown': (e, i) => {
                 if (e.keyCode === 13) {
+                  // 回车
                   const elementId = i.$el.id;
                   this.tableCellFocusByEnter(elementId);
+                } if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                 }
               }
             }
