@@ -56,7 +56,7 @@ export default {
       if (element.value === tableName) {
         buttons.dataArray.collectiImg = true;
       }
-    }); 
+    });
   },
   updateDefaultButtonsdatas({
     buttons
@@ -113,7 +113,7 @@ export default {
     ag.datas = Object.assign({}, ag.datas);
   },
   setErrorModalValue({ buttons }, {
-    title, contentText, footerHide 
+    title, contentText, footerHide
   }) { // 设置error弹窗提示信息
     buttons.dialogConfig = {
       title,
@@ -163,6 +163,8 @@ export default {
   updateButtonsExport({ buttons }, data) { // 导出
     buttons.exportdata = data;
   },
-  
+  updateWebconfCommonTable({ webconf }, data) {
+    webconf.commonTable = data.commonTable;
+  }, // 修改state中commonTable的值
  
 };

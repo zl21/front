@@ -16,6 +16,7 @@
     />
     <AgTable
       ref="agTableElement"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :style="agTableElementStyles"
       :page-attribute="pageAttribute"
       :datas="ag.datas"
@@ -31,6 +32,7 @@
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
+      :is-common-table="webconf.commonTable"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
@@ -103,7 +105,7 @@
   import { getGateway } from '../__utils__/network';
 
   const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery 
+    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
   // eslint-disable-next-line import/no-dynamic-require
   } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -189,6 +191,12 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapMutations('global', ['tabHref', 'tabOpen']),
+      commonTableCustomizedDialog(params){
+        this.$refs.dialogRef.open();
+        this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
+        this.dialogComponentNameConfig.footerHide = true;
+        this.dialogComponentName = params.column.customerurl.tableurl;
+      }, // 普通表格跳动作定义按钮弹窗
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.buttons.isrefrsh) {
           this.searchClickData();
@@ -251,10 +259,18 @@
       }, // ag表格行双击回调
       onSortChange(sortArr) {
         const { tableName } = this.$route.params;
-        this.searchData.orderby = sortArr.map(d => ({
-          column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
-          asc: d.sort === 'asc'
-        }));
+        this.searchData.orderby = sortArr.map((d) => {
+          if (d.sort ==='normal') {
+            return {
+              column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+              // asc: d.sort === 'asc'
+            }
+          }
+          return {
+            column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
+            asc: d.sort === 'asc'
+          }
+        });
         this.getQueryList();
       },
       onColumnMoved(cols) {
@@ -878,7 +894,7 @@
         let promise = new Promise((resolve, reject) => {
           this.$loading.show();
           this.getExeActionDataForButtons({
-            item, obj, resolve, reject 
+            item, obj, resolve, reject
           });
         });
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
@@ -958,7 +974,7 @@
           }
           return obj;
         }, {});
-  
+
         return Object.keys(jsonData).reduce((obj, item) => {
           let value = '';
 
@@ -982,14 +998,14 @@
                 value = jsonData[item].join('~');
                 return false;
               }
-              
+
               if (temp.item.type === 'select') {
                 if (jsonData[item].length > 0) {
                   value = jsonData[item].map(option => `=${option}`);
                 } else {
                   value = '';
                 }
-  
+
                 // 处理select，分为单个字段select和合并型select
                 return false;
               }
@@ -1009,7 +1025,7 @@
             if (temp.item.inputname === item) {
               value = jsonData[item];
             }
-            
+
 
             return true;
           });
@@ -1117,7 +1133,7 @@
           if (this.buttons.selectIdArr.length > 0) {
             const title = '警告';
             const contentText = `确认执行${obj.name}?`;
-            this.dialogMessage(title, contentText);  
+            this.dialogMessage(title, contentText);
           } else {
             const data = {
               title: '警告',
@@ -1192,7 +1208,7 @@
         };
         if (this.buttons.selectIdArr.length === 0) {
           searchData.fixedcolumns = this.dataProcessing();
-        } 
+        }
         const OBJ = {
           searchdata: searchData,
           filename: this.activeTab.label,
@@ -1220,7 +1236,7 @@
         const selectIdArr = this.buttons.selectIdArr;
         const promise = new Promise((resolve, reject) => {
           this.getBatchDeleteForButtons({
-            tableName, selectIdArr, resolve, reject 
+            tableName, selectIdArr, resolve, reject
           });
         });
         promise.then(() => {
@@ -1239,7 +1255,7 @@
         // this.$loading.show();
         const promise = new Promise((resolve, reject) => {
           this.batchVoidForButtons({
-            tableName, ids, resolve, reject 
+            tableName, ids, resolve, reject
           });
         });
         promise.then(() => {
@@ -1260,7 +1276,7 @@
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         const promise = new Promise((resolve, reject) => {
           this.batchSubmitForButtons({
-            url, tableName, ids, resolve, reject 
+            url, tableName, ids, resolve, reject
           });
         });
         promise.then(() => {
@@ -1403,10 +1419,10 @@
                   // 单选
                   if (this.buttons.selectIdArr.length === 1) {
                     this.objTabActionDialog(this.buttons.activeTabAction);
-                  } 
+                  }
                 } else if (this.buttons.selectIdArr.length > 0) {
                   this.objTabActionDialog(this.buttons.activeTabAction);
-                } 
+                }
               } else {
                 this.objTabActionDialog(this.buttons.activeTabAction);
               }
@@ -1460,7 +1476,7 @@
           });
         }
       },
-      
+
       // network 监听函数
       networkEventListener(event) {
         if (this._inactive) { return; }
@@ -1492,7 +1508,7 @@
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
-        this.getTableQueryForForm({ searchData, resolve, reject }); 
+        this.getTableQueryForForm({ searchData, resolve, reject });
       });
       promise.then(() => {
         this.getbuttonGroupdata();

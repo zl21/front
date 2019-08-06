@@ -46,10 +46,13 @@ export default {
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
+          commit('updateWebconfCommonTable', queryData.datas.webconf);
+        }
       }
     });
   },
-  getExportQueryForButtons({ commit }, 
+  getExportQueryForButtons({ commit },
     { OBJ, resolve, reject }) {
     network.post('/p/cs/export', urlSearchParams(
       OBJ
@@ -66,7 +69,7 @@ export default {
     });
   },
   getBatchDeleteForButtons({ commit }, {
-    tableName, selectIdArr, resolve, reject 
+    tableName, selectIdArr, resolve, reject
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
     network.post('/p/cs/batchDelete',
@@ -91,7 +94,7 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, {
-    item, obj, resolve, reject 
+    item, obj, resolve, reject
   }) {
     network.post(item.action || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
@@ -152,9 +155,9 @@ export default {
     });
   },
   batchVoidForButtons({ commit }, {
-    tableName, ids, resolve, reject 
+    tableName, ids, resolve, reject
   }) { // 调用作废接口
-    network.post('/p/cs/batchVoid', 
+    network.post('/p/cs/batchVoid',
       { tableName, ids }).then((res) => {
       const data = res.data;
       if (res.data.code === 0) {
@@ -169,10 +172,10 @@ export default {
     });
   },
   batchSubmitForButtons({ commit }, {
-    url, tableName, ids, resolve, reject 
+    url, tableName, ids, resolve, reject
   }) { // 调用提交接口
     network.post(url || '/p/cs/batchSubmit', {
-      tableName, 
+      tableName,
       ids
     }).then((res) => {
       if (res.data.code === 0) {
@@ -187,7 +190,7 @@ export default {
     });
   },
  
-  batchUnSubmitForButtons({ commit }, 
+  batchUnSubmitForButtons({ commit },
     { obj, resolve, reject }) {
     network.post('/p/cs/batchUnSubmit',
       obj).then((res) => {
