@@ -50,6 +50,14 @@ const routes = [
           '../__component__/C.TableKeepAlive'
         ), // 定制界面
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
+      }, {
+        path: `${PLUGIN_MODULE_PREFIX}/:pluginModuleName`,
+        component: () => import(
+          /* webpackChunkName: 'P.KeepAlive' */
+          /* webpackMode: 'eager' */
+          '../__component__/P.KeepAlive'
+        ), // 定制界面
+        meta: { routePrefix: PLUGIN_MODULE_PREFIX }
       }]
   },
   {

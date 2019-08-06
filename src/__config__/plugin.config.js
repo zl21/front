@@ -7,7 +7,7 @@ export default {
       '../__plugin__/NetworkMonitor/NetworkMonitor.vue'
     )
   },
-  InstanceManagementList: {
+  INSTANCEMANAGEMENTLIST: {
     name: '待办列表', // 菜单Tab显示的label
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */

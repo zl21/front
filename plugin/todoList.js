@@ -28,7 +28,7 @@ function openTodoLists() {
   // const { type, value, id } = obj;
   // routeTo({ type, info: { tableName: value, tableId: id } });
   jflowRouter.push({
-    path: '/InstanceManagementList'
+    path: '/PLUGIN/INSTANCEMANAGEMENTLIST'
   });
   // window.jflowPlugin.todoListsFun(true);
 }
