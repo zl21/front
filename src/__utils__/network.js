@@ -173,12 +173,20 @@ export const urlSearchParams = (data) => {
   });
   return params;
 };
-
+//  判断网关
+function setUrlSeverId(gateWay, url, serviceconfig) {
+  if (serviceconfig && serviceconfig.serviceId) {
+    return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
+  }
+  return gateWay ? `/${gateWay}${url}` : url;
+}
+  
 function NetworkConstructor() {
   // equals to axios.post(url, config)
-  this.post = (url, config) => {
+  this.post = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
@@ -195,9 +203,9 @@ function NetworkConstructor() {
   };
 
   // equals to axios.get(url, config)
-  this.get = (url, config) => {
+  this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     const requestMd5 = getRequestMd5({
       data: config,
       url: matchedUrl,
@@ -216,6 +224,7 @@ function NetworkConstructor() {
   // make axios available
   this.axios = axios;
 }
+
 
 const network = new NetworkConstructor();
 
