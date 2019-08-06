@@ -131,7 +131,6 @@ export default {
     label,
     keepAliveModuleName
   }) {
-    console.log(label, keepAliveModuleName);
     state.openedMenuLists.forEach((d) => {
       d.isActive = false;
       if (d.label === label && d.keepAliveModuleName === keepAliveModuleName) {
