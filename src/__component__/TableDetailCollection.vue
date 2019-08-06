@@ -598,7 +598,9 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-
+            if (ele.comment) {
+              param.renderHeader = this.tooltipRenderHeader();
+            }
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
             // if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
             //   this.dataSource.ordids.map((order) => {
@@ -628,6 +630,37 @@
         ];
         return headColumn.concat(renderColumns);
       },
+      tooltipRenderHeader() {
+        return (h, params) => {
+          return h('span', [
+            h('Poptip', {
+              style: {},
+              props: {
+                trigger: 'hover',
+                transfer: true,
+                wordWrap: true,
+                content: 'content',
+                placement: 'top'
+
+              },
+              scopedSlots: {
+                default: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  }
+                }),
+                content: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<span>${params.column.comment}</span>`
+                  }
+                }),
+              },
+            })
+          ]);
+        };
+      }, // 表头提示的render
       filterData(rows) {
         if (!rows) {
           return [];
