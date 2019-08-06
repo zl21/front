@@ -5,13 +5,14 @@
 </template>
 
 <script>
-  import { hideMenu } from './__config__/event.config';
+  import { hideMenu, launchNetworkMonitor } from './__config__/event.config';
   import network from './__utils__/network';
   
   export default {
     name: 'App',
     mounted() {
       hideMenu();
+      launchNetworkMonitor();
     },
     created() {
       this.getUserInfo();

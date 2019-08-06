@@ -10,10 +10,11 @@
 </template>
 
 <script>
-  import { queryAllNetwork } from '../__utils__/indexedDB';
+  import { queryAllNetwork } from '../../__utils__/indexedDB';
   
   export default {
     data: () => ({
+      interval: -1,
       data: [],
       columns: [
         { key: 'timecost', title: '请求耗时' },
@@ -23,21 +24,24 @@
         { key: 'data', title: '请求参数' },
       ]
     }),
-    name: 'NetworkMonitor',
     created() {
-      const intervalTime = 5000;
+      const intervalTime = 1000 * 60;
       this.doQuery();
-      setInterval(() => {
+      this.interval = setInterval(() => {
         this.doQuery();
       }, intervalTime);
     },
     methods: {
       doQuery() {
         console.log('NetWork Monitor Refresh.');
-        queryAllNetwork().then((res) => {
-          this.data = res;
-        });
+        queryAllNetwork()
+          .then((res) => {
+            this.data = res;
+          });
       }
+    },
+    beforeDestroy() {
+      clearInterval(this.interval);
     }
   };
 </script>

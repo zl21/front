@@ -1,13 +1,13 @@
 import Login from '../__component__/Login';
 import Content from '../__component__/Content';
 import WelcomePage from '../__component__/WelcomePage';
-import NetworkMonitor from '../__component__/NetworkMonitor';
 import ComponentProtoType from '../__component__/ComponentPrototype';
 import {
   CUSTOMIZED_MODULE_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX
+  VERTICAL_TABLE_DETAIL_PREFIX,
+  PLUGIN_MODULE_PREFIX
 } from '../constants/global';
 
 const routes = [
@@ -51,8 +51,13 @@ const routes = [
         ), // 定制界面
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
       }, {
-        path: '/NetworkMonitor',
-        component: NetworkMonitor
+        path: `${PLUGIN_MODULE_PREFIX}/:pluginModuleName`,
+        component: () => import(
+          /* webpackChunkName: 'P.KeepAlive' */
+          /* webpackMode: 'eager' */
+          '../__component__/P.KeepAlive'
+        ), // 定制界面
+        meta: { routePrefix: PLUGIN_MODULE_PREFIX }
       }]
   },
   {
