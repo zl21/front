@@ -19,7 +19,6 @@ export default {
       
       const resData = res.data.data;
       commit('updateCopyDataForRealdOnly', resData); // 复制按钮操作保存默认数据
-      console.log('updateObjectForMainTableForm=',this)
       dispatch('updateObjectForMainTableForm').then(() => {
         commit('updateObjectForMainTableForm', resData);
       });
