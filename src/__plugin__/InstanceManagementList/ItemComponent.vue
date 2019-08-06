@@ -104,8 +104,8 @@
         :data-empty-message="_items.props.dataEmptyMessage"
         :default-selected="_items.props.defaultSelected"
         :transfer="_items.props.transfer"
-        :columnsKey="_items.props.columnsKey"
-        :showColnameKey="_items.props.showColnameKey"
+        :columns-key="_items.props.columnsKey"
+        :show-colname-key="_items.props.showColnameKey"
         @on-fkrp-selected="fkrpSelected"
         @on-page-change="pageChange"
         @on-input-value-change="inputValueChange"
@@ -116,44 +116,42 @@
         @on-popper-show="fkrpSelectedPopperShow"
         @on-clear="fkrpSelectedClear"
       />
-
-
     </div>
   </div>
 </template>
 <script>
-import dataProp from '../utils/props.config';
-export default {
-  name:'ItemComponent',
-  props:{
-    items: {
-      type: Object,
-      default() {
-        return {};
-      }
+  import dataProp from './utils/props.config';
+
+  export default {
+    name: 'ItemComponent',
+    props: {
+      items: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
     },
-  },
-  computed: {
-    _items() {
+    computed: {
+      _items() {
         // 将设置的props和默认props进行assign
         const item = JSON.parse(JSON.stringify(this.items));
         // const item = this.items;
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
         item.event = Object.assign({}, this.items.event);
-        if(item.type === 'DatePicker'){
-          if(item.props.type === 'datetimerange'){
-            item.value = [new Date(new Date(new Date().toLocaleDateString()).getTime()),new Date()]
-          }else{
-            item.value = new Date()
+        if (item.type === 'DatePicker') {
+          if (item.props.type === 'datetimerange') {
+            item.value = [new Date(new Date(new Date().toLocaleDateString()).getTime()), new Date()];
+          } else {
+            item.value = new Date();
           }
-
         }
         return item;
       }
-  },
-  methods: {
+    },
+    methods: {
       valueChange() { // 值发生改变时触发  只要是item中的value改变就触发该方法，是为了让父组件数据同步
-        this.$emit('inputChange', this._items.value, this._items, );
+        this.$emit('inputChange', this._items.value, this._items,);
       },
       // input event
       inputChange(event, $this) {
@@ -325,7 +323,6 @@ export default {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'inputValueChange') && typeof this._items.event.inputValueChange === 'function') {
           this._items.event.inputValueChange(value, $this);
         }
-
       },
       attachFilterSelected(row, $this) {
         this._items.value = row.label;
@@ -364,7 +361,7 @@ export default {
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I' && Object.prototype.hasOwnProperty.call(this._items.event, 'on-delete') && typeof this._items.event['on-delete'] === 'function') {
-          this._items.event['on-delete']($this, this._items,row.key ,this.index);
+          this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
       attachFilterClear(event, $this) {
@@ -375,23 +372,21 @@ export default {
       },
       attachFilterPopperShow($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-show') && typeof this._items.event['popper-show'] === 'function') {
-          this._items.event['popper-show']($this,this._items,this.index);
+          this._items.event['popper-show']($this, this._items, this.index);
         }
       },
       attachFilterOk($this) {
         if (Object.prototype.hasOwnProperty.call(this._items.event, 'popper-value') && typeof this._items.event['popper-value'] === 'function') {
-          if($this._data.IN >0 ){
-            let value = `已经选中${$this._data.IN}条数据`;
+          if ($this._data.IN > 0) {
+            const value = `已经选中${$this._data.IN}条数据`;
             this._items.value = value;
             this.valueChange();
-            this._items.event['popper-value']($this,value, $this._data.IN, this.index);
-
+            this._items.event['popper-value']($this, value, $this._data.IN, this.index);
           }
-
         }
       }
     },
-}
+  };
 </script>
 <style lang="less" scoped>
 .ItemComponentRoot{
