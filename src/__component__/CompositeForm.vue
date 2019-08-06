@@ -777,7 +777,9 @@
       },
       searchClickData() {
         // 按钮查找
-        this.$emit('on-formEnter');
+        setTimeout(() => {
+          this.$emit('on-formEnter');
+        }, 200);
       },
       checkDisplay(item) {
         // 组件显示类型

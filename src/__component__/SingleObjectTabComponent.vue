@@ -237,6 +237,8 @@
         let savePath = '';
         const { itemId } = router.currentRoute.params;
         if(Version() === '1.4') {
+          const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
+          const itemName = this.tableName;// 子表表名
           if (this.type === 'horizontal') {
             this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels.forEach((item) => {
               if (item.tablename === this.tableName) {
@@ -247,13 +249,17 @@
                 }
               }
             });
+            this.determineSaveType(savePath);
           } else if (itemId === 'New') { // 主表新增保存和编辑新增保存
-            savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+            if (store.updateData[itemName].add && Object.values(store.updateData[itemName].add[itemName]).length > 0) { // 新增时只有子表有新增内容才可进行回车保存
+              savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[0];
+              this.determineSaveType(savePath);
+            }
           } else {
             savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[1];
+            this.determineSaveType(savePath);
           }
         }
-        this.determineSaveType(savePath);
       }, // 表单回车触发
       subtables() {
         if (Version() === 1.4) {
@@ -356,7 +362,6 @@
               //   }
               // }
               // else { // 没有配置path
-              //   debugger;
               //   const store = this.$store.state[this[MODULE_COMPONENT_NAME]];
               //   if (store.updateData[itemName].modify[itemName] && Object.values(store.updateData[itemName].modify[itemName]).length > 0) {
               //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
@@ -434,10 +439,7 @@
             // this.updateChangeData({ tableName: this.tableName, value: {} });
             this.$store.commit('global/tabHref', tab);
             this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
-          }
-          // console.log(this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData);
-          // const objIdSave = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId;
-          if (this.type === 'horizontal') {
+          }else if (this.type === 'horizontal') {
             const searchdata = {
               column_include_uicontroller: true,
               startindex: this.$store.state[this[MODULE_COMPONENT_NAME]].tablePageInfo.currentPageIndex - 1,
@@ -459,6 +461,9 @@
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectForMainTableForm`, { table: tableName, objid: itemId, tabIndex });
             this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getObjectTabForMainTable`, { table: tableName, objid: itemId, tabIndex });
           }
+          // console.log(this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData);
+          // const objIdSave = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId;
+         
           this.$Message.success(message);
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
