@@ -14,7 +14,7 @@
       @on-focus="attachFilterInputFocus"
       @on-blur="attachFilterInputBlur"
       @on-keyup="attachFilterInputKeyup"
-      @on-enter="attachFilterInputKeydown"
+      @on-keydown="attachFilterInputKeydown"
       @on-ok="attachFilterOk"
       @on-cancel="attachFilterCancel"
       @on-popclick="attachFilterPopclick"
@@ -157,10 +157,10 @@
         this.propsData.AutoData = [];
         this.valueChange();
       },
-      attachFilterInputFocus() {
-        
+      attachFilterInputFocus(event, $this) {
+        this.$emit('on-focus', event, $this);
       },
-      attachFilterInputBlur() {
+      attachFilterInputBlur(event, $this) {
         if (!this.selected[0]) {
           this.value = '';
           this.selected = [
@@ -170,13 +170,14 @@
             }
           ];
         }
-        this.valueChange();
+        this.valueChange(event, $this);
+        this.$emit('on-blur', event, $this);
       },
-      attachFilterInputKeyup() {
-        
+      attachFilterInputKeyup(value, event, $this) {
+        this.$emit('on-keyup', value, event, $this);
       },
       attachFilterInputKeydown(value, event, $this) {
-        this.$emit('keydown', event, $this);
+        this.$emit('on-keydown', value, event, $this);
       },
       attachFilterPopclick(event, row, targName, $this) {
         if (targName !== 'I' && event !== 1) {

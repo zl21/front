@@ -1,7 +1,7 @@
 export default {
   functionPermission: {
     component: () => import(
-      /* webpackChunkName: 'FunctionPowser' */
+      /* webpackChunkName: 'functionPermission' */
       /* webpackMode: 'eager' */
       '../__customize__/functionPower/FunctionPower.vue'
     )

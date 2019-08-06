@@ -147,7 +147,6 @@ export default {
                   if (c.readonly === true) {
                     b.valuedata = '';// 将配置为不可编辑的值置空
                   } else if (b.valuedata) {
-                    // debugger;
                     if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {

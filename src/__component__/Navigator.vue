@@ -64,6 +64,7 @@
           placeholder="请输入要查询的功能名"
           @on-click="searchBtn = true"
           @click="setBtn"
+          @on-keydown="enter"
           @on-change="searchData"
         >
           <Option
@@ -177,7 +178,21 @@
         // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
-      routeTo(data) {
+      enter(event) {
+        if (event.keyCode === 13) {
+          let index = 0;
+          if (this.$refs.AutoComplete.$refs.select.focusIndex !== -1) {
+            index = this.$refs.AutoComplete.$refs.select.focusIndex;
+          } else {
+            index = 0;
+          }  
+          const routerItem = this.searchList[index];
+          if (routerItem) {
+            this.routeTonext(routerItem);
+          }
+        }
+      },
+      routeTonext(data) {
         const type = data.type;
         let tabid = 0;
         if (type === 'table') {
@@ -189,7 +204,9 @@
           { type, info: { tableName: data.name, tableId: tabid } },
           () => {
             this.keyWord = '';
-            this.searchList = [];
+            setTimeout(() => {
+              this.searchList = [];
+            }, 100);
           }
         );
       },
@@ -218,7 +235,7 @@
         const index = name.value;
         const routerItem = this.searchList[index];
         if (routerItem) {
-          this.routeTo(routerItem);
+          this.routeTonext(routerItem);
         }
         //
       },

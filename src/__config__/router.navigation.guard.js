@@ -9,10 +9,18 @@ import {
   VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
+  PLUGIN_MODULE_PREFIX,
+  PLUGIN_MODULE_COMPONENT_PREFIX,
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
+import PluginModule from './plugin.config';
+
+const pluginModules = {};
+Object.keys(PluginModule).forEach((key) => {
+  pluginModules[key.toUpperCase()] = PluginModule[key];
+});
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
@@ -22,13 +30,15 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, customizedModuleId 
+      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName
     } = to.params;
+    const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX];
     const fromTableName = from.params.tableName;
     const fromTableId = from.params.tableId;
     const fromItemId = from.params.itemId;
     const fromCustomizedModuleName = from.params.customizedModuleName;
     const fromCustomizedModuleId = from.params.customizedModuleId;
+    const fromPluginModuleName = from.params.pluginModuleName;
     const { routePrefix } = to.meta;
     const fromRoutePrefix = from.meta.routePrefix;
     const { isBack } = to.query;
@@ -58,7 +68,7 @@ export default (router) => {
         fromKeepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}`;
         break;
 
-      // Condition Three: 来自列表明细界面
+      // Condition Two: 来自列表明细界面
       case VERTICAL_TABLE_DETAIL_PREFIX:
         fromKeepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}.${fromParamItemId}`;
         break;
@@ -73,6 +83,11 @@ export default (router) => {
         fromKeepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${fromCustomizedModuleName}.${fromCustomizedModuleId}`;
         break;
 
+      // Condition Five: 来自系统内置的插件界面
+      case PLUGIN_MODULE_PREFIX:
+        fromKeepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${fromPluginModuleName}`;
+        break;
+
       default:
         break;
     }
@@ -84,7 +99,7 @@ export default (router) => {
         dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
         break;
 
-      // Condition Three: 路由到左右Tab页签切换（纵向布局）的列表明细界面
+      // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
       case VERTICAL_TABLE_DETAIL_PREFIX:
         keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
         dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
@@ -102,6 +117,12 @@ export default (router) => {
         dynamicModuleTag = CUSTOMIZED_MODULE_COMPONENT_PREFIX;
         break;
 
+      // Condition Five: 路由到插件界面
+      case PLUGIN_MODULE_PREFIX:
+        keepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
+        dynamicModuleTag = PLUGIN_MODULE_COMPONENT_PREFIX;
+        break;
+
       default:
         break;
     }
@@ -112,7 +133,7 @@ export default (router) => {
     }
 
     // 判断是否状态中已经存在某个模块，不存在则创建。用户自定义界面不创建
-    if (routePrefix !== CUSTOMIZED_MODULE_PREFIX && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
+    if (preventRegisterModule.indexOf(routePrefix) === -1 && dynamicModuleTag !== '' && store.state[keepAliveModuleName] === undefined) {
       store.registerModule(keepAliveModuleName, moduleGenerator[dynamicModuleTag]());
     }
 
@@ -164,17 +185,18 @@ export default (router) => {
       return;
     }
 
+    // 处理label逻辑。因为引入了框架插件界面，故而label显示逻辑会有些需要注意的地方。
     if (dynamicModuleTag !== '' && openedMenuLists.filter(d => d.keepAliveModuleName === keepAliveModuleName).length === 0) {
-      // 目标路由所对应的[功能模块]没有存在与openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
+      // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
       let tempInterval = -1;
       tempInterval = setInterval(() => {
         const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
         if (ready) {
           clearInterval(tempInterval);
           commit('global/increaseOpenedMenuLists', {
-            label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+            label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName: tableName || customizedModuleName,
+            tableName: tableName || customizedModuleName || pluginModuleName,
             routeFullPath: to.path,
             routePrefix
           });
@@ -185,7 +207,7 @@ export default (router) => {
       // eslint-disable-next-line no-lonely-if
       if (to.path !== '/') {
         commit('global/againClickOpenedMenuLists', {
-          label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
+          label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
           keepAliveModuleName
         });
       }

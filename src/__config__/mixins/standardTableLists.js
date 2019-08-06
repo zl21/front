@@ -71,7 +71,8 @@ export default () => ({
         'show-total': true
       }),
       formItems: ({ formItems }) => formItems,
-      buttons: ({ buttons }) => buttons
+      buttons: ({ buttons }) => buttons,
+      webconf: ({ webconf }) => webconf
     }),
   },
   beforeDestroy() {

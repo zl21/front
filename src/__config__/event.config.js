@@ -5,13 +5,24 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   VERTICAL_TABLE_DETAIL_PREFIX,
-  CUSTOMIZED_MODULE_PREFIX
+  CUSTOMIZED_MODULE_PREFIX,
+  PLUGIN_MODULE_PREFIX
 } from '../constants/global';
 
 export const hideMenu = () => {
   document.body.addEventListener('click', () => {
     if (store.state.global.primaryMenuIndex !== -1) {
       store.commit('global/hideMenu');
+    }
+  });
+};
+
+export const launchNetworkMonitor = () => {
+  window.addEventListener('keydown', (e) => {
+    if (e.altKey && e.key.toLowerCase() === 'n') {
+      router.push({
+        path: `${PLUGIN_MODULE_PREFIX}/NETWORKMONITOR`
+      });
     }
   });
 };

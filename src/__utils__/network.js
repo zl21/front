@@ -3,8 +3,9 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes 
+  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes,
 } from '../constants/global';
+import { addNetwork } from './indexedDB';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
@@ -66,6 +67,15 @@ axios.interceptors.response.use(
       url: config.url,
       method: config.method
     }));
+    // 记录每次网络请求的时间
+    addNetwork([{
+      timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
+      url: config.url,
+      data: isJson ? JSON.parse(config.data) : config.data,
+      method: config.method,
+      isJson,
+      reqTimeString: pendingRequestMap[requestMd5].reqTimeString
+    }]);
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
@@ -173,12 +183,20 @@ export const urlSearchParams = (data) => {
   });
   return params;
 };
-
+//  判断网关
+function setUrlSeverId(gateWay, url, serviceconfig) {
+  if (serviceconfig && serviceconfig.serviceId) {
+    return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
+  }
+  return gateWay ? `/${gateWay}${url}` : url;
+}
+  
 function NetworkConstructor() {
   // equals to axios.post(url, config)
-  this.post = (url, config) => {
+  this.post = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
@@ -188,16 +206,18 @@ function NetworkConstructor() {
       console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
+    const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
+      reqTime: now.getTime()
     };
     return axios.post(matchedUrl, config);
   };
 
   // equals to axios.get(url, config)
-  this.get = (url, config) => {
+  this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     const requestMd5 = getRequestMd5({
       data: config,
       url: matchedUrl,
@@ -207,8 +227,10 @@ function NetworkConstructor() {
       console.warn(`request: [${matchedUrl}] is pending.`);
       return { then: () => {} };
     }
+    const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
+      reqTime: now.getTime()
     };
     return axios.get(matchedUrl, config);
   };
