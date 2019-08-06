@@ -16,9 +16,9 @@
     />
     <AgTable
       ref="agTableElement"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :style="agTableElementStyles"
       :page-attribute="pageAttribute"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :datas="ag.datas"
       :css-status="ag.status4css"
       :legend="ag.status4css"
@@ -191,7 +191,7 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
       ...mapMutations('global', ['tabHref', 'tabOpen']),
-      commonTableCustomizedDialog(params){
+      commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
         this.dialogComponentNameConfig.footerHide = true;
@@ -260,16 +260,16 @@
       onSortChange(sortArr) {
         const { tableName } = this.$route.params;
         this.searchData.orderby = sortArr.map((d) => {
-          if (d.sort ==='normal') {
+          if (d.sort === 'normal') {
             return {
               column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
               // asc: d.sort === 'asc'
-            }
+            };
           }
           return {
             column: `${tableName}.${d.colId || 'COMUMN_NOT_EXIST'}`,
             asc: d.sort === 'asc'
-          }
+          };
         });
         this.getQueryList();
       },
@@ -517,12 +517,15 @@
             // 日期控件属性控制
             if (current.display === 'OBJ_DATENUMBER') {
               obj.item.props.type = 'daterange';
+              obj.item.props.format = 'yyyy/MM/dd';
             }
             if (current.display === 'OBJ_DATE') {
               obj.item.props.type = 'datetimerange';
+              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
             }
             if (current.display === 'OBJ_TIME') {
               obj.item.props.type = 'timerange';
+              obj.item.props.format = 'yyyy/MM/dd HH:mm:ss';
             }
 
             // 属性isuppercase控制
@@ -1498,7 +1501,7 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
-          this.updateFormData(this.$refs.FormItemComponent.formDataObject);
+          // this.updateFormData(this.$refs.FormItemComponent.formDataObject);
           this.searchClickData();
         }
       }
