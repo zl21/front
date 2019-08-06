@@ -1568,9 +1568,9 @@
         // drp mrp 初始数据赋值
         let defaultData = [];
         if (cellData.fkdisplay === 'drp') {
-          if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
+          if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
-          } else if (this.dataSource.row[params.index][cellData.colname]) {
+          } else if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname]) {
             const data = {
               ID: this.dataSource.row[params.index][cellData.colname].refobjid.toString(),
               Label: params.row[cellData.colname]
