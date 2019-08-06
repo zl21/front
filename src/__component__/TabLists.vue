@@ -15,6 +15,7 @@
         @click="prevClick"
       >
     </span>
+    
     <ul
       ref="tabList"
       class="tab-list"
@@ -25,10 +26,11 @@
         ref="tabBox"
         class="tabBox"
         :title="tag.label"
+        :class="{active:tag.isActive === true}"
         @click="switchTab(tag,index)"
       >
         <div
-          :class="{active:tag.isActive === true}"
+         
           class="openedMenuListsItem"
         >
           {{ tag.label }}
@@ -82,10 +84,14 @@
     computed: {
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists
-      })
+      }),
+      menuLists() {
+        const openedMenuListsLength = this.openedMenuLists.length;
+        return openedMenuListsLength;
+      }
     },
     watch: {
-      openedMenuLists: {
+      menuLists: {
         handler(val) {
           this.$nextTick(() => {
             const tabOpenedMenuLists = this.$refs.openedMenuLists;
@@ -94,9 +100,9 @@
                 (tabOpenedMenuLists.offsetWidth - 75) / 122
               );
               const width = tabOpenedMenuLists.offsetWidth - 75;
-              const tagWidth = this.openedMenuLists.length * 122;
+              const tagWidth = this.menuLists * 122;
               const left = Math.abs(tagWidth - width);
-              if (val.length > length) {
+              if (val > length) {
                 this.clickShow = true;
                 this.$refs.tabBox.forEach((item) => {
                   item.style.left = `-${left}px`;
@@ -169,7 +175,9 @@
   background-color: #fff;
   display: flex;
   box-sizing: border-box;
-  height: 36px;
+  height: 32px;
+    border-bottom: 1px solid #dfdfdf;
+
   > span {
     display: inline-block;
     width: 20px;
@@ -199,9 +207,9 @@
     position: relative;
     z-index: 0;
     display: flex;
-    // overflow: hidden;
-    border-bottom: 1px solid #dfdfdf;
+    overflow: hidden;
     user-select: none;
+    height: 34px;
     a {
       display: inline-block;
       text-decoration: none;
@@ -210,7 +218,7 @@
       color: #000;
 
       .openedMenuListsItem {
-        height: 96%;
+        height: 29px;
         width: 81px;
         display: block;
         padding-left: 20px;
@@ -270,7 +278,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid #dfdfdf;
     img {
       width: 17px;
       height: 20px;
