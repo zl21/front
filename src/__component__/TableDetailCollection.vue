@@ -415,8 +415,8 @@
         this.editElementId = [];
         data.row.forEach((rowItem, rowIdx) => {
           data.tabth.forEach((tabthItem, tabthIdx) => {
-            if (tabthItem.display === 'text' || tabthItem.display === 'drp' || tabthItem.display === 'mrp'
-              || tabthItem.display === 'mop' || tabthItem.display === 'pop') {
+            if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
+              || tabthItem.fkdisplay === 'mop' || tabthItem.fkdisplay === 'pop') {
               if (tabthItem.ismodify) {
                 this.editElementId.push(`${rowIdx}-${tabthIdx}`);
                 if (!this.columnEditElementId[tabthIdx]) {
@@ -427,11 +427,12 @@
             }
           });
         });
+        // console.log(this.editElementId);
       }, // 获取表格里可编辑元素的id
       tableCellFocusByEnter(elementId) {
         const findIndex = this.editElementId.findIndex(item => item === elementId);
         let elementIndex = 0;
-        if (findIndex !== this.editElementId - 1) {
+        if (findIndex !== this.editElementId.length - 1) {
           elementIndex = findIndex + 1;
         }
         const focusDom = document.getElementById(this.editElementId[elementIndex]);
@@ -948,6 +949,12 @@
                   }
                 });
               },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               'on-blur': () => {
                 this.fkAutoData = [];
                 // if (value.notAutoData) {
@@ -1053,6 +1060,12 @@
 
             },
             on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               valuechange: (item) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = item.value;
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
@@ -1116,6 +1129,12 @@
 
             },
             on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               valuechange: (item) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = item.value;
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
