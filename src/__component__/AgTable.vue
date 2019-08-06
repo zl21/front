@@ -61,7 +61,7 @@
     name: 'AgTable',
     data() {
       return {
-        isCommonTable: true, // 是否显示普通表格
+        // isCommonTable: true, // 是否显示普通表格
         // isCommonTable: false, // 是否显示普通表格
       };
     },
@@ -182,7 +182,11 @@
       legend: {
         type: Array,
         default: () => []
-      } // 图例,
+      }, // 图例,
+      isCommonTable: {
+        type: Boolean,
+        default: false
+      } // 是否显示普通表格
     },
     watch: {
       userConfigForAgTable(val) {

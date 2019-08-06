@@ -32,6 +32,7 @@
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
+      :is-common-table="webconf.commonTable"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"

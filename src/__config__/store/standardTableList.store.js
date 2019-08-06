@@ -104,6 +104,9 @@ export default () => ({
       hideColumn: '',
       colPosition: '',
       fixedColumn: ''
+    },
+    webconf: {
+      commonTable: false
     }
   },
   actions,
