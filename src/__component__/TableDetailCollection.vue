@@ -219,6 +219,10 @@
           confirm: () => {
           }
         },
+
+        columnEditElementId: {}, // 保存每列的可编辑元素的id
+        editElementId: [], // 表格可编辑元素id 用于回车键使用
+        currentFocusElementId: null, // 当前聚焦元素的id
       };
     },
     props: {
@@ -390,11 +394,12 @@
             this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
             this.totalDataNumber = this.totalData();
           }, 50);
-         
+
           this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
           }
+          this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         },
         deep: true,
         immediate: true
@@ -405,6 +410,38 @@
 
       ...mapMutations('global', ['tabHref']),
       //   ...mapActions('global', ['getMenuLists']),
+      getEditAbleId(data) {
+        this.columnEditElementId = {};
+        this.editElementId = [];
+        data.row.forEach((rowItem, rowIdx) => {
+          data.tabth.forEach((tabthItem, tabthIdx) => {
+            if (tabthItem.display === 'text' || tabthItem.display === 'drp' || tabthItem.display === 'mrp'
+              || tabthItem.display === 'mop' || tabthItem.display === 'pop') {
+              if (tabthItem.ismodify) {
+                this.editElementId.push(`${rowIdx}-${tabthIdx}`);
+                if (!this.columnEditElementId[tabthIdx]) {
+                  this.columnEditElementId[tabthIdx] = [];
+                }
+                this.columnEditElementId[tabthIdx].push(`${rowIdx}-${tabthIdx}`);
+              }
+            }
+          });
+        });
+      }, // 获取表格里可编辑元素的id
+      tableCellFocusByEnter(elementId) {
+        const findIndex = this.editElementId.findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (findIndex !== this.editElementId - 1) {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.editElementId[elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+        } else {
+          this.tableCellFocusByEnter(this.editElementId[elementIndex]);
+        }
+        // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
+      }, // 回车的时候聚焦下一个可编辑的输入框
       clearSearchData() {
         this.searchCondition = null;
         this.searchInfo = '';
@@ -693,6 +730,9 @@
             style: {
               width: '100px'
             },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
             props: {
               // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
               value: this.copyDataSource.row[params.index][cellData.colname].val,
@@ -708,11 +748,15 @@
               'on-change': (event, data) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
                 this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+              },
+              'on-focus': (e, i) => {
+              },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
               }
-              // 'on-focus': (event) => {
-              //   event.stopPropagation();
-              //   event.preventDefault();
-              // }
             }
           })
         ]);
@@ -806,6 +850,9 @@
           h(tag, {
             style: {
               width: '100px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
             },
             props: {
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
@@ -959,6 +1006,9 @@
             style: {
               width: '130px'
             },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
               defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
@@ -1021,6 +1071,9 @@
           h(tag, {
             style: {
               width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
             },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
