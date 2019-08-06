@@ -26,17 +26,14 @@ export const addNetwork = (data = []) => {
   }
 };
 
-export const queryAllNetwork = () => {
-  const queryPromise = new Promise((resolve, reject) => {
-    const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
-    const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
-    if (db) {
-      dbStore.getAll().onsuccess = (event) => {
-        resolve(event.target.result.reverse());
-      };
-    } else {
-      reject(new Error('DataBase is not initialized.'));
-    }
-  });
-  return queryPromise;
-};
+export const queryAllNetwork = () => new Promise((resolve, reject) => {
+  const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
+  const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
+  if (db) {
+    dbStore.getAll().onsuccess = (event) => {
+      resolve(event.target.result.reverse());
+    };
+  } else {
+    reject(new Error('DataBase is not initialized.'));
+  }
+});
