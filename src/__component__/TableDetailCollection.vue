@@ -219,6 +219,9 @@
           confirm: () => {
           }
         },
+
+        columnEditElementId: {}, // 保存每列的可编辑元素的id
+        editElementId: [], // 表格可编辑元素id 用于回车键使用
       };
     },
     props: {
@@ -390,11 +393,12 @@
             this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
             this.totalDataNumber = this.totalData();
           }, 50);
-         
+
           this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
           }
+          this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         },
         deep: true,
         immediate: true
@@ -405,6 +409,57 @@
 
       ...mapMutations('global', ['tabHref']),
       //   ...mapActions('global', ['getMenuLists']),
+      getEditAbleId(data) {
+        this.columnEditElementId = {};
+        this.editElementId = [];
+        data.row.forEach((rowItem, rowIdx) => {
+          data.tabth.forEach((tabthItem, tabthIdx) => {
+            if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
+              || tabthItem.fkdisplay === 'mop' || tabthItem.fkdisplay === 'pop') {
+              if (tabthItem.ismodify) {
+                this.editElementId.push(`${rowIdx}-${tabthIdx}`);
+                if (!this.columnEditElementId[tabthIdx]) {
+                  this.columnEditElementId[tabthIdx] = [];
+                }
+                this.columnEditElementId[tabthIdx].push(`${rowIdx}-${tabthIdx}`);
+              }
+            }
+          });
+        });
+      }, // 获取表格里可编辑元素的id
+      tableCellFocusByEnter(elementId) {
+        const findIndex = this.editElementId.findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (findIndex !== this.editElementId.length - 1) {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.editElementId[elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+        } else {
+          this.tableCellFocusByEnter(this.editElementId[elementIndex]);
+        }
+        // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
+      }, // 回车的时候聚焦下一个可编辑的输入框
+      tableCellFocusByUpOrDown(elementId, currentColumn, type) {
+        const findIndex = this.columnEditElementId[currentColumn].findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (type === 'up') {
+          if (findIndex === 0) {
+            elementIndex = this.columnEditElementId[currentColumn].length - 1;
+          } else {
+            elementIndex = findIndex - 1;
+          }
+        } else if (type === 'down') {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.columnEditElementId[currentColumn][elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+        } else {
+          this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn,type);
+        }
+      }, // 按下上键或者下键的时候聚焦下一个可编辑的输入框
       clearSearchData() {
         this.searchCondition = null;
         this.searchInfo = '';
@@ -543,7 +598,9 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-
+            if (ele.comment) {
+              param.renderHeader = this.tooltipRenderHeader();
+            }
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
             // if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
             //   this.dataSource.ordids.map((order) => {
@@ -573,6 +630,37 @@
         ];
         return headColumn.concat(renderColumns);
       },
+      tooltipRenderHeader() {
+        return (h, params) => {
+          return h('span', [
+            h('Poptip', {
+              style: {},
+              props: {
+                trigger: 'hover',
+                transfer: true,
+                wordWrap: true,
+                content: 'content',
+                placement: 'top'
+
+              },
+              scopedSlots: {
+                default: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                  }
+                }),
+                content: () => h('div', {
+                  style: {},
+                  domProps: {
+                    innerHTML: `<span>${params.column.comment}</span>`
+                  }
+                }),
+              },
+            })
+          ]);
+        };
+      }, // 表头提示的render
       filterData(rows) {
         if (!rows) {
           return [];
@@ -693,6 +781,9 @@
             style: {
               width: '100px'
             },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
             props: {
               // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
               value: this.copyDataSource.row[params.index][cellData.colname].val,
@@ -708,11 +799,26 @@
               'on-change': (event, data) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
                 this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+              },
+              'on-focus': (e, i) => {
+              },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  // 回车
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
               }
-              // 'on-focus': (event) => {
-              //   event.stopPropagation();
-              //   event.preventDefault();
-              // }
             }
           })
         ]);
@@ -806,6 +912,9 @@
           h(tag, {
             style: {
               width: '100px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
             },
             props: {
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
@@ -901,6 +1010,12 @@
                   }
                 });
               },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               'on-blur': () => {
                 this.fkAutoData = [];
                 // if (value.notAutoData) {
@@ -959,6 +1074,9 @@
             style: {
               width: '130px'
             },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
               defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
@@ -1003,6 +1121,12 @@
 
             },
             on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               valuechange: (item) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = item.value;
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
@@ -1021,6 +1145,9 @@
           h(tag, {
             style: {
               width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
             },
             props: {
               defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
@@ -1063,6 +1190,12 @@
 
             },
             on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                }
+              },
               valuechange: (item) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = item.value;
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;

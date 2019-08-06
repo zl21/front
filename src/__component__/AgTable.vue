@@ -10,9 +10,20 @@
     />
     <div
       ref="agGridTableContainer"
+      v-if="!isCommonTable"
       class="detailTable"
     />
-
+    <div class="common-table" v-if="isCommonTable">
+      <CommonTable :datas="datas"
+                   ref="commonTable"
+                   @CustomizedDialog="customizedDialog"
+                   :cssStatus="cssStatus"
+                   :errorArr="errorArr"
+                   :onRowDoubleClick="onRowDoubleClick"
+                   :onSortChanged="onSortChanged"
+                   :onSelectionChanged="onSelectionChanged"
+                   :onRowSingleClick="onRowSingleClick"></CommonTable>
+    </div>
     <div class="queryDesc">
       <div
         v-if="legend.length > 0 & isLegendShow"
@@ -44,10 +55,20 @@
   /* eslint-disable no-lonely-if */
 
   import agTable from '../assets/js/ag-grid-table-pure';
+  import CommonTable from './CommonTable';
 
   export default {
     name: 'AgTable',
-    components: {},
+    data() {
+      return {
+        // isCommonTable: true, // 是否显示普通表格
+        // isCommonTable: false, // 是否显示普通表格
+      };
+    },
+    components: {
+      CommonTable
+    },
+    computed: {},
     props: {
       userConfigForAgTable: {
         type: Object,
@@ -161,24 +182,32 @@
       legend: {
         type: Array,
         default: () => []
-      } // 图例,
+      }, // 图例,
+      isCommonTable: {
+        type: Boolean,
+        default: false
+      } // 是否显示普通表格
     },
     watch: {
       userConfigForAgTable(val) {
-        const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+        if (!this.isCommonTable) {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.dealWithPinnedColumns(true, val.fixedColumn || '');
+          }
         }
       },
       datas(val) {
-        this.agGridTable(val.tabth, val.row, val);
-        setTimeout(() => {
-          const { agGridTableContainer } = this.$refs;
-          if (agGridTableContainer && agGridTableContainer.agTable) {
-            agGridTableContainer.agTable.fixContainerHeight();
-            agGridTableContainer.agTable.emptyAllFilters();
-          }
-        }, 30);
+        if (!this.isCommonTable) {
+          this.agGridTable(val.tabth, val.row, val);
+          setTimeout(() => {
+            const { agGridTableContainer } = this.$refs;
+            if (agGridTableContainer && agGridTableContainer.agTable) {
+              agGridTableContainer.agTable.fixContainerHeight();
+              agGridTableContainer.agTable.emptyAllFilters();
+            }
+          }, 30);
+        }
       },
     },
     methods: {
@@ -274,17 +303,26 @@
         }
       }, // 每页条数改变
       showAgLoading() {
-        const { agGridTableContainer } = this.$refs;
-        if (agGridTableContainer.agTable) {
-          agGridTableContainer.agTable.showLoading();
+        if (!this.isCommonTable) {
+          const { agGridTableContainer } = this.$refs;
+          if (agGridTableContainer.agTable) {
+            agGridTableContainer.agTable.showLoading();
+          }
+        } else {
+          this.$refs.commonTable.spinShow = true;
         }
       },
+      customizedDialog(params) {
+        this.$emit('CommonTableCustomizedDialog', params);
+      }
     },
     activated() {
-      const { agGridTableContainer } = this.$refs;
-      if (agGridTableContainer.agTable) {
-        agGridTableContainer.agTable.fixAgRenderChoke();
-        agGridTableContainer.agTable.fixContainerHeight();
+      if (!this.isCommonTable) {
+        const { agGridTableContainer } = this.$refs;
+        if (agGridTableContainer.agTable) {
+          agGridTableContainer.agTable.fixAgRenderChoke();
+          agGridTableContainer.agTable.fixContainerHeight();
+        }
       }
     }
   };
@@ -296,6 +334,11 @@
    display: flex;
    flex: 1;
    flex-direction: column;
+   .common-table {
+     margin-top: 10px;
+     overflow-y: hidden;
+     flex: 1;
+   }
  }
   .detailTable {
     border: 1px solid #d8d8d8;
