@@ -59,14 +59,18 @@ export default {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
-            if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
-              const param = {
-                table: firstReftab.tablename,
-                objid,
-                tabIndex
-              };
-              this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
-            }
+            const getObjectTabPromise = new Promise((rec, rej) => {
+              if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                const param = {
+                  table: firstReftab.tablename,
+                  objid,
+                  tabIndex,
+                  rec,
+                  rej
+                };
+                this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+              }
+            });
             if (resData.reftabs[0].refcolid !== -1) {
               // commit('updateActiveRefFormInfo', resData.reftabs[0]);
               // 获取第一个tab的子表表单
@@ -80,18 +84,20 @@ export default {
               }
               // 获取第一个tab的子表列表数据
               if (resData.reftabs[0].tabrelation === '1:m') {
-                if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                  const tableParam = {
-                    table: firstReftab.tablename,
-                    objid,
-                    refcolid: firstReftab.refcolid,
-                    searchdata: {
-                      column_include_uicontroller: true
-                    },
-                    tabIndex
-                  };
-                  this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
-                }
+                getObjectTabPromise.then(() => {
+                  if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    const tableParam = {
+                      table: firstReftab.tablename,
+                      objid,
+                      refcolid: firstReftab.refcolid,
+                      searchdata: {
+                        column_include_uicontroller: true
+                      },
+                      tabIndex
+                    };
+                    this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                  }
+                });
               } else if (resData.reftabs[0].tabrelation === '1:1') {
                 // 获取子表面板数据
                 if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
@@ -115,7 +121,9 @@ export default {
   }, { // 获取子表按钮
     table,
     objid,
-    tabIndex
+    tabIndex,
+    rec,
+    rej
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -124,9 +132,12 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
+        rec();
         const resData = res.data.data;
         resData.tabIndex = tabIndex;
         commit('updateRefButtonsData', resData);
+      } else {
+        rej();
       }
     });
   },
@@ -624,7 +635,7 @@ export default {
     params,
     path,
     resolve, reject
-  }) { 
+  }) {
     network.post(path || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
@@ -633,7 +644,7 @@ export default {
         commit('updateObjTabActionSlientConfirm', invalidData);
       } else {
         reject();
-      }  
+      }
     }).catch(() => {
       reject();
     });

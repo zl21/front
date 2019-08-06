@@ -159,28 +159,33 @@
         this.updateTabCurrentIndex(index);
         const { itemId } = this.$route.params;
         const refTab = this.tabPanel[index];
+        let getButtonDataPromise = null;
         if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
           // 获取子表表单
+          getButtonDataPromise = new Promise((rec, rej) => {
+            this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej });
+          });
           const formParam = {
             table: refTab.tablename,
             inlinemode: refTab.tabinlinemode,
             tabIndex: index
           };
           this.getFormDataForRefTable(formParam);
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
         }
         if (refTab.tabrelation === '1:m') {
-          this.getObjectTableItemForTableData({
-            table: refTab.tablename,
-            objid: itemId,
-            refcolid: refTab.refcolid,
-            searchdata: {
-              column_include_uicontroller: true,
-              startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-              range: this.tablePageInfo.pageSize,
-              fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : {}
-            },
-            tabIndex: index
+          getButtonDataPromise.then(() => {
+            this.getObjectTableItemForTableData({
+              table: refTab.tablename,
+              objid: itemId,
+              refcolid: refTab.refcolid,
+              searchdata: {
+                column_include_uicontroller: true,
+                startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                range: this.tablePageInfo.pageSize,
+                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : {}
+              },
+              tabIndex: index
+            });
           });
         } else if (refTab.tabrelation === '1:1') {
           this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
