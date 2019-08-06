@@ -180,7 +180,7 @@
           option.expand = !!obj.expand;
           option.children = [...obj.VALUE];
           option.children.forEach((item) => {
-            item.title = item.NAME;
+            item.title = item.NAME.toString();
           });
           return option;
         });
@@ -826,7 +826,6 @@
     },
     mounted() {
       this.$refs.dialog.$refs.Table[0].$el.focus();
-      console.log(this.$refs.dialog.$refs.Table[0].$el);
       /**/
     },
     created() {
