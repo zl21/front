@@ -71,7 +71,11 @@
                   option[items.item.field] = items.item.value[0].ID;
                 }
               } else if (items.item.value[0]) {
-                option[items.item.field] = items.item.value[0];
+                if (items.item.type === 'ImageUpload') {
+                  option[items.item.field] = JSON.stringify(items.item.value);
+                } else {
+                  option[items.item.field] = items.item.value[0];
+                }
               }
             } else if (items.item.value) {
               if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
@@ -394,6 +398,7 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
+          console.log(this.formDataObject, 'this.formDataObject');
           this.mountdataForm(this.formDataObject);
           this.formInit();
           setTimeout(() => {
