@@ -258,9 +258,9 @@ function getConfigMap() { // 获取所有配置流程图的表集合
 }
 
 function createComponent() { // 创建跟节点实例
-  const jflowPlugin = document.createElement('div');
-  jflowPlugin.id = 'jflowPlugin';
-  document.body.appendChild(jflowPlugin);
+  // const jflowPlugin = document.createElement('div');
+  // jflowPlugin.id = 'jflowPlugin';
+  // document.body.appendChild(jflowPlugin);
   // const vm = new Vue({
   //   el: '#jflowPlugin',
   //   template: '<mainComponent />',
