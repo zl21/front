@@ -39,7 +39,7 @@ function pollBacklogData(store) {
     if (res.data.resultCode === 0 && res.data.data.total > 0) {
       let data = store.state.global.navigatorSetting.concat([]);
       data = [{
-        icon: 'iconmd-umbrella',
+        icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: res.data.data.total 
       }];
@@ -47,7 +47,7 @@ function pollBacklogData(store) {
     } else {
       let data = store.state.global.navigatorSetting.concat([]);
       data = [{
-        icon: 'iconmd-umbrella',
+        icon: 'iconlogo-jflow',
         callback: openTodoLists,
         count: 0
       }];
