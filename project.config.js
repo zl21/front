@@ -10,6 +10,6 @@ module.exports = {
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开
-  enableJflow: true, // 是否开启JFlow插件功能
+  enableJflow: false, // 是否开启JFlow插件功能
   jflowRequestDomain: '47.99.229.124:32940', // jflow请求转发的域名或者IP
 };
