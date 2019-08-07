@@ -43,12 +43,11 @@ export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promi
         data.push(cursor.value);
         cursor.continue();
       } else {
-        console.log(data.map((d) => d.reqTimeString));
         resolve(data);
       }
     };
-    dbStore.index('timecost').getAll(timeCostKeyRange).onsuccess = (event) => {
-      resolve(event.target.result.reverse());
+    timeCostCursor.onerror = (event) => {
+      reject(event);
     };
   } else if (ENABLE_NETWORK_MONITOR) {
     reject(new Error('DataBase is not initialized.'));
@@ -57,11 +56,11 @@ export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promi
   }
 });
 
-export const emptyOtherDayRecord = (interval) => new Promise((resolve, reject) => {
+export const emptyOtherDayRecord = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
   if (ENABLE_NETWORK_MONITOR && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
-    const recordDateTimeKeyRange = IDBKeyRange.upperBound(new Date(new Date().toDateString()).getTime(), true);
+    const recordDateTimeKeyRange = IDBKeyRange.upperBound(interval, true);
     const recordDateTimeCursor = dbStore.index('recordDateTime').openCursor(recordDateTimeKeyRange);
     recordDateTimeCursor.onsuccess = (event) => {
       const cursor = event.target.result;

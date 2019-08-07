@@ -4,8 +4,26 @@
       <Button @click="doQuery">刷新</Button>
       <Button @click="doEmpty">清空非当日数据</Button>
     </div>
+    <div style="margin-bottom: 15px;">
+      <Page
+        ref="page"
+        size="small"
+        :total="data.length"
+        show-total
+        show-elevator
+        show-sizer
+        @on-change="pageChange"
+        @on-page-size-change="pageSizeChange"
+      />
+    </div>
     <div class="tableWrapper" >
-      <Table size="small" :columns="columns" :data="data" disabled-hover :height="true"></Table>
+      <Table
+        size="small"
+        :columns="columns"
+        :data="viewData"
+        disabled-hover
+        :height="true"
+      ></Table>
     </div>
   </div>
 </template>
@@ -15,27 +33,41 @@
   
   export default {
     data: () => ({
+      page: 1,
+      pageSize: 10,
+      viewData: [],
       data: [],
       columns: [
-        { key: 'timecost', title: '请求耗时(ms)' },
+        { key: 'timecost', title: 'TimeCost' },
         { key: 'url', title: 'Url' },
-        { key: 'method', title: '请求Method' },
-        { key: 'reqTimeString', title: '请求时间' },
-        { key: 'data', title: '请求参数' },
+        { key: 'method', title: 'Method' },
+        { key: 'reqTime', title: 'Request Time' },
+        { key: 'data', title: 'Request Params' },
       ]
     }),
     created() {
       this.doQuery();
     },
     methods: {
+      pageChange(pageNum) {
+        this.page = pageNum;
+        this.generateViewData();
+      }, // 页码改变
+      pageSizeChange(pageSize) {
+        this.pageSize = pageSize;
+      },
+      generateViewData() {
+        this.viewData = this.data.slice((this.page - 1) * this.pageSize, this.page * this.pageSize);
+      },
       doQuery() {
         queryAllNetwork()
           .then((res) => {
             this.data = res;
+            this.generateViewData();
           });
       },
       doEmpty() {
-        emptyOtherDayRecord()
+        emptyOtherDayRecord(Date.now() - 1000 * 60)
           .then(() => {
             this.doQuery();
           });

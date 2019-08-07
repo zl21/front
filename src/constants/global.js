@@ -25,7 +25,7 @@ export const MODULE_COMPONENT_NAME = 'moduleComponentName';
 export const DB_NAME = 'R3';
 export const DB_SCHEMA_NETWORK = 'Network';
 export const ENABLE_NETWORK_MONITOR = true;
-export const SLOW_NETWORK_THRESHOLD = 500;
+export const SLOW_NETWORK_THRESHOLD = 0;
 
 // 需要走全局公共网关的接口
 export const globalGateWay = [

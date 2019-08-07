@@ -74,7 +74,7 @@ axios.interceptors.response.use(
       data: isJson ? JSON.parse(config.data) : config.data,
       method: config.method,
       isJson,
-      reqTimeString: pendingRequestMap[requestMd5].reqTimeString
+      reqTime: pendingRequestMap[requestMd5].reqTime
     }]);
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
@@ -208,7 +208,6 @@ function NetworkConstructor() {
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
       reqTime: now.getTime()
     };
     return axios.post(matchedUrl, config);
@@ -229,7 +228,6 @@ function NetworkConstructor() {
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
-      reqTimeString: `${now.toLocaleString()}.${now.getMilliseconds()}`,
       reqTime: now.getTime()
     };
     return axios.get(matchedUrl, config);
