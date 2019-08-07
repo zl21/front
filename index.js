@@ -19,7 +19,7 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 
-import jflowplugin from './plugin/jflow-plugin';
+import jflowplugin from './src/plugin/jflow-plugin';
 
 if (enableJflow() && jflowRequestDomain()) {
   Vue.use(jflowplugin, {
