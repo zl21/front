@@ -436,6 +436,7 @@
         const focusDom = document.getElementById(this.editElementId[elementIndex]);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
+          focusDom.getElementsByTagName('input')[0].select();
         } else {
           this.tableCellFocusByEnter(this.editElementId[elementIndex]);
         }
@@ -456,6 +457,7 @@
         const focusDom = document.getElementById(this.columnEditElementId[currentColumn][elementIndex]);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
+          focusDom.getElementsByTagName('input')[0].select();
         } else {
           this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn,type);
         }
@@ -807,7 +809,7 @@
                   // 回车
                   const elementId = i.$el.id;
                   this.tableCellFocusByEnter(elementId);
-                } if (e.keyCode === 40) {
+                } else if (e.keyCode === 40) {
                   // 下键
                   const elementId = i.$el.id;
                   const currentColumn = params.column._index - 1;
@@ -1014,6 +1016,16 @@
                 if (e.keyCode === 13) {
                   const elementId = i.$el.id;
                   this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                 }
               },
               'on-blur': () => {
@@ -1125,6 +1137,16 @@
                 if (e.keyCode === 13) {
                   const elementId = i.$parent.$el.id;
                   this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                 }
               },
               valuechange: (item) => {
@@ -1194,6 +1216,16 @@
                 if (e.keyCode === 13) {
                   const elementId = i.$parent.$el.id;
                   this.tableCellFocusByEnter(elementId);
+                } else  if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
                 }
               },
               valuechange: (item) => {
