@@ -1,41 +1,100 @@
 <template>
   <div class="NetworkMonitorContainer">
     <div style="margin: 15px;">
-      <Button @click="doQuery">刷新</Button>
-      <Button @click="doEmpty">清空非当日数据</Button>
+      <Button @click="doQuery">
+        刷新
+      </Button>
+      <Button @click="doEmpty">
+        清空所有数据
+      </Button>
     </div>
-    <div class="tableWrapper" >
-      <Table size="small" :columns="columns" :data="data" disabled-hover :height="true"></Table>
+    <div style="margin-bottom: 15px;">
+      <Page
+        ref="page"
+        size="small"
+        :total="data.length"
+        show-total
+        show-elevator
+        show-sizer
+        @on-change="pageChange"
+        @on-page-size-change="pageSizeChange"
+      />
+    </div>
+    <div class="tableWrapper">
+      <Table
+        size="small"
+        :columns="columns"
+        :data="viewData"
+        disabled-hover
+        :height="true"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import { queryAllNetwork, emptyOtherDayRecord } from '../../__utils__/indexedDB';
+  import { queryAllNetwork, emptyRecord } from '../../__utils__/indexedDB';
   
   export default {
     data: () => ({
+      page: 1,
+      pageSize: 10,
+      viewData: [],
       data: [],
       columns: [
-        { key: 'timecost', title: '请求耗时(ms)' },
+        { key: 'timecost', title: 'TimeCost' },
         { key: 'url', title: 'Url' },
-        { key: 'method', title: '请求Method' },
-        { key: 'reqTimeString', title: '请求时间' },
-        { key: 'data', title: '请求参数' },
+        { key: 'method', title: 'Method' },
+        {
+          key: 'reqTime',
+          title: 'Request Time',
+          render: (createElement, data) => {
+            const date = new Date(data.row[data.column.key]);
+            const format = `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
+            return createElement('span', format);
+          }
+        },
+        {
+          key: 'data',
+          title: 'Request Params',
+          // minWidth: 300,
+          maxWidth: 500,
+          ellipsis: false,
+          render: (createElement, data) => {
+            const format = data.row.isJson ? JSON.stringify(data.row[data.column.key] || {}, null, 4) : decodeURIComponent(data.row[data.column.key] || '');
+            return createElement('span', format);
+          }
+        },
+        {
+          key: 'isJson',
+          title: 'Content-Type',
+          render: (createElement, data) => createElement('span', data.row[data.column.key] ? 'application/json' : 'application/x-www-form-urlencoded')
+        }
       ]
     }),
     created() {
       this.doQuery();
     },
     methods: {
+      pageChange(pageNum) {
+        this.page = pageNum;
+        this.generateViewData();
+      }, // 页码改变
+      pageSizeChange(pageSize) {
+        this.pageSize = pageSize;
+      },
+      generateViewData() {
+        this.viewData = this.data.slice((this.page - 1) * this.pageSize, this.page * this.pageSize);
+      },
       doQuery() {
         queryAllNetwork()
           .then((res) => {
-            this.data = res;
+            this.data = res.sort((a, b) => b.reqTime - a.reqTime);
+            this.generateViewData();
           });
       },
       doEmpty() {
-        emptyOtherDayRecord()
+        emptyRecord(Date.now())
           .then(() => {
             this.doQuery();
           });

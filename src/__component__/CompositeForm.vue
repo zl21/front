@@ -441,7 +441,7 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
-        obj.show = true;
+        obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? false : true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,

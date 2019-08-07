@@ -4,7 +4,7 @@
  * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22"
  */
 Date.prototype.toIsoDateString = function toIsoDateString() {
-  return this.setNewFormt(this.toISOString().slice(0, -14));
+  return this.toISOString().slice(0, -14);
 };
  
 /**
@@ -66,6 +66,7 @@ Date.prototype.getEndOfNextMonth = function getEndOfNextMonth() {
  * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22 08:37:43"
  * 传参格式: yyyy-MM-dd hh:mm:ss yyyy-MM-dd
  */
-Date.prototype.setNewFormt = function (fmt) { 
-  return fmt.replace(/-/g, '/'); 
+Date.prototype.setNewFormt = function (fmt,from,to) { 
+  console.log(fmt.replace('/-/g',''));  
+  return fmt.replace(new RegExp(from,'g'), to); 
 };  

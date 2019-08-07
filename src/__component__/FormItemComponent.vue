@@ -254,7 +254,21 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;
+        if (this.newFormItemLists[index].item.props.display === 'OBJ_DATENUMBER') {
+          // 列表界面 配置 显示字符串
+          if (Array.isArray(value)) {
+            const _value = value.reduce((arry, item) => {
+              arry.push(new Date().setNewFormt(item, '/', ''));
+              return arry;
+            }, []);
+            this.newFormItemLists[index].item.value = _value;
+          } else {
+            this.newFormItemLists[index].item.value = new Date().setNewFormt(value, '/', '');
+          }
+          
+        } else {
+          this.newFormItemLists[index].item.value = value;
+        }
         this.newFormItemLists = this.newFormItemLists.concat([]);
       },
       dynamicforcompute(items, json, index) {
