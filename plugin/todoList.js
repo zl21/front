@@ -9,7 +9,7 @@ function todoList(store, router) {
 function createIcon(store) {
   let data = store.state.global.navigatorSetting.concat([]);
   data = [{
-    icon: 'iconmd-umbrella',
+    icon: 'iconlogo-jflow',
     callback: () => {
       openTodoLists();
     },

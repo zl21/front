@@ -43,7 +43,7 @@
       <Badge 
         v-for="(item,index) in navigatorSetting" 
         :key="index"
-        style="width:50px;"
+        style="width:50px;height:50px"
         :offset="['6px','-8px']"
         :count="item.count"
         @click.native="item.callback"
