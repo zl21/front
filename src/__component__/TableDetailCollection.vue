@@ -457,7 +457,9 @@
         const focusDom = document.getElementById(this.columnEditElementId[currentColumn][elementIndex]);
         if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
           focusDom.getElementsByTagName('input')[0].focus();
-          focusDom.getElementsByTagName('input')[0].select();
+          setTimeout(() => {
+            focusDom.getElementsByTagName('input')[0].select();
+          }, 0);
         } else {
           this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn,type);
         }
