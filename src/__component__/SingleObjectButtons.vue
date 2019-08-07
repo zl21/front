@@ -388,9 +388,16 @@
           this.clickButtonsBack();
         } else if (type === 'refresh') {
           this.clickButtonsRefresh();
-        } else {
-          this.searchClickData();
+        } else if (type === 'extraposition') {
+          this.clickExtraposition(obj);
         }
+      },
+      clickExtraposition(obj) { // jflow方法
+        DispatchEvent('jflowPlugin', {
+          detail: {
+            obj
+          }
+        });
       },
       clickButtonsRefresh() { // 按钮刷新事件
         // DispatchEvent('tabRefreshClick', {
