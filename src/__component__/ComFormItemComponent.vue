@@ -353,7 +353,7 @@
         return onfousInput;
       },  
       formInit() {
-        const val = this.refcolvalData;
+        const val = this.getStateData();
         this.newFormItemLists.map((items, i) => {
           const item = items.item;
           this.LinkageForm.push({
@@ -398,7 +398,6 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          console.log(this.formDataObject, 'this.formDataObject');
           this.mountdataForm(this.formDataObject);
           this.formInit();
           setTimeout(() => {
