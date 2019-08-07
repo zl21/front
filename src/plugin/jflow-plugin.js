@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import CreateButton from './button';
 import todoList from './todoList';
-import '../src/__plugin__/InstanceManagementList/utils/dateApi';
+import '../__plugin__/InstanceManagementList/utils/dateApi';
 
 
 let axios = {}; // axios请求
