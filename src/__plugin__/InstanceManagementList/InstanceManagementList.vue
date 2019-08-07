@@ -1,80 +1,95 @@
 <template>
-  <div class="InstanceManagementList">
+    <div class="InstanceManagementList">
     <div class="content">
-      <Tabs
-        :value="tabalive"
-        @on-click="onClick"
-      >
-        <TabPane
-          label="待办流程"
-          name="待办流程"
-        >
-          <todoProcess />
-        </TabPane>
-        <TabPane
-          label="历史流程"
-          name="历史流程"
-        >
-          <HistoricalProcess />
-        </TabPane>
+      <Tabs :value="tabalive" @on-click="onClick">
+          <TabPane label="待我审批的" name="待我审批的"><todoProcess></todoProcess></TabPane>
+          <TabPane label="我已审批的" name="我已审批的"><HistoricalProcess></HistoricalProcess></TabPane>
+          <TabPane label="我发起的" name="我发起的"><launchList></launchList></TabPane>
       </Tabs>
+      <i class="iconfont iconbj_delete2 InstanceManagementListDelete" @click="closeLists"></i>
     </div>
-  </div>
-</template>
-// <script>
-  import todoProcess from './TodoProcess';
-  import HistoricalProcess from './HistoricalProcess';
 
-  export default {
-    name: 'InstanceManagementList',
-    components: { todoProcess, HistoricalProcess },
-    data() {
-      return {
-        tabalive: '待办流程', // tab切换默认值
-        tabConfig: [{
-          label: '待办流程',
-          name: '待办流程'
-        }, {
-          label: '历史流程',
-          name: '历史流程'
-        }]
-      };
-    },
-    methods: {
-      routeClick(val) {
-        if (val === 1) {
-          this.tabalive = '待办流程';
-        } else if (val === 2) {
-          this.tabalive = '历史流程';
+
+    </div>
+</template>
+<script>
+import todoProcess from './TodoProcess';
+import HistoricalProcess from './HistoricalProcess';
+import launchList from './launchList';
+export default {
+    name:'InstanceManagementList',
+    components:{todoProcess,HistoricalProcess,launchList},
+    data(){
+        return{
+            tabalive:"待我审批的",//tab切换默认值
+            tabConfig:[{
+                label:'待我审批的',
+                name:'待我审批的'
+            },{
+                label:' 我已审批的',
+                name:' 我已审批的'
+            },{
+                label:'我发起的',
+                name:'我发起的'
+            }]
         }
-      },
-      // tab切换点击事件
-      onClick(val) {
-        this.tabalive = val;
-        // if(val==='历史流程'){
-        //  window.history.replaceState({}, '', "/InstanceManagementList?type=2");
-        // }else{
-        //  window.history.replaceState({}, '', "/InstanceManagementList?type=1");
-        // }
-      }
     },
-    created() {
-      const path = window.location.pathname;
-      this.routeClick(path.split('=')[1]);
+    methods:{
+        routeClick(val){
+            if(val === 1){
+                this.tabalive = '待我审批的';
+            } else if (val === 2) {
+                this.tabalive = ' 我已审批的';
+            }else if(val===3){
+                this.tabalive = ' 我发起的';
+            }
+        },
+        //tab切换点击事件
+        onClick(val){
+            this.tabalive=val;
+            // if(val==='历史流程'){
+            //  window.history.replaceState({}, '', "/InstanceManagementList?type=2");
+            // }else{
+            //  window.history.replaceState({}, '', "/InstanceManagementList?type=1");
+            // }
+
+        },
+        closeLists () {  //关闭待办列表
+          window.jflowPlugin.todoListsFun(false)
+        }
+    },
+    created(){
+        let path=window.location.pathname;
+       this.routeClick(path.split('=')[1]);
     }
 
-  };
+}
 </script>
 <style lang="less" >
-
+@keyframes myfirst
+{
+  from {
+    height:0%;
+    top: 100%;
+  }
+  to {
+    height:100%;
+    top:0;
+  }
+}
 .InstanceManagementList{
-
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     z-index: 2000;
+    background: rgba(0,0,0,0.3);
+    padding: 60px 10px 10px 10px;
     display: flex;
     flex-direction: column;
+
 
 
     .content{
@@ -83,6 +98,7 @@
       background: white;
       padding: 10px;
       position: relative;
+      animation:myfirst 1s ease;
 
       .InstanceManagementListDelete{
         width: 12px;
@@ -120,3 +136,4 @@
 
 }
 </style>
+
