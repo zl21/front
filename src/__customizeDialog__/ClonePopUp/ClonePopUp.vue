@@ -177,7 +177,13 @@
     },
     mounted() {
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
-    }
+    },
+    destroyed() {
+      const dom = document.getElementById('dropDownSelectPopper');
+      if (dom) {
+        dom.parentNode.removeChild(dom);
+      }
+    },
   };
 </script>
 <style lang="less" scoped type="text/less">

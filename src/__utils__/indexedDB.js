@@ -1,4 +1,6 @@
-import { DB_NAME, DB_SCHEMA_NETWORK, ENABLE_NETWORK_MONITOR, SLOW_NETWORK_THRESHOLD } from '../constants/global';
+import {
+  DB_NAME, DB_SCHEMA_NETWORK, ENABLE_NETWORK_MONITOR, SLOW_NETWORK_THRESHOLD 
+} from '../constants/global';
 
 const open = (name, version) => {
   const db = window.indexedDB.open(name, version);
@@ -22,23 +24,32 @@ export const addNetwork = (data = []) => {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
     data.forEach((d) => {
-      if (d.timecost >= SLOW_NETWORK_THRESHOLD) {
-        const result = dbStore.add(Object.assign({}, d, { recordDateTime: new Date(new Date().toDateString()).getTime() }));
-        result.onerror = (err) => {
-          console.error(err);
-        };
-      }
+      const result = dbStore.add(Object.assign({}, d, { recordDateTime: Date.now() }));
+      result.onerror = (err) => {
+        console.error(err);
+      };
     });
   }
 };
 
-export const queryAllNetwork = () => new Promise((resolve, reject) => {
+export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promise((resolve, reject) => {
   if (ENABLE_NETWORK_MONITOR && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
-    const timeCostKeyRange = IDBKeyRange.lowerBound(SLOW_NETWORK_THRESHOLD);
-    dbStore.index('timecost').getAll(timeCostKeyRange).onsuccess = (event) => {
-      resolve(event.target.result.reverse());
+    const timeCostKeyRange = IDBKeyRange.lowerBound(threshold);
+    const timeCostCursor = dbStore.index('timecost').openCursor(timeCostKeyRange);
+    const data = [];
+    timeCostCursor.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        data.push(cursor.value);
+        cursor.continue();
+      } else {
+        resolve(data);
+      }
+    };
+    timeCostCursor.onerror = (event) => {
+      reject(event);
     };
   } else if (ENABLE_NETWORK_MONITOR) {
     reject(new Error('DataBase is not initialized.'));
@@ -47,21 +58,29 @@ export const queryAllNetwork = () => new Promise((resolve, reject) => {
   }
 });
 
-export const emptyOtherDayRecord = () => new Promise((resolve, reject) => {
+export const emptyRecord = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
   if (ENABLE_NETWORK_MONITOR && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
-    const recordDateTimeKeyRange = IDBKeyRange.upperBound(new Date(new Date().toDateString()).getTime(), true);
-    const deleteTask = dbStore.index('recordDateTime').objectStore.delete(recordDateTimeKeyRange);
-    deleteTask.onsuccess = (event) => {
-      resolve(event);
+    const recordDateTimeKeyRange = IDBKeyRange.upperBound(interval, true);
+    const recordDateTimeCursor = dbStore.index('recordDateTime').openCursor(recordDateTimeKeyRange);
+    recordDateTimeCursor.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        cursor.delete();
+        cursor.continue();
+      } else {
+        resolve(event);
+      }
     };
-    deleteTask.onerror = (event) => {
+    recordDateTimeCursor.onerror = (event) => {
       reject(event);
     };
+  } else {
+    reject(new Error('DataBase is not available at this moment.'));
   }
 });
 
-if (ENABLE_NETWORK_MONITOR) {
+if (ENABLE_NETWORK_MONITOR && window.indexedDB) {
   initDB();
 }

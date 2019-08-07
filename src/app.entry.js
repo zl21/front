@@ -19,16 +19,7 @@ import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 
-import jflowplugin from '../plugin/jflow-plugin';
-
-if (enableJflow() && jflowRequestDomain()) {
-  Vue.use(jflowplugin, {
-    router,
-    axios,
-    store,
-    jflowIp: jflowRequestDomain()
-  });
-}
+import jflowplugin from './plugin/jflow-plugin';
 
 
 Vue.component('CompositeForm', CompositeForm);
@@ -116,6 +107,14 @@ export default (projectConfig = {
   });
 
   // 启动
+  if (enableJflow() && jflowRequestDomain()) {
+    Vue.use(jflowplugin, {
+      router,
+      axios,
+      store,
+      jflowIp: jflowRequestDomain()
+    });
+  }
   if (enableGateWay()) {
     getGateWayServiceId();
   } else {

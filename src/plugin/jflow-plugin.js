@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import CreateButton from './button';
 import todoList from './todoList';
-import '../src/__plugin__/InstanceManagementList/utils/dateApi';
+import '../__plugin__/InstanceManagementList/utils/dateApi';
+import network from '../__utils__/network';
 
 
 let axios = {}; // axios请求
@@ -26,7 +27,7 @@ const install = function install(Vue, options = {}) {
     AxiosGuard(options.axios);
     createComponent();
 
-    Vue.prototype.$network = options.axios;
+    Vue.prototype.$network = network;
   }
 };
 
@@ -129,7 +130,7 @@ async function jflowsave(flag, response) {
       Temparam.append('objid', router.currentRoute.params.itemId);
     }
     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-    axios.post(`/${serviceId}/p/cs/getObject`, Temparam).then(async (res) => {
+    network.post(`/${serviceId}/p/cs/getObject`, Temparam).then(async (res) => {
       if (res.data.code === 0) {
         res.data.data.addcolums.forEach((element) => {
           if (element.childs) {
@@ -154,7 +155,7 @@ async function jflowsave(flag, response) {
           temSearch.set('id', response.objId);
           allPath += `?${temSearch.toString()}`;
 
-          axios.post('/jflow/p/cs/process/launch', {
+          network.post('/jflow/p/cs/process/launch', {
             businessBody: needbody, businessCode: parseInt(response.objId), businessType: router.currentRoute.params.tableId, initiator: userInfo.id, initiatorName: userInfo.name, moduleId, businessUrl: '/p/cs/objectSubmit', formUrl: allPath 
           }).then((res) => {
             if (res.data.notice) {
@@ -186,7 +187,7 @@ async function jflowsave(flag, response) {
           const id = changeDetail.objId;
           delete changeDetail.table;
           delete changeDetail.objId;
-          axios.post('/jflow/p/cs/process/business/save', {
+          network.post('/jflow/p/cs/process/business/save', {
             businessBody: needbody, businessCode: parseInt(id), changeDetail, instanceId, changeUser: userInfo.id, userName: userInfo.name 
           }).then((res) => {
             if (res.data.resultCode === -1) {
@@ -203,7 +204,7 @@ async function jflowsave(flag, response) {
   });
 }
 function jflowButtons(id) { // jflow按钮逻辑处理
-  axios.post('/jflow/p/cs/task/buttons', {
+  network.post('/jflow/p/cs/task/buttons', {
     businessCode: id,
     userId: userInfo.id
   })
@@ -248,7 +249,7 @@ function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配
 }
 
 function getConfigMap() { // 获取所有配置流程图的表集合
-  axios.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
+  network.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
     if (res.data.resultCode === 0) {
       configMap = res.data.data.businessTypes;
     } else {
@@ -275,7 +276,7 @@ function createComponent() { // 创建跟节点实例
 }
 
 function thirdlogin() { // 三方登录  获取accessToken
-  axios.post('/jflow/p/c/thirdlogin', { username: 'guest' }).then((res) => {
+  network.post('/jflow/p/c/thirdlogin', { username: 'guest' }).then((res) => {
     accessToken = res.data.data ? res.data.data.accessToken : '';
     window.jflowPlugin.jflowIp = jflowIp;
     getConfigMap();

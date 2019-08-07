@@ -24,8 +24,8 @@
       :user-config-for-ag-table="userConfigForAgTable"
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-selection-changed="onSelectionChanged"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-row-double-click="onRowDoubleClick"
       :on-sort-changed="onSortChange"
       :on-column-moved="onColumnMoved"
@@ -517,6 +517,7 @@
             // 日期控件属性控制
             if (current.display === 'OBJ_DATENUMBER') {
               obj.item.props.type = 'daterange';
+              obj.item.props.display = current.display;
               obj.item.props.format = 'yyyy/MM/dd';
             }
             if (current.display === 'OBJ_DATE') {
@@ -603,20 +604,20 @@
           if (item.default === '-1') {
             return '';
           } if (item.default !== '-1' && item.default) {
-            return Date().minusDays(item.default).toIsoDateString();
+            return new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
           }
           const timeRange = [
-            new Date().minusDays(Number(item.daterange)).toIsoDateString(),
-            new Date().toIsoDateString()
+            new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
+            new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
           ];
           return timeRange;
         }
         if (item.display === 'OBJ_DATE') {
           const timeRange = [
-            `${new Date()
+            `${new Date().setNewFormt(new Date()
               .minusDays(Number(item.daterange))
-              .toIsoDateString()} 00:00:00`,
-            `${new Date().toIsoDateString()} 23:59:59`
+              .toIsoDateString(), '-', '/')} 00:00:00`,
+            `${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`
           ];
           return timeRange;
         }
