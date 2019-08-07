@@ -249,7 +249,7 @@ export default {
             }
           };
         } else {
-          const itemValue = itemModify[tableName];
+          const itemValue = itemModify;
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
