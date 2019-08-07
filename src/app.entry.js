@@ -19,7 +19,7 @@ import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 
-import jflowplugin from '../plugin/jflow-plugin';
+import jflowplugin from './plugin/jflow-plugin';
 
 
 Vue.component('CompositeForm', CompositeForm);
