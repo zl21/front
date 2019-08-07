@@ -262,14 +262,14 @@ function createComponent() { // 创建跟节点实例
   const jflowPlugin = document.createElement('div');
   jflowPlugin.id = 'jflowPlugin';
   document.body.appendChild(jflowPlugin);
-  const vm = new Vue({
-    el: '#jflowPlugin',
-    template: '<mainComponent />',
-    components: {
-      mainComponent
-    }
-  });
-  window.jflowPlugin = vm.$children[0];
+  // const vm = new Vue({
+  //   el: '#jflowPlugin',
+  //   template: '<mainComponent />',
+  //   components: {
+  //     mainComponent
+  //   }
+  // });
+  window.jflowPlugin = {};
   window.jflowPlugin.axios = axios;
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;
