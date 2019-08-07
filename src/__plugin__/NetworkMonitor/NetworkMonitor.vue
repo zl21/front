@@ -1,8 +1,9 @@
 <template>
   <div class="NetworkMonitorContainer">
-    <h1>
-      Network Monitor
-    </h1>
+    <div style="margin: 15px;">
+      <Button @click="doQuery">刷新</Button>
+      <Button @click="doEmpty">清空非当日数据</Button>
+    </div>
     <div class="tableWrapper" >
       <Table size="small" :columns="columns" :data="data" disabled-hover :height="true"></Table>
     </div>
@@ -10,14 +11,13 @@
 </template>
 
 <script>
-  import { queryAllNetwork } from '../../__utils__/indexedDB';
+  import { queryAllNetwork, emptyOtherDayRecord } from '../../__utils__/indexedDB';
   
   export default {
     data: () => ({
-      interval: -1,
       data: [],
       columns: [
-        { key: 'timecost', title: '请求耗时' },
+        { key: 'timecost', title: '请求耗时(ms)' },
         { key: 'url', title: 'Url' },
         { key: 'method', title: '请求Method' },
         { key: 'reqTimeString', title: '请求时间' },
@@ -25,24 +25,22 @@
       ]
     }),
     created() {
-      const intervalTime = 1000 * 60;
       this.doQuery();
-      this.interval = setInterval(() => {
-        this.doQuery();
-      }, intervalTime);
     },
     methods: {
       doQuery() {
-        console.log('NetWork Monitor Refresh.');
         queryAllNetwork()
           .then((res) => {
             this.data = res;
           });
+      },
+      doEmpty() {
+        emptyOtherDayRecord()
+          .then(() => {
+            this.doQuery();
+          });
       }
     },
-    beforeDestroy() {
-      clearInterval(this.interval);
-    }
   };
 </script>
 
