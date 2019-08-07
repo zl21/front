@@ -21,15 +21,6 @@ import './assets/css/custom-ext.less';
 
 import jflowplugin from '../plugin/jflow-plugin';
 
-if (enableJflow() && jflowRequestDomain()) {
-  Vue.use(jflowplugin, {
-    router,
-    axios,
-    store,
-    jflowIp: jflowRequestDomain()
-  });
-}
-
 
 Vue.component('CompositeForm', CompositeForm);
 Vue.use(BurgeonUi);
@@ -116,6 +107,14 @@ export default (projectConfig = {
   });
 
   // 启动
+  if (enableJflow() && jflowRequestDomain()) {
+    Vue.use(jflowplugin, {
+      router,
+      axios,
+      store,
+      jflowIp: jflowRequestDomain()
+    });
+  }
   if (enableGateWay()) {
     getGateWayServiceId();
   } else {

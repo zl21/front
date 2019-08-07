@@ -147,6 +147,7 @@ export default {
       }
     } else if (type === 'modify') { // 编辑保存参数
       if (isreftabs) {
+        debugger
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
@@ -254,7 +255,7 @@ export default {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              itemValue
+              ...itemValue
             }
           };
         }

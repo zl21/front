@@ -177,7 +177,7 @@
     },
     mounted() {
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
-    }
+    },
   };
 </script>
 <style lang="less" scoped type="text/less">
