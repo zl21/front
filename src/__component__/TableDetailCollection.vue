@@ -2164,6 +2164,9 @@
 <style lang="less">
   .table-in {
     flex: 1;
+    thead th {
+      font-weight: 400;
+    }
     .burgeon-input-wrapper >input{
       height: 22px;
     }
