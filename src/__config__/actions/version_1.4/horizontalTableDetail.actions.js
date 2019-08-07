@@ -249,12 +249,12 @@ export default {
             }
           };
         } else {
-          const itemValue = itemModify[tableName];
+          const itemValue = itemModify;
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              itemValue
+              ...itemValue
             }
           };
         }
