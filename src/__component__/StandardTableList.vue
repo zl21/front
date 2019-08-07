@@ -24,12 +24,12 @@
       :user-config-for-ag-table="userConfigForAgTable"
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
       :on-sort-changed="onSortChange"
       :on-column-moved="onColumnMoved"
       :on-column-pinned="onColumnPinned"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
       :is-common-table="webconf.commonTable"
@@ -1501,7 +1501,7 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
-          // this.updateFormData(this.$refs.FormItemComponent.formDataObject);
+          this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           this.searchClickData();
         }
       }
