@@ -6,6 +6,7 @@
 
 <script>
   import { hideMenu, launchNetworkMonitor } from './__config__/event.config';
+  import { emptyRecord } from './__utils__/indexedDB';
   import network from './__utils__/network';
   
   export default {
@@ -13,6 +14,7 @@
     mounted() {
       hideMenu();
       launchNetworkMonitor();
+      emptyRecord(Date.now() - 1000 * 60 * 60);
     },
     created() {
       this.getUserInfo();

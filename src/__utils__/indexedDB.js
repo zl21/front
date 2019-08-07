@@ -56,7 +56,7 @@ export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promi
   }
 });
 
-export const emptyOtherDayRecord = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
+export const emptyRecord = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
   if (ENABLE_NETWORK_MONITOR && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);

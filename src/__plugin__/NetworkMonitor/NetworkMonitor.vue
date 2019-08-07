@@ -1,8 +1,12 @@
 <template>
   <div class="NetworkMonitorContainer">
     <div style="margin: 15px;">
-      <Button @click="doQuery">刷新</Button>
-      <Button @click="doEmpty">清空非当日数据</Button>
+      <Button @click="doQuery">
+        刷新
+      </Button>
+      <Button @click="doEmpty">
+        清空所有数据
+      </Button>
     </div>
     <div style="margin-bottom: 15px;">
       <Page
@@ -16,20 +20,20 @@
         @on-page-size-change="pageSizeChange"
       />
     </div>
-    <div class="tableWrapper" >
+    <div class="tableWrapper">
       <Table
         size="small"
         :columns="columns"
         :data="viewData"
         disabled-hover
         :height="true"
-      ></Table>
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import { queryAllNetwork, emptyOtherDayRecord } from '../../__utils__/indexedDB';
+  import { queryAllNetwork, emptyRecord } from '../../__utils__/indexedDB';
   
   export default {
     data: () => ({
@@ -41,8 +45,31 @@
         { key: 'timecost', title: 'TimeCost' },
         { key: 'url', title: 'Url' },
         { key: 'method', title: 'Method' },
-        { key: 'reqTime', title: 'Request Time' },
-        { key: 'data', title: 'Request Params' },
+        {
+          key: 'reqTime',
+          title: 'Request Time',
+          render: (createElement, data) => {
+            const date = new Date(data.row[data.column.key]);
+            const format = `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
+            return createElement('span', format);
+          }
+        },
+        {
+          key: 'data',
+          title: 'Request Params',
+          // minWidth: 300,
+          maxWidth: 500,
+          ellipsis: false,
+          render: (createElement, data) => {
+            const format = data.row.isJson ? JSON.stringify(data.row[data.column.key] || {}, null, 4) : decodeURIComponent(data.row[data.column.key] || '');
+            return createElement('span', format);
+          }
+        },
+        {
+          key: 'isJson',
+          title: 'Content-Type',
+          render: (createElement, data) => createElement('span', data.row[data.column.key] ? 'application/json' : 'application/x-www-form-urlencoded')
+        }
       ]
     }),
     created() {
@@ -62,12 +89,12 @@
       doQuery() {
         queryAllNetwork()
           .then((res) => {
-            this.data = res;
+            this.data = res.sort((a, b) => b.reqTime - a.reqTime);
             this.generateViewData();
           });
       },
       doEmpty() {
-        emptyOtherDayRecord(Date.now() - 1000 * 60)
+        emptyRecord(Date.now())
           .then(() => {
             this.doQuery();
           });
