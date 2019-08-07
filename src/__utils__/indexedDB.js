@@ -81,6 +81,6 @@ export const emptyRecord = (interval = new Date(new Date().toDateString()).getTi
   }
 });
 
-if (ENABLE_NETWORK_MONITOR) {
+if (ENABLE_NETWORK_MONITOR && window.indexedDB) {
   initDB();
 }
