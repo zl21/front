@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import BurgeonUi from 'burgeon-ui';
+import axios from 'axios';
 
 import { getGuid } from './__utils__/random';
 import router from './__config__/router.config';
@@ -9,7 +10,7 @@ import store from './__config__/store.config';
 import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
-import { enableGateWay } from './constants/global';
+import { enableGateWay, enableJflow, jflowRequestDomain } from './constants/global';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 // css import
@@ -17,6 +18,17 @@ import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
+
+import jflowplugin from '../plugin/jflow-plugin';
+
+if (enableJflow() && jflowRequestDomain()) {
+  Vue.use(jflowplugin, {
+    router,
+    axios,
+    store,
+    jflowIp: jflowRequestDomain()
+  });
+}
 
 
 Vue.component('CompositeForm', CompositeForm);

@@ -39,7 +39,10 @@
         :index="index"
       />
     </div>
-    <div class="tag right">
+    <div
+      v-if="navigatorSetting.length > 0"
+      class="tag right"
+    >
       <Badge 
         v-for="(item,index) in navigatorSetting" 
         :key="index"
