@@ -147,7 +147,6 @@ export default {
       }
     } else if (type === 'modify') { // 编辑保存参数
       if (isreftabs) {
-        debugger
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
