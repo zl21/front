@@ -30,7 +30,6 @@ function openTodoLists() {
   jflowRouter.push({
     path: '/PLUGIN/INSTANCEMANAGEMENTLIST'
   });
-  // window.jflowPlugin.todoListsFun(true);
 }
 
 function pollBacklogData(store) {

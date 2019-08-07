@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import CreateButton from './button';
 import todoList from './todoList';
-import mainComponent from '../src/__plugin__/InstanceManagementList/mainComponent';
 import '../src/__plugin__/InstanceManagementList/utils/dateApi';
 
 
@@ -35,6 +34,7 @@ const install = function install(Vue, options = {}) {
 function RoutingGuard(router) { // 路由守卫
   router.beforeEach((to, from, next) => {
     const type = to.path.split('/')[3];// 获取组件类型
+    instanceId = null;
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       moduleId = null;
@@ -225,7 +225,6 @@ function jflowButtons(id) { // jflow按钮逻辑处理
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
   if (instanceId) {
-    console.log(data.addcolums);
     data.addcolums.map((item) => {
       if (item.childs) {
         item.childs.map((temp) => {
