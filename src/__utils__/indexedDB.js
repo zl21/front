@@ -1,4 +1,6 @@
-import { DB_NAME, DB_SCHEMA_NETWORK, ENABLE_NETWORK_MONITOR, SLOW_NETWORK_THRESHOLD } from '../constants/global';
+import {
+  DB_NAME, DB_SCHEMA_NETWORK, ENABLE_NETWORK_MONITOR, SLOW_NETWORK_THRESHOLD 
+} from '../constants/global';
 
 const open = (name, version) => {
   const db = window.indexedDB.open(name, version);
@@ -74,6 +76,8 @@ export const emptyRecord = (interval = new Date(new Date().toDateString()).getTi
     recordDateTimeCursor.onerror = (event) => {
       reject(event);
     };
+  } else {
+    reject(new Error('DataBase is not available at this moment.'));
   }
 });
 
