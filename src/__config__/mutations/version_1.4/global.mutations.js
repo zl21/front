@@ -9,6 +9,9 @@ import {
 import router from '../../router.config';
 
 export default {
+  changeNavigatorSetting(state, data) {
+    state.navigatorSetting = data;
+  },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;
   },

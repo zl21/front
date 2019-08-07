@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import BurgeonUi from 'burgeon-ui';
+import axios from 'axios';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
 import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
-import { enableGateWay } from './src/constants/global';
+import { enableGateWay, enableJflow, jflowRequestDomain } from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 // css import
@@ -17,6 +18,18 @@ import './src/assets/css/ag-theme-balham.less';
 import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
+
+import jflowplugin from './plugin/jflow-plugin';
+
+if (enableJflow() && jflowRequestDomain()) {
+  Vue.use(jflowplugin, {
+    router,
+    axios,
+    store,
+    jflowIp: jflowRequestDomain()
+  });
+}
+
 
 // 注册自定义模态框组件
 const registerCustomizedModal = () => {

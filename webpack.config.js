@@ -48,6 +48,10 @@ module.exports = env => ({
     }, {
       context: proxyListsForPalmCloud,
       target
+    },
+    {
+      context: '/jflow',
+      target: 'http://47.99.229.124:18080' // 重新占单
     }]
    
   },

@@ -30,7 +30,8 @@ module.exports = {
     'vue/order-in-components': 'off',
     'no-extend-native':'off',
     'no-eval':'off',
-    'import/no-dynamic-require':'off'
+    'import/no-dynamic-require':'off',
+    'no-console':'off'
   },
   overrides: [
     {

@@ -67,7 +67,8 @@ const routes = [
   {
     path: '/ComponentPrototype',
     component: ComponentProtoType
-  },
+  }
+  
 ];
 
 export default routes;

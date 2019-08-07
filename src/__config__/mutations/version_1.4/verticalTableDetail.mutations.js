@@ -265,7 +265,19 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, data) { // jflowPlugin按钮逻辑
-
+  jflowPlugin(state, {buttonsData,newButtons,buttonAnother}) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else {
+      if(state.anotherData.length>0){
+        state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
+      }else{
+        state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+      }
+      
+    }
+      
   }
 };

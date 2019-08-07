@@ -1,11 +1,29 @@
 
 /**
- * 返回ISO格式的日期字符串（去掉时分秒）
- * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22"
+ * 返回yyyy-MM-dd hh:mm:ss 或者 yyyy-MM-dd格式的日期字符串
+ * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22 08:37:43"
+ * 传参格式: yyyy-MM-dd hh:mm:ss yyyy-MM-dd
  */
-Date.prototype.toIsoDateString = function toIsoDateString() {
-  return this.setNewFormt(this.toISOString().slice(0, -14));
-};
+Date.prototype.format = function(fmt) { 
+  var o = { 
+     "M+" : this.getMonth()+1,                 //月份 
+     "d+" : this.getDate(),                    //日 
+     "h+" : this.getHours(),                   //小时 
+     "m+" : this.getMinutes(),                 //分 
+     "s+" : this.getSeconds(),                 //秒 
+     "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+     "S"  : this.getMilliseconds()             //毫秒 
+ }; 
+ if(/(y+)/.test(fmt)) {
+         fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+ }
+  for(var k in o) {
+     if(new RegExp("("+ k +")").test(fmt)){
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+      }
+  }
+ return fmt; 
+}  
  
 /**
  * 返回一个加上days天的新Date
@@ -61,11 +79,3 @@ Date.prototype.getEndOfNextMonth = function getEndOfNextMonth() {
   newDate.setDate(0); // 再退回上个月的最后一天
   return newDate;
 };
-/**
- * 返回yyyy-MM-dd hh:mm:ss 或者 yyyy-MM-dd格式的日期字符串
- * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22 08:37:43"
- * 传参格式: yyyy-MM-dd hh:mm:ss yyyy-MM-dd
- */
-Date.prototype.setNewFormt = function (fmt) { 
-  return fmt.replace(/-/g, '/'); 
-};  

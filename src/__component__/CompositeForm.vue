@@ -344,7 +344,6 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
-        
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
           data[current.item.field] = data[current.item.field].toUpperCase();
@@ -354,6 +353,7 @@
           // 区分是否是默认值的change 拦截 
           return false;
         }
+
         if (Array.isArray(data)) {
           data = data[0];
         }
@@ -383,11 +383,10 @@
           this.$emit('VerifyMessage', {});
         }
         // let v1.4外键 及number
-
         if (!this.formData[current.item.field]) {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
-          } else {
+          } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
           }
         }
@@ -777,7 +776,9 @@
       },
       searchClickData() {
         // 按钮查找
-        this.$emit('on-formEnter');
+        setTimeout(() => {
+          this.$emit('on-formEnter');
+        }, 200);
       },
       checkDisplay(item) {
         // 组件显示类型
@@ -1383,7 +1384,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 550 * (current.col / this.defaultColumnCol),
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 160,
             height: 120,
             readonly,
             masterName: this.masterName,

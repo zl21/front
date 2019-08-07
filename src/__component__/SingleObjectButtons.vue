@@ -115,7 +115,7 @@
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
-          printValue: true, // 是否显示打印
+          printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮
@@ -156,6 +156,13 @@
       ImportDialog, // 导入弹框
     },
     watch: {
+      jflowPluginDataArray: {
+        handler(val) {
+          if (val) {
+            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+          }
+        }
+      },
       tabcmd: {
         handler(val) {
           if (Object.keys(val).length > 0) {
@@ -381,9 +388,16 @@
           this.clickButtonsBack();
         } else if (type === 'refresh') {
           this.clickButtonsRefresh();
-        } else {
-          this.searchClickData();
+        } else if (type === 'extraposition') {
+          this.clickExtraposition(obj);
         }
+      },
+      clickExtraposition(obj) { // jflow方法
+        DispatchEvent('jflowPlugin', {
+          detail: {
+            obj
+          }
+        });
       },
       clickButtonsRefresh() { // 按钮刷新事件
         // DispatchEvent('tabRefreshClick', {
@@ -1750,6 +1764,9 @@
       }
       this.buttonsReorganization(this.tabcmd);
       this.waListButtons(this.tabwebact);
+      if (this.jflowPluginDataArray) {
+        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      }
     },
     beforeCreate() {
     },

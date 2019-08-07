@@ -24,14 +24,21 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
-     
+      <Button
+        v-for="(item,index) in dataArray.jflowPluginDataArray"
+        :key="index"
+        :ref="item"
+        type="fcdefault"
+        @click="btnclick('extraposition', item)"
+        v-text="item.name" 
+      />
       <Dropdown
         v-if="dataArray.printValue"
         trigger="click"
         placement="bottom-start"
         split-button
         type="primary"
-        @on-click='print'
+        @on-click="print"
       >
         <Button type="fcdefault">
           打印
@@ -40,8 +47,8 @@
         <DropdownMenu slot="list">
           <DropdownItem
             v-for="(item) of printList"
-            :name='item.webid'
             :key="item.webid"
+            :name='item.webid'
           >
             {{ item.webdesc }}
           </DropdownItem>
@@ -82,7 +89,7 @@
         @click="btnclick('back')"
         v-text="back"
       />
-       <!-- <Dialog
+      <!-- <Dialog
       ref="dialogRef"
       :title="dialogConfig.title"
       :mask="dialogConfig.mask"
@@ -169,10 +176,10 @@
     },
     methods: {
       print(id) {
-        if(id==='2530'){//打印预览
+        if (id === '2530') { // 打印预览
              
-        }else{
-           this.objTabActionDialog()
+        } else{
+          this.objTabActionDialog();
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框

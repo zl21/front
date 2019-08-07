@@ -25,7 +25,9 @@ export default () => ({
     },
     objTabActionSlientConfirmData: {},
     LinkageForm: [], // form 校验
-    mappStatus: {} // 校验联动图
+    mappStatus: {}, // 校验联动图
+    anotherData:[],//按钮显示的备份数据
+    jflowPluginDataArray:[]
   },
   actions,
   mutations

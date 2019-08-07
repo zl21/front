@@ -103,7 +103,7 @@ export default {
       state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
     }
   },
-  
+
   updateModifyData(state, data) {
     state.updateData[data.tableName].modify = data.value;
   },
@@ -187,7 +187,7 @@ export default {
     //     });
     //   });
     // });
-    
+
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
     state.updateData = Object.assign({}, state.updateData);
@@ -235,7 +235,7 @@ export default {
   },
   updateMaping(state, data) {
     // form 联动校验map 图
-  //  获取映射关系
+    //  获取映射关系
     const temp = Object.keys(data).reduce((a, c) => {
       const f = (key) => {
         if (!data[key]) {
@@ -253,7 +253,17 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
-  jflowPlugin(state, data) { // jflowPlugin按钮逻辑
-
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else {
+      if(state.anotherData.length>0){
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
+      }else{
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      }
+    }
   }
 };

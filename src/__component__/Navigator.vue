@@ -39,6 +39,24 @@
         :index="index"
       />
     </div>
+    <div
+      v-if="navigatorSetting.length > 0"
+      class="tag right"
+    >
+      <Badge 
+        v-for="(item,index) in navigatorSetting" 
+        :key="index"
+        style="width:50px;height:50px"
+        :offset="['6px','-8px']"
+        :count="item.count"
+        @click.native="item.callback"
+      >
+        <i 
+          class="iconfont"
+          :class="item.icon"
+        />
+      </Badge>
+    </div>
     <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
       <template v-if="searchBtn === false">
         <AutoComplete
@@ -150,6 +168,7 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         menuLists: ({ menuLists }) => menuLists,
+        navigatorSetting: ({ navigatorSetting }) => navigatorSetting
       }),
     },
     methods: {
