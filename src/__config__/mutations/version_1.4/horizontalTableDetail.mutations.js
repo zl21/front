@@ -189,9 +189,10 @@ export default {
     // });
 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
-    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
     state.updateData = Object.assign({}, state.updateData);
-    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
+    state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
+
+    // state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};
@@ -258,12 +259,10 @@ export default {
     if (buttonAnother) { 
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
     } else {
-      if(state.anotherData.length>0){
-        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
-      }else{
-        state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
-      }
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
     }
   }
 };

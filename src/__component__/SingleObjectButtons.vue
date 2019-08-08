@@ -814,12 +814,16 @@
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
+          console.log('copyData=',this.copyDatas)
+
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
-        this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        // this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
+          console.log('copyData=',this.copyDatas)
+
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
-        this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        // this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;
