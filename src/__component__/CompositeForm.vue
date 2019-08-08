@@ -1065,10 +1065,8 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current);
-          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
-          let readonly = ImageSize
-            ? ImageSize > valuedata.length
-            : current.readonly;
+          //const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
@@ -1366,9 +1364,7 @@
           const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
-          let readonly = ImageSize
-            ? !(ImageSize > valuedata)
-            : current.readonly;
+          let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
