@@ -928,7 +928,6 @@
           if (this.defaultSetValue[item.colname]) {
             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
           }
-          console.log(item.valuedata, arr.length);
           return arr;
         }
         // const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
@@ -1100,6 +1099,7 @@
             const index = checkName.findIndex(x => x === item.props.trueValue);
             item.props.falseValue = falseName[index] || falseName[0];
           }
+          return current.valuedata || current.defval || '';
         }
 
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
