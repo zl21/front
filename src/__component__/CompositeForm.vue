@@ -907,7 +907,7 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval;
+          return item.valuedata || item.defval || 'N';
         }
         // console.log(item, this.defaultSetValue);
 
