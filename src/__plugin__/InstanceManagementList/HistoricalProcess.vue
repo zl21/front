@@ -120,6 +120,33 @@
             title: '消耗时长',
             key: 'durationTime'
           },
+           {
+          title: "流程状态",
+          key: "processStatus",
+          render: (h, params) => {
+            let processStatusT='';
+            switch(params.row.processStatus){
+              case 0:processStatusT="待审批";break;
+              case 1:processStatusT="审批中";break;
+              case 2:processStatusT="已中止";break;
+              case 3:processStatusT="已完结";break;
+              case 4:processStatusT="业务系统提交失败";break;
+              case -1:processStatusT="已撤销";break;
+            }
+            return h(
+              "p",
+              {
+                style: {
+                  maxWidth: "160px",
+                  overflow: "hidden",
+                  "text-overflow": "ellipsis",
+                  "white-space": "nowrap"
+                }
+              },
+              processStatusT
+            );
+          }
+        },
           {
             title: '详情',
             fixed: 'right',
