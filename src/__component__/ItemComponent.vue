@@ -1016,6 +1016,7 @@
             } else {
               // new
               this._items.props.itemdata.valuedata.splice(index - 1, 1);
+
               this.valueImgChange();
             }
           }
@@ -1045,11 +1046,20 @@
           }
         });
       },
+      readonlyImage() {
+        if (this._items.props.itemdata.ImageSize) {
+          return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
+        }
+        return true;
+      },
       uploadFileChangeSuccess(result) {
         const self = this;
 
         const resultData = result;
-
+        if (this.readonlyImage()) {
+          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          return false;
+        }
         fkQueuploadProgressry({
           searchObject: {
             uploadId: resultData.data.UploadId
@@ -1059,6 +1069,7 @@
             if (res.data.code !== 0) {
               return false;
             }
+           
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({
@@ -1099,6 +1110,7 @@
               this.valueImgChange();
             }
           }
+          
         });
       },
       pathsCheckout(parms, data) {

@@ -76,6 +76,7 @@
 
 <script>
   import { setTimeout } from 'timers';
+  import { type } from 'os';
   import FormItemComponent from './ComFormItemComponent';
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
@@ -441,7 +442,7 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
-        obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? false : true;
+        obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? this.hidecolumn(current, array) : true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -677,23 +678,25 @@
           },
           validate: this.validateList(current)
         };
-        // 属性赋值
-        // 是否显示 隐藏字段
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   if (this.computdefaultData.length > 0) {
-        //     this.computdefaultData[current.formIndex].childs[index].show = true;
-        //   } else {
-        //     obj.show = this.hidecolumn(array, current);
-        //   }
-        // }
-
-        // if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-        //   console.log(obj, this);
-        //   // obj.item.props.regx = regExp.Letter;
-        // }
-
         this.propsType(current, obj.item);
         return obj;
+      },
+      hidecolumn(current, array) {
+        //  隐藏判断 
+        const check = array.some((option) => {
+          const refcolumn = current.hidecolumn.refcolumn;
+          const refval = current.hidecolumn.refval;
+          let val = option.item.value;
+          if (Array.isArray(option.item.value) && option.item.value[0]) {
+            if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
+              val = option.item.value[0].ID;
+            } else {
+              val = option.item.value[0];
+            }
+          }
+          return option.item.field === refcolumn && val === refval;
+        });
+        return check;
       },
       focusChange(value, current, index) {
         // 外键的模糊搜索
@@ -737,23 +740,6 @@
             this.freshDropDownSelectFilterAutoData(res, index, current);
           }
         });
-      },
-      hidecolumn(array, current) {
-        // 默认值的联动
-        let check = true;
-        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          const refcolumn = current.hidecolumn.refcolumn;
-          const refval = current.hidecolumn.refval;
-          check = array.some((option) => {
-            const value = option.item.props.valuedata || option.item.props.defval;
-            return (
-              option.item.field === refcolumn
-              && JSON.stringify(value) === JSON.stringify(refval)
-            );
-          });
-        }
-
-        return check;
       },
       validateList(current) {
         // 联动校验
@@ -1113,6 +1099,7 @@
             const index = checkName.findIndex(x => x === item.props.trueValue);
             item.props.falseValue = falseName[index] || falseName[0];
           }
+          return current.valuedata || current.defval || '';
         }
 
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
@@ -1378,8 +1365,9 @@
           item.props.type = 'ImageUpload';
           const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+
           let readonly = ImageSize
-            ? ImageSize > valuedata.length
+            ? !(ImageSize > valuedata)
             : current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
@@ -1387,6 +1375,7 @@
             width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 160,
             height: 120,
             readonly,
+            ImageSize,
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
