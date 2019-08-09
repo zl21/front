@@ -48,7 +48,7 @@ export default [
       {
         name: '更新规则',
         key: 'addrule',
-        type: 'input-group',
+        type: 'object-group',
         showLabel: true,
         objectInfo: [
           {
