@@ -1047,10 +1047,10 @@
         });
       },
       readonlyImage() {
-        if (this._items.props.itemdata.ImageSize) {
+        if (!isNaN(this._items.props.itemdata.ImageSize)) {
           return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
         }
-        return true;
+        return false;
       },
       uploadFileChangeSuccess(result) {
         const self = this;
