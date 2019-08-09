@@ -1,6 +1,13 @@
 /* eslint-disable import/no-dynamic-require */
 <template>
   <div class="r3-file-doc">
+    <div>
+        <ul class="re-doc-list">
+            <li>文件展示名称<i class="iconfont iconbj_delete2" @click="deleteLi(index,item)"></i></li>
+        </ul>
+    </div>      
+                 
+
     <form ref="file">
       <label><i
         class="iconfont iconbj_link"
@@ -104,6 +111,12 @@
    input{
         opacity: 0;
         display: none
+   }
+   .re-doc-list{
+       li{
+              padding:5px 6px; 
+           }
+         
    }
 }
 </style>
