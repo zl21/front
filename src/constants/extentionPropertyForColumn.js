@@ -7,7 +7,7 @@ export default [
     description: '加密后字段值即显示***'
   },
   {
-    name: '字段值过滤',
+    name: '字段值过滤/字段缺省值更改',
     key: 'refcolval',
     type: 'input-group',
     inputLists: [
@@ -22,31 +22,13 @@ export default [
         type: 'input'
       },
       {
-        name: '过滤字段在表头',
+        name: '关联字段在表头',
         key: 'maintable',
         type: 'radio',
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
       },
-    ],
-    description: 'B字段根据A字段选择的值过滤出对应条件下的数据'
-  },
-  {
-    name: '字段缺省值更改',
-    key: 'refcolval',
-    type: 'input-group',
-    inputLists: [
       {
-        name: '外键关联字段',
-        key: 'fixcolumn',
-        type: 'input'
-      },
-      {
-        name: '已知条件字段',
-        key: 'srccol',
-        type: 'input'
-      },
-      {
-        name: '更新规则',
+        name: '缺省值更新规则',
         key: 'addrule',
         type: 'object-group',
         showLabel: true,
@@ -65,7 +47,7 @@ export default [
         ]
       },
     ],
-    description: 'B字段根据A字段选择的值按计算规则更新缺省值'
+    description: 'B字段根据A字段选择的值过滤出对应条件下的数据/B字段根据A字段选择的值更新缺省值'
   },
   {
     name: 'HR折叠',
