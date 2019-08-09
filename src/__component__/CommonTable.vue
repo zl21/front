@@ -603,9 +603,15 @@
             .doc-wrapper {
                 margin-right: 5px;
                 display: inline-block;
+                a {
+                    color: #575757;
+                }
             }
             .doc-wrapper:hover {
                 border-bottom: 1px solid #000;
+                a {
+                    color: #2d8cf0;
+                }
             }
         }
     }
