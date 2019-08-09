@@ -107,6 +107,14 @@
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
+              } else if (cur.display === 'doc') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.docRender(),
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
               } else if (cur.display === 'image') {
                 acc.push(Object.assign({
                   title: cur.name,
@@ -174,6 +182,13 @@
                   key: cur.colname,
                   sortable: cur.isorder ? 'custom' : false,
                   render: this.imageRender(cur.colname)
+                }, cur));
+              } else if (cur.display === 'doc') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.docRender()
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
@@ -445,6 +460,23 @@
           ]);
         };
       }, // 图片render
+      docRender() {
+        return (h, params) => {
+          if (!params.row[params.column.colname]) {
+            return null;
+          }
+          const data = JSON.parse(params.row[params.column.colname]);
+          let html = '';
+          data.forEach((item) => {
+            html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 14px" ></i> ${item.name}</a></span>`;
+          });
+          return h('div', {
+            domProps: {
+              innerHTML: html
+            }
+          });
+        };
+      }, // 图片render
       isJsonString(str) {
         if (typeof JSON.parse(str) === 'object') {
           return true;
@@ -567,6 +599,13 @@
             }
             .burgeon-table-fixed tfoot td {
                 border-bottom: 1px solid #e8eaec;
+            }
+            .doc-wrapper {
+                margin-right: 5px;
+                display: inline-block;
+            }
+            .doc-wrapper:hover {
+                border-bottom: 1px solid #000;
             }
         }
     }

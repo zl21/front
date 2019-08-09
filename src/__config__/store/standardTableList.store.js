@@ -106,7 +106,7 @@ export default () => ({
       fixedColumn: ''
     },
     webconf: {
-      commonTable: false
+      commonTable: true
     }
   },
   actions,
