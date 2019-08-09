@@ -468,7 +468,7 @@
           const data = JSON.parse(params.row[params.column.colname]);
           let html = '';
           data.forEach((item) => {
-            html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 14px" ></i> ${item.name}</a></span>`;
+            html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #20a0ff; cursor: pointer; font-size: 16px" ></i> ${item.name}</a></span>`;
           });
           return h('div', {
             domProps: {
