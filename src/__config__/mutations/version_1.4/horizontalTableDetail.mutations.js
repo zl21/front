@@ -162,7 +162,11 @@ export default {
             if (b.name === c.name) {
               b.readonly = c.readonly;
               if (c.readonly === true) {
-                b.valuedata = '';// 将配置为不可编辑的值置空
+                if (d.parentdesc === '日志' && b.display === 'check') {
+                  b.valuedata = 'N'; // check类型
+                } else {
+                  b.valuedata = '';// 将配置为不可编辑的值置空
+                }
               } else if (b.valuedata) {
                 if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
@@ -187,12 +191,9 @@ export default {
     //     });
     //   });
     // });
-
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
-
-    // state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};

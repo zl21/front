@@ -67,6 +67,5 @@ Date.prototype.getEndOfNextMonth = function getEndOfNextMonth() {
  * 传参格式: yyyy-MM-dd hh:mm:ss yyyy-MM-dd
  */
 Date.prototype.setNewFormt = function (fmt,from,to) { 
-  console.log(fmt.replace('/-/g',''));  
   return fmt.replace(new RegExp(from,'g'), to); 
 };  

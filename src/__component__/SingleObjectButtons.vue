@@ -770,7 +770,6 @@
       objectCopy() { // 按钮复制功能
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
-       
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
             let formData = {};
@@ -780,12 +779,9 @@
               }
             });
             const copyData = { ...formData };
-           
             const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
-
             this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
             this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
-
             this.updateFormDataForRefshow();
             const type = 'tableDetailHorizontal';
             this.tabHref({// 跳转路由，复制是新增逻辑
@@ -814,16 +810,12 @@
         this.changeCopy(true);
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
-          console.log('copyData=',this.copyDatas)
-
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
-        // this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
-          console.log('copyData=',this.copyDatas)
-
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
-        // this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
       clickButtonsBack() { // 按钮返回事件
         const { tableId, tableName } = this.$route.params;

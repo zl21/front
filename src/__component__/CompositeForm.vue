@@ -418,7 +418,16 @@
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
           if (this.defaultFormData[option] !== '' && this.defaultFormData[option] !== undefined && this.defaultFormData[option] !== null) {
-            arr[option] = this.defaultFormData[option];
+            if (Array.isArray(this.defaultFormData[option])) {
+              if (Object.hasOwnProperty.call(this.defaultFormData[option], 'ID')) {
+                arr[option] = this.defaultFormData[option].ID;
+              } else {
+                arr[option] = this.defaultFormData[option][0];
+              }
+            } else {
+              arr[option] = this.defaultFormData[option];
+            }
+            
           }
           return arr;
         }, {});
@@ -907,7 +916,7 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval;
+          return item.valuedata || item.defval || 'N';
         }
         // console.log(item, this.defaultSetValue);
 
@@ -1065,10 +1074,8 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current);
-          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
-          let readonly = ImageSize
-            ? ImageSize > valuedata.length
-            : current.readonly;
+          // const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
@@ -1366,9 +1373,7 @@
           const valuedata = this.defaultValue(current);
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
-          let readonly = ImageSize
-            ? !(ImageSize > valuedata)
-            : current.readonly;
+          let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
