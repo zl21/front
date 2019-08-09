@@ -31,6 +31,43 @@ export default [
     description: 'B字段根据A字段选择的值过滤出对应条件下的数据'
   },
   {
+    name: '字段缺省值更改',
+    key: 'refcolval',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '外键关联字段',
+        key: 'fixcolumn',
+        type: 'input'
+      },
+      {
+        name: '已知条件字段',
+        key: 'srccol',
+        type: 'input'
+      },
+      {
+        name: '更新规则',
+        key: 'addrule',
+        type: 'input-group',
+        showLabel: true,
+        objectInfo: [
+          {
+            name: '已知条件字段的值',
+            key: 'refval',
+            type: 'input',
+            outputValueType: 'Array'
+          },
+          {
+            name: '缺省值更新规则',
+            key: 'defval',
+            type: 'input'
+          }
+        ]
+      },
+    ],
+    description: 'B字段根据A字段选择的值按计算规则更新缺省值'
+  },
+  {
     name: 'HR折叠',
     key: 'hrdisplay',
     type: 'radio',
@@ -74,6 +111,10 @@ export default [
       name: '关联表',
       key: 'reftablename',
       type: 'input'
+    }, {
+      name: '关联表id',
+      key: 'reftableid',
+      type: 'input'
     }],
     description: '列表界面指定字段显示链接，点击可进入对应界面'
   },
@@ -108,6 +149,50 @@ export default [
     key: 'refhsfobjval',
     type: 'input',
     description: '填写转换显示格式的path'
+  },
+  {
+    name: '自定义字段翻译服务',
+    key: 'interpreter',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '服务程序',
+        key: 'command',
+        type: 'input'
+      },
+      {
+        name: '中心',
+        key: 'group',
+        type: 'input'
+      },
+      {
+        name: '版本',
+        key: 'version',
+        type: 'input'
+      },
+      {
+        name: '传入翻译器的字段名称',
+        key: 'refcolumn',
+        type: 'input'
+      },
+      {
+        name: '事件',
+        key: 'event',
+        type: 'input'
+      },
+      {
+        name: '是否传入整行数据',
+        key: 'loadRecord',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+      },
+      {
+        name: '自定义参数',
+        key: 'param',
+        type: 'input',
+        outputValueType: 'JSON',
+      }],
+    description: '自定义字段翻译服务'
   },
   {
     name: '字段隐藏显示',
@@ -145,6 +230,43 @@ export default [
     description: '随着A字段、B字段输入的值，即时变化显示C字段的值，C为联动字段'
   },
   {
+    name: 'c字段根据A、B字段计算',
+    key: 'ComputedColumns',
+    type: 'input-group',
+    inputLists: [{
+      name: '计算方式',
+      type: 'input',
+      key: 'ComputedType'
+    },
+    {
+      name: 'A字段名称',
+      type: 'input',
+      key: 'RefColA'
+    },
+    {
+      name: 'B字段名称',
+      type: 'input',
+      key: 'RefColB'
+    }],
+    description: '根据A、B字段计算当前字段的值'
+  },
+  {
+    name: '头表字段合计',
+    key: 'StatColumns',
+    type: 'input-group',
+    inputLists: [{
+      name: '计算方式',
+      type: 'input',
+      key: 'StatType'
+    },
+    {
+      name: '子表对应字段名称',
+      type: 'input',
+      key: 'SubColumns'
+    }],
+    description: '头表字段根据子表某字段的值计算，字段名称中配置为‘子表名.字段名’'
+  },
+  {
     name: '区间配置',
     key: 'rangecolumn',
     type: 'input-group',
@@ -160,6 +282,26 @@ export default [
     description: '区间字段为虚拟字段，仅支持单对象'
   },
   {
+    name: '导入字段公式',
+    key: 'importExp',
+    type: 'input',
+    description: '导入时根据规则计算出对应值'
+  },
+  {
+    name: '唯一检查',
+    key: 'Unique',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '保存时字段唯一检查'
+  },
+  {
+    name: '回车进入扫描界面',
+    key: 'ispassword',
+    type: 'isscan',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '查询条件中输入单号回车进入扫描界面'
+  },
+  {
     name: '是否过滤不可用数据',
     key: 'must_be_active',
     type: 'radio',
@@ -167,10 +309,135 @@ export default [
     description: '只针对关联表中ISACTIVE字段可编辑，或不可编辑但该表有作废这两种情况'
   },
   {
+    name: '过期设置',
+    key: 'refremotecachetimeout',
+    type: 'input',
+    inputType: 'Number',
+    description: '字段过期设置，单位为秒'
+  },
+  {
     name: '前端自定义参数',
     key: 'webconf',
     type: 'input',
     outputValueType: 'JSON',
     description: '自定义参数格式及内容'
-  }
+  },
+  {
+    name: '列表查询条件区域主店仓权限配置',
+    key: 'precollist',
+    type: 'object-group',
+    showLabel: false,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '来源表中的字段',
+        key: 'refcol',
+        type: 'input'
+      },
+      {
+        name: '是否获取编辑权限',
+        key: 'iswrite',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
+      }
+    ],
+    description: '控制列表界面可以选择的数据'
+  },
+  {
+    name: '列表数据显示区域主店仓权限配置',
+    key: 'precolnameslist',
+    type: 'object-group',
+    showLabel: false,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制列表界面显示的数据'
+  },
+  {
+    name: '单对象数据选择主店仓权限配置',
+    key: 'precolobj',
+    type: 'object-group',
+    showLabel: false,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      },
+      {
+        name: '是否获取编辑权限',
+        key: 'iswrite',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
+      }
+    ],
+    description: '控制单对象界面可以选择的数据'
+  },
+  {
+    name: '单对象数据查看主店仓权限配置',
+    key: 'precolnames',
+    type: 'object-group',
+    showLabel: false,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制单对象界面显示的数据'
+  },
+  {
+    name: '单对象关联店仓权限配置',
+    key: 'refcolprem',
+    type: 'object-group',
+    showLabel: false,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '主店仓字段名称',
+        key: 'srccol',
+        type: 'input'
+      },
+      {
+        name: '来源表中的字段',
+        key: 'refcol',
+        type: 'input'
+      },
+      {
+        name: '是否获取编辑权限',
+        key: 'iswrite',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
+      }
+    ],
+    description: '控制单对象界面可以选择的数据'
+  },
 ];

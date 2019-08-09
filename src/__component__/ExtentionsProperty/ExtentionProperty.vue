@@ -167,6 +167,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: scroll;
         li.active {
           border-left: 2px solid orangered;
         }
@@ -175,6 +176,7 @@
           display: flex;
           align-items: center;
           padding: 2px 10px;
+          min-height: 35px;
         }
         li:hover {
           opacity: 0.8;

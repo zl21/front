@@ -26,11 +26,6 @@ export default [
     type: 'input-group',
     inputLists: [
       {
-        name: '全局检索自动匹配字段',
-        key: 'multiCenter',
-        type: 'input'
-      },
-      {
         name: '全局检索字段',
         key: 'multiIndex',
         type: 'object-group',
@@ -49,6 +44,11 @@ export default [
             enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
           }
         ]
+      },
+      {
+        name: '全局检索自动匹配字段',
+        key: 'multiCenter',
+        type: 'input'
       },
       {
         name: '中间展示字段',
@@ -132,7 +132,7 @@ export default [
     description: '表的数据由定制服务查询写入，而非标准的数据，不支持导出，则可隐藏导出按钮'
   },
   {
-    name: '导入',
+    name: '导入模板外键字段可选择',
     key: 'smalltable',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
@@ -243,5 +243,122 @@ export default [
     type: 'input',
     outputValueType: 'JSON',
     description: '自定义参数格式及内容'
-  }
+  },
+  {
+    name: '前端自定义参数(快鱼)',
+    key: 'web',
+    type: 'input',
+    outputValueType: 'JSON',
+    description: '自定义参数格式及内容'
+  },
+  {
+    name: 'solr查询默认查询条件',
+    key: 'solrfilter',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '查询条件',
+        key: 'fixcol',
+        type: 'input',
+        outputValueType: 'JSON'
+      }
+    ],
+    description: 'solr查询默认条件，在查询条件中配置{"字段名":["val1","val2"]}'
+  },
+  {
+    name: '新增界面可显示动作定义',
+    key: 'showaction',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '新增单对象可显示符合显示条件的动作定义按钮'
+  },
+  {
+    name: '支持列表批量操作',
+    key: 'isBatch',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '列表的提交、作废，若后台程序支持批量操作，则不走循环调用'
+  },
+  {
+    name: '提交后单对象可编辑',
+    key: 'fobstatus',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '提交后单对象可编辑，且不显示水印'
+  },
+  {
+    name: '商品数量矩阵',
+    key: '__root__',
+    type: 'input-group',
+    inputLists: [
+      {
+        name: '对应商品字段名称',
+        key: 'pdtcol',
+        type: 'input'
+      },
+      {
+        name: '对应数量字段名称',
+        key: 'qtycol',
+        type: 'input'
+      },
+      {
+        name: '新增是否显示数量字段',
+        key: 'qtyisshow',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
+      },
+      {
+        name: '新增默认数量值',
+        key: 'defnum',
+        type: 'input',
+        inputType: 'Number'
+      },
+      {
+        name: '矩阵弹窗地址',
+        key: 'cusurl',
+        type: 'input'
+      }
+    ],
+    description: '单据明细新增商品时的矩阵配置'
+  },
+  {
+    name: '列表数据权限配置',
+    key: 'precolnameslist',
+    type: 'object-group',
+    showLabel: false,
+    enableIncrease: true,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制列表界面过滤的数据，以及列表界面查询条件可以选到的数据'
+  },
+  {
+    name: '单对象数据权限配置',
+    key: 'precolnames',
+    type: 'object-group',
+    showLabel: false,
+    enableIncrease: true,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制单对象界面可以选到的数据'
+  },
 ];
