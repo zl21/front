@@ -20,4 +20,11 @@ export default {
       '../__customizeDialog__/Publish/Publish.vue'
     )
   },
+  PublishPrintTemplate: {
+    component: () => import(
+      /* webpackChunkName: 'PublishPrintTemplate' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/PublishPrintTemplate/PublishPrintTemplate.vue'
+    )
+  },
 };
