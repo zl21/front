@@ -262,10 +262,11 @@
       </template> -->
       <!-- 上传文件 -->
        
-      <!-- <Docfile
+      <Docfile
         v-if="_items.type === 'docfile'"
         :dataitem="_items.props.itemdata"
-      /> -->
+        @filechange="filechange"
+      />
     </div>
   </div>
 </template>
@@ -1032,6 +1033,61 @@
         }
         this.valueChange();
       },
+      filechange(value) {
+        // 上传文件 
+        const _value = value.length > 0 ? value : '';
+        this._items.value = _value;
+        const fixedData = Array.isArray(_value) ? [..._value] : '';
+        let parms = {
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        console.log(fixedData);
+        //  判断parms 是否 需要保存
+        parms = this.pathsCheckout(parms, fixedData);
+        if (
+          this.$route.params
+          && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+        ) {
+          //  判断是否需要调用保存
+          const path = this.$parent.pathcheck !== '';
+          const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+
+          if (this.$parent.isreftabs && childTableName !== false) {
+            //  主子表 子表
+            this._items.props.itemdata.valuedata.push(
+              fixedData[fixedData.length - 1]
+            );
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+            this.valueChange();
+          } else {
+            this.upSavefile(parms, fixedData, path, value);
+          }
+        } else {
+          this._items.props.itemdata.valuedata.push(
+            fixedData[fixedData.length - 1]
+          );
+          this.valueImgChange();
+        }
+      },
+      upSavefile(obj, fixedData, path, value) {
+        fkObjectSave({
+          searchObject: {
+            ...obj
+          },
+          url: path ? this.$parent.pathcheck : undefined,
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.code !== 0) {
+              return false;
+            }
+            // this._items.props.itemdata.valuedata.push(...value);
+          // this.valueChange();
+          }
+        });
+      },
       deleteImgData(obj, index) {
         deleteImg({
           params: {
@@ -1054,7 +1110,6 @@
       },
       uploadFileChangeSuccess(result) {
         const self = this;
-
         const resultData = result;
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);

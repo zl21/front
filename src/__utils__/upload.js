@@ -7,10 +7,12 @@ class Upload {
     this.sendData = obj.sendData || {}; // 携带参数
     this.multiple = obj.multiple || false; // 是否多选
     this.file = [];
+    this.fileName = obj.fileName || 'file';
     this.img = new Image();
     this.length = 3; // 最多上传多少张
     this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
     this.checkimgSize = true;
+    this.result = 0;
     if (this.multiple) {
       if (Object.keys(this.FileList).length > this.length) {
         this.event.onerror(`最多选择${this.length}个文件`);
@@ -40,8 +42,10 @@ class Upload {
     }
   }
 
-  init(file) {
-    this.transformFileToDataUrl(file);
+  init() {
+    this.file.forEach((item) => { 
+      this.transformFileToDataUrl(item);
+    });
   }
 
   // 将file转成dataUrl
@@ -50,37 +54,41 @@ class Upload {
     const reader = new FileReader();
     // file转dataUrl是个异步函数，要将代码写在回调里
     const self = this;
-    reader.onload = function (e) {
+    reader.onload = (e) => {
       if (Object.prototype.hasOwnProperty.call(self.event, 'onload') && typeof self.event.onload === 'function') {
         self.event.onload(e);
       }
     };
-    reader.onloadstart = function (e) {
+    reader.onloadstart = (e) => {
       if (Object.prototype.hasOwnProperty.call(self.event, 'onloadstart') && typeof self.event.onloadstart === 'function') {
         self.event.onloadstart(e);
       }
     };
-    reader.onloadend = function (e) {
+    reader.onloadend = (e) => {
       if (Object.prototype.hasOwnProperty.call(self.event, 'onloadend') && typeof self.event.onloadend === 'function') {
         self.event.onloadend(e);
       }
-      self.transformFileToFormData(file);
+      this.result++;
+      if (this.result === this.file.length) {
+        self.transformFileToFormData();
+      }
     };
-    reader.onerror = function (e) {
+    reader.onerror = (e) => {
       if (Object.prototype.hasOwnProperty.call(this.event, 'onerror') && typeof this.event.onerror === 'function') {
         this.event.onerror(e);
       }
     };
-    this.file.forEach((item) => {
-      reader.readAsDataURL(item);
-    });
+
+    reader.readAsDataURL(file);
   }
 
 
   // 将File append进 FormData
   transformFileToFormData() {
     const formData = new FormData();
-    formData.append('file', this.FileList);
+    this.file.forEach((item) => {
+      formData.append(this.fileName, item);
+    });
     Object.keys(this.sendData).forEach((item) => {
       formData.append(item, this.sendData[item]);
     });
@@ -96,6 +104,7 @@ class Upload {
       }
     }, false);
     // 错误监听
+    
     xhr.addEventListener('error', (e) => {
       if (Object.prototype.hasOwnProperty.call(this.event, 'onerror') && typeof this.event.onerror === 'function') {
         this.event.onerror(e);
@@ -103,7 +112,7 @@ class Upload {
     }, false);
     const that = this;
 
-    xhr.onreadystatechange = function () {
+    xhr.onreadystatechange = () => {
       const result = xhr.responseText;
       if (that.event.ContentType !== undefined) {
         xhr.setRequestHeader('Content-Type', this.event.ContentType);
@@ -124,6 +133,11 @@ class Upload {
     xhr.open(this.Method, this.url, true);
     xhr.send(formData);
   }
+
+  uploadProgress(e){
+    console.log(e);
+  }
+
 }
 
 export default Upload;
