@@ -274,12 +274,12 @@ export default [
     key: 'Unique',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-    description: '保存时字段唯一检查'
+    description: '保存时对字段做唯一检查'
   },
   {
     name: '回车进入扫描界面',
-    key: 'ispassword',
-    type: 'isscan',
+    key: 'isscan',
+    type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '查询条件中输入单号回车进入扫描界面'
   },
