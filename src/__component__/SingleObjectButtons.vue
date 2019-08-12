@@ -246,11 +246,11 @@
 
       }),
       watermarkImg() { // 匹配水印图片路径
-        if (this.watermarkimg.includes('/static/img/')) {
-          // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
-          const src = this.watermarkimg.split('/')[3];
-          return require(`../assets/image/watermark/${src}`);
-        }
+        // if (this.watermarkimg.includes('/static/img/')) {
+        //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
+        //   const src = this.watermarkimg.split('/')[3];
+        //   return require(`../assets/image/watermark/${src}`);
+        // }
         return this.watermarkimg;
       },
       waterMarkText() {
