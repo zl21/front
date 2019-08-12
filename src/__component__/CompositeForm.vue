@@ -427,7 +427,6 @@
             } else {
               arr[option] = this.defaultFormData[option];
             }
-            
           }
           return arr;
         }, {});
@@ -1074,7 +1073,7 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
-          // const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
           let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
