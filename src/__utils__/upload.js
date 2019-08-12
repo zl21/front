@@ -9,14 +9,16 @@ class Upload {
     this.file = [];
     this.fileName = obj.fileName || 'file';
     this.img = new Image();
-    this.length = 3; // 最多上传多少张
+    this.length = obj.length; // 最多上传多少张
     this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
     this.checkimgSize = true;
     this.result = 0;
     if (this.multiple) {
-      if (Object.keys(this.FileList).length > this.length) {
-        this.event.onerror(`最多选择${this.length}个文件`);
-      }
+      if (this.length > 0) {
+        if (Object.keys(this.FileList).length > this.length) {
+          this.event.onerror(`最多选择${this.length}个文件`);
+        }
+      }  
       Object.keys(this.FileList).forEach((i) => {
         this.file.push(this.FileList[i]);
       });
@@ -134,10 +136,9 @@ class Upload {
     xhr.send(formData);
   }
 
-  uploadProgress(e){
+  uploadProgress(e) {
     console.log(e);
   }
-
 }
 
 export default Upload;

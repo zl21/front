@@ -1036,13 +1036,15 @@
       filechange(value) {
         // 上传文件 
         const _value = value.length > 0 ? value : '';
-        this._items.value = _value;
+        // this._items.value = _value;
+        console.log(_value, 'valuevalue');
+
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        console.log(fixedData);
+        console.log(fixedData, 'fixedData');
         //  判断parms 是否 需要保存
         parms = this.pathsCheckout(parms, fixedData);
         if (
@@ -1055,9 +1057,9 @@
 
           if (this.$parent.isreftabs && childTableName !== false) {
             //  主子表 子表
-            this._items.props.itemdata.valuedata.push(
-              fixedData[fixedData.length - 1]
-            );
+            const _fixedData = fixedData || '';
+            this._items.props.itemdata.valuedata = [];  
+            this._items.props.itemdata.valuedata = _fixedData;
             this._items.value = JSON.stringify([
               ...this._items.props.itemdata.valuedata
             ]);
@@ -1066,9 +1068,9 @@
             this.upSavefile(parms, fixedData, path, value);
           }
         } else {
-          this._items.props.itemdata.valuedata.push(
-            fixedData[fixedData.length - 1]
-          );
+          const _fixedData = fixedData || '';
+          this._items.props.itemdata.valuedata = [];  
+          this._items.props.itemdata.valuedata = _fixedData;
           this.valueImgChange();
         }
       },

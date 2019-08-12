@@ -19,24 +19,28 @@
     <!-- 
        
      -->
-    <form ref="file">
+    <form
+      ref="file"
+      :class="docList.readonly=== true ? 'disbaled' :''"
+    >
       <label><i
         class="iconfont iconmd-cloud-upload"
         data-target-tag="fkIcon"
       /><input
         type="file"
         multiple="multiple"
-         accept="application/vnd.ms-excel ,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, 
+        :disabled="docList.readonly"
+        accept="application/vnd.ms-excel ,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, 
         application/msword, application/msexcel,
         application/vnd.openxmlformats-officedocument.wordprocessingml.document,
         application/vnd.openxmlformats-officedocument.wordprocessingml.template" 
         @change.stop="uploadFileChange($event)"
       >上传附件</label>
       <span
-      v-if="percent"
-      class="proInfo"
-    >
-      文件正在导入中……
+        v-if="percent"
+        class="proInfo"
+      >
+        文件正在导入中……
       </span>
     </form>
   </div>
@@ -95,7 +99,7 @@
             target: fileInformationUploaded,
             url,
             multiple: true,
-            length: 3,
+            length: this.docList.ImageSize,
             sendData,
             fileName: 'files',
             success: this.success,
@@ -191,6 +195,9 @@
     color: #0f8ee9; 
    label{
        cursor: pointer; 
+   }
+   .disbaled{
+     color:#999;
    }
    .proInfo{
      height:20px;

@@ -427,7 +427,6 @@
             } else {
               arr[option] = this.defaultFormData[option];
             }
-            
           }
           return arr;
         }, {});
@@ -1074,7 +1073,7 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
-          // const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
           let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
@@ -1615,9 +1614,9 @@
   text-align: center;
   padding: 0;
   margin: 0;
-  line-height: 24px;
+  height: 28px!important;
+  line-height: 28px!important;
   font-size: 12px;
-  height: 28px;
   font-weight: normal;
   color: #1f2d3d;
   background: #f8f7f7;
