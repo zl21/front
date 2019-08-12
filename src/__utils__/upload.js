@@ -11,6 +11,7 @@ class Upload {
     this.img = new Image();
     this.length = obj.length; // 最多上传多少张
     this.imgSize = obj.imgSize || 1024 * 1024 * 10; // 10MB;
+    this.type = obj.type || 'Image'; // 上传的文件类型
     this.checkimgSize = true;
     this.result = 0;
     if (this.multiple) {
@@ -41,6 +42,15 @@ class Upload {
         this.checkimgSize = false;
         this.event.onerror('文件内容过大', index);
       }
+    }
+    if (this.type === 'Image') {
+      if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
+        this.checkimgSize = false;
+        this.event.onerror('图片类型必须是.gif,jpeg,jpg,png中的一种', index);
+      }
+    } else if (!/\.(xls|xlsx|xlsm|doc|docx)$/.test(file.name)) {
+      this.checkimgSize = false;
+      this.event.onerror('允许上传的文件类型为：xls、xlsx、xlsm、doc、docx！', index);
     }
   }
 
