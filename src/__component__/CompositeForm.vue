@@ -1614,9 +1614,9 @@
   text-align: center;
   padding: 0;
   margin: 0;
-  line-height: 24px;
+  height: 28px!important;
+  line-height: 28px!important;
   font-size: 12px;
-  height: 28px;
   font-weight: normal;
   color: #1f2d3d;
   background: #f8f7f7;
