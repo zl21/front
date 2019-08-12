@@ -13,6 +13,7 @@
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
+      :watermarkimg="watermarkimg"
       :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
     />
@@ -168,6 +169,10 @@
         type: Array,
         default: () => []
       }, // 面板数据
+      watermarkimg: {
+        type: String,
+        default: ''
+      }, // 水印数据
       tooltipForItemTable: {
         type: Array,
         default: () => []
@@ -463,7 +468,7 @@
           }
           // console.log(this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData);
           // const objIdSave = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId ? this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.newMainTableSaveData.objId : itemId;
-         
+
           this.$Message.success(message);
           // this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId });
           // this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId });
