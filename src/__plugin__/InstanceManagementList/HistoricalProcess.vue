@@ -114,7 +114,7 @@
           },
           {
             title: '处理时间',
-            key: 'createTime'
+            key: 'updateTime'
           },
           {
             title: '消耗时长',
