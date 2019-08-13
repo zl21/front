@@ -230,11 +230,14 @@ export default {
     state.modifyData = modifyData;
   },
   setLayout(state, data) {
-    state.hideModule = {
+    state.showModule = {
       HistoryAndFavorite: data, // 隐藏收藏夹
       TabLists: data, // 隐藏tab栏
       Navigator: data, // 隐藏菜单栏
     };
+    if(data===false){
+      const doc=document.getElementById('content').style.padding='0px';
+    }
   }
   
 };

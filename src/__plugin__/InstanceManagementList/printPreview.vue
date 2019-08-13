@@ -24,7 +24,9 @@
     },
     mounted() {
       this.$store.commit('global/setLayout', false);
-      window.opener.postMessage({ ready: true }, '*');
+      if (window.opener) {
+        window.opener.postMessage({ ready: true }, '*');
+      }
       window.addEventListener('message', (event) => {
         // if (event.origin !== 'http://0.0.0.0:8090') return;
         console.log('接收到:', event.data.print);
