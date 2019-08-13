@@ -103,6 +103,7 @@
             sendData,
             fileName: 'files',
             success: this.success,
+            type: 'file',
             onerror: this.onerror,
             progress: this.progress,
             onload: this.onload,
@@ -156,16 +157,17 @@
           mask: true,
           showCancel: true,
           title: '提示',
-          content: '此操作将永久删除该图片, 是否继续?',
+          content: '此操作将永久删除改文件, 是否继续?',
           onOk: () => {
             this.docList.valuedata.splice(index, 1);
             this.filechange();
           }
         });
       },
-      onerror() {
+      onerror(e) {
         this.$refs.file.reset();
         this.percent = false;
+        this.$Message.info(e);
       },
       progress(e, press) {
         // 上传进度

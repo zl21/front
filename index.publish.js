@@ -8,37 +8,39 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.0.6',
+  version: '1.0.10',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
    *   image: {
    *     enterpriseLogo: '',  // 公司 Logo 图片
    *     enterpriseBanner: '', // 公司Banner 图片
-   *   },
+   *   }, // 此配置项必传。
    *   globalComponent: {
    *     Login: '',  // 登录页
    *     WelcomePage: '', // 欢迎页
-   *   },
+   *   }, // 此配置项必传。
    *   externalModules: { // 项目自定义界面组件入口
-   *      key-1: VueComponent-1,
-   *      key-2: VueComponent-2,
+   *      keyOne: VueComponentOne,
+   *      keyTwo: VueComponentTwo,
    *      ...
-   *   },
+   *   }, // 如无自定义界面，此配置项可不传参。
    *   externalModals: {  // 项目自定义弹框（模态框）组件
-   *     key-1: VueComponent-1,
-   *     key-2: VueComponent-2,
+   *     keyOne: VueComponentOne,
+   *     keyTwo: VueComponentTwo,
    *     ...
-   *   },
-   *   projectRoutes: [  // 项目自定义路由
+   *   }, // 如无自定义弹窗，此配置项可不传参。
+   *   projectRoutes: [  // 项目自定义路由，一般情况下用不到此配置。
    *     {
-   *       path: '/XXX',
-   *       component: VueComponent-For-XXX
+   *       path: '/register',
+   *       component: VueComponentForRegister
    *     }
-   *   ],
-   *   quietRoutes: [  // 项目中针对403的请求，都会默认跳转到登录页面。处于静默路由列表的路由界面则不进行跳转。
-   *     '/register'
-   *   ]
+   *   ], // 此配置项可不传参。
+   *   quietRoutes: [ '/register' ],  // 项目中针对403的请求，都会默认跳转到登录页面。处于静默路由列表的路由界面则不进行跳转。一般情况用不到此配置。默认值为[]，此配置项可不传参。
+   *   Version： '1.4', // 后台框架API版本号，目前只支持['1.3', '1.4']其中一个。默认值是"1.4"，此配置项可不传参。
+   *   enableGateWay: true, // 开启 | 关闭 网关(默认开启)，此配置项可不传参。
+   *   enableJflow: true, // 开启JFlow插件功能（默认关闭），此配置项可不传参。
+   *   jflowRequestDomain： 'http(s)://domain:port', // jflow请求转发的域名或者IP（只有在enableJflow为true时生效），此配置项可不传参。
    * }
    */
   launchApplication(projectConfig) {

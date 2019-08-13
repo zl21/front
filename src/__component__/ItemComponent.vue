@@ -1299,8 +1299,8 @@
           }
         });
       },
-      uploadFileChangeOnerror() {
-      // console.log('err', result);
+      uploadFileChangeOnerror(e) {
+        this.$Message.info(e);
       },
       getWangeditorChangeItem(value) {
         // 富文本change
