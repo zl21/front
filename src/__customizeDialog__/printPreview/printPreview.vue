@@ -2,7 +2,7 @@
   <iframe
     id="printframe"
     name="printframe"
-    width="500px"
+    width="1000px"
     height="600px"
     :src="src"
   />

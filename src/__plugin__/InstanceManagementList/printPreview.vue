@@ -2,8 +2,8 @@
   <iframe
     id="printframe"
     name="printframe"
-    width="400px"
-    height="500px"
+    width="100%"
+    height="100%"
     :src="src"
   />
 </template> 
@@ -23,31 +23,20 @@
         
     },
     mounted() {
-      // const userId = this.userInfo.id;// 用户ID
-      // const { tableName, tableId, itemId } = router.currentRoute.params;// 明细ID
-      // window.addEventListener('message', (event) => {
-      //   if (event.origin !== 'http://0.0.0.0:8090') return;
-      //   console.log('received response:  ', event.data);
-      //   tableId = event.data.tableId;
-      //   userId = event.data.userId;
-      // }, false);
-      // if (userId && itemId) {
-      //   this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${itemId}&userId=${userId}`;
-      // }
-      
       this.$store.commit('global/setLayout', false);
+      window.opener.postMessage({ ready: true }, '*');
       window.addEventListener('message', (event) => {
-        if (event.origin !== 'http://0.0.0.0:8090') return;
-        console.log('received response:  ', event.data);
-        this.tableName = event.data.tableName;
-        this.userId = event.data.userId;
-        this.objIds = event.data.objIds;
-      }, false);
-      setTimeout(() => {
-        if (this.userId && this.tableName && this.objIds) {
-          this.src = `/api/rpt/preview?tableName=${this.tableName}&objIds=${this.objIds}&userId=${this.userId}`;
+        // if (event.origin !== 'http://0.0.0.0:8090') return;
+        console.log('接收到:', event.data.print);
+        if (event.data.print) {
+          this.tableName = event.data.print.tableName;
+          this.userId = event.data.print.userId;
+          this.objIds = event.data.print.objIds;
+          if (this.userId && this.tableName && this.objIds) {
+            this.src = `/api/rpt/preview?tableName=${this.tableName}&objIds=${this.objIds}&userId=${this.userId}`;
+          }
         }
-      }, 1000);
+      }, false);
     }
 
   };
