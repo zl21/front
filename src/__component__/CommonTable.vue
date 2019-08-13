@@ -582,6 +582,7 @@
         overflow-y: hidden;
         position: relative;
         .table {
+            height: 100% !important;
             thead th {
                 font-weight: 400;
             }

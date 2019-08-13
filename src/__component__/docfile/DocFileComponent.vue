@@ -157,7 +157,7 @@
           mask: true,
           showCancel: true,
           title: '提示',
-          content: '此操作将永久删除改文件, 是否继续?',
+          content: '此操作将永久删除该文件, 是否继续?',
           onOk: () => {
             this.docList.valuedata.splice(index, 1);
             this.filechange();
