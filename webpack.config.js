@@ -12,7 +12,6 @@ const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
-
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
 
@@ -39,21 +38,26 @@ module.exports = env => ({
       ],
     },
     publicPath: '/',
-    proxy: [{
-      context: proxyLists,
-      target
-    }, {
-      context: proxyListsForGateway,
-      target
-    }, {
-      context: proxyListsForPalmCloud,
-      target
-    },
-    {
-      context: '/jflow',
-      target: 'http://47.99.229.124:18080' // 重新占单
-    }]
-   
+    proxy: [
+      
+      {
+        context: proxyLists,
+        target
+      }, {
+        context: proxyListsForGateway,
+        target
+      }, {
+        context: proxyListsForPalmCloud,
+        target
+      },
+      {
+        context: '/api',
+        target: ' http://172.18.34.189:9093' // 打印
+      },
+      {
+        context: '/jflow',
+        target: 'http://47.99.229.124:18080' // 重新占单
+      }]
   },
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',

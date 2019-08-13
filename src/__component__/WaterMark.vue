@@ -1,10 +1,13 @@
 <template>
-    <div class="waterMarkContainer" :style="waterMarkStyle">
-        <i class="iconfont iconbj_docstate"></i>
-        <div class="textTip">
-            <div v-for="item in textArr">{{item}}</div>
-        </div>
+  <div class="waterMarkContainer"
+:style="waterMarkStyle">
+    <i class="iconfont iconbj_docstate"/>
+    <div class="textTip">
+      <div v-for="item in textArr">
+{{ item }}
+</div>
     </div>
+  </div>
 </template>
 
 <script>
