@@ -48,7 +48,9 @@ export const globalGateWay = [
 
 // 不走网关的接口
 export const ignoreGateWay = [
-  '/p/c/get_service_id'
+  '/p/c/get_service_id',
+  '/api/rpt/print/query',
+  '/api/rpt/userprint/save'
 ];
 
 //

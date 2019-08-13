@@ -48,16 +48,10 @@
           <DropdownItem
             v-for="(item) of printList"
             :key="item.webid"
-            :name='item.webid'
+            :name="item.webid"
           >
             {{ item.webdesc }}
           </DropdownItem>
-          <!-- <DropdownItem>
-            <a
-              href="http://up.ffvos.cn/FinePrint.exe"
-              target="_blank"
-            >打印插件</a>
-          </DropdownItem> -->
         </DropdownMenu>
       </Dropdown>
       <Button
@@ -89,23 +83,22 @@
         @click="btnclick('back')"
         v-text="back"
       />
-      <!-- <Dialog
-      ref="dialogRef"
-      :title="dialogConfig.title"
-      :mask="dialogConfig.mask"
-      :content-text="dialogConfig.contentText"
-      :footer-hide="dialogConfig.footerHide"
-      :confirm="dialogConfig.confirm"
-      :dialog-component-name="dialogComponentName"
-      :obj-list="dialogComponentName?objList:[]"
-      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
-      @clearDialogComponentName="clearDialogComponentName"
-    /> -->
+      <Dialog
+        ref="dialogRef"
+        :title="dialogConfig.title"
+        :mask="dialogConfig.mask"
+        :content-text="dialogConfig.contentText"
+        :footer-hide="dialogConfig.footerHide"
+        :confirm="dialogConfig.confirm"
+        :dialog-component-name="dialogComponentName"
+        @clearDialogComponentName="clearDialogComponentName"
+      />
     </div>
   </div>
 </template>
 <script> 
   
+  import Dialog from './Dialog.vue';
 
   export default {
     name: 'ButtonList',
@@ -116,13 +109,24 @@
       },
      
     },
-    components: {},
+    components: {
+      Dialog
+    },
   
     mounted() {
      
     },
     data() {
       return {
+        dialogComponentName: null,
+        dialogConfig: {
+          title: '提示',
+          mask: true,
+          footerHide: false,
+          contentText: '',
+          confirm: () => {
+          }
+        }, // 弹框配置信息
         search: '查找',
         refresh: '刷新',
         back: '返回',
@@ -150,7 +154,7 @@
             webname: 'OutPreview',
             webicon: null,
             action: 'custompage/redirect?preview',
-            cuscomponent: null,
+            cuscomponent: 'printPreview',
             ishide: false
           },
           {
@@ -163,7 +167,7 @@
             webname: 'OutSetTemplate',
             webicon: null,
             action: 'custompage/Konad',
-            cuscomponent: null,
+            cuscomponent: 'printTemplate',
             ishide: false
           }
         ], // 打印选择列表
@@ -175,25 +179,27 @@
       };
     },
     methods: {
+      clearDialogComponentName() {
+        this.dialogComponentName = null;
+      },
       print(id) {
-        if (id === '2530') { // 打印预览
-             
-        } else{
-          this.objTabActionDialog();
-        }
+        let tab = {};
+        this.printList.forEach((item) => {
+          if (item.webid === id) {
+            tab = item;
+          }
+        });
+        this.objTabActionDialog(tab);
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
-        const title = `${tab.webdesc}`;
+        const title = tab.webdesc;
         this.dialogConfig = {
           title,
         };
         this.dialogConfig.footerHide = true;
-        const url = tab.action;
-        const index = url.lastIndexOf('/');
-        const filePath = url.substring(index + 1, url.length);
         // Vue.component(filePath, CustomizeModule[filePath].component);
-        this.dialogComponentName = filePath;
+        this.dialogComponentName = tab.cuscomponent;
         // }
       },
       btnclick(type, item) {
@@ -219,7 +225,6 @@
     overflow: hidden;
     flex-wrap: wrap;
     .burgeon-select-dropdown {
-      top: 131px !important;
       .burgeon-dropdown-menu {
         min-width: 58px;
         .burgeon-dropdown-item {
@@ -252,10 +257,6 @@
     }
     .collection,.burgeon-btn-fcdefault{
       min-width: auto !important;
-    }
-
-    .burgeon-select-dropdown{
-      top: 58px !important;
     }
   }
 

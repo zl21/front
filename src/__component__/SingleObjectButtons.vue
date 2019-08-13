@@ -8,10 +8,7 @@
       v-if="watermarkImg"
       class="submit-img"
     >
-      <img
-        :src="watermarkImg"
-        alt="水印图标"
-      >
+      <WaterMark :text="waterMarkText" :color="waterMarkColor"></WaterMark>
     </div>
     <ButtonGroup
       :data-array="dataArray"
@@ -59,7 +56,7 @@
         :dialog-component-name="dialogComponentName"
         @closeActionDialog="closeActionDialog"
       >
-        /> 
+        />
       </component>
     </Modal> -->
     <!-- 导入弹框 -->
@@ -85,6 +82,7 @@
   import ButtonGroup from './ButtonComponent';
   import router from '../__config__/router.config';
   import Dialog from './Dialog.vue';
+  import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import { getGateway } from '../__utils__/network';
@@ -154,6 +152,7 @@
       ButtonGroup,
       Dialog, // 定制弹框
       ImportDialog, // 导入弹框
+      WaterMark, // 水印组件
     },
     watch: {
       jflowPluginDataArray: {
@@ -247,13 +246,65 @@
 
       }),
       watermarkImg() { // 匹配水印图片路径
-        if (this.watermarkimg.includes('/static/img/')) {
-          // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
-          const src = this.watermarkimg.split('/')[3];
-          return require(`../assets/image/watermark/${src}`);
-        }
+        // if (this.watermarkimg.includes('/static/img/')) {
+        //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
+        //   const src = this.watermarkimg.split('/')[3];
+        //   return require(`../assets/image/watermark/${src}`);
+        // }
         return this.watermarkimg;
       },
+      waterMarkText() {
+        const textMap = {
+          accepet: '已验收',
+          back: '已退回',
+          box: '已装箱',
+          boxing: '装箱中',
+          charge: '已记账',
+          check: '已收银',
+          completed: '已完成',
+          confirm: '已确认',
+          execute: '已执行',
+          executing: '执行中',
+          extremely: '异常终止',
+          Inventory: '已盈亏',
+          send: '已发出',
+          submit: '已提交',
+          system: '系统',
+          terminate: '已终止',
+          void: '已作废'
+        };
+        if (this.watermarkimg.includes('/static/img/')) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          return textMap[src];
+        }
+        return '';
+      }, // 水印组件的文字
+      waterMarkColor() {
+        const colorMap = {
+          accepet: '#e80000',
+          back: '#979797',
+          box: '#e80000',
+          boxing: '#09a155',
+          charge: '#e80000',
+          check: '#e80000',
+          completed: '#e80000',
+          confirm: '#e80000',
+          execute: '#e80000',
+          executing: '#09a155',
+          extremely: '#979797',
+          Inventory: '#e80000',
+          send: '#e80000',
+          submit: '#e80000',
+          system: '#e80000',
+          terminate: '#e80000',
+          void: '#979797'
+        };
+        if (this.watermarkimg.includes('/static/img/')) {
+          const src = this.watermarkimg.split('/')[3].split('.')[0];
+          return colorMap[src];
+        }
+        return '';
+      }, // 水印组件的颜色
       objList() { // 返回克隆表定制弹框所需数据
         if (this.objectType === 'horizontal') { // 横向布局
           return this.itemInfo.componentAttribute.panelData.data.addcolums;
@@ -272,7 +323,7 @@
       },
       disableExport: {
         type: Boolean,
-      }, 
+      },
       isactive: {
         type: Boolean,
         default: false
@@ -371,7 +422,7 @@
               this.getbuttonGroupData(buttonData);
             }
           }
-          if (this.copy === true) { 
+          if (this.copy === true) {
             this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
@@ -413,10 +464,10 @@
         const message = '刷新成功';
         this.upData(`${message}`);
       },
-      upData(message) { // 页面刷新判断逻辑 
+      upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
         const {
-          tablename, refcolid, tabrelation, tabinlinemode 
+          tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
@@ -425,7 +476,7 @@
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
             });
             const searchdata = {
               column_include_uicontroller: true,
@@ -437,17 +488,17 @@
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex 
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex 
+              table: tablename, objid: this.itemId, refcolid, tabIndex
             });
           }
         } else { // 纵向布局
           this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
         }
-       
+
         setTimeout(() => {
           if (message) {
             this.$Message.success(message);
@@ -462,7 +513,7 @@
         case 'actionMODIFY': // 保存
           this.objectSave(obj);
           break;
-      
+
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
           break;
@@ -520,7 +571,7 @@
             contentText: '确认执行提交?',
             confirm: () => {
               obj.requestUrlPath = this.saveButtonPath;
-              this.determineSaveType(obj); 
+              this.determineSaveType(obj);
               this.saveEventAfter = 'submit';
             }
           };
@@ -533,17 +584,17 @@
           confirm: () => {
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
-                objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
+                objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
               });
             });
             promise.then(() => {
               const message = this.buttonsData.unSubmitData.message;
               if (message) {
-                this.upData(`${message}`); 
+                this.upData(`${message}`);
               }
             });
           }
-   
+
         };
       },
       objectTryVoid(obj) {
@@ -554,7 +605,7 @@
             contentText: '确认执行作废?',
             confirm: () => {
               obj.requestUrlPath = this.saveButtonPath;
-              this.determineSaveType(obj); 
+              this.determineSaveType(obj);
               this.saveEventAfter = 'invalid';
             }
           };
@@ -603,7 +654,7 @@
           });
         }
       },
-       
+
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
         // tab.confirm = true
@@ -670,14 +721,14 @@
             ID: this.itemId
           };
         }
-       
+
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject 
+            params, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
-        
+
         promise.then(() => {
           this.$loading.hide();
           const message = this.objTabActionSlientConfirmData.message;
@@ -735,8 +786,8 @@
           filetype: '.xlsx',
           showColumnName: true,
         };
-       
-     
+
+
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
@@ -762,7 +813,7 @@
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
               });
             }
-      
+
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           }
         }, () => {});
@@ -929,7 +980,7 @@
               }
             });
           }
-          // 
+          //
         }
         // }
       },
@@ -939,7 +990,7 @@
             if (item.ishide) {
               tabwebact.objbutton.splice(index);
             }
-            
+
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
             this.isrefrsh = item.isrefrsh;
           });
@@ -981,20 +1032,20 @@
                   confirm: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
-                        path: obj.requestUrlPath, 
-                        table: this.tableName, 
+                        path: obj.requestUrlPath,
+                        table: this.tableName,
                         objId: this.itemId,
-                        currentParameter: this.currentParameter, 
+                        currentParameter: this.currentParameter,
                         itemName: this.itemName,
                         isreftabs: this.subtables(),
-                        itemNameGroup: this.itemNameGroup, 
-                        itemCurrentParameter: this.itemCurrentParameter, 
+                        itemNameGroup: this.itemNameGroup,
+                        itemCurrentParameter: this.itemCurrentParameter,
                         tabIndex,
                         resolve,
                         reject
                       });
                     });
-   
+
                     promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
@@ -1019,7 +1070,7 @@
                   confirm: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
-                        table: this.tableName, objId: this.itemId, resolve, reject 
+                        table: this.tableName, objId: this.itemId, resolve, reject
                       });
                     });
                     promise.then(() => {
@@ -1047,16 +1098,16 @@
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
                         path: obj.requestUrlPath,
-                        table: this.tableName, 
+                        table: this.tableName,
                         objId: this.itemId,
                         currentParameter: this.currentParameter,
                         itemName: this.itemName,
-                        isreftabs: this.subtables(), 
+                        isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
                         tabIndex,
-                        resolve, 
-                        reject 
+                        resolve,
+                        reject
                       });
                     });
                     promise.then(() => {
@@ -1098,10 +1149,10 @@
                         table: this.tableName,
                         objId: this.itemId,
                         currentParameter: this.currentParameter,
-                        itemName: this.itemName, 
+                        itemName: this.itemName,
                         isreftabs: this.subtables(),
-                        itemNameGroup: this.itemNameGroup, 
-                        itemCurrentParameter: this.itemCurrentParameter, 
+                        itemNameGroup: this.itemNameGroup,
+                        itemCurrentParameter: this.itemCurrentParameter,
                         tabIndex,
                         resolve,
                         reject
@@ -1151,15 +1202,15 @@
                 confirm: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      path: obj.requestUrlPath, 
-                      table: this.tableName, 
-                      objId: this.itemId, 
+                      path: obj.requestUrlPath,
+                      table: this.tableName,
+                      objId: this.itemId,
                       currentParameter: this.currentParameter,
-                      itemName: this.itemName, 
+                      itemName: this.itemName,
                       isreftabs: this.subtables(),
                       itemNameGroup: this.itemNameGroup,
                       itemCurrentParameter: this.itemCurrentParameter,
-                      resolve, 
+                      resolve,
                       reject
                     });
                   });
@@ -1186,7 +1237,7 @@
                 confirm: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
-                      table: this.tableName, objId: this.itemId, resolve, reject 
+                      table: this.tableName, objId: this.itemId, resolve, reject
                     });
                   });
                   promise.then(() => {
@@ -1299,7 +1350,7 @@
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
           }
-        } else if (this.itemId !== '-1') { // 主表编辑保存  
+        } else if (this.itemId !== '-1') { // 主表编辑保存
           this.mainTableEditorSave(obj);
         }
       },
@@ -1354,7 +1405,7 @@
           this.mainTableEditorSaveIsreftabs(obj);
         }
       },
-      
+
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
@@ -1490,10 +1541,10 @@
                             this.$Message.warning(itemMessageTip[0]);
                             itemCheckedInfo.validateForm.focus();
                             return false;
-                          } 
+                          }
                         } if (Object.values(addInfo).length < 1) {
                           this.$Message.warning('个人信息不能为空!');
-                        
+
                           return false;
                         }
                       }
@@ -1506,7 +1557,7 @@
                           return false;
                         }
                       }
-                    } 
+                    }
                   }
                 } else if (Object.values(this.itemCurrentParameter.add[this.itemName]).length > 0) { // 处理当子表填入一个必填项值时，其余必填项必须填写
                   const itemMessageTip = itemCheckedInfo.messageTip;
@@ -1528,8 +1579,8 @@
                   }
                 }
               }
-              
-              
+
+
               // else if (itemCheckedInfo) {
               //   const itemMessageTip = itemCheckedInfo.messageTip;
               //   if (itemMessageTip) {
@@ -1577,7 +1628,7 @@
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
-   
+
         promise.then(() => {
           this.clearEditData();// 清空store update数据
           this.saveAfter(type, tableName);
@@ -1593,7 +1644,7 @@
             types = 'tableDetailVertical';
           }
           const label = `${this.activeTab.label.replace('新增', '编辑')}`;
-          
+
           const tab = {
             type: types,
             tableName,
@@ -1601,7 +1652,7 @@
             label,
             id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
           };
-            
+
           // this.updateChangeData({ tableName: this.tableName, value: {} });
 
           this.tabHref(tab);
@@ -1669,7 +1720,7 @@
         if (this.saveEventAfter === 'submit') { // 提交操作
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
+              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
             });
           });
           // let message = '';
@@ -1684,7 +1735,7 @@
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
             this.getObjectTryInvalid({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject 
+              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
             });
           });
           // let message = '';
@@ -1775,7 +1826,7 @@
       this.buttonMap = buttonmap;
     }
   };
-</script>                                              
+</script>
 
 <style lang="less">
 .singleObjectButton {
@@ -1788,7 +1839,7 @@
     right: 60px;
     width: 104px;
     z-index: 1000;
-    
+
     img {
       width: 100%;
     }
