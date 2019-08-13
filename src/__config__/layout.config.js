@@ -8,6 +8,7 @@ export default {
     {
       height: 50,
       component: Navigator,
+      name: 'Navigator', // global.showModule.Navigator = false时，此选项不渲染。
     },
     {
       weight: 1,

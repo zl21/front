@@ -120,12 +120,10 @@
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
-  import Vue from 'vue';
+  import { mapState, mapMutations } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import Dialog from './Dialog.vue';
-  import CustomizeModule from '../__config__/customizeDialog.config';
   import closedImg from '../assets/image/closed@2x.png';
   import openedImg from '../assets/image/open@2x.png';
   import logoImg from '../assets/image/logo.png';
@@ -174,6 +172,13 @@
         navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
         showModule: ({ showModule }) => showModule
       }),
+    },
+    watch: {
+      showModule(val) {
+        if (!val.Navigator) {
+          this.$el.parentElement.hidden = true;
+        }
+      }
     },
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
