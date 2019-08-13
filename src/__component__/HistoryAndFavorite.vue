@@ -197,7 +197,7 @@
         left: 60px;
         background: white;
         top: 60px;
-        z-index: 10;
+        z-index: 1000;
         padding-left:0;
         border-radius: 2px;
        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
