@@ -28,8 +28,8 @@
     },
     mounted() {
       const userId = this.userInfo.id;// 用户ID
-      const { tableName, tableId, itemId } = router.currentRoute.params;// 明细ID
-      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${itemId}&userId=${userId}`;
+      const { tableName, tableId } = router.currentRoute.params;// 明细ID
+      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${tableId}&userId=${userId}`;
     }
 
   };

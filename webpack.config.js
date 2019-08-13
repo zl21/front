@@ -52,7 +52,7 @@ module.exports = env => ({
       },
       {
         context: '/api',
-        target: ' http://172.18.34.189:9093' // 打印
+        target: 'http://47.99.229.124:9093' // 打印
       },
       {
         context: '/jflow',

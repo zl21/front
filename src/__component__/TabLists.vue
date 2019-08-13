@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="openedMenuLists.length > 0"
+    v-if="openedMenuLists.length > 0 && hideModule.TabLists"
     ref="openedMenuLists"
     class="openedMenuLists"
   >
@@ -83,7 +83,8 @@
     },
     computed: {
       ...mapState('global', {
-        openedMenuLists: ({ openedMenuLists }) => openedMenuLists
+        openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
+        hideModule: ({ hideModule }) => hideModule
       }),
       menuLists() {
         const openedMenuListsLength = this.openedMenuLists.length;

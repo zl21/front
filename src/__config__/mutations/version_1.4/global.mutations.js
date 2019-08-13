@@ -228,6 +228,13 @@ export default {
   },
   copyModifyDataForSingleObject(state, modifyData) {
     state.modifyData = modifyData;
+  },
+  setLayout(state, data) {
+    state.hideModule = {
+      HistoryAndFavorite: data, // 隐藏收藏夹
+      TabLists: data, // 隐藏tab栏
+      Navigator: data, // 隐藏菜单栏
+    };
   }
   
 };

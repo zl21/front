@@ -68,7 +68,9 @@
     data() {
       return {
         checkItem: {},
-        printTemplateData: []
+        printTemplateData: [],
+        tableId: '', // 主表ID
+        userId: '', // 用户ID
       };
     },
     computed: {
@@ -79,7 +81,7 @@
     components: {},
     methods: {
       getTempleteData(tableId, userId) {
-        network.post('/api/rpt/print/query', urlSearchParams({ tableId: '23792', userId }))
+        network.post('/api/rpt/print/query', urlSearchParams({ tableId, userId }))
           .then((res) => {
             if (res.data.code !== 0) {
               return;
@@ -92,11 +94,13 @@
       },
              
       CheckItem(item) {
-        this.checkIte = item;
+        this.checkItem = item;
       },
       save() {
-        const userId = this.userInfo.id; 
+        const userId = this.userId; 
         const printId = this.checkItem.ID;
+        console.log(userId, printId);
+
         if (!printId) {
           const data = {
             title: 'warning',
@@ -131,21 +135,30 @@
     created() {
     },
     mounted() {
-      let tableId = '';
-      let userId = '';
-      if (!router.currentRoute.params.tableId && !this.userInfo.id) {
-        // 监听消息反馈
-        window.addEventListener('message', (event) => {
-          if (event.origin !== 'http://127.0.0.1:8190/PLUGIN/PRINTTEMPLATE') return;
-          console.log('received response:  ', event.data);
-          tableId = event.data.tableId;//主表id
-          userId = event.data.userId;//用户id
-        }, false);
-      } else {
-        const { tableId, itemId } = router.currentRoute.params;
-        const userId = this.userInfo.id;
-      }
-      this.getTempleteData(tableId, userId);
+      this.$store.commit('global/setLayout', false);
+      // if (!router.currentRoute.params.tableId && !this.userInfo.id) {
+      //   // 监听消息反馈
+      //   window.addEventListener('message', (event) => {
+      //     if (event.origin !== 'http://0.0.0.0:8090') return;
+      //     console.log('received response:  ', event.data);
+      //     tableId = event.data.tableId; // 主表id
+      //     userId = event.data.userId; // 用户id
+      //   }, false);
+      // } else {
+      //   const { tableId, itemId } = router.currentRoute.params;
+      //   const userId = this.userInfo.id;
+      // }
+      window.addEventListener('message', (event) => {
+        if (event.origin !== 'http://0.0.0.0:8090') return;
+        console.log('received response:  ', event.data);
+        this.tableId = event.data.tableId; // 主表id
+        this.userId = event.data.userId; // 用户id
+      }, false);
+      setTimeout(()=>{
+        if (this.tableId && this.userId) {
+          this.getTempleteData(this.tableId, this.userId);
+        }
+      },1000)
     }
   };
 </script>

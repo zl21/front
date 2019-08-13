@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="hideModule.HistoryAndFavorite"
     class="history-and-favorite"
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
@@ -111,7 +112,8 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         history: ({ history }) => history.concat([]).reverse(),
-        favorite: ({ favorite }) => favorite.concat([]).reverse()
+        favorite: ({ favorite }) => favorite.concat([]).reverse(),
+        hideModule: ({ hideModule }) => hideModule
       })
     },
     methods: {
