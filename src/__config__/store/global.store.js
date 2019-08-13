@@ -24,7 +24,7 @@ export default {
     showFavoritesList: '',
     serviceIdMap: {},
     navigatorSetting: [],
-    hideModule: {
+    showModule: {
       HistoryAndFavorite: true, // 隐藏收藏夹
       TabLists: true, // 隐藏tab栏
       Navigator: true, // 隐藏菜单栏

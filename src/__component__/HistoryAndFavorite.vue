@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="hideModule.HistoryAndFavorite"
+    v-if="showModule.HistoryAndFavorite"
     class="history-and-favorite"
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
@@ -113,7 +113,7 @@
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         history: ({ history }) => history.concat([]).reverse(),
         favorite: ({ favorite }) => favorite.concat([]).reverse(),
-        hideModule: ({ hideModule }) => hideModule
+        showModule: ({ showModule }) => showModule
       })
     },
     methods: {

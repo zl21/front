@@ -128,7 +128,8 @@
           });
       }, // 确定
       cancel() {
-        this.$emit('closeActionDialog', false); // 关闭弹框
+        window.close(); 
+        // this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
 
     },

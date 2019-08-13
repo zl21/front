@@ -1,5 +1,8 @@
 <template>
-  <div class="navigator" v-if="hideModule.Navigator">
+  <div
+    v-if="showModule.Navigator"
+    class="navigator"
+  >
     <div
       class="left"
       :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
@@ -169,7 +172,7 @@
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         menuLists: ({ menuLists }) => menuLists,
         navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
-        hideModule: ({ hideModule }) => hideModule
+        showModule: ({ showModule }) => showModule
       }),
     },
     methods: {
