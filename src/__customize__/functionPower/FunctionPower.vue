@@ -604,7 +604,7 @@
               this.savePermission(type);
             },
             onCancel: () => {
-              this.refresh();
+              this.getTableData();
             }
           });
           return true;
