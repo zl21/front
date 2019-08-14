@@ -135,9 +135,7 @@ export default {
   },
  
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
-    
     const copySaveDataForParam = {};
-    // console.log( ' copyDatas.data.addcolums',copyDatas.data.addcolums)
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         if (d.childs) {
@@ -147,7 +145,11 @@ export default {
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
                   if (c.readonly === true) {
-                    b.valuedata = '';// 将配置为不可编辑的值置空
+                    if (c.defval) {
+                      copySaveDataForParam[b.colname] = c.defval;
+                    } else {
+                      b.valuedata = '';// 将配置为不可编辑的值置空
+                    }
                   } else if (b.valuedata) {
                     if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
@@ -155,7 +157,7 @@ export default {
                       const number = JSON.parse(b.valuedata).lists.result.length;
                       copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
                     } else {
-                      copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                      copySaveDataForParam[b.colname] = b.valuedata;
                     }
                   }
                 }
@@ -165,6 +167,8 @@ export default {
         }
       });
     });
+    console.log('🦋', copySaveDataForParam);
+
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
     state.mainFormInfo.formData.data = data.data;
@@ -267,19 +271,15 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, {buttonsData,newButtons,buttonAnother}) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     if (buttonAnother) { 
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
     } else {
-      if(state.anotherData.length>0){
-        state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
-      }else{
-        state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
-      }
-      
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
     }
-      
   }
 };

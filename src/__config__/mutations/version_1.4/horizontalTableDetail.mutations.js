@@ -162,11 +162,16 @@ export default {
             if (b.name === c.name) {
               b.readonly = c.readonly;
               if (c.readonly === true) {
-                if (d.parentdesc === '日志' && b.display === 'check') {
-                  b.valuedata = 'N'; // check类型
+                if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                  copySaveDataForParam[b.colname] = c.defval;
                 } else {
                   b.valuedata = '';// 将配置为不可编辑的值置空
                 }
+                // if (d.parentdesc === '日志' && b.display === 'check') {
+                //   b.valuedata = 'N'; // check类型
+                // } else {
+                //   b.valuedata = '';// 将配置为不可编辑的值置空
+                // }
               } else if (b.valuedata) {
                 if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
