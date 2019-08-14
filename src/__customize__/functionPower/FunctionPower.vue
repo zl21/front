@@ -196,6 +196,7 @@
         menuHighlightIndex: 0, // 菜单高亮的index
         menuList: [], // 菜单数据
         groupId: '', // 菜单id
+        newGroupId: '', // 切换菜单时，当前切换的id
 
         menuTreeData: [], // 菜单树数据
         menuTreeQuery: '', // 菜单树检索的值
@@ -584,12 +585,12 @@
         });
       }, // 刷新数据
       refreshButtonClick() {
-        if (this.checkNoSaveData()) {
+        if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
         }
       }, // 刷新按钮
-      checkNoSaveData() {
+      checkNoSaveData(type) {
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -598,7 +599,7 @@
             showCancel: true,
             content: '是否保存修改的数据！',
             onOk: () => {
-              this.savePermission();
+              this.savePermission(type);
             },
             onCancel: () => {
               this.refresh();
@@ -636,6 +637,7 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        this.newGroupId = item.ID;
         if (this.checkNoSaveData()) {
         } else {
           this.spinShow = true;
@@ -1300,7 +1302,7 @@
         }
         this.extendTableData[params.index] = params.row;
       }, // 下边表格功能列checkbox改变时触发
-      savePermission() {
+      savePermission(type) {
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
@@ -1314,7 +1316,12 @@
           network.post('/p/cs/savePermission', obj)
             .then((res) => {
               if (res.data.code === 0) {
-                this.getTableData();
+                if (type === 'refresh') {
+                  this.refresh();
+                } else {
+                  this.groupId = this.newGroupId;
+                  this.getTableData();
+                }
                 this.$Message.success({
                   content: res.data.message
                 });
