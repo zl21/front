@@ -844,6 +844,7 @@
             });
           }
         } else { // 纵向布局
+        // console.log('this.mainFormInfo.formData',this.mainFormInfo.formData)
           const copyData = { ...this.mainFormInfo.formData };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID

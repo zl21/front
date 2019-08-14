@@ -136,11 +136,10 @@
                 content: message
               };
               this.$Modal.fcSuccess(data);
-              // window.close(); 
-              const path = this.$route.path;// 获取当前路由
-              const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
-              this.$router.push(templatePath);
-              console.log(this.$route.path);
+              window.close(); 
+              // const path = this.$route.path;// 获取当前路由
+              // const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
+              // this.$router.push(templatePath);
             }
           });
       }, // 确定

@@ -42,7 +42,7 @@ colspan="2">
         class="sav-btn"
         @click="save"
       >
-        <span>打印</span>
+        <span>确定</span>
       </button>
       <button
         class="cancel-btn"
@@ -88,7 +88,7 @@ colspan="2">
         const printId = this.checkItem.ID;
         if (!printId) {
           const data = {
-            title: 'warning',
+            title: '警告',
             content: '请选择一个模版'
           };
           this.$Modal.fcWarning(data);
@@ -105,11 +105,12 @@ colspan="2">
               const message = res.data.message;
               const data = {
                 mask: true,
-                title: 'success',
+                title: '成功',
                 content: message
               };
               this.$Modal.fcSuccess(data);
-              this.$emit('dialogComponentSaveSuccess',);
+              // this.$emit('dialogComponentSaveSuccess',);//此方法用于保存并打印功能，现改为只保存
+              this.$emit('closeActionDialog', false); // 关闭弹框
             }
           });
       }, // 确定
@@ -130,7 +131,7 @@ colspan="2">
           }
           if (res.data.code === 0) {
             this.printTemplateData = res.data.data;
-            // this.$emit('closeActionDialog', true); // 关闭弹框
+
           }
         });
     }
