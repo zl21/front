@@ -604,7 +604,14 @@
               this.savePermission(type);
             },
             onCancel: () => {
-              this.getTableData();
+              if (type === 'refresh') {
+                this.refresh();
+              } else {
+                this.groupId = this.newGroupId;
+                this.adSubsystemId = this.newAdSubsystemId;
+                this.adTableCateId = this.newAdTableCateId;
+                this.getTableData();
+              }
             }
           });
           return true;
@@ -696,6 +703,7 @@
               // this.groupId = this.menuList[this.menuHighlightIndex].ID;
 
               this.groupId = res.data.data[0].ID;
+              this.newGroupId = res.data.data[0].ID;
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
