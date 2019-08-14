@@ -942,6 +942,10 @@
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
+        // 表头取消选中
+        this.columns.forEach((item) => {
+          this.tabthCheckboxSelected(item, item.key);
+        });
         // 如果该行有扩展功能的表格的数据，取消下边表格的选中状态
         if (params.row.actionList && params.row.actionList.length > 0) {
           params.row.actionList.map((item) => {
@@ -1030,9 +1034,10 @@
       }, // 获取保存数据的权限的二进制数据
       allTabthSelected() {
         this.columns.forEach((item) => {
-          if (item.key !== 'see') {
-            this.tabthCheckboxSelected(item, item.key);
-          }
+          this.tabthCheckboxSelected(item, item.key);
+          // if (item.key !== 'see') {  // 注释掉的这个代码是默认的查看列没有选中
+          //   this.tabthCheckboxSelected(item, item.key);
+          // }
         });
       }, // 判断所有表头是不是应该选中
       tabthCheckboxSelected(column, columnKey) {
