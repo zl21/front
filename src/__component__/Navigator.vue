@@ -177,6 +177,9 @@
       showModule(val) {
         if (!val.Navigator) {
           this.$el.parentElement.hidden = true;
+          this.$el.parentElement.parentElement.hidden = true;
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
       }
     },

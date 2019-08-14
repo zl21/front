@@ -75,9 +75,19 @@
     },
     computed: {
       ...mapState('global', {
-        userInfo: ({ userInfo }) => userInfo,
+        showModule: ({ showModule }) => showModule
       }),
     }, 
+    watch: {
+      showModule(val) {
+        if (!val.Navigator) {
+          // this.$el.parentElement.hidden = true;
+          // this.$el.parentElement.style.padding='0px';
+          // this.$el.parentElement.parentElement.parentElement.style.margin='0px'
+
+        }
+      }
+    },
     components: {},
     methods: {
       getTempleteData(tableId, userId) {
@@ -99,7 +109,10 @@
       save() {
         const userId = this.userId; 
         const printId = this.checkItem.ID;
-        console.log(userId, printId);
+        const path = this.$route.path;// 获取当前路由
+        const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
+        this.$router.push(templatePath);
+        console.log(this.$route.path);
 
         if (!printId) {
           const data = {
@@ -123,7 +136,11 @@
                 content: message
               };
               this.$Modal.fcSuccess(data);
-              this.$emit('closeActionDialog', true); // 关闭弹框
+              // window.close(); 
+              const path = this.$route.path;// 获取当前路由
+              const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
+              this.$router.push(templatePath);
+              console.log(this.$route.path);
             }
           });
       }, // 确定
@@ -147,6 +164,16 @@
         if (event.data.print) {
           this.tableId = event.data.print.tableId; // 主表id
           this.userId = event.data.print.userId; // 用户id
+          // 打印预览需要的参数
+          const printPreview = {
+            tableName: event.data.print.tableName,
+            userId: event.data.print.userId,
+            objIds: event.data.print.objIds
+          };
+          // this.tableName = event.data.print.tableName;
+          // this.userId = event.data.print.userId;
+          // this.objIds = event.data.print.objIds;
+          window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));//存打印模版所需参数
           if (this.tableId && this.userId) {
             this.getTempleteData(this.tableId, this.userId);
           }

@@ -92,6 +92,7 @@
         :confirm="dialogConfig.confirm"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
+        @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
       />
     </div>
   </div>
@@ -179,6 +180,11 @@
       };
     },
     methods: {
+      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+        setTimeout(() => {
+          this.print(2530);
+        }, 1000);
+      },
       clearDialogComponentName() {
         this.dialogComponentName = null;
       },

@@ -86,7 +86,7 @@ colspan="2">
       save() {
         const userId = this.userInfo.id; 
         const printId = this.checkItem.ID;
-        if (printId === 'undefined') {
+        if (!printId) {
           const data = {
             title: 'warning',
             content: '请选择一个模版'
@@ -94,12 +94,14 @@ colspan="2">
           this.$Modal.fcWarning(data);
           return;
         }
+             
         network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId }))
           .then((res) => {
             if (res.data.code !== 0) {
               return;
             }
             if (res.data.code === 0) {
+              this.$emit('closeActionDialog', true); // 关闭弹框
               const message = res.data.message;
               const data = {
                 mask: true,
@@ -107,7 +109,7 @@ colspan="2">
                 content: message
               };
               this.$Modal.fcSuccess(data);
-              this.$emit('closeActionDialog', true); // 关闭弹框
+              this.$emit('dialogComponentSaveSuccess',);
             }
           });
       }, // 确定
@@ -121,7 +123,6 @@ colspan="2">
     mounted() {
       const { tableId, itemId } = router.currentRoute.params;
       const userId = this.userInfo.id;
-     
       network.post('/api/rpt/print/query', urlSearchParams({ tableId, userId }))
         .then((res) => {
           if (res.data.code !== 0) {
@@ -137,6 +138,7 @@ colspan="2">
 </script>
 <style lang='less'>
 .printTemplate{
+  width:520px;
   .th{
     background: #f8f8f9;
   }
