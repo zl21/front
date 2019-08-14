@@ -8,7 +8,10 @@
       v-if="watermarkImg"
       class="submit-img"
     >
-      <WaterMark :text="waterMarkText" :color="waterMarkColor"></WaterMark>
+      <WaterMark
+:text="waterMarkText"
+                 :color="waterMarkColor"
+ />
     </div>
     <ButtonGroup
       :data-array="dataArray"
@@ -621,6 +624,9 @@
         case 'slient':
           this.objTabActionSlient(tab);
           break;
+        case 'download':
+          this.objTabActiondDownload(tab);
+          break;
         case 'dialog':
           this.objTabActionDialog(tab);
           break;
@@ -631,6 +637,27 @@
           break;
         }
       },
+      objTabActiondDownload(tab) {
+        const filename = tab.webname;
+        const downloadId = this.itemId;
+        const path = tab.action.replace('objid', downloadId);
+        this.downFile(path, filename);
+      },
+      downFile(path, filename) {
+        // 创建隐藏的可下载链接
+        const eleLink = document.createElement('a');
+        eleLink.download = filename;
+        eleLink.style.display = 'none';
+        // 字符内容转变成blob地址
+        const blob = new Blob([path]);
+        eleLink.href = URL.createObjectURL(blob);
+        // 触发点击
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        // 然后移除
+        document.body.removeChild(eleLink);
+      },
+
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
         const url = tab.action;
@@ -645,7 +672,9 @@
             customizedModuleId = item.split(/\./)[2];
           }
         });
-        if (tab.action) {
+        if (tab.actiontype === 'url') {
+          this.objTabActionUrl(tab);
+        } else if (tab.action) {
           this.tabOpen({
             type,
             customizedModuleName,
@@ -654,7 +683,14 @@
           });
         }
       },
-
+      objTabActionUrl(tab) {
+        const eleLink = document.createElement('a');
+        eleLink.href = tab.action;
+        eleLink.target = '_blank';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+      },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
         // tab.confirm = true

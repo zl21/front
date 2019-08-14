@@ -26,13 +26,13 @@
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
       :on-row-double-click="onRowDoubleClick"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-sort-changed="onSortChange"
       :on-column-moved="onColumnMoved"
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
       :is-common-table="webconf.commonTable"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
@@ -766,9 +766,7 @@
           // 接口返回有url地址
           // eslint-disable-next-line no-restricted-globals
           location.href = obj.action;
-          return;
-        }
-        if (obj.vuedisplay === 'slient') {
+        } else if (obj.vuedisplay === 'slient') {
           // 静默程序            if(obj.confirm){  //有提示
           if (obj.confirm) {
             // 有提示
@@ -805,7 +803,11 @@
         } else if (obj.vuedisplay === 'navbar') {
           // !JSON.parse(obj.confirm.isselect)
           if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-            this.objTabActionNavbar(obj); // 新标签跳转
+            if (obj.actiontype === 'url') {
+              this.objTabActionUrl(obj);
+            } else {
+              this.objTabActionNavbar(obj); // 新标签跳转
+            }
           } else {
             // 动作定义根据列表是否选值
             const confirm = JSON.parse(obj.confirm);
@@ -852,6 +854,8 @@
                 this.buttons.selectIdArr.length
               )}`;
               this.dialogMessage(title, contentText);
+            } else if (obj.vuedisplay === 'download') {
+              this.objTabActiondDownload(obj);
             } else {
               // this.setActionDialog(obj);
               // const componentName = obj.action
@@ -880,7 +884,7 @@
             // this.dialogComponent = componentName;
             this.objTabActionDialog(obj);
           }
-        } else {
+        } else { // 需要弹出提示信息
           const message = obj.confirm.indexOf('{') >= 0
             ? JSON.parse(obj.confirm).nodesc
             : obj.confirm;
@@ -888,6 +892,36 @@
           const contentText = `${message}`;
           this.dialogMessage(title, contentText);
         }
+      },
+
+      objTabActionUrl(tab) {
+        const eleLink = document.createElement('a');
+        eleLink.href = tab.action;
+        eleLink.target = '_blank';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+      },
+      objTabActiondDownload(tab) {
+        const filename = tab.webname;
+        const selectIdArr = this.buttons.selectIdArr;
+        const downloadId = selectIdArr[0];
+        const path = tab.action.replace('objid', downloadId);
+        this.downFile(path, filename);
+      },
+      downFile(path, filename) {
+        // 创建隐藏的可下载链接
+        const eleLink = document.createElement('a');
+        eleLink.download = filename;
+        eleLink.style.display = 'none';
+        // 字符内容转变成blob地址
+        const blob = new Blob([path]);
+        eleLink.href = URL.createObjectURL(blob);
+        // 触发点击
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        // 然后移除
+        document.body.removeChild(eleLink);
       },
       webActionSlient(item) {
         const obj = {
