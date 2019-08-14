@@ -2198,6 +2198,9 @@
 <style lang="less">
   .table-in {
     flex: 1;
+    tbody tr.burgeon-table-row-hover td{
+      background-color: #ecf0f1;
+    }
     thead th {
       font-weight: 400;
     }

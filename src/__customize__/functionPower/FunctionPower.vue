@@ -1606,6 +1606,12 @@
               height: 100%;
               .table {
                 border: 0;
+                tbody tr.burgeon-table-row-hover td{
+                  background-color: #ecf0f1;
+                }
+                .burgeon-table-row-highlight {
+                  background-color: rgb(196, 226, 255);
+                }
               }
             }
           }
