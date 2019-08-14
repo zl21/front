@@ -645,25 +645,32 @@
         }
       },
       objTabActiondDownload(tab) {
-        const filename = tab.webname;
+        // const filename = tab.webname;
         const downloadId = this.itemId;
-        const path = tab.action.replace('objid', downloadId);
-        this.downFile(path, filename);
+        const paths = tab.action.replace('$objid$', downloadId);
+            const eleLink = document.createElement('a');
+            const path = getGateway(`${paths}`);
+            eleLink.setAttribute('href', path);
+            eleLink.style.display = 'none';
+            document.body.appendChild(eleLink);
+            eleLink.click();
+            document.body.removeChild(eleLink);
+        // this.downFile(path, filename);
       },
-      downFile(path, filename) {
-        // 创建隐藏的可下载链接
-        const eleLink = document.createElement('a');
-        eleLink.download = filename;
-        eleLink.style.display = 'none';
-        // 字符内容转变成blob地址
-        const blob = new Blob([path]);
-        eleLink.href = URL.createObjectURL(blob);
-        // 触发点击
-        document.body.appendChild(eleLink);
-        eleLink.click();
-        // 然后移除
-        document.body.removeChild(eleLink);
-      },
+      // downFile(path, filename) {
+      //   // 创建隐藏的可下载链接
+      //   const eleLink = document.createElement('a');
+      //   eleLink.download = filename;
+      //   eleLink.style.display = 'none';
+      //   // 字符内容转变成blob地址
+      //   const blob = new Blob([path]);
+      //   eleLink.href = URL.createObjectURL(blob);
+      //   // 触发点击
+      //   document.body.appendChild(eleLink);
+      //   eleLink.click();
+      //   // 然后移除
+      //   document.body.removeChild(eleLink);
+      // },
 
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
