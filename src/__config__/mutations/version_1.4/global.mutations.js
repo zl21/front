@@ -235,8 +235,10 @@ export default {
       TabLists: data, // 隐藏tab栏
       Navigator: data, // 隐藏菜单栏
     };
-    if(data===false){
-      const doc=document.getElementById('content').style.padding='0px';
+    if (data === false) {
+      // const dom = document.getElementById('content');
+      // const doc = dom.style.padding = '0px';
+      // const domForMargin = dom.parentNode.parentNode.style.margin = '0px';
     }
   }
   

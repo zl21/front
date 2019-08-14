@@ -113,7 +113,7 @@
         dataArray: {
           refresh: true, // 显示刷新
           back: true, // 显示返回
-          printValue: true, // 是否显示打印
+          printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
           waListButtonsConfig: {// 自定义按钮
@@ -847,7 +847,7 @@
           const copyData = { ...this.mainFormInfo.formData };
           this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           const modifyData = this.updateData[this.tableName].changeData;// 取changeData值，因外键形式需要lable和ID
-          this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
+          // this.copyDataForSingleObject({ copyData });// 将复制所保存的数据存到global中
           this.copyModifyDataForSingleObject(modifyData);// 将复制修改过所保存的数据存到global中
           const type = 'tableDetailVertical';
           this.tabHref({

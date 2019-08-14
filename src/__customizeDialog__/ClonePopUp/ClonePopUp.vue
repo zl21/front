@@ -168,9 +168,7 @@
           }
         }
       },
-      errorDialogClose() {
-        this.errorDialog = false;
-      } // 关闭弹框
+
     },
     created() {
       this.chineseName = ChineseDictionary;

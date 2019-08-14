@@ -55,5 +55,7 @@ export const ignoreGateWay = [
 
 //
 export const defaultQuietRoutes = [
-  '/login'
+  '/login',
+  '/PLUGIN/PRINTTEMPLATE',
+  '/PLUGIN/PRINTPREVIEW'
 ];

@@ -128,7 +128,7 @@
       }
     },
     watch: {
-      dialogComponentName(val) {
+      dialogComponentName(val,oldval) {
         if (val) {
           this.getModalWidth();
         }

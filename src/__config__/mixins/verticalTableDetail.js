@@ -13,8 +13,9 @@ export default () => ({
       keepAliveLists: ({ keepAliveLists }) => keepAliveLists
     }),
     ...mapState(getComponentName(), {
+
       buttonsData: ({ buttonsData }) => buttonsData,
-      mainFormInfo: ({ ...mainFormInfo }) => mainFormInfo.mainFormInfo,
+      mainFormInfo: ({mainFormInfo }) => mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
@@ -30,7 +31,6 @@ export default () => ({
         return acc;
       }, []),
     }),
-
   },
   methods: {
     ...mapActions(getComponentName(),

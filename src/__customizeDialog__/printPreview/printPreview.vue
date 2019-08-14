@@ -34,3 +34,8 @@
 
   };
 </script>
+<style scoped>
+   #printframe{
+     border:0;
+   }
+</style>
