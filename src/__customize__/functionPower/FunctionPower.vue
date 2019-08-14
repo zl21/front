@@ -204,6 +204,8 @@
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
         adTableCateId: null, // 树子节点ID
+        newAdSubsystemId: '', // 树节点ID
+        newAdTableCateId: null, // 树子节点ID
 
         tableDefaultSelectedRowIndex: 0, // 表格默认选中的行的index
         tableData: [], // 表格数据
@@ -813,6 +815,8 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        this.newAdSubsystemId = obj.ad_subsystem_id;
+        this.newAdTableCateId = obj.ad_tablecategory_id;
         if (this.checkNoSaveData()) {
         } else {
           this.spinShow = true;
@@ -1320,6 +1324,8 @@
                   this.refresh();
                 } else {
                   this.groupId = this.newGroupId;
+                  this.adSubsystemId = this.newAdSubsystemId;
+                  this.adTableCateId = this.newAdTableCateId;
                   this.getTableData();
                 }
                 this.$Message.success({
@@ -1334,7 +1340,7 @@
       }, // 保存数据
       getSaveData() {
         this.tableSaveData = this.tableData.reduce((acc, cur, idx) => {
-          if (this.getSavePermission(idx) !== this.toBin(this.backupsTableData[idx].permission)) {
+          if (cur.ad_menu_id === this.backupsTableData[idx].ad_menu_id && this.getSavePermission(idx) !== this.toBin(this.backupsTableData[idx].permission)) {
             acc.push({
               AD_MENU_ID: cur.ad_menu_id,
               DATA_SOURCE: cur.data_source,
