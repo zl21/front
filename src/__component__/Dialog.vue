@@ -25,6 +25,7 @@
         :is="dialogComponentName"
         v-if="showModal"
         ref="modalComponent"
+        :id-array="idArray"
         :obj-list="objList"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
@@ -38,6 +39,10 @@
   export default {
     // name: 'DialogComponent',
     props: {
+      idArray: {// 获取ID用于多选
+        type: Array,
+        default: () => []
+      },
       // showModal: {
       //   type: Boolean,
       //   default: () => false
@@ -46,7 +51,7 @@
       //   type: String,
       //   default: () => 'auto'
       // },
-      objList: {
+      objList: {// 需要从外部获取的信息
         type: Array,
         default: () => []
       },
@@ -128,7 +133,7 @@
       }
     },
     watch: {
-      dialogComponentName(val,oldval) {
+      dialogComponentName(val, oldval) {
         if (val) {
           this.getModalWidth();
         }

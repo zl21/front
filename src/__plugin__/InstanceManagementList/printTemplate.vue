@@ -22,6 +22,7 @@
             <input
               type="radio"
               name="radio"
+              :checked="item.ISDEFAULT"
               @click="CheckItem(item)"
             >
           </td>

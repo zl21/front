@@ -9,13 +9,14 @@
       class="submit-img"
     >
       <WaterMark
-:text="waterMarkText"
-                 :color="waterMarkColor"
- />
+        :text="waterMarkText"
+        :color="waterMarkColor"
+      />
     </div>
     <ButtonGroup
       :data-array="dataArray"
       class="buttonGroup"
+      :id-array="idArray"
       @buttonClick="buttonClick"
     />
     <Dialog
@@ -315,6 +316,12 @@
           if (this.mainFormInfo.formData.data) {
             return this.mainFormInfo.formData.data.addcolums;
           }
+        }
+        return [];
+      },
+      idArray() {
+        if (this.itemName && typeof (this.updateData[this.itemName].delete[this.itemName]) === 'array') {
+          return this.updateData[this.itemName].delete[this.itemName];
         }
         return [];
       }

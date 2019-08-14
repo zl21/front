@@ -129,7 +129,7 @@
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
           const data = {
-            title: 'warning',
+            title: '警告',
             content: '请输入目标表名或目标描述'
           };
           this.$Modal.fcWarning(data);
@@ -147,7 +147,7 @@
               return;
             }
             const data = {
-              title: 'success',
+              title: '成功',
               content: '克隆成功'
             };
             this.$Modal.fcWarning(data);

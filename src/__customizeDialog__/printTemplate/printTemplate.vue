@@ -22,16 +22,19 @@
             <input
               type="radio"
               name="radio"
+              :checked="item.ISDEFAULT"
               @click="CheckItem(item)"
             >
           </td>
           <td>{{ item.NAME }}</td>
         </tr>
         <tr>
-          <td v-if="printTemplateData.length<1"
-colspan="2">
-暂无数据
-</td>
+          <td
+v-if="printTemplateData.length<1"
+              colspan="2"
+>
+            暂无数据
+          </td>
         </tr>
       </table>
     </div>
@@ -131,7 +134,6 @@ colspan="2">
           }
           if (res.data.code === 0) {
             this.printTemplateData = res.data.data;
-
           }
         });
     }

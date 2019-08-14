@@ -85,6 +85,7 @@
       />
       <Dialog
         ref="dialogRef"
+        :id-array="idArray"
         :title="dialogConfig.title"
         :mask="dialogConfig.mask"
         :content-text="dialogConfig.contentText"
@@ -105,6 +106,10 @@
     props: {
       dataArray: {
         type: Object,
+        default: () => ({})
+      },
+      idArray: {
+        type: Array,
         default: () => ({})
       },
      
@@ -191,10 +196,19 @@
         let tab = {};
         this.printList.forEach((item) => {
           if (item.webid === id) {
-            tab = item;
+            tab = item;            
           }
         });
-        this.objTabActionDialog(tab);
+        console.log( "🍌",this.idArray)
+        if (id === 2530 && this.idArray.length === 0) {
+          const data = {
+            title: '警告',
+            content: '请先选择需要打印预览的记录！'
+          };
+          this.$Modal.fcWarning(data);
+        } else {
+          this.objTabActionDialog(tab);
+        }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

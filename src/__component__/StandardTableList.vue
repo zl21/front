@@ -4,6 +4,7 @@
   <div class="StandardTableListRootDiv">
     <ButtonGroup
       :data-array="buttons.dataArray"
+      :id-array="idArray"
       @buttonClick="buttonClick"
     />
     <FormItemComponent
@@ -162,6 +163,9 @@
           };
         }
         return {};
+      },
+      idArray() {
+          return this.buttons.selectIdArr;
       }
     },
     watch: {
@@ -930,6 +934,7 @@
           menu: this.buttons.tabledesc
         };
         let promise = new Promise((resolve, reject) => {
+
           this.$loading.show();
           this.getExeActionDataForButtons({
             item, obj, resolve, reject
