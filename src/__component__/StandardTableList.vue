@@ -1221,7 +1221,7 @@
               );
             }, 200);
           } else {
-            this.$Modal.confirm({
+            this.$Modal.fcWarning({
               mask: true,
               title: '警告',
               content: `未勾选记录,将批量更新所有查询结果(共计${
