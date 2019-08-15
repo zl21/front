@@ -529,10 +529,12 @@
           return;
         }
         // this.$refs.dialogRef.showModal = true;
-        this.$refs.dialogRef.open();
-        this.dialogConfig = {
-          contentText: '确认执行删除?',
-          confirm: () => {
+        this.$Modal.fcWarning({
+          title: '提示',
+          mask: true,
+          showCancel: true,
+          content: '确认执行删除?',
+          onOk: () => {
             let params = {};
             const { tableName, tableId, itemId } = router.currentRoute.params;
             const path = obj.path;
@@ -584,8 +586,66 @@
                 }
               }
             });
-          }
-        };
+          },
+          onCancel: () => {}
+        });
+        // this.$refs.dialogRef.open();
+        // this.dialogConfig = {
+        //   contentText: '确认执行删除?',
+        //   confirm: () => {
+        //     let params = {};
+        //     const { tableName, tableId, itemId } = router.currentRoute.params;
+        //     const path = obj.path;
+        //     const itemTable = this.updateData[this.tableName].delete;
+        //     if (obj.path) {
+        //       const mainTable = this.updateData[tableName].delete;
+        //
+        //       mainTable[tableName].ID = itemId;
+        //       mainTable[tableName].isdelmtable = false;
+        //
+        //       params = {
+        //         ...mainTable,
+        //         ...itemTable
+        //       };
+        //     } else {
+        //       params = {
+        //         delMTable: false,
+        //         objId: tableId,
+        //         tabItem: { ...itemTable },
+        //         table: tableName
+        //       };
+        //     }
+        //
+        //     itemTableDelete({
+        //       params,
+        //       path,
+        //       success: (res) => {
+        //         if (res.data.code === -1) {
+        //           // 删除失败
+        //           this.reloadErrorTips(res.data.data);
+        //         } else {
+        //           const deleteMessage = res.data.message;
+        //           this.$Message.success(`${deleteMessage}`);
+        //           const { refcolid } = this.itemInfo;
+        //           const tabIndex = this.tabCurrentIndex;
+        //           this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
+        //           this.getObjectTableItemForTableData({
+        //             table: this.tableName,
+        //             objid: itemId,
+        //             refcolid,
+        //             searchdata: {
+        //               column_include_uicontroller: true,
+        //               startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+        //               range: this.pageInfo.pageSize,
+        //               fixedcolumns: {}
+        //             },
+        //             tabIndex
+        //           });
+        //         }
+        //       }
+        //     });
+        //   }
+        // };
       },
       filterColumns(data) {
         if (!data) {
@@ -1611,7 +1671,7 @@
             };
             defaultData.push(data);
           }
-        } else if (this.dataSource.row[params.index][cellData.colname]) {
+        } else if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname]) {
           if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
             defaultData = this.fkSelectedChangeData[params.index][cellData.key];
           } else {
