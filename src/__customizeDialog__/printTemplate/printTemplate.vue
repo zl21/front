@@ -73,7 +73,8 @@
     data() {
       return {
         checkItem: {},
-        printTemplateData: []
+        printTemplateData: [],
+        checkedValue: {}
       };
     },
     computed: {
@@ -85,13 +86,14 @@
     methods: {
                
       CheckItem(item) {
-        this.checkItem = item;
+        this.checkItem = item.ID;
       },
       save() {
         const userId = this.userInfo.id; 
-        const printId = this.checkItem.ID;
+        const printId = this.checkItem;
         if (!printId) {
           const data = {
+            mask: true,
             title: '警告',
             content: '请选择一个模版'
           };
@@ -134,6 +136,11 @@
             return;
           }
           if (res.data.code === 0) {
+            res.data.data.forEach((element) => {
+              if (element.ISDEFAULT === 'Y') {
+                this.checkItem = element.ID;
+              }
+            });
             this.printTemplateData = res.data.data;
           }
         });
