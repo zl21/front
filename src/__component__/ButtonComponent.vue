@@ -249,7 +249,7 @@
             };
             this.$Modal.fcWarning(data);
           }
-        } else if (Array.isArray(printIdArray) && printIdArray.length === 0) {
+        } else if (Array.isArray(printIdArray) && printIdArray.length === 0 && id !== 2533) {
           if (id === 2530 || id === 2527) {
             const data = {
               title: '警告',
