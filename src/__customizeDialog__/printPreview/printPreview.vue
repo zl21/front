@@ -11,7 +11,9 @@
   import { mapState } from 'vuex';
   import router from '../../__config__/router.config';
   import getComponentName from '../../__utils__/getModuleName';
+
   import { MODULE_COMPONENT_NAME } from '../../constants/global';
+
 
   export default {
     name: 'PrintPreview',
@@ -26,10 +28,22 @@
         type: Array,
         default: () => []
       },
-      idArray: {// 获取ID用于多选
-        type: Array,
-        default: () => []
+      idArray: {
+        type: [Array, Object],
+        default: () => ({})
       },
+      itemName: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
+      // clickPrint: {// 用于调取打印方法
+      //   type: Boolean,
+      //   default: () => false
+      // },
+      
+    },
+    watch: {
+      
     },
     computed: {
       ...mapState('global', {
@@ -43,11 +57,21 @@
     mounted() {
       const userId = this.userInfo.id;// 用户ID
       const { tableName } = router.currentRoute.params;// 明细ID
-      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${this.idArray}&userId=${userId}`;
+      let printIds = [];
+
+      if (getComponentName()[0] === 'S') {
+        printIds = this.idArray;
+      } else {
+        this.idArray.delete[this.itemName].forEach((element) => {
+          printIds.push(element.ID);
+        });
+      }
+      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
     },
     created() {
       this[MODULE_COMPONENT_NAME] = getComponentName();
     },
+   
 
   };
 </script>

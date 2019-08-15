@@ -27,6 +27,7 @@
         ref="modalComponent"
         :id-array="idArray"
         :obj-list="objList"
+        :item-name="itemName"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
       />
@@ -40,8 +41,12 @@
     // name: 'DialogComponent',
     props: {
       idArray: {// 获取ID用于多选
-        type: Array,
-        default: () => []
+        type: [Array, Object],
+        default: () => {}
+      },
+      itemName: {// 获取当前子表表名
+        type: String,
+        default: () => ''
       },
       // showModal: {
       //   type: Boolean,
@@ -137,7 +142,7 @@
         if (val) {
           this.getModalWidth();
         }
-      }
+      },
     },
     mounted() {
     },

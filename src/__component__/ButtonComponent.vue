@@ -42,7 +42,6 @@
       >
         <Button type="fcdefault">
           打印
-         
           <Icon type="ios-arrow-down" />
         </Button>
         <DropdownMenu slot="list">
@@ -92,6 +91,7 @@
         :content-text="dialogConfig.contentText"
         :footer-hide="dialogConfig.footerHide"
         :confirm="dialogConfig.confirm"
+        :item-name="itemName"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
       />
@@ -100,20 +100,28 @@
 </template>
 <script> 
   
+  import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
+  import getComponentName from '../__utils__/getModuleName';
+
+  import { MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
     name: 'ButtonList',
+    provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
     props: {
       dataArray: {
         type: Object,
         default: () => ({})
       },
       idArray: {
-        type: Array,
+        type: [Array, Object],
         default: () => ({})
       },
-     
+      itemName: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
     },
     components: {
       Dialog
@@ -152,6 +160,19 @@
           // 打印列表
           {
             vuedisplay: 'dialog',
+            /* "confirm":"{\"isselect\":true,\"nodesc\":\"请先选择需要打印的记录！\"}", */
+            actiontype: 'url',
+            isrefrsh: false,
+            webid: 2527,
+            webdesc: '直接打印',
+            webname: 'OutPrint',
+            webicon: null,
+            action: 'custompage/redirect?print',
+            cuscomponent: null,
+            ishide: false,
+          },
+          {
+            vuedisplay: 'dialog',
             confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
             actiontype: 'url',
             isrefrsh: false,
@@ -184,6 +205,12 @@
         },
       };
     },
+    computed: {
+      ...mapState('global', {
+        userInfo: ({ userInfo }) => userInfo,
+      }),
+     
+    },
     methods: {
       // dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作  暂时不需要保存并打印
       //   setTimeout(() => {
@@ -195,18 +222,58 @@
       },
       print(id) {
         let tab = {};
+        let printContent = {};
         this.printList.forEach((item) => {
           if (item.webid === id) {
-            tab = item;            
+            tab = item;
+          } else if (item.webid === 2530) {
+            printContent = item;
           }
         });
-        console.log( "🍌",this.idArray)
-        if (id === 2530 && this.idArray.length === 0) {
-          const data = {
-            title: '警告',
-            content: '请先选择需要打印预览的记录！'
-          };
-          this.$Modal.fcWarning(data);
+        let printIdArray = [];
+        if (getComponentName()[0] === 'S') {
+          printIdArray = this.idArray;
+        } else {
+          printIdArray = this.idArray.delete[this.itemName];
+        }
+        if (!Array.isArray(printIdArray)) {
+          if (id === 2530 || id === 2527) {
+            const data = {
+              title: '警告',
+              content: '请先选择需要打印预览的记录！'
+            };
+            this.$Modal.fcWarning(data);
+          }
+        } else if (Array.isArray(printIdArray) && printIdArray.length === 0) {
+          if (id === 2530 || id === 2527) {
+            const data = {
+              title: '警告',
+              content: '请先选择需要打印预览的记录！'
+            };
+            this.$Modal.fcWarning(data);
+          }
+        } else if (id === 2527) { // 直接打印
+          const printIds = [];
+          let src = '';
+         
+          if (getComponentName()[0] === 'S') {
+            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
+          } else {
+            this.idArray.delete[this.itemName].forEach((element) => {
+              printIds.push(element.ID);
+            });
+            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIds}&userId=${this.userInfo.id}`;
+          }
+          const iFrame = document.createElement('iframe');
+          iFrame.src = src;
+          iFrame.id = 'iFrame';
+          iFrame.style.display = 'none';
+          document.body.appendChild(iFrame);
+          document.getElementById('iFrame').focus();
+          document.getElementById('iFrame').contentWindow.print();
+          setTimeout(() => {
+            document.body.removeChild(iFrame);
+          }, 5000);
         } else {
           this.objTabActionDialog(tab);
         }
@@ -226,6 +293,9 @@
         this.$emit('buttonClick', type, item);
       },
         
+    },
+    created() {
+      this[MODULE_COMPONENT_NAME] = getComponentName();
     },
    
   };

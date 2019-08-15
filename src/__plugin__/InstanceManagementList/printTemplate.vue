@@ -20,9 +20,10 @@
         >
           <td>
             <input
+              v-model="item.ISDEFAULT"
               type="radio"
               name="radio"
-              :checked="item.ISDEFAULT"
+              value="Y"
               @click="CheckItem(item)"
             >
           </td>
@@ -59,7 +60,6 @@
 <script>
   import { mapState } from 'vuex';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import router from '../../__config__/router.config';
 
   export default {
     name: 'PrintTemplate',
@@ -113,8 +113,6 @@
         const path = this.$route.path;// 获取当前路由
         const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
         this.$router.push(templatePath);
-        console.log(this.$route.path);
-
         if (!printId) {
           const data = {
             title: 'warning',
@@ -146,7 +144,6 @@
       }, // 确定
       cancel() {
         window.close(); 
-        // this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
 
     },
@@ -173,7 +170,7 @@
           // this.tableName = event.data.print.tableName;
           // this.userId = event.data.print.userId;
           // this.objIds = event.data.print.objIds;
-          window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));//存打印模版所需参数
+          window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));// 存打印模版所需参数
           if (this.tableId && this.userId) {
             this.getTempleteData(this.tableId, this.userId);
           }
