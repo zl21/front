@@ -221,6 +221,10 @@
         this.dialogComponentName = null;
       },
       print(id) {
+        const iFrame = document.getElementById('iframe');
+        if (iFrame) {
+          document.body.removeChild(iFrame);
+        }
         let tab = {};
         let printContent = {};
         this.printList.forEach((item) => {
@@ -236,7 +240,8 @@
         } else {
           printIdArray = this.idArray.delete[this.itemName];
         }
-        if (!Array.isArray(printIdArray)) {
+
+        if (!Array.isArray(printIdArray) && id !== 2533) {
           if (id === 2530 || id === 2527) {
             const data = {
               title: '警告',
@@ -271,9 +276,7 @@
           document.body.appendChild(iFrame);
           document.getElementById('iFrame').focus();
           document.getElementById('iFrame').contentWindow.print();
-          setTimeout(() => {
-            document.body.removeChild(iFrame);
-          }, 5000);
+          // this.$emit('cl', type, item);
         } else {
           this.objTabActionDialog(tab);
         }
