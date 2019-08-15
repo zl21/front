@@ -92,7 +92,7 @@ axios.interceptors.response.use(
     });
     return response;
   },
-  (error) => { 
+  (error) => {
     if (error.response) {
       const { status, config } = error.response;
       const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
@@ -117,7 +117,7 @@ axios.interceptors.response.use(
             formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
           }
         }
-        window.vm.$Modal.info({
+        window.vm.$Modal.fcError({
           mask: true,
           titleAlign: 'center',
           title: '错误',
@@ -126,6 +126,7 @@ axios.interceptors.response.use(
               value: formatJsonEmg,
               rows: 8,
               style: `width: 100%;
+              margin: 1px;
               margin-bottom: -8px;
               box-sizing: border-box;
               padding: 5px;
@@ -190,7 +191,7 @@ function setUrlSeverId(gateWay, url, serviceconfig) {
   }
   return gateWay ? `/${gateWay}${url}` : url;
 }
-  
+
 function NetworkConstructor() {
   // equals to axios.post(url, config)
   this.post = (url, config, serviceconfig) => {
