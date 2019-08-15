@@ -86,11 +86,11 @@
     methods: {
                
       CheckItem(item) {
-        this.checkItem = item.ID;
+        this.checkItem = item;
       },
       save() {
         const userId = this.userInfo.id; 
-        const printId = this.checkItem;
+        const printId = this.checkItem.ID;
         if (!printId) {
           const data = {
             mask: true,
@@ -138,7 +138,7 @@
           if (res.data.code === 0) {
             res.data.data.forEach((element) => {
               if (element.ISDEFAULT === 'Y') {
-                this.checkItem = element.ID;
+                this.checkItem = element;
               }
             });
             this.printTemplateData = res.data.data;

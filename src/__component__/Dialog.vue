@@ -16,6 +16,7 @@
     :width="modalWidth"
     @on-cancel="onCancel"
     @on-ok="onOk"
+    @on-visible-change="close"
   >
     <p v-if="contentText">
       {{ contentText }}
@@ -147,6 +148,11 @@
     mounted() {
     },
     methods: {
+      close(value){
+        if(value==='false'){
+            this.$emit('clearSelectIdArray');
+        }
+      },
       setTitle(value) {
         this.setTitleName = value;
       },

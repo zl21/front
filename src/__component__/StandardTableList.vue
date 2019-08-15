@@ -6,6 +6,7 @@
       :data-array="buttons.dataArray"
       :id-array="idArray"
       @buttonClick="buttonClick"
+      @clearSelectIdArray="clearSelectIdArray"
     />
     <FormItemComponent
       ref="FormItemComponent"
@@ -703,6 +704,9 @@
       },
 
       // 按钮组操作
+      clearSelectIdArray(){
+alert(111)
+      },
       getbuttonGroupdata() {
         // 获取按钮数据
         const tabcmdData = this.buttons.tabcmd;

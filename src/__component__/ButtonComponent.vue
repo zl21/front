@@ -94,6 +94,7 @@
         :item-name="itemName"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </div>
@@ -219,6 +220,10 @@
       // },
       clearDialogComponentName() {
         this.dialogComponentName = null;
+        //  this.$emit('buttonClick', type, item);
+      },
+      clearSelectIdArray(){
+            this.$emit('clearSelectIdArray');
       },
       print(id) {
         const iFrame = document.getElementById('iframe');
@@ -240,7 +245,6 @@
         } else {
           printIdArray = this.idArray.delete[this.itemName];
         }
-
         if (!Array.isArray(printIdArray) && id !== 2533) {
           if (id === 2530 || id === 2527) {
             const data = {
@@ -280,6 +284,7 @@
         } else {
           this.objTabActionDialog(tab);
         }
+
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
