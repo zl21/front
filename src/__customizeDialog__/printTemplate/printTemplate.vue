@@ -20,9 +20,10 @@
         >
           <td>
             <input
+              v-model="item.ISDEFAULT"
               type="radio"
               name="radio"
-              :checked="item.ISDEFAULT"
+              value="Y"
               @click="CheckItem(item)"
             >
           </td>
@@ -30,9 +31,9 @@
         </tr>
         <tr>
           <td
-v-if="printTemplateData.length<1"
-              colspan="2"
->
+            v-if="printTemplateData.length<1"
+            colspan="2"
+          >
             暂无数据
           </td>
         </tr>
@@ -67,7 +68,7 @@ v-if="printTemplateData.length<1"
       objList: {
         type: Array,
         default: () => []
-      }
+      },
     },
     data() {
       return {

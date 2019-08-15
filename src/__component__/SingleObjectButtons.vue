@@ -16,7 +16,8 @@
     <ButtonGroup
       :data-array="dataArray"
       class="buttonGroup"
-      :id-array="idArray"
+      :item-name="itemName"
+      :id-array="itemName ? updateData[itemName] :{}"
       @buttonClick="buttonClick"
     />
     <Dialog
@@ -321,6 +322,7 @@
       },
       idArray() {
         if (this.itemName && typeof (this.updateData[this.itemName].delete[this.itemName]) === 'array') {
+          console.log(typeof (this.updateData[this.itemName].delete[this.itemName]));
           return this.updateData[this.itemName].delete[this.itemName];
         }
         return [];
@@ -648,13 +650,13 @@
         // const filename = tab.webname;
         const downloadId = this.itemId;
         const paths = tab.action.replace('$objid$', downloadId);
-            const eleLink = document.createElement('a');
-            const path = getGateway(`${paths}`);
-            eleLink.setAttribute('href', path);
-            eleLink.style.display = 'none';
-            document.body.appendChild(eleLink);
-            eleLink.click();
-            document.body.removeChild(eleLink);
+        const eleLink = document.createElement('a');
+        const path = getGateway(`${paths}`);
+        eleLink.setAttribute('href', path);
+        eleLink.style.display = 'none';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
         // this.downFile(path, filename);
       },
       // downFile(path, filename) {
