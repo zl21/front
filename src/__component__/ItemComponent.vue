@@ -966,7 +966,7 @@
       },
       deleteImg(item, index) {
         const that = this;
-        this.$Modal.warning({
+        this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
           title: '提示',

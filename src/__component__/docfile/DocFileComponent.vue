@@ -153,7 +153,7 @@
         this.$refs.file.reset();
       },
       deleteLi(index) {
-        this.$Modal.warning({
+        this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
           title: '提示',
