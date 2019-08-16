@@ -1152,7 +1152,17 @@
           title,
           contentText,
         });
-        this.$refs.dialogRefs.open();
+        const data = {
+          mask: this.buttons.dialogConfig.mask,
+          title: this.buttons.dialogConfig.title,
+          content: this.buttons.dialogConfig.contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog();
+          }
+        };
+        this.$Modal.fcWarning(data);
+        // this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;

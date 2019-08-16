@@ -11,6 +11,7 @@ import {
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -32,7 +33,7 @@ export default (router) => {
     const {
       tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName
     } = to.params;
-    const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX];
+    const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const fromTableName = from.params.tableName;
     const fromTableId = from.params.tableId;
     const fromItemId = from.params.itemId;
