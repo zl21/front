@@ -6,7 +6,7 @@
       :data-array="buttons.dataArray"
       :id-array="idArray"
       @buttonClick="buttonClick"
-      @clearSelectArray="clearSelectArray"
+      @clearSelectIdArray="clearSelectIdArray"
     />
     <FormItemComponent
       ref="FormItemComponent"
@@ -746,8 +746,17 @@
       },
 
       // 按钮组操作
-      clearSelectArray() {//关闭打印预览与直接打印后清空选中项
+      clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        const detailTable = document.querySelector('.detailTable');
+        const commonTable = document.querySelector('.commonTable');
+
+        if (detailTable && detailTable.agTable) { // ag表格
+          detailTable.agTable.deselectAll();
+        } 
+        if (commonTable) { // 普通表格
+          commonTable.deselectAll();
+        }
       },
       getbuttonGroupdata() {
         // 获取按钮数据

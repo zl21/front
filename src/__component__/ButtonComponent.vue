@@ -94,7 +94,7 @@
         :item-id="itemId"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
-        @clearSelectArray="clearSelectArray"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </div>
@@ -218,8 +218,8 @@
       //     this.print(2530);
       //   }, 1000);
       // },
-      clearSelectArray() {
-        // this.$emit('clearSelectArray'); 
+      clearSelectIdArray() { // 用于关闭打印相关弹框清空标准列表界面选中项
+        this.$emit('clearSelectIdArray'); 
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
@@ -258,16 +258,11 @@
             return;
           }
         }
-
         if (id === 2527) { // 直接打印
           let src = '';
-         
           if (getComponentName()[0] === 'S') {
             src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
           } else {
-            // this.idArray.delete[this.itemName].forEach((element) => {
-            //   printIds.push(element.ID);
-            // });
             const printId = this.itemId;
             src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
           }
@@ -278,6 +273,7 @@
           document.body.appendChild(iFrame);
           document.getElementById('iFrame').focus();
           document.getElementById('iFrame').contentWindow.print();
+          this.clearSelectIdArray();
         } else {
           this.objTabActionDialog(tab);
         }

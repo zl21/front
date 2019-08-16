@@ -69,7 +69,9 @@
     created() {
       this[MODULE_COMPONENT_NAME] = getComponentName();
     },
-   
+    destroyed() {
+      this.$emit('clearSelectIdArray');
+    }
 
   };
 </script>

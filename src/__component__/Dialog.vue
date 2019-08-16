@@ -16,7 +16,6 @@
     :width="modalWidth"
     @on-cancel="onCancel"
     @on-ok="onOk"
-    @on-visible-change="close"
   >
     <p v-if="contentText">
       {{ contentText }}
@@ -31,6 +30,7 @@
         :item-id="itemId"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </Modal>
@@ -148,8 +148,8 @@
     mounted() {
     },
     methods: {
-      close(value) { // 清空列表选中项
-        if (value === false) { this.$emit('clearSelectArray'); }
+      clearSelectIdArray() { // 清空列表选中项
+        this.$emit('clearSelectIdArray');
       },
       setTitle(value) {
         this.setTitleName = value;
