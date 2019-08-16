@@ -94,7 +94,7 @@
         :item-id="itemId"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
-        @clearSelectArray="clearSelectArray"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </div>
@@ -218,8 +218,8 @@
       //     this.print(2530);
       //   }, 1000);
       // },
-      clearSelectArray() {
-        // this.$emit('clearSelectArray'); 
+      clearSelectIdArray() {
+        this.$emit('clearSelectIdArray'); 
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
