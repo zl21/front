@@ -3,6 +3,7 @@
         <Table
                 :columns="columns"
                 class="table"
+                ref="table"
                 :height="true"
                 :data="tableData"
                 :row-class-name="rowClassName"
@@ -289,6 +290,9 @@
     watch: {},
     methods: {
       ...mapMutations('global', ['tabOpen', 'tabHref']),
+      deselectAll() {
+        this.$refs.table.selectAll(false);
+      }, // 取消表格全部选中
       rowClassName(row) {
         let cssStr = '';
         this.cssStatus.forEach((item) => {
