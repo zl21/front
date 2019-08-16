@@ -927,10 +927,16 @@
               // this.dialogComponent = componentName;
               this.objTabActionDialog(obj);
             }
-          } else if (confirm.nodesc) {
+          } else if (confirm.nodesc) { // 校验提示
             const title = this.ChineseDictionary.WARNING;
             const contentText = `${confirm.nodesc}`;
-            this.dialogMessage(title, contentText);
+            // this.dialogMessage(title, contentText);
+            const data = {
+              mask: true,
+              title,
+              content: contentText
+            };
+            this.$Modal.fcWarning(data);
           } else {
             // this.setActionDialog(obj);
 
