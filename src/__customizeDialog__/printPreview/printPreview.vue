@@ -32,7 +32,7 @@
         type: [Array, Object],
         default: () => ({})
       },
-      itemName: {// 获取当前子表表名
+      tableId: {// 获取当前子表表名
         type: String,
         default: () => ''
       },
@@ -62,9 +62,7 @@
       if (getComponentName()[0] === 'S') {
         printIds = this.idArray;
       } else {
-        this.idArray.delete[this.itemName].forEach((element) => {
-          printIds.push(element.ID);
-        });
+        printIds = this.tableId;
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
     },
