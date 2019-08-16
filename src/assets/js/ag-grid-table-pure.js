@@ -1212,6 +1212,11 @@ const initializeAgTable = (container, opt) => {
       }
       return agTable;
     };
+    
+    // 清空选中所有列
+    agTable.deselectAll = () => {
+      api.deselectAll();
+    };
 
     // 暴露ag showOverlay方法
     agTable.showLoading = () => {
