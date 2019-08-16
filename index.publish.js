@@ -1,6 +1,7 @@
 import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
+import store from './src/__config__/store.config';
 
 const validateConfig = config => ({
   isQualified: true,
@@ -64,4 +65,5 @@ export default {
   urlSearchParams,
   getModuleName,
   network,
+  store
 };
