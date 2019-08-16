@@ -30,10 +30,7 @@
         type="file"
         multiple="multiple"
         :disabled="docList.readonly"
-        accept="application/vnd.ms-excel ,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, 
-        application/msword, application/msexcel,
-        application/vnd.openxmlformats-officedocument.wordprocessingml.document,
-        application/vnd.openxmlformats-officedocument.wordprocessingml.template" 
+        accept="*"
         @change.stop="uploadFileChange($event)"
       >上传附件</label>
       <span
