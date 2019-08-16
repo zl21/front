@@ -219,7 +219,7 @@
       //   }, 1000);
       // },
       clearSelectArray() {
-        this.$emit('clearSelectArray'); 
+        // this.$emit('clearSelectArray'); 
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
