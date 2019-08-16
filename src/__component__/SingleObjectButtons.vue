@@ -75,6 +75,7 @@
       :main-table="tableName"
       :main-id="tableId"
       @confirmImport="importsuccess"
+      @closeDialog="closeActionDialog"
     />
     <!-- @confirmImport="" -->
   </div>
@@ -1077,11 +1078,13 @@
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
               if (obj.requestUrlPath) { // 有path
-                this.$refs.dialogRef.open();
                 this.saveParameters();// 调用获取参数方法
-                this.dialogConfig = {
-                  contentText: '确认执行删除?',
-                  confirm: () => {
+                const data = {
+                  title: '警告',
+                  mask: true,
+                  content: '确认执行删除?',
+                  showCancel: true,
+                  onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
                         path: obj.requestUrlPath,
@@ -1114,12 +1117,15 @@
                     });
                   }
                 };
+                this.$Modal.fcWarning(data);
               } else { // 没有path
                 // 没有path
-                this.$refs.dialogRef.open();
-                this.dialogConfig = {
-                  contentText: '确认执行删除?',
-                  confirm: () => {
+                const data = {
+                  title: '警告',
+                  mask: true,
+                  content: '确认执行删除?',
+                  showCancel: true,
+                  onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
                         table: this.tableName, objId: this.itemId, resolve, reject
@@ -1138,15 +1144,18 @@
                     });
                   }
                 };
+                this.$Modal.fcWarning(data);
               }
             } else if (this.updateData[this.itemName].delete[this.itemName].length > 0) { // 子表删除
               this.saveParameters();// 调用获取参数方法
               if (obj.requestUrlPath) { // 有path
-                this.$refs.dialogRef.open();
                 this.saveParameters();// 调用获取参数方法
-                this.dialogConfig = {
-                  contentText: '确认执行删除?',
-                  confirm: () => {
+                const data = {
+                  title: '警告',
+                  mask: true,
+                  content: '确认执行删除?',
+                  showCancel: true,
+                  onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
                         path: obj.requestUrlPath,
@@ -1189,12 +1198,15 @@
                     });
                   }
                 };
+                this.$Modal.fcWarning(data);
               } else { // 没有path
                 // 没有path
-                this.$refs.dialogRef.open();
-                this.dialogConfig = {
-                  contentText: '确认执行删除?',
-                  confirm: () => {
+                const data = {
+                  title: '警告',
+                  mask: true,
+                  content: '确认执行删除?',
+                  showCancel: true,
+                  onOk: () => {
                     const promise = new Promise((resolve, reject) => {
                       this.performMainTableDeleteAction({
                         path: obj.requestUrlPath,
@@ -1236,6 +1248,7 @@
                     });
                   }
                 };
+                this.$Modal.fcWarning(data);
               }
             } else {
               const data = {
@@ -1249,9 +1262,12 @@
             if (obj.requestUrlPath) { // 有path
               this.$refs.dialogRef.open();
               this.saveParameters();// 调用获取参数方法
-              this.dialogConfig = {
-                contentText: '确认执行删除?',
-                confirm: () => {
+              const data = {
+                title: '警告',
+                mask: true,
+                content: '确认执行删除?',
+                showCancel: true,
+                onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
                       path: obj.requestUrlPath,
@@ -1281,12 +1297,15 @@
                   });
                 }
               };
+              this.$Modal.fcWarning(data);
             } else { // 没有path
               // 没有path
-              this.$refs.dialogRef.open();
-              this.dialogConfig = {
-                contentText: '确认执行删除?',
-                confirm: () => {
+              const data = {
+                title: '警告',
+                mask: true,
+                content: '确认执行删除?',
+                showCancel: true,
+                onOk: () => {
                   const promise = new Promise((resolve, reject) => {
                     this.performMainTableDeleteAction({
                       table: this.tableName, objId: this.itemId, resolve, reject
@@ -1307,13 +1326,16 @@
                   });
                 }
               };
+              this.$Modal.fcWarning(data);
             }
           }
         } else if (obj.requestUrlPath) { // 有path，没有子表
-          this.$refs.dialogRef.open();
-          this.dialogConfig = {
-            contentText: '确认执行删除?',
-            confirm: () => {
+          const data = {
+            title: '警告',
+            mask: true,
+            content: '确认执行删除?',
+            showCancel: true,
+            onOk: () => {
               const promise = new Promise((resolve, reject) => {
                 this.performMainTableDeleteAction({
                   path: obj.requestUrlPath, table: this.tableName, objId: this.itemId, resolve, reject
@@ -1334,12 +1356,15 @@
               });
             }
           };
+          this.$Modal.fcWarning(data);
         } else {
           // 没有path
-          this.$refs.dialogRef.open();
-          this.dialogConfig = {
-            contentText: '确认执行删除?',
-            confirm: () => {
+          const data = {
+            title: '警告',
+            mask: true,
+            content: '确认执行删除?',
+            showCancel: true,
+            onOk: () => {
               const promise = new Promise((resolve, reject) => {
                 this.performMainTableDeleteAction({
                   table: this.tableName, objId: this.itemId, resolve, reject
@@ -1360,6 +1385,7 @@
               });
             }
           };
+          this.$Modal.fcWarning(data);
         }
       },
 

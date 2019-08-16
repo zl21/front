@@ -11,7 +11,7 @@
       <div>
         <div class="importICon">
           <span class="icon-span">
-            <i class="iconfont iconbj_import"></i>
+            <i class="iconfont iconbj_import" />
           </span>
         </div>
         <div class="import-panel">
@@ -199,11 +199,11 @@
       }
     },
     mounted() {
+      console.log(444, this.visible);
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
       else this.modalVisible = false;
       this.axiosSetting();
-      console.log(this.tablename);
     },
 
     computed: {
@@ -320,16 +320,14 @@
         this.$emit('confirmImport');
       },
       // 上传失败
-      handleError(result) {
-        console.log(result.onerror());
-
+      handleError(e) {
         if (e.status === 403) {
           this.$store.commit('beforeSignout');
           this.closeDialog();
         } else {
           this.$store.commit('errorDialog', {
             // 弹框报错
-            message: e
+            // message: e
           });
           this.clearFile();
         }
