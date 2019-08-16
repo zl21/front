@@ -65,16 +65,12 @@
   export default {
     name: 'PrintTemplate',
     props: {
-      objList: {
-        type: Array,
-        default: () => []
-      },
+      
     },
     data() {
       return {
         checkItem: {},
         printTemplateData: [],
-        checkedValue: {}
       };
     },
     computed: {

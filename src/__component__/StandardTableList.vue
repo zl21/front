@@ -6,7 +6,7 @@
       :data-array="buttons.dataArray"
       :id-array="idArray"
       @buttonClick="buttonClick"
-      @clearSelectIdArray="clearSelectIdArray"
+      @clearSelectArray="clearSelectArray"
     />
     <FormItemComponent
       ref="FormItemComponent"
@@ -704,8 +704,8 @@
       },
 
       // 按钮组操作
-      clearSelectIdArray(){
-alert(111)
+      clearSelectArray() {//关闭打印预览与直接打印后清空选中项
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
       },
       getbuttonGroupdata() {
         // 获取按钮数据

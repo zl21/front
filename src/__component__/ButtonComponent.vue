@@ -91,10 +91,10 @@
         :content-text="dialogConfig.contentText"
         :footer-hide="dialogConfig.footerHide"
         :confirm="dialogConfig.confirm"
-        :item-name="itemName"
+        :item-id="itemId"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
-        @clearSelectIdArray="clearSelectIdArray"
+        @clearSelectArray="clearSelectArray"
       />
     </div>
   </div>
@@ -119,7 +119,7 @@
         type: [Array, Object],
         default: () => ({})
       },
-      itemName: {// 获取当前子表表名
+      itemId: {// 获取当前子表明细ID
         type: String,
         default: () => ''
       },
@@ -218,12 +218,12 @@
       //     this.print(2530);
       //   }, 1000);
       // },
+      clearSelectArray() {
+        // this.$emit('clearSelectArray'); 
+      },
       clearDialogComponentName() {
         this.dialogComponentName = null;
         //  this.$emit('buttonClick', type, item);
-      },
-      clearSelectIdArray(){
-            this.$emit('clearSelectIdArray');
       },
       print(id) {
         const iFrame = document.getElementById('iframe');
@@ -240,38 +240,36 @@
           }
         });
         let printIdArray = [];
-        if (getComponentName()[0] === 'S') {
+        if (getComponentName()[0] === 'S') { // 只有列表界面需要勾选明细
           printIdArray = this.idArray;
-        } else {
-          printIdArray = this.idArray.delete[this.itemName];
+          if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
+            const data = {
+              title: '警告',
+              content: '请先选择需要打印预览的记录！'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          } if (printIdArray.length === 0 && id === 2527) { // 直接打印
+            const data = {
+              title: '警告',
+              content: '请先选择需要直接打印的记录！'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          }
         }
-        if (!Array.isArray(printIdArray) && id !== 2533) {
-          if (id === 2530 || id === 2527) {
-            const data = {
-              title: '警告',
-              content: '请先选择需要打印预览的记录！'
-            };
-            this.$Modal.fcWarning(data);
-          }
-        } else if (Array.isArray(printIdArray) && printIdArray.length === 0 && id !== 2533) {
-          if (id === 2530 || id === 2527) {
-            const data = {
-              title: '警告',
-              content: '请先选择需要打印预览的记录！'
-            };
-            this.$Modal.fcWarning(data);
-          }
-        } else if (id === 2527) { // 直接打印
-          const printIds = [];
+
+        if (id === 2527) { // 直接打印
           let src = '';
          
           if (getComponentName()[0] === 'S') {
             src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
           } else {
-            this.idArray.delete[this.itemName].forEach((element) => {
-              printIds.push(element.ID);
-            });
-            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIds}&userId=${this.userInfo.id}`;
+            // this.idArray.delete[this.itemName].forEach((element) => {
+            //   printIds.push(element.ID);
+            // });
+            const printId = this.itemId;
+            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
           }
           const iFrame = document.createElement('iframe');
           iFrame.src = src;
@@ -280,11 +278,9 @@
           document.body.appendChild(iFrame);
           document.getElementById('iFrame').focus();
           document.getElementById('iFrame').contentWindow.print();
-          // this.$emit('cl', type, item);
         } else {
           this.objTabActionDialog(tab);
         }
-
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

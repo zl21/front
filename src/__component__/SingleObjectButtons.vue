@@ -16,7 +16,7 @@
     <ButtonGroup
       :data-array="dataArray"
       class="buttonGroup"
-      :item-name="itemName"
+      :itemId="itemId"
       :id-array="itemName ? updateData[itemName] :{}"
       @buttonClick="buttonClick"
     />

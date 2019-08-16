@@ -28,7 +28,7 @@
         ref="modalComponent"
         :id-array="idArray"
         :obj-list="objList"
-        :item-name="itemName"
+        :item-id="itemId"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
       />
@@ -45,7 +45,7 @@
         type: [Array, Object],
         default: () => {}
       },
-      itemName: {// 获取当前子表表名
+      itemId: {// 获取当前子表表名
         type: String,
         default: () => ''
       },
@@ -148,10 +148,8 @@
     mounted() {
     },
     methods: {
-      close(value){
-        if(value==='false'){
-            this.$emit('clearSelectIdArray');
-        }
+      close(value) { // 清空列表选中项
+        if (value === false) { this.$emit('clearSelectArray'); }
       },
       setTitle(value) {
         this.setTitleName = value;

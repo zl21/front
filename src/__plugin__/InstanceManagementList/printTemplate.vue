@@ -46,7 +46,7 @@
         class="sav-btn"
         @click="save"
       >
-        <span>打印</span>
+        <span>确定</span>
       </button>
       <button
         class="cancel-btn"
@@ -76,18 +76,11 @@
     },
     computed: {
       ...mapState('global', {
-        showModule: ({ showModule }) => showModule
+        showModule: ({ showModule }) => showModule// 隐藏菜单栏和收藏夹
       }),
     }, 
     watch: {
-      showModule(val) {
-        if (!val.Navigator) {
-          // this.$el.parentElement.hidden = true;
-          // this.$el.parentElement.style.padding='0px';
-          // this.$el.parentElement.parentElement.parentElement.style.margin='0px'
-
-        }
-      }
+     
     },
     components: {},
     methods: {
@@ -95,9 +88,19 @@
         network.post('/api/rpt/print/query', urlSearchParams({ tableId, userId }))
           .then((res) => {
             if (res.data.code !== 0) {
+              const data = {
+                title: '错误',
+                content: res.data
+              };
+              this.$Modal.fcError(data);
               return;
             }
             if (res.data.code === 0) {
+              res.data.data.forEach((element) => {
+                if (element.ISDEFAULT === 'Y') {
+                  this.checkItem = element;
+                }
+              });
               this.printTemplateData = res.data.data;
             // this.$emit('closeActionDialog', true); // 关闭弹框
             }
@@ -110,12 +113,12 @@
       save() {
         const userId = this.userId; 
         const printId = this.checkItem.ID;
-        const path = this.$route.path;// 获取当前路由
-        const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
-        this.$router.push(templatePath);
+        // const path = this.$route.path;// 获取当前路由
+        // const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
+        // this.$router.push(templatePath);
         if (!printId) {
           const data = {
-            title: 'warning',
+            title: 'warni警告ng',
             content: '请选择一个模版'
           };
           this.$Modal.fcWarning(data);
@@ -125,6 +128,11 @@
         network.post('/api/rpt/userprint/save', urlSearchParams({ printId, userId }))
           .then((res) => {
             if (res.data.code !== 0) {
+              const data = {
+                title: '错误',
+                content: res.data
+              };
+              this.$Modal.fcError(data);
               return;
             }
             if (res.data.code === 0) {
@@ -135,7 +143,9 @@
                 content: message
               };
               this.$Modal.fcSuccess(data);
-              window.close(); 
+              setTimeout(() => {
+                window.close(); 
+              }, 1000);
               // const path = this.$route.path;// 获取当前路由
               // const templatePath = path.replace('PRINTTEMPLATE', 'PRINTPREVIEW');
               // this.$router.push(templatePath);
@@ -145,37 +155,40 @@
       cancel() {
         window.close(); 
       }, // 取消
+      getEventListenerParam() {
+        if (window.opener) {
+          window.opener.postMessage({ ready: true }, '*');// 向全局发送消息
+        }
 
+        window.addEventListener('message', (event) => {
+          if (event.data.print) {
+            this.tableId = event.data.print.tableId; // 主表id
+            this.userId = event.data.print.userId; // 用户id
+            // 打印预览需要的参数d
+            // const printPreview = {
+            //   tableName: event.data.print.tableName,
+            //   userId: event.data.print.userId,
+            //   objIds: event.data.print.objIds
+            // };
+            // this.tableName = event.data.print.tableName;
+            // this.userId = event.data.print.userId;
+            // this.objIds = event.data.print.objIds;
+            // window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));// 存打印模版所需参数
+            if (this.tableId && this.userId) {
+              this.getTempleteData(this.tableId, this.userId);
+            }
+          }
+        }, false);
+      }
     },
     created() {
     },
     mounted() {
       this.$store.commit('global/setLayout', false);
-      if (window.opener) {
-        window.opener.postMessage({ ready: true }, '*');
-      }
-
-      window.addEventListener('message', (event) => {
-        // if (event.origin !== 'http://0.0.0.0:8090') return;
-        console.log('接收到:', event.data.print);
-        if (event.data.print) {
-          this.tableId = event.data.print.tableId; // 主表id
-          this.userId = event.data.print.userId; // 用户id
-          // 打印预览需要的参数
-          const printPreview = {
-            tableName: event.data.print.tableName,
-            userId: event.data.print.userId,
-            objIds: event.data.print.objIds
-          };
-          // this.tableName = event.data.print.tableName;
-          // this.userId = event.data.print.userId;
-          // this.objIds = event.data.print.objIds;
-          window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));// 存打印模版所需参数
-          if (this.tableId && this.userId) {
-            this.getTempleteData(this.tableId, this.userId);
-          }
-        }
-      }, false);
+      this.getEventListenerParam();
+    },
+    beforeshowModule() {
+      window.removeEventListener('message', this.getEventListenerParam);
     }
   };
 </script>
