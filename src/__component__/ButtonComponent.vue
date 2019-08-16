@@ -268,7 +268,7 @@
             // this.idArray.delete[this.itemName].forEach((element) => {
             //   printIds.push(element.ID);
             // });
-            const printId = this.tableId;
+            const printId = this.itemId;
             src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
           }
           const iFrame = document.createElement('iframe');
