@@ -834,7 +834,13 @@
                 if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                  this.dialogMessage(title, contentText);
+                  // this.dialogMessage(title, contentText);
+                  const data = {
+                    mask: true,
+                    title,
+                    content: contentText
+                  };
+                  this.$Modal.fcWarning(data);
                 } else if (
                   JSON.parse(obj.confirm).isradio
                   && this.buttons.selectIdArr.length !== 1
