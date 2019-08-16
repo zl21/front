@@ -34,7 +34,7 @@
           if (event.data.print) {
             this.tableName = event.data.print.tableName;// 主表表名
             this.userId = event.data.print.userId;// 用户ID
-            this.objIds = event.data.print.objIds;// 用于标准列表界面:主表多选明细;用于单对象界面：主表ID
+            this.objIds = event.data.print.objIds;// 用于标准列表界面:主表多选明细;用于单对象界面：明细ID
             if (this.userId && this.tableName && this.objIds) {
               this.src = `/api/rpt/preview?tableName=${this.tableName}&objIds=${this.objIds}&userId=${this.userId}`;
             }

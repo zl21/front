@@ -28,7 +28,7 @@
         ref="modalComponent"
         :id-array="idArray"
         :obj-list="objList"
-        :table-id="tableId"
+        :item-id="itemId"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
       />
@@ -45,7 +45,7 @@
         type: [Array, Object],
         default: () => {}
       },
-      tableId: {// 获取当前子表表名
+      itemId: {// 获取当前子表表名
         type: String,
         default: () => ''
       },

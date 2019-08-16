@@ -91,7 +91,7 @@
         :content-text="dialogConfig.contentText"
         :footer-hide="dialogConfig.footerHide"
         :confirm="dialogConfig.confirm"
-        :table-id="tableId"
+        :item-id="itemId"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
         @clearSelectArray="clearSelectArray"
@@ -119,7 +119,7 @@
         type: [Array, Object],
         default: () => ({})
       },
-      tableId: {// 获取当前子表表名
+      itemId: {// 获取当前子表明细ID
         type: String,
         default: () => ''
       },
