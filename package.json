@@ -71,8 +71,5 @@
     },
     "peerDependencies": {
         "burgeon-ui": ">1.0.0"
-    },
-    "arkDependencies": {
-        "demo": "1.0.1"
     }
 }

@@ -312,6 +312,48 @@
             type: 'tableDetailVertical'
           });
         }
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+          const objdistype = colDef.customerurl.objdistype;
+          if (objdistype === 'popwin') {
+            // 自定义弹窗
+            this.$refs.dialogRef.open();
+            this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
+            this.dialogComponentNameConfig.footerHide = true;
+            this.dialogComponentName = colDef.customerurl.tableurl;
+          } else if (objdistype === 'tabpanle') {
+            // 左右结构单对象界面
+            const type = 'tableDetailHorizontal';
+            const tab = {
+              type,
+              tableName: colDef.customerurl.reftablename,
+              tableId: colDef.customerurl.reftableid,
+              label: colDef.customerurl.reftabdesc,
+              id: rowData[colDef.customerurl.refobjid].val
+            };
+            this.tabOpen(tab);
+          } else if (objdistype === 'object') {
+            // 上下结构单对象界面
+            const type = 'tableDetailVertical';
+            const tab = {
+              type,
+              tableName: colDef.customerurl.reftablename,
+              tableId: colDef.customerurl.reftableid,
+              label: colDef.customerurl.reftabdesc,
+              id: rowData[colDef.customerurl.refobjid].val
+            };
+            this.tabOpen(tab);
+          } else if (objdistype === 'customized') {
+            // 自定义界面
+            const type = 'tableDetailAction';
+            const tab = {
+              type,
+              label: colDef.customerurl.reftabdesc,
+              customizedModuleName: colDef.customerurl.tableurl,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.tabOpen(tab);
+          }
+        }
       },
       // 表单操作
       refactoringData(defaultFormItemsLists) {
@@ -707,8 +749,13 @@
       clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         const detailTable = document.querySelector('.detailTable');
-        if (detailTable && detailTable.agTable) {
+        const commonTable = document.querySelector('.commonTable');
+
+        if (detailTable && detailTable.agTable) { // ag表格
           detailTable.agTable.deselectAll();
+        } 
+        if (commonTable) { // 普通表格
+          commonTable.deselectAll();
         }
       },
       getbuttonGroupdata() {

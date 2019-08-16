@@ -105,7 +105,7 @@ export default () => ({
       colPosition: '',
       fixedColumn: ''
     },
-    webconf: {
+    webconf: {// 普通表格开关
       commonTable: false
     }
   },
