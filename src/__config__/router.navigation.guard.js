@@ -11,7 +11,8 @@ import {
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
-  LINK_MODULE_PREFIX
+  LINK_MODULE_PREFIX,
+  LINK_MODULE_COMPONENT_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
@@ -31,7 +32,7 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName
+      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName, LinkName
     } = to.params;
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const fromTableName = from.params.tableName;
@@ -40,6 +41,8 @@ export default (router) => {
     const fromCustomizedModuleName = from.params.customizedModuleName;
     const fromCustomizedModuleId = from.params.customizedModuleId;
     const fromPluginModuleName = from.params.pluginModuleName;
+    const fromLinkName = from.params.linkName;
+
     const { routePrefix } = to.meta;
     const fromRoutePrefix = from.meta.routePrefix;
     const { isBack } = to.query;
@@ -87,6 +90,11 @@ export default (router) => {
       // Condition Five: 来自系统内置的插件界面
       case PLUGIN_MODULE_PREFIX:
         fromKeepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${fromPluginModuleName}`;
+        break;
+
+      // Condition Five: 来自外链界面
+      case LINK_MODULE_PREFIX:
+        fromKeepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${fromLinkName}`;
         break;
 
       default:
