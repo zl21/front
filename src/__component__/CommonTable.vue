@@ -261,7 +261,10 @@
           needSubtotalList.map((ele) => {
             const needSubtotalDatas = [];
             this.tableData.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []).toFixed(2);
+            let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            if (typeof totalNumber === 'number') {
+              totalNumber = totalNumber.toFixed(2);
+            }
             cell[ele.colname] = `${totalNumber}`;
             return ele;
           });
