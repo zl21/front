@@ -11,7 +11,7 @@
       <div>
         <div class="importICon">
           <span class="icon-span">
-            <i>&#xe633;</i>
+            <i class="iconfont iconbj_import"></i>
           </span>
         </div>
         <div class="import-panel">
@@ -225,8 +225,8 @@
       // 发送请求, 获取上传参数
       axiosSetting() {
         network.post('/p/cs/settings',
-                     urlSearchParams({ 
-                       configNames: JSON.stringify(['upload.import.max-file-size']) 
+                     urlSearchParams({
+                       configNames: JSON.stringify(['upload.import.max-file-size'])
                      })).then((res) => {
           if (res.data.code === 0) {
             this.fileSize = res.data.data['upload.import.max-file-size'];
