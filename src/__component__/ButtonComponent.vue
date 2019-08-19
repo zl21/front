@@ -258,18 +258,27 @@
             return;
           }
         }
-        if (id === 2527) { // 直接打印
+        if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
          
           network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
             if (res.status === 200 && res.statusText === 'OK') {
               if (getComponentName()[0] === 'S') {
-                src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
+                if (id === 2530) {
+                  this.objTabActionDialog(tab);
+                } else { 
+                  src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
+                  this.setIframeForPrint(src);
+                }
               } else {
                 const printId = this.itemId;
-                src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
+                if (id === 2530) {
+                  this.objTabActionDialog(tab);
+                } else {
+                  src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
+                  this.setIframeForPrint(src);
+                }
               }
-              this.setIframeForPrint(src);
             }
           });
         } else {
