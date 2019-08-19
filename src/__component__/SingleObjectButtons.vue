@@ -579,22 +579,26 @@
       objectTrySubmit(obj) { // 按钮提交逻辑
         this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
-          this.$refs.dialogRef.open();
-          this.dialogConfig = {
-            contentText: '确认执行提交?',
-            confirm: () => {
+          const data = {
+            title: '警告',
+            mask: true,
+            content: '确认执行提交?',
+            onOk: () => {
               obj.requestUrlPath = this.saveButtonPath;
               this.determineSaveType(obj);
               this.saveEventAfter = 'submit';
             }
           };
+          this.$Modal.fcWarning(data);
         }
       },
       objectTryUnSubmit() { // 按钮取消提交操作
-        this.$refs.dialogRef.open();
-        this.dialogConfig = {
-          contentText: '确认执行取消提交?',
-          confirm: () => {
+        const data = {
+          title: '警告',
+          mask: true,
+          content: '确认执行取消提交?',
+          showCancel: true,
+          onOk: () => {
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
                 objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
@@ -607,16 +611,17 @@
               }
             });
           }
-
         };
+        this.$Modal.fcWarning(data);
       },
       objectTryVoid(obj) {
         this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
-          this.$refs.dialogRef.open();
-          this.dialogConfig = {
-            contentText: '确认执行作废?',
-            confirm: () => {
+          this.data = {
+            title: '警告',
+            mask: true,
+            content: '确认执行作废?',
+            onOk: () => {
               obj.requestUrlPath = this.saveButtonPath;
               this.determineSaveType(obj);
               this.saveEventAfter = 'invalid';
@@ -701,6 +706,13 @@
         }
       },
       objTabActionUrl(tab) {
+        // this.tabOpen({
+        //   type: 'tableDetailUrl',
+        //   tableName: tab.webname.toUpperCase(),
+        //   tableId: tab.webid,
+        //   label: tab.webdesc,
+        //   url: tab.action
+        // });
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';
@@ -715,14 +727,15 @@
         if (!tab) tab = self.activeTabAction;
         if (tab.confirm) {
           if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            this.$refs.dialogRef.open();
-            this.dialogConfig = {
+            const data = {
               title: '警告',
-              contentText: tab.confirm,
-              confirm: () => {
+              mask: true,
+              content: tab.confirm,
+              onOk: () => {
                 this.objTabActionSlientConfirm(tab);
               }
             };
+            this.$Modal.fcWarning(data);
           } else if (JSON.parse(tab.confirm).desc) {
             //            确定后执行下一步操作
             //            判断是否先执行保存
@@ -1260,7 +1273,6 @@
             }
           } else if (this.objectType === 'vertical') {
             if (obj.requestUrlPath) { // 有path
-              this.$refs.dialogRef.open();
               this.saveParameters();// 调用获取参数方法
               const data = {
                 title: '警告',

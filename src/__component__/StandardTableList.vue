@@ -966,6 +966,13 @@
       },
 
       objTabActionUrl(tab) {
+        // this.tabOpen({
+        //   type: 'tableDetailUrl',
+        //   tableName: tab.webname.toUpperCase(),
+        //   tableId: tab.webid,
+        //   label: tab.webdesc,
+        //   url: tab.action
+        // });
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';

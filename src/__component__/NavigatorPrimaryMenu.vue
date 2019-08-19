@@ -5,7 +5,7 @@
     @click.stop="togglePrimaryMenu"
   >
     {{ data.label }}
-    <transition  name="fade">
+    <transition name="fade">
       <NavigatorSubMenu
         v-show="index === primaryMenuIndex"
         :data="data.children || []"

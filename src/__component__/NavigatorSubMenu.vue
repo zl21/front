@@ -39,8 +39,14 @@
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        const { type, value, id } = data;
-        routeTo({ type, info: { tableName: value, tableId: id } }, () => {
+        let {
+          type, value, id, url 
+        } = data;
+        if (url && url.substring(0, 4) === 'http') {
+          const linkType = url.substring(0, 4);
+          type = linkType;
+        }
+        routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });
       },

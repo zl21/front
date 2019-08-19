@@ -6,7 +6,10 @@ import {
   STANDARD_TABLE_LIST_PREFIX,
   VERTICAL_TABLE_DETAIL_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
-  PLUGIN_MODULE_PREFIX
+  PLUGIN_MODULE_PREFIX,
+  LINK_MODULE_PREFIX,
+  LINK_URL
+
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -61,7 +64,12 @@ export const routeTo = ({ type, info }, cb) => {
         path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
       });
       break;
-  
+    case 'http':
+      router.push({
+        path: `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
+        // query: { url: `${info.url}` }
+      });
+      break;
     default:
       router.push({
         path: '/',

@@ -5,6 +5,9 @@ import {
   STANDARD_TABLE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
+  LINK_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX
+  
 } from '../../../constants/global';
 import router from '../../router.config';
 
@@ -44,11 +47,19 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
+        if (c.url && c.url.substring(0, 4) === 'http') {
+          const linkType = c.url.substring(0, 4);
+          c.type = linkType;
+        }
+
         if (c.type === 'action') {
           a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+        }
+        if (c.type === 'http') {
+          a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         return a;
       }, {});
@@ -188,7 +199,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId, url
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -205,6 +216,12 @@ export default {
     }
     if (type === 'tableDetailAction') {
       path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      router.push({
+        path
+      });
+    }
+    if (type === 'tableDetailUrl') {
+      path = `${LINK_MODULE_PREFIX}/${tableName}/${tableId}?${url}`;
       router.push({
         path
       });

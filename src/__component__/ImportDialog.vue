@@ -199,7 +199,6 @@
       }
     },
     mounted() {
-      console.log(444, this.visible);
       this.ChineseDictionary = ChineseDictionary;
       if (this.visible) this.modalVisible = true;
       else this.modalVisible = false;
