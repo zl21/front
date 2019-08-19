@@ -40,13 +40,12 @@
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
         let {
-          type, value, id, url 
+          type, value, id, vuedisplay 
         } = data;
-        if (url && url.substring(0, 4) === 'http') {
-          const linkType = url.substring(0, 4);
-          type = linkType;
+        if (vuedisplay && vuedisplay === 'external') {
+          type = vuedisplay;
         }
-        routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
+        routeTo({ type, info: { tableName: value, tableId: id } }, () => {
           this.hideMenu();
         });
       },

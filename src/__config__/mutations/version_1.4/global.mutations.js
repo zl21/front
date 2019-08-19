@@ -47,9 +47,18 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        if (c.url && c.url.substring(0, 4) === 'http') {
-          const linkType = c.url.substring(0, 4);
-          c.type = linkType;
+        // if (c.url && c.url.substring(0, 4) === 'http') {
+        //   const linkUrl = {};
+        //   linkUrl[c.id] = c.url;
+        //   state.LinkUrl.push(linkUrl);
+        //   const linkType = c.url.substring(0, 4);
+        //   c.type = linkType;
+        // }
+
+        if (c.vuedisplay === 'external') {
+          const linkUrl = {};
+          linkUrl[c.id] = c.url;
+          state.LinkUrl.push(linkUrl);
         }
 
         if (c.type === 'action') {
@@ -58,7 +67,7 @@ export default {
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
-        if (c.type === 'http') {
+        if (c.vuedisplay === 'external') {
           a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         return a;
