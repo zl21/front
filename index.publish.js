@@ -2,6 +2,8 @@ import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
 import store from './src/__config__/store.config';
+import extentionForColumn from './src/constants/extentionPropertyForColumn';
+import extentionForTable from './src/constants/extentionPropertyForTable';
 
 const validateConfig = config => ({
   isQualified: true,
@@ -66,5 +68,7 @@ export default {
   urlSearchParams,
   getModuleName,
   network,
-  store
+  store,
+  extentionForColumn,
+  extentionForTable
 };

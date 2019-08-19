@@ -60,8 +60,7 @@
   import ExtentionInput from './ExtentionInput';
   import enumerableForColumn from '../constants/enumerateInputForColumn';
   import enumerableForTable from '../constants/enumerateInputForTable';
-  import extentionForColumn from '../constants/extentionPropertyForColumn';
-  import extentionForTable from '../constants/extentionPropertyForTable';
+  import { extentionForColumn, extentionForTable } from '../constants/global';
   
   const extentionDataForTable = {
     fkdrplist: {
@@ -153,8 +152,8 @@
       extentionDataForTable,
       enumerableForColumn,
       enumerableForTable,
-      extentionForColumn,
-      extentionForTable
+      extentionForColumn: extentionForColumn(),
+      extentionForTable: extentionForTable()
     }),
     components: {
       EnumerableInput,

@@ -1,4 +1,6 @@
 import project from '../../project.config';
+import configForColumn from './extentionPropertyForColumn';
+import configForTable from './extentionPropertyForTable';
 
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
 export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks ? window.ProjectConfig.interlocks : project.interlocks);
@@ -69,3 +71,8 @@ export const defaultQuietRoutes = [
   '/PLUGIN/PRINTTEMPLATE',
   '/PLUGIN/PRINTPREVIEW'
 ];
+
+// 导出表的拓展属性、字段扩展属性配置。
+export const extentionForTable = () => (window.ProjectConfig && window.ProjectConfig.extentionForTable ? window.ProjectConfig.extentionForTable : configForTable);
+
+export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);
