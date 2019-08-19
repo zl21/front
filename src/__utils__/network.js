@@ -68,14 +68,16 @@ axios.interceptors.response.use(
       method: config.method
     }));
     // 记录每次网络请求的时间
-    addNetwork([{
-      timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
-      url: config.url,
-      data: isJson ? JSON.parse(config.data) : config.data,
-      method: config.method,
-      isJson,
-      reqTime: pendingRequestMap[requestMd5].reqTime
-    }]);
+    if (pendingRequestMap[requestMd5]) {
+      addNetwork([{
+        timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
+        url: config.url,
+        data: isJson ? JSON.parse(config.data) : config.data,
+        method: config.method,
+        isJson,
+        reqTime: pendingRequestMap[requestMd5].reqTime
+      }]);
+    }
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
       window.vm.$Modal.fcError({
