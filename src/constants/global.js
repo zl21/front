@@ -54,7 +54,8 @@ export const globalGateWay = [
 export const ignoreGateWay = [
   '/p/c/get_service_id',
   '/api/rpt/print/query',
-  '/api/rpt/userprint/save'
+  '/api/rpt/userprint/save',
+  '/api/rpt/preview',
 ];
 
 // 不走网关的正则模式匹配

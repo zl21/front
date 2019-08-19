@@ -60,11 +60,15 @@
         } else {
           if (this.tabPanel[index].tabrelation === '1:m') {
             const { tableName, itemId } = this.$route.params;
-            const { tablename, refcolid, tableSearchData, tabinlinemode } = this.tabPanel[index];
+            const {
+ tablename, refcolid, tableSearchData, tabinlinemode 
+} = this.tabPanel[index];
             if (this.tabPanel[index].refcolid !== -1) {
               this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
             }
-            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
+            this.getObjectTabForChildTableButtons({
+ maintable: tableName, table: tablename, objid: itemId, tabIndex: index 
+});
             this.getObjectTableItemForTableData({
               table: tablename,
               objid: itemId,
@@ -80,15 +84,21 @@
           } else if (this.tabPanel[index].tabrelation === '1:1') {
             const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
-            this.getObjectTabForChildTableButtons({ maintable: tableName, table: tablename, objid: itemId, tabIndex: index });
-            this.getItemObjForChildTableForm({ table: tablename, objid: itemId, refcolid, tabIndex: index });
+            this.getObjectTabForChildTableButtons({
+ maintable: tableName, table: tablename, objid: itemId, tabIndex: index 
+});
+            this.getItemObjForChildTableForm({
+ table: tablename, objid: itemId, refcolid, tabIndex: index 
+});
           }
         }
       }, // tab切换触发的方法
       getMainTable(index, isNotFirstRequest) {
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-        this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest });
+        this.getObjectTabForMainTable({
+ table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest 
+});
       }
     },
     activated() {
