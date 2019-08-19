@@ -511,7 +511,6 @@
           this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
         }
-
         setTimeout(() => {
           if (message) {
             this.$Message.success(message);
