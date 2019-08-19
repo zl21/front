@@ -105,7 +105,6 @@
       if (this.$route.params.tableName === 'AD_COLUMN') {
         this.options = extentionForColumn();
       } else if (this.$route.params.tableName === 'AD_TABLE') {
-        console.log('extentionForTable() = ', extentionForTable());
         this.options = extentionForTable();
       } else {
         this.options = this.extentionConfig;
