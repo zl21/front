@@ -127,7 +127,7 @@ axios.interceptors.response.use(
             domProps: {
               value: formatJsonEmg,
               rows: 8,
-              style: `width: 100%;
+              style: `width: 99%;
               margin: 1px;
               margin-bottom: -8px;
               box-sizing: border-box;
