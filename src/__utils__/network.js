@@ -3,7 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, enableGateWay, globalGateWay, defaultQuietRoutes,
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes,
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -23,7 +23,7 @@ const matchGateWay = (url) => {
   if (!enableGateWay()) {
     return undefined;
   }
-  if (ignoreGateWay.includes(url)) {
+  if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
     return undefined;
   }
   if (globalGateWay.includes(url)) {

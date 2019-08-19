@@ -57,7 +57,13 @@ export const ignoreGateWay = [
   '/api/rpt/userprint/save'
 ];
 
-//
+// 不走网关的正则模式匹配
+export const ignorePattern = () => {
+  const { ignoreGateWayPattern } = window.ProjectConfig || {};
+  return (project.ignoreGateWayPattern || []).concat(ignoreGateWayPattern);
+};
+
+// 静默路由，当遇到网络请求403时，不跳转到登录页。
 export const defaultQuietRoutes = [
   '/login',
   '/PLUGIN/PRINTTEMPLATE',
