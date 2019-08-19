@@ -384,7 +384,7 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
@@ -648,6 +648,9 @@
         case 'navbar':
           this.objTabActionNavbar(tab);
           break;
+        case 'external':
+          this.objTabActionUrl(tab);
+          break;
         default:
           break;
         }
@@ -694,9 +697,10 @@
             customizedModuleId = item.split(/\./)[2];
           }
         });
-        if (tab.actiontype === 'url') {
-          this.objTabActionUrl(tab);
-        } else if (tab.action) {
+        // if (tab.actiontype === 'url') {
+        //   this.objTabActionUrl(tab);
+        // } else
+        if (tab.action) {
           this.tabOpen({
             type,
             customizedModuleName,
@@ -705,14 +709,19 @@
           });
         }
       },
-      objTabActionUrl(tab) {
-        // this.tabOpen({
-        //   type: 'tableDetailUrl',
-        //   tableName: tab.webname.toUpperCase(),
-        //   tableId: tab.webid,
-        //   label: tab.webdesc,
-        //   url: tab.action
-        // });
+      objTabActionUrl(tab) { // 外链类型
+        // const linkUrl = tab.action;
+        // const linkId = tab.webid;
+        // this.increaseLinkUrl({ linkId, linkUrl });
+        // setTimeout(() => {
+        //   this.tabOpen({
+        //     type: 'tableDetailUrl',
+        //     tableName: tab.webname.toUpperCase(),
+        //     tableId: tab.webid,
+        //     label: tab.webdesc,
+        //     url: tab.action
+        //   });
+        // }, 500);
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';
