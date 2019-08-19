@@ -772,7 +772,8 @@
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str === 'CMD_PRINT') {
-                this.buttons.dataArray.printValue = true;
+                this.setPrintValueForButtons(true);
+                // this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 if (tabcmdData.paths) {

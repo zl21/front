@@ -104,7 +104,7 @@
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import getComponentName from '../__utils__/getModuleName';
-
+  import network from '../__utils__/network';
   import { MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
@@ -260,23 +260,31 @@
         }
         if (id === 2527) { // 直接打印
           let src = '';
-          if (getComponentName()[0] === 'S') {
-            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
-          } else {
-            const printId = this.itemId;
-            src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
-          }
-          const iFrame = document.createElement('iframe');
-          iFrame.src = src;
-          iFrame.id = 'iFrame';
-          iFrame.style.display = 'none';
-          document.body.appendChild(iFrame);
-          document.getElementById('iFrame').focus();
-          document.getElementById('iFrame').contentWindow.print();
-          this.clearSelectIdArray();
+         
+          network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
+            if (res.status === 200 && res.statusText === 'OK') {
+              if (getComponentName()[0] === 'S') {
+                src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
+              } else {
+                const printId = this.itemId;
+                src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
+              }
+              this.setIframeForPrint(src);
+            }
+          });
         } else {
           this.objTabActionDialog(tab);
         }
+      },
+      setIframeForPrint(printSrc) {
+        const iFrame = document.createElement('iframe');
+        iFrame.src = printSrc;
+        iFrame.id = 'iFrame';
+        iFrame.style.display = 'none';
+        document.body.appendChild(iFrame);
+        document.getElementById('iFrame').focus();
+        document.getElementById('iFrame').contentWindow.print();
+        this.clearSelectIdArray();
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

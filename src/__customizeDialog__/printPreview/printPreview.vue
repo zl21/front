@@ -11,9 +11,8 @@
   import { mapState } from 'vuex';
   import router from '../../__config__/router.config';
   import getComponentName from '../../__utils__/getModuleName';
-
   import { MODULE_COMPONENT_NAME } from '../../constants/global';
-
+  import network from '../../__utils__/network';
 
   export default {
     name: 'PrintPreview',
@@ -64,7 +63,13 @@
       } else {
         printIds = this.itemId;
       }
-      this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
+      network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {
+        if (res.status === 200 && res.statusText === 'OK') {
+          this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
+        }
+      }).catch(() => {
+        this.$emit('closeActionDialog', false); // 关闭弹框
+      });
     },
     created() {
       this[MODULE_COMPONENT_NAME] = getComponentName();
