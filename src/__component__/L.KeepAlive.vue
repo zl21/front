@@ -3,13 +3,14 @@
     :include="keepAliveLists"
   >
     <iframe
-      :src="linkUrl"
-      class="linkUrl"
+      v-if="urlName"
+      :src="urlName"
+      class="urlName"
     />
-    <!-- <component
+    <component
       :is="currentModule"
-      v-if="currentModule"
-    /> -->
+      v-if="currentModule&&urlName===''"
+    />
   </keep-alive>
 </template>
 
@@ -30,36 +31,41 @@
     name: `${LINK_MODULE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
-        linkUrl: '',
-        currentModule: ''
+        urlName: '',
+        currentModule: null
       };
     },
     computed: {
-      ...mapState('global', ['keepAliveLists', 'menuLists'])
+      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl'])
     },
     methods: {
       generateComponent() {
         // const url = this.$route.query.url;
-        let url = '';
         const { linkModuleName, linkModuleId } = this.$route.params;
-        this.menuLists.forEach((ele) => {
-          ele.children.forEach((c) => {
-            c.children.forEach((d) => {
-              if (d.url && d.url.substring(0, 4) === 'http') {
-                if (linkModuleId == d.id) {
-                  this.linkUrl = d.url;
-                  url = d.url;
-                }
-              }
-            });
+        if (this.LinkUrl.length > 0) {
+          this.LinkUrl.forEach((url) => {
+            this.urlName = url[linkModuleId];
           });
-        });
+        }
+        
+        // this.menuLists.forEach((ele) => {
+        //   ele.children.forEach((c) => {
+        //     c.children.forEach((d) => {
+        //       if (d.url && d.url.substring(0, 4) === 'http') {
+        //         if (linkModuleId == d.id) {
+        //           this.linkUrl = d.url;
+        //           url = d.url;
+        //         }
+        //       }
+        //     });
+        //   });
+        // });
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
-        if (url === '') {
+        if (this.urlName === '') {
           Vue.component(linkModuleName, Vue.extend(Object.assign({}, PageNotFound)));
+          this.currentModule = linkModuleName;
         }
-        this.currentModule = linkModuleName;
       }
     },
     mounted() {
@@ -69,11 +75,18 @@
       $route() {
         this.generateComponent();
       },
+      LinkUrl: {
+        handler(val) {
+          if (val.length > 0) {
+            this.generateComponent();
+          }
+        }
+      },
     }
   };
 </script>
 <style scoped>
-  .linkUrl{
+  .urlName{
     border:none;
     width: 100%;
     height:100%;
