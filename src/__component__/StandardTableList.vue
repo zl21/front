@@ -150,7 +150,9 @@
         favorite: ({ favorite }) => favorite,
         activeTab: ({ activeTab }) => activeTab,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
-        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps
+        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
+        LinkUrl: ({ LinkUrl }) => LinkUrl
+        
       }),
       formLists() {
         return this.refactoringData(
@@ -195,7 +197,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'tabOpen']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -868,11 +870,7 @@
         } else if (obj.vuedisplay === 'navbar') {
           // !JSON.parse(obj.confirm.isselect)
           if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
-            if (obj.actiontype === 'url') {
-              this.objTabActionUrl(obj);
-            } else {
-              this.objTabActionNavbar(obj); // 新标签跳转
-            }
+            this.objTabActionNavbar(obj); // 新标签跳转
           } else {
             // 动作定义根据列表是否选值
             const confirm = JSON.parse(obj.confirm);
@@ -896,6 +894,8 @@
               this.objTabActionNavbar(obj); // 新标签跳转
             }
           }
+        } else if (obj.vuedisplay === 'external') {
+          this.objTabActionUrl(obj);
         } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
           this.objTabActionDialog(obj);
           // this.setActionDialog(obj);
@@ -965,14 +965,20 @@
         }
       },
 
-      objTabActionUrl(tab) {
-        // this.tabOpen({
-        //   type: 'tableDetailUrl',
-        //   tableName: tab.webname.toUpperCase(),
-        //   tableId: tab.webid,
-        //   label: tab.webdesc,
-        //   url: tab.action
-        // });
+      objTabActionUrl(tab) { // 外链类型
+        // const linkUrl = tab.action;
+        // const linkId = tab.webid;
+        // this.increaseLinkUrl({ linkId, linkUrl });
+        // setTimeout(() => {
+        //   this.tabOpen({
+        //     type: 'tableDetailUrl',
+        //     tableName: tab.webname.toUpperCase(),
+        //     tableId: tab.webid,
+        //     label: tab.webdesc,
+        //     url: tab.action
+        //   });
+        // }, 500);
+       
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';

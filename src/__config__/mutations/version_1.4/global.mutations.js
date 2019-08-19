@@ -39,6 +39,7 @@ export default {
       state.favorite = favorite;
     }
   },
+
   updateMenuLists(state, menuLists) {
     state.menuLists = menuLists;
     state.keepAliveLabelMaps = menuLists
@@ -61,7 +62,7 @@ export default {
           state.LinkUrl.push(linkUrl);
         }
 
-        if (c.type === 'action') {
+        if (c.type === 'action' && c.vuedisplay !== 'external') {
           a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         if (c.type === 'table') {
@@ -81,6 +82,11 @@ export default {
         a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
+  },
+  increaseLinkUrl(state, { linkId, linkUrl }) {
+    const linkType = {};
+    linkType[linkId] = linkUrl;
+    state.LinkUrl.push(linkType);
   },
   increaseKeepAliveLists(state, name) {
     if (!state.keepAliveLists.includes(name)) {
@@ -208,7 +214,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId, url
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -230,7 +236,7 @@ export default {
       });
     }
     if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${tableName}/${tableId}?${url}`;
+      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
       router.push({
         path
       });
