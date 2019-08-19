@@ -9,11 +9,10 @@
 </template> 
 <script>
   import { mapState } from 'vuex';
-  import axios from 'axios';
   import router from '../../__config__/router.config';
   import getComponentName from '../../__utils__/getModuleName';
   import { MODULE_COMPONENT_NAME } from '../../constants/global';
-  import network, { urlSearchParams } from '../../__utils__/network';
+  import network from '../../__utils__/network';
 
   export default {
     name: 'PrintPreview',
@@ -64,11 +63,13 @@
       } else {
         printIds = this.itemId;
       }
-    
-      network.get('/api/rpt/preview',).then((res) => {
-        console.log(res.data);
+      network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {
+        if (res.status === 200 && res.statusText === 'OK') {
+          this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
+        }
+      }).catch(() => {
+        this.$emit('closeActionDialog', false); // 关闭弹框
       });
-      // this.src = `/api/rpt/preview?tableName=33&objIds=${printIds}&userId=${userId}`;
     },
     created() {
       this[MODULE_COMPONENT_NAME] = getComponentName();

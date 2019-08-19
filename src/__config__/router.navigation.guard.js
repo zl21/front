@@ -72,6 +72,7 @@ export default (router) => {
 
     switch (routePrefix) {
       case CUSTOMIZED_MODULE_PREFIX:
+        originModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         break;
 
       case LINK_MODULE_PREFIX:

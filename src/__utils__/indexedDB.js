@@ -2,10 +2,7 @@ import {
   DB_NAME, DB_SCHEMA_NETWORK, ENABLE_NETWORK_MONITOR, SLOW_NETWORK_THRESHOLD 
 } from '../constants/global';
 
-const open = (name, version) => {
-  const db = window.indexedDB.open(name, version);
-  return db;
-};
+const open = (name, version) => window.indexedDB.open(name, version);
 
 let db = null;
 const initDB = () => {
