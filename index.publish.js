@@ -45,6 +45,8 @@ export default {
    *   enableJflow: true, // 开启JFlow插件功能（默认关闭），此配置项可不传参。
    *   jflowRequestDomain： 'http(s)://domain:port', // jflow请求转发的域名或者IP（只有在enableJflow为true时生效），此配置项可不传参。
    *   ignoreGateWayPattern: RegExp 正则表达是，表示项目中需要忽略网关规则的那些指定请求url。
+   *   extentionForTable: [], // 项目自定义“表”扩展属性列表
+   *   extentionForColumn: [], // 项目自定义“字段”扩展属性列表
    * }
    */
   launchApplication(projectConfig) {
