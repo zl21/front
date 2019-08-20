@@ -71,7 +71,7 @@
         if (!this.envValue) {
           const data = {
             mask: true,
-            title: 'warning',
+            title: '警告',
             content: '请选择环境'
           };
           this.$Modal.fcWarning(data);
@@ -89,7 +89,7 @@
               const message = res.data.message;
               const data = {
                 mask: true,
-                title: 'success',
+                title: '成功',
                 content: message
               };
               this.$Modal.fcSuccess(data);
