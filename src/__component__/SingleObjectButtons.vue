@@ -581,6 +581,7 @@
           const data = {
             title: '警告',
             mask: true,
+            showCancel: true,
             content: '确认执行提交?',
             onOk: () => {
               obj.requestUrlPath = this.saveButtonPath;
@@ -589,6 +590,14 @@
             }
           };
           this.$Modal.fcWarning(data);
+ 
+
+
+
+
+
+
+
         }
       },
       objectTryUnSubmit() { // 按钮取消提交操作
