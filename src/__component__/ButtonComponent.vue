@@ -290,7 +290,8 @@
         }
       },
       setIframeForPrint(printSrc) {
-        debugger
+                  console.log('printSrc',printSrc)
+
         const iFrame = document.createElement('iframe');
         iFrame.src = printSrc;
         iFrame.id = 'iFrame';

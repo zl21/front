@@ -64,7 +64,7 @@
         printIds = this.itemId;
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
-
+console.log("printPreview", this.src)
       // network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {
       //   if (res.status === 200 && res.statusText === 'OK') {
       //     this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
