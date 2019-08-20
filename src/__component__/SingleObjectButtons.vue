@@ -590,14 +590,6 @@
             }
           };
           this.$Modal.fcWarning(data);
- 
-
-
-
-
-
-
-
         }
       },
       objectTryUnSubmit() { // 按钮取消提交操作
@@ -625,9 +617,10 @@
       objectTryVoid(obj) {
         this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
-          this.data = {
+          const data = {
             title: '警告',
             mask: true,
+            showCancel: true,
             content: '确认执行作废?',
             onOk: () => {
               obj.requestUrlPath = this.saveButtonPath;
@@ -635,6 +628,7 @@
               this.saveEventAfter = 'invalid';
             }
           };
+          this.$Modal.fcWarning(data);
         }
       },
       webactionClick(tab) { // 动作定义执行
@@ -757,18 +751,28 @@
             //            确定后执行下一步操作
             //            判断是否先执行保存
             if (JSON.parse(tab.confirm).isSave) {
-              self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+              console.log('暂时未处理配置isSave的相关逻辑');
+              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
             } else {
-              self.confirmAction = 'objTabActionSlientConfirm';
+              const data = {
+                title: '警告',
+                mask: true,
+                showCancel: true, 
+                content: JSON.parse(tab.confirm).desc,
+                onOk: () => {
+                  this.objTabActionSlientConfirm(tab);
+                }
+              };
+              this.$Modal.fcWarning(data);
             }
-            self.confirmTips({
-              action: 'confirm',
-              title: tab.webdesc,
-              type: 'warning',
-              list: [],
-              isAction: true,
-              desc: JSON.parse(tab.confirm).desc,
-            });
+            // self.confirmTips({
+            //   action: 'confirm',
+            //   title: tab.webdesc,
+            //   type: 'warning',
+            //   list: [],
+            //   isAction: true,
+            //   desc: JSON.parse(tab.confirm).desc,
+            // });
             // 清除提示信息
           } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
             self.beforeObjectSubmit(() => {
@@ -1833,6 +1837,21 @@
           // let message = '';
           promise.then(() => {
             const message = this.buttonsData.submitData.message;
+            if (message) {
+              this.upData(`${message}`);
+            } else {
+              this.upData();
+            }
+          });
+        } else if (this.saveEventAfter === 'invalid') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTryInvalid({
+              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+            });
+          });
+          // let message = '';
+          promise.then(() => {
+            const message = this.buttonsData.invalidData.message;
             if (message) {
               this.upData(`${message}`);
             } else {
