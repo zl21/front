@@ -262,12 +262,14 @@
           let src = '';
          
           network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
-            if (res.status === 200 && res.statusText === 'OK') {
+            if (res.status === 200) {
+              debugger
               if (getComponentName()[0] === 'S') {
                 if (id === 2530) {
                   this.objTabActionDialog(tab);
                 } else { 
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
+                  console.log('S_src',src)
                   this.setIframeForPrint(src);
                 }
               } else {
@@ -276,6 +278,8 @@
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
+                  console.log('D_src',src)
+
                   this.setIframeForPrint(src);
                 }
               }
@@ -286,6 +290,7 @@
         }
       },
       setIframeForPrint(printSrc) {
+        debugger
         const iFrame = document.createElement('iframe');
         iFrame.src = printSrc;
         iFrame.id = 'iFrame';
