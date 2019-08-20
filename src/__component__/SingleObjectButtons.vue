@@ -404,7 +404,7 @@
       //   }
       // },
       subtables() {
-        if (Version() === 1.4) {
+        if (Version() === '1.4') {
           if (this.isreftabs) {
             return true;
           }
