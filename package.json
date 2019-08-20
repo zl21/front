@@ -32,6 +32,7 @@
         "babel-loader": "^8.0.5",
         "babel-plugin-syntax-jsx": "^6.18.0",
         "babel-plugin-transform-vue-jsx": "^3.7.0",
+        "burgeon-ui": "^1.0.24",
         "clean-webpack-plugin": "^1.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.0",
@@ -57,8 +58,7 @@
         "webpack": "^4.29.3",
         "webpack-cli": "^3.2.1",
         "webpack-dev-server": "^3.1.14",
-        "webpack-merge": "^4.2.1",
-        "burgeon-ui": "^1.0.24"
+        "webpack-merge": "^4.2.1"
     },
     "dependencies": {
         "ag-grid": "^17.1.1",
