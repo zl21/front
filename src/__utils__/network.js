@@ -123,22 +123,23 @@ axios.interceptors.response.use(
           mask: true,
           titleAlign: 'center',
           title: '错误',
-          render: createElement => createElement('textarea', {
-            domProps: {
-              value: formatJsonEmg,
-              rows: 8,
-              style: `width: 99%;
-              margin: 1px;
-              margin-bottom: -8px;
-              box-sizing: border-box;
-              padding: 5px;
-              resize: none;
-              `
-            },
-            attrs: {
-              readonly: 'readonly',
-            }
-          })
+          content: formatJsonEmg
+          // render: createElement => createElement('textarea', {
+          //   domProps: {
+          //     value: formatJsonEmg,
+          //     rows: 8,
+          //     style: `width: 99%;
+          //     margin: 1px;
+          //     margin-bottom: -8px;
+          //     box-sizing: border-box;
+          //     padding: 5px;
+          //     resize: none;
+          //     `
+          //   },
+          //   attrs: {
+          //     readonly: 'readonly',
+          //   }
+          // })
         });
       }
       dispatchR3Event({
