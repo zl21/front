@@ -129,6 +129,7 @@
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
           const data = {
+            mask: true,
             title: '警告',
             content: '请输入目标表名或目标描述'
           };
@@ -147,10 +148,11 @@
               return;
             }
             const data = {
+              mask: true,
               title: '成功',
               content: '克隆成功'
             };
-            this.$Modal.fcWarning(data);
+            this.$Modal.fcSuccess(data);
             this.$emit('closeActionDialog', true); // 关闭弹框
           });
       }, // 确定
