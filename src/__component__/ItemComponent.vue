@@ -272,7 +272,7 @@
 </template>
 
 <script>
-  import { mapActions, mapState, mapMutations } from 'vuex';
+  import { mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -734,7 +734,7 @@
       },
 
       // AttachFilter event
-      attachFilterChange(value, $this) {
+      attachFilterChange(value) {
         this._items.value = value;
         this.valueChange();
       },
@@ -819,7 +819,7 @@
           this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
-      attachFilterClear(event, $this) {
+      attachFilterClear() {
         this._items.value = '';
         this.resultData = {};
         this._items.props.Selected = [
@@ -960,6 +960,7 @@
             );
           }
         }
+        return true;
       },
       uploadFileChange() {
       // console.log(e);
@@ -1074,7 +1075,7 @@
           this.valueImgChange();
         }
       },
-      upSavefile(obj, fixedData, path, value) {
+      upSavefile(obj, fixedData, path) {
         fkObjectSave({
           searchObject: {
             ...obj
@@ -1169,6 +1170,7 @@
           }
           
         });
+        return true;
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
@@ -1197,7 +1199,7 @@
 
           const parmsdata = {
             [parms.table]: {
-              [this._items.field]: data == '' ? '' : JSON.stringify(data),
+              [this._items.field]: data === '' ? '' : JSON.stringify(data),
               ID: parms.objId || parms.ID
             }
           };
@@ -1256,6 +1258,7 @@
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
+        return true;
       },
       pathsCheckoutolder(parms, data) {
         //   1.3 后台拼数据

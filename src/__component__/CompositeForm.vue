@@ -48,7 +48,7 @@
         </Panel>
       </Collapse>
     </template>
-    <template v-if="type === ''">
+    <template v-if="type !== 'PanelForm'">
       <template v-if="FormItemComponent!==''">
         <component
           :is="FormItemComponent"
@@ -76,7 +76,6 @@
 
 <script>
   import { setTimeout } from 'timers';
-  import { type } from 'os';
   import FormItemComponent from './ComFormItemComponent';
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
@@ -748,6 +747,7 @@
             this.freshDropDownSelectFilterAutoData(res, index, current);
           }
         });
+        return true;
       },
       validateList(current) {
         // 联动校验
@@ -980,9 +980,9 @@
             // 多选change
             const refobjid = fkdisplayValue.ID.split(',');
             const valuedata = fkdisplayValue.Label.split(',');
-            const option = refobjid.reduce((currty, item, index) => {
+            const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
-                ID: item || '',
+                ID: itemI || '',
                 Label: valuedata[index] || ''
               });
               return currty;
@@ -993,9 +993,9 @@
             // 多选默认值
             const refobjid = item.refobjid.split(',');
             const valuedata = item.valuedata.split(',');
-            const option = refobjid.reduce((currty, item, index) => {
+            const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
-                ID: item || '',
+                ID: itemI || '',
                 Label: valuedata[index] || ''
               });
               return currty;
@@ -1018,7 +1018,7 @@
               arr.push(`已经选中${valuedata.total}条` || '');
             }
           } else if (item.fkdisplay === 'pop') {
-            arr.push(fkdisplayValue && fkdisplayValue.label || '');
+            arr.push((fkdisplayValue && fkdisplayValue.label) || '');
           }
           if (fkdisplayValue) {
             if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp') {
@@ -1027,7 +1027,7 @@
             } else if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
               arr[0].ID = fkdisplayValue ? fkdisplayValue.ID : '';
               arr[0].Label = fkdisplayValue ? fkdisplayValue.Label : '';
-              arr.push(fkdisplayValue && fkdisplayValue.Label || '');
+              arr.push((fkdisplayValue && fkdisplayValue.Label) || '');
             }
           }
           
@@ -1073,7 +1073,7 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
-          const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          //   const ImageSize = Number(current.webconf && current.webconf.ImageSize);
           let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
@@ -1092,7 +1092,7 @@
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
           const check = falseName.some(
-            (x, i) => x === current.valuedata || x === current.defval
+            x => x === current.valuedata || x === current.defval
           );
           if (check) {
             // eslint-disable-next-line no-tabs
@@ -1105,6 +1105,9 @@
             const index = checkName.findIndex(x => x === item.props.trueValue);
             item.props.falseValue = falseName[index] || falseName[0];
           }
+          item.props.disabled = this.objreadonly
+            ? this.objreadonly
+            : item.props.readonly;
           return current.valuedata || current.defval || '';
         }
 
@@ -1141,6 +1144,9 @@
           if (current.ispassword) {
             item.props.type = 'password';
           }
+          item.props.disabled = this.objreadonly
+            ? this.objreadonly
+            : item.props.readonly;
         }
         // 外键的单选多选判断
 
@@ -1262,7 +1268,7 @@
                   refcolval = that.defaultFormData[currentThat.refcolval.srccol];
                 }
                 const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
-                const Index = LinkageForm.findIndex(item => item.key === currentThat.refcolval.srccol);
+                const Index = LinkageForm.findIndex(itemI => itemI.key === currentThat.refcolval.srccol);
                 if (!refcolval) {
                   if (Index !== -1) {
                     this.$Message.info(`请先选择${LinkageForm[Index].name}`);
@@ -1392,7 +1398,7 @@
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
         }
-        if (item.props.readonly === true && item.props.fkdisplay || this.objreadonly && item.props.fkdisplay) {
+        if ((item.props.readonly === true && item.props.fkdisplay) || (this.objreadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
           if (
             item.props.fkdisplay === 'drp'
@@ -1529,7 +1535,7 @@
         focusItemArry.splice(0, index + 1);
         const _index = index
           + 1
-          + focusItemArry.findIndex(item => item.item.props.readonly === false);
+          + focusItemArry.findIndex(itemI => itemI.item.props.readonly === false);
 
         if (item[_index] && arry[_index].item.type !== 'checkbox') {
           if (item[_index].$el.querySelector('input')) {
@@ -1540,6 +1546,7 @@
           return false;
         } 
         this.focusItem(_index, current, arry);
+        return true;
       },
       setdefaultColumnCol() {
         const width = this.$el.offsetWidth;
@@ -1586,7 +1593,7 @@
         this.setdefaultColumnCol();
       }
       this.conditiontype = this.condition;
-      window.addEventListener('resize', (e) => {
+      window.addEventListener('resize', () => {
         if (this.$el) {
           this.setdefaultColumnCol();
         }

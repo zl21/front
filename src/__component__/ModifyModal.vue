@@ -5,7 +5,7 @@
   >
     <ModalConfirm
       ref="Modal"
-      :title="title"
+      :title="poptitle"
       :width="width"
       :loading="loading"
       :title-align="titleAlign"
@@ -30,9 +30,9 @@
           :is="'CompositeFormpop'"
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
-          class="formPanel"
+          class="pop-formPanel"
           :condition="Condition"
-          type="PanelForm"
+          type=""
           @formChange="formChange"
         />
       </div>
@@ -62,6 +62,7 @@
         fixedcolumns: {},
         Condition: 'list',
         objids: [],
+        poptitle: '批量修改',
         loading: false,
         type: false, // 判断是勾选 还是批量
         router: {},
@@ -111,14 +112,18 @@
             }, []);
             childs = childs.flat();
             this.newformList = {
-              addcolums: [{
-                hrdisplay: 'expand',
-                parentdesc: '批量修改',
-                parentname: val.addcolums[0].parentname,
-                childs
-              }],
+              inpubobj: childs,
               objviewcol: val.objviewcol
             };
+            // this.newformList = {
+            //   addcolums: [{
+            //     hrdisplay: 'expand',
+            //     parentdesc: '批量修改',
+            //     parentname: val.addcolums[0].parentname,
+            //     childs
+            //   }],
+            //   objviewcol: val.objviewcol
+            // };
           }
         },
         deep: true
@@ -206,5 +211,9 @@
     margin: 0px 0 10px;
     height: 24px;
     line-height:24px;
+}
+.pop-formPanel{
+    padding: 16px;
+    border: 1px solid #dcdee2
 }
 </style>
