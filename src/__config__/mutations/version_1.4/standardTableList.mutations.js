@@ -122,6 +122,7 @@ export default {
       title,
       footerHide,
       contentText,
+      mask: true
     };
   },
   setActionDialog({ buttons }, obj) {

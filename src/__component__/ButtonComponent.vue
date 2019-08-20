@@ -262,7 +262,7 @@
           let src = '';
          
           network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
-            if (res.status === 200 && res.statusText === 'OK') {
+            if (res.status === 200) {
               if (getComponentName()[0] === 'S') {
                 if (id === 2530) {
                   this.objTabActionDialog(tab);
