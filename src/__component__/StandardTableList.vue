@@ -1243,6 +1243,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1276,6 +1277,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,          
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
