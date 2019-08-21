@@ -16,7 +16,7 @@ function CreateButton(obj, buttons, id, store) {
         let buttonsData = [];
         let hasDataTime = setInterval(function () {
                 if (window.location.pathname.split('/')[3] === 'V') {
-                    if(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem){
+                    if(store.state[MODULE_COMPONENT_NAME].mainFormInfo&&store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData&&store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data&&store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd&&store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem){
                         clearInterval(hasDataTime)
                     buttonAnother = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem;
                     operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
