@@ -16,7 +16,7 @@
 
 <script>
   import Vue from 'vue';
-  import { mapState } from 'vuex';
+  import { mapState , mapActions } from 'vuex';
   import PageNotFound from './PageNotFound';
   import PluginModule from '../__config__/plugin.config';
   import { LINK_MODULE_PREFIX, LINK_MODULE_COMPONENT_PREFIX } from '../constants/global';
@@ -39,6 +39,7 @@
       ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl'])
     },
     methods: {
+      ...mapActions('global', ['updateAccessHistory']),
       generateComponent() {
         // const url = this.$route.query.url;
         const { linkModuleName, linkModuleId } = this.$route.params;
@@ -70,6 +71,8 @@
     },
     mounted() {
       this.generateComponent();
+      const { linkModuleId } = this.$route.params;
+      this.updateAccessHistory({ type: 'action', id: linkModuleId });
     },
     watch: {
       $route() {

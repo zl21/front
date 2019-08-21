@@ -20,7 +20,6 @@
           />
           <span v-if="!collapseHistoryAndFavorite">
             收藏夹
-           
             <i
               v-if="!collapseFavorite"
               class="iconfont iconios-arrow-up arrow-icon"
@@ -113,7 +112,7 @@
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         history: ({ history }) => history.concat([]).reverse(),
         favorite: ({ favorite }) => favorite.concat([]).reverse(),
-        showModule: ({ showModule }) => showModule
+        showModule: ({ showModule }) => showModule,
       })
     },
     methods: {
@@ -139,7 +138,11 @@
         }
       },
       routeTo(data) {
-        const { type, value, id } = data;
+        const { value, id } = data;
+        let type = data.type;
+        if (data.vuedisplay === 'external') { // 外链型取vuedisplay类型external，除外链类型全部取type
+          type = 'external';
+        }
         routeTo({ type, info: { tableName: value, tableId: id } });
       },
     },
