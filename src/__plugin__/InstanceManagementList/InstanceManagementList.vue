@@ -16,37 +16,45 @@
           name="历史流程"
         >
           <HistoricalProcess />
+         
         </TabPane>
+         <TabPane label="我发起的" name="我发起的"><launchList></launchList></TabPane>
       </Tabs>
     </div>
   </div>
 </template>
-// <script>
+ <script>
   import todoProcess from './TodoProcess';
   import HistoricalProcess from './HistoricalProcess';
+  import launchList from './launchList';
 
   export default {
     name: 'InstanceManagementList',
-    components: { todoProcess, HistoricalProcess },
+    components: { todoProcess, HistoricalProcess,launchList },
     data() {
       return {
-        tabalive: '待办流程', // tab切换默认值
-        tabConfig: [{
-          label: '待办流程',
-          name: '待办流程'
-        }, {
-          label: '历史流程',
-          name: '历史流程'
-        }]
+        tabalive:"待我审批的",//tab切换默认值
+            tabConfig:[{
+                label:'待我审批的',
+                name:'待我审批的'
+            },{
+                label:' 我已审批的',
+                name:' 我已审批的'
+            },{
+                label:'我发起的',
+                name:'我发起的'
+            }]
       };
     },
     methods: {
       routeClick(val) {
-        if (val === 1) {
-          this.tabalive = '待办流程';
-        } else if (val === 2) {
-          this.tabalive = '历史流程';
-        }
+         if(val === 1){
+                this.tabalive = '待我审批的';
+            } else if (val === 2) {
+                this.tabalive = ' 我已审批的';
+            }else if(val===3){
+                this.tabalive = ' 我发起的';
+            }
       },
       // tab切换点击事件
       onClick(val) {
