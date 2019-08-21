@@ -130,7 +130,7 @@ async function jflowsave(flag, response) {
       Temparam.append('objid', router.currentRoute.params.itemId);
     }
     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-    network.post(`/${serviceId}/p/cs/getObject`, Temparam).then(async (res) => {
+    network.post(`/p/cs/getObject`, Temparam).then(async (res) => {
       if (res.data.code === 0) {
         res.data.data.addcolums.forEach((element) => {
           if (element.childs) {
