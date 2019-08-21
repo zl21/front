@@ -11,6 +11,7 @@ const actions = require(`../actions/version_${Version()}/global.actions`).defaul
 export default {
   namespaced: true,
   state: {
+    lastIndex: -1, // 当前点击的menu下标
     primaryMenuIndex: -1,
     collapseHistoryAndFavorite: false,
     history: [],

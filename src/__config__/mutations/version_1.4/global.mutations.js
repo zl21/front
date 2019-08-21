@@ -21,6 +21,13 @@ export default {
   hideMenu(state) {
     state.primaryMenuIndex = -1;
   },
+  saveLastIndexForMenu(state, lastIndex) {
+    if (state.lastIndex === lastIndex) {
+      state.lastIndex = -1;
+    } else {
+      state.lastIndex = lastIndex;
+    }
+  },
   doCollapseHistoryAndFavorite(state, { showFavorites }) {
     state.showFavoritesList = showFavorites;
     if (showFavorites) {

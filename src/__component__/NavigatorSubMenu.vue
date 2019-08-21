@@ -40,8 +40,9 @@
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
         let {
-          type, value, id, vuedisplay 
+          type
         } = data;
+        const { value, id, vuedisplay } = data;
         if (vuedisplay && vuedisplay === 'external') {
           type = vuedisplay;
         }
