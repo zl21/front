@@ -41,11 +41,9 @@
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
-  import router from '../../__config__/router.config';
-
 
   export default {
-    name: 'Publish',
+    name: 'PublishPrintTemplate',
     props: {
       objList: {
         type: Array,
@@ -79,12 +77,10 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        const { itemId } = router.currentRoute.params;
         const searchdata = {
           env: this.envValue, 
-          objId: itemId, 
         };
-        network.post('/p/cs/release', urlSearchParams(searchdata))
+        network.post('/p/cs/print/release', urlSearchParams(searchdata))
           .then((res) => {
             if (res.data.code !== 0) {
               return;

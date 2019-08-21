@@ -5,6 +5,9 @@ import {
   STANDARD_TABLE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
+  LINK_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX
+  
 } from '../../../constants/global';
 import router from '../../router.config';
 
@@ -17,6 +20,13 @@ export default {
   },
   hideMenu(state) {
     state.primaryMenuIndex = -1;
+  },
+  saveLastIndexForMenu(state, lastIndex) {
+    if (state.lastIndex === lastIndex) {
+      state.lastIndex = -1;
+    } else {
+      state.lastIndex = lastIndex;
+    }
   },
   doCollapseHistoryAndFavorite(state, { showFavorites }) {
     state.showFavoritesList = showFavorites;
@@ -36,6 +46,7 @@ export default {
       state.favorite = favorite;
     }
   },
+
   updateMenuLists(state, menuLists) {
     state.menuLists = menuLists;
     state.keepAliveLabelMaps = menuLists
@@ -44,11 +55,28 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        if (c.type === 'action') {
+        // if (c.url && c.url.substring(0, 4) === 'http') {
+        //   const linkUrl = {};
+        //   linkUrl[c.id] = c.url;
+        //   state.LinkUrl.push(linkUrl);
+        //   const linkType = c.url.substring(0, 4);
+        //   c.type = linkType;
+        // }
+
+        if (c.vuedisplay === 'external') {
+          const linkUrl = {};
+          linkUrl[c.id] = c.url;
+          state.LinkUrl.push(linkUrl);
+        }
+
+        if (c.type === 'action' && c.vuedisplay !== 'external') {
           a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         if (c.type === 'table') {
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+        }
+        if (c.vuedisplay === 'external') {
+          a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
         }
         return a;
       }, {});
@@ -61,6 +89,11 @@ export default {
         a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
+  },
+  increaseLinkUrl(state, { linkId, linkUrl }) {
+    const linkType = {};
+    linkType[linkId] = linkUrl;
+    state.LinkUrl.push(linkType);
   },
   increaseKeepAliveLists(state, name) {
     if (!state.keepAliveLists.includes(name)) {
@@ -188,7 +221,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -205,6 +238,12 @@ export default {
     }
     if (type === 'tableDetailAction') {
       path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      router.push({
+        path
+      });
+    }
+    if (type === 'tableDetailUrl') {
+      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
       router.push({
         path
       });
@@ -228,6 +267,18 @@ export default {
   },
   copyModifyDataForSingleObject(state, modifyData) {
     state.modifyData = modifyData;
+  },
+  setLayout(state, data) {
+    state.showModule = {
+      HistoryAndFavorite: data, // 隐藏收藏夹
+      TabLists: data, // 隐藏tab栏
+      Navigator: data, // 隐藏菜单栏
+    };
+    if (data === false) {
+      // const dom = document.getElementById('content');
+      // const doc = dom.style.padding = '0px';
+      // const domForMargin = dom.parentNode.parentNode.style.margin = '0px';
+    }
   }
   
 };

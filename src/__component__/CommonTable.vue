@@ -3,6 +3,7 @@
         <Table
                 :columns="columns"
                 class="table"
+                ref="table"
                 :height="true"
                 :data="tableData"
                 :row-class-name="rowClassName"
@@ -107,6 +108,14 @@
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
+              } else if (cur.display === 'doc') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.docRender(),
+                  renderHeader: this.tooltipRenderHeader()
+                }, cur));
               } else if (cur.display === 'image') {
                 acc.push(Object.assign({
                   title: cur.name,
@@ -174,6 +183,13 @@
                   key: cur.colname,
                   sortable: cur.isorder ? 'custom' : false,
                   render: this.imageRender(cur.colname)
+                }, cur));
+              } else if (cur.display === 'doc') {
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  sortable: cur.isorder ? 'custom' : false,
+                  render: this.docRender()
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
@@ -245,7 +261,10 @@
           needSubtotalList.map((ele) => {
             const needSubtotalDatas = [];
             this.tableData.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []).toFixed(2);
+            let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            if (typeof totalNumber === 'number') {
+              totalNumber = totalNumber.toFixed(2);
+            }
             cell[ele.colname] = `${totalNumber}`;
             return ele;
           });
@@ -274,6 +293,9 @@
     watch: {},
     methods: {
       ...mapMutations('global', ['tabOpen', 'tabHref']),
+      deselectAll() {
+        this.$refs.table.selectAll(false);
+      }, // 取消表格全部选中
       rowClassName(row) {
         let cssStr = '';
         this.cssStatus.forEach((item) => {
@@ -445,6 +467,23 @@
           ]);
         };
       }, // 图片render
+      docRender() {
+        return (h, params) => {
+          if (!params.row[params.column.colname]) {
+            return null;
+          }
+          const data = JSON.parse(params.row[params.column.colname]);
+          let html = '';
+          data.forEach((item) => {
+            html += `<span class="doc-wrapper"><a href="${item.url}"><i class="iconfont iconmd-document" data-target-tag="fkIcon" style="color: #20a0ff; cursor: pointer; font-size: 16px" ></i> ${item.name}</a></span>`;
+          });
+          return h('div', {
+            domProps: {
+              innerHTML: html
+            }
+          });
+        };
+      }, // 图片render
       isJsonString(str) {
         if (typeof JSON.parse(str) === 'object') {
           return true;
@@ -550,6 +589,7 @@
         overflow-y: hidden;
         position: relative;
         .table {
+            height: 100% !important;
             thead th {
                 font-weight: 400;
             }
@@ -567,6 +607,19 @@
             }
             .burgeon-table-fixed tfoot td {
                 border-bottom: 1px solid #e8eaec;
+            }
+            .doc-wrapper {
+                margin-right: 5px;
+                display: inline-block;
+                a {
+                    color: #575757;
+                }
+            }
+            .doc-wrapper:hover {
+                border-bottom: 1px solid #000;
+                a {
+                    color: #2d8cf0;
+                }
             }
         }
     }

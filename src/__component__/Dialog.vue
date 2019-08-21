@@ -25,9 +25,12 @@
         :is="dialogComponentName"
         v-if="showModal"
         ref="modalComponent"
+        :id-array="idArray"
         :obj-list="objList"
+        :item-id="itemId"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </Modal>
@@ -38,6 +41,14 @@
   export default {
     // name: 'DialogComponent',
     props: {
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
+      itemId: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
       // showModal: {
       //   type: Boolean,
       //   default: () => false
@@ -46,7 +57,7 @@
       //   type: String,
       //   default: () => 'auto'
       // },
-      objList: {
+      objList: {// 需要从外部获取的信息
         type: Array,
         default: () => []
       },
@@ -128,15 +139,18 @@
       }
     },
     watch: {
-      dialogComponentName(val) {
+      dialogComponentName(val, oldval) {
         if (val) {
           this.getModalWidth();
         }
-      }
+      },
     },
     mounted() {
     },
     methods: {
+      clearSelectIdArray() { // 清空列表选中项
+        this.$emit('clearSelectIdArray');
+      },
       setTitle(value) {
         this.setTitleName = value;
       },

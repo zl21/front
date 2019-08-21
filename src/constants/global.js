@@ -1,4 +1,6 @@
 import project from '../../project.config';
+import configForColumn from './extentionPropertyForColumn';
+import configForTable from './extentionPropertyForTable';
 
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
 export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks ? window.ProjectConfig.interlocks : project.interlocks);
@@ -11,12 +13,16 @@ export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
 export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
 export const CUSTOMIZED_MODULE_PREFIX = '/CUSTOMIZED';
 export const PLUGIN_MODULE_PREFIX = '/PLUGIN';
+export const LINK_MODULE_PREFIX = '/LINK';
+export const LINK_URL = '';
+
 
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'S';
 export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'H';
 export const VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX = 'V';
 export const CUSTOMIZED_MODULE_COMPONENT_PREFIX = 'C';
 export const PLUGIN_MODULE_COMPONENT_PREFIX = 'P';
+export const LINK_MODULE_COMPONENT_PREFIX = 'L';
 
 export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜单时如何显示已经打开的模块
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必填项点击保存时是否必须填写子表信息
@@ -48,10 +54,25 @@ export const globalGateWay = [
 
 // 不走网关的接口
 export const ignoreGateWay = [
-  '/p/c/get_service_id'
+  '/p/c/get_service_id',
+  '/api/rpt/print/query',
+  '/api/rpt/userprint/save',
 ];
 
-//
+// 不走网关的正则模式匹配
+export const ignorePattern = () => {
+  const { ignoreGateWayPattern } = window.ProjectConfig || {};
+  return (project.ignoreGateWayPattern || []).concat(ignoreGateWayPattern || []);
+};
+
+// 静默路由，当遇到网络请求403时，不跳转到登录页。
 export const defaultQuietRoutes = [
-  '/login'
+  '/login',
+  '/PLUGIN/PRINTTEMPLATE',
+  '/PLUGIN/PRINTPREVIEW'
 ];
+
+// 导出表的拓展属性、字段扩展属性配置。
+export const extentionForTable = () => (window.ProjectConfig && window.ProjectConfig.extentionForTable ? window.ProjectConfig.extentionForTable : configForTable);
+
+export const extentionForColumn = () => (window.ProjectConfig && window.ProjectConfig.extentionForColumn ? window.ProjectConfig.extentionForColumn : configForColumn);

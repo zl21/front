@@ -39,7 +39,13 @@
     methods: {
       ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
       routeTo(data) {
-        const { type, value, id } = data;
+        let {
+          type
+        } = data;
+        const { value, id, vuedisplay } = data;
+        if (vuedisplay && vuedisplay === 'external') {
+          type = vuedisplay;
+        }
         routeTo({ type, info: { tableName: value, tableId: id } }, () => {
           this.hideMenu();
         });

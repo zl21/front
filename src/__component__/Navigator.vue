@@ -1,5 +1,8 @@
 <template>
-  <div class="navigator">
+  <div
+    v-if="showModule.Navigator"
+    class="navigator"
+  >
     <div
       class="left"
       :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
@@ -117,12 +120,10 @@
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
-  import Vue from 'vue';
+  import { mapState, mapMutations } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import Dialog from './Dialog.vue';
-  import CustomizeModule from '../__config__/customizeDialog.config';
   import closedImg from '../assets/image/closed@2x.png';
   import openedImg from '../assets/image/open@2x.png';
   import logoImg from '../assets/image/logo.png';
@@ -168,8 +169,19 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         menuLists: ({ menuLists }) => menuLists,
-        navigatorSetting: ({ navigatorSetting }) => navigatorSetting
+        navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
+        showModule: ({ showModule }) => showModule
       }),
+    },
+    watch: {
+      showModule(val) {
+        if (!val.Navigator) {
+          this.$el.parentElement.hidden = true;
+          this.$el.parentElement.parentElement.hidden = true;
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+        }
+      }
     },
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),

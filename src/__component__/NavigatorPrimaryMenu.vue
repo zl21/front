@@ -5,7 +5,7 @@
     @click.stop="togglePrimaryMenu"
   >
     {{ data.label }}
-    <transition  name="fade">
+    <transition name="fade">
       <NavigatorSubMenu
         v-show="index === primaryMenuIndex"
         :data="data.children || []"
@@ -23,22 +23,32 @@
     components: {
       NavigatorSubMenu
     },
+    data() {
+      return {
+       
+      };
+    },
     computed: {
       ...mapState('global', {
-        primaryMenuIndex: state => state.primaryMenuIndex
+        primaryMenuIndex: state => state.primaryMenuIndex,
+        lastIndex: state => state.lastIndex
+
       })
     },
     methods: {
       togglePrimaryMenu() {
         // 由于此处禁用了冒泡，所以需要手动触发body的点击事件以辅助其他控件对body点击事件的监听。
         document.body.click();
-        if (this.index === this.primaryMenuIndex) {
+        if (this.index === this.primaryMenuIndex || this.lastIndex === this.index) {
           this.hideMenu();
         } else {
           this.changeSelectedPrimaryMenu(this.index);
         }
+        this.saveLastIndexForMenu(this.index,);
+
+        // this.saveLastIndexForMenu(-1);
       },
-      ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu'])
+      ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu', 'saveLastIndexForMenu'])
     },
     props: {
       data: {

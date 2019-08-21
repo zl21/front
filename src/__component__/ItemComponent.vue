@@ -262,16 +262,17 @@
       </template> -->
       <!-- 上传文件 -->
        
-      <!-- <Docfile
+      <Docfile
         v-if="_items.type === 'docfile'"
         :dataitem="_items.props.itemdata"
-      /> -->
+        @filechange="filechange"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import { mapActions, mapState, mapMutations } from 'vuex';
+  import { mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
   // import Dialog from './ComplexsDialog';
@@ -733,7 +734,7 @@
       },
 
       // AttachFilter event
-      attachFilterChange(value, $this) {
+      attachFilterChange(value) {
         this._items.value = value;
         this.valueChange();
       },
@@ -818,7 +819,7 @@
           this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
-      attachFilterClear(event, $this) {
+      attachFilterClear() {
         this._items.value = '';
         this.resultData = {};
         this._items.props.Selected = [
@@ -959,13 +960,14 @@
             );
           }
         }
+        return true;
       },
       uploadFileChange() {
       // console.log(e);
       },
       deleteImg(item, index) {
         const that = this;
-        this.$Modal.warning({
+        this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
           title: '提示',
@@ -1016,6 +1018,7 @@
             } else {
               // new
               this._items.props.itemdata.valuedata.splice(index - 1, 1);
+
               this.valueImgChange();
             }
           }
@@ -1031,6 +1034,63 @@
         }
         this.valueChange();
       },
+      filechange(value) {
+        // 上传文件 
+        const _value = value.length > 0 ? value : '';
+        // this._items.value = _value;
+        console.log(_value, 'valuevalue');
+
+        const fixedData = Array.isArray(_value) ? [..._value] : '';
+        let parms = {
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        console.log(fixedData, 'fixedData');
+        //  判断parms 是否 需要保存
+        parms = this.pathsCheckout(parms, fixedData);
+        if (
+          this.$route.params
+          && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+        ) {
+          //  判断是否需要调用保存
+          const path = this.$parent.pathcheck !== '';
+          const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+
+          if (this.$parent.isreftabs && childTableName !== false) {
+            //  主子表 子表
+            const _fixedData = fixedData || '';
+            this._items.props.itemdata.valuedata = [];  
+            this._items.props.itemdata.valuedata = _fixedData;
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+            this.valueChange();
+          } else {
+            this.upSavefile(parms, fixedData, path, value);
+          }
+        } else {
+          const _fixedData = fixedData || '';
+          this._items.props.itemdata.valuedata = [];  
+          this._items.props.itemdata.valuedata = _fixedData;
+          this.valueImgChange();
+        }
+      },
+      upSavefile(obj, fixedData, path) {
+        fkObjectSave({
+          searchObject: {
+            ...obj
+          },
+          url: path ? this.$parent.pathcheck : undefined,
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.code !== 0) {
+              return false;
+            }
+            // this._items.props.itemdata.valuedata.push(...value);
+          // this.valueChange();
+          }
+        });
+      },
       deleteImgData(obj, index) {
         deleteImg({
           params: {
@@ -1045,11 +1105,19 @@
           }
         });
       },
+      readonlyImage() {
+        if (!isNaN(this._items.props.itemdata.ImageSize)) {
+          return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
+        }
+        return false;
+      },
       uploadFileChangeSuccess(result) {
         const self = this;
-
         const resultData = result;
-
+        if (this.readonlyImage()) {
+          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          return false;
+        }
         fkQueuploadProgressry({
           searchObject: {
             uploadId: resultData.data.UploadId
@@ -1059,6 +1127,7 @@
             if (res.data.code !== 0) {
               return false;
             }
+           
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({
@@ -1099,7 +1168,9 @@
               this.valueImgChange();
             }
           }
+          
         });
+        return true;
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
@@ -1128,7 +1199,7 @@
 
           const parmsdata = {
             [parms.table]: {
-              [this._items.field]: data == '' ? '' : JSON.stringify(data),
+              [this._items.field]: data === '' ? '' : JSON.stringify(data),
               ID: parms.objId || parms.ID
             }
           };
@@ -1187,6 +1258,7 @@
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
+        return true;
       },
       pathsCheckoutolder(parms, data) {
         //   1.3 后台拼数据
@@ -1230,8 +1302,8 @@
           }
         });
       },
-      uploadFileChangeOnerror() {
-      // console.log('err', result);
+      uploadFileChangeOnerror(e) {
+        this.$Message.info(e);
       },
       getWangeditorChangeItem(value) {
         // 富文本change

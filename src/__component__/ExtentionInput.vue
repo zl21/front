@@ -39,8 +39,7 @@
 </template>
 
 <script>
-  import extentionForColumn from '../constants/extentionPropertyForColumn';
-  import extentionForTable from '../constants/extentionPropertyForTable';
+  import { extentionForColumn, extentionForTable } from '../constants/global';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
   export default {
@@ -102,10 +101,11 @@
       },
     },
     created() {
+      // 这里逻辑是写死的，专门针对“表”、“字段”的扩展属性
       if (this.$route.params.tableName === 'AD_COLUMN') {
-        this.options = extentionForColumn;
+        this.options = extentionForColumn();
       } else if (this.$route.params.tableName === 'AD_TABLE') {
-        this.options = extentionForTable;
+        this.options = extentionForTable();
       } else {
         this.options = this.extentionConfig;
       }

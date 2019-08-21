@@ -11,6 +11,7 @@ const actions = require(`../actions/version_${Version()}/global.actions`).defaul
 export default {
   namespaced: true,
   state: {
+    lastIndex: -1, // 当前点击的menu下标
     primaryMenuIndex: -1,
     collapseHistoryAndFavorite: false,
     history: [],
@@ -23,7 +24,14 @@ export default {
     userInfo: {},
     showFavoritesList: '',
     serviceIdMap: {},
-    navigatorSetting: []
+    navigatorSetting: [],
+    showModule: {
+      HistoryAndFavorite: true, // 隐藏收藏夹
+      TabLists: true, // 隐藏tab栏
+      Navigator: true, // 隐藏菜单栏
+    },
+    LinkUrl: []
+    
   },
   mutations,
   actions,

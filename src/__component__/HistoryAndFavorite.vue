@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="showModule.HistoryAndFavorite"
     class="history-and-favorite"
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
@@ -19,7 +20,6 @@
           />
           <span v-if="!collapseHistoryAndFavorite">
             收藏夹
-           
             <i
               v-if="!collapseFavorite"
               class="iconfont iconios-arrow-up arrow-icon"
@@ -111,7 +111,8 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         history: ({ history }) => history.concat([]).reverse(),
-        favorite: ({ favorite }) => favorite.concat([]).reverse()
+        favorite: ({ favorite }) => favorite.concat([]).reverse(),
+        showModule: ({ showModule }) => showModule,
       })
     },
     methods: {
@@ -137,7 +138,11 @@
         }
       },
       routeTo(data) {
-        const { type, value, id } = data;
+        const { value, id } = data;
+        let type = data.type;
+        if (data.vuedisplay === 'external') { // 外链型取vuedisplay类型external，除外链类型全部取type
+          type = 'external';
+        }
         routeTo({ type, info: { tableName: value, tableId: id } });
       },
     },
@@ -197,7 +202,7 @@
         left: 60px;
         background: white;
         top: 60px;
-        z-index: 10;
+        z-index: 1000;
         padding-left:0;
         border-radius: 2px;
        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);

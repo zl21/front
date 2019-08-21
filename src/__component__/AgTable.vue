@@ -334,6 +334,7 @@
    display: flex;
    flex: 1;
    flex-direction: column;
+   height: 100%;
    .common-table {
      margin-top: 10px;
      overflow-y: hidden;

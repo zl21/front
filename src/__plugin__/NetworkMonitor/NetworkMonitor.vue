@@ -36,42 +36,49 @@
   import { queryAllNetwork, emptyRecord } from '../../__utils__/indexedDB';
   
   export default {
-    data: () => ({
-      page: 1,
-      pageSize: 10,
-      viewData: [],
-      data: [],
-      columns: [
-        { key: 'timecost', title: 'TimeCost' },
-        { key: 'url', title: 'Url' },
-        { key: 'method', title: 'Method' },
-        {
-          key: 'reqTime',
-          title: 'Request Time',
-          render: (createElement, data) => {
-            const date = new Date(data.row[data.column.key]);
-            const format = `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
-            return createElement('span', format);
+    data() {
+      return ({
+        page: 1,
+        pageSize: 10,
+        viewData: [],
+        data: [],
+        columns: [
+          {
+            key: 'serialId',
+            title: '序号',
+            render: (createElement, data) => createElement('span', data.index + 1 + (this.page - 1) * this.pageSize)
+          },
+          { key: 'timecost', title: 'TimeCost' },
+          { key: 'url', title: 'Url' },
+          { key: 'method', title: 'Method' },
+          {
+            key: 'reqTime',
+            title: 'Request Time',
+            render: (createElement, data) => {
+              const date = new Date(data.row[data.column.key]);
+              const format = `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
+              return createElement('span', format);
+            }
+          },
+          {
+            key: 'data',
+            title: 'Request Params',
+            // minWidth: 300,
+            maxWidth: 500,
+            ellipsis: false,
+            render: (createElement, data) => {
+              const format = data.row.isJson ? JSON.stringify(data.row[data.column.key] || {}, null, 4) : decodeURIComponent(data.row[data.column.key] || '');
+              return createElement('span', format);
+            }
+          },
+          {
+            key: 'isJson',
+            title: 'Content-Type',
+            render: (createElement, data) => createElement('span', data.row[data.column.key] ? 'application/json' : 'application/x-www-form-urlencoded')
           }
-        },
-        {
-          key: 'data',
-          title: 'Request Params',
-          // minWidth: 300,
-          maxWidth: 500,
-          ellipsis: false,
-          render: (createElement, data) => {
-            const format = data.row.isJson ? JSON.stringify(data.row[data.column.key] || {}, null, 4) : decodeURIComponent(data.row[data.column.key] || '');
-            return createElement('span', format);
-          }
-        },
-        {
-          key: 'isJson',
-          title: 'Content-Type',
-          render: (createElement, data) => createElement('span', data.row[data.column.key] ? 'application/json' : 'application/x-www-form-urlencoded')
-        }
-      ]
-    }),
+        ]
+      });
+    },
     created() {
       this.doQuery();
     },

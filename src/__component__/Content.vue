@@ -2,8 +2,8 @@
   import Vue from 'vue';
   import appLayout from '../__config__/layout.config';
   import Loading from '../__utils__/loading';
-
   Vue.use(Loading);
+
   /**
    * 高级函数：用于采用JSX渲染Vue的Html Template
    * @param h vue中render函数createElement的参数简写

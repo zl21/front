@@ -22,11 +22,11 @@ export default [
         type: 'input'
       },
       {
-        name: '过滤字段在表头',
+        name: '关联字段在表头',
         key: 'maintable',
         type: 'radio',
         enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
-      },
+      }      
     ],
     description: 'B字段根据A字段选择的值过滤出对应条件下的数据'
   },
@@ -73,6 +73,10 @@ export default [
     }, {
       name: '关联表',
       key: 'reftablename',
+      type: 'input'
+    }, {
+      name: '关联表id',
+      key: 'reftableid',
       type: 'input'
     }],
     description: '列表界面指定字段显示链接，点击可进入对应界面'
@@ -172,5 +176,5 @@ export default [
     type: 'input',
     outputValueType: 'JSON',
     description: '自定义参数格式及内容'
-  }
+  },
 ];

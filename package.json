@@ -1,6 +1,6 @@
 {
     "name": "burgeon-r3",
-    "version": "1.0.6",
+    "version": "1.0.11",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -32,6 +32,7 @@
         "babel-loader": "^8.0.5",
         "babel-plugin-syntax-jsx": "^6.18.0",
         "babel-plugin-transform-vue-jsx": "^3.7.0",
+        "burgeon-ui": "^1.0.26",
         "clean-webpack-plugin": "^1.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.0",
@@ -43,7 +44,7 @@
         "eslint-plugin-vue": "^5.1.0",
         "file-loader": "^3.0.1",
         "html-webpack-plugin": "^3.2.0",
-        "less": "^3.9.0",
+        "less": "~3.9.0",
         "less-loader": "^4.1.0",
         "mini-css-extract-plugin": "^0.7.0",
         "optimize-css-assets-webpack-plugin": "^5.0.1",
@@ -57,8 +58,7 @@
         "webpack": "^4.29.3",
         "webpack-cli": "^3.2.1",
         "webpack-dev-server": "^3.1.14",
-        "webpack-merge": "^4.2.1",
-        "burgeon-ui": "^1.0.24"
+        "webpack-merge": "^4.2.1"
     },
     "dependencies": {
         "ag-grid": "^17.1.1",
@@ -71,8 +71,5 @@
     },
     "peerDependencies": {
         "burgeon-ui": ">1.0.0"
-    },
-    "arkDependencies": {
-        "demo": "1.0.1"
     }
 }

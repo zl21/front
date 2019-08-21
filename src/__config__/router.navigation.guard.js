@@ -11,11 +11,14 @@ import {
   KEEP_MODULE_STATE_WHEN_CLICK_MENU,
   PLUGIN_MODULE_PREFIX,
   PLUGIN_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX,
+  LINK_MODULE_COMPONENT_PREFIX
 } from '../constants/global';
 import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
+
 
 const pluginModules = {};
 Object.keys(PluginModule).forEach((key) => {
@@ -30,16 +33,19 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName
+      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName, linkModuleName, linkModuleId
     } = to.params;
-    const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX];
+    const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const fromTableName = from.params.tableName;
     const fromTableId = from.params.tableId;
     const fromItemId = from.params.itemId;
     const fromCustomizedModuleName = from.params.customizedModuleName;
     const fromCustomizedModuleId = from.params.customizedModuleId;
     const fromPluginModuleName = from.params.pluginModuleName;
+    const fromLinkName = from.params.linkName;
+
     const { routePrefix } = to.meta;
+
     const fromRoutePrefix = from.meta.routePrefix;
     const { isBack } = to.query;
     const moduleGenerator = {
@@ -49,6 +55,7 @@ export default (router) => {
     };
     const labelSuffix = {
       [CUSTOMIZED_MODULE_COMPONENT_PREFIX]: '',
+      [LINK_MODULE_COMPONENT_PREFIX]: '',
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
@@ -58,9 +65,24 @@ export default (router) => {
     let dynamicModuleTag = '';
     let keepAliveModuleName = '';
     let fromKeepAliveModuleName = '';
-    const originModuleName = routePrefix === CUSTOMIZED_MODULE_PREFIX
-      ? `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`
-      : `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+    let originModuleName = '';
+    // const originModuleName = routePrefix === CUSTOMIZED_MODULE_PREFIX
+    //   ? `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`
+    //   : `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+
+    switch (routePrefix) {
+      case CUSTOMIZED_MODULE_PREFIX:
+        originModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
+        break;
+
+      case LINK_MODULE_PREFIX:
+        originModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}.${linkModuleId}`;
+        break;
+
+      default:
+        originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+    }
+
 
     switch (fromRoutePrefix) {
       // Condition One: 来自标准列表界面
@@ -86,6 +108,11 @@ export default (router) => {
       // Condition Five: 来自系统内置的插件界面
       case PLUGIN_MODULE_PREFIX:
         fromKeepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${fromPluginModuleName}`;
+        break;
+
+      // Condition Six: 来自外链界面
+      case LINK_MODULE_PREFIX:
+        fromKeepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${fromLinkName}`;
         break;
 
       default:
@@ -121,6 +148,12 @@ export default (router) => {
       case PLUGIN_MODULE_PREFIX:
         keepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
         dynamicModuleTag = PLUGIN_MODULE_COMPONENT_PREFIX;
+        break;
+
+      // Condition Five: 路由到外链界面
+      case LINK_MODULE_PREFIX:
+        keepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}`;
+        dynamicModuleTag = LINK_MODULE_COMPONENT_PREFIX;
         break;
 
       default:
@@ -193,10 +226,17 @@ export default (router) => {
         const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
         if (ready) {
           clearInterval(tempInterval);
+          // let label = '';
+          // if(routePrefix === PLUGIN_MODULE_PREFIX ){
+          //   label=pluginModules[pluginModuleName].name
+          // }else if(routePrefix ===LINK_MODULE_PREFIX){
+          //   label=
+            
+          // }
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
-            tableName: tableName || customizedModuleName || pluginModuleName,
+            tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
             routeFullPath: to.path,
             routePrefix
           });

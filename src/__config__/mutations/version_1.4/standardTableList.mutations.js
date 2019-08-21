@@ -87,6 +87,9 @@ export default {
       this.state.global.favorite = data.data;
     }
   },
+  setPrintValueForButtons({ buttons }, value) { // 控制打印按钮开关
+    buttons.dataArray.printValue = value;
+  },
   updateDefaultButtonGroupData({ buttons }, data) {
     buttons.dataArray.buttonGroupShowConfig.buttonGroupShow = data;
   },
@@ -119,6 +122,7 @@ export default {
       title,
       footerHide,
       contentText,
+      mask: true
     };
   },
   setActionDialog({ buttons }, obj) {
@@ -166,5 +170,5 @@ export default {
   updateWebconfCommonTable({ webconf }, data) {
     webconf.commonTable = data.commonTable;
   }, // 修改state中commonTable的值
- 
+  
 };

@@ -9,7 +9,9 @@ module.exports = {
   // target: 'http://dev.burgeononline.com:8099', // 掌云测试环境(启用网关)
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开
-  enableJflow: false, // 是否开启JFlow插件功能
-  jflowRequestDomain: '', // jflow请求转发的域名或者IP
+  enableGateWay: true, // 网关是否打开,
+  ignoreGateWayPattern: [
+    /\/api\/rpt\/preview/
+  ] 
+  // 框架默认禁用的网关逻辑的正则模式匹配。
 };

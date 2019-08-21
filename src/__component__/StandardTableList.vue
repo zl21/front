@@ -4,7 +4,9 @@
   <div class="StandardTableListRootDiv">
     <ButtonGroup
       :data-array="buttons.dataArray"
+      :id-array="idArray"
       @buttonClick="buttonClick"
+      @clearSelectIdArray="clearSelectIdArray"
     />
     <FormItemComponent
       ref="FormItemComponent"
@@ -25,7 +27,6 @@
       :on-page-change="onPageChange"
       :on-page-size-change="onPageSizeChange"
       :on-selection-changed="onSelectionChanged"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
       :on-row-double-click="onRowDoubleClick"
       :on-sort-changed="onSortChange"
       :on-column-moved="onColumnMoved"
@@ -33,6 +34,7 @@
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
       :is-common-table="webconf.commonTable"
+      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
@@ -148,7 +150,9 @@
         favorite: ({ favorite }) => favorite,
         activeTab: ({ activeTab }) => activeTab,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
-        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps
+        keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
+        LinkUrl: ({ LinkUrl }) => LinkUrl
+        
       }),
       formLists() {
         return this.refactoringData(
@@ -162,6 +166,9 @@
           };
         }
         return {};
+      },
+      idArray() {
+        return this.buttons.selectIdArr;
       }
     },
     watch: {
@@ -190,7 +197,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'tabOpen']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -306,6 +313,48 @@
             tableId: reftableid,
             type: 'tableDetailVertical'
           });
+        }
+        if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
+          const objdistype = colDef.customerurl.objdistype;
+          if (objdistype === 'popwin') {
+            // 自定义弹窗
+            this.$refs.dialogRef.open();
+            this.dialogComponentNameConfig.title = colDef.customerurl.reftabdesc;
+            this.dialogComponentNameConfig.footerHide = true;
+            this.dialogComponentName = colDef.customerurl.tableurl;
+          } else if (objdistype === 'tabpanle') {
+            // 左右结构单对象界面
+            const type = 'tableDetailHorizontal';
+            const tab = {
+              type,
+              tableName: colDef.customerurl.reftablename,
+              tableId: colDef.customerurl.reftableid,
+              label: colDef.customerurl.reftabdesc,
+              id: rowData[colDef.customerurl.refobjid].val
+            };
+            this.tabOpen(tab);
+          } else if (objdistype === 'object') {
+            // 上下结构单对象界面
+            const type = 'tableDetailVertical';
+            const tab = {
+              type,
+              tableName: colDef.customerurl.reftablename,
+              tableId: colDef.customerurl.reftableid,
+              label: colDef.customerurl.reftabdesc,
+              id: rowData[colDef.customerurl.refobjid].val
+            };
+            this.tabOpen(tab);
+          } else if (objdistype === 'customized') {
+            // 自定义界面
+            const type = 'tableDetailAction';
+            const tab = {
+              type,
+              label: colDef.customerurl.reftabdesc,
+              customizedModuleName: colDef.customerurl.tableurl,
+              customizedModuleId: colDef.customerurl.reftableid
+            };
+            this.tabOpen(tab);
+          }
         }
       },
       // 表单操作
@@ -699,6 +748,18 @@
       },
 
       // 按钮组操作
+      clearSelectIdArray() { // 关闭打印预览与直接打印后清空选中项
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        const detailTable = document.querySelector('.detailTable');
+        const commonTable = document.querySelector('.commonTable');
+
+        if (detailTable && detailTable.agTable) { // ag表格
+          detailTable.agTable.deselectAll();
+        } 
+        if (commonTable) { // 普通表格
+          commonTable.deselectAll();
+        }
+      },
       getbuttonGroupdata() {
         // 获取按钮数据
         const tabcmdData = this.buttons.tabcmd;
@@ -711,7 +772,8 @@
               const type = item.split('action');
               const str = `CMD_${type[1].toUpperCase()}`;
               if (str === 'CMD_PRINT') {
-                this.buttons.dataArray.printValue = true;
+                this.setPrintValueForButtons(true);
+                // this.buttons.dataArray.printValue = true;
               } else {
                 const buttonConfigInfo = this.buttonMap[str];
                 if (tabcmdData.paths) {
@@ -766,9 +828,7 @@
           // 接口返回有url地址
           // eslint-disable-next-line no-restricted-globals
           location.href = obj.action;
-          return;
-        }
-        if (obj.vuedisplay === 'slient') {
+        } else if (obj.vuedisplay === 'slient') {
           // 静默程序            if(obj.confirm){  //有提示
           if (obj.confirm) {
             // 有提示
@@ -777,7 +837,13 @@
                 if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                  this.dialogMessage(title, contentText);
+                  // this.dialogMessage(title, contentText);
+                  const data = {
+                    mask: true,
+                    title,
+                    content: contentText
+                  };
+                  this.$Modal.fcWarning(data);
                 } else if (
                   JSON.parse(obj.confirm).isradio
                   && this.buttons.selectIdArr.length !== 1
@@ -829,6 +895,8 @@
               this.objTabActionNavbar(obj); // 新标签跳转
             }
           }
+        } else if (obj.vuedisplay === 'external') {
+          this.objTabActionUrl(obj);
         } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
           this.objTabActionDialog(obj);
           // this.setActionDialog(obj);
@@ -852,6 +920,8 @@
                 this.buttons.selectIdArr.length
               )}`;
               this.dialogMessage(title, contentText);
+            } else if (obj.vuedisplay === 'download') {
+              this.objTabActiondDownload(obj);
             } else {
               // this.setActionDialog(obj);
               // const componentName = obj.action
@@ -864,10 +934,16 @@
               // this.dialogComponent = componentName;
               this.objTabActionDialog(obj);
             }
-          } else if (confirm.nodesc) {
+          } else if (confirm.nodesc) { // 校验提示
             const title = this.ChineseDictionary.WARNING;
             const contentText = `${confirm.nodesc}`;
-            this.dialogMessage(title, contentText);
+            // this.dialogMessage(title, contentText);
+            const data = {
+              mask: true,
+              title,
+              content: contentText
+            };
+            this.$Modal.fcWarning(data);
           } else {
             // this.setActionDialog(obj);
 
@@ -880,7 +956,7 @@
             // this.dialogComponent = componentName;
             this.objTabActionDialog(obj);
           }
-        } else {
+        } else { // 需要弹出提示信息
           const message = obj.confirm.indexOf('{') >= 0
             ? JSON.parse(obj.confirm).nodesc
             : obj.confirm;
@@ -889,6 +965,56 @@
           this.dialogMessage(title, contentText);
         }
       },
+
+      objTabActionUrl(tab) { // 外链类型
+        // const linkUrl = tab.action;
+        // const linkId = tab.webid;
+        // this.increaseLinkUrl({ linkId, linkUrl });
+        // setTimeout(() => {
+        //   this.tabOpen({
+        //     type: 'tableDetailUrl',
+        //     tableName: tab.webname.toUpperCase(),
+        //     tableId: tab.webid,
+        //     label: tab.webdesc,
+        //     url: tab.action
+        //   });
+        // }, 500);
+       
+        const eleLink = document.createElement('a');
+        eleLink.href = tab.action;
+        eleLink.target = '_blank';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+      },
+      objTabActiondDownload(tab) {
+        // const filename = tab.webname;
+        const selectIdArr = this.buttons.selectIdArr;
+        const downloadId = selectIdArr[0];
+        const paths = tab.action.replace('$objid$', downloadId);
+        const eleLink = document.createElement('a');
+        const path = getGateway(`${paths}`);
+        eleLink.setAttribute('href', path);
+        eleLink.style.display = 'none';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+        // this.downFile(path, filename);
+      },
+      // downFile(path, filename) {
+      //   // 创建隐藏的可下载链接
+      //   const eleLink = document.createElement('a');
+      //   eleLink.download = filename;
+      //   eleLink.style.display = 'none';
+      //   // 字符内容转变成blob地址
+      //   const blob = new Blob([path]);
+      //   eleLink.href = URL.createObjectURL(blob);
+      //   // 触发点击
+      //   document.body.appendChild(eleLink);
+      //   eleLink.click();
+      //   // 然后移除
+      //   document.body.removeChild(eleLink);
+      // },
       webActionSlient(item) {
         const obj = {
           tableid: this.buttons.tableId,
@@ -1052,7 +1178,17 @@
           title,
           contentText,
         });
-        this.$refs.dialogRefs.open();
+        const data = {
+          mask: this.buttons.dialogConfig.mask,
+          title: this.buttons.dialogConfig.title,
+          content: this.buttons.dialogConfig.contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog();
+          }
+        };
+        this.$Modal.fcWarning(data);
+        // this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
         const { tableName, tableId } = this.$route.params;
@@ -1107,6 +1243,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1140,6 +1277,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
+              mask: true,          
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1176,7 +1314,7 @@
               );
             }, 200);
           } else {
-            this.$Modal.confirm({
+            this.$Modal.fcWarning({
               mask: true,
               title: '警告',
               content: `未勾选记录,将批量更新所有查询结果(共计${
@@ -1502,7 +1640,7 @@
         if (this._inactive) { return; }
         const { detail } = event;
         if (detail.url === '/p/cs/getTableQuery') {
-          // this.updateFormData(this.$refs.FormItemComponent.formDataObject);
+          this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           this.searchClickData();
         }
       }

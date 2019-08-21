@@ -222,7 +222,7 @@ attachmentComponent.prototype.init = function (params) {
   this.eGui = eGui;
   const { value } = params;
   if (Object.prototype.toString.call(JSON.parse(value)) === '[object Array]') {
-    eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont">&#xe649;</i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
+    eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont iconmd-document"></i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
   }
 };
 
@@ -1211,6 +1211,11 @@ const initializeAgTable = (container, opt) => {
         }, 50);
       }
       return agTable;
+    };
+    
+    // 清空选中所有列
+    agTable.deselectAll = () => {
+      api.deselectAll();
     };
 
     // 暴露ag showOverlay方法

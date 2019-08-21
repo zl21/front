@@ -26,11 +26,6 @@ export default [
     type: 'input-group',
     inputLists: [
       {
-        name: '全局检索自动匹配字段',
-        key: 'multiCenter',
-        type: 'input'
-      },
-      {
         name: '全局检索字段',
         key: 'multiIndex',
         type: 'object-group',
@@ -49,6 +44,11 @@ export default [
             enumerateValue: [{ text: '全模糊', value: '%X%' }, { text: '右模糊', value: 'X%' }, { text: '左模糊', value: '%X' }],
           }
         ]
+      },
+      {
+        name: '全局检索自动匹配字段',
+        key: 'multiCenter',
+        type: 'input'
       },
       {
         name: '中间展示字段',
@@ -132,7 +132,7 @@ export default [
     description: '表的数据由定制服务查询写入，而非标准的数据，不支持导出，则可隐藏导出按钮'
   },
   {
-    name: '导入',
+    name: '导入模板外键字段可选择',
     key: 'smalltable',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
@@ -225,6 +225,13 @@ export default [
     description: '外键关联下拉列表每页显示行数'
   },
   {
+    name: '新增界面可显示动作定义',
+    key: 'showaction',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '新增单对象可显示符合显示条件的动作定义按钮'
+  },
+  {
     name: '列表定制查询',
     key: 'cusQResult',
     type: 'input-group',
@@ -243,5 +250,5 @@ export default [
     type: 'input',
     outputValueType: 'JSON',
     description: '自定义参数格式及内容'
-  }
+  },
 ];
