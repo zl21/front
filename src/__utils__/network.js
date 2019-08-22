@@ -211,8 +211,7 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
@@ -231,8 +230,7 @@ function NetworkConstructor() {
       method: 'get'
     });
     if (pendingRequestMap[requestMd5]) {
-      console.warn(`request: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
