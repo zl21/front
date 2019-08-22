@@ -1,5 +1,5 @@
 <template>
-  <div class="NetworkMonitorContainer">
+  <div class="NetworkMonitorContainer" >
     <div style="margin: 15px;">
       <Button @click="doQuery">
         刷新
@@ -22,18 +22,23 @@
     </div>
     <div class="tableWrapper">
       <Table
+        v-if="enableNetworkMonitor"
         size="small"
         :columns="columns"
         :data="viewData"
         disabled-hover
         :height="true"
       />
+      <div v-else>
+        <h4>当前系统未启动网络监视器功能，请联系开发人员开启此功能！</h4>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import { queryAllNetwork, emptyRecord } from '../../__utils__/indexedDB';
+  import { ENABLE_NETWORK_MONITOR } from '../../constants/global';
   
   export default {
     data() {
@@ -76,11 +81,14 @@
             title: 'Content-Type',
             render: (createElement, data) => createElement('span', data.row[data.column.key] ? 'application/json' : 'application/x-www-form-urlencoded')
           }
-        ]
+        ],
+        enableNetworkMonitor: ENABLE_NETWORK_MONITOR()
       });
     },
     created() {
-      this.doQuery();
+      if (this.enableNetworkMonitor) {
+        this.doQuery();
+      }
     },
     methods: {
       pageChange(pageNum) {
@@ -94,17 +102,21 @@
         this.viewData = this.data.slice((this.page - 1) * this.pageSize, this.page * this.pageSize);
       },
       doQuery() {
-        queryAllNetwork()
-          .then((res) => {
-            this.data = res.sort((a, b) => b.reqTime - a.reqTime);
-            this.generateViewData();
-          });
+        if (this.enableNetworkMonitor) {
+          queryAllNetwork()
+            .then((res) => {
+              this.data = res.sort((a, b) => b.reqTime - a.reqTime);
+              this.generateViewData();
+            });
+        }
       },
       doEmpty() {
-        emptyRecord(Date.now())
-          .then(() => {
-            this.doQuery();
-          });
+        if (this.enableNetworkMonitor) {
+          emptyRecord(Date.now())
+            .then(() => {
+              this.doQuery();
+            });
+        }
       }
     },
   };
@@ -119,6 +131,12 @@
     h1 {
       text-align: center;
       margin: 15px auto;
+    }
+    h4 {
+      font-size: 20px;
+      text-align: center;
+      padding: 15px;
+      font-weight: 400;
     }
     .tableWrapper {
       /*border: 1px solid lightgrey;*/

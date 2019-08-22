@@ -17,7 +17,7 @@ const initDB = () => {
 };
 
 export const addNetwork = (data = []) => {
-  if (ENABLE_NETWORK_MONITOR && db) {
+  if (ENABLE_NETWORK_MONITOR() && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
     data.forEach((d) => {
@@ -30,7 +30,7 @@ export const addNetwork = (data = []) => {
 };
 
 export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promise((resolve, reject) => {
-  if (ENABLE_NETWORK_MONITOR && db) {
+  if (ENABLE_NETWORK_MONITOR() && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
     const timeCostKeyRange = IDBKeyRange.lowerBound(threshold);
@@ -48,15 +48,15 @@ export const queryAllNetwork = (threshold = SLOW_NETWORK_THRESHOLD) => new Promi
     timeCostCursor.onerror = (event) => {
       reject(event);
     };
-  } else if (ENABLE_NETWORK_MONITOR) {
+  } else if (ENABLE_NETWORK_MONITOR()) {
     reject(new Error('DataBase is not initialized.'));
   } else {
     reject(new Error('DataBase is not available at this moment.'));
   }
 });
 
-export const emptyRecord = (interval = new Date(new Date().toDateString()).getTime()) => new Promise((resolve, reject) => {
-  if (ENABLE_NETWORK_MONITOR && db) {
+export const emptyRecord = (interval = new Date(new Date().toDateString()).getTime()) => (ENABLE_NETWORK_MONITOR() ? new Promise((resolve, reject) => {
+  if (ENABLE_NETWORK_MONITOR() && db) {
     const transaction = db.transaction([DB_SCHEMA_NETWORK], 'readwrite');
     const dbStore = transaction.objectStore(DB_SCHEMA_NETWORK);
     const recordDateTimeKeyRange = IDBKeyRange.upperBound(interval, true);
@@ -76,8 +76,8 @@ export const emptyRecord = (interval = new Date(new Date().toDateString()).getTi
   } else {
     reject(new Error('DataBase is not available at this moment.'));
   }
-});
+}) : () => {});
 
-if (ENABLE_NETWORK_MONITOR && window.indexedDB) {
+if (ENABLE_NETWORK_MONITOR() && window.indexedDB) {
   initDB();
 }

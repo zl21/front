@@ -12,6 +12,6 @@ module.exports = {
   enableGateWay: true, // 网关是否打开,
   ignoreGateWayPattern: [
     /\/api\/rpt\/preview/
-  ] 
-  // 框架默认禁用的网关逻辑的正则模式匹配。
+  ], // 框架默认禁用的网关逻辑的正则模式匹配。
+  enableNetworkMonitor: true, // 是否开启网络监控功能
 };
