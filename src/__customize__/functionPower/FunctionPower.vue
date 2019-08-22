@@ -81,8 +81,9 @@
             v-model="copyPermission"
             closable
             :width="420"
-            footer-hide
             mask
+            @on-ok="modalConfirm"
+            @on-cancel="modalCancel"
             title="复制权限"
     >
       <div class="modalContent">
@@ -137,22 +138,22 @@
             <Option value="copy">保留原有权限</Option>
           </Select>
         </div>
-        <div class="modalButton">
-          <Button
-                  type="fcdefault"
-                  class="Button"
-                  @click="modalConfirm"
-          >
-            确定
-          </Button>
-          <Button
-                  type="fcdefault"
-                  class="Button"
-                  @click="modalCancel"
-          >
-            取消
-          </Button>
-        </div>
+        <!--<div class="modalButton">-->
+          <!--<Button-->
+                  <!--type="fcdefault"-->
+                  <!--class="Button"-->
+                  <!--@click="modalConfirm"-->
+          <!--&gt;-->
+            <!--确定-->
+          <!--</Button>-->
+          <!--<Button-->
+                  <!--type="fcdefault"-->
+                  <!--class="Button"-->
+                  <!--@click="modalCancel"-->
+          <!--&gt;-->
+            <!--取消-->
+          <!--</Button>-->
+        <!--</div>-->
       </div>
     </Modal>
     <Spin
