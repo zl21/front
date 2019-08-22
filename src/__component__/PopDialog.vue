@@ -338,7 +338,7 @@
     }
   };
 </script>
-<style lang="less" scope>
+<style lang="less" scoped>
 .modify-tip {
   display: inline-block;
   margin-left: 20px;
