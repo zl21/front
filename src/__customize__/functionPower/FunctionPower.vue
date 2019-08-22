@@ -82,8 +82,7 @@
             closable
             :width="420"
             mask
-            @on-ok="modalConfirm"
-            @on-cancel="modalCancel"
+            footer-hide
             title="复制权限"
     >
       <div class="modalContent">
@@ -138,22 +137,22 @@
             <Option value="copy">保留原有权限</Option>
           </Select>
         </div>
-        <!--<div class="modalButton">-->
-          <!--<Button-->
-                  <!--type="fcdefault"-->
-                  <!--class="Button"-->
-                  <!--@click="modalConfirm"-->
-          <!--&gt;-->
-            <!--确定-->
-          <!--</Button>-->
-          <!--<Button-->
-                  <!--type="fcdefault"-->
-                  <!--class="Button"-->
-                  <!--@click="modalCancel"-->
-          <!--&gt;-->
-            <!--取消-->
-          <!--</Button>-->
-        <!--</div>-->
+        <div class="modalButton">
+          <Button
+                  type="fcdefault"
+                  class="Button"
+                  @click="modalConfirm"
+          >
+            确定
+          </Button>
+          <Button
+                  type="fcdefault"
+                  class="Button"
+                  @click="modalCancel"
+          >
+            取消
+          </Button>
+        </div>
       </div>
     </Modal>
     <Spin
@@ -1544,7 +1543,6 @@
         padding: 0 8px;
         border-radius:2px;
         font-size:12px;
-        font-family:PingFangSC-Regular;
         font-weight:400;
         box-sizing: border-box;
         margin-right: 10px;
@@ -1672,6 +1670,16 @@
       justify-content: flex-end;
       .Button {
         margin-left: 10px;
+        min-width: 0;
+        padding: 0 8px;
+        border-radius:2px;
+        font-size:12px;
+        font-weight:400;
+        box-sizing: border-box;
+        height: 22px;
+        span {
+          vertical-align: initial;
+        }
       }
     }
   }
