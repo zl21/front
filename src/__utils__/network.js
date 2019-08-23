@@ -69,14 +69,18 @@ axios.interceptors.response.use(
     }));
     // 记录每次网络请求的时间
     if (pendingRequestMap[requestMd5]) {
-      addNetwork([{
-        timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
-        url: config.url,
-        data: isJson ? JSON.parse(config.data) : config.data,
-        method: config.method,
-        isJson,
-        reqTime: pendingRequestMap[requestMd5].reqTime
-      }]);
+      try {
+        addNetwork([{
+          timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
+          url: config.url,
+          data: isJson ? JSON.parse(config.data) : config.data,
+          method: config.method,
+          isJson,
+          reqTime: pendingRequestMap[requestMd5].reqTime
+        }]);
+      } catch (e) {
+        console.warn(e);
+      }
     }
     delete pendingRequestMap[requestMd5];
     if (response.data.code === -1) {
@@ -189,7 +193,7 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (serviceconfig && serviceconfig.serviceId) {
+  if (gateWay && serviceconfig && serviceconfig.serviceId) {
     return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
   }
   return gateWay ? `/${gateWay}${url}` : url;
@@ -207,8 +211,7 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
@@ -227,8 +230,7 @@ function NetworkConstructor() {
       method: 'get'
     });
     if (pendingRequestMap[requestMd5]) {
-      console.warn(`request: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {

@@ -81,8 +81,8 @@
             v-model="copyPermission"
             closable
             :width="420"
-            footer-hide
             mask
+            footer-hide
             title="复制权限"
     >
       <div class="modalContent">
@@ -1539,13 +1539,17 @@
     .buttonGroup {
       display: flex;
       .Button {
-        padding: 6px 8px;
+        min-width: 0;
+        padding: 0 8px;
         border-radius:2px;
         font-size:12px;
-        font-family:PingFangSC-Regular;
         font-weight:400;
         box-sizing: border-box;
         margin-right: 10px;
+        height: 22px;
+        span {
+          vertical-align: initial;
+        }
       }
     }
     .content {
@@ -1557,7 +1561,7 @@
         width: 240px;
         height: 100%;
         padding: 10px;
-        border: solid 1px #B4B4B4;
+        border: solid 1px #d8d8d8;
         border-radius: 6px;
         margin-right: 10px;
         display: flex;
@@ -1589,14 +1593,14 @@
       .contentRight {
         height: 100%;
         flex: 1;
-        border: solid 1px #B4B4B4;
+        border: solid 1px #d8d8d8;
         border-radius: 6px;
         display: flex;
         width: 100%;
         .left-tree {
           width: 200px;
           padding: 10px;
-          border-right: solid 1px #B4B4B4;
+          border-right: solid 1px #d8d8d8;
           overflow: auto;
           .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
             background-color: rgb(196, 226, 255);
@@ -1609,7 +1613,7 @@
           .upper-part {
             height: 60%;
             padding: 10px;
-            border-bottom: solid 1px #B4B4B4;
+            border-bottom: solid 1px #d8d8d8;
             .upper-table {
               height: 100%;
               .table {
@@ -1666,6 +1670,16 @@
       justify-content: flex-end;
       .Button {
         margin-left: 10px;
+        min-width: 0;
+        padding: 0 8px;
+        border-radius:2px;
+        font-size:12px;
+        font-weight:400;
+        box-sizing: border-box;
+        height: 22px;
+        span {
+          vertical-align: initial;
+        }
       }
     }
   }
