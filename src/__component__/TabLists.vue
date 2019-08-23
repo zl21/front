@@ -33,7 +33,7 @@
           class="openedMenuListsItem"
         >
           {{ tag.label }}
-          <!-- <span
+          <span
             class="close"
             @click.stop="handleClose(tag,index)"
           >
@@ -41,7 +41,7 @@
               src="../assets/image/iconX.png"
               alt
             >
-          </span> -->
+          </span>
         </span>
       </a>
     </ul>
@@ -168,7 +168,7 @@
 <style scoped lang="less">
 .active {
   border-top: 2px solid #fd6442 !important;
-  border-bottom: 1px solid white !important;
+  border-bottom: 2px solid white !important;
   color: #fd6442 !important;
 }
 .openedMenuLists {
@@ -218,7 +218,7 @@
       color: #000;
 
       .openedMenuListsItem {
-        height: 29px;
+        height: 28px;
         width: 81px;
         display: block;
         padding-left: 20px;

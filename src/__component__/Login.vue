@@ -91,8 +91,14 @@
       }
     },
     created() {
-      
-    }
+      const vm = this;
+      document.onkeydown = function (e) {
+        const key = window.event.keyCode;
+        if (key == 13) {
+          vm.login();
+        }
+      };
+    },
   };
 </script>
 
