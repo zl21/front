@@ -91,11 +91,10 @@
       }
     },
     created() {
-      const vm = this;
-      document.onkeydown = () => {
-        const key = window.event.keyCode;
+      document.onkeydown = (e) => {
+        const key = e.keyCode;
         if (key === 13) {
-          vm.login();
+          this.login();
         }
       };
     },
