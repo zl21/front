@@ -33,7 +33,7 @@
           class="openedMenuListsItem"
         >
           {{ tag.label }}
-          <!-- <span
+          <span
             class="close"
             @click.stop="handleClose(tag,index)"
           >
@@ -41,7 +41,7 @@
               src="../assets/image/iconX.png"
               alt
             >
-          </span> -->
+          </span>
         </span>
       </a>
     </ul>
