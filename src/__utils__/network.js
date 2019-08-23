@@ -193,7 +193,7 @@ export const urlSearchParams = (data) => {
 };
 //  判断网关
 function setUrlSeverId(gateWay, url, serviceconfig) {
-  if (serviceconfig && serviceconfig.serviceId) {
+  if (gateWay && serviceconfig && serviceconfig.serviceId) {
     return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
   }
   return gateWay ? `/${gateWay}${url}` : url;
