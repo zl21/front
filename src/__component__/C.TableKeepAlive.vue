@@ -14,6 +14,8 @@
   import PageNotFound from './PageNotFound';
   import CustomizeModule from '../__config__/customize.config';
   import { CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX } from '../constants/global';
+  import mixins from '../__config__/mixins/customize';
+
   
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -40,7 +42,14 @@
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
-          Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
+          if (target) {
+            Vue.component(componentName, target.component);
+            Vue.component(componentName)().then((result) => {
+              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
+            });
+          } else {
+            Vue.component(componentName, PageNotFound);
+          }
         }
         this.currentModule = componentName;
       }
