@@ -92,9 +92,9 @@
     },
     created() {
       const vm = this;
-      document.onkeydown = function (e) {
+      document.onkeydown = () => {
         const key = window.event.keyCode;
-        if (key == 13) {
+        if (key === 13) {
           vm.login();
         }
       };
