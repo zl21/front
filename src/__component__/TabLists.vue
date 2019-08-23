@@ -26,15 +26,14 @@
         ref="tabBox"
         class="tabBox"
         :title="tag.label"
-        :class="{active:tag.isActive === true}"
         @click="switchTab(tag,index)"
       >
-        <div
-         
+        <span
+          :class="{active:tag.isActive === true}"
           class="openedMenuListsItem"
         >
           {{ tag.label }}
-          <span
+          <!-- <span
             class="close"
             @click.stop="handleClose(tag,index)"
           >
@@ -42,8 +41,8 @@
               src="../assets/image/iconX.png"
               alt
             >
-          </span>
-        </div>
+          </span> -->
+        </span>
       </a>
     </ul>
     <span
@@ -219,7 +218,7 @@
       color: #000;
 
       .openedMenuListsItem {
-        height: 29px;
+        height: 28px;
         width: 81px;
         display: block;
         padding-left: 20px;
@@ -229,7 +228,7 @@
         box-sizing: content-box;
         text-align: center;
         border: none;
-        // border-top: 2px solid #fff;
+        border-top: 2px solid #fff;
         border-right: 1px solid #dfdfdf;
         border-radius: 0;
         position: relative;
