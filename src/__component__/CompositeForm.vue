@@ -388,6 +388,8 @@
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
             this.formData[current.item.field] = '';
+          } else {
+            this.formData[current.item.field] = '';
           }
         }
         // 获取需要校验的表单
