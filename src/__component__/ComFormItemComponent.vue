@@ -657,6 +657,10 @@
               } else {
                 this.newFormItemLists[index].show = false;
               }
+              if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+                this.newFormItemLists[index].item.value = '';
+              }
+
               this.VerificationFormInt();
               // this.VerificationForm = this.VerificationMap();
               // this.VerificationFormInt();
