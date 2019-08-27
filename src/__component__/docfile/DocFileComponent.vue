@@ -73,7 +73,7 @@
     },
     watch: {
       dataitem: {
-        handler(val) {
+        handler() {
           this.docList = Object.assign({}, this.dataitem);
           this.setvaluedata();
         },
@@ -83,8 +83,17 @@
     methods: {
       filechange() {
         const valuedata = this.docList.valuedata;
+       
+
         this.$emit('filechange', valuedata);
       }, 
+      checkFile(files) {
+        if ((this.docList.valuedata.length + files.length) > this.docList.filesLength && this.docList.filesLength) {
+          this.$Message.info(`只能上传${this.docList.filesLength}个文件`);
+          return false;
+        }
+        return true;
+      },
       uploadFileChange(e) {
         // 上传图片
         const fileInformationUploaded = e.target.files;
@@ -114,7 +123,6 @@
         let uploadIds = [];
         let filelist = [];
         this.percent = false;
-
         if (res.code === 0) {
           if (Array.isArray(res.data)) {
             res.data.forEach((item) => {
@@ -128,6 +136,9 @@
           } else {
             return false;
           }
+        }        
+        if (!this.checkFile(filelist)) {
+          return false;
         }
         if (uploadIds.length < 1) {
           return false;

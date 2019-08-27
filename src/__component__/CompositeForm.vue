@@ -1075,12 +1075,13 @@
         if (item.props.display === 'doc') {
           item.type = 'docfile';
           const valuedata = this.defaultValue(current) || [];
-          //   const ImageSize = Number(current.webconf && current.webconf.ImageSize);
+          const filesLength = Number(current.webconf && current.webconf.filesLength);
           let readonly = current.readonly;
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
             readonly,
+            filesLength,
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
@@ -1090,6 +1091,7 @@
             valuedata
           };
         }
+
         if (item.type === 'checkbox') {
           const checkName = ['Y', '1', true];
           const falseName = ['N', '0', false];
