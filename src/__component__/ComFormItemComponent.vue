@@ -658,7 +658,10 @@
                 this.newFormItemLists[index].show = false;
               }
               if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+                //   清除页面 联动的值
                 this.newFormItemLists[index].item.value = '';
+                this.newFormItemLists[index].item.props.defaultSelected = [];
+                this.dataProcessing(this.newFormItemLists[index], index);
               }
 
               this.VerificationFormInt();
