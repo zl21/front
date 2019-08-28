@@ -242,12 +242,12 @@ export default {
         path
       });
     }
-    if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
-      router.push({
-        path
-      });
-    }
+    // if (type === 'tableDetailUrl') {
+    //   path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
+    //   router.push({
+    //     path
+    //   });
+    // }
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;

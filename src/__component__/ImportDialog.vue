@@ -39,10 +39,9 @@
             >
             <!-- <label for="选择文件上传" /> -->
             <div
-              slot="tip"
               class="tip"
             >
-              {{ ChineseDictionary.FILEMAX }}{{ fileSize }}
+              {{ ChineseDictionary.FILEMAX }}{{ fileSizeNumber }}
             </div>
             <div class="fileName">
               {{ fileName }}
@@ -72,31 +71,13 @@
             {{ ChineseDictionary.CANCEL }}
           </Button>
         </div>
-        <!-- <div v-if="errorMsg.errorList.length>0">
-          <div class="error-message">
-            <div>
-              <i class="iconfont">&#xe631;</i>
-            </div>
-            <div>
-              <p
-                v-if="errorMsg.errorUrl.length > 0"
-                class="link"
-              >
-                <a :href="errorMsg.errorUrl">（下载报错信息）</a>
-              </p>
-              <div>
-                <p>{{ errorMsg.message }}</p>
-              </div>
-            </div>
-          </div>
-        </div>-->
         <div
           v-if="errorMsg.errorList.length>0"
           class="error-content"
         >
           <div class="error-message">
             <div class="left-icon">
-              <i class="iconfont">&#xe631;</i>
+              <i class="iconfont">&#xecd0;</i>
             </div>
             <div class="right-content">
               <p
@@ -176,6 +157,7 @@
         showFlag: false,
         loading: false, // 是否加载
         ChineseDictionary: {},
+        fileSizeNumber: '',
         fileSize: '', // 文件尺寸
         importFlies: [], // 导入文件列表
         errorMsg: {
@@ -228,14 +210,14 @@
                        configNames: JSON.stringify(['upload.import.max-file-size'])
                      })).then((res) => {
           if (res.data.code === 0) {
-            this.fileSize = res.data.data['upload.import.max-file-size'];
-          } else this.fileSize = '0M';
+            this.fileSizeNumber = res.data.data['upload.import.max-file-size'];
+          } else this.fileSizeNumber = '0M';
         })
           .catch((error) => {
             if (error.response.status === 403) {
               this.closeDialog();
             }
-            this.fileSize = '0M';
+            this.fileSizeNumber = '0M';
           });
       },
       // 发送请求, 下载模板
@@ -287,10 +269,12 @@
             target: fileInformationUploaded,
             url,
             sendData,
-            imgSize: this.fileSiz,
+            imgSize: this.fileSize,
             success: this.handleSuccess,
             onerror: this.handleError,
-            onloadstart: this.onloadstart
+            onloadstart: this.onloadstart,
+            type: 'file'
+
           }
         );
         const article = new Upload(aUploadParame);
@@ -298,7 +282,6 @@
 
       // 上传成功
       handleSuccess(response) {
-        // debugger;
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
@@ -324,10 +307,18 @@
           this.$store.commit('beforeSignout');
           this.closeDialog();
         } else {
-          this.$store.commit('errorDialog', {
-            // 弹框报错
-            // message: e
-          });
+          // this.$store.commit('errorDialog', {
+          //   // 弹框报错
+          //   // message: e
+          // });
+          const data = {
+            title: '警告',
+            mask: true,
+            content: e,
+            onOk: () => {
+            }
+          };
+          this.$Modal.fcWarning(data);
           this.clearFile();
         }
       },
