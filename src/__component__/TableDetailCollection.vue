@@ -126,8 +126,10 @@
   import router from '../__config__/router.config';
   import { getGateway } from '../__utils__/network';
   import ComAttachFilter from './ComAttachFilter';
+  import Docfile from './docfile/DocFileComponent';
 
   Vue.component('ComAttachFilter', ComAttachFilter);
+  Vue.component('TableDocFile', Docfile);
 
   const {
     fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
@@ -197,7 +199,8 @@
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
-          image: { tag: 'Poptip', event: this.imageRender }
+          image: { tag: 'Poptip', event: this.imageRender },
+          doc: { tag: 'Poptip', event: this.docRender }
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -824,6 +827,10 @@
           if (cellData.display === 'image') {
             // 不可编辑话 图片也是能照常render出来的
             return this.imageRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+          }
+          if (cellData.display === 'doc') {
+            // 不可编辑话 文件也是能照常render出来的，只能下载
+            return this.docReadonlyRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
           return null;
         }
@@ -1642,6 +1649,118 @@
                   domProps: {
                     src: params.row[cellData.colname] && this.isJsonString(params.row[cellData.colname]) ? JSON.parse(params.row[cellData.colname])[0].URL : params.row[cellData.colname]
                   }
+                }),
+              },
+              nativeOn: {
+                click: (e) => {
+                  e.stopPropagation();
+                }
+              },
+              // on: {
+              //   'on-change': (event, dateType, data) => {
+              //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              //   }
+              // }
+            })
+          ]);
+        };
+      },
+      docRender(cellData, tag) {
+        const that = this;
+        return (h, params) => {
+          if (!params.row[cellData.colname]) {
+            return null;
+          }
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '40px',
+                'text-align': 'center',
+                cursor: 'pointer',
+                color: '#2D8CF0'
+              },
+              props: {
+                trigger: 'click',
+                transfer: true,
+                content: 'content'
+              },
+              scopedSlots: {
+                default: () => h('span', '操作', {
+                  style: {
+                    width: '100%',
+                    'text-align': 'center',
+                    color: '#2D8CF0'
+                  },
+                }),
+                content: () => h('TableDocFile', {
+                  props: {
+                    dataitem: {
+                      sendData: {
+                        path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                      },
+                      url: getGateway('/p/cs/batchUpload'),
+                      valuedata: params.row[cellData.colname]
+                    }
+                  },
+                  on: {
+                    filechange: (val) => {
+                      this.putDataFromCell(JSON.stringify(val), params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    }
+                  }
+                }),
+              },
+              nativeOn: {
+                click: (e) => {
+                  e.stopPropagation();
+                }
+              },
+              // on: {
+              //   'on-change': (event, dateType, data) => {
+              //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              //   }
+              // }
+            })
+          ]);
+        };
+      },
+      docReadonlyRender(cellData, tag) {
+        const that = this;
+        return (h, params) => {
+          if (!params.row[cellData.colname]) {
+            return null;
+          }
+          return h('div', [
+            h(tag, {
+              style: {
+                width: '40px',
+                'text-align': 'center',
+                cursor: 'pointer',
+                color: '#2D8CF0'
+              },
+              props: {
+                trigger: 'click',
+                transfer: true,
+                content: 'content'
+              },
+              scopedSlots: {
+                default: () => h('span', '查看', {
+                  style: {
+                    width: '100%',
+                    'text-align': 'center',
+                    color: '#2D8CF0'
+                  },
+                }),
+                content: () => h('TableDocFile', {
+                  props: {
+                    dataitem: {
+                      readonly: true,
+                      sendData: {
+                        path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                      },
+                      url: getGateway('/p/cs/batchUpload'),
+                      valuedata: params.row[cellData.colname]
+                    }
+                  },
                 }),
               },
               nativeOn: {
