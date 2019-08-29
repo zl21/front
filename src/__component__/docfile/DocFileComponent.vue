@@ -9,6 +9,7 @@
         >
           <a :href="option.url">{{ option.name }}</a>
           <i
+            v-if="docList.readonly!== true "
             class="iconfont iconios-close-circle-outline"
             @click="deleteLi(index,option)"
           />
@@ -20,8 +21,8 @@
        
      -->
     <form
+      v-if="docList.readonly!== true "
       ref="file"
-      :class="docList.readonly=== true ? 'disbaled' :''"
     >
       <label><i
         class="iconfont iconmd-cloud-upload"
