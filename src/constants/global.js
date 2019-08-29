@@ -3,10 +3,10 @@ import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
 
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
-export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks ? window.ProjectConfig.interlocks : project.interlocks);
-export const enableGateWay = () => (window.ProjectConfig && window.ProjectConfig.enableGateWay ? window.ProjectConfig.enableGateWay : project.enableGateWay);
-export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
-export const enableJflow = () => (window.ProjectConfig && window.ProjectConfig.enableJflow ? window.ProjectConfig.enableJflow : project.enableJflow);
+export const interlocks = () => (window.ProjectConfig && window.ProjectConfig.interlocks.constructor === Boolean ? window.ProjectConfig.interlocks : project.interlocks);
+export const enableGateWay = () => (window.ProjectConfig && window.ProjectConfig.enableGateWay.constructor === Boolean ? window.ProjectConfig.enableGateWay : project.enableGateWay);
+export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain.constructor === Boolean ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
+export const enableJflow = () => (window.ProjectConfig && window.ProjectConfig.enableJflow.constructor === Boolean ? window.ProjectConfig.enableJflow : project.enableJflow);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
