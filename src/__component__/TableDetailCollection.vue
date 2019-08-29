@@ -1674,7 +1674,7 @@
           return h('div', [
             h(tag, {
               style: {
-                width: '40px',
+                width: '100%',
                 'text-align': 'center',
                 cursor: 'pointer',
                 color: '#2D8CF0'
@@ -1709,11 +1709,6 @@
                   }
                 }),
               },
-              nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
-              },
               // on: {
               //   'on-change': (event, dateType, data) => {
               //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
@@ -1732,7 +1727,7 @@
           return h('div', [
             h(tag, {
               style: {
-                width: '40px',
+                width: '100%',
                 'text-align': 'center',
                 cursor: 'pointer',
                 color: '#2D8CF0'
@@ -1762,11 +1757,6 @@
                     }
                   },
                 }),
-              },
-              nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
               },
               // on: {
               //   'on-change': (event, dateType, data) => {
