@@ -21,8 +21,8 @@
        
      -->
     <form
+      v-if="docList.readonly!== true "
       ref="file"
-      :class="docList.readonly=== true ? 'disbaled' :''"
     >
       <label><i
         class="iconfont iconmd-cloud-upload"
