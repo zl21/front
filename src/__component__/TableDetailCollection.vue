@@ -127,6 +127,7 @@
   import { getGateway } from '../__utils__/network';
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -1699,12 +1700,14 @@
                         path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
                       },
                       url: getGateway('/p/cs/batchUpload'),
-                      valuedata: params.row[cellData.colname]
+                      valuedata: this.copyDataSource.row[params.index][cellData.colname].val
                     }
                   },
                   on: {
                     filechange: (val) => {
+                      this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                       this.putDataFromCell(JSON.stringify(val), params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                      DispatchEvent('childTableSaveFile');
                     }
                   }
                 }),
