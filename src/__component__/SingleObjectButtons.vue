@@ -1454,6 +1454,7 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
+        console.log(66, obj);
         this.determineSaveType(obj);
       },
       determineSaveType(obj) { // 保存按钮事件逻辑

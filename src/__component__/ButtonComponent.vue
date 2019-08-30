@@ -10,6 +10,7 @@
       />
       <Button
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
+        :id="item.eName"
         :key="index"
         :ref="item.ref"
         type="fcdefault"
@@ -129,7 +130,12 @@
     },
   
     mounted() {
-     
+      window.addEventListener('childTableSaveFile', () => {
+        if (!this._inactive) {
+          const dom = document.getElementById('actionMODIFY');
+          dom.click();
+        }
+      }, false);
     },
     data() {
       return {
