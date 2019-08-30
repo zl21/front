@@ -1707,7 +1707,9 @@
                     filechange: (val) => {
                       this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
                       this.putDataFromCell(JSON.stringify(val), params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                      DispatchEvent('childTableSaveFile');
+                      DispatchEvent('childTableSaveFile', {detail: {
+                          type: 'save'
+                        }});
                     }
                   }
                 }),
