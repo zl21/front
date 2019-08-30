@@ -465,7 +465,7 @@
             focusDom.getElementsByTagName('input')[0].select();
           }, 0);
         } else {
-          this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn,type);
+          this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn, type);
         }
       }, // 按下上键或者下键的时候聚焦下一个可编辑的输入框
       clearSearchData() {
@@ -591,7 +591,8 @@
               }
             });
           },
-          onCancel: () => {}
+          onCancel: () => {
+          }
         });
         // this.$refs.dialogRef.open();
         // this.dialogConfig = {
@@ -699,35 +700,33 @@
         return headColumn.concat(renderColumns);
       },
       tooltipRenderHeader() {
-        return (h, params) => {
-          return h('span', [
-            h('Poptip', {
-              style: {},
-              props: {
-                trigger: 'hover',
-                transfer: true,
-                wordWrap: true,
-                content: 'content',
-                placement: 'top'
+        return (h, params) => h('span', [
+          h('Poptip', {
+            style: {},
+            props: {
+              trigger: 'hover',
+              transfer: true,
+              wordWrap: true,
+              content: 'content',
+              placement: 'top'
 
-              },
-              scopedSlots: {
-                default: () => h('div', {
-                  style: {},
-                  domProps: {
-                    innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
-                  }
-                }),
-                content: () => h('div', {
-                  style: {},
-                  domProps: {
-                    innerHTML: `<span>${params.column.comment}</span>`
-                  }
-                }),
-              },
-            })
-          ]);
-        };
+            },
+            scopedSlots: {
+              default: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                }
+              }),
+              content: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<span>${params.column.comment}</span>`
+                }
+              }),
+            },
+          })
+        ]);
       }, // 表头提示的render
       filterData(rows) {
         if (!rows) {
@@ -863,9 +862,9 @@
               maxlength: cellData.length
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, data) => {
@@ -910,9 +909,9 @@
               )[0].limitdis : null
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (currentValue, data) => {
@@ -941,9 +940,9 @@
                 value: this.getSelectValue(params, cellData)
               },
               nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
+                // click: (e) => {
+                //   e.stopPropagation();
+                // }
               },
               on: {
                 'on-change': (event, data) => {
@@ -963,7 +962,8 @@
           // 先从修改里找 如果修改的里面没有 就从默认值里取
           if (modifyValue[tableName] && modifyValue[tableName][cellData.refcolval.srccol]) {
             return true;
-          } if (modifyValue[tableName]) {
+          }
+          if (modifyValue[tableName]) {
             if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0) {
               return false;
             }
@@ -1054,9 +1054,19 @@
               },
               'on-input-value-change': (data, value) => {
                 if (this.fkSelectedChangeData[params.index]) {
-                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: data, ID: '' }] });
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: data,
+                      ID: ''
+                    }]
+                  });
                 } else {
-                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: data, ID: '' }] });
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                    [cellData.key]: [{
+                      Label: data,
+                      ID: ''
+                    }]
+                  });
                 }
                 if (!value.inputValue) {
                   value.transferDefaultSelected = [];
@@ -1138,7 +1148,12 @@
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
-                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: [{ Label: '', ID: '' }] });
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: '',
+                      ID: ''
+                    }]
+                  });
                 } else {
                   this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: '', ID: '' }] });
                 }
@@ -1198,7 +1213,7 @@
                 },
                 datalist: this.popFilterDataList,
                 ...cellData,
-              // 模糊查询的文字信息，支持多列
+                // 模糊查询的文字信息，支持多列
               },
 
             },
@@ -1277,7 +1292,7 @@
                   show: true,
                 },
                 ...cellData,
-              // 模糊查询的文字信息，支持多列
+                // 模糊查询的文字信息，支持多列
               },
 
             },
@@ -1286,7 +1301,7 @@
                 if (e.keyCode === 13) {
                   const elementId = i.$parent.$el.id;
                   this.tableCellFocusByEnter(elementId);
-                } else  if (e.keyCode === 40) {
+                } else if (e.keyCode === 40) {
                   // 下键
                   const elementId = i.$parent.$el.id;
                   const currentColumn = params.column._index - 1;
@@ -1351,9 +1366,9 @@
               defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : []
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
@@ -1495,9 +1510,9 @@
               transfer: true
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, dateType, data) => {
@@ -1527,9 +1542,9 @@
               transfer: true
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, dateType, data) => {
@@ -1612,7 +1627,7 @@
                   id: data.refobjid
                 });
               }
-              event.stopPropagation();
+              // event.stopPropagation();
             }
           }
         });
@@ -1653,9 +1668,9 @@
                 }),
               },
               nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
+                // click: (e) => {
+                //   e.stopPropagation();
+                // }
               },
               // on: {
               //   'on-change': (event, dateType, data) => {
@@ -1668,109 +1683,108 @@
       },
       docRender(cellData, tag) {
         const that = this;
-        return (h, params) => {
-          if (!params.row[cellData.colname]) {
-            return null;
-          }
-          return h('div', [
-            h(tag, {
-              style: {
-                width: '100%',
-                'text-align': 'center',
-                cursor: 'pointer',
-                color: '#2D8CF0'
-              },
-              props: {
-                trigger: 'click',
-                transfer: true,
-                content: 'content'
-              },
-              scopedSlots: {
-                default: () => h('span', '操作', {
-                  style: {
-                    width: '100%',
-                    'text-align': 'center',
-                    color: '#2D8CF0'
-                  },
-                }),
-                content: () => h('TableDocFile', {
-                  props: {
-                    dataitem: {
-                      sendData: {
-                        path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
-                      },
-                      url: getGateway('/p/cs/batchUpload'),
-                      valuedata: this.copyDataSource.row[params.index][cellData.colname].val
-                    }
-                  },
-                  on: {
-                    filechange: (val) => {
-                      this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
-                      this.putDataFromCell(JSON.stringify(val), params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                      DispatchEvent('childTableSaveFile', {detail: {
-                          type: 'save'
-                        }});
-                    }
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100%',
+              'text-align': 'center',
+              cursor: 'pointer',
+              color: '#2D8CF0'
+            },
+            props: {
+              trigger: 'click',
+              transfer: true,
+              content: 'content'
+            },
+            scopedSlots: {
+              default: () => h('span', '操作', {
+                style: {
+                  width: '100%',
+                  'text-align': 'center',
+                  color: '#2D8CF0'
+                },
+              }),
+              content: () => h('TableDocFile', {
+                props: {
+                  dataitem: {
+                    filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
+                    sendData: {
+                      path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                    },
+                    url: getGateway('/p/cs/batchUpload'),
+                    valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
                   }
-                }),
-              },
-              // on: {
-              //   'on-change': (event, dateType, data) => {
-              //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-              //   }
-              // }
-            })
-          ]);
-        };
+                },
+                on: {
+                  filechange: (val) => {
+                    this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
+                    this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                  }
+                }
+              }),
+            },
+            // on: {
+            //   'on-change': (event, dateType, data) => {
+            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
+            // }
+          })
+        ]);
       },
       docReadonlyRender(cellData, tag) {
         const that = this;
-        return (h, params) => {
-          if (!params.row[cellData.colname]) {
-            return null;
-          }
-          return h('div', [
-            h(tag, {
-              style: {
-                width: '100%',
-                'text-align': 'center',
-                cursor: 'pointer',
-                color: '#2D8CF0'
-              },
-              props: {
-                trigger: 'click',
-                transfer: true,
-                content: 'content'
-              },
-              scopedSlots: {
-                default: () => h('span', '查看', {
-                  style: {
-                    width: '100%',
-                    'text-align': 'center',
-                    color: '#2D8CF0'
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100%',
+              'text-align': 'center',
+              cursor: 'pointer',
+              color: '#2D8CF0'
+            },
+            props: {
+              trigger: 'click',
+              transfer: true,
+              content: 'content'
+            },
+            scopedSlots: {
+              default: () => h('span', '查看', {
+                style: {
+                  width: '100%',
+                  'text-align': 'center',
+                  color: '#2D8CF0'
+                },
+              }),
+              content: () => {
+                console.log(params);
+                if (params.row[params.column.key]) {
+                  return h('TableDocFile', {
+                    props: {
+                      dataitem: {
+                        readonly: true,
+                        sendData: {
+                          path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                        },
+                        url: getGateway('/p/cs/batchUpload'),
+                        valuedata: params.row[cellData.colname]
+                      }
+                    },
+                  });
+                }
+                return h('div', {
+                  domProps: {
+                    innerHTML: '暂无文件'
                   },
-                }),
-                content: () => h('TableDocFile', {
-                  props: {
-                    dataitem: {
-                      readonly: true,
-                      sendData: {
-                        path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
-                      },
-                      url: getGateway('/p/cs/batchUpload'),
-                      valuedata: params.row[cellData.colname]
-                    }
-                  },
-                }),
+                });
               },
-              // on: {
-              //   'on-change': (event, dateType, data) => {
-              //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
-              //   }
-              // }
-            })
-          ]);
-        };
+            },
+            // on: {
+            //   'on-change': (event, dateType, data) => {
+            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
+            // }
+          })
+        ]);
       },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
@@ -2370,37 +2384,37 @@
     }
 </style>
 <style lang="less">
-  .table-in {
-    flex: 1;
-    tbody tr.burgeon-table-row-hover td{
-      background-color: #ecf0f1;
+    .table-in {
+        flex: 1;
+        tbody tr.burgeon-table-row-hover td {
+            background-color: #ecf0f1;
+        }
+        thead th {
+            font-weight: 400;
+        }
+        .burgeon-input-wrapper > input {
+            height: 22px;
+        }
+        .burgeon-select-selection {
+            height: 22px;
+        }
+        .burgeon-table th, .burgeon-table td {
+            height: 26px;
+        }
+        .burgeon-fkrp-select-icon {
+            top: 2px;
+        }
+        .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
+            top: -2px;
+        }
+        .burgeon-fkrp-poptip .fkrp-poptip-text {
+            top: 2px;
+        }
+        .fkrp-poptip-two .burgeon-icon-ios-close-circle {
+            top: -2px;
+        }
+        .burgeon-input-icon {
+            top: -2px;
+        }
     }
-    thead th {
-      font-weight: 400;
-    }
-    .burgeon-input-wrapper >input{
-      height: 22px;
-    }
-    .burgeon-select-selection {
-      height: 22px;
-    }
-    .burgeon-table th, .burgeon-table td {
-      height: 26px;
-    }
-    .burgeon-fkrp-select-icon {
-      top: 2px;
-    }
-    .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
-      top: -2px;
-    }
-    .burgeon-fkrp-poptip .fkrp-poptip-text {
-      top: 2px;
-    }
-    .fkrp-poptip-two .burgeon-icon-ios-close-circle {
-      top: -2px;
-    }
-    .burgeon-input-icon {
-      top: -2px;
-    }
-  }
 </style>
