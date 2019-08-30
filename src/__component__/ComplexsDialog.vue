@@ -848,15 +848,25 @@
     .burgeon-tabs{
       overflow: visible;
     }
-}
-  .burgeon--dialog .dialog_center .dialog_center_bottom{
+    .dialog_center .dialog_center_bottom{
     margin-top: 10px;
     height: 44px;
-  }
-  .burgeon--dialog .dialog_center .table{
-         margin-bottom: 10px;
-         height: 340px!important;
-  }
+    }
+
+    .dialog_center .dialog_center_bottom{
+        height: 26px!important;
+        line-height: 26px!important;
+
+    }
+    .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+        height: 26px!important;
+        line-height: 26px!important;  
+    }
+    .burgeon--dialog .dialog_center .table{
+        height: 345px!important; 
+    }
+}
+  
 </style>
 <style lang="less" scoped>
   .burgeon-select-item{
@@ -916,5 +926,17 @@
           }
       }
   }
+ .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+      height: 26px;
+      line-height: 26px;
+ }
+ .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+      height: 26px;
+      line-height: 26px;
+ }
+ .burgeon--dialog .dialog_center .dialog_center_bottom{
+     height: 26px;
+      line-height: 26px;
+ }
 
 </style>

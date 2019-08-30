@@ -38,7 +38,6 @@
 
 <script>
   // 弹窗多选面板
-  import { type } from 'os';
   import { setTimeout } from 'timers';
   import Dialog from './ComplexsDialog';
   // 弹窗单选
@@ -48,7 +47,6 @@
 
 
   const {
-    fkQueryList,
     fkFuzzyquerybyak,
     fkGetMultiQuery,
     fkDelMultiQuery
@@ -239,6 +237,7 @@
       attachFilterPopperShow(value, instance) {
         if (
           this.propsData.fkobj.saveType
+          && this.selected[0]
           && this.selected[0].ID
           && /total/.test(this.selected[0].ID)
         ) {
