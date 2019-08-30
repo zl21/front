@@ -1756,8 +1756,7 @@
                 },
               }),
               content: () => {
-                console.log(params);
-                if (params.row[params.column.key]) {
+                if (params.row[cellData.colname]) {
                   return h('TableDocFile', {
                     props: {
                       dataitem: {
