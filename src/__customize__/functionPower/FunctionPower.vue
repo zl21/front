@@ -1127,7 +1127,6 @@
           return item;
         });
 
-
         // 选中扩展的表头
         if (params.column.key === 'extend') {
           this.selectedExtendTabth(currentValue);
