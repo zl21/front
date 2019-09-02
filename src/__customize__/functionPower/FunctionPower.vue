@@ -788,7 +788,7 @@
                   acc.push(cur);
                   return acc;
                 }, []);
-                this.getExtendTableData(this.tableData[0]);
+                this.getExtendTableData(this.tableData[0], 0);
                 this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
                 this.tableDefaultSelectedRowIndex = 0;
 
@@ -847,11 +847,15 @@
       }, // 复制权限
       tableRowClick(row, index) {
         this.tableDefaultSelectedRowIndex = index;
-        this.getExtendTableData(this.tableData[index]);
+        this.getExtendTableData(this.tableData[index], index);
       }, // 表格单击某一行
-      getExtendTableData(row) {
+      getExtendTableData(row, index) {
         if (row && row.actionList && row.actionList.length > 0) {
-          this.extendTableData = row.actionList;
+          this.extendTableData = row.actionList.reduce((acc, cur) => {
+            cur.extendIndex = index;
+            acc.push(cur);
+            return acc;
+          }, []);
         } else {
           this.extendTableData = [];
         }
@@ -1016,23 +1020,25 @@
         }
       }, // 获取下边表格的保存数据
       editTableExtendData(permission, row) {
-        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
-        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
           tableObj.actionList[actionListIndex].permission = permission;
-          this.tableData[tableIndex] = tableObj;
+          this.tableData[row.extendIndex] = tableObj;
         }
-      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
+      }, // 下边表格扩展功能数据修改
       editTableDataForFunction(permission, row) {
-        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
-        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
           tableObj.actionList[actionListIndex].children[0].permission = permission;
-          this.tableData[tableIndex] = tableObj;
+          this.tableData[row.extendIndex] = tableObj;
         }
-      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
+      }, // 下边表格功能数据修改
       getSavePermission(index) {
         const arr = this.columns.reduce((acc, cur, idx) => {
           if (idx > 0 && idx !== 9) {
@@ -1282,9 +1288,9 @@
           }
           return acc;
         }, []);
-
         // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
-        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        const findIndex = params.row.extendIndex;
         if (arr.length > 0) {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = false;
@@ -1313,6 +1319,38 @@
           this.editTableDataForFunction(0, params.row);
         }
         this.extendTableData[params.index] = params.row;
+
+        // 判断下边表格中是否全部选中，如果有没有选中的就存到数组里
+        const arr = this.extendTableData.reduce((acc, cur) => {
+          if (cur.permission === 0) {
+            acc.push(cur.permission);
+          }
+          if (cur.children && cur.children.length > 0) {
+            cur.children.forEach((item) => {
+              if (item.permission === 0) {
+                acc.push(item.permission);
+              }
+            });
+          }
+          return acc;
+        }, []);
+        // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        const findIndex = params.row.extendIndex;
+        if (arr.length > 0) {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = false;
+            this.selectedSeeColumn(findIndex, false);
+          }
+        } else {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = true;
+            this.selectedSeeColumn(findIndex, true);
+          }
+        }
+
+        // 判断扩展该列是否全选
+        this.tabthCheckboxSelected(this.columns[9], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
         this.getSaveData();
