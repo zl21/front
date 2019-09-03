@@ -129,11 +129,10 @@
     },
     created() {
       this.loading = true;
-      const router = this.$route.params;
       const params = {
         tableid: this.fkobj.reftableid,
         getcmd: 'n',
-        table: router.tableName
+        table: this.fkobj.reftable
       };
       this.params = params;
       this.getData(params);
