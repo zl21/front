@@ -13,6 +13,7 @@ import network from './__utils__/network';
 import { enableGateWay, enableJflow, jflowRequestDomain } from './constants/global';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
+import Loading from './__utils__/loading';
 // css import
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import './assets/css/ag-theme-balham.less';
@@ -21,9 +22,9 @@ import './assets/css/custom-ext.less';
 
 import jflowplugin from './plugin/jflow-plugin';
 
-
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
+Vue.use(Loading);
 
 const createRouter = routes => new VueRouter({
   routes,

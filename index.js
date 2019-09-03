@@ -10,6 +10,7 @@ import network from './src/__utils__/network';
 import { enableGateWay, enableJflow, jflowRequestDomain } from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
+import Loading from './src/__utils__/loading';
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
@@ -37,8 +38,11 @@ const registerCustomizedModal = () => {
   });
 };
 registerCustomizedModal();
+
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
+Vue.use(Loading);
+
 const createDOM = () => {
   const div = document.createElement('div');
   div.setAttribute('id', getGuid());
