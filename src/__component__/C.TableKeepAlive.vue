@@ -56,8 +56,8 @@
     },
     mounted() {
       this.generateComponent();
-      const { customizedModuleId } = this.$route.params;
-      this.updateAccessHistory({ type: 'action', id: customizedModuleId });
+      // const { customizedModuleId } = this.$route.params;
+      // this.updateAccessHistory({ type: 'action', id: customizedModuleId });
     },
     watch: {
       $route() {
