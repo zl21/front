@@ -32,7 +32,7 @@
   export default {
     name: 'Content',
     render(h) {
-      return renderSubLayout(h)(appLayout);
+      return renderSubLayout(h)(window.ProjectConfig && window.ProjectConfig.appLayout ? window.ProjectConfig.appLayout : appLayout);
     }
   };
 </script>
