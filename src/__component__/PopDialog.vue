@@ -157,6 +157,7 @@
         //  form 请求
         getTableQuery({
           searchObject,
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               this.loading = false;
@@ -203,6 +204,7 @@
         searchObject.fixedcolumns = { ...fixedcolumns };
         fkQueryListPop({
           searchObject,
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               const data = res.data.data;
