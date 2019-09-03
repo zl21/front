@@ -22,7 +22,7 @@ import './assets/css/custom-ext.less';
 import jflowplugin from './plugin/jflow-plugin';
 
 
-Vue.component('CompositeForm', CompositeForm);
+Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
 
 const createRouter = routes => new VueRouter({
