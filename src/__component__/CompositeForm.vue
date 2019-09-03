@@ -1303,7 +1303,7 @@
               item.props.optionTip = false;
               item.props.enterType = true;
               item.props.show = false;
-
+ 
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1321,10 +1321,11 @@
               item.props.fkobj = {
                 colid: current.colid,
                 reftable: current.reftable,
+                serviceId: current.serviceId,
                 reftableid: current.reftableid,
                 show: false,
                 url:
-                  `${current.serviceId ? +'/' + current.serviceId : '' 
+                  `${current.serviceId ? (`/${current.serviceId}`) : '' 
                   }/p/cs/menuimport`
               };
               item.props.datalist = [];
@@ -1357,10 +1358,11 @@
               refobjid: current.refobjid,
               reftable: current.reftable,
               reftableid: current.reftableid,
+              serviceId: current.serviceId,
               show: true,
               saveType: 'object',
               url:
-                `${current.serviceId ? current.serviceId : '' 
+                `${current.serviceId ? (`/${current.serviceId}`) : '' 
                 }/p/cs/menuimport`
             };
             item.props.datalist = [];

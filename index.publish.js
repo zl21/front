@@ -4,6 +4,8 @@ import getModuleName from './src/__utils__/getModuleName';
 import store from './src/__config__/store.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
+import popDialog from './src/__component__/PopDialog';
+
 
 const validateConfig = config => ({
   isQualified: true,
@@ -72,5 +74,6 @@ export default {
   network,
   store,
   extentionForColumn,
-  extentionForTable
+  extentionForTable,
+  popDialog
 };
