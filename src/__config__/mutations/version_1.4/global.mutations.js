@@ -6,8 +6,6 @@ import {
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
-  LINK_MODULE_PREFIX
-  
 } from '../../../constants/global';
 import router from '../../router.config';
 
