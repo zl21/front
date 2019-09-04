@@ -6,6 +6,7 @@ import {
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
+  enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
 
@@ -53,28 +54,18 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        // if (c.url && c.url.substring(0, 4) === 'http') {
-        //   const linkUrl = {};
-        //   linkUrl[c.id] = c.url;
-        //   state.LinkUrl.push(linkUrl);
-        //   const linkType = c.url.substring(0, 4);
-        //   c.type = linkType;
-        // }
-
-        if (c.vuedisplay === 'external') {
+        if (c.type === 'action' && c.vuedisplay !== 'external') {
+          // 自定义界面的处理
+          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        } else if (c.type === 'action' && c.vuedisplay === 'external') {
+          // 外部跳转链接URL的处理
           const linkUrl = {};
           linkUrl[c.id] = c.url;
-          state.LinkUrl.push(linkUrl);
-        }
-
-        if (c.type === 'action' && c.vuedisplay !== 'external') {
-          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-        }
-        if (c.type === 'table') {
-          a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
-        }
-        if (c.vuedisplay === 'external') {
+          state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
           a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        } else if (c.type === 'table') {
+          // 标准列表的处理
+          a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
         return a;
       }, {});
@@ -94,7 +85,7 @@ export default {
     state.LinkUrl.push(linkType);
   },
   increaseKeepAliveLists(state, name) {
-    if (!state.keepAliveLists.includes(name)) {
+    if (enableKeepAlive() && !state.keepAliveLists.includes(name)) {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
