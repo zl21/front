@@ -163,25 +163,11 @@ export default {
                         params.row.loadType = 0;
                         // window.jflowPlugin.store.dispatch('emptyTabs')
                         // window.fastfish.emit("closedalltab")
-                        let query = this.urlParse(params.row.formUrl)
-                        let type = params.row.formUrl.split('/')[2]
-                        window.jflowPlugin.store.commit("TabHref", {
-                          id: query.id,
-                          type: type,
-                          name: name,
-                          label: query.tabTitle,
-                          query: Object.assign({},
-                            {
-                              id: query.id,
-                              tableName: query.tableName,
-                              pid: query.pid,
-                              ptype: query.ptype,
-                              ptitle: query.ptitle,
-                              tabTitle: query.tabTitle
-                            }
-                          )
-                        })
-                        window.jflowPlugin.todoListsFun(false)
+                        const query = this.urlParse(params.row.formUrl);
+                        const type = params.row.formUrl.split('/')[2];
+                        window.jflowPlugin.router.push({
+                          path: params.row.formUrl
+                        });
                       }
                     }
                   },
