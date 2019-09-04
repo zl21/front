@@ -8,6 +8,7 @@ export const interlocks = () => (window.ProjectConfig && typeof window.ProjectCo
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const jflowRequestDomain = () => (window.ProjectConfig && typeof window.ProjectConfig.jflowRequestDomain === 'boolean' ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
+export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
@@ -15,8 +16,6 @@ export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
 export const CUSTOMIZED_MODULE_PREFIX = '/CUSTOMIZED';
 export const PLUGIN_MODULE_PREFIX = '/PLUGIN';
 export const LINK_MODULE_PREFIX = '/LINK';
-export const LINK_URL = '';
-
 
 export const STANDARD_TABLE_COMPONENT_PREFIX = 'S';
 export const HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX = 'H';
