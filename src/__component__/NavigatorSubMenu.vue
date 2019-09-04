@@ -1,7 +1,7 @@
 <template>
   <div
     class="navigator-sub-menu"
-    @click.stop
+    @click="toggleSubMenu()"
   >
     <ul
       v-for="(subMenu, index) in data"
@@ -37,7 +37,10 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+      toggleSubMenu() {
+        this.changeSelectedPrimaryMenu(1);
+      },
       routeTo(data) {
         let {
           type
