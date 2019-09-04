@@ -479,6 +479,7 @@
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
+        DispatchEvent('jflowPlugin');
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
