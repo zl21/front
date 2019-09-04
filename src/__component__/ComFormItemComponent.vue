@@ -391,7 +391,9 @@
           return items;
         });
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
+          if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
+          }  
         }
       },  
       mountdataFormInt() {

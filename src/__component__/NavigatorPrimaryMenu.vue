@@ -1,14 +1,10 @@
 <template>
-  <div>
-    <div style="">
-      <div
-        class="navigator-primary-menu"
-        :class="{ active: index === primaryMenuIndex }"
-        @click.stop="togglePrimaryMenu"
-      >
-        {{ data.label }}
-      </div>
-    </div>
+  <div
+    class="navigator-primary-menu"
+    :class="{ active: index === primaryMenuIndex }"
+    @click.stop="togglePrimaryMenu"
+  >
+    {{ data.label }}
     <transition name="fade">
       <NavigatorSubMenu
         v-show="index === primaryMenuIndex"
@@ -26,9 +22,6 @@
     name: 'NavigatorPrimaryMenu',
     components: {
       NavigatorSubMenu
-    },
-    watch() {
-       
     },
     computed: {
       ...mapState('global', {

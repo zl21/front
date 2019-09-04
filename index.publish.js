@@ -6,6 +6,8 @@ import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
 import PopDialog from './src/__component__/PopDialog';
 import ContentDisplayArea from './src/__component__/ContentDisplayArea';
+import ComAttachFilter from './src/__component__/ComAttachFilter';
+import DownComponent from './src/__component__/DownComponent';
 
 
 const validateConfig = config => ({
@@ -80,6 +82,8 @@ export default {
   },
   components: {
     ContentDisplayArea,
-    PopDialog
+    PopDialog,
+    ComAttachFilter,
+    DownComponent
   }
 };
