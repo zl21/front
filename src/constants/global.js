@@ -6,7 +6,7 @@ import configForTable from './extentionPropertyForTable';
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
-export const jflowRequestDomain = () => (window.ProjectConfig && typeof window.ProjectConfig.jflowRequestDomain === 'boolean' ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
+export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 

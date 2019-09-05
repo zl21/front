@@ -91,8 +91,7 @@ export const fksaveModify = function fksaveModify(params) {
 };
 export const getTableQuery = function getTableQuery(params) {
   // 弹窗单选 请求form
-  network
-    .post('/p/cs/getTableQuery', urlSearchParams(params.searchObject))
+  network.post('/p/cs/getTableQuery', urlSearchParams(params.searchObject), { serviceId: params.serviceId })
     .then((res) => {
       if (typeof params.success === 'function') {
         params.success(res);
