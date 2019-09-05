@@ -14,7 +14,7 @@ module.exports = {
     /\/api\/rpt\/preview/
   ], // 框架默认禁用的网关逻辑的正则模式匹配。
   enableNetworkMonitor: true, // 是否开启网络监控功能
-  enableModuleKA: false, // 默认启用keepAlive功能
+  enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: false, // 默认禁用JFlow插件功能
   jflowRequestDomain: undefined, // 默认禁用JFlow插件功能
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
