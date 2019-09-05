@@ -2,26 +2,18 @@
   <div
     class="navigator-primary-menu"
     :class="{ active: index === primaryMenuIndex }"
-    @click.stop="togglePrimaryMenu"
+    @click.stop="togglePrimaryMenu(data.children)"
   >
     {{ data.label }}
-    <transition name="fade">
-      <NavigatorSubMenu
-        v-show="index === primaryMenuIndex"
-        :data="data.children || []"
-      />
-    </transition>
   </div>
 </template>
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import NavigatorSubMenu from './NavigatorSubMenu';
 
   export default {
     name: 'NavigatorPrimaryMenu',
     components: {
-      NavigatorSubMenu
     },
     computed: {
       ...mapState('global', {
@@ -29,12 +21,8 @@
       })
     },
     methods: {
-      togglePrimaryMenu() {
-        if (this.index === this.primaryMenuIndex) {
-          this.hideMenu();
-        } else {
-          this.changeSelectedPrimaryMenu(this.index);
-        }
+      togglePrimaryMenu(data) {
+        this.$emit('togglePrimaryMenu', data, this.index);
       },
       ...mapMutations('global', ['changeSelectedPrimaryMenu', 'hideMenu', 'saveLastIndexForMenu'])
     },

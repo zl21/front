@@ -1,7 +1,7 @@
 <template>
   <div
     class="navigator-sub-menu"
-    @click.stop
+    @click="toggleSubMenu()"
   >
     <ul
       v-for="(subMenu, index) in data"
@@ -37,7 +37,10 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+      toggleSubMenu() {
+        this.changeSelectedPrimaryMenu(1);
+      },
       routeTo(data) {
         let {
           type
@@ -58,7 +61,7 @@
   .navigator-sub-menu {
     z-index: 9999;
     border-bottom: 1px solid #d1dbe5;
-    width: calc(100% - 10px + 50px);
+    width: calc(100% - 190px - 50px);
     max-height: calc(100vh - 50px);
     overflow-y: auto;
     display: flex;
@@ -68,7 +71,7 @@
     padding: 20px 10px 0;
     position: absolute;
     top: 50px;
-    left: 0;
+    left: 190px;
     
     .menu-group {
       min-width: 150px;
