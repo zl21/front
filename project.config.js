@@ -17,4 +17,5 @@ module.exports = {
   enableModuleKA: false, // 默认启用keepAlive功能
   enableJflow: false, // 默认禁用JFlow插件功能
   jflowRequestDomain: undefined, // 默认禁用JFlow插件功能
+  enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
 };
