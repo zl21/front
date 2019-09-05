@@ -4,7 +4,7 @@
     :data-keep-alive="keepAliveContainer"
   >
     <!-- 模块页签组件 -->
-    <TabLists />
+    <TabLists v-if="enableTabLists" />
     <div
       id="content"
       style="height: 100%; padding: 0 15px 0;overflow: auto;position: relative"
@@ -19,8 +19,14 @@
 <script>
   import { mapState } from 'vuex';
   import TabLists from './TabLists';
+  import { enableTabLists } from '../constants/global';
   
   export default {
+    data() {
+      return {
+        enableTabLists: true
+      };
+    },
     name: 'ContentDisplayArea',
     computed: {
       ...mapState('global', ['keepAliveLists']),
@@ -31,6 +37,9 @@
     components: {
       TabLists
     },
+    beforeMount() {
+      this.enableTabLists = enableTabLists();
+    }
   };
 </script>
 

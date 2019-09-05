@@ -9,6 +9,7 @@ export const enableGateWay = () => (window.ProjectConfig && typeof window.Projec
 export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
+export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
