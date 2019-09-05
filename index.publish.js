@@ -8,6 +8,7 @@ import PopDialog from './src/__component__/PopDialog';
 import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
+import { menuClick } from './src/__config__/event.config';
 
 
 const validateConfig = config => ({
@@ -74,6 +75,7 @@ export default {
   },
   urlSearchParams,
   getModuleName,
+  menuClick,
   network,
   store,
   config: {
