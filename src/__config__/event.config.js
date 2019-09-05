@@ -38,11 +38,6 @@ export const launchNetworkMonitor = () => {
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
   switch (type) {
-    case 'tableDetailAction':
-      router.push({
-        path: `${info.moduleName}/${info.tableName}/${info.tableId}`,
-      });
-      break;
     case 'action':
       router.push({
         path: `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
@@ -53,20 +48,9 @@ export const routeTo = ({ type, info }, cb) => {
         path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
       });
       break;
-    case 'tableDetailVertical':
-      router.push({
-        path: `${VERTICAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
-    case 'tableDetailHorizontal':
-      router.push({
-        path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
     case 'external':
       router.push({
         path: `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
-        // query: { url: `${info.url}` }
       });
       break;
     default:
