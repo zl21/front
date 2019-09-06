@@ -44,9 +44,9 @@
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
           if (target) {
             Vue.component(componentName, target.component);
-            // Vue.component(componentName)().then((result) => {
-            //   Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
-            // });
+            Vue.component(componentName)().then((result) => {
+              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
+            });
           } else {
             Vue.component(componentName, PageNotFound);
           }
