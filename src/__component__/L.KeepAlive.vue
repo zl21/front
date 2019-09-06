@@ -57,8 +57,8 @@
     },
     mounted() {
       this.generateComponent();
-      const { linkModuleId } = this.$route.params;
-      this.updateAccessHistory({ type: 'action', id: linkModuleId });
+      // const { linkModuleId } = this.$route.params;
+      // this.updateAccessHistory({ type: 'action', id: linkModuleId });
     },
     watch: {
       $route() {
