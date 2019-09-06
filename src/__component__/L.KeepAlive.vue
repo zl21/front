@@ -8,7 +8,6 @@
       :src="urlName"
       class="urlName"
       @load="onload"
-      @click="click"
     />
     <component
       :is="currentModule"
