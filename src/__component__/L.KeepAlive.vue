@@ -43,9 +43,6 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      click() {
-       
-      },
       generateComponent() {
         const { linkModuleName, linkModuleId } = this.$route.params;
         if (this.LinkUrl.length > 0) {
@@ -65,8 +62,6 @@
     },
     mounted() {
       this.generateComponent();
-      // const { linkModuleId } = this.$route.params;
-      // this.updateAccessHistory({ type: 'action', id: linkModuleId });
     },
     watch: {
       $route() {
@@ -107,16 +102,10 @@
   };
 </script>
 <style lang="less" >
- .iframe{
-      width: 100%;
-    height: 100%;
-   
-    }
-     .urlName{
+  .urlName{
     border:none;
     width: 100%;
     height:100%;
-   
   }
   
 </style>
