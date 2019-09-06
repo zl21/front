@@ -235,6 +235,19 @@
         this.valueChange();
       },
       attachFilterPopperShow(value, instance) {
+
+        if ( instance.showModal === false ) {
+          fkGetMultiQuery({
+            searchObject: {
+              tableid: this.propsData.fkobj.reftableid
+            },
+            serviceId: this.propsData.serviceId,
+            success: (res) => {
+              this.freshDropDownPopFilterData(res);
+            }
+          });
+          return false;
+        }
         if (
           this.propsData.fkobj.saveType
           && this.selected[0]
@@ -257,15 +270,7 @@
             instance.complexs = true;
           }, 100);
         }    
-        fkGetMultiQuery({
-          searchObject: {
-            tableid: this.propsData.fkobj.reftableid
-          },
-          serviceId: this.propsData.serviceId,
-          success: (res) => {
-            this.freshDropDownPopFilterData(res);
-          }
-        });
+        
       },
       attachFile() {
         
