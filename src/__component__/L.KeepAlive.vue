@@ -4,8 +4,11 @@
   >
     <iframe
       v-if="urlName"
+      id="iframe"
       :src="urlName"
       class="urlName"
+      @load="onload"
+      @click="click"
     />
     <component
       :is="currentModule"
@@ -36,10 +39,13 @@
       };
     },
     computed: {
-      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl'])
+      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex'])
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
+      click() {
+       
+      },
       generateComponent() {
         const { linkModuleName, linkModuleId } = this.$route.params;
         if (this.LinkUrl.length > 0) {
@@ -53,6 +59,8 @@
           Vue.component(linkModuleName, Vue.extend(Object.assign({}, PageNotFound)));
           this.currentModule = linkModuleName;
         }
+      },
+      onload() {
       }
     },
     mounted() {
@@ -71,6 +79,26 @@
           }
         }
       },
+      primaryMenuIndex: {
+        handler(val) {
+          const iFrameForLinkPage = document.createElement('div');
+          if (val !== -1) {
+            iFrameForLinkPage.id = 'iFrameForLinkPage';
+            iFrameForLinkPage.style.width = '100%';
+            iFrameForLinkPage.style.height = '100%';
+            iFrameForLinkPage.style.zIndex = '10';
+            iFrameForLinkPage.style.position = 'absolute';
+            iFrameForLinkPage.style.top = '0';
+            iFrameForLinkPage.style.left = '0';
+            document.getElementById('content').appendChild(iFrameForLinkPage);
+          } else if (val === -1) {
+            const elem = document.getElementById('iFrameForLinkPage');
+            if (elem) {
+              document.getElementById('content').removeChild(elem);
+            }
+          }
+        }
+      }
     },
     activated() {
       const { linkModuleId } = this.$route.params;
@@ -78,10 +106,17 @@
     }
   };
 </script>
-<style scoped>
-  .urlName{
+<style lang="less" >
+ .iframe{
+      width: 100%;
+    height: 100%;
+   
+    }
+     .urlName{
     border:none;
     width: 100%;
     height:100%;
+   
   }
+  
 </style>
