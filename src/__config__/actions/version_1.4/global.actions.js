@@ -15,7 +15,6 @@ export default {
     });
   },
   updateAccessHistory({ commit, state }, { type, id }) {
-    console.log(444, enableHistoryAndFavorite());
     if (enableHistoryAndFavorite()) {
       network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
         commit('updateHistoryAndFavorite', { history: res.data.data });
