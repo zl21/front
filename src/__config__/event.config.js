@@ -2,9 +2,7 @@ import store from './store.config';
 import router from './router.config';
 
 import {
-  HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
@@ -30,19 +28,14 @@ export const launchNetworkMonitor = () => {
 };
 
 /**
- *
+ *  主要用于点击菜单的路由跳转
  * @param type 路由目标类型
- * @param info 路由目标信息
+ * @param info 路由目标信息 { tableName: "表名|自定义界面组件名", tableId: "表ID|自定义界面动作定义ID" }
  * @param cb   回调函数
  */
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
   switch (type) {
-    case 'tableDetailAction':
-      router.push({
-        path: `${info.moduleName}/${info.tableName}/${info.tableId}`,
-      });
-      break;
     case 'action':
       router.push({
         path: `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
@@ -53,20 +46,9 @@ export const routeTo = ({ type, info }, cb) => {
         path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
       });
       break;
-    case 'tableDetailVertical':
-      router.push({
-        path: `${VERTICAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
-    case 'tableDetailHorizontal':
-      router.push({
-        path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
     case 'external':
       router.push({
         path: `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
-        // query: { url: `${info.url}` }
       });
       break;
     default:
@@ -77,4 +59,12 @@ export const routeTo = ({ type, info }, cb) => {
   }
 };
 
-export default { hideMenu, routeTo };
+export const menuClick = (data, cb) => {
+  if (typeof cb === 'function') { cb(); }
+  const {
+    type, value, id, vuedisplay 
+  } = data;
+  routeTo({ type: vuedisplay && vuedisplay === 'external' ? vuedisplay : type, info: { tableName: value, tableId: id } }, cb);
+};
+
+export default { hideMenu, routeTo, menuClick };

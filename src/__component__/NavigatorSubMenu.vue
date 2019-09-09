@@ -1,7 +1,8 @@
 <template>
   <div
     class="navigator-sub-menu"
-    @click.stop
+    :class="collapseHistoryAndFavorite ? 'close':'open'"
+    @click="toggleSubMenu()"
   >
     <ul
       v-for="(subMenu, index) in data"
@@ -24,9 +25,9 @@
 </template>
 
 <script>
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState } from 'vuex';
   import { routeTo } from '../__config__/event.config';
-  
+
   export default {
     name: 'NavigatorSubMenu',
     props: {
@@ -36,8 +37,16 @@
         default: () => []
       }
     },
+    computed: {
+      ...mapState('global', {
+        collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
+      })
+    },
     methods: {
-      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists']),
+      ...mapMutations('global', ['increaseKeepAliveLists', 'hideMenu', 'increaseOpenedMenuLists', 'changeSelectedPrimaryMenu']),
+      toggleSubMenu() {
+        this.changeSelectedPrimaryMenu(1);
+      },
       routeTo(data) {
         let {
           type
@@ -55,10 +64,18 @@
 </script>
 
 <style scoped lang="less">
+  .open{
+     width: calc(100% - 190px - 50px);
+    left: 190px;
+  }
+  .close{
+     width: calc(100% - 60px - 50px);
+     left: 60px;
+  }
   .navigator-sub-menu {
     z-index: 9999;
     border-bottom: 1px solid #d1dbe5;
-    width: calc(100% - 10px + 50px);
+    // width: calc(100% - 190px - 50px);
     max-height: calc(100vh - 50px);
     overflow-y: auto;
     display: flex;
@@ -68,7 +85,6 @@
     padding: 20px 10px 0;
     position: absolute;
     top: 50px;
-    left: 0;
     
     .menu-group {
       min-width: 150px;

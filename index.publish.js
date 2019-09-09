@@ -8,6 +8,7 @@ import PopDialog from './src/__component__/PopDialog';
 import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
+import { menuClick } from './src/__config__/event.config';
 
 
 const validateConfig = config => ({
@@ -16,7 +17,7 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.2.0',
+  version: '1.3.0',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -52,6 +53,8 @@ export default {
    *   ignoreGateWayPattern: RegExp 正则表达是，表示项目中需要忽略网关规则的那些指定请求url。
    *   extentionForTable: [], // 项目自定义“表”扩展属性列表
    *   extentionForColumn: [], // 项目自定义“字段”扩展属性列表
+   *   enableModuleKA: true, //  启用KeepAlive
+   *   enableTabLists: true, // 启用TabLits模块页签切换
    * }
    */
   launchApplication(projectConfig) {
@@ -74,6 +77,7 @@ export default {
   },
   urlSearchParams,
   getModuleName,
+  menuClick,
   network,
   store,
   config: {

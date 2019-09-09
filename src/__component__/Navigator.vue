@@ -35,13 +35,22 @@
       >
     </div>
     <div class="middle">
-      <NavigatorPrimaryMenu
-        v-for="(menu, index) in menuLists"
-        :key="`primary-menu-${index}`"
-        :data="menu"
-        :index="index"
-      />
+      <div style="display: flex;">
+        <NavigatorPrimaryMenu
+          v-for="(menu, index) in menuLists"
+          :key="`primary-menu-${index}`"
+          :data="menu"
+          :index="index"
+          @togglePrimaryMenu="togglePrimaryMenu"
+        />
+      </div>
     </div>
+    <transition name="fade">
+      <NavigatorSubMenu
+        v-show="primaryMenuIndex!==-1"
+        :data="togglePrimaryMenuData || []"
+      />
+    </transition>
     <div
       v-if="navigatorSetting.length > 0"
       class="tag right"
@@ -130,6 +139,7 @@
   import bannerImg from '../assets/image/banner.png';
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
+  import NavigatorSubMenu from './NavigatorSubMenu';
 
   export default {
     name: 'Navigator',
@@ -137,9 +147,12 @@
       NavigatorPrimaryMenu,
       SetPanel,
       Dialog,
+      NavigatorSubMenu
     },
+    
     data() {
       return {
+        // primaryMenuShow: false,
         imgSrc: {
           closedImg,
           openedImg,
@@ -163,6 +176,7 @@
           },
         }, // 弹框配置信息
         dialogComponentName: null,
+        togglePrimaryMenuData: []
       };
     },
     computed: {
@@ -170,8 +184,10 @@
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         menuLists: ({ menuLists }) => menuLists,
         navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
-        showModule: ({ showModule }) => showModule
+        showModule: ({ showModule }) => showModule,
+        primaryMenuIndex: state => state.primaryMenuIndex,
       }),
+      
     },
     watch: {
       showModule(val) {
@@ -184,7 +200,15 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu']),
+      togglePrimaryMenu(data, index) {
+        this.togglePrimaryMenuData = data;
+        if (index === this.primaryMenuIndex) {
+          this.hideMenu();
+        } else {
+          this.changeSelectedPrimaryMenu(index);
+        }
+      },
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
@@ -318,6 +342,10 @@
       position: relative;
       display: flex;
       flex: 1 1 1px;
+      overflow: auto;
+    }
+     .middle::-webkit-scrollbar {
+        display: none;
     }
     
     .nav-search {
