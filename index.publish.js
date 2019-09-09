@@ -17,7 +17,7 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.3.0',
+  version: '1.4.1',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -55,6 +55,7 @@ export default {
    *   extentionForColumn: [], // 项目自定义“字段”扩展属性列表
    *   enableModuleKA: true, //  启用KeepAlive
    *   enableTabLists: true, // 启用TabLits模块页签切换
+   *   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
    * }
    */
   launchApplication(projectConfig) {

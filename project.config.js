@@ -10,12 +10,13 @@ module.exports = {
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
+  enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [
     /\/api\/rpt\/preview/
   ], // 框架默认禁用的网关逻辑的正则模式匹配。
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: false, // 默认禁用JFlow插件功能
-  jflowRequestDomain: undefined, // 默认禁用JFlow插件功能
+  jflowRequestDomain: undefined, // jflow后台地址
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
 };

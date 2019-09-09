@@ -3,6 +3,7 @@
     :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
   >
     <AttachFilter
+      ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
       :auot-data="propsData.AutoData"
@@ -57,13 +58,13 @@
     name: 'ComAttachFilter',
     props: {
       defaultValue: {
-        type: String,    
+        type: String,
         default() {
           return '';
         }
       },
       defaultSelected: {
-        type: Array,    
+        type: Array,
         default() {
           return [];
         }
@@ -100,22 +101,22 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
-        
-        this.propsData = JSON.parse(JSON.stringify(this.propstype));        
+
+        this.propsData = JSON.parse(JSON.stringify(this.propstype));
         if (this.propstype.fkdisplay === 'pop') {
-          this.propstype.show = false;  
+          this.propstype.show = false;
           this.propsData.componentType = myPopDialog;
         } else {
           this.propsData.componentType = Dialog;
-          this.propstype.show = true;  
+          this.propstype.show = true;
         }
       }
     },
     methods: {
       valueChange() {
-        // console.log('valueChange');  
-        this.$emit('valuechange', { value: this.value, selected: this.selected });
-      }, 
+        // console.log('valueChange');
+        this.$emit('valuechange', { value: this.value, selected: this.selected }, this);
+      },
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
@@ -216,11 +217,11 @@
             item.label = item.value;
             item.value = item.key;
             item.delete = true;
-          }); 
+          });
           this.propsData.datalist = [];
           this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
             res
-          );         
+          );
         }
       },
       attachFilterClear() {
@@ -235,8 +236,7 @@
         this.valueChange();
       },
       attachFilterPopperShow(value, instance) {
-
-        if ( instance.showModal === false ) {
+        if (instance.showModal === false) {
           fkGetMultiQuery({
             searchObject: {
               tableid: this.propsData.fkobj.reftableid
@@ -269,11 +269,10 @@
             // 打开弹窗
             instance.complexs = true;
           }, 100);
-        }    
-        
+        }
       },
       attachFile() {
-        
+
       },
       attachFilterCancel($this) {
         this.filterDate = {};
@@ -296,33 +295,41 @@
             }
           ];
           this.value = value;
-        } else if ($this._data.IN.length > 0) {
+        } else if ($this._data.IN) {
           const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
           const saveObjectmessage = $this.savObjemessage();
+          const saveType = JSON.parse($this.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
-          const value = `已经选中${$this._data.IN.length}条数据`;
-          this.selected = [
-            {
-              Label: value,
-              ID: saveObjectmessage
-            }
-          ];
+          if (saveType > 0) {
+            const value = `已经选中${$this._data.IN.length}条数据`;
+           
         
-          this.value = value;
-          if (this.propsData.fkobj.saveType) {
+            if (!this.propsData.fkobj.saveType) {
+              const Select = [
+                {
+                  Label: value,
+                  ID: $this._data.IN
+                }
+              ];
+              this.selected = Select;
+              this.value = value;
+            } else {
+              this.selected = [
+                {
+                  Label: value,
+                  ID: saveObjectmessage
+                }
+              ];
+              this.filterDate = JSON.parse(saveObjectmessage);
+              this.value = value;
+            }
           } else {
-            const Select = [
-              {
-                Label: value,
-                ID: $this._data.IN
-              }
-            ];
-            this.selected = Select;
-            this.value = value;
+            this.attachFilterClear();
+            // this.$refs.AttachFilter.$refs.AutoComplete.disabled = false;
           }
         } else {
           this.value = '';
-          this.Selected = [
+          this.selected = [
             {
               Label: '',
               ID: ''
@@ -343,11 +350,11 @@
         }];
       }
       if (this.propstype.fkdisplay === 'pop') {
-        this.propstype.show = false;  
+        this.propstype.show = false;
         this.propsData.componentType = myPopDialog;
       } else {
         this.propsData.componentType = Dialog;
-        this.propstype.show = true;  
+        this.propstype.show = true;
       }
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
