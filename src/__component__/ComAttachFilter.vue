@@ -3,6 +3,7 @@
     :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
   >
     <AttachFilter
+      ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
       :auot-data="propsData.AutoData"
@@ -235,8 +236,7 @@
         this.valueChange();
       },
       attachFilterPopperShow(value, instance) {
-
-        if ( instance.showModal === false ) {
+        if (instance.showModal === false) {
           fkGetMultiQuery({
             searchObject: {
               tableid: this.propsData.fkobj.reftableid
@@ -270,7 +270,6 @@
             instance.complexs = true;
           }, 100);
         }
-
       },
       attachFile() {
 
@@ -296,33 +295,41 @@
             }
           ];
           this.value = value;
-        } else if ($this._data.IN.length > 0) {
+        } else if ($this._data.IN) {
           const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
           const saveObjectmessage = $this.savObjemessage();
+          const saveType = JSON.parse($this.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
-          const value = `已经选中${$this._data.IN.length}条数据`;
-          this.selected = [
-            {
-              Label: value,
-              ID: saveObjectmessage
+          if (saveType > 0) {
+            const value = `已经选中${$this._data.IN.length}条数据`;
+           
+        
+            if (!this.propsData.fkobj.saveType) {
+              const Select = [
+                {
+                  Label: value,
+                  ID: $this._data.IN
+                }
+              ];
+              this.selected = Select;
+              this.value = value;
+            } else {
+              this.selected = [
+                {
+                  Label: value,
+                  ID: saveObjectmessage
+                }
+              ];
+              this.filterDate = JSON.parse(saveObjectmessage);
+              this.value = value;
             }
-          ];
-
-          this.value = value;
-          if (this.propsData.fkobj.saveType) {
           } else {
-            const Select = [
-              {
-                Label: value,
-                ID: $this._data.IN
-              }
-            ];
-            this.selected = Select;
-            this.value = value;
+            this.attachFilterClear();
+            // this.$refs.AttachFilter.$refs.AutoComplete.disabled = false;
           }
         } else {
           this.value = '';
-          this.Selected = [
+          this.selected = [
             {
               Label: '',
               ID: ''
