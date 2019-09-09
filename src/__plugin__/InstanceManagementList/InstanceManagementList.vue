@@ -6,19 +6,21 @@
         @on-click="onClick"
       >
         <TabPane
-          label="待办流程"
-          name="待办流程"
+          label="待我审批的"
+          name="待我审批的"
         >
-          <todoProcess />
+         <todoProcess :tabalive="tabalive">
+          </todoProcess>
         </TabPane>
         <TabPane
-          label="历史流程"
-          name="历史流程"
+          label="我已审批的"
+          name="我已审批的"
         >
-          <HistoricalProcess />
+        <HistoricalProcess :tabalive="tabalive">
+          </HistoricalProcess>
          
         </TabPane>
-         <TabPane label="我发起的" name="我发起的"><launchList></launchList></TabPane>
+         <TabPane label="我发起的" name="我发起的"><launchList :tabalive="tabalive"></launchList></TabPane>
       </Tabs>
     </div>
   </div>

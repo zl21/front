@@ -11,16 +11,15 @@
     <div class="StandardTable">
       <Spin size="large" fix v-if="spinShow"></Spin>
       <StandardTable
-      class="table"
-      :currentPage="searchData.page"
-      :pageSize="searchData.pageSize"
-      :total="total"
-      :columns="columns"
-      :data="data"
-      :standardTableEvent="standardTableEvent"
-    ></StandardTable>
+        class="table"
+        :currentPage="searchData.page"
+        :pageSize="searchData.pageSize"
+        :total="total"
+        :columns="columns"
+        :data="data"
+        :standardTableEvent="standardTableEvent"
+      ></StandardTable>
     </div>
-
   </div>
 </template>
 <script>
@@ -30,6 +29,9 @@ import StandardTable from "./StandardTable";
 export default {
   name: "HistoricalProcess",
   components: { FormItemComponent, StandardTable },
+  props: {
+    tabalive: { type: String, default: "" }
+  },
   data() {
     return {
       //表单配置
@@ -76,7 +78,7 @@ export default {
         page: 1,
         pageSize: 10,
         excuStatus: 0,
-        userId:window.jflowPlugin.userInfo.id,
+        userId: window.jflowPlugin.userInfo.id,
         createTime: [
           new Date(new Date(new Date().toLocaleDateString()).getTime()),
           new Date()
@@ -87,8 +89,8 @@ export default {
       total: 0,
       columns: [
         {
-          title:'工作流编号',
-          key: 'instanceId'
+          title: "工作流编号",
+          key: "instanceId"
         },
         {
           title: "单据类型",
@@ -110,18 +112,30 @@ export default {
           title: "消耗时长",
           key: "durationTime"
         },
-         {
+        {
           title: "流程状态",
           key: "processStatus",
           render: (h, params) => {
-            let processStatusT='';
-            switch(params.row.processStatus){
-              case 0:processStatusT="待审批";break;
-              case 1:processStatusT="审批中";break;
-              case 2:processStatusT="已中止";break;
-              case 3:processStatusT="已完结";break;
-              case 4:processStatusT="业务系统提交失败";break;
-              case -1:processStatusT="已撤销";break;
+            let processStatusT = "";
+            switch (params.row.processStatus) {
+              case 0:
+                processStatusT = "待审批";
+                break;
+              case 1:
+                processStatusT = "审批中";
+                break;
+              case 2:
+                processStatusT = "已中止";
+                break;
+              case 3:
+                processStatusT = "已完结";
+                break;
+              case 4:
+                processStatusT = "业务系统提交失败";
+                break;
+              case -1:
+                processStatusT = "已撤销";
+                break;
             }
             return h(
               "p",
@@ -164,7 +178,7 @@ export default {
                         // window.jflowPlugin.store.dispatch('emptyTabs')
                         // window.fastfish.emit("closedalltab")
                         const query = this.urlParse(params.row.formUrl);
-                        const type = params.row.formUrl.split('/')[2];
+                        const type = params.row.formUrl.split("/")[2];
                         window.jflowPlugin.router.push({
                           path: params.row.formUrl
                         });
@@ -182,7 +196,7 @@ export default {
                     margin: "0 16px"
                   }
                 }),
-                 h(
+                h(
                   "span",
                   {
                     style: {
@@ -191,7 +205,11 @@ export default {
                     },
                     on: {
                       click: () => {
-                        window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,'_blank','width=800,height=800')
+                        window.open(
+                          `http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
+                          "_blank",
+                          "width=800,height=800"
+                        );
                       }
                     }
                   },
@@ -209,29 +227,37 @@ export default {
           this.queryLists();
         },
         "on-page-size-change": pageSize => {
-          this.searchData.page=1;
+          this.searchData.page = 1;
           this.searchData.pageSize = pageSize;
           this.queryLists();
         }
       },
 
-      spinShow:false
+      spinShow: false
     };
+  },
+  watch:{
+    tabalive(newVal,oldVal){
+      if(newVal==='我发起的'){
+        this.getselectOption();
+        this.queryLists();
+      }
+    }
   },
   methods: {
     urlParse(path) {
-      let url = path || window.location.search;// 得到url问号后面拼接的参数  ?id=12345&a=b
-      let obj = {};// 创建一个Object
-      let reg = /[?&][^?&]+=[^?&]+/g;// 正则匹配 ?&开始 =拼接  非?&结束  的参数
-      let arr = url.match(reg);// match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+      let url = path || window.location.search; // 得到url问号后面拼接的参数  ?id=12345&a=b
+      let obj = {}; // 创建一个Object
+      let reg = /[?&][^?&]+=[^?&]+/g; // 正则匹配 ?&开始 =拼接  非?&结束  的参数
+      let arr = url.match(reg); // match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
       // arr数组形式 ['?id=12345','&a=b']
       if (arr) {
-        arr.forEach((item) => {
+        arr.forEach(item => {
           /**
            * tempArr数组    ['id','12345']和['a','b']
            * 第一个是key，第二个是value
            * */
-          let tempArr = item.substring(1).split('=');
+          let tempArr = item.substring(1).split("=");
           let key = decodeURIComponent(tempArr[0]);
           let val = decodeURIComponent(tempArr[1]);
           obj[key] = val;
@@ -241,35 +267,47 @@ export default {
     },
     formChange(data) {
       //表单数据修改时，修改searchData数据
-     this.searchData = Object.assign({},this.searchData,data)
-      if(Object.prototype.toString.call(this.searchData.businessType) === '[object Array]' && this.searchData.businessType.length === 0){
-        delete this.searchData.businessType
+      this.searchData = Object.assign({}, this.searchData, data);
+      if (
+        Object.prototype.toString.call(this.searchData.businessType) ===
+          "[object Array]" &&
+        this.searchData.businessType.length === 0
+      ) {
+        delete this.searchData.businessType;
       }
-      this.searchData.page = 1
+      this.searchData.page = 1;
     },
-     getselectOption(){
-      this.$network.post(`/jflow/p/cs/task/relation/list`,{}).then(res=>{
-      if(res.data.resultCode===0){
-         this.formLists[1].item.options = res.data.data.relations.map(item => {
-            item.value = item.businesskey
-            item.label = item.businessName
-            return item
-          })
-      }
-    })
-  },
+    getselectOption() {
+      this.$network.post(`/jflow/p/cs/task/relation/list`, {}).then(res => {
+        if (res.data.resultCode === 0) {
+          this.formLists[1].item.options = res.data.data.relations.map(item => {
+            item.value = item.businesskey;
+            item.label = item.businessName;
+            return item;
+          });
+        }
+      });
+    },
     queryLists() {
-      this.spinShow=true
+      this.spinShow = true;
       //查询列表
-      if(this.searchData.createTime && this.searchData.createTime[0] && this.searchData.createTime[1]){
-        this.searchData.startTime = new Date(this.searchData.createTime[0]).format('yyyy-MM-dd hh:mm')
-        this.searchData.endTime = new Date(this.searchData.createTime[1]).format('yyyy-MM-dd hh:mm')
-      }else{
-        this.searchData.startTime = ''
-        this.searchData.endTime = ''
+      if (
+        this.searchData.createTime &&
+        this.searchData.createTime[0] &&
+        this.searchData.createTime[1]
+      ) {
+        this.searchData.startTime = new Date(
+          this.searchData.createTime[0]
+        ).format("yyyy-MM-dd hh:mm");
+        this.searchData.endTime = new Date(
+          this.searchData.createTime[1]
+        ).format("yyyy-MM-dd hh:mm");
+      } else {
+        this.searchData.startTime = "";
+        this.searchData.endTime = "";
       }
-      let obj = Object.assign({},this.searchData)
-      delete obj.createTime
+      let obj = Object.assign({}, this.searchData);
+      delete obj.createTime;
       this.$network
         .post("/jflow/p/cs/task/initiator/list", obj)
         .then(res => {
@@ -278,21 +316,21 @@ export default {
             this.total = data.total;
             this.data = data.records;
           }
-          this.spinShow=false
+          this.spinShow = false;
         })
         .catch(res => {
-          this.spinShow=false
-        })
+          this.spinShow = false;
+        });
     }
   },
   created() {
-    this.getselectOption();
-    this.queryLists();
+    // this.getselectOption();
+    // this.queryLists();
   }
 };
 </script>
 <style lang="less">
-.burgeon-spin-fix{
+.burgeon-spin-fix {
   z-index: 100;
 }
 .HistoricalProcess {
@@ -318,9 +356,9 @@ export default {
     margin-bottom: 16px;
   }
 
-  .StandardTable{
+  .StandardTable {
     position: relative;
-    flex:1;
+    flex: 1;
     display: flex;
     .table {
       flex: 1;

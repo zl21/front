@@ -132,6 +132,7 @@
             searchName: '查询结果'
           }
         ],
+        CONDITIONList: [],
         sendMessage: {
           CONDITION: '', // 组织树
           GLOBAL: '', //  文字查询
@@ -173,14 +174,19 @@
     methods: {
       treeRestructure(data) {
         // tree_lists 树形结构重新组合
-        this.AKNAME = data.data[0].AKNAME;
-        this.treedata = data.data.map((obj) => {
+        this.AKNAME = data.data.reduce((arr, item) => {
+          arr.push(item.AKNAME);
+          return arr;
+        }, []);
+       
+        this.treedata = data.data.map((obj, i) => {
           const option = {};
           option.title = obj.NAME;
           option.expand = !!obj.expand;
           option.children = [...obj.VALUE];
           option.children.forEach((item) => {
             item.title = item.NAME.toString();
+            item.index = i;
           });
           return option;
         });
@@ -327,7 +333,12 @@
         this.treeSelectData = obj;
         if (this.HRORG_ID.length > 0) {
           this.sendMessage.CONDITION = {};
-          this.sendMessage.CONDITION[this.AKNAME] = this.HRORG_ID;
+          this.AKNAME.forEach((item) => {
+            this.sendMessage.CONDITION[item] = [];
+          });
+          obj.forEach((item) => {
+            this.sendMessage.CONDITION[this.AKNAME[item.index]].push(item.ID);
+          });
         } else {
           this.sendMessage.CONDITION = '';
         }
@@ -490,13 +501,13 @@
         if (this.HRORG_ID.length > 0) {
           this.loading = true;
           if (!this.checkbox) {
-            this.sendMessage.CONDITION = [];
+            // this.sendMessage.CONDITION = [];
             this.EXCLUDE = '';
-            this.HRORG_ID.forEach((x) => {
-              this.sendMessage.CONDITION.push({
-                [this.AKNAME]: [x]
-              });
+            this.AKNAME.forEach((item) => {
+              this.CONDITIONList.push({ [item]: this.sendMessage.CONDITION[item] });  
             });
+            console.log(this.CONDITIONList, 'this.CONDITIONList');
+            this.sendMessage.CONDITION = this.CONDITIONList;
             this.text.result.push({
               exclude: false,
               id_list: [this.HRORG_ID],
