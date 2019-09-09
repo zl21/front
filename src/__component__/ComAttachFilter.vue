@@ -57,13 +57,13 @@
     name: 'ComAttachFilter',
     props: {
       defaultValue: {
-        type: String,    
+        type: String,
         default() {
           return '';
         }
       },
       defaultSelected: {
-        type: Array,    
+        type: Array,
         default() {
           return [];
         }
@@ -100,22 +100,22 @@
         //   const valuedata = JSON.parse(this.selected[0].Label);
         //   this.selected[0].Label = `已经选中${valuedata.total}条` || '';
         // }
-        
-        this.propsData = JSON.parse(JSON.stringify(this.propstype));        
+
+        this.propsData = JSON.parse(JSON.stringify(this.propstype));
         if (this.propstype.fkdisplay === 'pop') {
-          this.propstype.show = false;  
+          this.propstype.show = false;
           this.propsData.componentType = myPopDialog;
         } else {
           this.propsData.componentType = Dialog;
-          this.propstype.show = true;  
+          this.propstype.show = true;
         }
       }
     },
     methods: {
       valueChange() {
-        // console.log('valueChange');  
-        this.$emit('valuechange', { value: this.value, selected: this.selected });
-      }, 
+        // console.log('valueChange');
+        this.$emit('valuechange', { value: this.value, selected: this.selected }, this);
+      },
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
@@ -216,11 +216,11 @@
             item.label = item.value;
             item.value = item.key;
             item.delete = true;
-          }); 
+          });
           this.propsData.datalist = [];
           this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
             res
-          );         
+          );
         }
       },
       attachFilterClear() {
@@ -269,11 +269,11 @@
             // 打开弹窗
             instance.complexs = true;
           }, 100);
-        }    
-        
+        }
+
       },
       attachFile() {
-        
+
       },
       attachFilterCancel($this) {
         this.filterDate = {};
@@ -307,7 +307,7 @@
               ID: saveObjectmessage
             }
           ];
-        
+
           this.value = value;
           if (this.propsData.fkobj.saveType) {
           } else {
@@ -343,11 +343,11 @@
         }];
       }
       if (this.propstype.fkdisplay === 'pop') {
-        this.propstype.show = false;  
+        this.propstype.show = false;
         this.propsData.componentType = myPopDialog;
       } else {
         this.propsData.componentType = Dialog;
-        this.propstype.show = true;  
+        this.propstype.show = true;
       }
       if (this.selected[0] && this.selected[0].ID) {
         this.propsData.disabled = true;
