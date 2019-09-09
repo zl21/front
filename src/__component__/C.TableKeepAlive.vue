@@ -57,6 +57,8 @@
             Vue.component(componentName, PageNotFound);
             this.currentModule = componentName;
           }
+        } else {
+          this.currentModule = componentName;
         }
       }
     },

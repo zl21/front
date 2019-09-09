@@ -34,6 +34,7 @@ export const launchNetworkMonitor = () => {
  * @param cb   回调函数
  */
 export const routeTo = ({ type, info }, cb) => {
+  console.log(44);
   if (typeof cb === 'function') { cb(); }
   switch (type) {
     case 'action':
