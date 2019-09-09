@@ -10,14 +10,14 @@
           name="待我审批的"
         >
          <todoProcess :tabalive="tabalive">
-          <todoProcess />
+          </todoProcess>
         </TabPane>
         <TabPane
           label="我已审批的"
           name="我已审批的"
         >
         <HistoricalProcess :tabalive="tabalive">
-          <HistoricalProcess />
+          </HistoricalProcess>
          
         </TabPane>
          <TabPane label="我发起的" name="我发起的"><launchList :tabalive="tabalive"></launchList></TabPane>

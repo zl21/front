@@ -239,6 +239,7 @@ export default {
   watch:{
     tabalive(newVal,oldVal){
       if(newVal==='我发起的'){
+        this.getselectOption();
         this.queryLists();
       }
     }
@@ -323,7 +324,7 @@ export default {
     }
   },
   created() {
-    this.getselectOption();
+    // this.getselectOption();
     // this.queryLists();
   }
 };

@@ -238,6 +238,7 @@ export default {
   watch: {
     tabalive(newVal, oldVal) {
       if (newVal === "我已审批的") {
+        this.getselectOption();
         this.queryLists();
       }
     }
@@ -322,7 +323,7 @@ export default {
     }
   },
   created() {
-    this.getselectOption();
+   
     // this.queryLists();
   }
 };
