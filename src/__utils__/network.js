@@ -3,7 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes,
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -110,7 +110,7 @@ axios.interceptors.response.use(
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
         if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
-          router.push('/login');
+          router.push(getTouristRoute());
         }
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
