@@ -3,6 +3,7 @@ import CreateButton from './button';
 import todoList from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
+import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
 
 
 let axios = {}; // axios请求
@@ -130,7 +131,7 @@ async function jflowsave(flag, response) {
       Temparam.append('objid', router.currentRoute.params.itemId);
     }
     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-    network.post(`/p/cs/getObject`, Temparam).then(async (res) => {
+    network.post('/p/cs/getObject', Temparam).then(async (res) => {
       if (res.data.code === 0) {
         res.data.data.addcolums.forEach((element) => {
           if (element.childs) {
@@ -259,17 +260,17 @@ function getConfigMap() { // 获取所有配置流程图的表集合
 }
 
 function createComponent() { // 创建跟节点实例
-  // const jflowPlugin = document.createElement('div');
-  // jflowPlugin.id = 'jflowPlugin';
-  // document.body.appendChild(jflowPlugin);
-  // const vm = new Vue({
-  //   el: '#jflowPlugin',
-  //   template: '<mainComponent />',
-  //   components: {
-  //     mainComponent
-  //   }
-  // });
-  window.jflowPlugin = {};
+  const jflowPlugin = document.createElement('div');
+  jflowPlugin.id = 'jflowPlugin';
+  document.body.appendChild(jflowPlugin);
+  const vm = new Vue({
+    el: '#jflowPlugin',
+    template: '<mainComponent />',
+    components: {
+      mainComponent
+    }
+  });
+  window.jflowPlugin = vm.$children[0];
   window.jflowPlugin.axios = axios;
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;
