@@ -6,6 +6,7 @@ import {
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX,
   enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
@@ -232,12 +233,12 @@ export default {
       });
     }
   
-    // if (type === 'tableDetailUrl') {
-    //   path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
-    //   router.push({
-    //     path
-    //   });
-    // }
+    if (type === 'tableDetailUrl') {
+      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
+      router.push({
+        path
+      });
+    }
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;
@@ -273,5 +274,6 @@ export default {
   addKeepAliveLabelMaps(state, { name, label }) {
     state.keepAliveLabelMaps[name] = `${label}`;
   }
+
   
 };

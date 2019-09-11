@@ -590,7 +590,7 @@
             showCancel: true,
             content: '确认执行提交?',
             onOk: () => {
-              obj.requestUrlPath = this.saveButtonPath;
+              this.saveButtonPath = obj.requestUrlPath;
               this.determineSaveType(obj);
               this.saveEventAfter = 'submit';
             }
@@ -629,7 +629,7 @@
             showCancel: true,
             content: '确认执行作废?',
             onOk: () => {
-              obj.requestUrlPath = this.saveButtonPath;
+              this.saveButtonPath = obj.requestUrlPath;
               this.determineSaveType(obj);
               this.saveEventAfter = 'invalid';
             }
@@ -738,6 +738,16 @@
         // const linkUrl = tab.action;
         // const linkId = tab.webid;
         // this.increaseLinkUrl({ linkId, linkUrl });
+        // const label = `${tab.webdesc}`;
+        // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
+        // this.addKeepAliveLabelMaps({ name, label });
+        // const linkInfo = {
+        //   linkUrl: tab.action,
+        //   linkId: tab.webid,
+        //   label,
+        //   name
+        // };
+        // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
         // setTimeout(() => {
         //   this.tabOpen({
         //     type: 'tableDetailUrl',
@@ -1477,7 +1487,6 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        console.log(66, obj);
         this.determineSaveType(obj);
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
@@ -1853,6 +1862,7 @@
         this.clearEditData();// 清空store update数据
 
         if (this.saveEventAfter === 'submit') { // 提交操作
+          console.log(44, this.requestUrlPath);
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
               objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
@@ -1921,9 +1931,29 @@
             }
           }
         }
-      }
-    },
+      },
+      // clickKeepAliveLabelMaps(buttonData) {
+      //   buttonData.objbutton.map((button) => {
+      //     if (button.vuedisplay === 'edit') {
+      //       const editTableId = button.action.lastIndexOf('/');
+      //       const editTableName = button.action.substring(0, editTableId);
+      //       const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
+      //       const name = `S.${editTableName}.${editTableId}`;
+      //       this.addKeepAliveLabelMaps({ name, label });
+      //     } else if (button.vuedisplay === 'external') {
+      //       const linkUrl = button.action;
+      //       const linkId = button.webid;
+      //       this.increaseLinkUrl({ linkId, linkUrl });
+      //       const label = `${button.webdesc}`;
+      //       const name = `L.${button.webname.toUpperCase()}.${linkId}`;
+      //       this.addKeepAliveLabelMaps({ name, label });
+      //     }
+      //     return false;
+      //   });
+      // }
+    },  
     mounted() {
+      // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
           if (item.tablename === this.tableName) {
