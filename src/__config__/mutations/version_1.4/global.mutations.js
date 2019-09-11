@@ -269,6 +269,9 @@ export default {
       // const doc = dom.style.padding = '0px';
       // const domForMargin = dom.parentNode.parentNode.style.margin = '0px';
     }
+  },
+  addKeepAliveLabelMaps(state, { name, label }) {
+    state.keepAliveLabelMaps[name] = `${label}`;
   }
   
 };

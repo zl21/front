@@ -384,7 +384,7 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
@@ -473,6 +473,7 @@
 
         //   console.log(event.detail);
         // }, false);
+        
         this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
@@ -658,9 +659,26 @@
         case 'external':
           this.objTabActionUrl(tab);
           break;
+        case 'edit':
+          this.objTabActionEdit(tab);
+          break;
         default:
           break;
         }
+      },
+      objTabActionEdit(tab) {
+        const editTableId = tab.action.lastIndexOf('/');
+        const editTableName = tab.action.substring(0, editTableId);
+        const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
+        const name = `S.${editTableName}.${editTableId}`;
+        this.addKeepAliveLabelMaps({ name, label });
+        this.tabHref({
+          type: 'tableDetailVertical',
+          tableName: editTableName,
+          tableId: editTableId,
+          label: 'this.activeTab.label',
+          id: this.itemId
+        });
       },
       objTabActiondDownload(tab) {
         // const filename = tab.webname;
@@ -693,7 +711,7 @@
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
         const url = tab.action;
-        const index = url.lastIndexOf('\/');
+        const index = url.lastIndexOf('/');
         const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
         const type = 'tableDetailAction';

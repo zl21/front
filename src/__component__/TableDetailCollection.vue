@@ -1619,6 +1619,7 @@
                   id: data.refobjid
                 });
               } else if (cellData.objdistype === 'tabpanle') {
+
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
