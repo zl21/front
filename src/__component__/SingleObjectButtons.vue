@@ -213,8 +213,9 @@
                 }
               }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+              //  || item === 'actionCANCOPY'
               val.cmds.forEach((item, index) => {
-                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
                   val.prem[index] = false;
                 }
               });
@@ -321,13 +322,6 @@
         }
         return [];
       },
-      idArray() {
-        if (this.itemName && typeof (this.updateData[this.itemName].delete[this.itemName]) === 'array') {
-          console.log(typeof (this.updateData[this.itemName].delete[this.itemName]));
-          return this.updateData[this.itemName].delete[this.itemName];
-        }
-        return [];
-      }
     },
     props: {
       watermarkimg: {
@@ -591,7 +585,8 @@
             content: '确认执行提交?',
             onOk: () => {
               this.saveButtonPath = obj.requestUrlPath;
-              this.determineSaveType(obj);
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
               this.saveEventAfter = 'submit';
             }
           };
@@ -630,7 +625,8 @@
             content: '确认执行作废?',
             onOk: () => {
               this.saveButtonPath = obj.requestUrlPath;
-              this.determineSaveType(obj);
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
               this.saveEventAfter = 'invalid';
             }
           };
@@ -1862,10 +1858,9 @@
         this.clearEditData();// 清空store update数据
 
         if (this.saveEventAfter === 'submit') { // 提交操作
-          console.log(44, this.requestUrlPath);
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
             });
           });
           // let message = '';
@@ -1880,7 +1875,7 @@
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
             this.getObjectTryInvalid({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
             });
           });
           // let message = '';
