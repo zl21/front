@@ -172,7 +172,7 @@ async function jflowsave(flag, response) {
                 content: '审核成功'
               });
               instanceId = res.data.data.instanceId;
-              const children = document.getElementsByClassName('operate-btn')[0].children;
+              const children = document.getElementsByClassName('button-group')[0].children;
               for (const child of children) {
                 if (child.innerText === '刷新') {
                   const myEvent = new Event('click');
