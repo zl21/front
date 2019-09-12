@@ -273,6 +273,9 @@ export default {
   },
   addKeepAliveLabelMaps(state, { name, label }) {
     state.keepAliveLabelMaps[name] = `${label}`;
+  },
+  addServiceIdMap(state, { tableName, gateWay }) {
+    state.serviceIdMap[tableName] = `${gateWay}`;
   }
 
   

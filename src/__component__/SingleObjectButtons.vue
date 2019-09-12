@@ -250,6 +250,7 @@
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         copyDatas: ({ copyDatas }) => copyDatas,
         modifyData: ({ modifyData }) => modifyData,
+        serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
 
       }),
       watermarkImg() { // 匹配水印图片路径
@@ -378,7 +379,7 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
@@ -668,6 +669,11 @@
         const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
         const name = `S.${editTableName}.${editTableId}`;
         this.addKeepAliveLabelMaps({ name, label });
+        const gateWay = this.serviceIdMap[this.tableName];
+        this.addServiceIdMap({ tableName: editTableName.toUpperCase(), gateWay });
+        const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        serviceIdMap[editTableName.toUpperCase()] = `${gateWay}`;
+        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
         this.tabHref({
           type: 'tableDetailVertical',
           tableName: editTableName,
