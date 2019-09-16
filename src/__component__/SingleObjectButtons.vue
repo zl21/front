@@ -937,7 +937,6 @@
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
               });
             }
-
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           }
         }, () => {});
