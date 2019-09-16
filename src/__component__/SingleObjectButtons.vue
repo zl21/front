@@ -179,6 +179,7 @@
                   val.cmds.forEach((item, index) => {
                     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
                       val.prem[index] = false;
+                      this.clickButtonsRefresh();
                     }
                   });
                 }
@@ -217,6 +218,7 @@
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
                   val.prem[index] = false;
+                  this.clickButtonsRefresh();
                 }
               });
             }
@@ -1964,6 +1966,7 @@
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
                     this.tabcmd.prem[index] = false;
+                    this.clickButtonsRefresh();
                   }
                 });
               }
