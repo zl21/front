@@ -169,7 +169,7 @@ async function jflowsave(flag, response) {
             if (res.data.resultCode === 0 && res.data.data.instanceId && !res.data.notice) {
               window.vm.$Modal.fcSuccess({
                 title: '提示',
-                content: '审核成功'
+                content: res.data.resultMsg
               });
               instanceId = res.data.data.instanceId;
               const children = document.getElementsByClassName('button-group')[0].children;
