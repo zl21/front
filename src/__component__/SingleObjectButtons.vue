@@ -27,6 +27,7 @@
       :content-text="dialogConfig.contentText"
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
+      :isrefrsh="isrefrsh"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
@@ -179,7 +180,6 @@
                   val.cmds.forEach((item, index) => {
                     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
                       val.prem[index] = false;
-                      this.clickButtonsRefresh();
                     }
                   });
                 }
@@ -218,7 +218,6 @@
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
                   val.prem[index] = false;
-                  this.clickButtonsRefresh();
                 }
               });
             }
@@ -872,6 +871,7 @@
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
         const title = `${tab.webdesc}`;
+        this.isrefrsh = tab.isrefrsh;
         this.dialogConfig = {
           title,
         };
@@ -1965,7 +1965,6 @@
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
                     this.tabcmd.prem[index] = false;
-                    this.clickButtonsRefresh();
                   }
                 });
               }

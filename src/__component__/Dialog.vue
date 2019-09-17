@@ -122,6 +122,11 @@
         type: String,
         default: () => ''
       },
+      isrefrsh: {
+        type: Boolean,
+        default: () => false
+      },
+      
     },
     data() {
       return {
@@ -182,7 +187,7 @@
       closeActionDialog(value) {
         this.$emit('clearDialogComponentName');
         this.showModal = false;
-        if (value === true) {
+        if (value === true || this.isrefrsh) {
           this.$emit('dialogComponentSaveSuccess');
         }
       },
