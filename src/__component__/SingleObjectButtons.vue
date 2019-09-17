@@ -1872,32 +1872,20 @@
           });
           // let message = '';
           promise.then(() => {
-            const message = this.buttonsData.submitData.message;
-            if (message) {
-              this.upData(`${message}`);
-            } else {
-              this.upData();
-            }
-          });
+                         const message = this.buttonsData.submitData.message;
+                         if (message) {
+                           this.upData(`${message}`);
+                         } else {
+                           this.upData();
+                         }
+                       },
+                       () => { // 状态为rejected时执行
+                         this.upData();
+                       });
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
             this.getObjectTryInvalid({
               objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
-            });
-          });
-          // let message = '';
-          promise.then(() => {
-            const message = this.buttonsData.invalidData.message;
-            if (message) {
-              this.upData(`${message}`);
-            } else {
-              this.upData();
-            }
-          });
-        } else if (this.saveEventAfter === 'invalid') {
-          const promise = new Promise((resolve, reject) => {
-            this.getObjectTryInvalid({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
             });
           });
           // let message = '';
