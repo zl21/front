@@ -1881,6 +1881,7 @@
                        },
                        () => { // 状态为rejected时执行
                          this.upData();
+                         this.saveEventAfter = '';
                        });
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
@@ -1896,6 +1897,9 @@
             } else {
               this.upData();
             }
+          }, () => { // 状态为rejected时执行
+            this.upData();
+            this.saveEventAfter = '';
           });
         } else { // 保存后的保存成功提示信息
           const message = this.buttonsData.message;
