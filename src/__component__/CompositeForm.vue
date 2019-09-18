@@ -33,6 +33,7 @@
                 :child-table-name="childTableName"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
+                :is-main-table="isMainTableForm"
                 :condition="conditiontype"
                 :module-form-type="moduleFormType"
                 :get-state-data="getStateData"
@@ -64,6 +65,7 @@
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
+          :is-main-table="isMainTableForm"
           :get-state-data="getStateData"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
@@ -94,6 +96,13 @@
     name: 'CompositeForm',
     components: {},
     props: {
+      isMainTable: {
+        // 是否 主表
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       defaultData: {
         type: Object,
         default() {
@@ -233,6 +242,9 @@
       },
       childTableNameForm() {
         return this.childTableName;
+      },
+      isMainTableForm() {
+        return this.isMainTable;
       }
     },
     updated() {},

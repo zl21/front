@@ -996,8 +996,7 @@
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  不是新增  和不是主子表中的子表
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
-
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
               if (childTableName !== false && this.$parent.isreftabs) {
                 this._items.props.itemdata.valuedata.splice(index - 1, 1);
                 if (this._items.props.itemdata.valuedata.length > 0) {
@@ -1007,7 +1006,12 @@
                 } else {
                   this._items.value = '';
                 }
+
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else if (this.$parent.pathcheck === '') {
                 parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
@@ -1038,14 +1042,12 @@
         // 上传文件 
         const _value = value.length > 0 ? value : '';
         // this._items.value = _value;
-        console.log(_value, 'valuevalue');
 
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        console.log(fixedData, 'fixedData');
         //  判断parms 是否 需要保存
         parms = this.pathsCheckout(parms, fixedData);
         if (
@@ -1054,7 +1056,7 @@
         ) {
           //  判断是否需要调用保存
           const path = this.$parent.pathcheck !== '';
-          const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
 
           if (this.$parent.isreftabs && childTableName !== false) {
             //  主子表 子表
@@ -1065,6 +1067,10 @@
               ...this._items.props.itemdata.valuedata
             ]);
             this.valueChange();
+            if (childTableName && this.$parent.type === 'PanelForm') {
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
+            }
           } else {
             this.upSavefile(parms, fixedData, path, value);
           }
@@ -1147,7 +1153,7 @@
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
 
               if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
@@ -1158,6 +1164,10 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else {
                 self.upSaveImg(parms, fixedData, path);
               }
@@ -1181,7 +1191,7 @@
         const pathcheck = this.$parent.pathcheck;
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
-        const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+        const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
         if (isreftabs && pathcheck !== '') {
           // 主子表 有path  主表明+子表明 // parms.table 主表
           if (childTableName) {
@@ -1195,7 +1205,6 @@
             };
             return Object.assign({}, parmsdata);
           }
-          console.log('主子表 path');
 
           const parmsdata = {
             [parms.table]: {

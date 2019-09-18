@@ -180,6 +180,13 @@
           return function () {};
         }
       },
+      isMainTable: {
+        // 是否 主表
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       path: {
         type: String,
         default() {
