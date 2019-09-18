@@ -8,6 +8,7 @@ import PopDialog from './src/__component__/PopDialog';
 import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
+import WaterMark from './src/__component__/WaterMark';
 import { menuClick } from './src/__config__/event.config';
 
 
@@ -90,6 +91,7 @@ export default {
     ContentDisplayArea,
     PopDialog,
     ComAttachFilter,
-    DownComponent
+    DownComponent,
+    WaterMark
   }
 };

@@ -167,7 +167,18 @@ async function jflowsave(flag, response) {
               reject(response);
             }
             if (res.data.resultCode === 0 && res.data.data.instanceId && !res.data.notice) {
+              window.vm.$Modal.fcSuccess({
+                title: '提示',
+                content: res.data.resultMsg
+              });
               instanceId = res.data.data.instanceId;
+              const children = document.getElementsByClassName('button-group')[0].children;
+              for (const child of children) {
+                if (child.innerText === '刷新') {
+                  const myEvent = new Event('click');
+                  child.dispatchEvent(myEvent);
+                }
+              }
 
               jflowButtons(response.objId);
 
