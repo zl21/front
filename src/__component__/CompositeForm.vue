@@ -944,9 +944,19 @@
           return arr;
         }
         if (item.display === 'image') {
-          const arr = item.valuedata
-            ? JSON.parse(item.valuedata)
-            : [];
+          let arr = [];
+          try {
+            arr = JSON.parse(item.valuedata);
+          } catch (err) {
+            if (typeof item.valuedata === 'string') {
+              arr = [{
+                URL: item.valuedata
+              }];
+            } else {
+              arr = [];
+            }
+          }
+        
           if (this.defaultSetValue[item.colname]) {
             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
           }
