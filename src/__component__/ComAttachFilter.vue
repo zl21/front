@@ -113,9 +113,8 @@
       }
     },
     methods: {
-      valueChange() {
-        // console.log('valueChange');
-        this.$emit('valuechange', { value: this.value, selected: this.selected }, this);
+      valueChange(type) {
+        this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
       },
       attachFilterInput(value) {
         this.value = value;
@@ -143,7 +142,7 @@
       // AttachFilter event
       attachFilterChange(value) {
         this.value = value;
-        this.valueChange();
+        this.valueChange('attachFilterChange');
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -154,7 +153,7 @@
           }
         ];
         this.propsData.AutoData = [];
-        this.valueChange();
+        // this.valueChange('attachFilterSelected');
       },
       attachFilterInputFocus(event, $this) {
         this.$emit('on-focus', event, $this);
@@ -169,7 +168,7 @@
             }
           ];
         }
-        this.valueChange(event, $this);
+        this.valueChange('attachFilterInputBlur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -233,7 +232,7 @@
             ID: ''
           }
         ];
-        this.valueChange();
+        this.valueChange('attachFilterClear');
       },
       attachFilterPopperShow(value, instance) {
         if (instance.showModal === false) {
