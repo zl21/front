@@ -42,7 +42,20 @@ export default {
           item: {
             type: "input",
             title: "单据编号",
-            filed: "businessCode"
+            filed: "businessNumber"
+          }
+        },
+        {
+          row: 1,
+          col: 1,
+          component: ItemComponent,
+          item: {
+            type:'input',
+            title:'工作流编号',
+            filed:'instanceId',
+            props:{
+              regx:/^[0-9]*$/
+            }
           }
         },
         {
@@ -68,7 +81,7 @@ export default {
           item: {
             type: "DatePicker",
             title: "处理时间",
-            filed: "createTime"
+            filed: "updateTime"
           }
         }
       ],
@@ -88,13 +101,20 @@ export default {
       // 表格数据
       total: 0,
       columns: [
-        {
-          title: "工作流编号",
-          key: "instanceId"
+       {
+          title:'工作流编号',
+          key: 'instanceId'
+        },{
+          title:"单据编号",
+          key:"businessNumber"
         },
         {
           title: "单据类型",
           key: "businessName"
+        },
+        {
+          title:"模板名称",
+          key:"moduleName"
         },
         // {
         //   title:'待审批人',
@@ -279,10 +299,14 @@ export default {
     getselectOption() {
       this.$network.post("/jflow/p/cs/task/relation/list", {}).then(res => {
         if (res.data.resultCode === 0) {
-          this.formLists[1].item.options = res.data.data.relations.map(item => {
-            item.value = item.businesskey;
-            item.label = item.businessName;
-            return item;
+           this.formLists.forEach(outer => {
+            if (outer.item.filed === "businessType") {
+              outer.item.options = res.data.data.relations.map(item => {
+                item.value = item.businesskey;
+                item.label = item.businessName;
+                return item;
+              });
+            }
           });
         }
       });
