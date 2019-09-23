@@ -92,8 +92,6 @@
                   });
                   this.listData.id.push(item.ID);
                 });
-               
-                console.log('ctrlAdd', this.listData);
               },
               shiftAdd: (obj) => {
                 this.listData.list = [];
@@ -132,9 +130,10 @@
             searchName: '查询结果'
           }
         ],
-        CONDITIONList: [],
+        CONDITIONList: [], // 组织树 选中值
+        CONDITIONTable: {}, // 组织树 --查询条件 
         sendMessage: {
-          CONDITION: {}, // 组织树
+          CONDITION: [], // 组织树 -- 选中结果查询条件
           GLOBAL: '', //  文字查询
           PAGENUM: 1, // 当前页码
           PAGESIZE: 50 // 显示条数
@@ -146,6 +145,7 @@
         IN: [], // 选中的id
         NOTIN: [], // 点击排除按钮 选中的id
         EXCLUDE: [],
+        chooseTreeData: [], // 选中节点
         open: false,
         refresh: false,
         checkbox: false,
@@ -183,10 +183,12 @@
           const option = {};
           option.title = obj.NAME;
           option.expand = !!obj.expand;
+          option.AKNAME = obj.AKNAME;
           option.children = [...obj.VALUE];
           option.children.forEach((item) => {
             item.title = item.NAME.toString();
             item.index = i;
+            item.AKNAME = obj.AKNAME;
           });
           return option;
         });
@@ -317,20 +319,37 @@
       changeTtree(obj) {
         this.treeId(obj);
         this.treeSelectData = obj;
-        if (this.HRORG_ID.length > 0) {
-          this.sendMessage.CONDITION = {};
-          this.AKNAME.forEach((item) => {
-            this.sendMessage.CONDITION[item] = [];
-          });
-          obj.forEach((item) => {
-            this.sendMessage.CONDITION[this.AKNAME[item.index]].push(item.ID);
-          });
-        } else if (this.CONDITIONList.length === 0) {
-          this.sendMessage.CONDITION = {};
-        }
+        this.chooseTreeData = obj;
+        this.setConDitions('obj');
+
         this.tableLoading = true;
-        console.log(this.sendMessage, 'this.sendMessage');
         this.multipleSelectionTable(this.sendMessage, 0);
+      },
+      setConDitions(type) {
+        //  计算 this.sendMessage.CONDITION
+        const ids = {};
+        this.chooseTreeData.forEach((item) => {
+          ids[item.AKNAME] = [];
+        });
+        Object.keys(ids).forEach((item) => {
+          ids[item] = this.chooseTreeData.reduce((arr, option) => {
+            if (option.AKNAME === item && option.ID) {
+              arr.push(option.ID);
+            } 
+            return arr;
+          }, []);
+        });
+        if (type === 'obj') {
+          this.CONDITIONTable = ids;
+        } else {
+          if (!Array.isArray(this.sendMessage.CONDITION)) {
+            this.sendMessage.CONDITION = [];
+          }
+          this.sendMessage.CONDITION.push(ids);
+          const _ids = { ...ids };
+          _ids.indexI = this.text.result.length;
+          this.CONDITIONList.push(_ids);
+        }
       },
       clickTab(index) {
         // 点击切换tab
@@ -461,7 +480,7 @@
           str = event.match(/[A-Za-z0-9]*/g);
         }
         this.sendMessage.GLOBAL = str[0].trim();
-        this.sendMessage.CONDITION = {};
+        this.CONDITIONTable = {};
         this.clearIndexPage();
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -485,16 +504,19 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         // this.sendMessage = 
+        this.setConDitions();
+
+        this.chooseTreeData = [];
         if (this.HRORG_ID.length > 0) {
           this.loading = true;
           if (!this.checkbox) {
             // this.sendMessage.CONDITION = [];
-            this.CONDITIONList = [];
+            // Object.keys(this.sendMessage.CONDITION).forEach((item) => {
+            //   if (item) {
+            //     this.CONDITIONList[item] = this.sendMessage.CONDITION[item];
+            //   }
+            // });
             this.EXCLUDE = '';
-            this.AKNAME.forEach((item) => {
-              this.CONDITIONList.push({ [item]: this.sendMessage.CONDITION[item] });  
-            });
-            this.sendMessage.CONDITION = this.CONDITIONList;
             this.text.result.push({
               exclude: false,
               id_list: [this.HRORG_ID],
@@ -583,9 +605,17 @@
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
+          if (Array.isArray(row.ID)) {
+            this.CONDITIONList.forEach((item, i) => {
+              if (item.indexI === index) {
+                this.CONDITIONList.splice(i, 1);
+                this.sendMessage.CONDITION.splice(i, 1);
+              }
+            });
+          }
           this.text.result.splice(index, 1);
         }
-        if (row.exclude) {
+        if (!row.exclude) {
           const indexI = this.IN.findIndex(x => x === row.ID);
           if (indexI !== -1) {
             this.IN.splice(indexI, 1);
@@ -596,7 +626,7 @@
             this.NOTIN.splice(indexI, 1);
           }
         }
-        if (this.resultData.total > 1) {
+        if (this.text.result.length > 0) {
           this.multipleScreenResultCheck(this.sendMessage, 1);
         } else {
           this.resultData.total = 0;
@@ -614,22 +644,20 @@
         this.IN = [];
         this.NOTIN = [];
         this.resultData.total = 0;
-        this.sendMessage.CONDITION = {};
+        this.sendMessage.CONDITION = [];
+        this.CONDITIONTable = {};
         this.EXCLUDE = '';
         this.componentData[1].list = [];
         this.componentData[1].total = 0;
         this.componentData[1].pageNum = 1;
         this.componentData[1].pageSize = 50;
-        this.CONDITIONList = [];
         this.clearIndexPage();
       },
       savemessage() {
         //   初始化 默认值
         this.sendMessage.TABLENAME = this.sendMessage.reftable;
         const s_value = this.sendMessage;
-        if (Array.isArray(this.sendMessage)) {
-          this.CONDITIONList = this.sendMessage.CONDITION;
-        }
+        
         s_value.IN = this.IN;
         s_value.NOTIN = this.NOTIN;
         return {
@@ -694,7 +722,8 @@
         this.multipleSetMultiQuery(savemessage);
       },
       refreshFun() {
-        this.sendMessage.CONDITION = {};
+        this.sendMessage.CONDITION = [];
+        this.CONDITIONTable = {};
         this.HRORG_ID = [];
         this.sendMessage.GLOBAL = '';
         this.sendMessage.PAGENUM = 1;
@@ -730,12 +759,11 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
-        const CONDITION = Array.isArray(obj.CONDITION) ? {} : obj.CONDITION;
         multipleComple.multipleSelectionTable({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
-              CONDITION,
+              CONDITION: this.CONDITIONTable,
               GLOBAL: obj.GLOBAL,
               PAGENUM: obj.PAGENUM || 1,
               PAGESIZE: obj.PAGESIZE || 10
@@ -754,7 +782,15 @@
         if (type !== 'all') {
           // obj.CONDITION = '';
         }
-        const CONDITION = Array.isArray(obj.CONDITION) ? obj.CONDITION : [];
+        let CONDITION = [];
+        if (!Array.isArray(obj.CONDITION)) {
+          CONDITION = Object.keys(obj.CONDITION).reduce((arr, item) => {
+            arr.push({ [item]: obj.CONDITION[item] });
+            return arr;
+          }, []);
+        } else {
+          CONDITION = obj.CONDITION;
+        }
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
@@ -858,6 +894,9 @@
     .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
         height: 26px!important;
         line-height: 26px!important;  
+    }
+    .dialog_center{
+      overflow: hidden;
     }
     .burgeon--dialog .dialog_center .table{
         height: 345px!important; 
