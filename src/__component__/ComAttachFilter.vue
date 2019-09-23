@@ -39,7 +39,7 @@
 
 <script>
   // 弹窗多选面板
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import Dialog from './ComplexsDialog';
   // 弹窗单选
   import myPopDialog from './PopDialog';
@@ -85,7 +85,7 @@
             ID: ''
           }
         ],
-        timer: null,
+        clickTimer: 0,
         value: '',
         fkobj: {}, // 过滤
         propsData: {},
@@ -115,10 +115,10 @@
     },
     methods: {
       valueChange(type) {
-        clearTimeout(this.timer);
-        this.timer = setTimeout(() => {
+        window.clearTimeout(this.clickTimer);
+        this.clickTimer = window.setTimeout(() => {
           this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
-        }, 10);
+        }, 100);
       },
       attachFilterInput(value) {
         this.value = value;
@@ -147,6 +147,7 @@
         this.value = value;
         this.inputValueChange(value);
         this.valueChange('change');
+
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -156,8 +157,11 @@
             ID: row.value
           }
         ];
-        this.propsData.AutoData = [];
+        
         this.valueChange('selected');
+        setTimeout(() => {
+          //this.propsData.AutoData = [];
+        }, 50);
       },
       attachFilterInputFocus(event, $this) {
         this.$emit('on-focus', event, $this);
@@ -236,7 +240,7 @@
             ID: ''
           }
         ];
-        // this.valueChange('clear');
+        //this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
         if (instance.showModal === false) {
@@ -304,7 +308,7 @@
           const saveType = JSON.parse($this.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
           if (saveType > 0) {
-            const value = `已经选中${$this._data.IN.length}条数据`;
+            const value = `已经选中${$this._data.resultData.total}条数据`;
            
         
             if (!this.propsData.fkobj.saveType) {
@@ -360,7 +364,9 @@
         this.propstype.show = true;
       }
       if (this.selected[0] && this.selected[0].ID) {
-        this.propsData.disabled = true;
+        if ( this.propstype.fkdisplay !== 'pop' ) {
+          this.propsData.disabled = true;
+        }
       }
     }
   };

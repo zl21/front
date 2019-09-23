@@ -116,7 +116,7 @@
   import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';

@@ -77,7 +77,7 @@
 </template>
 
 <script>
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 

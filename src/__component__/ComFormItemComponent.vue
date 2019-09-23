@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 

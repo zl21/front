@@ -689,30 +689,32 @@
       ComAttachFilterkeydown() {
 
       },
-      attachFilterInput(item, $this) {
+      attachFilterInput(item) {
         this._items.value = item.value;
+        this._items.props.Selected = item.selected;
         this.valueChange();
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value'](
-            $this,
-            item.value,
-            item.selected
-          );
-        }
-        if (
-          Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-          && typeof this._items.event.clear === 'function'
-        ) {
-          if (!item.value && !item.selected[0] && !item.selected[0].ID) {
-            this._items.event.clear($this);
-          }
-        }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        // console.log(item);
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     item.value,
+        //     item.selected
+        //   );
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+        //   && typeof this._items.event.clear === 'function'
+        // ) {
+        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
+        //     this._items.event.clear($this);
+        //   }
+        // }
         // if (
         //   Object.prototype.hasOwnProperty.call(
         //     this._items.event,
