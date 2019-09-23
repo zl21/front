@@ -85,6 +85,7 @@
             ID: ''
           }
         ],
+        timer: null,
         value: '',
         fkobj: {}, // 过滤
         propsData: {},
@@ -114,13 +115,15 @@
     },
     methods: {
       valueChange(type) {
-        this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+        }, 10);
       },
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
-        this.valueChange();
-        this.inputValueChange(value);
+        // this.valueChange();
       },
       inputValueChange(value) {
         // 外键的模糊搜索
@@ -142,7 +145,8 @@
       // AttachFilter event
       attachFilterChange(value) {
         this.value = value;
-        this.valueChange('attachFilterChange');
+        this.inputValueChange(value);
+        this.valueChange('change');
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -153,7 +157,7 @@
           }
         ];
         this.propsData.AutoData = [];
-        // this.valueChange('attachFilterSelected');
+        this.valueChange('selected');
       },
       attachFilterInputFocus(event, $this) {
         this.$emit('on-focus', event, $this);
@@ -168,7 +172,7 @@
             }
           ];
         }
-        this.valueChange('attachFilterInputBlur');
+        // this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -232,7 +236,7 @@
             ID: ''
           }
         ];
-        this.valueChange('attachFilterClear');
+        // this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
         if (instance.showModal === false) {
@@ -335,7 +339,7 @@
             }
           ];
         }
-        this.valueChange();
+        // this.valueChange();
       }
     },
     created() {

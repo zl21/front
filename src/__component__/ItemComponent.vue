@@ -709,7 +709,7 @@
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
           && typeof this._items.event.clear === 'function'
         ) {
-          if (!item.value && !item.selected[0].ID) {
+          if (!item.value && !item.selected[0] && !item.selected[0].ID) {
             this._items.event.clear($this);
           }
         }
