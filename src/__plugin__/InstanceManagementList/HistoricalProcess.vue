@@ -90,7 +90,7 @@
             item: {
               type: 'DatePicker',
               title: '处理时间',
-              filed: 'createTime'
+              filed: 'updateTime'
             }
           }
         ],
@@ -111,29 +111,37 @@
         total: 0,
         columns: [
           {
-            title: '工作流编号',
-            key: 'instanceId'
-          },
-          {
-            title: '单据类型',
-            key: 'businessName'
-          },
-          // {
-          //   title:'待审批人',
-          //   key: 'approverValue'
-          // },
-          {
-            title: '发起人',
-            key: 'initiatorName'
-          },
-          {
-            title: '处理时间',
-            key: 'updateTime'
-          },
-          {
-            title: '消耗时长',
-            key: 'durationTime'
-          },
+          title: "工作流编号",
+          key: "instanceId"
+        },
+        {
+          title: "单据编号",
+          key: "businessNumber"
+        },
+        {
+          title: "单据类型",
+          key: "businessName"
+        },
+        {
+          title: "模板名称",
+          key: "moduleName"
+        },
+        // {
+        //   title:'待审批人',
+        //   key: 'approverValue'
+        // },
+        {
+          title: "发起人",
+          key: "initiatorName"
+        },
+        {
+          title: "处理时间",
+          key: "updateTime"
+        },
+        {
+          title: "消耗时长",
+          key: "durationTime"
+        },
           {
             title: '流程状态',
             key: 'processStatus',
@@ -300,11 +308,15 @@
       getselectOption() {
         this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
-            this.formLists[1].item.options = res.data.data.relations.map((item) => {
-              item.value = item.businesskey;
-              item.label = item.businessName;
-              return item;
-            });
+            this.formLists.forEach(outer => {
+            if (outer.item.filed === "businessType") {
+              outer.item.options = res.data.data.relations.map(item => {
+                item.value = item.businesskey;
+                item.label = item.businessName;
+                return item;
+              });
+            }
+          });
           }
         });
       },
