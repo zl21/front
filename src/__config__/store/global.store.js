@@ -25,7 +25,8 @@ export default {
       TabLists: true, // 隐藏tab栏
       Navigator: true, // 隐藏菜单栏
     },
-    LinkUrl: []
+    LinkUrl: [],
+
     
   },
   mutations,

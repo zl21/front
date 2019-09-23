@@ -35,27 +35,22 @@ export const launchNetworkMonitor = () => {
  */
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
+  let path = '/';
   switch (type) {
     case 'action':
-      router.push({
-        path: `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
-      });
+      path = `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
       break;
     case 'table':
-      router.push({
-        path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
-      });
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
     case 'external':
-      router.push({
-        path: `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
-      });
+      path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
       break;
     default:
-      router.push({
-        path: '/',
-      });
       break;
+  }
+  if (router.currentRoute.fullPath !== path) {
+    router.push({ path }).catch((e) => { console.error(e); });
   }
 };
 

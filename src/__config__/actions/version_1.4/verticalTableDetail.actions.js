@@ -16,7 +16,6 @@ export default {
       table,
       objid: id,
     })).then((res) => {
-      
       const resData = res.data.data;
       commit('updateCopyDataForRealdOnly', resData); // 复制按钮操作保存默认数据
       dispatch('updateObjectForMainTableForm').then(() => {

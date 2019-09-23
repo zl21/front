@@ -3,6 +3,7 @@ import CreateButton from './button';
 import todoList from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
+import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
 
 
 let axios = {}; // axios请求
@@ -130,7 +131,7 @@ async function jflowsave(flag, response) {
       Temparam.append('objid', router.currentRoute.params.itemId);
     }
     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-    network.post(`/p/cs/getObject`, Temparam).then(async (res) => {
+    network.post('/p/cs/getObject', Temparam).then(async (res) => {
       if (res.data.code === 0) {
         res.data.data.addcolums.forEach((element) => {
           if (element.childs) {
@@ -166,7 +167,18 @@ async function jflowsave(flag, response) {
               reject(response);
             }
             if (res.data.resultCode === 0 && res.data.data.instanceId && !res.data.notice) {
+              window.vm.$Modal.fcSuccess({
+                title: '提示',
+                content: res.data.resultMsg
+              });
               instanceId = res.data.data.instanceId;
+              const children = document.getElementsByClassName('button-group')[0].children;
+              for (const child of children) {
+                if (child.innerText === '刷新') {
+                  const myEvent = new Event('click');
+                  child.dispatchEvent(myEvent);
+                }
+              }
 
               jflowButtons(response.objId);
 
@@ -259,17 +271,17 @@ function getConfigMap() { // 获取所有配置流程图的表集合
 }
 
 function createComponent() { // 创建跟节点实例
-  // const jflowPlugin = document.createElement('div');
-  // jflowPlugin.id = 'jflowPlugin';
-  // document.body.appendChild(jflowPlugin);
-  // const vm = new Vue({
-  //   el: '#jflowPlugin',
-  //   template: '<mainComponent />',
-  //   components: {
-  //     mainComponent
-  //   }
-  // });
-  window.jflowPlugin = {};
+  const jflowPlugin = document.createElement('div');
+  jflowPlugin.id = 'jflowPlugin';
+  document.body.appendChild(jflowPlugin);
+  const vm = new Vue({
+    el: '#jflowPlugin',
+    template: '<mainComponent />',
+    components: {
+      mainComponent
+    }
+  });
+  window.jflowPlugin = vm.$children[0];
   window.jflowPlugin.axios = axios;
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;

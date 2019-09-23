@@ -127,8 +127,10 @@
       ]),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
-        router.push({ path: tag.routeFullPath });
-        this.switchTabForActiveTab(item);
+        if (router.currentRoute.fullPath !== tag.routeFullPath) {
+          router.push({ path: tag.routeFullPath });
+          this.switchTabForActiveTab(item);
+        }
       },
       handleClose(tag) {
         this.tabCloseAppoint(tag);

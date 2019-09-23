@@ -213,8 +213,9 @@
                 }
               }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+              //  || item === 'actionCANCOPY'
               val.cmds.forEach((item, index) => {
-                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
                   val.prem[index] = false;
                 }
               });
@@ -321,13 +322,6 @@
         }
         return [];
       },
-      idArray() {
-        if (this.itemName && typeof (this.updateData[this.itemName].delete[this.itemName]) === 'array') {
-          console.log(typeof (this.updateData[this.itemName].delete[this.itemName]));
-          return this.updateData[this.itemName].delete[this.itemName];
-        }
-        return [];
-      }
     },
     props: {
       watermarkimg: {
@@ -384,7 +378,7 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
           this.upData();
@@ -473,6 +467,7 @@
 
         //   console.log(event.detail);
         // }, false);
+        
         this.clearEditData();
         const message = '刷新成功';
         this.upData(`${message}`);
@@ -589,8 +584,9 @@
             showCancel: true,
             content: '确认执行提交?',
             onOk: () => {
-              obj.requestUrlPath = this.saveButtonPath;
-              this.determineSaveType(obj);
+              this.saveButtonPath = obj.requestUrlPath;
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
               this.saveEventAfter = 'submit';
             }
           };
@@ -628,8 +624,9 @@
             showCancel: true,
             content: '确认执行作废?',
             onOk: () => {
-              obj.requestUrlPath = this.saveButtonPath;
-              this.determineSaveType(obj);
+              this.saveButtonPath = obj.requestUrlPath;
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
               this.saveEventAfter = 'invalid';
             }
           };
@@ -658,9 +655,26 @@
         case 'external':
           this.objTabActionUrl(tab);
           break;
+        case 'edit':
+          this.objTabActionEdit(tab);
+          break;
         default:
           break;
         }
+      },
+      objTabActionEdit(tab) {
+        const editTableId = tab.action.lastIndexOf('/');
+        const editTableName = tab.action.substring(0, editTableId);
+        const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
+        const name = `S.${editTableName}.${editTableId}`;
+        this.addKeepAliveLabelMaps({ name, label });
+        this.tabHref({
+          type: 'tableDetailVertical',
+          tableName: editTableName,
+          tableId: editTableId,
+          label: 'this.activeTab.label',
+          id: this.itemId
+        });
       },
       objTabActiondDownload(tab) {
         // const filename = tab.webname;
@@ -693,7 +707,7 @@
       objTabActionNavbar(tab) {
         // 判断跳转到哪个页面
         const url = tab.action;
-        const index = url.lastIndexOf('\/');
+        const index = url.lastIndexOf('/');
         const customizedModuleName = url.substring(index + 1, url.length);
         const label = tab.webdesc;
         const type = 'tableDetailAction';
@@ -720,6 +734,16 @@
         // const linkUrl = tab.action;
         // const linkId = tab.webid;
         // this.increaseLinkUrl({ linkId, linkUrl });
+        // const label = `${tab.webdesc}`;
+        // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
+        // this.addKeepAliveLabelMaps({ name, label });
+        // const linkInfo = {
+        //   linkUrl: tab.action,
+        //   linkId: tab.webid,
+        //   label,
+        //   name
+        // };
+        // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
         // setTimeout(() => {
         //   this.tabOpen({
         //     type: 'tableDetailUrl',
@@ -1459,7 +1483,6 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        console.log(66, obj);
         this.determineSaveType(obj);
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
@@ -1837,7 +1860,7 @@
         if (this.saveEventAfter === 'submit') { // 提交操作
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
             });
           });
           // let message = '';
@@ -1852,7 +1875,7 @@
         } else if (this.saveEventAfter === 'invalid') {
           const promise = new Promise((resolve, reject) => {
             this.getObjectTryInvalid({
-              objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
             });
           });
           // let message = '';
@@ -1903,9 +1926,29 @@
             }
           }
         }
-      }
-    },
+      },
+      // clickKeepAliveLabelMaps(buttonData) {
+      //   buttonData.objbutton.map((button) => {
+      //     if (button.vuedisplay === 'edit') {
+      //       const editTableId = button.action.lastIndexOf('/');
+      //       const editTableName = button.action.substring(0, editTableId);
+      //       const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
+      //       const name = `S.${editTableName}.${editTableId}`;
+      //       this.addKeepAliveLabelMaps({ name, label });
+      //     } else if (button.vuedisplay === 'external') {
+      //       const linkUrl = button.action;
+      //       const linkId = button.webid;
+      //       this.increaseLinkUrl({ linkId, linkUrl });
+      //       const label = `${button.webdesc}`;
+      //       const name = `L.${button.webname.toUpperCase()}.${linkId}`;
+      //       this.addKeepAliveLabelMaps({ name, label });
+      //     }
+      //     return false;
+      //   });
+      // }
+    },  
     mounted() {
+      // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
           if (item.tablename === this.tableName) {

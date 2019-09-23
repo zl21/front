@@ -1,4 +1,6 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
+import { enableHistoryAndFavorite } from '../../../constants/global';
+
 
 export default {
   getHistoryAndFavorite({ commit }) {
@@ -12,9 +14,11 @@ export default {
       commit('updateMenuLists', res.data.data);
     });
   },
-  updateAccessHistory({ commit }, { type, id }) {
-    network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
-      commit('updateHistoryAndFavorite', { history: res.data.data });
-    });
+  updateAccessHistory({ commit, state }, { type, id }) {
+    if (enableHistoryAndFavorite()) {
+      network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
+        commit('updateHistoryAndFavorite', { history: res.data.data });
+      });
+    }
   },
 };

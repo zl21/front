@@ -5,6 +5,7 @@ import {
   STANDARD_TABLE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
+  LINK_MODULE_COMPONENT_PREFIX,
 } from '../../../constants/global';
 import router from '../../router.config';
 
@@ -41,10 +42,17 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        if (c.type === 'action') {
+        if (c.type === 'action' && c.vuedisplay !== 'external') {
+          // 自定义界面的处理
           a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-        }
-        if (c.type === 'table') {
+        } else if (c.type === 'action' && c.vuedisplay === 'external') {
+          // 外部跳转链接URL的处理
+          const linkUrl = {};
+          linkUrl[c.id] = c.url;
+          state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
+          a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+        } else if (c.type === 'table') {
+          // 标准列表的处理
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
         }
         return a;
@@ -225,6 +233,22 @@ export default {
   },
   copyModifyDataForSingleObject(state, modifyData) {
     state.modifyData = modifyData;
+  },
+  setLayout(state, data) {
+    state.showModule = {
+      HistoryAndFavorite: data, // 隐藏收藏夹
+      TabLists: data, // 隐藏tab栏
+      Navigator: data, // 隐藏菜单栏
+    };
+    if (data === false) {
+      // const dom = document.getElementById('content');
+      // const doc = dom.style.padding = '0px';
+      // const domForMargin = dom.parentNode.parentNode.style.margin = '0px';
+    }
+  },
+  addKeepAliveLabelMaps(state, { name, label }) {
+    state.keepAliveLabelMaps[name] = `${label}`;
   }
+  
   
 };

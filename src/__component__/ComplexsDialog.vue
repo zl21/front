@@ -134,7 +134,7 @@
         ],
         CONDITIONList: [],
         sendMessage: {
-          CONDITION: '', // 组织树
+          CONDITION: {}, // 组织树
           GLOBAL: '', //  文字查询
           PAGENUM: 1, // 当前页码
           PAGESIZE: 50 // 显示条数
@@ -208,23 +208,9 @@
       },
       treeChecked() {
         // tree_lists 树形结构重新组合
-        const self = this;
         this.treedata.forEach((item, index) => {
           this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
-        // ((option) => {
-        //   option.checked = false;
-        //   option.children.map((item) => {
-        //     if ((item.ID.toString()).indexOf(self.HRORG_ID.join(',')) === -1) {
-        //       item.checked = true;
-        //     } else {
-        //       item.checked = false;
-
-        //       return item;
-        //     }
-        //   });
-        //   return option;
-        // });
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
@@ -262,9 +248,9 @@
         this.componentData[1].columns = this.columnsDate(header, 1);
         // console.log(this.IN,'this.INthis.IN');
       },
-      columnsDate(columns, index) {
+      columnsDate(columns) {
         // 表格头部 数据重组
-        return Object.keys(columns).reduce((item, option, key) => {
+        return Object.keys(columns).reduce((item, option) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
               key: 'ID',
@@ -339,10 +325,11 @@
           obj.forEach((item) => {
             this.sendMessage.CONDITION[this.AKNAME[item.index]].push(item.ID);
           });
-        } else {
-          this.sendMessage.CONDITION = '';
+        } else if (this.CONDITIONList.length === 0) {
+          this.sendMessage.CONDITION = {};
         }
         this.tableLoading = true;
+        console.log(this.sendMessage, 'this.sendMessage');
         this.multipleSelectionTable(this.sendMessage, 0);
       },
       clickTab(index) {
@@ -502,11 +489,11 @@
           this.loading = true;
           if (!this.checkbox) {
             // this.sendMessage.CONDITION = [];
+            this.CONDITIONList = [];
             this.EXCLUDE = '';
             this.AKNAME.forEach((item) => {
               this.CONDITIONList.push({ [item]: this.sendMessage.CONDITION[item] });  
             });
-            console.log(this.CONDITIONList, 'this.CONDITIONList');
             this.sendMessage.CONDITION = this.CONDITIONList;
             this.text.result.push({
               exclude: false,
@@ -519,7 +506,6 @@
             this.clearTree();
           } else {
             this.EXCLUDE = [];
-            this.sendMessage.CONDITION = '';
             this.HRORG_ID.forEach((x) => {
               this.EXCLUDE.push({
                 [this.AKNAME]: [x]
@@ -536,7 +522,6 @@
             this.clearTree();
           }
         } else {
-          this.sendMessage.CONDITION = '';
           this.sendMessage.EXCLUDE = '';
           this.clearIndexPage();
           return false;
@@ -629,18 +614,22 @@
         this.IN = [];
         this.NOTIN = [];
         this.resultData.total = 0;
-        this.sendMessage.CONDITION = '';
+        this.sendMessage.CONDITION = {};
         this.EXCLUDE = '';
         this.componentData[1].list = [];
         this.componentData[1].total = 0;
         this.componentData[1].pageNum = 1;
         this.componentData[1].pageSize = 50;
-
+        this.CONDITIONList = [];
         this.clearIndexPage();
       },
       savemessage() {
+        //   初始化 默认值
         this.sendMessage.TABLENAME = this.sendMessage.reftable;
         const s_value = this.sendMessage;
+        if (Array.isArray(this.sendMessage)) {
+          this.CONDITIONList = this.sendMessage.CONDITION;
+        }
         s_value.IN = this.IN;
         s_value.NOTIN = this.NOTIN;
         return {
@@ -648,7 +637,7 @@
           text: JSON.stringify(this.text)
         };
       },
-      savObjemessage() {
+      savObjemessage() {  
         const sendMessage = {
           idArray: [],
           lists: {
@@ -705,7 +694,7 @@
         this.multipleSetMultiQuery(savemessage);
       },
       refreshFun() {
-        this.sendMessage.CONDITION = '';
+        this.sendMessage.CONDITION = {};
         this.HRORG_ID = [];
         this.sendMessage.GLOBAL = '';
         this.sendMessage.PAGENUM = 1;
@@ -741,11 +730,12 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
+        const CONDITION = Array.isArray(obj.CONDITION) ? {} : obj.CONDITION;
         multipleComple.multipleSelectionTable({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
-              CONDITION: obj.CONDITION,
+              CONDITION,
               GLOBAL: obj.GLOBAL,
               PAGENUM: obj.PAGENUM || 1,
               PAGESIZE: obj.PAGESIZE || 10
@@ -762,19 +752,14 @@
       },
       multipleScreenResultCheck(obj, index, type) {
         if (type !== 'all') {
-          obj.CONDITION = '';
+          // obj.CONDITION = '';
         }
-        // setTimeout(() =>{
-        //   this.loading = false, // z最大loading
-        //   this.tree_loading =  false, // 左边的 的loading
-        //   this.tableLoading =  false, // 中间的 的loading
-        // },300)
-        
+        const CONDITION = Array.isArray(obj.CONDITION) ? obj.CONDITION : [];
         multipleComple.multipleScreenResultCheck({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
-              CONDITION: obj.CONDITION,
+              CONDITION,
               GLOBAL: obj.GLOBAL,
               PAGENUM: obj.PAGENUM,
               PAGESIZE: obj.PAGESIZE,
@@ -816,6 +801,7 @@
         this.multipleSelectionTree(this.fkobj);
         this.sendMessage.reftable = this.fkobj.reftable;
         const tableData = Object.assign(this.sendMessage, this.fkobj);
+
         this.sendMessage = tableData;
         this.multipleSelectionTable(tableData, 0);
         if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
@@ -824,7 +810,7 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = { ...this.filter.value };    
+          this.sendMessage = { ...this.filter.value };  
           this.sendMessage.PAGENUM = 1;
           this.sendMessage.PAGESIZE = 10;
           this.sendMessage.TABLENAME = this.fkobj.reftable;

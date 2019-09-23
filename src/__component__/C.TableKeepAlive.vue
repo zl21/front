@@ -43,15 +43,23 @@
         if (Vue.component(componentName) === undefined) {
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
           if (target) {
-            Vue.component(componentName, target.component);
-            Vue.component(componentName)().then((result) => {
-              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
-            });
+            if (typeof target.component === 'function') {
+              Vue.component(componentName, target.component);
+              Vue.component(componentName)().then((result) => {
+                Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
+              });
+              this.currentModule = componentName;
+            } else {
+              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, target.component)));
+              this.currentModule = componentName;
+            }
           } else {
             Vue.component(componentName, PageNotFound);
+            this.currentModule = componentName;
           }
+        } else {
+          this.currentModule = componentName;
         }
-        this.currentModule = componentName;
       }
     },
     mounted() {

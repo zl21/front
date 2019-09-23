@@ -61,7 +61,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-
+  import { getTouristRoute } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -167,10 +167,10 @@
         network
           .get('/p/cs/logout')
           .then(() => {
-            router.push({ path: '/login' });
+            router.push({ path: getTouristRoute() });
           })
           .catch(() => {
-            router.push({ path: '/login' });
+            router.push({ path: getTouristRoute() });
           });
       }
     }
