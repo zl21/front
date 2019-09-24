@@ -608,7 +608,7 @@
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.fkobj.colid = current.colid;
-                obj.item.props.fkobj.saveType = 'object';
+                //obj.item.props.fkobj.saveType = 'object';
                 obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];

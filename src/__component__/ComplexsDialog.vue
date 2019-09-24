@@ -27,7 +27,6 @@
 </template>
 
 <script>
-  import { fips } from 'crypto';
   import { Version } from '../constants/global';
 
   // eslint-disable-next-line import/no-dynamic-require
@@ -168,7 +167,8 @@
         listData: {
           id: [],
           list: [] 
-        }
+        },
+        idslist: [] // 选中所有的id
       };
     },
     methods: {
@@ -248,6 +248,9 @@
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
+        if (data.ids) {
+          this.idslist = data.ids.flat();
+        }
         // console.log(this.IN,'this.INthis.IN');
       },
       columnsDate(columns) {
@@ -355,6 +358,19 @@
         // 点击切换tab
         this.index = index;
       },
+      selectId() {
+        // 查询条件 所有id
+        // const ids = this.CONDITIONList.reduce((arr, item) => {
+        //   Object.keys(item).forEach((option) => {
+        //     console.log(arr,'arr');
+        //     let options = item[option];
+        //     arr = arr.concat(options);
+        //   });
+        //   return arr;
+        // }, []);
+        // return ids.concat(this.IN);
+
+      },
       changePage(index) {
         // 点击页面
         this.tableLoading = true;
@@ -370,6 +386,7 @@
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
         }
+        return true;
       },
       changePageSize(index) {
         // 点击显示条数
@@ -382,6 +399,7 @@
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
         }
+        return true;
       },
       rowdbclick(row) {
         // 表格双击
