@@ -125,9 +125,8 @@ export default {
     state.updateData = Object.assign({}, state.updateData);
   },
   updateCheckedInfoData(state, data) {
-    state.updateData[data.tableName]{
+    if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].checkedInfo = data.value;
-
     }
   },
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
