@@ -1559,6 +1559,7 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
+
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
@@ -1780,6 +1781,7 @@
           this.clearEditData();// 清空store update数据
           this.saveAfter(type, tableName);
         }, () => {}).then(() => {
+          this.saveAfter(type, tableName);
         });
       },
       saveAfter(type, tableName) {
@@ -1988,6 +1990,10 @@
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
       }
+      // const a = setTimeout(() => {
+      //   const dom = document.getElementById('back');
+      //   dom.click();
+      // }, 1000);
     },
     beforeCreate() {
     },
