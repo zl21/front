@@ -21,7 +21,16 @@
       >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop'">
         <!-- 路由跳转 -->
-        <template v-if=" !!_items.value">
+        <template v-if=" !!_items.props.disabled && !!_items.value">
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.Selected)"
+          />
+        </template>
+        <template v-if="_items.props.disabled && _items.props.Selected[0]">
+          <!-- disabled -->
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -32,12 +41,21 @@
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
         <!-- 路由跳转 -->
-        <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
+        <template v-if="!! _items.props.disabled && !!_items.value && _items.value[0] && !!_items.value[0].ID">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.value)"
+          />
+        </template>
+        <template v-if="_items.props.disabled && _items.props.defaultSelected[0]">
+          <!-- disabled -->
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.defaultSelected)"
           />
         </template>
       </template>

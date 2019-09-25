@@ -1436,6 +1436,14 @@
           ) {
             item.props.type = 'text';
             item.type = 'input';
+            item.props.defaultSelected = [{
+              ID: current.refobjid,
+              Label: current.valuedata
+            }];
+            item.props.Selected = [{
+              ID: current.refobjid,
+              Label: current.valuedata
+            }];
           }
         }
         item.props.disabled = this.objreadonly
