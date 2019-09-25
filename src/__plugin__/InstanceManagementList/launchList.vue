@@ -93,7 +93,7 @@ export default {
         pageSize: 10,
         excuStatus: 0,
         userId: window.jflowPlugin.userInfo.id,
-        createTime: [
+        updateTime: [
           new Date(new Date(new Date().toLocaleDateString()).getTime()),
           new Date()
         ]
@@ -139,38 +139,61 @@ export default {
           key: "processStatus",
           render: (h, params) => {
             let processStatusT = "";
-            switch (params.row.processStatus) {
-              case 0:
-                processStatusT = "待审批";
-                break;
-              case 1:
-                processStatusT = "审批中";
-                break;
-              case 2:
-                processStatusT = "已中止";
-                break;
-              case 3:
-                processStatusT = "已完结";
-                break;
-              case 4:
-                processStatusT = "业务系统提交失败";
-                break;
-              case -1:
-                processStatusT = "已撤销";
-                break;
-            }
-            return h(
-              "p",
-              {
-                style: {
-                  maxWidth: "160px",
-                  overflow: "hidden",
-                  "text-overflow": "ellipsis",
-                  "white-space": "nowrap"
+            if (params.row.processStatus === 4) {
+             return h("Poptip",{
+                props:{
+                  trigger:'hover',
+                  content:params.row.submitErrorMsg
                 }
-              },
-              processStatusT
-            );
+              },[ h(
+                "span",
+                {
+                  style: {
+                    color: "rgba(16, 142, 233, 1)",
+                    cursor: "pointer"
+                  },
+                  on: {
+                    click: () => {
+                      // this.modalShow = true;
+                      this.instanceId = params.row.instanceId;
+                      this.submitTask(this.instanceId);
+                    }
+                  }
+                },
+                "提交失败，重新提交"
+              )])
+            } else {
+              switch (params.row.processStatus) {
+                case 0:
+                  processStatusT = "待审批";
+                  break;
+                case 1:
+                  processStatusT = "审批中";
+                  break;
+                case 2:
+                  processStatusT = "已中止";
+                  break;
+                case 3:
+                  processStatusT = "已完结";
+                  break;
+                // case 4:processStatusT="业务系统提交失败";break;
+                case -1:
+                  processStatusT = "已撤销";
+                  break;
+              }
+              return h(
+                "p",
+                {
+                  style: {
+                    maxWidth: "160px",
+                    overflow: "hidden",
+                    "text-overflow": "ellipsis",
+                    "white-space": "nowrap"
+                  }
+                },
+                processStatusT
+              );
+            }
           }
         },
         {
@@ -317,22 +340,22 @@ export default {
       this.spinShow = true;
       // 查询列表
       if (
-        this.searchData.createTime &&
-        this.searchData.createTime[0] &&
-        this.searchData.createTime[1]
+        this.searchData.updateTime &&
+        this.searchData.updateTime[0] &&
+        this.searchData.updateTime[1]
       ) {
         this.searchData.startTime = new Date(
-          this.searchData.createTime[0]
+          this.searchData.updateTime[0]
         ).format("yyyy-MM-dd hh:mm");
         this.searchData.endTime = new Date(
-          this.searchData.createTime[1]
+          this.searchData.updateTime[1]
         ).format("yyyy-MM-dd hh:mm");
       } else {
         this.searchData.startTime = "";
         this.searchData.endTime = "";
       }
       const obj = Object.assign({}, this.searchData);
-      delete obj.createTime;
+      delete obj.updateTime;
       this.$network
         .post("/jflow/p/cs/task/initiator/list", obj)
         .then(res => {

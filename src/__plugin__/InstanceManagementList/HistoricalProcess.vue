@@ -101,7 +101,7 @@
           searchType: '0,1',
           excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: [
+          updateTime: [
             new Date(new Date(new Date().toLocaleDateString()).getTime()),
             new Date()
           ]
@@ -324,22 +324,22 @@
         this.spinShow = true;
         // 查询列表
         if (
-          this.searchData.createTime
-          && this.searchData.createTime[0]
-          && this.searchData.createTime[1]
+          this.searchData.updateTime
+          && this.searchData.updateTime[0]
+          && this.searchData.updateTime[1]
         ) {
           this.searchData.startTime = new Date(
-            this.searchData.createTime[0]
+            this.searchData.updateTime[0]
           ).format('yyyy-MM-dd hh:mm');
           this.searchData.endTime = new Date(
-            this.searchData.createTime[1]
+            this.searchData.updateTime[1]
           ).format('yyyy-MM-dd hh:mm');
         } else {
           this.searchData.startTime = '';
           this.searchData.endTime = '';
         }
         const obj = Object.assign({}, this.searchData);
-        delete obj.createTime;
+        delete obj.updateTime;
         this.$network
           .post('/jflow/p/cs/task/history/list', obj)
           .then((res) => {
