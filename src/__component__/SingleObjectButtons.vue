@@ -1772,16 +1772,16 @@
           sataType,
           itemNameGroup
         };
-
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
-
         promise.then(() => {
           this.clearEditData();// 清空store update数据
           this.saveAfter(type, tableName);
-        }, () => {}).then(() => {
+        }, () => {
           this.saveAfter(type, tableName);
+        }).then(() => {
+
         });
       },
       saveAfter(type, tableName) {
