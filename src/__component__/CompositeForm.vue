@@ -1002,8 +1002,8 @@
           const ID = item.refobjid ? item.refobjid : '';
           if (item.fkdisplay === 'mrp' && fkdisplayValue) {
             // 多选change
-            const refobjid = fkdisplayValue.ID.split(',');
-            const valuedata = fkdisplayValue.Label.split(',');
+            const refobjid = (fkdisplayValue.ID && fkdisplayValue.ID.split(',')) || [];
+            const valuedata = (fkdisplayValue.Label && fkdisplayValue.Label.split(',')) || [];
             const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
                 ID: itemI || '',
@@ -1015,8 +1015,8 @@
             return option;
           } if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
-            const refobjid = item.refobjid.split(',');
-            const valuedata = item.valuedata.split(',');
+            const refobjid = (item.refobjid && item.refobjid.split(',')) || [];
+            const valuedata = (item.valuedata && item.valuedata.split(',')) || [];
             const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
                 ID: itemI || '',
