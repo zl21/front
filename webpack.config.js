@@ -61,7 +61,7 @@ module.exports = env => ({
       },
       {
         context: '/jflow',
-        target: 'http://47.99.229.124:18080' // 重新占单
+        target: 'http://172.18.34.214:18080' // 重新占单
       }]
   },
   target: 'web',

@@ -94,19 +94,21 @@ async function jflowsave(flag, request) {
           businessUrl: request.url,
           ruleField: 'V'
         }).then((res) => {
-        if (res.data.notice) {
+        if (res.data.data.records[0].notice) {
           window.vm.$Modal.fcError({
             title: '错误',
-            content: res.data.notice
+            content: res.data.data.records[0].notice
           });
-          resolve();
+          reject(response);
           return;
         }
         if (res.data.resultCode === 0) {
-          window.vm.$Modal.fcSuccess({
-            title: '提示',
-            content: res.data.resultMsg
-          });
+          if (response.objids) {
+            window.vm.$Modal.fcWarning({
+              title: '提示',
+              content: '请稍等,正在审批······'
+            });
+          }
           instanceId = res.data.data.instanceId;
           if (document.getElementsByClassName('button-group')[0]) {
             const children = document.getElementsByClassName('button-group')[0].children;
@@ -148,14 +150,13 @@ async function jflowsave(flag, request) {
       for (const pair of params.entries()) {
         changeDetail[pair[0]] = pair[1];
       }
-
       delete changeDetail.table;
       delete changeDetail.objId;
       axios.post('/jflow/p/cs/process/business/save',
         {
-          businessCodes: router.current.params.itemId,
-          businessType: router.current.params.tableId,
-          businessTypeName: router.current.params.tableName,
+          businessCodes: request.data.data.objId,
+          businessType: router.currentRoute.params.tableId,
+          businessTypeName: router.currentRoute.params.tableName,
           changeDetail,
           instanceId,
           changeUser: userInfo.id,
@@ -276,7 +277,7 @@ async function jflowsave(flag, request) {
 function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
-      config.headers.accessToken = accessToken;
+      config.headers.accountName = 'guest';
     }
     const type = router.currentRoute.path.split('/')[3];// 获取组件类型
 
@@ -330,27 +331,30 @@ function AxiosGuard(axios) { // axios拦截
 }
 
 
-function jflowButtons(id, pid) { // jflow按钮逻辑处理
-  axios.post('/jflow/p/cs/task/buttons', {
-    businessCode: id,
-    userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-    businessType: pid || router.current.params.tableId
-  })
-    .then((res) => {
-      if (res.data.resultCode === 0) {
-        if (res.data.data.submitErrorMsg) {
-          window.vm.$Modal.fcError({
-            title: '错误',
-            content: res.data.data.submitErrorMsg,
-            mask: true
-          });
+async function jflowButtons(id, pid) { // jflow按钮逻辑处理
+  await new Promise((resolve, reject) => {
+    axios.post('/jflow/p/cs/task/buttons', {
+      businessCode: id,
+      userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
+      businessType: pid || router.currentRoute.params.tableId
+    })
+      .then((res) => {
+        if (res.data.resultCode === 0) {
+          if (res.data.data.submitErrorMsg) {
+            window.vm.$Modal.fcError({
+              title: '错误',
+              content: res.data.data.submitErrorMsg,
+              mask: true
+            });
+          }
+          modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
+          instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
+  
+          CreateButton(res.data.data, jflowButtons, id, store);
         }
-        modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
-        instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
-
-        CreateButton(res.data.data, jflowButtons, id, store);
-      }
-    });
+        resolve(res);
+      });
+  });
 }
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
