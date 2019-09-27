@@ -84,7 +84,6 @@ async function jflowsave(flag, request) {
         changeDetail[pair[0]] = pair[1];
       }
       const response = changeDetail;
-      console.log(response);
       axios.post('/jflow/p/cs/process/launch',
         {
           businessCodes: response.ids ? response.ids : response.objId,
