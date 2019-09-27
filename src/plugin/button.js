@@ -50,19 +50,22 @@ function CreateButton(obj, buttons, id, store) {
         return; 
       }
       const item = e.detail.obj;
-      if (!(item.button === '4')) {
-        if (item.button === '-1' || item.button === '2') {
-          mutipleOperate(item.url, obj.instanceId, buttons, id);
-        } else if (item.button === '1') {
-          window.jflowPlugin.open({
+      if(item.button!=='4'){
+        switch(item.button){
+          case '-1':
+          case '2': mutipleOperate(item.url, obj.instanceId, buttons, id);break;
+          case '1': window.jflowPlugin.open({
             control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
           });
-        } else if (item.button === '5') {
-          window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
-        } else {
-          window.jflowPlugin.open({
+          break;
+          case '0':
+          case '3': window.jflowPlugin.open({//同意和转派
             control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
           });
+          break;
+          case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
+          break;
+  
         }
       }
     }, false);
