@@ -39,7 +39,7 @@
 
 <script>
   // 弹窗多选面板
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import Dialog from './ComplexsDialog';
   // 弹窗单选
   import myPopDialog from './PopDialog';
@@ -85,6 +85,7 @@
             ID: ''
           }
         ],
+        clickTimer: 0,
         value: '',
         fkobj: {}, // 过滤
         propsData: {},
@@ -113,14 +114,15 @@
       }
     },
     methods: {
-      valueChange() {
-        // console.log('valueChange');
-        this.$emit('valuechange', { value: this.value, selected: this.selected }, this);
+      valueChange(type) {
+        window.clearTimeout(this.clickTimer);
+        this.clickTimer = window.setTimeout(() => {
+          this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
+        }, 100);
       },
       attachFilterInput(value) {
         this.value = value;
         this.selected = [];
-        this.valueChange();
         this.inputValueChange(value);
       },
       inputValueChange(value) {
@@ -139,11 +141,12 @@
             this.propsData.AutoData = res.data.data;
           }
         });
+        return true;
       },
       // AttachFilter event
       attachFilterChange(value) {
         this.value = value;
-        this.valueChange();
+        this.valueChange('change');
       },
       attachFilterSelected(row) {
         this.value = row.label;
@@ -154,13 +157,14 @@
           }
         ];
         this.propsData.AutoData = [];
-        this.valueChange();
+        this.valueChange('selected');
+        return true;
       },
       attachFilterInputFocus(event, $this) {
         this.$emit('on-focus', event, $this);
       },
       attachFilterInputBlur(event, $this) {
-        if (!this.selected[0]) {
+        if (!this.selected[0] && this.propsData.fkobj.saveType) {
           this.value = '';
           this.selected = [
             {
@@ -168,8 +172,9 @@
               ID: ''
             }
           ];
+          this.filterDate = {};
         }
-        this.valueChange(event, $this);
+        // this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -186,7 +191,7 @@
             $this.showModal = true;
             $this.complexs = true;
           }, 100);
-          if (event !== 0) {
+          if (event > 1) {
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I') {
@@ -233,9 +238,15 @@
             ID: ''
           }
         ];
-        this.valueChange();
+        this.filterDate = {};
+        // this.valueChange('clear');
       },
       attachFilterPopperShow(value, instance) {
+        if (Array.isArray(instance.datalist)) {
+          instance.datalist.forEach((item) => {
+            item.class = '';
+          });
+        }        
         if (instance.showModal === false) {
           fkGetMultiQuery({
             searchObject: {
@@ -249,10 +260,9 @@
           return false;
         }
         if (
-          this.propsData.fkobj.saveType
-          && this.selected[0]
+          this.selected[0]
           && this.selected[0].ID
-          && /total/.test(this.selected[0].ID)
+          // && /total/.test(this.selected[0].ID)
         ) {
           // this.filter = data;
           const data = JSON.parse(this.selected[0].ID);
@@ -270,6 +280,7 @@
             instance.complexs = true;
           }, 100);
         }
+        return true;
       },
       attachFile() {
 
@@ -295,24 +306,26 @@
             }
           ];
           this.value = value;
-        } else if ($this._data.IN) {
+        } else if ($this._data.resultData.list.length > 0) {
           const savemessage = JSON.parse(JSON.stringify($this.savemessage()));
           const saveObjectmessage = $this.savObjemessage();
           const saveType = JSON.parse($this.savObjemessage()).lists.result.length;
           this.resultData = savemessage;
           if (saveType > 0) {
-            const value = `已经选中${$this._data.IN.length}条数据`;
+            const value = `已经选中${$this._data.resultData.total}条数据`;
            
         
             if (!this.propsData.fkobj.saveType) {
+              const ids = $this.idslist;
               const Select = [
                 {
                   Label: value,
-                  ID: $this._data.IN
+                  ID: ids
                 }
               ];
               this.selected = Select;
               this.value = value;
+              this.filterDate = savemessage;
             } else {
               this.selected = [
                 {
@@ -320,7 +333,7 @@
                   ID: saveObjectmessage
                 }
               ];
-              this.filterDate = JSON.parse(saveObjectmessage);
+              this.filterDate = savemessage;
               this.value = value;
             }
           } else {
@@ -336,7 +349,7 @@
             }
           ];
         }
-        this.valueChange();
+        // this.valueChange();
       }
     },
     created() {
@@ -357,7 +370,9 @@
         this.propstype.show = true;
       }
       if (this.selected[0] && this.selected[0].ID) {
-        this.propsData.disabled = true;
+        if (this.propstype.fkdisplay !== 'pop') {
+          this.propsData.disabled = true;
+        }
       }
     }
   };
@@ -370,5 +385,15 @@
   .iconbj_tcduo {
     padding-top: 2px;
   }
+  
+}
+.attachfiter-pop{
+  .burgeon-select-item-selected{
+    color: #333333!important;
+  }
+  .burgeon-select-item-focus{
+    background-color: #fff!important;
+  }
+
 }
 </style>

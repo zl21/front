@@ -33,6 +33,7 @@
                 :child-table-name="childTableName"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
+                :is-main-table="isMainTableForm"
                 :condition="conditiontype"
                 :module-form-type="moduleFormType"
                 :get-state-data="getStateData"
@@ -64,6 +65,7 @@
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
+          :is-main-table="isMainTableForm"
           :get-state-data="getStateData"
           :mountdata-form="mountdataForm"
           :form-item-lists="computdefaultData"
@@ -75,7 +77,7 @@
 </template>
 
 <script>
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import FormItemComponent from './ComFormItemComponent';
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
@@ -94,6 +96,13 @@
     name: 'CompositeForm',
     components: {},
     props: {
+      isMainTable: {
+        // 是否 主表
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       defaultData: {
         type: Object,
         default() {
@@ -233,6 +242,9 @@
       },
       childTableNameForm() {
         return this.childTableName;
+      },
+      isMainTableForm() {
+        return this.isMainTable;
       }
     },
     updated() {},
@@ -932,9 +944,19 @@
           return arr;
         }
         if (item.display === 'image') {
-          const arr = item.valuedata
-            ? JSON.parse(item.valuedata)
-            : [];
+          let arr = [];
+          try {
+            arr = JSON.parse(item.valuedata);
+          } catch (err) {
+            if (typeof item.valuedata === 'string') {
+              arr = [{
+                URL: item.valuedata
+              }];
+            } else {
+              arr = [];
+            }
+          }
+        
           if (this.defaultSetValue[item.colname]) {
             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
           }
@@ -980,8 +1002,8 @@
           const ID = item.refobjid ? item.refobjid : '';
           if (item.fkdisplay === 'mrp' && fkdisplayValue) {
             // 多选change
-            const refobjid = fkdisplayValue.ID.split(',');
-            const valuedata = fkdisplayValue.Label.split(',');
+            const refobjid = (fkdisplayValue.ID && fkdisplayValue.ID.split(',')) || [];
+            const valuedata = (fkdisplayValue.Label && fkdisplayValue.Label.split(',')) || [];
             const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
                 ID: itemI || '',
@@ -993,8 +1015,8 @@
             return option;
           } if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
-            const refobjid = item.refobjid.split(',');
-            const valuedata = item.valuedata.split(',');
+            const refobjid = (item.refobjid && item.refobjid.split(',')) || [];
+            const valuedata = (item.valuedata && item.valuedata.split(',')) || [];
             const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
                 ID: itemI || '',
@@ -1414,6 +1436,14 @@
           ) {
             item.props.type = 'text';
             item.type = 'input';
+            item.props.defaultSelected = [{
+              ID: current.refobjid,
+              Label: current.valuedata
+            }];
+            item.props.Selected = [{
+              ID: current.refobjid,
+              Label: current.valuedata
+            }];
           }
         }
         item.props.disabled = this.objreadonly

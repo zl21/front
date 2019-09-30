@@ -116,7 +116,7 @@
   import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import { Version } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
@@ -817,6 +817,9 @@
         return renderColumns;
       },
       collectionCellRender(cellData) {
+        if (cellData.customerurl && Object.keys(cellData.customerurl).length > 0) {
+          return this.customerurlRender(cellData);
+        }
         // 给cell赋render
         if (!cellData.ismodify || this.readonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
           // 不可编辑状态 显示label
@@ -1619,12 +1622,51 @@
                   id: data.refobjid
                 });
               } else if (cellData.objdistype === 'tabpanle') {
+
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
                   tableId: data.reftableid,
                   label: data.reftabdesc,
                   id: data.refobjid
+                });
+              }
+              // event.stopPropagation();
+            }
+          }
+        });
+      },
+      customerurlRender(cellData) {
+        // 外键关联到icon
+        return (h, params) => h('div', {
+          style: {
+            color: '#0f8ee9',
+            'text-decoration': 'underline',
+            cursor: 'pointer'
+          },
+          domProps: {
+            innerHTML: params.row[cellData.colname] ? `${params.row[cellData.colname]}` : ''
+          },
+          on: {
+            click: (event) => {
+              // customerurl跳转
+              const data = cellData.customerurl;
+              if (data.objdistype === 'object') {
+                this.tabHref({
+                  type: 'tableDetailVertical',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: params.row[data.refobjid]
+                });
+              } else if (data.objdistype === 'tabpanle') {
+
+                this.tabHref({
+                  type: 'tableDetailHorizontal',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: params.row[data.refobjid]
                 });
               }
               // event.stopPropagation();

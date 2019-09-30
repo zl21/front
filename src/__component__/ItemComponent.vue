@@ -21,7 +21,16 @@
       >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop'">
         <!-- 路由跳转 -->
-        <template v-if=" !!_items.value">
+        <template v-if=" !!_items.props.disabled && !!_items.value">
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.Selected)"
+          />
+        </template>
+        <template v-if="_items.props.disabled && _items.props.Selected[0]">
+          <!-- disabled -->
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -32,12 +41,21 @@
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
         <!-- 路由跳转 -->
-        <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
+        <template v-if="!! _items.props.disabled && !!_items.value && _items.value[0] && !!_items.value[0].ID">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
             style="color: #0f8ee9; cursor: pointer; font-size: 12px"
             @click="routerNext(_items.value)"
+          />
+        </template>
+        <template v-if="_items.props.disabled && _items.props.defaultSelected[0]">
+          <!-- disabled -->
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.defaultSelected)"
           />
         </template>
       </template>
@@ -689,30 +707,32 @@
       ComAttachFilterkeydown() {
 
       },
-      attachFilterInput(item, $this) {
+      attachFilterInput(item) {
         this._items.value = item.value;
+        this._items.props.Selected = item.selected;
         this.valueChange();
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value'](
-            $this,
-            item.value,
-            item.selected
-          );
-        }
-        if (
-          Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
-          && typeof this._items.event.clear === 'function'
-        ) {
-          if (!item.value && !item.selected[0].ID) {
-            this._items.event.clear($this);
-          }
-        }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        // console.log(item);
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     item.value,
+        //     item.selected
+        //   );
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+        //   && typeof this._items.event.clear === 'function'
+        // ) {
+        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
+        //     this._items.event.clear($this);
+        //   }
+        // }
         // if (
         //   Object.prototype.hasOwnProperty.call(
         //     this._items.event,
@@ -996,8 +1016,7 @@
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  不是新增  和不是主子表中的子表
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
-
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
               if (childTableName !== false && this.$parent.isreftabs) {
                 this._items.props.itemdata.valuedata.splice(index - 1, 1);
                 if (this._items.props.itemdata.valuedata.length > 0) {
@@ -1007,7 +1026,12 @@
                 } else {
                   this._items.value = '';
                 }
+
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else if (this.$parent.pathcheck === '') {
                 parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
@@ -1038,14 +1062,12 @@
         // 上传文件 
         const _value = value.length > 0 ? value : '';
         // this._items.value = _value;
-        console.log(_value, 'valuevalue');
 
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
           table: this._items.props.itemdata.masterName
         };
-        console.log(fixedData, 'fixedData');
         //  判断parms 是否 需要保存
         parms = this.pathsCheckout(parms, fixedData);
         if (
@@ -1054,7 +1076,7 @@
         ) {
           //  判断是否需要调用保存
           const path = this.$parent.pathcheck !== '';
-          const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
 
           if (this.$parent.isreftabs && childTableName !== false) {
             //  主子表 子表
@@ -1065,6 +1087,10 @@
               ...this._items.props.itemdata.valuedata
             ]);
             this.valueChange();
+            if (childTableName && this.$parent.type === 'PanelForm') {
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
+            }
           } else {
             this.upSavefile(parms, fixedData, path, value);
           }
@@ -1147,7 +1173,7 @@
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
 
               if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
@@ -1158,6 +1184,10 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else {
                 self.upSaveImg(parms, fixedData, path);
               }
@@ -1181,7 +1211,7 @@
         const pathcheck = this.$parent.pathcheck;
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
-        const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+        const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
         if (isreftabs && pathcheck !== '') {
           // 主子表 有path  主表明+子表明 // parms.table 主表
           if (childTableName) {
@@ -1195,7 +1225,6 @@
             };
             return Object.assign({}, parmsdata);
           }
-          console.log('主子表 path');
 
           const parmsdata = {
             [parms.table]: {

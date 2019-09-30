@@ -90,27 +90,37 @@ export default {
     }
   },
   updateAddData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].add[data.tableName] = {};
-    } else {
-      state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].add[data.tableName] = {};
+      } else {
+        state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      }
     }
   },
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modify = data.value;
+    }
   },
   updateAddDefaultData(state, data) {
-    state.updateData[data.tableName].addDefault = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].addDefault = data.value;
+    }
   },
   updateDeleteData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].delete[data.tableName] = data.value;
-    } else {
-      state.updateData[data.tableName].delete = data.value;
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].delete[data.tableName] = data.value;
+      } else {
+        state.updateData[data.tableName].delete = data.value;
+      }
     }
   },
   updateChangeData(state, data) {
-    state.updateData[data.tableName].changeData = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].changeData = data.value;
+    }
   },
   updateCheckedInfoData(state, data) {
     if (state.updateData && state.updateData[data.tableName] && state.updateData[data.tableName].checkedInfo) {
@@ -163,16 +173,19 @@ export default {
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
                   if (c.readonly === true) {
-                    b.valuedata = '';// 将配置为不可编辑的值置空
+                    if (c.defval) {
+                      copySaveDataForParam[b.colname] = c.defval;
+                    } else {
+                      b.valuedata = '';// 将配置为不可编辑的值置空
+                    }
                   } else if (b.valuedata) {
-                    // debugger;
                     if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
                       const number = JSON.parse(b.valuedata).lists.result.length;
                       copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
                     } else {
-                      copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                      copySaveDataForParam[b.colname] = b.valuedata;
                     }
                   }
                 }
@@ -182,9 +195,10 @@ export default {
         }
       });
     });
+
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    state.mainFormInfo.formData.data = data;
+    state.mainFormInfo.formData.data = data.data;
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
     state.updateData[tableName].add = defaultForCopyDatas;

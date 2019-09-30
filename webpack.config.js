@@ -12,6 +12,8 @@ const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
+const proxyListsForPalmZx = ['/zhixiao-app'];
+
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
 
@@ -48,6 +50,9 @@ module.exports = env => ({
         target
       }, {
         context: proxyListsForPalmCloud,
+        target
+      }, {
+        context: proxyListsForPalmZx,
         target
       },
       {

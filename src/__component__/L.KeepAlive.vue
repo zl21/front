@@ -7,7 +7,6 @@
       id="iframe"
       :src="urlName"
       class="urlName"
-      @load="onload"
     />
     <component
       :is="currentModule"
@@ -18,7 +17,7 @@
 
 <script>
   import Vue from 'vue';
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapActions, mapMutations } from 'vuex';
   import PageNotFound from './PageNotFound';
   import PluginModule from '../__config__/plugin.config';
   import { LINK_MODULE_PREFIX, LINK_MODULE_COMPONENT_PREFIX } from '../constants/global';
@@ -38,10 +37,11 @@
       };
     },
     computed: {
-      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex'])
+      ...mapState('global', ['keepAliveLists', 'menuLists', 'LinkUrl', 'primaryMenuIndex', 'keepAliveLabelMaps'])
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
+      ...mapMutations('global', ['increaseLinkUrl', 'addKeepAliveLabelMaps']),
       generateComponent() {
         const { linkModuleName, linkModuleId } = this.$route.params;
         if (this.LinkUrl.length > 0) {
@@ -56,10 +56,15 @@
           this.currentModule = linkModuleName;
         }
       },
-      onload() {
-      }
     },
     mounted() {
+      // if (window.sessionStorage.getItem('linkInfo')) {
+      //   const linkInfo = JSON.parse(window.sessionStorage.getItem('linkInfo') || null);
+      //   if (Object.values(linkInfo).length > 0) {
+      //     this.increaseLinkUrl({ linkId: linkInfo.linkId, linkUrl: linkInfo.linkUrl });
+      //     this.addKeepAliveLabelMaps({ name: linkInfo.name, label: linkInfo.label });
+      //   }
+      // }
       this.generateComponent();
     },
     watch: {

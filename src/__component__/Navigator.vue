@@ -396,6 +396,9 @@
     .tag-search {
       width: 192px;
       line-height: 40px;
+      .burgeon-select{
+          text-align: left;
+      }
     }
     
     .tag:hover {

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import { setTimeout } from 'timers';
+  // import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 
@@ -178,6 +178,13 @@
         type: Function,
         default() {
           return function () {};
+        }
+      },
+      isMainTable: {
+        // 是否 主表
+        type: Boolean,
+        default() {
+          return false;
         }
       },
       path: {
