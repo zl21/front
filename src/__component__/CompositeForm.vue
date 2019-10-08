@@ -535,6 +535,7 @@
                 item = this.$refs.FormComponent_0.newFormItemLists;
               }
               item[index].item.props.AutoData = [];
+              item[index].item.props.defaultSelected = item[index].item.value;
             },
             'popper-value': ($this, value, Selected) => {
               // 当外键下拉展开时去请求数据
@@ -1602,6 +1603,9 @@
         if (this.$route.params.itemId === undefined) {
           return false;
         }
+        if (!state || !state.updateData[this.masterName]) {
+          return false;
+        }
        
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
           if (this.isreftabsForm) {
@@ -1643,7 +1647,7 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {     
-      if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+      if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
         if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
         }
