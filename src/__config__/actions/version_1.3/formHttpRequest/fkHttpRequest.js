@@ -115,3 +115,11 @@ export const deleteImg = function deleteImg({ params, success }) { // 删除图�
     }
   });
 };
+export const batchUploadProgress = function batchUploadProgress(params) {
+  // 上传文件进度
+  network.post('/p/cs/batchUploadProgress', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res.data);
+    }
+  });
+};
