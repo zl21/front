@@ -237,7 +237,7 @@
       isreftabsForm() {
         if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
           return true;
-        } 
+        }
         return this.isreftabs;
       },
       childTableNameForm() {
@@ -362,7 +362,7 @@
         }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
-          // 区分是否是默认值的change 拦截 
+          // 区分是否是默认值的change 拦截
           return false;
         }
 
@@ -492,7 +492,7 @@
                 if (!this.refcolvalAll[mappStatus[item]]) {
                   const Index = LinkageForm.findIndex(option => option.key === item);
                   if (LinkageForm[Index].input) {
-                    // console.log(LinkageForm[Index].input);  
+                    // console.log(LinkageForm[Index].input);
                     // LinkageForm[Index].input.value = '';
                   }
                 }
@@ -547,7 +547,7 @@
                 item = this.$refs.FormComponent_0.newFormItemLists;
               }
 
-              // 
+              //
               item[index].item.props.Selected = Selected;
               item[index].item.value = value;
             },
@@ -640,7 +640,7 @@
                 if (item.type === 'AttachFilter') {
                   if (item.props.Selected[0] && item.props.Selected[0].ID === '') {
                     Fitem[index].item.value = '';
-                    
+
                     this.resultData = {};
                     Fitem[index].item.props.Selected = [
                       {
@@ -649,7 +649,7 @@
                       }
                     ];
                   }
-                } else if (item.type === 'DropDownSelectFilter') {
+                } else if (item.type === 'DropDownSelectFilter' || item.type === 'DropMultiSelectFilter') {
                   if (Array.isArray(item.value)) {
                     if (item.value[0].ID === '' || item.value[0].ID === undefined) {
                       Fitem[index].item.props.defaultSelected = [];
@@ -665,7 +665,7 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
-              
+
               let searchObject = {};
               if (current.refcolval && current.refcolval.srccol) {
                 const refcolval = this.refcolvalAll[current.refcolval.srccol]
@@ -704,7 +704,7 @@
         return obj;
       },
       hidecolumn(current, array) {
-        //  隐藏判断 
+        //  隐藏判断
         const check = array.some((option) => {
           const refcolumn = current.hidecolumn.refcolumn;
           const refval = current.hidecolumn.refval;
@@ -848,7 +848,7 @@
             str = 'DropDownSelectFilter';
             break;
           case 'mrp':
-            str = 'DropDownSelectFilter';
+            str = 'DropMultiSelectFilter';
             break;
           case 'pop':
             str = 'AttachFilter';
@@ -880,7 +880,7 @@
         // }
         if (this.objreadonly) {
           // 页面只读标记
-          
+
           // if (item.display === "select" || item.display === "OBJ_SELECT") {
           //   const value = item.defval || item.valuedata;
           //   const index = item.combobox.findIndex(x => x.limitval === value);
@@ -889,7 +889,7 @@
         }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
-          
+
           return item.valuedata || item.defval || '';
         }
         // 设置表单的默认值
@@ -957,7 +957,7 @@
               arr = [];
             }
           }
-        
+
           if (this.defaultSetValue[item.colname]) {
             // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
           }
@@ -967,7 +967,7 @@
         // if (item.fkdisplay === 'mop') {
         //   if (fkdisplayValue) {
         //     return fkdisplayValue.lable;
-         
+
         // }
 
         // if (item.fkdisplay === 'pop') {
@@ -999,7 +999,7 @@
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
-          
+
           const ID = item.refobjid ? item.refobjid : '';
           if (item.fkdisplay === 'mrp' && fkdisplayValue) {
             // 多选change
@@ -1028,13 +1028,13 @@
             // arr = [...option];
             return option;
           }
-          
-          
+
+
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
           });
-          
+
           if (item.fkdisplay === 'mop') {
             arr[0].ID = item.valuedata || item.defval || '';
             if (item.valuedata && /total/.test(item.valuedata)) {
@@ -1055,23 +1055,23 @@
               arr.push((fkdisplayValue && fkdisplayValue.Label) || '');
             }
           }
-          
+
           return arr;
         }
-      
-        
+
+
         return this.defaultSetValue[item.colname] || item.valuedata || item.defval || item.default || '';
       // wewe
       },
       propsType(current, item) {
         // 表单 props
         const obj = item;
-        
+
 
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
         item.props.comment = item.props.comment;
-        
+
 
         if (this.objreadonly) {
           // 页面只读标记
@@ -1270,7 +1270,7 @@
             item.props.type = 'datetimerange';
           } else {
             item.props.type = 'datetime';
-          }  
+          }
         }
 
         if (current.display === 'text' || current.display === 'xml') {
@@ -1309,7 +1309,7 @@
                   return false;
                 }
                 return true;
-              } 
+              }
               return true;
             };
             break;
@@ -1326,7 +1326,7 @@
               item.props.optionTip = false;
               item.props.enterType = true;
               item.props.show = false;
- 
+
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1348,7 +1348,7 @@
                 reftableid: current.reftableid,
                 show: false,
                 url:
-                  `${current.serviceId ? (`/${current.serviceId}`) : '' 
+                  `${current.serviceId ? (`/${current.serviceId}`) : ''
                   }/p/cs/menuimport`
               };
               item.props.datalist = [];
@@ -1356,7 +1356,7 @@
               if (!item.props.readonly && !this.objreadonly) {
                 item.props.Selected.push(this.defaultValue(current)[0]);
                 item.value = this.defaultValue(current)[0].Label;
-              } 
+              }
             }
 
             break;
@@ -1385,7 +1385,7 @@
               show: true,
               saveType: 'object',
               url:
-                `${current.serviceId ? (`/${current.serviceId}`) : '' 
+                `${current.serviceId ? (`/${current.serviceId}`) : ''
                 }/p/cs/menuimport`
             };
             item.props.datalist = [];
@@ -1394,8 +1394,8 @@
             if (!item.props.readonly && !this.objreadonly) {
               item.value = this.defaultValue(current)[1];
               item.props.Selected.push(this.defaultValue(current)[0]);
-            } 
-            
+            }
+
             break;
           default:
             break;
@@ -1581,7 +1581,7 @@
             item[_index].$el.querySelector('textarea').focus();
           }
           return false;
-        } 
+        }
         this.focusItem(_index, current, arry);
         return true;
       },
@@ -1606,13 +1606,13 @@
         if (!state || !state.updateData[this.masterName]) {
           return false;
         }
-       
+
         if (this.$route.params.itemId.toLocaleLowerCase() !== 'new') {
           if (this.isreftabsForm) {
             const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
             const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
             this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
-        
+
             return this.refcolvalAll;
           }
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
@@ -1646,12 +1646,12 @@
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
-    deactivated() {     
+    deactivated() {
       if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
         if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
         }
-      }  
+      }
     }
   };
 </script>
