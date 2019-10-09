@@ -5,11 +5,11 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   // target: 'http://47.99.229.124:10001', // 框架研发网关开启环境
-  // target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
-  target: 'http://47.99.229.124:8110', // 掌云测试环境(启用网关)
-  Version: '1.4', // 版本号
+  target: 'http://r3dev.qiaodan.com:28888', // 乔丹开发环境
+  // target: 'http://47.99.229.124:8110', // 掌云测试环境(启用网关)
+  Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: true, // 网关是否打开,
+  enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [
     /\/api\/rpt\/preview/

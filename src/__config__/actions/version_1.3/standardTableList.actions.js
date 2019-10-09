@@ -47,6 +47,9 @@ export default {
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
+          commit('updateWebconfCommonTable', queryData.datas.webconf);
+        }
       }
     });
   },
