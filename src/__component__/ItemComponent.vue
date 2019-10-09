@@ -29,7 +29,7 @@
             @click="routerNext(_items.props.Selected)"
           />
         </template>
-       
+
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
         <!-- 路由跳转 -->
@@ -41,9 +41,9 @@
             @click="routerNext(_items.props.defaultSelected)"
           />
         </template>
-        
+
       </template>
-      
+
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
@@ -176,7 +176,32 @@
         @on-popper-hide="fkrPopperHide"
         @on-clear="fkrpSelectedClear"
       />
-      <ComAttachFilter 
+      <DropMultiSelectFilter
+        v-if="_items.type === 'DropMultiSelectFilter'"
+        :data="_items.props.data"
+        :single="_items.props.single"
+        :total-row-count="_items.props.totalRowCount"
+        :page-size="_items.props.pageSize"
+        :auto-data="_items.props.AutoData"
+        :disabled="_items.props.disabled"
+        :is-show-pop-tip="_items.props.isShowPopTip"
+        :enter-type="_items.props.enterType"
+        :hidecolumns="_items.props.hidecolumns"
+        :data-empty-message="_items.props.dataEmptyMessage"
+        :default-selected="_items.props.defaultSelected"
+        :transfer="_items.props.transfer"
+        @on-fkrp-selected="fkrpSelected"
+        @on-page-change="pageChange"
+        @on-input-value-change="inputValueChange"
+        @on-focus="fkrpSelectedInputFocus"
+        @on-blur="fkrpSelectedInputBlur"
+        @on-keyup="fkrpSelectedInputKeyup"
+        @on-keydown="fkrpSelectedInputKeydown"
+        @on-popper-show="fkrpSelectedPopperShow"
+        @on-popper-hide="fkrPopperHide"
+        @on-clear="fkrpSelectedClear"
+      />
+      <ComAttachFilter
         v-if="_items.type === 'AttachFilter'"
         :default-value="_items.value"
         :default-selected="_items.props.Selected"
@@ -263,7 +288,7 @@
         />
       </template> -->
       <!-- 上传文件 -->
-       
+
       <Docfile
         v-if="_items.type === 'docfile'"
         :dataitem="_items.props.itemdata"
@@ -302,7 +327,7 @@
   export default {
     name: 'ItemComponent',
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile 
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
     },
     props: {
       labelWidth: {
@@ -374,7 +399,7 @@
                 item.props.datalist
               );
             }
-            
+
             item.props.dialog.model['footer-hide'] = false;
             // item.props.datalist.forEach((option, i) => {
             //   if (option.value === '导入') {
@@ -409,7 +434,7 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
-      
+
         let id = 0;
         if (!props.readonly) {
           id = value[0].ID;
@@ -995,7 +1020,7 @@
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             // 判断是否有path
             const parms = this.pathsCheckout(data, HEADIMG);
-            
+
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
@@ -1044,7 +1069,7 @@
         this.valueChange();
       },
       filechange(value) {
-        // 上传文件 
+        // 上传文件
         const _value = value.length > 0 ? value : '';
         // this._items.value = _value;
 
@@ -1066,7 +1091,7 @@
           if (this.$parent.isreftabs && childTableName !== false) {
             //  主子表 子表
             const _fixedData = fixedData || '';
-            this._items.props.itemdata.valuedata = [];  
+            this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = _fixedData;
             this._items.value = JSON.stringify([
               ...this._items.props.itemdata.valuedata
@@ -1081,7 +1106,7 @@
           }
         } else {
           const _fixedData = fixedData || '';
-          this._items.props.itemdata.valuedata = [];  
+          this._items.props.itemdata.valuedata = [];
           this._items.props.itemdata.valuedata = _fixedData;
           this.valueImgChange();
         }
@@ -1138,7 +1163,7 @@
             if (res.data.code !== 0) {
               return false;
             }
-           
+
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({
@@ -1183,7 +1208,7 @@
               this.valueImgChange();
             }
           }
-          
+
         });
         return true;
       },
@@ -1436,7 +1461,7 @@ textarea.burgeon-input{
         }
 
         }
-        
+
 
     }
 }

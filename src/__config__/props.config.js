@@ -270,6 +270,36 @@ const DropDownSelectFilter = {
     enterType: false
   }
 };
+// 下拉框
+const DropMultiSelectFilter = {
+  type: 'DropMultiSelectFilter', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    // 是否是单选，可选值为 true、false
+    single: true,
+    isShowPopTip: () => true, // form 不展示
+    // 下拉气泡表格里数据
+    data: {},
+    // 数据总条数
+    totalRowCount: 0,
+    // 每页条数
+    pageSize: 10,
+    // 模糊搜索的数据
+    AutoData: [],
+    // 模糊搜索要显示的列
+    columns: [],
+    // 无数据的时候提示
+    dataEmptyMessage: '暂无数据',
+    // 下拉多选 默认选中数据
+    defaultSelected: [],
+    // 是否将弹层放置于 body 内
+    transfer: true,
+    // 是否开启回车默认选中第一条
+    enterType: false
+  }
+};
 
 // 弹框多选
 const AttachFilter = {
@@ -359,7 +389,7 @@ const EnumerableInput = {
   }
 };
 
-// 扩展属性 
+// 扩展属性
 const ExtentionInput = {
   type: 'ExtentionInput', // 必填!
   field: '', // 必填!
@@ -383,7 +413,8 @@ const dataProp = {
   ImageUpload,
   Wangeditor,
   EnumerableInput,
-  ExtentionInput
+  ExtentionInput,
+  DropMultiSelectFilter
 
 };
 export default dataProp;

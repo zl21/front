@@ -152,7 +152,7 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl
-        
+
       }),
       formLists() {
         return this.refactoringData(
@@ -382,7 +382,7 @@
                   str = 'DropDownSelectFilter';
                   break;
                 case 'mrp':
-                  str = 'DropDownSelectFilter';
+                  str = 'DropMultiSelectFilter';
                   break;
                 case 'pop':
                   str = 'AttachFilter';
@@ -756,7 +756,7 @@
 
         if (detailTable && detailTable.agTable) { // ag表格
           detailTable.agTable.deselectAll();
-        } 
+        }
         if (commonTable) { // 普通表格
           commonTable.deselectAll();
         }
@@ -980,7 +980,7 @@
         //     url: tab.action
         //   });
         // }, 500);
-       
+
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';
@@ -1278,7 +1278,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
-              mask: true,          
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
