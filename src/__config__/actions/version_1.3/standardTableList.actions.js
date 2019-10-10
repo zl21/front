@@ -39,7 +39,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data;
-        console.log(queryData.status4css);
         resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
