@@ -194,7 +194,7 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mrp: { tag: 'DropMultiSelectFilter', event: this.dropDownSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
           pop: { tag: 'ComAttachFilter', event: this.comAttachFilterpopRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
