@@ -194,10 +194,12 @@ export default {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+
       router.push({ path });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+
       router.push({ path });
     }
     if (back) {

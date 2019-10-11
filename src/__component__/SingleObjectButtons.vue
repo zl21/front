@@ -1779,12 +1779,13 @@
           this.clearEditData();// 清空store update数据
           this.saveAfter(type, tableName);
         }, () => {
-          this.saveAfter(type, tableName);
+          const stop = true;
+          this.saveAfter(type, tableName, stop);
         }).then(() => {
 
         });
       },
-      saveAfter(type, tableName) {
+      saveAfter(type, tableName, stop) {
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           let types = '';
           if (this.objectType === 'horizontal') {
@@ -1803,8 +1804,9 @@
           };
 
           // this.updateChangeData({ tableName: this.tableName, value: {} });
-
-          this.tabHref(tab);
+          if (!stop) {
+            this.tabHref(tab);
+          }
           const message = this.buttonsData.message;
           const data = {
             title: '成功',
