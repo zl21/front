@@ -120,5 +120,6 @@ export default (projectConfig = {
     getGateWayServiceId();
   } else {
     init();
+    getCategory();
   }
 };
