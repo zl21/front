@@ -1102,7 +1102,13 @@
               dom.click();
             }
           } else {
+            this._items.props.itemdata.valuedata = [];
+            this._items.props.itemdata.valuedata = fixedData;
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
             this.upSavefile(parms, fixedData, path, value);
+            this.valueChange();
           }
         } else {
           const _fixedData = fixedData || '';
@@ -1124,6 +1130,8 @@
             }
             // this._items.props.itemdata.valuedata.push(...value);
           // this.valueChange();
+            // this.valueChange();
+
           }
         });
       },
