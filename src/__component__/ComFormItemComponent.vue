@@ -262,8 +262,9 @@
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
-        // this.VerificationForm = this.VerificationMap();
+        // 获取校验
         this.VerificationFormInt();
+        // 获取 默认值
         this.mountdataFormInt();
       }, 500);
 
@@ -274,6 +275,7 @@
     },
     watch: {
       mountedType() {
+        // 监听刷新、切换
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -281,6 +283,7 @@
       },
       formDataObject: {
         handler(val, old) {
+          // 页面的联动关系及计算逻辑的处理
           if (this.indexItem === -1) {
             return;
           }
@@ -329,13 +332,15 @@
       },
       formItemLists: {
         handler() {
+          // 监听页面配置的处理
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
           this.newFormItemLists = this.formItemLists;
         },
         deep: true
       },
-      VerificationForm(val) {
+      VerificationForm() {
+        // 监听校验的处理
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
@@ -424,6 +429,7 @@
         });
       },
       verificationMap(formIndex, index, items) {
+        // 获取校验的配置及节点
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
         if (!elDiv) {
@@ -446,6 +452,7 @@
           fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
+        return true;
       },
       setMapping(data) {
         //  获取映射关系

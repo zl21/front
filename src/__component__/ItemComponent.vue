@@ -996,6 +996,7 @@
       // console.log(e);
       },
       deleteImg(item, index) {
+        // 删除图片
         const that = this;
         this.$Modal.fcWarning({
           mask: true,
@@ -1098,6 +1099,7 @@
             ]);
             this.valueChange();
             if (childTableName && this.$parent.type === 'PanelForm') {
+              // 主子表的子表修改（1:1）的情况下
               const dom = document.getElementById('actionMODIFY');
               dom.click();
             }
@@ -1118,6 +1120,8 @@
         }
       },
       upSavefile(obj, fixedData, path) {
+        // 保存文件
+
         fkObjectSave({
           searchObject: {
             ...obj
@@ -1131,11 +1135,11 @@
             // this._items.props.itemdata.valuedata.push(...value);
           // this.valueChange();
             // this.valueChange();
-
           }
         });
       },
       deleteImgData(obj, index) {
+        // 删除图片
         deleteImg({
           params: {
             ...obj
@@ -1150,12 +1154,14 @@
         });
       },
       readonlyImage() {
+        // 判断是否能上传图片
         if (!isNaN(this._items.props.itemdata.ImageSize)) {
           return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
         }
         return false;
       },
       uploadFileChangeSuccess(result) {
+        // 图片进度接口
         const self = this;
         const resultData = result;
         if (this.readonlyImage()) {
@@ -1320,6 +1326,7 @@
         return Object.assign({}, fixedData);
       },
       upSaveImg(obj, fixedData, path, index) {
+        // 图片保存接口
         fkObjectSave({
           searchObject: {
             ...obj
@@ -1344,8 +1351,9 @@
                 NAME: data.NAME,
                 URL: data.URL
               });
+              this._items.value = this._items.props.itemdata.valuedata;
             }
-          // this.valueChange();
+            this.valueChange();
           }
         });
       },

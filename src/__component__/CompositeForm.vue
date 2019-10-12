@@ -104,6 +104,7 @@
         }
       },
       defaultData: {
+        // 默认后台配置
         type: Object,
         default() {
           return {};
@@ -117,24 +118,28 @@
         }
       },
       defaultSetValue: {
+        // change 复制后的传值
         type: Object,
         default() {
           return {};
         }
       },
       isreftabs: {
+        // 是否存在子表
         type: Boolean,
         default() {
           return false;
         }
-      }, // 是否存在子表
+      }, 
       childTableName: {
+        // 子表表明
         type: String,
         default() {
           return '';
         }
       },
       paths: {
+        // 路由的
         type: Array,
         default() {
           return [];
@@ -148,6 +153,7 @@
         }
       },
       moduleFormType: {
+        // 是上下结构还是左右
         type: String,
         default() {
           return '';
@@ -235,15 +241,18 @@
         return this.paths[1] || '';
       },
       isreftabsForm() {
+        // 
         if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
           return true;
         }
         return this.isreftabs;
       },
       childTableNameForm() {
+        // 子表名称
         return this.childTableName;
       },
       isMainTableForm() {
+        // 主表
         return this.isMainTable;
       }
     },
@@ -265,6 +274,7 @@
         this.Mapping = Object.assign(this.Mapping, Mapping);
       },
       reorganizeForm() {
+        // 重置表单 配置
         let items = [];
         // 有面板的数据
         // 有面板的数据  child,inpubobj,childs
@@ -372,12 +382,14 @@
         const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
         this.formData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
         this.formDataDef = Object.assign(formData, setdefval);
+        // 获取表单的默认值
         const key = Object.keys(data)[0];
         if (key && key.split(':').length > 1) {
           delete this.formData[current.item.field];
         } else {
           delete this.formData[current.item.inputname];
         }
+        //  校验赋值
         this.VerificationForm.forEach((item) => {
           Object.keys(this.formData).forEach((option) => {
             if (item.key === option.split(':')[0]) {
@@ -385,6 +397,7 @@
             }
           });
         });
+        // 校验
         const message = this.setVerifiy();
 
         if (message.messageTip.length > 0) {
@@ -443,7 +456,8 @@
           }
           return arr;
         }, {});
-        // 外部change的值
+
+        // 外部change的值(复制修改过后的值 去修改 页面)
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
             arr[option] = defaultFormData[option];
@@ -459,6 +473,7 @@
         this.$emit('InitializationForm', defaultFormData);
       },
       reduceForm(array, current, index) {
+        // 重新配置 表单的 事件及属性
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -874,10 +889,7 @@
         return str;
       },
       defaultValue(item) {
-        // if(!item.valuedata){
-        //   item.valuedata = '';
-        //   return '';
-        // }
+        // 组件的默认值  
         if (this.objreadonly) {
           // 页面只读标记
 
@@ -944,10 +956,15 @@
           }
           return arr;
         }
+        // 
         if (item.display === 'image') {
           let arr = [];
           try {
-            arr = JSON.parse(item.valuedata);
+            if (this.defaultSetValue[item.colname]) {
+              arr = this.defaultSetValue[item.colname];
+            } else {
+              arr = JSON.parse(item.valuedata);
+            }
           } catch (err) {
             if (typeof item.valuedata === 'string') {
               arr = [{
@@ -957,9 +974,24 @@
               arr = [];
             }
           }
-
-          if (this.defaultSetValue[item.colname]) {
-            // arr =  this.defaultSetValue[item.colname] ? JSON.parse(this.defaultSetValue[item.colname]) :[]
+          return arr;
+        }
+        if (item.display === 'doc') {
+          let arr = [];
+          try {
+            if (this.defaultSetValue[item.colname]) {
+              arr = this.defaultSetValue[item.colname];
+            } else {
+              arr = JSON.parse(item.valuedata);
+            }
+          } catch (err) {
+            if (typeof item.valuedata === 'string') {
+              arr = [{
+                URL: item.valuedata
+              }];
+            } else {
+              arr = [];
+            }
           }
           return arr;
         }
@@ -1411,7 +1443,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 250 : 160,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 220 : 160,
             height: 120,
             readonly,
             ImageSize,
@@ -1540,7 +1572,8 @@
           validateForm: ''
         };
         this.VerificationForm.forEach((item) => {
-          if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay)) {
+          // 校验值是不是有值
+          if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -1586,6 +1619,7 @@
         return true;
       },
       setdefaultColumnCol() {
+        // 设置表单 展示 的值
         const width = this.$el.offsetWidth;
         if (width < 580 && width !== 0) {
           this.defaultColumnCol = 1;
