@@ -196,7 +196,6 @@
           @on-focus="fkrpSelectedInputFocus"
           @on-blur="fkrpSelectedInputBlur"
           @on-keyup="fkrpSelectedInputKeyup"
-          @on-keydown="fkrpSelectedInputKeydown"
           @on-popper-show="fkrpSelectedPopperShow"
           @on-popper-hide="fkrPopperHide"
           @on-clear="fkrpSelectedClear"
@@ -612,8 +611,10 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
+        if (!value[0].ID) {
+          value.splice(0, 1);
+        }
         this._items.value = value;
-
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(
