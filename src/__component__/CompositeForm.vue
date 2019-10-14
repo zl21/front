@@ -664,7 +664,7 @@
                       }
                     ];
                   }
-                } else if (item.type === 'DropDownSelectFilter' || item.type === 'DropMultiSelectFilter') {
+                } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
                     if (item.value[0].ID === '' || item.value[0].ID === undefined) {
                       Fitem[index].item.props.defaultSelected = [];
@@ -863,7 +863,7 @@
             str = 'DropDownSelectFilter';
             break;
           case 'mrp':
-            str = 'DropMultiSelectFilter';
+            str = 'DropDownSelectFilter';
             break;
           case 'pop':
             str = 'AttachFilter';
@@ -1311,6 +1311,7 @@
             item.props.single = true;
             item.props.data = {};
             item.props.enterType = true;
+            item.props.fk_type = 'drp';
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
             // eslint-disable-next-line no-case-declarations
@@ -1348,6 +1349,7 @@
           case 'mrp':
             item.props.single = false;
             item.props.data = {};
+            item.props.fk_type = 'mrp';
             item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);

@@ -398,7 +398,7 @@
                   str = 'DropDownSelectFilter';
                   break;
                 case 'mrp':
-                  str = 'DropMultiSelectFilter';
+                  str = 'DropDownSelectFilter';
                   break;
                 case 'pop':
                   str = 'AttachFilter';
@@ -608,11 +608,13 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
+                obj.item.props.fk_type = 'drp';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'mrp':
                 obj.item.props.single = false;
+                obj.item.props.fk_type = 'mrp';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
