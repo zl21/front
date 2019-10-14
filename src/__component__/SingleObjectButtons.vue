@@ -1780,12 +1780,13 @@
           this.saveAfter(type, tableName);
         }, () => {
           const stop = true;
-          this.saveAfter(type, tableName, stop);
+          const removeMessage = true;
+          this.saveAfter(type, tableName, stop, removeMessage);
         }).then(() => {
 
         });
       },
-      saveAfter(type, tableName, stop) {
+      saveAfter(type, tableName, stop, removeMessage) {
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           let types = '';
           if (this.objectType === 'horizontal') {
@@ -1817,8 +1818,8 @@
           }
           this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
-          this.clearEditData();// 清空store update数据
-          this.saveEventAfterClick();// 保存成功后执行的事件
+          // this.clearEditData();// 清空store update数据
+          this.saveEventAfterClick(removeMessage);// 保存成功后执行的事件
         }
       },
       clearEditData() {
@@ -1865,9 +1866,8 @@
           return obj;
         }, {});
       },
-      saveEventAfterClick() { // 保存成功后执行的事件
+      saveEventAfterClick(removeMessage) { // 保存成功后执行的事件
         this.clearEditData();// 清空store update数据
-
         if (this.saveEventAfter === 'submit') { // 提交操作
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
@@ -1909,6 +1909,8 @@
           const message = this.buttonsData.message;
           if (message) {
             this.upData(`${message}`);
+          } else if (removeMessage) {
+            this.upData();
           } else {
             this.upData('保存成功');
           }
