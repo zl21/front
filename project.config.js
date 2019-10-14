@@ -20,4 +20,5 @@ module.exports = {
   jflowRequestDomain: undefined, // jflow后台地址
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
+  enableInitializationRequest: true // 是否开启初始化请求
 };

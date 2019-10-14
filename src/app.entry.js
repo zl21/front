@@ -10,7 +10,9 @@ import store from './__config__/store.config';
 import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
-import { enableGateWay, enableJflow, jflowRequestDomain } from './constants/global';
+import {
+  enableGateWay, enableJflow, jflowRequestDomain, enableInitializationRequest 
+} from './constants/global';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
 import Loading from './__utils__/loading';
@@ -48,28 +50,32 @@ const init = () => {
 };
 
 const getCategory = () => {
-  network.post('/p/cs/getSubSystems').then((res) => {
-    if (res.data.data) {
-      store.commit('global/updateMenuLists', res.data.data);
-      const serviceIdMaps = res.data.data.map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
-        .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
-      window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
-    }
-  });
+  if (enableInitializationRequest()) {
+    network.post('/p/cs/getSubSystems').then((res) => {
+      if (res.data.data) {
+        store.commit('global/updateMenuLists', res.data.data);
+        const serviceIdMaps = res.data.data.map(d => d.children)
+          .reduce((a, c) => a.concat(c))
+          .map(d => d.children)
+          .reduce((a, c) => a.concat(c))
+          .filter(d => d.type === 'table' || d.type === 'action')
+          .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
+        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+      }
+    });
+  }
 };
 
 const getGateWayServiceId = () => {
-  network.get('/p/c/get_service_id').then((res) => {
-    window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-    getCategory();
-    setTimeout(() => {
-      init();
-    }, 0);
-  });
+  if (enableInitializationRequest()) {
+    network.get('/p/c/get_service_id').then((res) => {
+      window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+      getCategory();
+      setTimeout(() => {
+        init();
+      }, 0);
+    });
+  }
 };
 
 export default (projectConfig = {

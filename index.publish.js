@@ -57,7 +57,8 @@ export default {
    *   enableModuleKA: true, //  启用KeepAlive
    *   enableTabLists: true, // 启用TabLits模块页签切换
    *   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
-   *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由。
+   *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由
+   *   enableInitializationRequest: true, //是否开启初始化请求，默认为开启
    * }
    */
   launchApplication(projectConfig) {
