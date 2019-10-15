@@ -794,6 +794,7 @@
                 this.setPrintValueForButtons(true);
                 // this.buttons.dataArray.printValue = true;
               } else {
+                this.buttonMap[str].eName = item;
                 const buttonConfigInfo = this.buttonMap[str];
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];

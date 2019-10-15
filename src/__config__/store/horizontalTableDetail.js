@@ -3,8 +3,8 @@
 // import mutations from '../mutations/horizontalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const mutations = require(`../mutations/version_${Version()}/horizontalTableDetail.mutations`).default;
-const actions = require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
+const mutations = () => require(`../mutations/version_${Version()}/horizontalTableDetail.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
 
 
 export default () => ({
@@ -26,9 +26,9 @@ export default () => ({
     objTabActionSlientConfirmData: {},
     LinkageForm: [], // form 校验
     mappStatus: {}, // 校验联动图
-    anotherData:[],//按钮显示的备份数据
-    jflowPluginDataArray:[]
+    anotherData: [], // 按钮显示的备份数据
+    jflowPluginDataArray: []
   },
-  actions,
-  mutations
+  actions: actions(),
+  mutations: mutations()
 });

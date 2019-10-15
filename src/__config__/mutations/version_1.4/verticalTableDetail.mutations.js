@@ -171,6 +171,9 @@ export default {
                       copySaveDataForParam[b.colname] = b.valuedata;
                     }
                   }
+                  hidecolumnArray.forEach((hidecolumnItem) => {
+                    // if(b===hidecolumnItem)
+                  });
                 }
               });
             }
