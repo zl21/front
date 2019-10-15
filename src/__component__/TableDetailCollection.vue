@@ -194,7 +194,7 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
+          mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
           mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
           pop: { tag: 'ComAttachFilter', event: this.comAttachFilterpopRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
@@ -1168,6 +1168,192 @@
           })
         ]);
       },
+      dropMultiSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultSelected: this.dropDefaultSelectedData(params, cellData),
+              // defaultSelected: () =>{},
+              single: cellData.fkdisplay === 'drp',
+              pageSize: this.fkDropPageInfo.pageSize,
+              totalRowCount: this.fkData.totalRowCount,
+              data: this.fkData,
+              isShowPopTip: () => {
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                            return acc;
+                          }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择${obj.name}`);
+                    }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
+                  }
+                  return this.dropDownIsShowPopTip(cellData, params);
+                }
+                return true;
+              },
+              transfer: true,
+              enterType: true,
+              AutoData: this.fkAutoData,
+              hidecolumns: ['id', 'value']
+            },
+            // nativeOn: {
+            //   click: (e) => {
+            //     e.stopPropagation();
+            //   }
+            // },
+            on: {
+              'on-popper-show': () => {
+                this.fkDropPageInfo.currentPageIndex = 1;
+                this.fkAutoData = [];
+                this.getFKList(params, cellData);
+              },
+              'on-popper-hide': () => {
+                this.fkData = {};
+              },
+              'on-page-change': (value) => {
+                // debugger;
+                this.fkDropPageInfo.currentPageIndex = value;
+                this.getFKList(params, cellData);
+              },
+              'on-input-value-change': (data, value) => {
+                // if (this.fkSelectedChangeData[params.index]) {
+                //   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                //     [cellData.key]: [{
+                //       Label: data,
+                //       ID: ''
+                //     }]
+                //   });
+                // } else {
+                //   this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                //     [cellData.key]: [{
+                //       Label: data,
+                //       ID: ''
+                //     }]
+                //   });
+                // }
+                if (!value.inputValue) {
+                  value.transferDefaultSelected = [];
+                }
+                this.fkAutoData = [];
+                fkFuzzyquerybyak({
+                  searchObject: {
+                    ak: data,
+                    colid: this.dataSource.row[params.index][cellData.colname].colid,
+                    fixedcolumns: {
+                      whereKeys: this.getMainRefobjid(params, cellData)
+                    }
+                  },
+                  success: (res) => {
+                    this.fkAutoData = res.data.data;
+                    const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                    if (autoData.length === 0) {
+                      // autodata中没有 清空输入框
+                      value.notAutoData = true;
+                    } else {
+                      delete value.notAutoData;
+                    }
+                  }
+                });
+              },
+              'on-keydown': (e, i) => {
+                // if (e.keyCode === 13) {
+                //   const elementId = i.$el.id;
+                //   this.tableCellFocusByEnter(elementId);
+                // } else if (e.keyCode === 40) {
+                //   // 下键
+                //   const elementId = i.$el.id;
+                //   const currentColumn = params.column._index - 1;
+                //   this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                // } else if (e.keyCode === 38) {
+                //   // 上键
+                //   const elementId = i.$el.id;
+                //   const currentColumn = params.column._index - 1;
+                //   this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                // }
+              },
+              'on-blur': () => {
+                this.fkAutoData = [];
+                // if (value.notAutoData) {
+                //   // autodata中没有 清空输入框 及上次选中的值
+                //   value.inputValue = '';
+                //   delete value.notAutoData;
+                // } else if (this.fkAutoData.length > 0) {
+                //   // 当选择模糊搜索结果的时候
+                //   const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                //   value.inputValue = autoData[0].value;
+                //   value.transferDefaultSelected = [{
+                //     ID: autoData[0].id,
+                //     Label: autoData[0].value
+                //   }];
+                // }
+                // let ids = null;
+                // if (value.transferDefaultSelected.length > 0) {
+                //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                // }
+                // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-fkrp-selected': (data, value) => {
+                this.fkAutoData = [];
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: data });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: data });
+                }
+                let ids = null;
+                if (value.transferDefaultSelected.length > 0) {
+                  ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
+                  acc.push(cur.Label);
+                  return acc;
+                }, []).join(',');
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+              },
+              'on-clear': (value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: '',
+                      ID: ''
+                    }]
+                  });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: '', ID: '' }] });
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = '';
+                this.fkAutoData = [];
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+              }
+            }
+          })
+        ]);
+      },
       comAttachFilterRender(cellData, tag) {
         return (h, params) => h('div', [
           h(tag, {
@@ -1842,7 +2028,11 @@
           }
         } else if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname]) {
           if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
-            defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            if (this.fkSelectedChangeData[params.index][cellData.key][0].ID) {
+              defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            } else {
+              defaultData = [];
+            }
           } else {
             let ids = [];
             const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;

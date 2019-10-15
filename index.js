@@ -7,7 +7,9 @@ import store from './src/__config__/store.config';
 import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
-import { enableGateWay, enableJflow, jflowRequestDomain } from './src/constants/global';
+import {
+  enableGateWay, enableJflow, jflowRequestDomain, enableInitializationRequest 
+} from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
@@ -58,34 +60,40 @@ const init = () => {
   }).$mount(rootDom);
 };
 const getCategory = () => {
-  network.post('/p/cs/getSubSystems').then((res) => {
-    if (res.data.data) {
-      store.commit('global/updateMenuLists', res.data.data);
-      const serviceIdMaps = res.data.data.map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .map(d => d.children)
-        .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
-        .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
-      window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
-    }
-  });
+  if (enableInitializationRequest()) {
+    network.post('/p/cs/getSubSystems').then((res) => {
+      if (res.data.data) {
+        store.commit('global/updateMenuLists', res.data.data);
+        const serviceIdMaps = res.data.data.map(d => d.children)
+          .reduce((a, c) => a.concat(c))
+          .map(d => d.children)
+          .reduce((a, c) => a.concat(c))
+          .filter(d => d.type === 'table' || d.type === 'action')
+          .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
+        window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+      }
+    });
+  }
 };
 const getSubSystems = () => {
-  network.post('/p/cs/getSubSystems').then((res) => {
-    if (res.data.data) {
-      store.commit('global/updateMenuLists', res.data.data);
-    }
-  });
+  if (enableInitializationRequest()) {
+    network.post('/p/cs/getSubSystems').then((res) => {
+      if (res.data.data) {
+        store.commit('global/updateMenuLists', res.data.data);
+      }
+    });
+  }
 };
 const getGateWayServiceId = () => {
-  network.get('/p/c/get_service_id').then((res) => {
-    window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
-    getCategory();
-    setTimeout(() => {
-      init();
-    }, 0);
-  });
+  if (enableInitializationRequest()) {
+    network.get('/p/c/get_service_id').then((res) => {
+      window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+      getCategory();
+      setTimeout(() => {
+        init();
+      }, 0);
+    });
+  }
 };
 if (enableGateWay()) {
   getGateWayServiceId();

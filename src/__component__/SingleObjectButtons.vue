@@ -1559,6 +1559,7 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
+
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
@@ -1771,18 +1772,21 @@
           sataType,
           itemNameGroup
         };
-
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
-
         promise.then(() => {
           this.clearEditData();// 清空store update数据
           this.saveAfter(type, tableName);
-        }, () => {}).then(() => {
+        }, () => {
+          const stop = true;
+          const removeMessage = true;
+          this.saveAfter(type, tableName, stop, removeMessage);
+        }).then(() => {
+
         });
       },
-      saveAfter(type, tableName) {
+      saveAfter(type, tableName, stop, removeMessage) {
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           let types = '';
           if (this.objectType === 'horizontal') {
@@ -1801,8 +1805,9 @@
           };
 
           // this.updateChangeData({ tableName: this.tableName, value: {} });
-
-          this.tabHref(tab);
+          if (!stop) {
+            this.tabHref(tab);
+          }
           const message = this.buttonsData.message;
           const data = {
             title: '成功',
@@ -1813,8 +1818,8 @@
           }
           this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
-          this.clearEditData();// 清空store update数据
-          this.saveEventAfterClick();// 保存成功后执行的事件
+          // this.clearEditData();// 清空store update数据
+          this.saveEventAfterClick(removeMessage);// 保存成功后执行的事件
         }
       },
       clearEditData() {
@@ -1861,9 +1866,8 @@
           return obj;
         }, {});
       },
-      saveEventAfterClick() { // 保存成功后执行的事件
+      saveEventAfterClick(removeMessage) { // 保存成功后执行的事件
         this.clearEditData();// 清空store update数据
-
         if (this.saveEventAfter === 'submit') { // 提交操作
           const promise = new Promise((resolve, reject) => {
             this.getObjectTrySubmit({
@@ -1905,6 +1909,8 @@
           const message = this.buttonsData.message;
           if (message) {
             this.upData(`${message}`);
+          } else if (removeMessage) {
+            this.upData();
           } else {
             this.upData('保存成功');
           }
@@ -1988,6 +1994,10 @@
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
       }
+      // const a = setTimeout(() => {
+      //   const dom = document.getElementById('back');
+      //   dom.click();
+      // }, 1000);
     },
     beforeCreate() {
     },

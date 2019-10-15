@@ -237,6 +237,7 @@ export default {
       itemNameGroup
     } = parame;
     let parames = {};
+
     if (type === 'add') { // 新增保存参数
       const {
         add

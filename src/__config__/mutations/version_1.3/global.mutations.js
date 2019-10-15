@@ -6,15 +6,27 @@ import {
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
+  LINK_MODULE_PREFIX,
+  enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
 
 export default {
+  changeNavigatorSetting(state, data) {
+    state.navigatorSetting = data;
+  },
   changeSelectedPrimaryMenu(state, index) {
     state.primaryMenuIndex = index;
   },
   hideMenu(state) {
     state.primaryMenuIndex = -1;
+  },
+  saveLastIndexForMenu(state, lastIndex) {
+    if (state.lastIndex === lastIndex) {
+      state.lastIndex = -1;
+    } else {
+      state.lastIndex = lastIndex;
+    }
   },
   doCollapseHistoryAndFavorite(state, { showFavorites }) {
     state.showFavoritesList = showFavorites;
@@ -67,8 +79,13 @@ export default {
         return a;
       }, {});
   },
+  increaseLinkUrl(state, { linkId, linkUrl }) {
+    const linkType = {};
+    linkType[linkId] = linkUrl;
+    state.LinkUrl.push(linkType);
+  },
   increaseKeepAliveLists(state, name) {
-    if (!state.keepAliveLists.includes(name)) {
+    if (enableKeepAlive() && !state.keepAliveLists.includes(name)) {
       state.keepAliveLists = state.keepAliveLists.concat([name]);
     }
   },
@@ -177,10 +194,12 @@ export default {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+
       router.push({ path });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+
       router.push({ path });
     }
     if (back) {
@@ -193,7 +212,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, label, customizedModuleName, customizedModuleId
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -210,6 +229,13 @@ export default {
     }
     if (type === 'tableDetailAction') {
       path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      router.push({
+        path
+      });
+    }
+  
+    if (type === 'tableDetailUrl') {
+      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
       router.push({
         path
       });
@@ -248,6 +274,9 @@ export default {
   },
   addKeepAliveLabelMaps(state, { name, label }) {
     state.keepAliveLabelMaps[name] = `${label}`;
+  },
+  addServiceIdMap(state, { tableName, gateWay }) {
+    state.serviceIdMap[tableName] = `${gateWay}`;
   }
   
   
