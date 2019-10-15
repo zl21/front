@@ -98,9 +98,13 @@
       getVersion() {
         const searchdata = {
           isdroplistsearch: true,
-          refcolid: 165894,
+          table: 'AD_VERSION',
           startindex: 0,
-          range: 10
+          range: 10,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            STATUS: ['=1']
+          }
         };
         network
           .post('/p/cs/QueryList', urlSearchParams({ searchdata }))

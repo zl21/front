@@ -90,27 +90,35 @@ export default {
     }
   },
   updateAddData(state, data) {
-    if (Object.values(data.value).length === 0) {
+    if (Object.values(data.value).length === 0 && state.updateData[data.tableName]) {
       state.updateData[data.tableName].add[data.tableName] = {};
-    } else {
+    } else if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
     }
   },
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modify = data.value;
+    }
   },
   updateAddDefaultData(state, data) {
-    state.updateData[data.tableName].addDefault = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].addDefault = data.value;
+    }
   },
   updateDeleteData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].delete[data.tableName] = data.value;
-    } else {
-      state.updateData[data.tableName].delete = data.value;
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].delete[data.tableName] = data.value;
+      } else {
+        state.updateData[data.tableName].delete = data.value;
+      }
     }
   },
   updateChangeData(state, data) {
-    state.updateData[data.tableName].changeData = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].changeData = data.value;
+    }
   },
   updateCheckedInfoData(state, data) {
     if (state.updateData && state.updateData[data.tableName] && state.updateData[data.tableName].checkedInfo) {
@@ -136,6 +144,7 @@ export default {
  
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
+    const hidecolumnArray = [];
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         if (d.childs) {
@@ -144,7 +153,9 @@ export default {
               item.childs.forEach((b) => {
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
-                  if (c.readonly === true) {
+                  if (c.hidecolumn) { // 筛选出关联关系
+                    hidecolumnArray.push(c);
+                  } else if (c.readonly === true) {
                     if (c.defval) {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {

@@ -61,7 +61,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute } from '../constants/global';
+  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -109,24 +109,26 @@
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
       setDefaultSearchFoldnum() {
-        network
-          .post('/p/cs/getParamList')
-          .then((res) => {
-            if (res.data.code === 0) {
-              if (res.data.data.length > 0) {
-                res.data.data.forEach((param) => {
-                  if (param.name === 'isFoldCond') {
-                    this.switchValue = JSON.parse(param.value);
-                  } else if (param.name === 'queryDisNumber') {
-                    this.num7 = Number(param.value);
-                    if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                      this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
-                    } 
-                  }
-                });
+        if (enableInitializationRequest()) {
+          network
+            .post('/p/cs/getParamList')
+            .then((res) => {
+              if (res.data.code === 0) {
+                if (res.data.data.length > 0) {
+                  res.data.data.forEach((param) => {
+                    if (param.name === 'isFoldCond') {
+                      this.switchValue = JSON.parse(param.value);
+                    } else if (param.name === 'queryDisNumber') {
+                      this.num7 = Number(param.value);
+                      if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                        this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
+                      } 
+                    }
+                  });
+                }
               }
-            }
-          });
+            });
+        }
       },
       changePwd() {
         this.$emit('changePwdBox');

@@ -97,33 +97,45 @@ export default {
     state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].add[data.tableName] = {};
-    } else {
-      state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].add[data.tableName] = {};
+      } else {
+        state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      }
     }
   },
-  
+
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modify = data.value;
+    }
   },
   updateAddDefaultData(state, data) {
-    state.updateData[data.tableName].addDefault = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].addDefault = data.value;
+    }
   },
   updateDeleteData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].delete[data.tableName] = data.value;
-    } else {
-      state.updateData[data.tableName].delete = data.value;
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].delete[data.tableName] = data.value;
+      } else {
+        state.updateData[data.tableName].delete = data.value;
+      }
     }
   },
   updateChangeData(state, data) {
     data = JSON.parse(JSON.stringify(data));
-    state.updateData[data.tableName].changeData = Object.assign(data.value, {});
-    state.updateData = Object.assign({}, state.updateData);
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].changeData = Object.assign(data.value, {});
+      state.updateData = Object.assign({}, state.updateData);
+    }
   },
   updateCheckedInfoData(state, data) {
-    state.updateData[data.tableName].checkedInfo = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].checkedInfo = data.value;
+    }
   },
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
     if (data.data) {
@@ -274,4 +286,16 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
+    } else {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+    }
+  }
 };

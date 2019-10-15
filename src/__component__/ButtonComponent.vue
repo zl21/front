@@ -73,7 +73,7 @@
         </span>
       </Button>
       <Button
-        v-if="dataArray.refresh"
+        v-show="dataArray.refresh"
         type="fcdefault"
         @click="btnclick('refresh')"
         v-text="refresh"

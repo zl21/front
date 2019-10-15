@@ -90,27 +90,37 @@ export default {
     }
   },
   updateAddData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].add[data.tableName] = {};
-    } else {
-      state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].add[data.tableName] = {};
+      } else {
+        state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      }
     }
   },
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modify = data.value;
+    }
   },
   updateAddDefaultData(state, data) {
-    state.updateData[data.tableName].addDefault = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].addDefault = data.value;
+    }
   },
   updateDeleteData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].delete[data.tableName] = data.value;
-    } else {
-      state.updateData[data.tableName].delete = data.value;
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].delete[data.tableName] = data.value;
+      } else {
+        state.updateData[data.tableName].delete = data.value;
+      }
     }
   },
   updateChangeData(state, data) {
-    state.updateData[data.tableName].changeData = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].changeData = data.value;
+    }
   },
   updateCheckedInfoData(state, data) {
     if (state.updateData && state.updateData[data.tableName] && state.updateData[data.tableName].checkedInfo) {
@@ -288,4 +298,16 @@ export default {
   //     });
   //   });
   // }
+
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
+    } else {
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+    }
+  }
 };

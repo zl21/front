@@ -9,6 +9,7 @@ export const enableGateWay = () => (window.ProjectConfig && typeof window.Projec
 export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
+export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
 export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
 export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);
@@ -34,7 +35,7 @@ export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必�
 export const MODULE_COMPONENT_NAME = 'moduleComponentName';
 export const DB_NAME = 'R3';
 export const DB_SCHEMA_NETWORK = 'Network';
-export const ENABLE_NETWORK_MONITOR = () => (window.ProjectConfig && window.ProjectConfig.enableNetworkMonitor ? window.ProjectConfig.enableNetworkMonitor : project.enableNetworkMonitor);
+export const ENABLE_NETWORK_MONITOR = () => (window.ProjectConfig && typeof window.ProjectConfig.enableNetworkMonitor === 'boolean' ? window.ProjectConfig.enableNetworkMonitor : project.enableNetworkMonitor);
 export const SLOW_NETWORK_THRESHOLD = 0;
 
 // 需要走全局公共网关的接口
