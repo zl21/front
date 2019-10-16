@@ -144,7 +144,6 @@ export default {
  
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
-    const hidecolumnArray = [];
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         if (d.childs) {
@@ -153,8 +152,7 @@ export default {
               item.childs.forEach((b) => {
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
-                  if (c.hidecolumn) { // 筛选出关联关系
-                    hidecolumnArray.push(c);
+                  if (b.webconf && b.webconf.clearWhenHidden) { // 去除配置了clearWhenHidden的
                   } else if (c.readonly === true) {
                     if (c.defval) {
                       copySaveDataForParam[b.colname] = c.defval;
@@ -171,9 +169,6 @@ export default {
                       copySaveDataForParam[b.colname] = b.valuedata;
                     }
                   }
-                  hidecolumnArray.forEach((hidecolumnItem) => {
-                    // if(b===hidecolumnItem)
-                  });
                 }
               });
             }
@@ -184,6 +179,17 @@ export default {
 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
+    data.data.addcolums.forEach((item) => {// 去除配置了clearWhenHidden的
+      if (item.parentdesc !== '日志') {
+        item.childs.forEach((itemValue, index) => {
+          if (itemValue.webconf) {
+            if (itemValue.webconf.clearWhenHidden) {
+              item.childs.splice(index, 1);
+            }
+          }
+        });
+      }
+    });
     state.mainFormInfo.formData.data = data.data;
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
