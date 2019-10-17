@@ -206,14 +206,17 @@ export default {
     // });
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
+
     copyDatas.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
       if (item.parentdesc !== '日志') {
-        item.childs.forEach((itemValue, index) => {
-          if (itemValue.webconf) {
-            if (itemValue.webconf.clearWhenHidden) {
-              item.childs.splice(index, 1);
+        item.childs.forEach((itemValue) => {
+          item.childs.forEach((childValue) => {
+            if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
+              if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
+                itemValue.valuedata = '';
+              }
             }
-          }
+          });
         });
       }
     });

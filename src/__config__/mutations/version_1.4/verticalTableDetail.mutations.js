@@ -131,7 +131,7 @@ export default {
     componentAttribute.panelData.data = data;
   },
 
-  updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
+  updateNewMainTableAddSaveData(state, { data }) { // 主表新增保存返回信息
     state.buttonsData.newMainTableSaveData = data.data;
     state.buttonsData.message = data.message;
   },
@@ -178,19 +178,24 @@ export default {
     });
 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
+    state.updateData[tableName].add = Object.assign({}, copySaveDataForParam, modifyData);
+
+    
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    data.data.addcolums.forEach((item) => {// 去除配置了clearWhenHidden的
+    data.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
       if (item.parentdesc !== '日志') {
-        item.childs.forEach((itemValue, index) => {
-          if (itemValue.webconf) {
-            if (itemValue.webconf.clearWhenHidden) {
-              item.childs.splice(index, 1);
+        item.childs.forEach((itemValue) => {
+          item.childs.forEach((childValue) => {
+            if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
+              if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
+                itemValue.valuedata = '';
+              }
             }
-          }
+          });
         });
       }
     });
-    state.mainFormInfo.formData.data = data.data;
+      state.mainFormInfo.formData.data.addcolums = data.data.addcolums.concat([]);
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
     state.updateData[tableName].add = defaultForCopyDatas;
