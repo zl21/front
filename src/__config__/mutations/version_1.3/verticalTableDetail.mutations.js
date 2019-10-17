@@ -321,5 +321,8 @@ export default {
     } else {
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
     }
+  },
+  updateRefreshButton(state, value) { // 控制刷新按钮开关
+    state.refreshButton = value;
   }
 };

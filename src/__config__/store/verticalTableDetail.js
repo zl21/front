@@ -38,8 +38,8 @@ export default () => ({
     LinkageForm: [], // 所有form
     mappStatus: {},
     anotherData: [], // 按钮显示的备份数据
-    jflowPluginDataArray: []
-
+    jflowPluginDataArray: [],
+    refreshButton: true, // 为方便jflow控制，改为全局状态调用
   },
   actions: actions(),
   mutations: mutations()

@@ -304,5 +304,8 @@ export default {
     } else {
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
     }
+  },
+  updateRefreshButton(state, value) { // 控制刷新按钮开关
+    state.refreshButton = value;
   }
 };

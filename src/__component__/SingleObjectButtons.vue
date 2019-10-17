@@ -118,7 +118,7 @@
           }
         }, // 弹框配置信息
         dataArray: {
-          refresh: true, // 显示刷新
+          refresh: false, // 显示刷新
           back: true, // 显示返回
           printValue: false, // 是否显示打印
           actionCollection: false,
@@ -432,7 +432,8 @@
             }
           }
           if (this.copy === true) {
-            this.dataArray.refresh = false;
+            this.updateRefreshButton(false);
+            // this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
         }
@@ -1025,7 +1026,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1047,7 +1050,8 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1071,7 +1075,8 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1096,7 +1101,8 @@
                         this.saveButtonPath = tabcmd.paths[index];
                       }
                     }
-                    this.dataArray.refresh = true;
+                    this.updateRefreshButton(true);
+                    // this.dataArray.refresh = true;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
                 }
@@ -1959,6 +1965,7 @@
       // }
     },  
     mounted() {
+      this.dataArray.refresh = this.refreshButton;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {

@@ -26,6 +26,7 @@ export default () => ({
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
+      refreshButton: ({ refreshButton }) => refreshButton,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -69,7 +70,8 @@ export default () => ({
         'updateTablePageInfo',
         'updateAddDefaultData',
         'updateObjTabActionSlientConfirm',
-        'updateTableSearchData'
+        'updateTableSearchData',
+        'updateRefreshButton'
         // 'resetFormReadOnlyAttribute'
 
       ]),
