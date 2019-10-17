@@ -320,7 +320,6 @@ export default {
     }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
-    debugger
     state.refreshButton = value;
   }
 };
