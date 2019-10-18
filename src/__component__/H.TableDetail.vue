@@ -28,12 +28,17 @@
         const arr = [];
         if (this.tabPanel) {
           this.tabPanel.forEach((item, index) => {
+            //             vuedisplay: "TabItem"
+            // webact: "manage/pro_desc"
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.isMainTable = true;
+            }
+            if (obj.vuedisplay === 'TabItem') {
+              console.log('obj', obj);
             }
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
