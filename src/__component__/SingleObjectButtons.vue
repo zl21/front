@@ -169,6 +169,12 @@
           }
         }
       },
+      refreshButtons: {
+        handler(val) {
+          this.dataArray.refresh = val;
+        }
+      },
+     
       tabcmd: {
         handler(val) {
           if (Object.keys(val).length > 0) {
@@ -252,7 +258,6 @@
         copyDatas: ({ copyDatas }) => copyDatas,
         modifyData: ({ modifyData }) => modifyData,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
-
       }),
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
@@ -323,6 +328,10 @@
           }
         }
         return [];
+      },
+      refreshButtons() {
+        // this.refresh = this.refreshButton;
+        return this.refreshButton;
       },
     },
     props: {
@@ -433,7 +442,6 @@
           }
           if (this.copy === true) {
             this.updateRefreshButton(false);
-            // this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
         }
@@ -1027,8 +1035,7 @@
                         }
                       }
                       this.updateRefreshButton(true);
-
-                      // this.dataArray.refresh = true;
+                      this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1051,7 +1058,7 @@
                         }
                       }
                       this.updateRefreshButton(true);
-                      // this.dataArray.refresh = true;
+                      this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1076,7 +1083,8 @@
                         }
                       }
                       this.updateRefreshButton(true);
-                      // this.dataArray.refresh = true;
+                      console.log(this.refreshButtons);
+                      this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1102,7 +1110,7 @@
                       }
                     }
                     this.updateRefreshButton(true);
-                    // this.dataArray.refresh = true;
+                    this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
                 }
@@ -1572,7 +1580,7 @@
           //   this.itemTableValidation = true;
           // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            if (Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+            if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path    if (this.verifyRequiredInformation()) {
@@ -1797,6 +1805,8 @@
         });
       },
       saveAfter(type, tableName, stop, removeMessage) {
+        this.clearEditData();// 清空store update数据
+
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
@@ -1828,7 +1838,6 @@
           }
           this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
-          // this.clearEditData();// 清空store update数据
           this.saveEventAfterClick(stop, removeMessage);// 保存成功后执行的事件
         }
       },
@@ -1926,7 +1935,9 @@
               this.upData('保存成功');
             }
           }
-        } 
+        } else {
+          this.upData();
+        }
       },
       networkEventListener(event) {
         const { detail } = event;
@@ -1965,7 +1976,7 @@
       // }
     },  
     mounted() {
-      this.dataArray.refresh = this.refreshButton;
+      // this.dataArray.refresh = this.refreshButtons;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {

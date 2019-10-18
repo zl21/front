@@ -297,6 +297,8 @@ function NetworkConstructor() {
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
+
+    console.log(config);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,

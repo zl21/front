@@ -17,7 +17,7 @@
       <Spin
         v-if="spinShow"
         size="large"
-        fix 
+        fix
       />
       <StandardTable
         class="table"
@@ -92,7 +92,7 @@
             item: {
               type: 'DatePicker',
               title: '处理时间',
-              filed: 'createTime'
+              filed: 'updateTime'
             }
           }
         ],
@@ -102,7 +102,7 @@
           pageSize: 10,
           excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: [
+          updateTime: [
             new Date(new Date(new Date().toLocaleDateString()).getTime()),
             new Date()
           ]
@@ -116,8 +116,16 @@
             key: 'instanceId'
           },
           {
+            title: '单据编号',
+            key: 'businessNumber'
+          },
+          {
             title: '单据类型',
             key: 'businessName'
+          },
+          {
+            title: '模板名称',
+            key: 'moduleName'
           },
           // {
           //   title:'待审批人',
@@ -129,7 +137,7 @@
           },
           {
             title: '处理时间',
-            key: 'createTime'
+            key: 'updateTime'
           },
           {
             title: '消耗时长',
@@ -140,6 +148,30 @@
             key: 'processStatus',
             render: (h, params) => {
               let processStatusT = '';
+              if (params.row.processStatus === 4) {
+                return h('Poptip', {
+                  props: {
+                    trigger: 'hover',
+                    content: params.row.submitErrorMsg
+                  }
+                }, [h(
+                  'span',
+                  {
+                    style: {
+                      color: 'rgba(16, 142, 233, 1)',
+                      cursor: 'pointer'
+                    },
+                    on: {
+                      click: () => {
+                        // this.modalShow = true;
+                        this.instanceId = params.row.instanceId;
+                        this.submitTask(this.instanceId);
+                      }
+                    }
+                  },
+                  '提交失败，重新提交'
+                )]);
+              } 
               switch (params.row.processStatus) {
               case 0:
                 processStatusT = '待审批';
@@ -153,9 +185,7 @@
               case 3:
                 processStatusT = '已完结';
                 break;
-              case 4:
-                processStatusT = '业务系统提交失败';
-                break;
+              // case 4:processStatusT="业务系统提交失败";break;
               case -1:
                 processStatusT = '已撤销';
                 break;
@@ -301,10 +331,14 @@
       getselectOption() {
         this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
-            this.formLists[1].item.options = res.data.data.relations.map((item) => {
-              item.value = item.businesskey;
-              item.label = item.businessName;
-              return item;
+            this.formLists.forEach((outer) => {
+              if (outer.item.filed === 'businessType') {
+                outer.item.options = res.data.data.relations.map((item) => {
+                  item.value = item.businesskey;
+                  item.label = item.businessName;
+                  return item;
+                });
+              }
             });
           }
         });
@@ -313,22 +347,22 @@
         this.spinShow = true;
         // 查询列表
         if (
-          this.searchData.createTime
-          && this.searchData.createTime[0]
-          && this.searchData.createTime[1]
+          this.searchData.updateTime
+          && this.searchData.updateTime[0]
+          && this.searchData.updateTime[1]
         ) {
           this.searchData.startTime = new Date(
-            this.searchData.createTime[0]
+            this.searchData.updateTime[0]
           ).format('yyyy-MM-dd hh:mm');
           this.searchData.endTime = new Date(
-            this.searchData.createTime[1]
+            this.searchData.updateTime[1]
           ).format('yyyy-MM-dd hh:mm');
         } else {
           this.searchData.startTime = '';
           this.searchData.endTime = '';
         }
         const obj = Object.assign({}, this.searchData);
-        delete obj.createTime;
+        delete obj.updateTime;
         this.$network
           .post('/jflow/p/cs/task/initiator/list', obj)
           .then((res) => {
