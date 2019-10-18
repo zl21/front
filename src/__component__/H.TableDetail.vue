@@ -38,7 +38,7 @@
               obj.componentAttribute.isMainTable = true;
             }
             if (obj.vuedisplay === 'TabItem') {
-              console.log('obj', obj);
+              // console.log('obj', obj);
             }
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
