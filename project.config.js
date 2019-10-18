@@ -15,6 +15,7 @@ module.exports = {
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: true, // 默认禁用JFlow插件功能
+  showTab: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
   jflowRequestDomain: '123123', // jflow后台地址
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
