@@ -9,6 +9,9 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
 import WaterMark from './src/__component__/WaterMark';
+import FormItemComponent from './src/__component__/FormItemComponent';
+import FilterTree from './src/__component__/Tree/FilterTree';
+import SelectTree from './src/__component__/Tree/SelectTree';
 import { menuClick } from './src/__config__/event.config';
 
 
@@ -18,7 +21,7 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.4.6',
+  version: '1.4.7',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -93,6 +96,9 @@ export default {
     PopDialog,
     ComAttachFilter,
     DownComponent,
-    WaterMark
+    WaterMark,
+    FormItemComponent,
+    FilterTree,
+    SelectTree
   }
 };

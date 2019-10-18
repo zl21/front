@@ -5,8 +5,9 @@ import { Version } from '../../constants/global';
 
 
 // eslint-disable-next-line import/no-dynamic-require
-const mutations = require(`../mutations/version_${Version()}/standardTableList.mutations`).default;
-const actions = require(`../actions/version_${Version()}/standardTableList.actions`).default;
+
+const mutations = () => require(`../mutations/version_${Version()}/standardTableList.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
   state: {
@@ -109,6 +110,6 @@ export default () => ({
       commonTable: false
     }
   },
-  actions,
-  mutations
+  actions: actions(),
+  mutations: mutations()
 });

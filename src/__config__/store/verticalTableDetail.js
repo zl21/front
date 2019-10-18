@@ -3,8 +3,8 @@
 // import mutations from '../mutations/verticalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const mutations = require(`../mutations/version_${Version()}/verticalTableDetail.mutations`).default;
-const actions = require(`../actions/version_${Version()}/verticalTableDetail.actions`).default;
+const mutations = () => require(`../mutations/version_${Version()}/verticalTableDetail.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/verticalTableDetail.actions`).default;
 
 export default () => ({
   namespaced: true,
@@ -37,10 +37,10 @@ export default () => ({
     objTabActionSlientConfirmData: {},
     LinkageForm: [], // 所有form
     mappStatus: {},
-    anotherData:[],//按钮显示的备份数据
-    jflowPluginDataArray:[]
-
+    anotherData: [], // 按钮显示的备份数据
+    jflowPluginDataArray: [],
+    refreshButton: true, // 为方便jflow控制，改为全局状态调用
   },
-  actions,
-  mutations
+  actions: actions(),
+  mutations: mutations()
 });

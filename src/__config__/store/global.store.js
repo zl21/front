@@ -2,8 +2,8 @@
 
 import { Version } from '../../constants/global';
 
-const mutations = require(`../mutations/version_${Version()}/global.mutations`).default;
-const actions = require(`../actions/version_${Version()}/global.actions`).default;
+const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
 export default {
   namespaced: true,
   state: {
@@ -29,6 +29,6 @@ export default {
 
     
   },
-  mutations,
-  actions,
+  mutations: mutations(),
+  actions: actions(),
 };
