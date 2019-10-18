@@ -1769,7 +1769,6 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
-        debugger;
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
