@@ -8,7 +8,7 @@
 //   },
 // };
 import functionPermission from '../__customize__/functionPower/FunctionPower.vue';
-import proDesc from '../__component__/Login';
+import proDesc from '../__customize__/pro_desc/pro_desc.vue';
 
 
 export default {
