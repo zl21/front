@@ -1580,7 +1580,7 @@
           //   this.itemTableValidation = true;
           // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            if (Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+            if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path    if (this.verifyRequiredInformation()) {
@@ -1769,6 +1769,7 @@
        * }
        */
       savaNewTable(type, path, objId, itemName, itemCurrentParameter, sataType) { // 主表新增保存方法
+        debugger;
         const tableName = this.tableName;
         const objectType = this.objectType;
         const isreftabs = this.subtables();
@@ -1805,6 +1806,8 @@
         });
       },
       saveAfter(type, tableName, stop, removeMessage) {
+        this.clearEditData();// 清空store update数据
+
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
@@ -1836,7 +1839,6 @@
           }
           this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
-          // this.clearEditData();// 清空store update数据
           this.saveEventAfterClick(stop, removeMessage);// 保存成功后执行的事件
         }
       },
@@ -1934,7 +1936,9 @@
               this.upData('保存成功');
             }
           }
-        } 
+        } else {
+          this.upData();
+        }
       },
       networkEventListener(event) {
         const { detail } = event;

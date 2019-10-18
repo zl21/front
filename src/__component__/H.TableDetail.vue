@@ -37,9 +37,7 @@
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.isMainTable = true;
             }
-            if (obj.vuedisplay === 'TabItem') {
-              // console.log('obj', obj);
-            }
+           
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.tableName = item.tablename;
@@ -48,8 +46,14 @@
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
             obj.componentAttribute.type = 'horizontal';
-            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+            if (obj.vuedisplay === 'TabItem') {
+              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+            } else {
+              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+            }
             obj.component = `tapComponent.${item.tablename}`;
+            
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
           });
