@@ -23,7 +23,7 @@ export default () => ({
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
-
+      refreshButton: ({ refreshButton }) => refreshButton,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -67,6 +67,7 @@ export default () => ({
         'updateDeleteData',
         'updateObjTabActionSlientConfirm',
         'updateTableSearchData',
+        'updateRefreshButton'
       ]),
   },
   beforeDestroy() {

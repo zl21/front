@@ -118,7 +118,7 @@
           }
         }, // 弹框配置信息
         dataArray: {
-          refresh: true, // 显示刷新
+          refresh: false, // 显示刷新
           back: true, // 显示返回
           printValue: false, // 是否显示打印
           actionCollection: false,
@@ -432,7 +432,8 @@
             }
           }
           if (this.copy === true) {
-            this.dataArray.refresh = false;
+            this.updateRefreshButton(false);
+            // this.dataArray.refresh = false;
             this.addButtonShow(buttonData);
           }
         }
@@ -1025,7 +1026,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1047,7 +1050,8 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1071,7 +1075,8 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.dataArray.refresh = true;
+                      this.updateRefreshButton(true);
+                      // this.dataArray.refresh = true;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   }
@@ -1096,7 +1101,8 @@
                         this.saveButtonPath = tabcmd.paths[index];
                       }
                     }
-                    this.dataArray.refresh = true;
+                    this.updateRefreshButton(true);
+                    // this.dataArray.refresh = true;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
                 }
@@ -1775,12 +1781,16 @@
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
+        let stop = false;
+        let removeMessage = false;
         promise.then(() => {
           this.clearEditData();// 清空store update数据
-          this.saveAfter(type, tableName);
+          stop = false;
+          removeMessage = false;
+          this.saveAfter(type, tableName, stop, removeMessage);
         }, () => {
-          const stop = true;
-          const removeMessage = true;
+          stop = true;
+          removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
         }).then(() => {
 
@@ -1788,24 +1798,24 @@
       },
       saveAfter(type, tableName, stop, removeMessage) {
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
-          let types = '';
-          if (this.objectType === 'horizontal') {
-            types = 'tableDetailHorizontal';
-          } else {
-            types = 'tableDetailVertical';
-          }
-          const label = `${this.activeTab.label.replace('新增', '编辑')}`;
-
-          const tab = {
-            type: types,
-            tableName,
-            tableId: this.tableId,
-            label,
-            id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
-          };
-
           // this.updateChangeData({ tableName: this.tableName, value: {} });
-          if (!stop) {
+          if (!stop) { // 如果保存失败，不执行以下操作
+            let types = '';
+            if (this.objectType === 'horizontal') {
+              types = 'tableDetailHorizontal';
+            } else {
+              types = 'tableDetailVertical';
+            }
+            const label = `${this.activeTab.label.replace('新增', '编辑')}`;
+
+            const tab = {
+              type: types,
+              tableName,
+              tableId: this.tableId,
+              label,
+              id: this.buttonsData.newMainTableSaveData ? this.buttonsData.newMainTableSaveData.objId : this.itemId
+            };
+
             this.tabHref(tab);
           }
           const message = this.buttonsData.message;
@@ -1819,7 +1829,7 @@
           this.decreasekeepAliveLists(this[MODULE_COMPONENT_NAME]);
         } else {
           // this.clearEditData();// 清空store update数据
-          this.saveEventAfterClick(removeMessage);// 保存成功后执行的事件
+          this.saveEventAfterClick(stop, removeMessage);// 保存成功后执行的事件
         }
       },
       clearEditData() {
@@ -1866,55 +1876,57 @@
           return obj;
         }, {});
       },
-      saveEventAfterClick(removeMessage) { // 保存成功后执行的事件
+      saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
         this.clearEditData();// 清空store update数据
-        if (this.saveEventAfter === 'submit') { // 提交操作
-          const promise = new Promise((resolve, reject) => {
-            this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+        if (!stop) {
+          if (this.saveEventAfter === 'submit') { // 提交操作
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTrySubmit({
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+              });
             });
-          });
-          // let message = '';
-          promise.then(() => {
-                         const message = this.buttonsData.submitData.message;
-                         if (message) {
-                           this.upData(`${message}`);
-                         } else {
+            // let message = '';
+            promise.then(() => {
+                           const message = this.buttonsData.submitData.message;
+                           if (message) {
+                             this.upData(`${message}`);
+                           } else {
+                             this.upData();
+                           }
+                         },
+                         () => { // 状态为rejected时执行
                            this.upData();
-                         }
-                       },
-                       () => { // 状态为rejected时执行
-                         this.upData();
-                         this.saveEventAfter = '';
-                       });
-        } else if (this.saveEventAfter === 'invalid') {
-          const promise = new Promise((resolve, reject) => {
-            this.getObjectTryInvalid({
-              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+                           this.saveEventAfter = '';
+                         });
+          } else if (this.saveEventAfter === 'invalid') {
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTryInvalid({
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+              });
             });
-          });
-          // let message = '';
-          promise.then(() => {
-            const message = this.buttonsData.invalidData.message;
+            // let message = '';
+            promise.then(() => {
+              const message = this.buttonsData.invalidData.message;
+              if (message) {
+                this.upData(`${message}`);
+              } else {
+                this.upData();
+              }
+            }, () => { // 状态为rejected时执行
+              this.upData();
+              this.saveEventAfter = '';
+            });
+          } else { // 保存后的保存成功提示信息
+            const message = this.buttonsData.message;
             if (message) {
               this.upData(`${message}`);
-            } else {
+            } else if (removeMessage) {
               this.upData();
+            } else {
+              this.upData('保存成功');
             }
-          }, () => { // 状态为rejected时执行
-            this.upData();
-            this.saveEventAfter = '';
-          });
-        } else { // 保存后的保存成功提示信息
-          const message = this.buttonsData.message;
-          if (message) {
-            this.upData(`${message}`);
-          } else if (removeMessage) {
-            this.upData();
-          } else {
-            this.upData('保存成功');
           }
-        }
+        } 
       },
       networkEventListener(event) {
         const { detail } = event;
@@ -1953,6 +1965,7 @@
       // }
     },  
     mounted() {
+      this.dataArray.refresh = this.refreshButton;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {

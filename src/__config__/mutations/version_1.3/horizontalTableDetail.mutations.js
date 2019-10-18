@@ -187,17 +187,13 @@ export default {
           item.childs.forEach((b) => {
             if (b.name === c.name) {
               b.readonly = c.readonly;
-              if (c.readonly === true) {
+              if (b.webconf && b.webconf.clearWhenHidden) { // 去除配置了clearWhenHidden的
+              } else if (c.readonly === true) {
                 if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                   copySaveDataForParam[b.colname] = c.defval;
                 } else {
                   b.valuedata = '';// 将配置为不可编辑的值置空
                 }
-                // if (d.parentdesc === '日志' && b.display === 'check') {
-                //   b.valuedata = 'N'; // check类型
-                // } else {
-                //   b.valuedata = '';// 将配置为不可编辑的值置空
-                // }
               } else if (b.valuedata) {
                 if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
@@ -224,6 +220,17 @@ export default {
     // });
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
+    copyDatas.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
+      if (item.parentdesc !== '日志') {
+        item.childs.forEach((itemValue, index) => {
+          if (itemValue.webconf) {
+            if (itemValue.webconf.clearWhenHidden) {
+              item.childs.splice(index, 1);
+            }
+          }
+        });
+      }
+    });
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
   },
   emptyChangeData(state, tableName) {
@@ -297,5 +304,8 @@ export default {
     } else {
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
     }
+  },
+  updateRefreshButton(state, value) { // 控制刷新按钮开关
+    state.refreshButton = value;
   }
 };
