@@ -16,6 +16,7 @@ function CreateButton(obj, buttons, id, store) {
       buttonsData.data.tabcmd.prem.map(item => false);
       const newButtons = [];
       const buttonAnother = [];
+      window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
       window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
     }
   }, 100);
