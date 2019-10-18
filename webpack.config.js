@@ -32,7 +32,7 @@ module.exports = env => ({
   devServer: {
     compress: true,
     port: 8190,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     open: false,
     historyApiFallback: {
       rewrites: [
@@ -61,7 +61,7 @@ module.exports = env => ({
       },
       {
         context: '/jflow',
-        target: 'http://172.18.34.214:18080' // 重新占单
+        target: 'http://47.99.229.124:18080' // 重新占单
       }]
   },
   target: 'web',

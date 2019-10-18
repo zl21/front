@@ -28,7 +28,8 @@ if (enableJflow() && jflowRequestDomain()) {
     router,
     axios,
     store,
-    jflowIp: jflowRequestDomain()
+    jflowIp: jflowRequestDomain(),
+    showTab: true
   });
 }
 
