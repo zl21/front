@@ -33,7 +33,7 @@ module.exports = env => ({
     compress: true,
     port: 8190,
     host: '0.0.0.0',
-    open: false,
+    open: true,
     historyApiFallback: {
       rewrites: [
         { from: /.*/, to: env && env.production ? indexProHtml : indexHtml },
