@@ -19,6 +19,7 @@
       />
       <Button
         v-for="(item) in dataArray.waListButtonsConfig.waListButtons"
+        :id="item.eName"
         :key="item.webid"
         :ref="item.ref"
         type="fcdefault"
@@ -35,6 +36,7 @@
       />
       <Dropdown
         v-if="dataArray.printValue"
+        id="print"
         trigger="click"
         placement="bottom-start"
         split-button
@@ -73,13 +75,15 @@
         </span>
       </Button>
       <Button
-        v-if="dataArray.refresh"
+        v-show="dataArray.refresh"
+        id="refresh"
         type="fcdefault"
         @click="btnclick('refresh')"
         v-text="refresh"
       />
       <Button
         v-if="dataArray.back"
+        id="back"
         type="fcdefault"
         @click="btnclick('back')"
         v-text="back"

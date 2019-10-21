@@ -39,7 +39,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const queryData = res.data;
-        console.log(queryData.status4css);
         resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
@@ -47,6 +46,9 @@ export default {
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
+          commit('updateWebconfCommonTable', queryData.datas.webconf);
+        }
       }
     });
   },

@@ -1,6 +1,18 @@
 
 <!--suppress ALL -->
 <template>
+  <!-- <div class="StandardTableList"> -->
+  <!-- <div class="tree">
+      <Input
+        search
+        placeholder="请输入机构编号或名称"
+      />
+      <my-tree
+        :list="list"
+        :search="search"
+        @getItemData="getItemData"
+      />
+    </div> -->
   <div class="StandardTableListRootDiv">
     <ButtonGroup
       :data-array="buttons.dataArray"
@@ -89,6 +101,7 @@
       @on-save-success="onSaveSuccess"
     />
   </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -101,6 +114,8 @@
   import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
+  import myTree from './Tree/Tree';
+
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import { Version } from '../constants/global';
@@ -119,7 +134,8 @@
       ImportDialog,
       ErrorModal,
       modifyDialog,
-      dialogComponent
+      dialogComponent,
+      myTree
     },
     data() {
       return {
@@ -152,7 +168,7 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl
-        
+
       }),
       formLists() {
         return this.refactoringData(
@@ -592,11 +608,13 @@
               switch (current.fkobj.searchmodel) {
               case 'drp':
                 obj.item.props.single = true;
+                obj.item.props.fk_type = 'drp';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
               case 'mrp':
                 obj.item.props.single = false;
+                obj.item.props.fk_type = 'mrp';
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.defaultSelected = this.defaultValue(current) || [];
                 break;
@@ -608,7 +626,7 @@
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.fkobj.colid = current.colid;
-                //obj.item.props.fkobj.saveType = 'object';
+                // obj.item.props.fkobj.saveType = 'object';
                 obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
                 obj.item.props.Selected = [];
@@ -756,7 +774,7 @@
 
         if (detailTable && detailTable.agTable) { // ag表格
           detailTable.agTable.deselectAll();
-        } 
+        }
         if (commonTable) { // 普通表格
           commonTable.deselectAll();
         }
@@ -776,6 +794,7 @@
                 this.setPrintValueForButtons(true);
                 // this.buttons.dataArray.printValue = true;
               } else {
+                this.buttonMap[str].eName = item;
                 const buttonConfigInfo = this.buttonMap[str];
                 if (tabcmdData.paths) {
                   buttonConfigInfo.requestUrlPath = tabcmdData.paths[index];
@@ -980,7 +999,7 @@
         //     url: tab.action
         //   });
         // }, 500);
-       
+
         const eleLink = document.createElement('a');
         eleLink.href = tab.action;
         eleLink.target = '_blank';
@@ -1278,7 +1297,7 @@
             this.dialogMessage(title, contentText);
           } else {
             const data = {
-              mask: true,          
+              mask: true,
               title: '警告',
               content: `请先选择需要${obj.name}的记录！`
             };
@@ -1675,6 +1694,15 @@
 </script>
 
 <style lang="less">
+.StandardTableList{
+  display: flex;
+  .tree{
+    width:240px;
+    padding:10px;
+    margin-right:15px;
+    border-right:1px solid #d2d2d2;
+  }
+}
 .StandardTableListRootDiv {
   width: 100%;
   height: 100%;

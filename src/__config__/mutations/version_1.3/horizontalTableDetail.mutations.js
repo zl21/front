@@ -97,18 +97,24 @@ export default {
     state.updateData[data.tableName].default = data.value;
   },
   updateAddData(state, data) {
-    if (Object.values(data.value).length === 0) {
-      state.updateData[data.tableName].add[data.tableName] = {};
-    } else {
-      state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+    if (state.updateData[data.tableName]) {
+      if (Object.values(data.value).length === 0) {
+        state.updateData[data.tableName].add[data.tableName] = {};
+      } else {
+        state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      }
     }
   },
-  
+
   updateModifyData(state, data) {
-    state.updateData[data.tableName].modify = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modify = data.value;
+    }
   },
   updateAddDefaultData(state, data) {
-    state.updateData[data.tableName].addDefault = data.value;
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].addDefault = data.value;
+    }
   },
   updateDeleteData(state, data) {
     if (state.updateData[data.tableName]) {
@@ -121,8 +127,10 @@ export default {
   },
   updateChangeData(state, data) {
     data = JSON.parse(JSON.stringify(data));
-    state.updateData[data.tableName].changeData = Object.assign(data.value, {});
-    state.updateData = Object.assign({}, state.updateData);
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].changeData = Object.assign(data.value, {});
+      state.updateData = Object.assign({}, state.updateData);
+    }
   },
   updateCheckedInfoData(state, data) {
     if (state.updateData[data.tableName]) {
@@ -179,17 +187,13 @@ export default {
           item.childs.forEach((b) => {
             if (b.name === c.name) {
               b.readonly = c.readonly;
-              if (c.readonly === true) {
+              if (b.webconf && b.webconf.clearWhenHidden) { // 去除配置了clearWhenHidden的
+              } else if (c.readonly === true) {
                 if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                   copySaveDataForParam[b.colname] = c.defval;
                 } else {
                   b.valuedata = '';// 将配置为不可编辑的值置空
                 }
-                // if (d.parentdesc === '日志' && b.display === 'check') {
-                //   b.valuedata = 'N'; // check类型
-                // } else {
-                //   b.valuedata = '';// 将配置为不可编辑的值置空
-                // }
               } else if (b.valuedata) {
                 if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                   copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
@@ -216,6 +220,17 @@ export default {
     // });
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
+    copyDatas.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
+      if (item.parentdesc !== '日志') {
+        item.childs.forEach((itemValue, index) => {
+          if (itemValue.webconf) {
+            if (itemValue.webconf.clearWhenHidden) {
+              item.childs.splice(index, 1);
+            }
+          }
+        });
+      }
+    });
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
   },
   emptyChangeData(state, tableName) {
@@ -278,4 +293,19 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
+    } else {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+    }
+  },
+  updateRefreshButton(state, value) { // 控制刷新按钮开关
+    state.refreshButton = value;
+  }
 };

@@ -172,7 +172,8 @@ export default {
               item.childs.forEach((b) => {
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
-                  if (c.readonly === true) {
+                  if (b.webconf && b.webconf.clearWhenHidden) { // 去除配置了clearWhenHidden的
+                  } else if (c.readonly === true) {
                     if (c.defval) {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
@@ -198,6 +199,17 @@ export default {
 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
+    data.data.addcolums.forEach((item) => {// 去除配置了clearWhenHidden的
+      if (item.parentdesc !== '日志') {
+        item.childs.forEach((itemValue, index) => {
+          if (itemValue.webconf) {
+            if (itemValue.webconf.clearWhenHidden) {
+              item.childs.splice(index, 1);
+            }
+          }
+        });
+      }
+    });
     state.mainFormInfo.formData.data = data.data;
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
@@ -298,4 +310,19 @@ export default {
   //     });
   //   });
   // }
+
+  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+    state.jflowPluginDataArray = newButtons;
+    if (buttonAnother) { 
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+      state.anotherData = buttonAnother;
+    } else if (state.anotherData.length > 0) {
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
+    } else {
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+    }
+  },
+  updateRefreshButton(state, value) { // 控制刷新按钮开关
+    state.refreshButton = value;
+  }
 };

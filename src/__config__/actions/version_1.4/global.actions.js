@@ -1,18 +1,22 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
-import { enableHistoryAndFavorite } from '../../../constants/global';
+import { enableHistoryAndFavorite, enableInitializationRequest } from '../../../constants/global';
 
 
 export default {
   getHistoryAndFavorite({ commit }) {
-    network.post('/p/cs/getHistoryAndFavorite').then((res) => {
-      const { history, favorite } = res.data.data;
-      commit('updateHistoryAndFavorite', { history, favorite });
-    });
+    if (enableInitializationRequest()) {
+      network.post('/p/cs/getHistoryAndFavorite').then((res) => {
+        const { history, favorite } = res.data.data;
+        commit('updateHistoryAndFavorite', { history, favorite });
+      });
+    }
   },
   getMenuLists({ commit }) {
-    network.post('/p/cs/getSubSystems').then((res) => {
-      commit('updateMenuLists', res.data.data);
-    });
+    if (enableInitializationRequest()) {
+      network.post('/p/cs/getSubSystems').then((res) => {
+        commit('updateMenuLists', res.data.data);
+      });
+    }
   },
   updateAccessHistory({ commit, state }, { type, id }) {
     if (enableHistoryAndFavorite()) {

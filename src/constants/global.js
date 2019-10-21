@@ -8,7 +8,9 @@ export const interlocks = () => (window.ProjectConfig && typeof window.ProjectCo
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
+export const jflowTabShow = () => (window.ProjectConfig && typeof window.ProjectConfig.showTab === 'boolean' ? window.ProjectConfig.showTab : project.showTab);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
+export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const enableTabLists = () => (window.ProjectConfig && typeof window.ProjectConfig.enableTabLists === 'boolean' ? window.ProjectConfig.enableTabLists : project.enableTabLists);
 export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
 export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);

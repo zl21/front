@@ -21,7 +21,7 @@
       >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop'">
         <!-- 路由跳转 -->
-        <template v-if=" !!_items.props.disabled && !!_items.value">
+        <template v-if="!!_items.value">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -29,28 +29,11 @@
             @click="routerNext(_items.props.Selected)"
           />
         </template>
-        <template v-if="_items.props.disabled && _items.props.Selected[0]">
-          <!-- disabled -->
-          <i
-            class="iconfont iconbj_link"
-            data-target-tag="fkIcon"
-            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
-            @click="routerNext(_items.props.Selected)"
-          />
-        </template>
+
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp'">
         <!-- 路由跳转 -->
-        <template v-if="!! _items.props.disabled && !!_items.value && _items.value[0] && !!_items.value[0].ID">
-          <i
-            class="iconfont iconbj_link"
-            data-target-tag="fkIcon"
-            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
-            @click="routerNext(_items.value)"
-          />
-        </template>
-        <template v-if="_items.props.disabled && _items.props.defaultSelected[0]">
-          <!-- disabled -->
+        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -58,8 +41,9 @@
             @click="routerNext(_items.props.defaultSelected)"
           />
         </template>
+
       </template>
-      
+
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
@@ -166,33 +150,58 @@
         @on-change="timePickerChange"
         @on-clear="timePickerClear"
       />
-
-      <DropDownSelectFilter
-        v-if="_items.type === 'DropDownSelectFilter'"
-        :data="_items.props.data"
-        :single="_items.props.single"
-        :total-row-count="_items.props.totalRowCount"
-        :page-size="_items.props.pageSize"
-        :auto-data="_items.props.AutoData"
-        :disabled="_items.props.disabled"
-        :is-show-pop-tip="_items.props.isShowPopTip"
-        :enter-type="_items.props.enterType"
-        :hidecolumns="_items.props.hidecolumns"
-        :data-empty-message="_items.props.dataEmptyMessage"
-        :default-selected="_items.props.defaultSelected"
-        :transfer="_items.props.transfer"
-        @on-fkrp-selected="fkrpSelected"
-        @on-page-change="pageChange"
-        @on-input-value-change="inputValueChange"
-        @on-focus="fkrpSelectedInputFocus"
-        @on-blur="fkrpSelectedInputBlur"
-        @on-keyup="fkrpSelectedInputKeyup"
-        @on-keydown="fkrpSelectedInputKeydown"
-        @on-popper-show="fkrpSelectedPopperShow"
-        @on-popper-hide="fkrPopperHide"
-        @on-clear="fkrpSelectedClear"
-      />
-      <ComAttachFilter 
+      <template v-if="_items.type === 'DropDownSelectFilter'">
+        <DropDownSelectFilter
+          v-if="_items.props.fk_type === 'drp'"
+          :data="_items.props.data"
+          :single="_items.props.single"
+          :total-row-count="_items.props.totalRowCount"
+          :page-size="_items.props.pageSize"
+          :auto-data="_items.props.AutoData"
+          :disabled="_items.props.disabled"
+          :is-show-pop-tip="_items.props.isShowPopTip"
+          :enter-type="_items.props.enterType"
+          :hidecolumns="_items.props.hidecolumns"
+          :data-empty-message="_items.props.dataEmptyMessage"
+          :default-selected="_items.props.defaultSelected"
+          :transfer="_items.props.transfer"
+          @on-fkrp-selected="fkrpSelected"
+          @on-page-change="pageChange"
+          @on-input-value-change="inputValueChange"
+          @on-focus="fkrpSelectedInputFocus"
+          @on-blur="fkrpSelectedInputBlur"
+          @on-keyup="fkrpSelectedInputKeyup"
+          @on-keydown="fkrpSelectedInputKeydown"
+          @on-popper-show="fkrpSelectedPopperShow"
+          @on-popper-hide="fkrPopperHide"
+          @on-clear="fkrpSelectedClear"
+        />
+        <DropMultiSelectFilter
+          v-if="_items.props.fk_type === 'mrp'"
+          :data="_items.props.data"
+          :single="_items.props.single"
+          :total-row-count="_items.props.totalRowCount"
+          :page-size="_items.props.pageSize"
+          :auto-data="_items.props.AutoData"
+          :disabled="_items.props.disabled"
+          :is-show-pop-tip="_items.props.isShowPopTip"
+          :enter-type="_items.props.enterType"
+          :hidecolumns="_items.props.hidecolumns"
+          :data-empty-message="_items.props.dataEmptyMessage"
+          :default-selected="_items.props.defaultSelected"
+          :transfer="_items.props.transfer"
+          @on-fkrp-selected="fkrpSelected"
+          @on-page-change="pageChange"
+          @on-input-value-change="inputValueChange"
+          @on-focus="fkrpSelectedInputFocus"
+          @on-blur="fkrpSelectedInputBlur"
+          @on-keyup="fkrpSelectedInputKeyup"
+          @on-popper-show="fkrpSelectedPopperShow"
+          @on-popper-hide="fkrPopperHide"
+          @on-clear="fkrpSelectedClear"
+        />
+      </template>
+      <ComAttachFilter
         v-if="_items.type === 'AttachFilter'"
         :default-value="_items.value"
         :default-selected="_items.props.Selected"
@@ -279,7 +288,7 @@
         />
       </template> -->
       <!-- 上传文件 -->
-       
+
       <Docfile
         v-if="_items.type === 'docfile'"
         :dataitem="_items.props.itemdata"
@@ -318,7 +327,7 @@
   export default {
     name: 'ItemComponent',
     components: {
-      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile 
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
     },
     props: {
       labelWidth: {
@@ -390,7 +399,7 @@
                 item.props.datalist
               );
             }
-            
+
             item.props.dialog.model['footer-hide'] = false;
             // item.props.datalist.forEach((option, i) => {
             //   if (option.value === '导入') {
@@ -425,6 +434,7 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
+
         let id = 0;
         if (!props.readonly) {
           id = value[0].ID;
@@ -601,6 +611,9 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
+        if (!value[0].ID) {
+          value.splice(0, 1);
+        }
         this._items.value = value;
         this.valueChange();
         if (
@@ -986,6 +999,7 @@
       // console.log(e);
       },
       deleteImg(item, index) {
+        // 删除图片
         const that = this;
         this.$Modal.fcWarning({
           mask: true,
@@ -1010,7 +1024,7 @@
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             // 判断是否有path
             const parms = this.pathsCheckout(data, HEADIMG);
-            
+
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
@@ -1059,7 +1073,7 @@
         this.valueChange();
       },
       filechange(value) {
-        // 上传文件 
+        // 上传文件
         const _value = value.length > 0 ? value : '';
         // this._items.value = _value;
 
@@ -1081,27 +1095,36 @@
           if (this.$parent.isreftabs && childTableName !== false) {
             //  主子表 子表
             const _fixedData = fixedData || '';
-            this._items.props.itemdata.valuedata = [];  
+            this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = _fixedData;
             this._items.value = JSON.stringify([
               ...this._items.props.itemdata.valuedata
             ]);
             this.valueChange();
             if (childTableName && this.$parent.type === 'PanelForm') {
+              // 主子表的子表修改（1:1）的情况下
               const dom = document.getElementById('actionMODIFY');
               dom.click();
             }
           } else {
+            this._items.props.itemdata.valuedata = [];
+            this._items.props.itemdata.valuedata = fixedData;
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
             this.upSavefile(parms, fixedData, path, value);
+            this.valueChange();
           }
         } else {
           const _fixedData = fixedData || '';
-          this._items.props.itemdata.valuedata = [];  
+          this._items.props.itemdata.valuedata = [];
           this._items.props.itemdata.valuedata = _fixedData;
           this.valueImgChange();
         }
       },
       upSavefile(obj, fixedData, path) {
+        // 保存文件
+
         fkObjectSave({
           searchObject: {
             ...obj
@@ -1114,10 +1137,12 @@
             }
             // this._items.props.itemdata.valuedata.push(...value);
           // this.valueChange();
+            // this.valueChange();
           }
         });
       },
       deleteImgData(obj, index) {
+        // 删除图片
         deleteImg({
           params: {
             ...obj
@@ -1132,12 +1157,14 @@
         });
       },
       readonlyImage() {
+        // 判断是否能上传图片
         if (!isNaN(this._items.props.itemdata.ImageSize)) {
           return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
         }
         return false;
       },
       uploadFileChangeSuccess(result) {
+        // 图片进度接口
         const self = this;
         const resultData = result;
         if (this.readonlyImage()) {
@@ -1153,7 +1180,7 @@
             if (res.data.code !== 0) {
               return false;
             }
-           
+
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({
@@ -1198,7 +1225,7 @@
               this.valueImgChange();
             }
           }
-          
+
         });
         return true;
       },
@@ -1302,6 +1329,7 @@
         return Object.assign({}, fixedData);
       },
       upSaveImg(obj, fixedData, path, index) {
+        // 图片保存接口
         fkObjectSave({
           searchObject: {
             ...obj
@@ -1326,8 +1354,9 @@
                 NAME: data.NAME,
                 URL: data.URL
               });
+              this._items.value = this._items.props.itemdata.valuedata;
             }
-          // this.valueChange();
+            this.valueChange();
           }
         });
       },
@@ -1451,7 +1480,7 @@ textarea.burgeon-input{
         }
 
         }
-        
+
 
     }
 }

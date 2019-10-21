@@ -9,6 +9,9 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
 import WaterMark from './src/__component__/WaterMark';
+import FormItemComponent from './src/__component__/FormItemComponent';
+import FilterTree from './src/__component__/Tree/FilterTree';
+import SelectTree from './src/__component__/Tree/SelectTree';
 import { menuClick } from './src/__config__/event.config';
 
 
@@ -18,7 +21,7 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.4.5',
+  version: '1.4.7',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -57,7 +60,8 @@ export default {
    *   enableModuleKA: true, //  启用KeepAlive
    *   enableTabLists: true, // 启用TabLits模块页签切换
    *   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
-   *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由。
+   *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由
+   *   enableInitializationRequest: true, //是否开启初始化请求，默认为开启
    * }
    */
   launchApplication(projectConfig) {
@@ -92,6 +96,9 @@ export default {
     PopDialog,
     ComAttachFilter,
     DownComponent,
-    WaterMark
+    WaterMark,
+    FormItemComponent,
+    FilterTree,
+    SelectTree
   }
 };

@@ -37,25 +37,32 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <compositeForm
-      v-if="panelData.isShow"
-      :is-main-table="isMainTable"
-      :object-type="type"
-      :objreadonly="objreadonly"
-      :default-set-value="changeData"
-      :master-name="$route.params.tableName"
-      :master-id="$route.params.itemId"
-      :module-form-type="type"
-      :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
-      type="PanelForm"
-      :default-data="panelData.data"
-      :paths="formPaths"
-      :isreftabs="isreftabs"
-      :child-table-name="tableName"
-      @formChange="formPanelChange"
-      @InitializationForm="initFormPanel"
-      @VerifyMessage="verifyFormPanel"
-    />
+    <div style="overflow-y: auto;flex:1;">
+      <component
+        :is="customizeComponent"
+        v-if="componentName"
+      />
+      <compositeForm
+        v-if="panelData.isShow"
+        :is-main-table="isMainTable"
+        :object-type="type"
+        :objreadonly="objreadonly"
+        :default-set-value="changeData"
+        :master-name="$route.params.tableName"
+        :master-id="$route.params.itemId"
+        :module-form-type="type"
+        :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
+        type="PanelForm"
+        :default-data="panelData.data"
+        :paths="formPaths"
+        :isreftabs="isreftabs"
+        :child-table-name="tableName"
+        @formChange="formPanelChange"
+        @InitializationForm="initFormPanel"
+        @VerifyMessage="verifyFormPanel"
+      />
+    </div>
+    
     <component
       :is="objectTableComponent"
       v-if="tableData.isShow"
@@ -89,6 +96,8 @@
   import compositeForm from './CompositeForm';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
+  import CustomizeModule from '../__config__/customize.config';
+
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
@@ -100,6 +109,8 @@
         isclick: true,
         objectButtonComponent: '', // 单对象按钮组件
         objectTableComponent: '', // 单对象表格组件
+        customizeComponent: '', // 自定义组件
+
       };
     },
     components: {
@@ -176,7 +187,12 @@
       tooltipForItemTable: {
         type: Array,
         default: () => []
-      }
+      },
+      componentName: {
+        type: String,
+        default: ''
+      }, // 版定制界面自定义组件名称
+      
     },
     inject: [MODULE_COMPONENT_NAME],
     watch: {},
@@ -221,6 +237,11 @@
           }
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
+          }
+          if(this.componentName) {
+            Vue.component(this.componentName, CustomizeModule[this.componentName].component);
+
+            this.customizeComponent = this.componentName;
           }
         }
         this.objectTableComponent = tableComponent;
@@ -648,7 +669,6 @@
     .verticalFormPanel {
       margin: 10px 16px;
       flex: 1;
-      overflow-y: auto;
     }
     .objectTable {
     }

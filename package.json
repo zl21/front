@@ -1,6 +1,6 @@
 {
     "name": "burgeon-r3",
-    "version": "1.4.5",
+    "version": "1.4.7",
     "description": "A Project for R3 Erp.",
     "main": "r3.publish/r3.min.js",
     "files": [
@@ -32,7 +32,7 @@
         "babel-loader": "^8.0.5",
         "babel-plugin-syntax-jsx": "^6.18.0",
         "babel-plugin-transform-vue-jsx": "^3.7.0",
-        "burgeon-ui": "^1.0.27",
+        "burgeon-ui": "^1.0.30",
         "clean-webpack-plugin": "^1.0.1",
         "copy-webpack-plugin": "^5.0.3",
         "css-loader": "^2.1.0",
