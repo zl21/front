@@ -9,7 +9,7 @@ import ContentDisplayArea from './src/__component__/ContentDisplayArea';
 import ComAttachFilter from './src/__component__/ComAttachFilter';
 import DownComponent from './src/__component__/DownComponent';
 import WaterMark from './src/__component__/WaterMark';
-import FormItemComponent from './src/__component__/FormItemComponent';
+import SearchForm from './src/__component__/form/SearchForm';
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
 import { menuClick } from './src/__config__/event.config';
@@ -97,7 +97,7 @@ export default {
     ComAttachFilter,
     DownComponent,
     WaterMark,
-    FormItemComponent,
+    SearchForm,
     FilterTree,
     SelectTree
   }

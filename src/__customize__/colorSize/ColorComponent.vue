@@ -1,16 +1,16 @@
 <template>
   <div class="color_container">
     <div class="left_container">
-        <div>
+        <div class="left_button">
             <Button type="fcdefault">
                 列出所有颜色
             </Button>
         </div>
-        <div class="leftTable">
+        <div class="leftTable" id="leftTable" ref="leftTable">
             <Table
                     :columns="leftTableColumns"
+                    :height="leftTableHeight"
                     :data="leftTableData"
-                    :height="true"
                     @on-row-click="leftTableRowClick"
             />
         </div>
@@ -41,14 +41,13 @@
         />
       </div>
     </div>
-      <div class="">
-          <!--<Table-->
-                  <!--:columns="rightTableColumns"-->
-                  <!--class="rightTable"-->
-                  <!--:height="true"-->
-                  <!--:data="rightTableData"-->
-                  <!--@on-row-click="rightTableRowClick"-->
-          <!--/>-->
+      <div class="right_container">
+          <Table
+                  :columns="rightTableColumns"
+                  class="rightTable"
+                  :data="rightTableData"
+                  @on-row-click="rightTableRowClick"
+          />
       </div>
   </div>
 </template>
@@ -61,6 +60,7 @@
           {title: 'xuhao', key: 'aaa'}
         ], // 左边表格的表头
         leftTableData: [], // 左边表格数据
+        leftTableHeight: 0, // 左边表格的高度
         rightTableColumns: [], // 右边表格的表头
         rightTableData: [], // 右边表格数据
       };
@@ -69,6 +69,9 @@
     components: {},
     watch: {},
     computed: {},
+    mounted() {
+      this.leftTableHeight = this.$refs.leftTable.offsetHeight - 31;
+    },
     methods: {
       rightSingle() {
 
@@ -106,8 +109,10 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            .left_button {
+                margin-bottom: 8px;
+            }
             .leftTable {
-               // padding-top: 8px;
                 flex: 1;
                 overflow: hidden;
             }
