@@ -11,7 +11,8 @@
     "scripts": {
         "start": "webpack-dev-server --progress --env.develop",
         "build": "webpack --color --progress --config webpack.config.js --env.production",
-        "build:publish": "webpack --color --progress --config webpack.publish.js"
+        "build:publish": "webpack --color --progress --config webpack.publish.js",
+        "zip": "node doZip.js"
     },
     "repository": {
         "type": "git",
@@ -64,6 +65,7 @@
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
         "axios": "^0.18.0",
+        "compressing": "^1.4.0",
         "md5": "^2.2.1",
         "vue": "^2.6.8",
         "vue-router": "^3.0.2",
