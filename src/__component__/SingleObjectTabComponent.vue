@@ -238,11 +238,11 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
           }
-          if(this.componentName) {
-            Vue.component(this.componentName, CustomizeModule[this.componentName].component);
+        }
+        if(this.componentName) {
+          Vue.component(this.componentName, CustomizeModule[this.componentName].component);
 
-            this.customizeComponent = this.componentName;
-          }
+          this.customizeComponent = this.componentName;
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;

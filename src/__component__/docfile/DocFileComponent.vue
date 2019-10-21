@@ -9,7 +9,7 @@
         >
           <a :href="option.url">{{ option.name }}</a>
           <i
-            v-if="docList.readonly!== true "
+            v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
             @click="deleteLi(index,option)"
           />

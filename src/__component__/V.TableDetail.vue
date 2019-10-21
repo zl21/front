@@ -81,7 +81,12 @@
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
-          Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          if (obj.vuedisplay === 'TabItem') {
+            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+            obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+          } else {
+            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          }
           obj.component = `tapComponent.${item.tablename}`;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
@@ -163,7 +168,9 @@
         if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
           // 获取子表表单
           getButtonDataPromise = new Promise((rec, rej) => {
-            this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej });
+            this.getObjectTabForRefTable({
+              table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej 
+            });
           });
           const formParam = {
             table: refTab.tablename,

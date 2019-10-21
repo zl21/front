@@ -1,13 +1,15 @@
 <template>
     <div class="size_container">
         <div class="left_container">
-            <Table
-                    :columns="leftTableColumns"
-                    class="leftTable"
-                    :height="true"
-                    :data="leftTableData"
-                    @on-row-click="leftTableRowClick"
-            />
+            <div class="left_table" ref="leftTable">
+                <Table
+                        :columns="leftTableColumns"
+                        :height="leftTableHeight"
+                        :data="leftTableData"
+                        highlight-row
+                        @on-row-click="leftTableRowClick"
+                />
+            </div>
         </div>
         <div class="center_container">
             <div class="right_single">
@@ -36,50 +38,134 @@
             </div>
         </div>
         <div class="right_container">
-            <Table
-                    :columns="rightTableColumns"
-                    class="rightTable"
-                    :height="true"
-                    :data="rightTableData"
-                    @on-row-click="rightTableRowClick"
-            />
+            <div class="right_table" ref="rightTable">
+                <Table
+                        :columns="rightTableColumns"
+                        :height="rightTableHeight"
+                        :data="rightTableData"
+                        highlight-row
+                        @on-row-click="rightTableRowClick"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+  import network, { urlSearchParams } from '../../__utils__/network';
+
   export default {
     data() {
       return {
-        leftTableColumns: [], // 左边表格的表头
+        leftTableColumns: [
+          {
+            title: '序号',
+            type: 'index',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: '尺寸编码',
+            key: 'ECODE'
+          },
+          {
+            title: '尺寸名称',
+            key: 'ENAME'
+          }
+        ], // 左边表格的表头
         leftTableData: [], // 左边表格数据
-        rightTableColumns: [], // 右边表格的表头
+        leftTableHeight: 0, // 左边表格的高度
+        leftTableSelectIndex: null, // 左侧表格选中的下标
+
+        rightTableColumns: [
+          {
+            title: '序号',
+            type: 'index',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: '尺寸编码',
+            key: 'ECODE'
+          },
+          {
+            title: '尺寸名称',
+            key: 'ENAME'
+          }
+        ], // 右边表格的表头
         rightTableData: [], // 右边表格数据
+        rightTableHeight: 0, // 右边表格的高度
+        rightTableSelectIndex: null, // 右侧的表格选中的下标
       };
     },
     name: 'SizeComponent',
     components: {},
     watch: {},
     computed: {},
+    mounted() {
+      this.leftTableHeight = this.$refs.leftTable.offsetHeight + 1;
+      this.rightTableHeight = this.$refs.rightTable.offsetHeight + 1;
+    },
+    created() {
+      this.getLeftTableData();
+      this.getSizeRightTableData();
+    },
     methods: {
       rightSingle() {
-
+        if (this.leftTableSelectIndex !== null) {
+          this.rightTableData.push(this.leftTableData[this.leftTableSelectIndex]);
+          this.leftTableData.splice(this.leftTableSelectIndex, 1);
+          this.leftTableSelectIndex = null;
+        }
       }, // 单个向右的icon点击触发
       rightDouble() {
-
+        this.rightTableData = this.rightTableData.concat(this.leftTableData);
+        this.leftTableData = [];
       }, // 两个向右的icon点击触发
       leftSingle() {
-
+        if (this.rightTableSelectIndex !== null) {
+          this.leftTableData.push(this.rightTableData[this.rightTableSelectIndex]);
+          this.rightTableData.splice(this.rightTableSelectIndex, 1);
+          this.rightTableSelectIndex = null;
+        }
       }, // 单个向左的icon点击触发
       leftDouble() {
-
+        this.leftTableData = this.leftTableData.concat(this.rightTableData);
+        this.rightTableData = [];
       }, // 两个向左的icon点击触发
-      leftTableRowClick() {
-
+      leftTableRowClick(val, index) {
+        this.leftTableSelectIndex = index;
       }, // 左边表格单选触发
-      rightTableRowClick() {
-
+      rightTableRowClick(val, index) {
+        this.rightTableSelectIndex = index;
       }, // 右边表格单选触发
+      getLeftTableData() {
+        const params = {
+          param: {
+            PS_C_PRO_ID: '22103',
+            FLAG: 2
+          }
+        };
+        network.get('/p/cs/cspecobjload', { params })
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.leftTableData = res.data.data;
+            }
+          });
+      }, // 获取左边表格的数据
+      getSizeRightTableData() {
+        const params = {
+          param: {
+            PS_C_PRO_ID: '22103'
+          }
+        };
+        network.get('/p/cs/cprospecload', { params })
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.rightTableData = res.data.data.SIZE;
+            }
+          });
+      }, // 获取右边表格的数据
     }
   };
 </script>
@@ -96,8 +182,8 @@
             border-radius: 6px;
             padding: 10px;
             overflow: hidden;
-            .leftTable {
-                margin-top: 8px;
+            .left_table {
+                height: 100%;
             }
         }
         .center_container {
@@ -134,8 +220,8 @@
             border-radius: 6px;
             padding: 10px;
             overflow: auto;
-            .rightTable {
-                margin-top: 5px;
+            .right_table {
+                height: 100%;
             }
         }
     }
