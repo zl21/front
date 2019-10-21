@@ -8,5 +8,5 @@ __test_script__/
 r3.publish/
 dist/
 *.tgz
-# project.config.js
+project.config.js
 burgeon-r3-*/
