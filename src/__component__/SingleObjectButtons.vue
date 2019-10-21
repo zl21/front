@@ -1083,7 +1083,6 @@
                         }
                       }
                       this.updateRefreshButton(true);
-                      console.log(this.refreshButtons);
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
