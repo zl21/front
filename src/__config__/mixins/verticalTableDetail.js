@@ -8,14 +8,15 @@ export default () => ({
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
+  activated() {
+  },
   computed: {
     ...mapState('global', {
       keepAliveLists: ({ keepAliveLists }) => keepAliveLists
     }),
     ...mapState(getComponentName(), {
-
       buttonsData: ({ buttonsData }) => buttonsData,
-      mainFormInfo: ({mainFormInfo }) => mainFormInfo,
+      mainFormInfo: ({ mainFormInfo }) => mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
