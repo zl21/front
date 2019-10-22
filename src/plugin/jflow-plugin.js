@@ -166,7 +166,7 @@ async function jflowsave(flag, request) {
           businessTypeName: router.currentRoute.params.tableName,
           initiator: userInfo.id,
           instanceId,
-          initiatorName: userInfo.name,
+          initiatorName: userInfo.ename,
           changeUser: userInfo.id,
           userName: userInfo.name,
           businessUrl: request.url,
