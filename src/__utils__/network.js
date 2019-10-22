@@ -313,6 +313,7 @@ function NetworkConstructor() {
         });
       } else {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      }
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
