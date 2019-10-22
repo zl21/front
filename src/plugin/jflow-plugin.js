@@ -24,14 +24,57 @@ let businessStatus = 0; // 流程状态  -2时正在发起流程
 
 
 function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
-  const arr = JSON.parse(window.localStorage.getItem('businessTypes'));
-  tabcmd.cmds.map((item, index) => {
-    if (item === 'actionSUBMIT' && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
-      arr.push(tabcmd.paths[index]);
+  if (tabcmd) {
+    let businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+    let arr = [];
+    businessTypes.map((item) => {
+      if (item.businessType === router.currentRoute.params.tableId) {
+        arr = item.action;
+      }
+      return item;
+    });
+    tabcmd.cmds.map((item, index) => {
+      if (item === 'actionSUBMIT' && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
+        arr.push(tabcmd.paths[index]);
+      }
+      return item;
+    });
+    if (businessTypes.length > 0) {
+      businessTypes.map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          item.action = arr;
+        }
+        return item;
+      });
+    } else {
+      businessTypes = [{
+        action: arr,
+        businessType: router.currentRoute.params.tableId,
+        moduleId: null
+      }];
     }
-    return item;
-  });
-  window.localStorage.setItem('businessTypes', JSON.stringify(arr));
+    
+
+    window.localStorage.setItem('businessTypes', JSON.stringify(businessTypes));
+    // window.localStorage.setItem('businessTypes', JSON.stringify(arr));
+  } else {
+    axios.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
+      if (res.data.resultCode === 0) {
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes')) ? JSON.parse(window.localStorage.getItem('businessTypes')) : [];
+        res.data.data.businessTypes.map((item) => {
+          businessTypes.map((temp) => {
+            if (temp.businessType === item.businessType) {
+              item.action.concat(temp.action);
+            }
+            return temp;
+          });
+
+          return item;
+        });
+        window.localStorage.setItem('businessTypes', JSON.stringify(res.data.data.businessTypes));
+      }
+    });
+  }
 }
 
 function thirdlogin() { // 三方登录  获取accessToken
@@ -39,7 +82,7 @@ function thirdlogin() { // 三方登录  获取accessToken
     username: 'guest'
   }).then(() => {
     window.jflowPlugin.jflowIp = jflowIp;
-    window.localStorage.setItem('businessTypes', JSON.stringify(['/p/cs/batchSubmit', '/p/cs/objectSubmit']));
+    getConfigMap();
   });
 }
 
@@ -145,7 +188,7 @@ async function jflowsave(flag, request) {
             });
           }
           instanceId = res.data.data.instanceId;
-          jflowButtons(response.objid);
+          jflowButtons(router.currentRoute.params.itemId);
           if (document.getElementsByClassName('button-group')[0]) {
             const children = document.getElementsByClassName('button-group')[0].children;
             for (const child of children) {
@@ -168,8 +211,6 @@ async function jflowsave(flag, request) {
                 }, 5000);
               }
             }
-
-            jflowButtons(response.objId);
           }
           reject(response);
         } else {
@@ -215,7 +256,13 @@ function AxiosGuard(axios) { // axios拦截
     const type = router.currentRoute.path.split('/')[3];// 获取组件类型
 
     if (configurationFlag) { // 配置了流程图并判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
-      const launchConfig = JSON.parse(window.localStorage.getItem('businessTypes'));
+      let launchConfig = [];
+      JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          launchConfig = item.action;
+        }
+        return item;
+      });
       // jflow流程发起
       const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
       for (let i = 0; i < launchConfig.length; i++) {

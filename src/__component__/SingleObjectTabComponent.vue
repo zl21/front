@@ -37,7 +37,7 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <div style="overflow-y: auto;flex:1;">
+    <div v-if="componentName" style="overflow-y: auto;flex:1;">
       <component
         :is="customizeComponent"
         v-if="componentName"
@@ -62,7 +62,25 @@
         @VerifyMessage="verifyFormPanel"
       />
     </div>
-    
+    <compositeForm
+      v-if="panelData.isShow&&!componentName"
+      :is-main-table="isMainTable"
+      :object-type="type"
+      :objreadonly="objreadonly"
+      :default-set-value="changeData"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.itemId"
+      :module-form-type="type"
+      :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
+      type="PanelForm"
+      :default-data="panelData.data"
+      :paths="formPaths"
+      :isreftabs="isreftabs"
+      :child-table-name="tableName"
+      @formChange="formPanelChange"
+      @InitializationForm="initFormPanel"
+      @VerifyMessage="verifyFormPanel"
+    />
     <component
       :is="objectTableComponent"
       v-if="tableData.isShow"
