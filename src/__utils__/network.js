@@ -303,7 +303,7 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {

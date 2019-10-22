@@ -11,198 +11,192 @@
 
     <div class="content">
       <!-- 商品／颜色主图 -->
-      <Collapse v-model="openCollapse">
-        <Panel title-type="center" name="1"/>
-        商品/颜色主图 
-      </Collapse>
-      <div
-        class="pro_c"
-        :class="{'flod':!childs[0].show}"
+      <Collapse
+        v-model="openCollapse"
       >
-        <h5 @click="triangleDisplay('pro_c')">
-          商品/颜色主图&nbsp;
-          <i
-            v-show="childs[0].show"
-            class="iconfont"
-          >&#xe645;</i>
-          <i
-            v-show="!childs[0].show"
-            class="iconfont"
-          >&#xe616;</i>
-        </h5>
-        <div class="item-area">
-          <div class="pro_img">
-            <div>主图视频:</div>
-            <div>
-              <input
-                v-model="video"
-                type="text"
-                placeholder="视频VID"
-              >
-              <span
-                class="span-tip"
-                @click="showPicture"
-              >视频上传教程</span>
-              <span class="span-tip">
-                <a
-                  :href="uploadImage"
-                  target="_blank"
-                >视频上传入口</a>
-              </span>
-              <ul style="display: none;">
-                <li>
-                  <div :style="{backgroundImage: 'url('+videoCover+')',height:'64px'}" />
-                </li>
-              </ul>
+        <Panel
+          name="1"
+          title-type="center"
+        >
+          商品/颜色主图 
+          <div
+            slot="content"
+            class="item-area"
+          >
+            <div class="pro_img">
+              <div>主图视频:</div>
+              <div>
+                <input
+                  v-model="video"
+                  type="text"
+                  placeholder="视频VID"
+                >
+                <span
+                  class="span-tip"
+                  @click="showPicture"
+                >视频上传教程</span>
+                <span class="span-tip">
+                  <a
+                    :href="uploadImage"
+                    target="_blank"
+                  >视频上传入口</a>
+                </span>
+                <ul style="display: none;">
+                  <li>
+                    <div :style="{backgroundImage: 'url('+videoCover+')',height:'64px'}" />
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div class="pro_img">
-            <div>商品主图:</div>
-            <div>
-              <ul class="clearfix">
-                <li
-                  v-for="(item,index) in proImg"
-                  :key="index"
-                  v-dragging="{ item: item, list: proImg, group: 'color', key: item }"
-                  @mouseout.stop="proImgOut(item)"
-                  @mouseover.stop="proImgDrag(item)"
-                  @mousedown.stop="proImgOut(item)"
-                >
-                  <i
-                    v-show="modify && item.flag"
-                    class="iconfont deleteIcon"
-                    @click.stop="proImgDelect(item,index)"
-                    @mousedown.stop
-                  >&#xe6b4;</i>
-                  
-                  <Poptip
-                    v-model="item.flag"
-                    placement="right"
-                    title
-                    trigger="hover"
-                    popper-class="el-popover-img"
+            <div class="pro_img">
+              <div>商品主图:</div>
+              <div>
+                <ul class="clearfix">
+                  <li
+                    v-for="(item,index) in proImg"
+                    :key="index"
+                    v-dragging="{ item: item, list: proImg, group: 'color', key: item }"
+                    @mouseout.stop="proImgOut(item)"
+                    @mouseover.stop="proImgDrag(item)"
+                    @mousedown.stop="proImgOut(item)"
                   >
-                    <div
-                      slot="reference"
-                      :style="{backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px'}"
-                      :title="item.NAME"
-                    />
-                    <img
-                      v-if="item.URL.indexOf('/static/img/default@2x.png') < 0"
-                      :src="item.URL"
-                      :style="{maxWidth:'400px'}"
-                    >
-                  </Poptip>
-                </li>
-
-                <li
-                  v-if="modify && proImg.length < 15"
-                  @click="proImgChange"
-                >
-                  <div :style="{height:'64px'}">
-                    <span class="upload-span">+ 添加图片</span>
-                  </div>
-                  <form
-                    role="form"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    style="display: none"
-                  >
-                    <div>
-                      <input
-                        :id="'proImg'+objId"
-                        type="file"
-                        multiple="multiple"
-                        style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;display: none"
-                        @change.stop="uploadFileChange($event)"
-                      >
-                    </div>
-                  </form>
-                </li>
-              </ul>
-              <p v-if="modify">
-                建议尺寸：800*800像素，你可以拖拽图片调整顺序，最多上传15张
-              </p>
-            </div>
-          </div>
-          <div class="pro_color_img">
-            <div>颜色主图:</div>
-            <div>
-              <ul class="clearfix">
-                <li
-                  v-for="(item,index) in colorList"
-                  :key="index"
-                >
-                  <span>{{ item.ECODE+item.ENAME }}</span>
-                  <div
-                    @mouseout.stop="colImgOut(item)"
-                    @mouseover.stop="colImgDrag(item)"
-                    @mousedown.stop="colImgOut(item)"
-                  >
-                    <span />
                     <i
                       v-show="modify && item.flag"
                       class="iconfont deleteIcon"
-                      @click.stop="colImgDelete(item,index)"
+                      @click.stop="proImgDelect(item,index)"
                       @mousedown.stop
                     >&#xe6b4;</i>
+                  
                     <Poptip
+                      v-model="item.flag"
                       placement="right"
                       title
                       trigger="hover"
                       popper-class="el-popover-img"
                     >
-                      <!--<div slot="reference" v-bind:style="{backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px'}" :class="{'default':item.URL != '/static/img/default@2x.png'}"  @click="colImgChange(item,index)"></div>-->
-
                       <div
                         slot="reference"
-                        :style="{backgroundImage: 'url('+item.URL+')',height:'62px'}"
-                        :class="{'default':item.URL != '/static/img/default@2x.png'}"
-                        @click="colImgChange(item,index)"
-                      >
-                        <span
-                          v-if="item.URL == ''"
-                          class="upload-span"
-                        >+ 添加图片</span>
-                      </div>
+                        :style="{backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px'}"
+                        :title="item.NAME"
+                      />
                       <img
-                        v-if="item.URL != '/static/img/default@2x.png' && item.URL != ''"
+                        v-if="item.URL.indexOf('/static/img/default@2x.png') < 0"
                         :src="item.URL"
                         :style="{maxWidth:'400px'}"
                       >
-                      <form
-                        slot="reference"
-                        role="form"
-                        method="POST"
-                        enctype="multipart/form-data"
-                        style="display: none"
-                      >
-                        <div>
-                          <input
-                            :id="'colImg'+objId+index"
-                            type="file"
-                            style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;display: none"
-                            @change.stop="uploadColorChange(item,index)"
-                          >
-                        </div>
-                      </form>
                     </Poptip>
-                  </div>
-                </li>
-              </ul>
-              <p v-if="modify">
-                建议尺寸：800*800像素，颜色项维护请在“颜色尺寸”栏。
-              </p>
+                  </li>
+
+                  <li
+                    v-if="modify && proImg.length < 15"
+                    @click="proImgChange"
+                  >
+                    <div :style="{height:'64px'}">
+                      <span class="upload-span">+ 添加图片</span>
+                    </div>
+                    <form
+                      role="form"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      style="display: none"
+                    >
+                      <div>
+                        <input
+                          :id="'proImg'+objId"
+                          type="file"
+                          multiple="multiple"
+                          style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;display: none"
+                          @change.stop="uploadFileChange($event)"
+                        >
+                      </div>
+                    </form>
+                  </li>
+                </ul>
+                <p v-if="modify">
+                  建议尺寸：800*800像素，你可以拖拽图片调整顺序，最多上传15张
+                </p>
+              </div>
+            </div>
+            <div class="pro_color_img">
+              <div>颜色主图:</div>
+              <div>
+                <ul class="clearfix">
+                  <li
+                    v-for="(item,index) in colorList"
+                    :key="index"
+                  >
+                    <span>{{ item.ECODE+item.ENAME }}</span>
+                    <div
+                      @mouseout.stop="colImgOut(item)"
+                      @mouseover.stop="colImgDrag(item)"
+                      @mousedown.stop="colImgOut(item)"
+                    >
+                      <span />
+                      <i
+                        v-show="modify && item.flag"
+                        class="iconfont deleteIcon"
+                        @click.stop="colImgDelete(item,index)"
+                        @mousedown.stop
+                      >&#xe6b4;</i>
+                      <Poptip
+                        placement="right"
+                        title
+                        trigger="hover"
+                        popper-class="el-popover-img"
+                      >
+                        <!--<div slot="reference" v-bind:style="{backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px'}" :class="{'default':item.URL != '/static/img/default@2x.png'}"  @click="colImgChange(item,index)"></div>-->
+
+                        <div
+                          slot="reference"
+                          :style="{backgroundImage: 'url('+item.URL+')',height:'62px'}"
+                          :class="{'default':item.URL != '/static/img/default@2x.png'}"
+                          @click="colImgChange(item,index)"
+                        >
+                          <span
+                            v-if="item.URL == ''"
+                            class="upload-span"
+                          >+ 添加图片</span>
+                        </div>
+                        <img
+                          v-if="item.URL != '/static/img/default@2x.png' && item.URL != ''"
+                          :src="item.URL"
+                          :style="{maxWidth:'400px'}"
+                        >
+                        <form
+                          slot="reference"
+                          role="form"
+                          method="POST"
+                          enctype="multipart/form-data"
+                          style="display: none"
+                        >
+                          <div>
+                            <input
+                              :id="'colImg'+objId+index"
+                              type="file"
+                              style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;display: none"
+                              @change.stop="uploadColorChange(item,index)"
+                            >
+                          </div>
+                        </form>
+                      </Poptip>
+                    </div>
+                  </li>
+                </ul>
+                <p v-if="modify">
+                  建议尺寸：800*800像素，颜色项维护请在“颜色尺寸”栏。
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Panel>
+      </Collapse>
     </div>
   </div>
 </template>
 
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
+  import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
     name: 'ProDesc',
@@ -335,277 +329,42 @@
 
         return temp;
       },
-      getMyDate(str) {
-        const oDate = new Date(str);
-        const oYear = oDate.getFullYear();
-        const oMonth = oDate.getMonth() + 1;
-        const oDay = oDate.getDate();
-        const oHour = oDate.getHours();
-        const oMin = oDate.getMinutes();
-        const oSen = oDate.getSeconds();
-        const oTime = `${oYear 
-        }-${ 
-          this.getzf(oMonth) 
-        }-${ 
-          this.getzf(oDay) 
-        } ${ 
-          this.getzf(oHour) 
-        }:${ 
-          this.getzf(oMin) 
-        }:${ 
-          this.getzf(oSen)}`; // 最后拼接时间
-        return oTime;
-      },
-      // 补0操作
-      getzf(num) {
-        if (parseInt(num) < 10) {
-          num = `0${num}`;
-        }
-        return num;
-      },
-      triangleDisplay(option) {
-        // 收缩切换
-
-        $(`.${option}`)
-          .find('.item-area')
-          .slideToggle();
-        if (option == 'pro_c') {
-          this.childs[0].show = !this.childs[0].show;
-        } else if (option == 'pro_detail') {
-          this.childs[1].show = !this.childs[1].show;
-        } else {
-          this.childs[2].show = !this.childs[2].show;
-        }
-      },
-      buttonClick(item) {
-        if (item.name == '返回') {
-          this.goBack();
-          return;
-        }
-
-        if (item.name == '刷新') {
-          this.saveObj = {};
-          this.getData();
-        }
-
-        if (item.name == '保存') {
-          this.objectSave();
-        }
-      },
-      goBack() {
-        // 返回
-        // let type = this.$store.state.activeTab.type;
-        // let params = {
-        //   name: this.$route.query.tableName,
-        //   label: this.$route.query['ptitle'],
-        //   id: this.$route.query.id,
-        //   pid: this.$route.query.pid,
-        //   type: this.$route.query.ptype,
-        //   ctype: type,
-        //   path: '/'+this.$route.path.split('/')[1] + '/'+ this.$route.query.ptype + '/' + this.$route.query.tableName + '?id=' + this.$route.query.pid
-        // }
-
-        const _self = this;
-
-        const query = _self.$route.query;
-        query.id = query.cid;
-        delete query.cid;
-        // 返回列表的
-        const params = {
-          id: _self.$route.query.pid,
-          type: 'table',
-          name: _self.$route.query.tableName,
-          label: _self.$route.query.ptitle
-        };
-        // 返回单对象的
-        // let params = {
-        //   id: query.id,
-        //   type: 'singleView',
-        //   name: _self.$route.query.tableName,
-        //   label: _self.$route.query.tabTitle,
-        //   query: query
-        // };
-        console.log(params);
-        _self.$store.commit('TabClose', params);
-      },
+     
+    
       getData() {
         // 获取数据
-        const self = this;
+       
+        const { tableName, tableId, itemId } = this.$route.params;
 
         // 获取主图
-        axios({
-          url: '/p/cs/proImage',
-          method: 'post',
-          data: {
-            param: JSON.stringify({
-              PS_C_PRO_ID: self.objId
-            })
+        network.post('/p/cs/proImage', urlSearchParams({
+          param: {
+            PS_C_PRO_ID: itemId
           }
-        }).then((pro) => {
-          if (pro.data.code == 0) {
-            if (pro.data.data) {
-              self.proImg = [];
+        })).then((res) => {
+          if (res.data.code === 0) {
+            if (res.data.data) {
+              this.proImg = [];
               // 商品主图
               if (pro.data.data.UPLOAD_IMAGE_BASE) {
-                self.uploadImage = pro.data.data.UPLOAD_IMAGE_BASE;
+                this.uploadImage = pro.data.data.UPLOAD_IMAGE_BASE;
               }
               if (pro.data.data.IMAGE) {
-                self.proImg = JSON.parse(pro.data.data.IMAGE);
-
-                self.proImg.forEach((item) => {
-                  // item.flag = false
-
-                  self.$set(item, 'flag', false);
+                this.proImg = JSON.parse(pro.data.data.IMAGE);
+                this.proImg.forEach((item) => {
+                  this.$set(item, 'flag', false);
                 });
               } else if (!self.modify) {
-                self.proImg.push({
+                this.proImg.push({
                   NAME: '默认图片',
                   URL: '/static/img/default@2x.png'
                 });
               }
-
-              // 其他数据
-
-              self.$set(self.itemdata, 'valuedata', pro.data.data.DETAILDESC);
-              self.currentView = 'editor';
-              self.formObj = pro.data.data;
-
-              self.video = pro.data.data.VIDEO;
-
-              self.$nextTick(() => {
-                if (self.$refs[`editor${self.objId}`]) {
-                  self.$refs[`editor${self.objId}`].getData(self.itemdata);
-                }
-              });
-            } else {
-              self.proImg = [];
-              self.currentView = 'editor';
-              self.$set(self.itemdata, 'valuedata', null);
-              self.$nextTick(() => {
-                if (self.$refs[`editor${self.objId}`]) {
-                  self.$refs[`editor${self.objId}`].getData(self.itemdata);
-                }
-              });
             }
           }
-
-          // 获取颜色主图
-          axios({
-            url: '/p/cs/cprospecload',
-            method: 'get',
-            params: {
-              param: JSON.stringify({
-                PS_C_PRO_ID: self.objId
-              })
-            }
-          }).then((col) => {
-            if (col.data.code == 0) {
-              self.colorList = [];
-              self.colorList = col.data.data.COLOR;
-
-              if (col.data.data.COLOR.length > 0) {
-                col.data.data.COLOR.forEach((item, index) => {
-                  if (pro.data.data) {
-                    if (
-                      !pro.data.data.IMAGE_SKU
-                      || pro.data.data.IMAGE_SKU.length == 0
-                    ) {
-                      console.log(self.modify);
-                      if (self.modify) {
-                        self.$set(item, 'URL', '');
-                        self.$set(item, 'flag', false);
-                      // item.URL = '/static/img/addImg.png'
-                      } else {
-                        self.$set(item, 'URL', '/static/img/default@2x.png');
-                        self.$set(item, 'flag', false);
-                      // item.URL = '/static/img/default@2x.png'
-                      }
-                    } else {
-                      JSON.parse(pro.data.data.IMAGE_SKU).forEach((temp) => {
-                        if (temp.ID == item.ID) {
-                          self.$set(item, 'flag', false);
-                          if (temp.URL) {
-                            self.$set(item, 'URL', temp.URL);
-                          } else if (self.modify) {
-                            self.$set(item, 'URL', '');
-                          } else {
-                            self.$set(
-                              item,
-                              'URL',
-                              '/static/img/default@2x.png'
-                            );
-                          }
-                        // item.URL = temp.URL
-                        }
-                      });
-                    }
-                  }
-                });
-              }
-            }
-          });
         });
       },
-      objectSave() {
-        // 保存
-        const self = this;
-
-        self.proImg.forEach((item) => {
-          item.flag = false;
-        });
-
-        if (self.saveObj.IMAGE_SKU) {
-          const arr = self.reaptData(JSON.parse(self.saveObj.IMAGE_SKU));
-
-          if (arr.length > 0) {
-            arr.forEach((index, item) => {
-              if (index.URL == '') {
-                index.URL = null;
-              }
-
-              delete index.flag;
-            });
-
-            self.saveObj.IMAGE_SKU = JSON.stringify(arr);
-          }
-        }
-
-        if (self.saveObj.IMAGE) {
-          if (JSON.parse(self.saveObj.IMAGE).length > 0) {
-            const arr = JSON.parse(self.saveObj.IMAGE);
-            if (arr.length > 0) {
-              arr.forEach((index, item) => {
-                delete index.flag;
-              });
-              if (arr.length == 0) {
-                self.saveObj.IMAGE = null;
-              } else {
-                self.saveObj.IMAGE = JSON.stringify(arr);
-              }
-            }
-          } else {
-            self.saveObj.IMAGE = null;
-          }
-        }
-
-        if (self.video) self.saveObj.VIDEO = self.video;
-        else self.saveObj.VIDEO = '';
-
-        const obj = {
-          table: 'PS_C_PRO',
-          objid: self.objId,
-          data: JSON.stringify({ PS_C_PRO: self.saveObj })
-        };
-
-        self.$ajax.dataAjax('/p/cs/objectSave', obj, (res) => {
-          self.$message({
-            message: res.message,
-            type: 'success'
-          });
-          self.saveObj = {};
-          self.getData();
-        });
-      },
+     
       proImgDelect(item, index) {
         // 商品主图删除
         const self = this;
@@ -833,42 +592,7 @@
   .content {
     flex: 1;
     overflow: auto;
-
-    > div {
-      border: 1px solid #b4b4b4;
-      border-radius: 4px;
-      margin-bottom: 10px;
-
-      > h5 {
-        color: #1f2d3d;
-        background: #f8f7f7;
-        text-align: center;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-        font-size: 12px;
-        height: 22px;
-        line-height: 22px;
-        font-weight: normal;
-        border-bottom: solid 1px #b4b4b4;
-      }
-
-      > .item-area {
-        padding: 10px 10px 10px 0;
-      }
-    }
-
-    > div.flod {
-      > h5 {
-        border-bottom: none;
-      }
-    }
-
-    .pro_c {
       .item-area {
-        > div {
-          min-height: 64px;
-        }
-
         .pro_img {
           display: flex;
           > div {
@@ -1087,8 +811,6 @@
           }
         }
       }
-    }
-
     .pro_detail {
       .item-area {
         position: relative;

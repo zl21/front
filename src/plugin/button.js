@@ -21,11 +21,11 @@ function CreateButton(obj, buttons, id, store) {
     }
   }, 100);
 
-  window.addEventListener('jflowPlugin', (e) => {
-    if (e.detail.type === 'fresh') {
-      buttons(id);
-    }
-  }, false);
+  // window.addEventListener('jflowPlugin', (e) => {
+  //   if (e.detail.type === 'fresh') {
+  //     buttons(id);
+  //   }
+  // }, false);
   // const MODULE_COMPONENT_NAME = window.location.pathname.split('/').slice(3).join('.');
   // // -1, "撤销"
   // // 0, "同意"
