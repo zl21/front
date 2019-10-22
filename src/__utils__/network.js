@@ -303,11 +303,7 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-    //   const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-      
-      if (url !== '/p/cs/objectTab') {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-      }
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
