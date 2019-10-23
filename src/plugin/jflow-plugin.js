@@ -168,7 +168,7 @@ async function jflowsave(flag, request) {
           instanceId,
           initiatorName: userInfo.ename,
           changeUser: userInfo.id,
-          userName: userInfo.name,
+          userName: userInfo.ename,
           businessUrl: request.url,
           ruleField: 'V'
         }).then((res) => {
