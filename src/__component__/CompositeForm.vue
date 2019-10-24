@@ -986,9 +986,11 @@
             }
           } catch (err) {
             if (typeof item.valuedata === 'string') {
-              arr = [{
-                URL: item.valuedata
-              }];
+              if (item.valuedata.length > 0) {
+                arr = [{
+                  URL: item.valuedata
+                }];
+              }
             } else {
               arr = [];
             }
