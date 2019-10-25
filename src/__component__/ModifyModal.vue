@@ -44,10 +44,16 @@
   import ModalConfirm from './Dialog/Confirm.vue';
 
   // eslint-disable-next-line import/no-dynamic-require
+  // const {
+  //   fkModify, fksaveModify
+  // // eslint-disable-next-line import/no-dynamic-require
+  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   const {
     fkModify, fksaveModify
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  } = fkHttpRequest();
+
 
   export default {
     name: 'ModifyDialog',

@@ -147,7 +147,6 @@
                       @mouseover.stop="colImgDrag(item)"
                       @mousedown.stop="colImgOut(item)"
                     >
-                      <span />
                       <i
                         v-show="item.flag &&item.URL !== ''"
                         class="iconfont iconios-close-circle"
@@ -155,7 +154,6 @@
                         @mousedown.stop
                       />
                       <span
-                        v-if="item.URL === ''"
                         class="upload-span"
                         @click="colImgChange(item,index)"
                       >+ 添加图片</span>
@@ -166,6 +164,7 @@
                         trigger="hover"
                         transfer
                       >
+                      {{item.flag}}
                         <div
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
@@ -371,7 +370,7 @@
                       //   this.$set(item, 'flag', false);
                       //   // item.URL = '/static/img/addImg.png'
                       // } else {
-                      this.$set(item, 'URL', 'http://5b0988e595225.cdn.sohucs.com/images/20180118/a0163c6be9d247918669229bed6c7280.png');
+                      // this.$set(item, 'URL', 'http://5b0988e595225.cdn.sohucs.com/images/20180118/a0163c6be9d247918669229bed6c7280.png');
                       this.$set(item, 'flag', false);
                       // item.URL = '/static/img/default@2x.png'
                       // }
@@ -382,7 +381,7 @@
                           if (temp.URL) {
                             this.$set(item, 'URL', temp.URL);
                           } else {
-                            this.$set(item, 'URL', 'http://5b0988e595225.cdn.sohucs.com/images/20180118/a0163c6be9d247918669229bed6c7280.png');
+                            // this.$set(item, 'URL', 'http://5b0988e595225.cdn.sohucs.com/images/20180118/a0163c6be9d247918669229bed6c7280.png');
                           }
                           // item.URL = temp.URL
                         }

@@ -261,15 +261,15 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const itemModify = itemCurrentParameter.modify;// 子表修改
+      const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
 
-      const itemDefault = itemCurrentParameter.default;
-      const itemAdd = itemCurrentParameter.add;// 子表新增
+      const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
+      const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       const sataTypeName = sataType ? sataType.sataType : '';
       const dufault = parame.default;
       if (sataTypeName === 'add') { // 子表新增
-        const addDefault = itemCurrentParameter.addDefault;
+        const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         Object.assign(itemAdd[itemName], add);
         const itemTableAdd = Object.assign({}, itemAdd);
@@ -336,7 +336,7 @@ export default {
         });
       } else if (sataTypeName === 'addAndModify') {
         if (Object.values(itemAdd[itemName]).length > 0) {
-          const addDefault = itemCurrentParameter.addDefault;
+          const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
           const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
