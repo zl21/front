@@ -167,7 +167,7 @@ async function jflowsave(flag, request) {
           initiator: userInfo.id,
           userName: userInfo.name,
           instanceId,
-          initiatorName: userInfo.ename,
+          initiatorName: userInfo.name,
           changeUser: userInfo.id,
           businessUrl: request.url,
           ruleField: 'V'
