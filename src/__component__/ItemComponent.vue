@@ -318,12 +318,6 @@
   import ExtentionInput from './ExtentionInput';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkQueuploadProgressry,
-    fkObjectSave,
-    deleteImg
-  } = fkHttpRequest();
-
 
   export default {
     name: 'ItemComponent',
@@ -1126,7 +1120,7 @@
       upSavefile(obj, fixedData, path) {
         // 保存文件
 
-        fkObjectSave({
+        fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
           },
@@ -1144,7 +1138,7 @@
       },
       deleteImgData(obj, index) {
         // 删除图片
-        deleteImg({
+        fkHttpRequest().deleteImg({
           params: {
             ...obj
           },
@@ -1172,7 +1166,7 @@
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
         }
-        fkQueuploadProgressry({
+        fkHttpRequest().fkQueuploadProgressry({
           searchObject: {
             uploadId: resultData.data.UploadId
           },
@@ -1331,7 +1325,7 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        fkObjectSave({
+        fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
           },

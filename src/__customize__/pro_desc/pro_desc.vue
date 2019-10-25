@@ -164,7 +164,7 @@
                         trigger="hover"
                         transfer
                       >
-                      {{item.flag}}
+                        {{ item.flag }}
                         <div
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
@@ -495,10 +495,10 @@
         });
       },
       colImgChange(item, index) {
-           const dom = document.getElementById(`colImg${this.objId}${index}`);
-           console.log(`colImg${this.objId}${index}`)
-          dom.click();
-          // $(`#colImg${this.objId}${index}`).trigger('click');
+        const dom = document.getElementById(`colImg${this.objId}${index}`);
+        console.log(`colImg${this.objId}${index}`);
+        dom.click();
+        // $(`#colImg${this.objId}${index}`).trigger('click');
       },
       uploadColorChange(item, index) {
         // 颜色图上传

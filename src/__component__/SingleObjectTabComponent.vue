@@ -37,7 +37,8 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <div v-if="componentName" style="overflow-y: auto;flex:1;">
+    <div v-if="componentName"
+style="overflow-y: auto;flex:1;">
       <component
         :is="customizeComponent"
         v-if="componentName"

@@ -48,10 +48,8 @@
   import Upload from '../../__utils__/upload';
   import { Version } from '../../constants/global';
 
-  const {
-    batchUploadProgress,
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
 
   export default {
     name: 'Docfile',
@@ -145,7 +143,7 @@
           return false;
         }
         uploadIds = uploadIds.join(',');
-        batchUploadProgress({
+        fkHttpRequest().batchUploadProgress({
           searchObject: {
             uploadIds
           },
