@@ -68,9 +68,11 @@ export default {
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateButtonsData(state, data) {
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.buttonsData.isShow = true;
-    componentAttribute.buttonsData.data = data;
+    if (!state.instanceId) {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data = data;
+    }
   }, // 更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -294,8 +296,12 @@ export default {
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
 
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
+    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     if (buttonAnother) { 
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
