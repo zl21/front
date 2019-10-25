@@ -71,12 +71,14 @@ export default {
   getBatchDeleteForButtons({ commit }, {
     tableName, selectIdArr, resolve, reject 
   }) { // 调用删除明细接口
-    const ids = selectIdArr.map(d => parseInt(d));
-    network.post('/p/cs/batchDelete',
-      {
-        tableName,
-        ids
-      }).then((res) => {
+    let params = {};
+    let ids = '';
+    ids = selectIdArr.join(',');
+    params = {
+      table: tableName,
+      objids: ids
+    };
+    network.post('/p/cs/batchDelete', urlSearchParams(params)).then((res) => {
       const deleteTableData = res.data;
       if (res.data.code === 0) {
         resolve();

@@ -10,9 +10,9 @@ module.exports = {
   // target: 'http://dev.burgeononline.com:8120', // 掌云测试环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
   // target: 'http://r3.burgeon.cn:28888', // 李宁
-  Version: '1.3', // 版本号
+  Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
-  enableGateWay: false, // 网关是否打开,
+  enableGateWay: true, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [/\/jflow\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配。
   enableNetworkMonitor: true, // 是否开启网络监控功能
