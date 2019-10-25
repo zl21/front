@@ -59,9 +59,11 @@ export default {
     });
     state.tabPanels = arr;
   },
-  updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
+  updateMainButtonsData(state, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    mainFormInfo.buttonsData.data = data;
+    if (!state.instanceId) {
+      state.mainFormInfo.buttonsData.data = data;
+    }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -308,8 +310,11 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
     if (buttonAnother) { 
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;

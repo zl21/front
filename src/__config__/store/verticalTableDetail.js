@@ -39,6 +39,7 @@ export default () => ({
     mappStatus: {},
     anotherData: [], // 按钮显示的备份数据
     jflowPluginDataArray: [],
+    instanceId: null, // jflow流程标志
     refreshButton: true, // 为方便jflow控制，改为全局状态调用
   },
   actions: actions(),

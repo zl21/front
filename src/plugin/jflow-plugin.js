@@ -136,7 +136,9 @@ function RoutingGuard(router) { // 路由守卫
         jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
           next();
           setTimeout(() => {
-            CreateButton(res.data.data, jflowButtons, to.query.id);
+            if (res.data.resultCode === 0) {
+              CreateButton(res.data.data, jflowButtons, to.query.id);
+            }
           }, 300);
         });
         configurationFlag = true;
@@ -188,9 +190,11 @@ async function jflowsave(flag, request) {
             });
           }
           instanceId = res.data.data.instanceId;
-          jflowButtons(router.currentRoute.params.itemId);
-          if (document.getElementsByClassName('button-group')[0]) {
-            const children = document.getElementsByClassName('button-group')[0].children;
+
+          
+          if (document.getElementsByClassName('R3-button-group')[0]) {
+            jflowButtons(router.currentRoute.params.itemId);
+            const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.innerText === '刷新') {
                 const style = document.createElement('style');
