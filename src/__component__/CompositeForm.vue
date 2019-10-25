@@ -85,13 +85,21 @@
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
 
+  // const {
+  //   fkQueryList,
+  //   fkFuzzyquerybyak,
+  //   fkGetMultiQuery,
+  //   fkDelMultiQuery
+  // // eslint-disable-next-line import/no-dynamic-require
+  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   const {
     fkQueryList,
     fkFuzzyquerybyak,
     fkGetMultiQuery,
     fkDelMultiQuery
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  } = fkHttpRequest();
   export default {
     name: 'CompositeForm',
     components: {},
