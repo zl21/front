@@ -1520,9 +1520,9 @@
         } else {
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
-        item[index].item.props.totalRowCount = res.data.datas.totalRowCount;
-        item[index].item.props.pageSize = res.data.datas.defaultrange;
-        item[index].item.props.data = res.data.datas;
+        item[index].item.props.totalRowCount = res.data.data.totalRowCount;
+        item[index].item.props.pageSize = res.data.data.defaultrange;
+        item[index].item.props.data = res.data.data;
       },
       freshDropDownSelectFilterAutoData(res, index, current, type) {
         // 外键的模糊搜索数据更新
