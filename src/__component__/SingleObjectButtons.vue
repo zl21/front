@@ -1804,8 +1804,9 @@
         });
       },
       saveAfter(type, tableName, stop, removeMessage) {
-        this.clearEditData();// 清空store update数据
-
+        if (!stop) { // 保存失败时，不清空store里面存的参数，
+          this.clearEditData();// 清空store update数据
+        }
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作

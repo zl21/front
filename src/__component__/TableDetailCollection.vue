@@ -20,7 +20,7 @@
             class="detail-buttons"
           >
             <a
-              v-for="item in buttonGroups"
+              v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -128,7 +128,7 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-
+  
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
@@ -155,6 +155,7 @@
     },
     data() {
       return {
+        buttonData: [],
         currentPage: 1, // 当前页码
         isRefreshClick: false, // 是否点击了刷新
 
@@ -313,14 +314,13 @@
             this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
               if (this.mainFormInfo.buttonsData.data.tabcmd.paths) {
                 this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                   if (index === i) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.buttonPath[cmd] = path;
                   }
                 });
               }
             });
-
             tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
                 tabcmd.prem[index] = false;
@@ -355,7 +355,9 @@
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
           buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         }
-        return buttonGroupShow;
+        const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        const b = JSON.parse(a);
+        return b;
       },
       isMainTableReadonly() {
         if (this.type === pageType.Vertical) {
@@ -375,6 +377,12 @@
       }
     },
     watch: {
+      buttonGroups: {
+        handler(val) {
+          this.buttonData = val;
+        },
+        deep: true
+      },
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
       },
@@ -1190,22 +1198,22 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                            cur.childs.forEach((item) => {
-                              acc.push(item);
-                            });
-                            return acc;
-                          }, [])
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
-                          return acc;
-                        }, [])
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
                       this.$Message.info(`请选择${obj.name}`);
                     }
@@ -1808,7 +1816,6 @@
                   id: data.refobjid
                 });
               } else if (cellData.objdistype === 'tabpanle') {
-
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
@@ -1846,7 +1853,6 @@
                   id: params.row[data.refobjid]
                 });
               } else if (data.objdistype === 'tabpanle') {
-
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
@@ -2089,15 +2095,17 @@
       reloadErrorTips(data) {
         // const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
         this.dataSource.row.map((ele) => {
-          const exceptFlag = data.every((item) => {
-            if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
-              return true;
+          if (data.every) {
+            const exceptFlag = data.every((item) => {
+              if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
+                return true;
+              }
+              ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
+              return false;
+            });
+            if (exceptFlag) {
+              ele.errorTips = '';
             }
-            ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
-            return false;
-          });
-          if (exceptFlag) {
-            ele.errorTips = '';
           }
           return ele;
         });
@@ -2529,6 +2537,7 @@
 
     },
     mounted() {
+      this.buttonData = this.buttonGroups;
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;

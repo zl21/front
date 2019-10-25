@@ -3,7 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -303,7 +303,17 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+      if (enableJflow()) {
+        businessTypes.forEach((localUrl) => {
+          if (localUrl !== 'url') {
+            return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+          }
+          return true;
+        });
+      } else {
+        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      }
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {

@@ -63,6 +63,7 @@
     "dependencies": {
         "ag-grid": "^17.1.1",
         "ag-grid-enterprise": "^17.1.1",
+        "awe-dnd": "^0.3.4",
         "axios": "^0.18.0",
         "md5": "^2.2.1",
         "vue": "^2.6.8",

@@ -165,10 +165,10 @@ async function jflowsave(flag, request) {
           businessType: router.currentRoute.params.tableId,
           businessTypeName: router.currentRoute.params.tableName,
           initiator: userInfo.id,
+          userName: userInfo.name,
           instanceId,
           initiatorName: userInfo.name,
           changeUser: userInfo.id,
-          userName: userInfo.name,
           businessUrl: request.url,
           ruleField: 'V'
         }).then((res) => {
@@ -312,17 +312,17 @@ function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配
     data.addcolums.map((item) => {
       if (item.childs) {
         item.childs.map((temp) => {
-          temp.readonly = true;
-          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0) {
+          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
             temp.readonly = false;
+          } else {
+            temp.readonly = true;
           }
           return temp;
         });
+      } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
+        item.child.readonly = false;
       } else {
         item.child.readonly = true;
-        if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0) {
-          item.child.readonly = false;
-        }
       }
       
       return item;

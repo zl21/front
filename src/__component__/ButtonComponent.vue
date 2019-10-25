@@ -1,6 +1,6 @@
 <template>
-  <div class="buttonList">
-    <div class="button-group">
+  <div class="R3-buttonList">
+    <div class="R3-button-group">
       <!-- //查找 -->
       <Button
         v-if="dataArray.search"
@@ -328,14 +328,14 @@
   };
 </script>
 
-<style lang="less">
-.buttonList {
+<style lang="less" scope>
+.R3-buttonList {
   padding: 8px 0px;
   > div {
     display: inline-block;
   }
   }
-  .button-group {
+  .R3-button-group {
     display: flex;
     justify-content: flex-start;
     text-align: right;
