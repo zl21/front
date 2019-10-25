@@ -317,12 +317,13 @@
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   const {
     fkQueuploadProgressry,
     fkObjectSave,
     deleteImg
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  } = fkHttpRequest();
+
 
   export default {
     name: 'ItemComponent',

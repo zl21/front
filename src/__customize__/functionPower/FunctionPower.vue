@@ -946,7 +946,7 @@
           }
         } else {
           // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
-          this.selectedSeeColumn(params.index, currentValue);
+          this.selectedSeeColumn(params, currentValue);
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
@@ -981,10 +981,11 @@
         const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
         this.tableData[findIndex] = params.row;
       }, // 取消整行的选中
-      selectedSeeColumn(index, currentValue) {
+      selectedSeeColumn(params, currentValue) {
         if (currentValue) {
-          this.tableData[index].seeValue = currentValue;
+          this.tableData[params.index].seeValue = currentValue;
         }
+        this.tabthCheckboxSelected(this.columns[1], 'see');
       }, // 选中查看列
       editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
@@ -1091,6 +1092,7 @@
               // this.columns[findIndex][`${columnKey}Value`] = false;
             }
           }
+          this.columns = this.columns.concat([]);
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {

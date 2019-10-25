@@ -46,13 +46,12 @@
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
 
-
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
   const {
     fkFuzzyquerybyak,
     fkGetMultiQuery,
     fkDelMultiQuery
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  } = fkHttpRequest();
 
   export default {
     name: 'ComAttachFilter',
