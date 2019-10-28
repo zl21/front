@@ -13,15 +13,8 @@
   import wangEditor from '../assets/js/wangeditor/wangEditor';
   import { Version } from '../constants/global';
 
-  // const {
-  //   fkQueuploadProgressry, editorUpload
-  // // eslint-disable-next-line import/no-dynamic-require
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkQueuploadProgressry, editorUpload
-  } = fkHttpRequest();
+ 
   export default {
     name: 'Wangeditor',
     props: {
@@ -215,7 +208,7 @@
           path
         };
         // 
-        editorUpload({
+        fkHttpRequest().editorUpload({
           params: {
             customUploadImg
           },
@@ -246,7 +239,7 @@
           return;
         }
         const self = this;
-        fkQueuploadProgressry({
+        fkHttpRequest().fkQueuploadProgressry({
           searchObject: {
             uploadId: upload.UploadId 
           },

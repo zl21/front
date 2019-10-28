@@ -150,11 +150,13 @@ export default {
     // state.colPosition = userConfig.colPosition;
     // state.fixedColumn = userConfig.fixedColumn;
     // 将控制隐藏列、列顺序、固定列等信息统一由state.userConfigForAgTable控制
-    state.userConfigForAgTable = {
-      hideColumn: userConfig.hideColumn,
-      colPosition: userConfig.colPosition,
-      fixedColumn: userConfig.fixedColumn
-    };
+    if (userConfig) {
+      state.userConfigForAgTable = {
+        hideColumn: userConfig.hideColumn,
+        colPosition: userConfig.colPosition,
+        fixedColumn: userConfig.fixedColumn
+      };
+    }
   },
   updateAgConfig(state, { key, value }) {
     // e.g: state['hideColumn'] = [];

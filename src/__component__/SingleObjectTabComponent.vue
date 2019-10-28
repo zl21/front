@@ -37,7 +37,10 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <div v-if="componentName" style="overflow-y: auto;flex:1;">
+    <div
+      v-if="componentName"
+      style="overflow-y: auto;flex:1;"
+    >
       <component
         :is="customizeComponent"
         v-if="componentName"
@@ -303,6 +306,8 @@
             savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[1];
             this.determineSaveType(savePath);
           }
+        }else{
+          this.determineSaveType();
         }
       }, // 表单回车触发
       subtables() {

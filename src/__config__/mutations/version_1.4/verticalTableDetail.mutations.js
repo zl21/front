@@ -59,9 +59,11 @@ export default {
     });
     state.tabPanels = arr;
   },
-  updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
+  updateMainButtonsData(state, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    mainFormInfo.buttonsData.data = data;
+    if (!state.instanceId) {
+      state.mainFormInfo.buttonsData.data = data;
+    }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -150,7 +152,7 @@ export default {
         if (d.childs) {
           d.childs.forEach((c) => {
             if (item.childs) {
-              item.childs.forEach((b) => { 
+              item.childs.forEach((b) => {
                 if (c.hidecolumn) {
                   if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
                     if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
@@ -161,26 +163,46 @@ export default {
                 }               
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
-                  hidecolunmArray.forEach((hidecolumnItem) => {
-                    if (b.colname !== hidecolumnItem.colname) {
-                      if (c.readonly === true) {
-                        if (c.defval) {
-                          copySaveDataForParam[b.colname] = c.defval;
-                        } else {
-                          b.valuedata = '';// 将配置为不可编辑的值置空
-                        }
-                      } else if (b.valuedata) {
-                        if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
-                          copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                        } else if (b.fkdisplay === 'mop') {
-                          const number = JSON.parse(b.valuedata).lists.result.length;
-                          copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                        } else {
-                          copySaveDataForParam[b.colname] = b.valuedata;
+                  if (hidecolunmArray.length > 0) {
+                    hidecolunmArray.forEach((hidecolumnItem) => {
+                      if (b.colname !== hidecolumnItem.colname) {
+                        if (c.readonly === true) {
+                          if (c.defval) {
+                            copySaveDataForParam[b.colname] = c.defval;
+                          } else {
+                            b.valuedata = '';// 将配置为不可编辑的值置空
+                          }
+                        } else if (b.valuedata) {
+                          if (b.display === 'doc') {
+                          } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                            copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                          } else if (b.fkdisplay === 'mop') {
+                            const number = JSON.parse(b.valuedata).lists.result.length;
+                            copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                          } else {
+                            copySaveDataForParam[b.colname] = b.valuedata;
+                          }
                         }
                       }
+                    });
+                  } else if (c.readonly === true) {
+                    if (c.defval) {
+                      copySaveDataForParam[b.colname] = c.defval;
+                    } else {
+                      b.valuedata = '';// 将配置为不可编辑的值置空
                     }
-                  });
+                  } else if (b.valuedata) {
+                    if (b.display === 'doc') {
+                      copySaveDataForParam[b.colname] = b.valuedata;
+                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                      copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                    } else if (b.fkdisplay === 'mop') {
+                      const number = JSON.parse(b.valuedata).lists.result.length;
+                      copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                    } else {
+                      copySaveDataForParam[b.colname] = b.valuedata;
+                    }
+                  }
                 }
               });
             }
@@ -188,10 +210,8 @@ export default {
         }
       });
     });
-    console.log('🍓', copySaveDataForParam);
-
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
-    state.updateData[tableName].add = Object.assign({}, copySaveDataForParam, modifyData);
+    // state.updateData[tableName].add = Object.assign({}, copySaveDataForParam, modifyData);
 
     
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
@@ -308,8 +328,12 @@ export default {
   //     });
   //   });
   // }
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
+    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     if (buttonAnother) { 
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;

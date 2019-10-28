@@ -121,16 +121,7 @@
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
 
-  // const {
-  //   fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
-  // // eslint-disable-next-line import/no-dynamic-require
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, fkDelMultiQuery
-  } = fkHttpRequest();
-
 
   export default {
     components: {
@@ -327,8 +318,10 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
+        const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const { reftableid, reftablename, refobjid } = rowData[colDef.colId];
+          // console.log(999, reftableid, reftablename, refobjid);
           this.tabHref({
             id: refobjid,
             tableName: reftablename,
@@ -350,7 +343,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId: colDef.customerurl.reftableid,
+              tableId,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };
@@ -361,7 +354,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId: colDef.customerurl.reftableid,
+              tableId,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };
@@ -462,14 +455,14 @@
                   this.formItemsLists = this.formItemsLists.concat([]);
                 },
                 'on-delete': ($this, item, key, index) => {
-                  fkDelMultiQuery({
+                  fkHttpRequest().fkDelMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid,
                       modelname: key
                     },
                     serviceId: current.fkobj.serviceId,
                     success: () => {
-                      fkGetMultiQuery({
+                      fkHttpRequest().fkGetMultiQuery({
                         searchObject: {
                           tableid: item.props.fkobj.reftableid
                         },
@@ -489,7 +482,7 @@
                 },
                 'popper-show': ($this, item, index) => {
                   // 当气泡拉展开时去请求数据
-                  fkGetMultiQuery({
+                  fkHttpRequest().fkGetMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
@@ -506,7 +499,7 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
-                  fkQueryList({
+                  fkHttpRequest().fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
                       refcolid: current.colid,
@@ -525,7 +518,7 @@
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
-                  fkFuzzyquerybyak({
+                  fkHttpRequest().fkFuzzyquerybyak({
                     searchObject: {
                       ak: value,
                       colid: current.colid,
@@ -539,7 +532,7 @@
                 },
                 pageChange: (currentPage, $this) => {
                   // 外键的分页查询
-                  fkQueryList({
+                  fkHttpRequest().fkQueryList({
                     searchObject: {
                       isdroplistsearch: true,
                       refcolid: current.colid,

@@ -132,18 +132,8 @@
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
-  // const {
-  //   fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
-  //   // eslint-disable-next-line import/no-dynamic-require
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
-
-
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
-  } = fkHttpRequest();
-
+  
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
   const pageType = {
@@ -580,7 +570,7 @@
               };
             }
 
-            itemTableDelete({
+            fkHttpRequest().itemTableDelete({
               params,
               path,
               success: (res) => {
@@ -1093,7 +1083,7 @@
                   value.transferDefaultSelected = [];
                 }
                 this.fkAutoData = [];
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -1279,7 +1269,7 @@
                   value.transferDefaultSelected = [];
                 }
                 this.fkAutoData = [];
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -1587,7 +1577,7 @@
                                             value: '导入',
                                             lable: 2
                                           }];
-                fkGetMultiQuery({
+                fkHttpRequest().fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
                   },
@@ -1641,7 +1631,7 @@
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                   return;
                 }
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.copyDataSource.row[params.index][cellData.colname].colid,
@@ -2243,7 +2233,7 @@
           startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize,
           range: this.fkDropPageInfo.pageSize
         };
-        fkQueryList({
+        fkHttpRequest().fkQueryList({
           searchObject: searchdata,
           success: (res) => {
             this.fkData = res.data.data;
