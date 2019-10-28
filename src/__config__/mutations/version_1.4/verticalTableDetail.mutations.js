@@ -210,24 +210,27 @@ export default {
         }
       });
     });
+    state.updateData[tableName].add = {};
+
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
-    // state.updateData[tableName].add = Object.assign({}, copySaveDataForParam, modifyData);
 
     
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
     data.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
       if (item.parentdesc !== '日志') {
-        item.childs.forEach((itemValue) => {
+        item.childs.forEach((itemValue,) => {
           item.childs.forEach((childValue) => {
             if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
               if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
                 itemValue.valuedata = '';
+                delete (itemValue.refobjid);
               }
             }
           });
         });
       }
     });
+
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums.concat([]);
   },
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
