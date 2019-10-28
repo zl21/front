@@ -164,7 +164,6 @@
                         trigger="hover"
                         transfer
                       >
-                        {{ item.flag }}
                         <div
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
