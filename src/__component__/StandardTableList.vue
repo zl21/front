@@ -251,7 +251,6 @@
       },
       onRowDoubleClick(colDef, row) {
         const { tableName, tableId } = this.$route.params;
-        console.log(this.$route.params);
         const id = row.ID.val;
         const label = `${this.activeTab.label}编辑`;
         if (this.ag.datas.objdistype === 'tabpanle') {
