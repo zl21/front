@@ -251,6 +251,7 @@
       },
       onRowDoubleClick(colDef, row) {
         const { tableName, tableId } = this.$route.params;
+        console.log(this.$route.params);
         const id = row.ID.val;
         const label = `${this.activeTab.label}编辑`;
         if (this.ag.datas.objdistype === 'tabpanle') {
@@ -318,8 +319,10 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
+        const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const { reftableid, reftablename, refobjid } = rowData[colDef.colId];
+          // console.log(999, reftableid, reftablename, refobjid);
           this.tabHref({
             id: refobjid,
             tableName: reftablename,
@@ -341,7 +344,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId: colDef.customerurl.reftableid,
+              tableId,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };
@@ -352,7 +355,7 @@
             const tab = {
               type,
               tableName: colDef.customerurl.reftablename,
-              tableId: colDef.customerurl.reftableid,
+              tableId,
               label: colDef.customerurl.reftabdesc,
               id: rowData[colDef.customerurl.refobjid].val
             };

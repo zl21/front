@@ -335,14 +335,15 @@
                 array2.push(option);
                 return array2;
               }, []);
-
-              array.push({
-                childs: tem.concat([]),
-                hrdisplay: current.hrdisplay,
-                parentdesc: current.parentdesc,
-                parentname: current.parentname,
-                isTitleShow: !current.isTitleShow
-              });
+              if (array !== undefined) {
+                array.push({
+                  childs: tem.concat([]),
+                  hrdisplay: current.hrdisplay,
+                  parentdesc: current.parentdesc,
+                  parentname: current.parentname,
+                  isTitleShow: !current.isTitleShow
+                });
+              }
               return array;
             }
           }, []);
