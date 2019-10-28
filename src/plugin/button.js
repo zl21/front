@@ -4,7 +4,7 @@
 // 创建按钮
 // obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
 function CreateButton(obj, buttons, id, store) {
-  if (!obj.instanceId && obj.businessStatus !== -2) {
+  if (!obj.instanceId && obj.businessStatus !== -2) { // 不存在流程或者当前流程正在发起中时不处理
     return;
   }
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];

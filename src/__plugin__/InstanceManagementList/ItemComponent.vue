@@ -141,7 +141,7 @@
         item.event = Object.assign({}, this.items.event);
         if (item.type === 'DatePicker') {
           if (item.props.type === 'datetimerange') {
-            item.value = [new Date(new Date(new Date().toLocaleDateString()).getTime()), new Date()];
+            item.value = [];
           } else {
             item.value = new Date();
           }

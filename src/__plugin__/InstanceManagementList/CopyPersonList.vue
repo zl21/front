@@ -1,6 +1,6 @@
 <template>
-  <!-- 历史流程 -->
-  <div class="HistoricalProcess">
+  <!-- 抄送人列表-->
+  <div class="CopyPersonList">
     <Button
       type="primary"
       @click="queryLists"
@@ -52,11 +52,8 @@
             component: ItemComponent,
             item: {
               type: 'input',
-              title: '工作流编号',
-              filed: 'instanceId',
-              props: {
-                regx: /^[0-9]*$/
-              },
+              title: '发起人姓名',
+              filed: 'initiatorName',
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
@@ -72,8 +69,8 @@
             component: ItemComponent,
             item: {
               type: 'input',
-              title: '查询索引',
-              filed: 'businessNumber',
+              title: '单据名称',
+              filed: 'businessTypeName',
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
@@ -106,7 +103,7 @@
             item: {
               type: 'DatePicker',
               title: '处理时间',
-              filed: 'updateTime'
+              filed: 'createTime'
             }
           }
         ],
@@ -114,14 +111,17 @@
         searchData: {
           page: 1,
           pageSize: 10,
-          excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          updateTime: []
+          createTime: []
         },
 
         // 表格数据
         total: 0,
         columns: [
+          {
+            title: '发起人',
+            key: 'initiatorName'
+          },
           {
             title: '工作流编号',
             key: 'instanceId'
@@ -131,20 +131,8 @@
             key: 'businessNumber'
           },
           {
-            title: '单据类型',
+            title: '表名',
             key: 'businessName'
-          },
-          {
-            title: '模板名称',
-            key: 'moduleName'
-          },
-          // {
-          //   title:'待审批人',
-          //   key: 'approverValue'
-          // },
-          {
-            title: '发起人',
-            key: 'initiatorName'
           },
           {
             title: '处理时间',
@@ -159,30 +147,7 @@
             key: 'processStatus',
             render: (h, params) => {
               let processStatusT = '';
-              if (params.row.processStatus === 4) {
-                return h('Poptip', {
-                  props: {
-                    trigger: 'hover',
-                    content: params.row.submitErrorMsg
-                  }
-                }, [h(
-                  'span',
-                  {
-                    style: {
-                      color: 'rgba(255, 0, 0, 1)',
-                      cursor: 'pointer'
-                    },
-                  // on: {
-                  //   click: () => {
-                  //     // this.modalShow = true;
-                  //     // this.instanceId = params.row.instanceId;
-                  //     // this.submitTask(this.instanceId);
-                  //   }
-                  // }
-                  },
-                  '提交失败，重新提交'
-                )]);
-              } 
+
               switch (params.row.processStatus) {
               case 0:
                 processStatusT = '待审批';
@@ -297,7 +262,7 @@
     },
     watch: {
       tabalive(newVal, oldVal) {
-        if (newVal === '我发起的') {
+        if (newVal === '抄送人') {
           this.getselectOption();
           this.queryLists();
         }
@@ -355,24 +320,24 @@
         this.spinShow = true;
         // 查询列表
         if (
-          this.searchData.updateTime
-          && this.searchData.updateTime[0]
-          && this.searchData.updateTime[1]
+          this.searchData.createTime
+          && this.searchData.createTime[0]
+          && this.searchData.createTime[1]
         ) {
           this.searchData.startTime = new Date(
-            this.searchData.updateTime[0]
+            this.searchData.createTime[0]
           ).format('yyyy-MM-dd hh:mm');
           this.searchData.endTime = new Date(
-            this.searchData.updateTime[1]
+            this.searchData.createTime[1]
           ).format('yyyy-MM-dd hh:mm');
         } else {
           this.searchData.startTime = '';
           this.searchData.endTime = '';
         }
         const obj = Object.assign({}, this.searchData);
-        delete obj.updateTime;
+        delete obj.createTime;
         this.$network
-          .post('/jflow/p/cs/task/initiator/list', obj)
+          .post('/jflow/p/cs/task/cslist', obj)
           .then((res) => {
             if (res.data.resultCode === 0) {
               const data = res.data.data;
@@ -396,7 +361,7 @@
 .burgeon-spin-fix {
   z-index: 100;
 }
-.HistoricalProcess {
+.CopyPersonList {
   flex: 1;
   display: flex;
   flex-direction: column;

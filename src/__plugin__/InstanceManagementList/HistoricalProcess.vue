@@ -17,7 +17,7 @@
       <Spin
         v-if="spinShow"
         size="large"
-        fix
+        fix 
       />
       <StandardTable
         class="table"
@@ -39,7 +39,9 @@
   export default {
     name: 'HistoricalProcess',
     components: { FormItemComponent, StandardTable },
-    props: { tabalive: { type: String, default: '' } },
+    props: {
+      tabalive: { type: String, default: '' }
+    },
     data() {
       return {
         // 表单配置
@@ -50,8 +52,18 @@
             component: ItemComponent,
             item: {
               type: 'input',
-              title: '单据编号',
-              filed: 'businessCode'
+              title: '工作流编号',
+              filed: 'instanceId',
+              props: {
+                regx: /^[0-9]*$/
+              },
+              event: {
+                keydown: (event) => {
+                  if (event.keyCode === 13) {
+                    this.queryLists();
+                  }
+                }
+              }
             }
           },
           {
@@ -60,13 +72,18 @@
             component: ItemComponent,
             item: {
               type: 'input',
-              title: '工作流编号',
-              filed: 'instanceId',
-              props: {
-                regx: /^[0-9]*$/
+              title: '查询索引',
+              filed: 'businessNumber',
+              event: {
+                keydown: (event) => {
+                  if (event.keyCode === 13) {
+                    this.queryLists();
+                  }
+                }
               }
             }
           },
+
           {
             row: 1,
             col: 1,
@@ -101,52 +118,72 @@
           searchType: '0,1',
           excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          updateTime: [
-            new Date(new Date(new Date().toLocaleDateString()).getTime()),
-            new Date()
-          ]
+          updateTime: []
         },
 
         // 表格数据
         total: 0,
         columns: [
           {
-          title: "工作流编号",
-          key: "instanceId"
-        },
-        {
-          title: "单据编号",
-          key: "businessNumber"
-        },
-        {
-          title: "单据类型",
-          key: "businessName"
-        },
-        {
-          title: "模板名称",
-          key: "moduleName"
-        },
-        // {
-        //   title:'待审批人',
-        //   key: 'approverValue'
-        // },
-        {
-          title: "发起人",
-          key: "initiatorName"
-        },
-        {
-          title: "处理时间",
-          key: "updateTime"
-        },
-        {
-          title: "消耗时长",
-          key: "durationTime"
-        },
+            title: '工作流编号',
+            key: 'instanceId'
+          }, {
+            title: '查询索引',
+            key: 'businessNumber'
+          },
+          {
+            title: '单据类型',
+            key: 'businessName'
+          },
+          {
+            title: '模板名称',
+            key: 'moduleName'
+          },
+          // {
+          //   title:'待审批人',
+          //   key: 'approverValue'
+          // },
+          {
+            title: '发起人',
+            key: 'initiatorName'
+          },
+          {
+            title: '处理时间',
+            key: 'updateTime'
+          },
+          {
+            title: '消耗时长',
+            key: 'durationTime'
+          },
           {
             title: '流程状态',
             key: 'processStatus',
             render: (h, params) => {
               let processStatusT = '';
+              if (params.row.processStatus === 4) {
+                return h('Poptip', {
+                  props: {
+                    trigger: 'hover',
+                    content: params.row.submitErrorMsg
+                  }
+                }, [h(
+                  'span',
+                  {
+                    style: {
+                      color: 'rgba(255, 0, 0, 1)',
+                      cursor: 'pointer'
+                    }
+                  // on: {
+                  //   click: () => {
+                  //     // this.modalShow = true;
+                  //     this.instanceId = params.row.instanceId;
+                  //     this.submitTask(this.instanceId);
+                  //   }
+                  // }
+                  },
+                  '提交失败，重新提交'
+                )]);
+              } 
               switch (params.row.processStatus) {
               case 0:
                 processStatusT = '待审批';
@@ -160,12 +197,11 @@
               case 3:
                 processStatusT = '已完结';
                 break;
-              case 4:
-                processStatusT = '业务系统提交失败';
-                break;
+              // case 4:processStatusT="业务系统提交失败";break;
               case -1:
                 processStatusT = '已撤销';
                 break;
+              default: break;
               }
               return h(
                 'p',
@@ -190,7 +226,7 @@
                 style: {
                   display: 'flex',
                   'align-items': 'center',
-                  'justify-content': 'center'
+                  // "justify-content": "center"
                 }
               },
               [
@@ -204,10 +240,6 @@
                     on: {
                       click: () => {
                         params.row.loadType = 0;
-                        // window.jflowPlugin.store.dispatch('emptyTabs')
-                        // window.fastfish.emit("closedalltab")
-                        const query = this.urlParse(params.row.formUrl);
-                        const type = params.row.formUrl.split('/')[2];
                         window.jflowPlugin.router.push({
                           path: params.row.formUrl
                         });
@@ -234,11 +266,7 @@
                     },
                     on: {
                       click: () => {
-                        window.open(
-                          `http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
-                          '_blank',
-                          'width=800,height=800'
-                        );
+                        window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`, '_blank', 'width=800,height=800');
                       }
                     }
                   },
@@ -269,15 +297,16 @@
         if (newVal === '我已审批的') {
           this.getselectOption();
           this.queryLists();
+        // this.getAgent();
         }
       }
     },
     methods: {
       urlParse(path) {
-        const url = path || window.location.search; // 得到url问号后面拼接的参数  ?id=12345&a=b
-        const obj = {}; // 创建一个Object
-        const reg = /[?&][^?&]+=[^?&]+/g; // 正则匹配 ?&开始 =拼接  非?&结束  的参数
-        const arr = url.match(reg); // match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+        const url = path || window.location.search;// 得到url问号后面拼接的参数  ?id=12345&a=b
+        const obj = {};// 创建一个Object
+        const reg = /[?&][^?&]+=[^?&]+/g;// 正则匹配 ?&开始 =拼接  非?&结束  的参数
+        const arr = url.match(reg);// match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
         // arr数组形式 ['?id=12345','&a=b']
         if (arr) {
           arr.forEach((item) => {
@@ -296,11 +325,7 @@
       formChange(data) {
         // 表单数据修改时，修改searchData数据
         this.searchData = Object.assign({}, this.searchData, data);
-        if (
-          Object.prototype.toString.call(this.searchData.businessType)
-          === '[object Array]'
-          && this.searchData.businessType.length === 0
-        ) {
+        if (Object.prototype.toString.call(this.searchData.businessType) === '[object Array]' && this.searchData.businessType.length === 0) {
           delete this.searchData.businessType;
         }
         this.searchData.page = 1;
@@ -308,32 +333,24 @@
       getselectOption() {
         this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
           if (res.data.resultCode === 0) {
-            this.formLists.forEach(outer => {
-            if (outer.item.filed === "businessType") {
-              outer.item.options = res.data.data.relations.map(item => {
-                item.value = item.businesskey;
-                item.label = item.businessName;
-                return item;
-              });
-            }
-          });
+            this.formLists.forEach((outer) => {
+              if (outer.item.filed === 'businessType') {
+                outer.item.options = res.data.data.relations.map((item) => {
+                  item.value = item.businesskey;
+                  item.label = item.businessName;
+                  return item;
+                });
+              }
+            });
           }
         });
       },
       queryLists() {
         this.spinShow = true;
         // 查询列表
-        if (
-          this.searchData.updateTime
-          && this.searchData.updateTime[0]
-          && this.searchData.updateTime[1]
-        ) {
-          this.searchData.startTime = new Date(
-            this.searchData.updateTime[0]
-          ).format('yyyy-MM-dd hh:mm');
-          this.searchData.endTime = new Date(
-            this.searchData.updateTime[1]
-          ).format('yyyy-MM-dd hh:mm');
+        if (this.searchData.updateTime && this.searchData.updateTime[0] && this.searchData.updateTime[1]) {
+          this.searchData.startTime = new Date(this.searchData.updateTime[0]).format('yyyy-MM-dd hh:mm');
+          this.searchData.endTime = new Date(this.searchData.updateTime[1]).format('yyyy-MM-dd hh:mm');
         } else {
           this.searchData.startTime = '';
           this.searchData.endTime = '';
@@ -356,13 +373,13 @@
       }
     },
     created() {
-   
+    // this.getselectOption();
     // this.queryLists();
     }
   };
 </script>
 <style lang="less">
-.burgeon-spin-fix {
+.burgeon-spin-fix{
   z-index: 100;
 }
 .HistoricalProcess {
@@ -370,6 +387,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow: hidden;
   .title {
     font-size: 18px;
     font-family: PingFangSC-Medium;
@@ -388,9 +406,9 @@
     margin-bottom: 16px;
   }
 
-  .StandardTable {
+  .StandardTable{
     position: relative;
-    flex: 1;
+    flex:1;
     display: flex;
     .table {
       flex: 1;

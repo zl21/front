@@ -95,11 +95,6 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
-          if (res.data.data.instanceId) {
-            window.vm.$Message.info({
-              content: '单据正在流程中....'
-            });
-          }
           if (res.data.data.submitErrorMsg) {
             window.vm.$Modal.fcError({
               title: '错误',
