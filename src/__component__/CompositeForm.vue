@@ -85,21 +85,9 @@
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
 
-  // const {
-  //   fkQueryList,
-  //   fkFuzzyquerybyak,
-  //   fkGetMultiQuery,
-  //   fkDelMultiQuery
-  // // eslint-disable-next-line import/no-dynamic-require
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkQueryList,
-    fkFuzzyquerybyak,
-    fkGetMultiQuery,
-    fkDelMultiQuery
-  } = fkHttpRequest();
+  
   export default {
     name: 'CompositeForm',
     components: {},
@@ -347,14 +335,15 @@
                 array2.push(option);
                 return array2;
               }, []);
-
-              array.push({
-                childs: tem.concat([]),
-                hrdisplay: current.hrdisplay,
-                parentdesc: current.parentdesc,
-                parentname: current.parentname,
-                isTitleShow: !current.isTitleShow
-              });
+              if (array !== undefined) {
+                array.push({
+                  childs: tem.concat([]),
+                  hrdisplay: current.hrdisplay,
+                  parentdesc: current.parentdesc,
+                  parentname: current.parentname,
+                  isTitleShow: !current.isTitleShow
+                });
+              }
               return array;
             }
           }, []);
@@ -530,14 +519,14 @@
               }
             },
             'on-delete': ($this, item, key) => {
-              fkDelMultiQuery({
+              fkHttpRequest().fkDelMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid,
                   modelname: key
                 },
                 serviceId: current.serviceId,
                 success: () => {
-                  fkGetMultiQuery({
+                  fkHttpRequest().fkGetMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
@@ -576,7 +565,7 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
-              fkGetMultiQuery({
+              fkHttpRequest().fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
                 },
@@ -639,7 +628,7 @@
                   range: $this.pageSize
                 };
               }
-              fkQueryList({
+              fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
@@ -712,7 +701,7 @@
                   range: $this.pageSize
                 };
               }
-              fkQueryList({
+              fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
@@ -778,7 +767,7 @@
           };
         }
 
-        fkFuzzyquerybyak({
+        fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
           serviceId: current.serviceId,
           success: (res) => {

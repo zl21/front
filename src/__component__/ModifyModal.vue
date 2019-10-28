@@ -43,17 +43,8 @@
   import { Version } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  // const {
-  //   fkModify, fksaveModify
-  // // eslint-disable-next-line import/no-dynamic-require
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    fkModify, fksaveModify
-  } = fkHttpRequest();
-
 
   export default {
     name: 'ModifyDialog',
@@ -138,7 +129,7 @@
     },
     methods: {
       getData(searchObject) {
-        fkModify({
+        fkHttpRequest().fkModify({
           searchObject,
           success: (res) => {
             if (res.data.code === 0) {
@@ -168,7 +159,7 @@
           fixedData: this.formChangeData,
           searchdata: localdata
         };
-        fksaveModify({
+        fkHttpRequest().fksaveModify({
           searchObject,
           success: (res) => {
             this.loading = false;

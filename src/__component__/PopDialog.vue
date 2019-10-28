@@ -73,18 +73,8 @@
 <script>
   import { Version } from '../constants/global';
 
-  // const {
-  //   getTableQuery,
-  //   fkQueryListPop
-  // } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  const {
-    getTableQuery,
-    fkQueryListPop
-  } = fkHttpRequest();
-
-
+  
   export default {
     name: 'PopDialog',
     components: {},
@@ -160,7 +150,7 @@
       },
       getData(searchObject) {
         //  form 请求
-        getTableQuery({
+        fkHttpRequest().getTableQuery({
           searchObject,
           serviceId: this.fkobj.serviceId,
           success: (res) => {
@@ -207,7 +197,7 @@
           {}
         );
         searchObject.fixedcolumns = { ...fixedcolumns };
-        fkQueryListPop({
+        fkHttpRequest().fkQueryListPop({
           searchObject,
           serviceId: this.fkobj.serviceId,
           success: (res) => {

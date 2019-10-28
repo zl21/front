@@ -59,9 +59,11 @@ export default {
     });
     state.tabPanels = arr;
   },
-  updateMainButtonsData({ mainFormInfo }, data) { // 更新主表按钮数据
+  updateMainButtonsData(state, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
-    mainFormInfo.buttonsData.data = data;
+    if (!state.instanceId) {
+      state.mainFormInfo.buttonsData.data = data;
+    }
   },
   updateRefButtonsData(state, data) { // 更新子表按钮数据
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -199,7 +201,7 @@ export default {
 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    data.data.addcolums.forEach((item) => {// 去除配置了clearWhenHidden的
+    data.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
       if (item.parentdesc !== '日志') {
         item.childs.forEach((itemValue, index) => {
           if (itemValue.webconf) {
@@ -311,8 +313,12 @@ export default {
   //   });
   // }
 
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
+    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     if (buttonAnother) { 
       state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
