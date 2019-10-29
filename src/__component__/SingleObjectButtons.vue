@@ -597,7 +597,8 @@
             onOk: () => {
               this.saveButtonPath = obj.requestUrlPath;
               const dom = document.getElementById('actionMODIFY');
-              dom.click();
+              const myEvent = new Event('click');
+              dom.dispatchEvent(myEvent);
               this.saveEventAfter = 'submit';
             }
           };
@@ -1572,7 +1573,6 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
-
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
