@@ -1609,6 +1609,17 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
+              if (Version() === '1.3') {
+                let mainModify = [];
+                if (this.updateData[this.tableName].modify) {
+                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+                }
+                if (mainModify.length > 0) {
+                  setTimeout(() => {
+                    this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                  }, 500);
+                }
+              }
             }
           }
         } else { // 横向结构
