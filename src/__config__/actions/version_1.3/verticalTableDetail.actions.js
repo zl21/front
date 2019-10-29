@@ -238,6 +238,7 @@ export default {
     } = parame;
     const { sataType } = parame;
     let parames = {};
+    debugger
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {

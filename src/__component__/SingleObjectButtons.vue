@@ -1568,6 +1568,7 @@
       },
 
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
+
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
         const path = obj.requestUrlPath;
@@ -1615,9 +1616,7 @@
                   mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
                 }
                 if (mainModify.length > 0) {
-                  setTimeout(() => {
-                    this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                  }, 500);
+                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
               }
             }
