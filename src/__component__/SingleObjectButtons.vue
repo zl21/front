@@ -1568,7 +1568,6 @@
       },
 
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
-
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
         const path = obj.requestUrlPath;
@@ -1616,7 +1615,7 @@
                   mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
                 }
                 if (mainModify.length > 0) {
-                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
               }
             }
@@ -1668,6 +1667,16 @@
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
+              }
+            }
+
+            if (Version() === '1.3') {
+              let mainModify = [];
+              if (this.updateData[this.tableName].modify) {
+                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              }
+              if (mainModify.length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           }
