@@ -237,6 +237,7 @@ export default {
       itemNameGroup
     } = parame;
     let parames = {};
+    
 
     if (type === 'add') { // 新增保存参数
       const {
@@ -437,7 +438,12 @@ export default {
             };
           }
         } else if (path) { // 主表保存有path的参数
-          modify[tableName].ID = objId; // 主表id
+          if (!modify[tableName]) {
+            modify[tableName] = {};
+            modify[tableName].ID = objId; // 主表id
+          } else {
+            modify[tableName].ID = objId; // 主表id
+          }
           parames = {
             ...modify
           };
