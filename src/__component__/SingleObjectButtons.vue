@@ -597,7 +597,8 @@
             onOk: () => {
               this.saveButtonPath = obj.requestUrlPath;
               const dom = document.getElementById('actionMODIFY');
-              dom.click();
+              const myEvent = new Event('click');
+              dom.dispatchEvent(myEvent);
               this.saveEventAfter = 'submit';
             }
           };
@@ -1572,7 +1573,6 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
-
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
@@ -1607,6 +1607,15 @@
               if (itemAdd.length > 0 && itemModify.length > 0) {
                 if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                }
+              }
+              if (Version() === '1.3') {
+                let mainModify = [];
+                if (this.updateData[this.tableName].modify) {
+                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+                }
+                if (mainModify.length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
               }
             }
@@ -1658,6 +1667,16 @@
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
+              }
+            }
+
+            if (Version() === '1.3') {
+              let mainModify = [];
+              if (this.updateData[this.tableName].modify) {
+                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              }
+              if (mainModify.length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           }
