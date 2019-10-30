@@ -25,22 +25,16 @@
         class="ApprovelModel"
       >
         <!-- 驳回 -->
-        <div class="returnWrap">
+        <!-- <div class="returnWrap">
           <span class="requireStyle">*</span>
-          <Select
-            v-model="returnOption"
-            style="margin-bottom:10px"
-            placeholder="请选择审批单驳回至哪个节点"
-          >
+          <Select v-model="returnOption" style="margin-bottom:10px" placeholder="请选择审批单驳回至哪个节点">
             <Option
               v-for="item in returnSelection"
-              :key="item.value"
               :value="item.value"
-            >
-              {{ item.label }}
-            </Option>
+              :key="item.value"
+            >{{ item.label }}</Option>
           </Select>
-        </div>
+        </div> -->
         <Input
           v-model="returnContent"
           type="textarea"
@@ -201,7 +195,7 @@
                   item.CP_C_ORGUP_ID === null
                   || item.CP_C_ORGUP_ID === ''
                 ) {
-                  root = Object.assign(item.CP_C_ORGUP_ID);
+                  root = Object.assign({}, item);
                 }
               });
               if (Object.keys(root).length < 1) {
@@ -413,12 +407,12 @@
         window.jflowPlugin.open({ control: false });
       },
       Agree() {
-        const children = document.getElementsByClassName('operate-btn')[0].children;
-        for (const child of children) {
-          if (child.innerText.trim() !== '同意') {
-            child.setAttribute('disabled', 'disabled');
-          }
-        }
+        // const children = document.getElementsByClassName('operate-btn')[0].children;
+        // for (const child of children) {
+        //   if (child.innerText.trim() !== '同意') {
+        //     child.setAttribute('disabled', 'disabled');
+        //   }
+        // }
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
@@ -439,22 +433,22 @@
       },
       // 驳回
       back() {
-        const children = document.getElementsByClassName('operate-btn')[0].children;
-        for (const child of children) {
-          if (child.innerText.trim() !== '驳回') {
-            child.setAttribute('disabled', 'disabled');
-          }
-        }
+        // const children = document.getElementsByClassName('operate-btn')[0].children;
+        // for (const child of children) {
+        //   if (child.innerText.trim() !== '驳回') {
+        //     child.setAttribute('disabled', 'disabled');
+        //   }
+        // }
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
-        if (this.returnOption === '') {
-          this.$Message.warning('驳回节点不能为空');
-          window.jflowPlugin.open({ control: false });
-          return;
-        } 
-        param.backId = this.returnOption; // 驳回节点id
-      
+        // if (this.returnOption === "") {
+        //   this.$Message.warning("驳回节点不能为空");
+        //   window.jflowPlugin.open({ control: false });
+        //   return;
+        // } else {
+        //   param.backId = this.returnOption; //驳回节点id
+        // }
         param.description = this.returnContent; // 审批意见
         this.$network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
@@ -472,12 +466,12 @@
       },
       // 转派
       delegate() {
-        const children = document.getElementsByClassName('operate-btn')[0].children;
-        for (const child of children) {
-          if (child.innerText.trim() !== '转派') {
-            child.setAttribute('disabled', 'disabled');
-          }
-        }
+        // const children = document.getElementsByClassName('operate-btn')[0].children;
+        // for (const child of children) {
+        //   if (child.innerText.trim() !== '转派') {
+        //     child.setAttribute('disabled', 'disabled');
+        //   }
+        // }
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;

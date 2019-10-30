@@ -84,6 +84,8 @@
           this.tabalive = ' 我已审批的';
         } else if (val === 3) {
           this.tabalive = ' 我发起的';
+        } else if (val === 4) {
+          this.tabalive = ' 抄送人';
         }
       },
       // tab切换点击事件
@@ -100,17 +102,27 @@
       const path = window.location.pathname;
       this.routeClick(path.split('=')[1]);
     },
+    mounted() {
+      this.showTab = window.jflowPlugin.showTab;
+    },
     activated() {
       if (this.tabalive === '待我审批的') {
+        this.$refs.todo.getselectOption();
         this.$refs.todo.queryLists();
+        this.$refs.todo.getAgent();
       }
-      if (this.tabalive === '我已审批的') {
+      if (this.tabalive === ' 我已审批的') {
+        this.$refs.history.getselectOption();
         this.$refs.history.queryLists();
       }
-      if (this.tabalive === '我发起的') {
+      if (this.tabalive === ' 我发起的') {
+        this.$refs.launch.getselectOption();
         this.$refs.launch.queryLists();
       }
-      // this.queryLists(this.url);
+      if (this.tabalive === '抄送人') {
+        this.$refs.copy.getselectOption();
+        this.$refs.copy.queryLists();
+      }
     }
   };
 </script>

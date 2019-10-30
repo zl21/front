@@ -110,24 +110,22 @@
       v-if="index === 0"
       class="dialog-operation"
     >
-      <Button>
-        <Button
-          v-if="isUse"
-          class="operatebtn"
-          type="primary"
-          ghost
-          @click="operationTwo"
-        >
-          选择部门
-        </Button>
-        <Button
-          class="operatebtn"
-          type="primary"
-          ghost
-          @click="operation"
-        >
-          选择人员
-        </Button>
+      <Button
+        v-if="isUse"
+        class="operatebtn"
+        type="primary"
+        ghost
+        @click="operationTwo"
+      >
+        选择部门
+      </Button>
+      <Button
+        class="operatebtn"
+        type="primary"
+        ghost
+        @click="operation"
+      >
+        选择人员
       </Button>
     </div>
     <div class="dialog_right">

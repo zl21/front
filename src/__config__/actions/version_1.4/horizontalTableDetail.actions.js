@@ -14,7 +14,7 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-
+        commit('updateDefaultButton', JSON.parse(JSON.stringify(res.data.data)));
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);

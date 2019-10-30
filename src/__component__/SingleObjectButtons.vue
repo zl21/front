@@ -485,11 +485,11 @@
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
-        DispatchEvent('jflowPlugin', {
-          detail: {
-            type: 'fresh'
-          }
-        });
+        // DispatchEvent('jflowPlugin', {
+        //   detail: {
+        //     type: 'fresh'
+        //   }
+        // });
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;

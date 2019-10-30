@@ -132,7 +132,7 @@ function RoutingGuard(router) { // 路由守卫
           next();
           setTimeout(() => {
             if (res.data.resultCode === 0) {
-              CreateButton(res.data.data, jflowButtons, to.query.id);
+              CreateButton(res.data.data, jflowButtons, to.params.itemId);
             }
           }, 300);
         });
@@ -149,103 +149,74 @@ function RoutingGuard(router) { // 路由守卫
 
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    if (flag) {
-      const params = new URLSearchParams(request.data);
-      const changeDetail = {};
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
+    const params = new URLSearchParams(request.data);
+    const changeDetail = {};
+    for (const pair of params.entries()) {
+      changeDetail[pair[0]] = pair[1];
+    }
+    const response = changeDetail;
+    axios.post('/jflow/p/cs/process/launch',
+      {
+        businessCodes: response.ids ? response.ids : response.objId,
+        businessType: router.currentRoute.params.tableId,
+        businessTypeName: router.currentRoute.params.tableName,
+        initiator: userInfo.id,
+        userName: userInfo.name,
+        instanceId,
+        initiatorName: userInfo.name,
+        changeUser: userInfo.id,
+        businessUrl: request.url,
+        ruleField: 'V'
+      }).then((res) => {
+      if (res.data.data.records && res.data.data.records[0].notice) {
+        window.vm.$Modal.fcError({
+          title: '错误',
+          content: res.data.data.records[0].notice,
+          mask: true
+        });
+        reject(response);
+        return;
       }
-      const response = changeDetail;
-      axios.post('/jflow/p/cs/process/launch',
-        {
-          businessCodes: response.ids ? response.ids : response.objId,
-          businessType: router.currentRoute.params.tableId,
-          businessTypeName: router.currentRoute.params.tableName,
-          initiator: userInfo.id,
-          userName: userInfo.name,
-          instanceId,
-          initiatorName: userInfo.name,
-          changeUser: userInfo.id,
-          businessUrl: request.url,
-          ruleField: 'V'
-        }).then((res) => {
-        if (res.data.data.records && res.data.data.records[0].notice) {
-          window.vm.$Modal.fcError({
-            title: '错误',
-            content: res.data.data.records[0].notice,
+      if (res.data.resultCode === 0) {
+        if (response.objids) {
+          window.vm.$Modal.fcWarning({
+            title: '提示',
+            content: '请稍等,正在审批······',
             mask: true
           });
-          reject(response);
-          return;
         }
-        if (res.data.resultCode === 0) {
-          if (response.objids) {
-            window.vm.$Modal.fcWarning({
-              title: '提示',
-              content: '请稍等,正在审批······',
-              mask: true
-            });
-          }
-          instanceId = res.data.data.instanceId;
+        instanceId = res.data.data.instanceId;
 
           
-          if (document.getElementsByClassName('R3-button-group')[0]) {
-            jflowButtons(router.currentRoute.params.itemId);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.innerText === '刷新') {
-                const style = document.createElement('style');
-                const styleStr = `
+        if (document.getElementsByClassName('R3-button-group')[0]) {
+          jflowButtons(router.currentRoute.params.itemId);
+          const children = document.getElementsByClassName('R3-button-group')[0].children;
+          for (const child of children) {
+            if (child.innerText === '刷新') {
+              const style = document.createElement('style');
+              const styleStr = `
                     .burgeon-message {
                       display: none!important;
                     }`;
-                style.type = 'text/css';
-                style.innerHTML = styleStr;
-                document.getElementsByTagName('head').item(0).appendChild(style);
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+              style.type = 'text/css';
+              style.innerHTML = styleStr;
+              document.getElementsByTagName('head').item(0).appendChild(style);
+              const myEvent = new Event('click');
+              child.dispatchEvent(myEvent);
 
-                setTimeout(() => {
-                  const parent = document.getElementsByTagName('head').item(0);
-                  const thisNode = parent.children[parent.children.length - 1];
-                  parent.removeChild(thisNode);
-                }, 5000);
-              }
+              setTimeout(() => {
+                const parent = document.getElementsByTagName('head').item(0);
+                const thisNode = parent.children[parent.children.length - 1];
+                parent.removeChild(thisNode);
+              }, 5000);
             }
           }
-          reject(response);
-        } else {
-          resolve();
         }
-      });
-    } else {
-      const params = new URLSearchParams(request.config.data);
-      const changeDetail = {};
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-      delete changeDetail.table;
-      delete changeDetail.objId;
-      axios.post('/jflow/p/cs/process/business/save',
-        {
-          businessCodes: request.data.data.objId,
-          businessType: router.currentRoute.params.tableId,
-          businessTypeName: router.currentRoute.params.tableName,
-          changeDetail,
-          instanceId,
-          changeUser: userInfo.id,
-          userName: userInfo.name
-        }).then((res) => {
-        if (res.data.resultCode === -1) {
-          window.vm.$Modal.fcWarning({
-            title: '警告',
-            content: res.data.resultMsg,
-            mask: true
-          });
-        }
+        reject(response);
+      } else {
         resolve();
-      });
-    }
+      }
+    });
   });
 }
 
