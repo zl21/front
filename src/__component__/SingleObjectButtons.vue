@@ -190,7 +190,7 @@
                   });
                 }
 
-                if (this.itemInfo && this.itemInfo.tabrelation) { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
                       if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
@@ -2026,7 +2026,7 @@
                 });
               }
             }
-            if (this.itemInfo && this.itemInfo.tabrelation) { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+            if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
