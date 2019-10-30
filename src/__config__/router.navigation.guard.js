@@ -115,6 +115,9 @@ export default (router) => {
         fromKeepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${fromLinkName}`;
         break;
 
+      
+      // Condition Seven: 来自单对象界面
+     
       default:
         break;
     }

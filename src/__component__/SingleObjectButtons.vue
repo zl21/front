@@ -189,6 +189,16 @@
                     }
                   });
                 }
+
+                if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                    this.tabcmd.cmds.forEach((item, index) => {
+                      if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                        this.tabcmd.prem[index] = false;
+                      }
+                    });
+                  }
+                }
               });
               if (this.itemName !== this.tableName) { // 子表
                 const { tabrelation } = this.itemInfo;
@@ -1062,6 +1072,9 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else {
+                    this.updateRefreshButton(true);
+                    this.dataArray.refresh = this.refreshButtons;
                   }
                 });
               }
@@ -1579,21 +1592,24 @@
           //   this.itemTableValidation = true;
           // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+            let itemModify = [];
+            let itemAdd = [];
+            if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+              itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+            }
+            if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+              itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            }
+            // if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length === 0 && Object.values(this.updateData[itemName].add[itemName]).length === 0) {
+            if (itemModify.length === 0 && itemAdd.length === 0) {
+              // if (!this.updateData[itemName].modify[itemName] && !this.updateData[itemName].add[itemName]) { // 主表修改保存（判断子表无新增且无修改）
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path    if (this.verifyRequiredInformation()) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
+              // }
             } else {
-              let itemModify = [];
-              let itemAdd = [];
-              if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
-                itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-              }
-              if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-                itemAdd = Object.values(this.updateData[itemName].add[itemName]);
-              }
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
                 if (this.itemTableCheckFunc()) {
@@ -2010,6 +2026,16 @@
                 });
               }
             }
+            if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+        
             const { tabinlinemode } = this.itemInfo;
             if (tabinlinemode === 'N') {
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
