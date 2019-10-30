@@ -172,7 +172,8 @@ async function jflowsave(flag, request) {
         if (res.data.data.records && res.data.data.records[0].notice) {
           window.vm.$Modal.fcError({
             title: '错误',
-            content: res.data.data.records[0].notice
+            content: res.data.data.records[0].notice,
+            mask: true
           });
           reject(response);
           return;
@@ -181,7 +182,8 @@ async function jflowsave(flag, request) {
           if (response.objids) {
             window.vm.$Modal.fcWarning({
               title: '提示',
-              content: '请稍等,正在审批······'
+              content: '请稍等,正在审批······',
+              mask: true
             });
           }
           instanceId = res.data.data.instanceId;
