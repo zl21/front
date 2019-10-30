@@ -128,12 +128,12 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-  
+
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  
+
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
   const pageType = {
@@ -320,7 +320,7 @@
                 }
               });
             }
-           
+
             tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
                 tabcmd.prem[index] = false;
@@ -2309,7 +2309,19 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
             } else {
-              fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // debugger;
+              // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // 上下结构子表
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
             }
           }
         }
