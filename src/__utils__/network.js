@@ -303,13 +303,14 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
       if (enableJflow()) {
-        businessTypes.forEach((localUrl) => {
-          if (localUrl !== 'url') {
-            return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-          }
-          return true;
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+        businessTypes.forEach((actionUrls) => {
+          actionUrls.action.forEach((jflowUrl) => {
+            if (jflowUrl === url) {
+              return axios.post(matchedUrl, config);
+            }
+          });
         });
       } else {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
