@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueDND from 'awe-dnd';
 import BurgeonUi from 'burgeon-ui';
 import axios from 'axios';
 import { getGuid } from './src/__utils__/random';
@@ -22,6 +23,8 @@ import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 
 import jflowplugin from './src/plugin/jflow-plugin';
+
+Vue.use(VueDND);
 
 if (enableJflow() && jflowRequestDomain()) {
   Vue.use(jflowplugin, {

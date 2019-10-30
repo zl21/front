@@ -62,11 +62,24 @@ axios.interceptors.response.use(
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
+    let data = {};
+
+    if (config.method === 'get' && config) {
+      if (config.params) {
+        data = config.params;
+      } else {
+        data = config.data;
+      }
+    } else {
+      data = config.data;
+    }
+    
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(config.data) : config.data,
+      data: isJson ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
+
     // 记录每次网络请求的时间
     if (pendingRequestMap[requestMd5]) {
       try {
@@ -303,13 +316,14 @@ function NetworkConstructor() {
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
       if (enableJflow()) {
-        businessTypes.forEach((localUrl) => {
-          if (localUrl !== 'url') {
-            return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
-          }
-          return true;
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+        businessTypes.forEach((actionUrls) => {
+          actionUrls.action.forEach((jflowUrl) => {
+            if (jflowUrl === url) {
+              return axios.post(matchedUrl, config);
+            }
+          });
         });
       } else {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
@@ -326,11 +340,18 @@ function NetworkConstructor() {
   this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
+    let data = {};
+    if (config && config.params) {
+      data = config.params;
+    } else {
+      data = config;
+    }
     const requestMd5 = getRequestMd5({
-      data: config,
+      data,
       url: matchedUrl,
       method: 'get'
     });
+    
     if (pendingRequestMap[requestMd5]) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }

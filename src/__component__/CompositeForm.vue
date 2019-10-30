@@ -369,7 +369,9 @@
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
-          data[current.item.field] = data[current.item.field].toUpperCase();
+          if (typeof data[current.item.field] === 'string') { 
+            data[current.item.field] = data[current.item.field].toUpperCase();
+          }
         }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
