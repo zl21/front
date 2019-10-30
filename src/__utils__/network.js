@@ -62,11 +62,18 @@ axios.interceptors.response.use(
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
+    let data = {};
+    if (config.params && config.params.param) { // get请求参数
+      data = config.params.param;
+    } else {
+      data = config.data;
+    }
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(config.data) : config.data,
+      data: isJson ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
+   
     // 记录每次网络请求的时间
     if (pendingRequestMap[requestMd5]) {
       try {

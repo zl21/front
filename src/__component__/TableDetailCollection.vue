@@ -350,6 +350,12 @@
           }
         }
 
+         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
+        if (!DisableEXPORT) {
+          buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
+          buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        }
+
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';

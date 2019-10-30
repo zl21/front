@@ -189,6 +189,16 @@
                     }
                   });
                 }
+
+                if (this.itemInfo && this.itemInfo.tabrelation) { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                    this.tabcmd.cmds.forEach((item, index) => {
+                      if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                        this.tabcmd.prem[index] = false;
+                      }
+                    });
+                  }
+                }
               });
               if (this.itemName !== this.tableName) { // 子表
                 const { tabrelation } = this.itemInfo;
@@ -1062,6 +1072,9 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else {
+                    this.updateRefreshButton(true);
+                    this.dataArray.refresh = this.refreshButtons;
                   }
                 });
               }
@@ -2013,6 +2026,16 @@
                 });
               }
             }
+            if (this.itemInfo && this.itemInfo.tabrelation) { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+        
             const { tabinlinemode } = this.itemInfo;
             if (tabinlinemode === 'N') {
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
