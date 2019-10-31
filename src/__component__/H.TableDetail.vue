@@ -37,7 +37,7 @@
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.isMainTable = true;
             }
-           
+
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.tableName = item.tablename;
@@ -53,7 +53,7 @@
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             }
             obj.component = `tapComponent.${item.tablename}`;
-            
+
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
           });
@@ -70,34 +70,37 @@
           if (this.tabPanel[index].tabrelation === '1:m') {
             const { tableName, itemId } = this.$route.params;
             const {
-              tablename, refcolid, tableSearchData, tabinlinemode 
+              tablename, refcolid, tableSearchData, tabinlinemode
             } = this.tabPanel[index];
             if (this.tabPanel[index].refcolid !== -1) {
               this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
             }
-            this.getObjectTabForChildTableButtons({
-              maintable: tableName, table: tablename, objid: itemId, tabIndex: index 
-            });
-            this.getObjectTableItemForTableData({
-              table: tablename,
-              objid: itemId,
-              refcolid,
-              searchdata: {
-                column_include_uicontroller: true,
-                startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                range: this.tablePageInfo.pageSize,
-                fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
-              },
-              tabIndex: index
+            new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+              });
+            }).then(() => {
+              this.getObjectTableItemForTableData({
+                table: tablename,
+                objid: itemId,
+                refcolid,
+                searchdata: {
+                  column_include_uicontroller: true,
+                  startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                  range: this.tablePageInfo.pageSize,
+                  fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
+                },
+                tabIndex: index
+              });
             });
           } else if (this.tabPanel[index].tabrelation === '1:1') {
             const { tableName, itemId } = this.$route.params;
             const { tablename, refcolid } = this.tabPanel[index];
             this.getObjectTabForChildTableButtons({
-              maintable: tableName, table: tablename, objid: itemId, tabIndex: index 
+              maintable: tableName, table: tablename, objid: itemId, tabIndex: index
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: itemId, refcolid, tabIndex: index 
+              table: tablename, objid: itemId, refcolid, tabIndex: index
             });
           }
         }
@@ -106,7 +109,7 @@
         const { tableName, itemId } = this.$route.params;
         // this.getObjectForMainTableForm({ table: tableName, objid: itemId });
         this.getObjectTabForMainTable({
-          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest 
+          table: tableName, objid: itemId, tabIndex: index, isNotFirstRequest
         });
       }
     },

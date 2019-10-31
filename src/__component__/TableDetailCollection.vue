@@ -53,7 +53,7 @@
               :label="item.name"
               :value="item.isfk ? item.inputname : item.colname"
             >
-              {{ item.label }}
+              {{ item.name }}
             </Option>
           </Select>
           <div class="detail-search-input">
