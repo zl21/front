@@ -63,17 +63,23 @@ axios.interceptors.response.use(
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
     let data = {};
-    if (config.params && config.params.param) { // get请求参数
-      data = config.params.param;
+
+    if (config.method === 'get' && config) {
+      if (config.params) {
+        data = config.params;
+      } else {
+        data = config.data;
+      }
     } else {
       data = config.data;
     }
+    
     const requestMd5 = md5(JSON.stringify({
       data: isJson ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
-   
+
     // 记录每次网络请求的时间
     if (pendingRequestMap[requestMd5]) {
       try {
@@ -334,11 +340,18 @@ function NetworkConstructor() {
   this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
+    let data = {};
+    if (config && config.params) {
+      data = config.params;
+    } else {
+      data = config;
+    }
     const requestMd5 = getRequestMd5({
-      data: config,
+      data,
       url: matchedUrl,
       method: 'get'
     });
+    
     if (pendingRequestMap[requestMd5]) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }

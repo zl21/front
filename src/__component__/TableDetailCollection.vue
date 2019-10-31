@@ -63,13 +63,13 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
+            />
+            <Button
+              slot="prepend"
+              @click="searTabelList"
             >
-                  <Button
-                    slot="prepend"
-                    @click="searTabelList"
-                  >
-                    搜索
-                  </Button>
+              搜索
+            </Button>
             </Input>
           </div>
         </div>
@@ -349,17 +349,21 @@
             });
           }
         }
-
-         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
-        if (!DisableEXPORT) {
-          buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
-          buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
-        }
+       
 
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
           buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        }
+
+        // 如果配置tabrelation为1:1 去除导入和删除
+        if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+          buttonGroupShow.forEach((item, index) => {
+            if (item.eName !== 'actionEXPORT') {
+              buttonGroupShow.splice(index, 1);
+            }
+          });
         }
         const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
         const b = JSON.parse(a);
