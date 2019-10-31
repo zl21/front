@@ -216,10 +216,10 @@ export default {
       tableName
     } = parame;
     const {
-      objId
+      add
     } = parame;
     const {
-      path
+      objId
     } = parame;
     const {
       type
@@ -239,14 +239,68 @@ export default {
     const { sataType } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
-      const { add } = parame;
-      parames = {
-        table: tableName, // 主表表名
-        objid: objId, // 固定传值-1 表示新增
-        data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-          ...add
+      if (isreftabs) { // 存在子表
+        if (itemNameGroup.length > 0) {
+          const itemAdd = itemCurrentParameter.add;
+          const {
+            addDefault
+          } = itemCurrentParameter;
+
+          if (Object.values(itemAdd[itemName]).length > 0) {
+            const itemTableAdd = Object.assign({}, itemAdd);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
+            ];
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+                ...itemTableAdd,
+              }
+            };
+          } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
+            const itemTableAdd = Object.assign({}, addDefault);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
+            ];
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+                ...itemTableAdd,
+              }
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+              }
+            };
+          }
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, 
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...add,
+            }
+          };
         }
-      };
+      } else {
+        parames = {
+          table: tableName, // 主表表名
+          objid: objId, // 固定传值-1 表示新增
+          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            ...add
+          }
+        };
+      }
       network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;

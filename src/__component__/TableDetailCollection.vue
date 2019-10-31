@@ -53,7 +53,7 @@
               :label="item.name"
               :value="item.isfk ? item.inputname : item.colname"
             >
-              {{ item.label }}
+              {{ item.name }}
             </Option>
           </Select>
           <div class="detail-search-input">
@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                  >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -128,12 +128,12 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-  
+
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
-  
+
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
   const pageType = {
@@ -320,7 +320,7 @@
                 }
               });
             }
-           
+
             tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
                 tabcmd.prem[index] = false;
@@ -349,11 +349,21 @@
             });
           }
         }
+       
 
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
           buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        }
+
+        // 如果配置tabrelation为1:1 去除导入和删除
+        if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+          buttonGroupShow.forEach((item, index) => {
+            if (item.eName !== 'actionEXPORT') {
+              buttonGroupShow.splice(index, 1);
+            }
+          });
         }
         const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
         const b = JSON.parse(a);
@@ -2309,7 +2319,19 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
             } else {
-              fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // debugger;
+              // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // 上下结构子表
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
             }
           }
         }

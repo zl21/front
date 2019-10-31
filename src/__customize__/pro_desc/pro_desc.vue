@@ -8,6 +8,12 @@
         v-text="item.name"
       />
     </div> -->
+ <ImageUpload
+                        :dataitem="ImageUploadData"
+                          ></ImageUpload>
+
+
+
 
     <div class="content">
       <!-- 商品／颜色主图 -->
@@ -153,10 +159,7 @@
                         @click.stop="colImgDelete(item,index)"
                         @mousedown.stop
                       />
-                      <span
-                        class="upload-span"
-                        @click="colImgChange(item,index)"
-                      >+ 添加图片</span>
+                      
                       <Poptip
                         v-model="item.flag"
                         placement="right"
@@ -164,8 +167,13 @@
                         trigger="hover"
                         transfer
                       >
-                        {{ item.flag }}
+                        <span
+                          v-if="!item.URL"
+                          class="upload-span"
+                          @click="colImgChange(item,index)"
+                        >+ 添加图片</span>
                         <div
+                          v-if="item.URL"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
                         />
@@ -219,6 +227,29 @@
     },
     data() {
       return {
+         ImageUploadData: {
+                url: '', // 上传地址
+                sendData: {}, // 上传参数
+                width: 150,
+                height: 150,
+                colname: 'IMAGE',
+                readonly: false,
+                valuedata: [
+                    {
+                        NAME: '1.jpg',
+                        URL:
+                            'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1561364661&di=766d38b55df12b23516f195942aa0055&src=http://img.zhiribao.com/upload/images/201607/6/6b0152a5b29f309f3f92f52adc6cd017eae73133.jpg'
+                        },
+                        {
+                        NAME: '2.jpg',
+                        URL:
+                            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561374887838&di=8027dfa1209bc0033b5168958c4608b2&imgtype=0&src=http%3A%2F%2Fimg.sccnn.com%2Fbimg%2F337%2F31662.jpg'
+                        }
+
+                ],
+                loadIconPosition: true,
+                name: '上传'
+         },
         objId: '',
         openCollapse: '1',
         ChineseDictionary: {},
@@ -496,8 +527,10 @@
       },
       colImgChange(item, index) {
         const dom = document.getElementById(`colImg${this.objId}${index}`);
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);
         console.log(`colImg${this.objId}${index}`);
-        dom.click();
+        // dom.click();
         // $(`#colImg${this.objId}${index}`).trigger('click');
       },
       uploadColorChange(item, index) {
