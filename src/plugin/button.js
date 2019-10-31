@@ -13,50 +13,78 @@ function mutipleOperate(url, instanceId, buttons, id) {
   });
 }
 
+// 重启流程
+function restartProcess() {
+  // 通过模拟点击一下actionSUBMIT按钮重新发起流程
+  const children = document.getElementsByClassName('R3-button-group')[0].children;
+  for (const child of children) {
+    if (child.getAttribute('id') === 'actionSUBMIT') {
+      const myEvent = new Event('click');
+      child.dispatchEvent(myEvent);
+    }
+  }
+}
+
+let jflowbuttons = [];
+let jflowobj = {};
+let jflowid = null;
+function clickFunction(e) {
+  const buttons = jflowbuttons;
+  const obj = jflowobj;
+  const id = jflowid;
+  if (e.detail.obj.button === 'fresh') {
+    buttons(id).then(() => {
+      const children = document.getElementsByClassName('R3-button-group')[0].children;
+      for (const child of children) {
+        if (child.getAttribute('id') === 'refresh') {
+          const myEvent = new Event('click');
+          child.dispatchEvent(myEvent);
+        }
+      }
+    });
+    return; 
+  }
+  const item = e.detail.obj;
+  if (item.button !== '4') {
+    switch (item.button) {
+      case '-1':
+      case '2': mutipleOperate(item.url, obj.instanceId, buttons, id); break;
+      case '1': window.jflowPlugin.open({
+        control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
+      });
+        break;
+      case '0':
+      case '3': window.jflowPlugin.open({// 同意和转派
+        control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
+      });
+        break;
+      case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
+        break;
+      case '6': // 重启流程
+        restartProcess();
+        break;
+      default: break;
+    }
+  }
+}
 // 按钮监听控制
 function buttonAddEventListener(buttons, obj, id) {
-  window.addEventListener('jflowPlugin', (e) => {
-    if (e.detail.obj.button === 'fresh') {
-      buttons(id).then(() => {
-        const children = document.getElementsByClassName('R3-button-group')[0].children;
-        for (const child of children) {
-          if (child.getAttribute('id') === 'refresh') {
-            const myEvent = new Event('click');
-            child.dispatchEvent(myEvent);
-          }
-        }
-      });
-      return; 
-    }
-    const item = e.detail.obj;
-    if (item.button !== '4') {
-      switch (item.button) {
-        case '-1':
-        case '2': mutipleOperate(item.url, obj.instanceId, buttons, id); break;
-        case '1': window.jflowPlugin.open({
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
-        });
-          break;
-        case '0':
-        case '3': window.jflowPlugin.open({// 同意和转派
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
-        });
-          break;
-        case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
-          break;
-        default: break;
-      }
-    }
-  }, false);
+  jflowbuttons = buttons;
+  jflowobj = obj;
+  jflowid = id;
+  window.addEventListener('jflowPlugin', clickFunction, this);
 }
+
 
 // 这里主要是按钮的逻辑
 // 创建按钮
 // obj 获取的按钮相关数据 buttons 生成按钮的方法（jflowButtons） 生成按钮需要的id
 function CreateButton(obj, buttons, id) {
-  window.removeEventListener('jflowPlugin', () => { // 无效！
-      
-  }, false);
+  // 移除事件监听
+  window.removeEventListener('jflowPlugin', clickFunction, true);
+
+  window.jflowPlugin.objInstanceId = obj.instanceId;
+  window.jflowPlugin.itemId = id;
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;

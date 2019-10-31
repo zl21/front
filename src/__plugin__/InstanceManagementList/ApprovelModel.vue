@@ -493,7 +493,9 @@
       }
     },
     created() {
-      this.getTreeData();
+      if (this.config.type === 3) {
+        this.getTreeData();
+      }
     }
   };
 </script>

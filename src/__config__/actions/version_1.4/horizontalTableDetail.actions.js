@@ -1,5 +1,6 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { enableJflow } from '../../../constants/global';
 
 export default {
   getObjectTabForMainTable({ commit }, {
@@ -60,10 +61,8 @@ export default {
         if (resolve) {
           resolve();
         }
-      } else {
-        if (reject) {
-          reject();
-        }
+      } else if (reject) {
+        reject();
       }
     });
   }, // 获取子表按钮
@@ -219,8 +218,12 @@ export default {
                 ...itemModify
               };
             }
-          } else {
-            modify[tableName].Id = objId;
+          } else { // 因引起jflow报错ID改为大写
+            if (enableJflow()) {
+              modify[tableName].ID = objId;
+            } else {
+              modify[tableName].Id = objId;
+            }
             parames = {
               ...modify,
             };
