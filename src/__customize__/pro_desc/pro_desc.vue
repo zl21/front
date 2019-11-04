@@ -8,13 +8,6 @@
         v-text="item.name"
       />
     </div> -->
- <ImageUpload
-                        :dataitem="ImageUploadData"
-                          ></ImageUpload>
-
-
-
-
     <div class="content">
       <!-- 商品／颜色主图 -->
       <Collapse
@@ -154,7 +147,7 @@
                       @mousedown.stop="colImgOut(item)"
                     >
                       <i
-                        v-show="item.flag &&item.URL !== ''"
+                        v-show="item.flag &&item.URL == ''"
                         class="iconfont iconios-close-circle"
                         @click.stop="colImgDelete(item,index)"
                         @mousedown.stop
@@ -171,13 +164,30 @@
                           v-if="!item.URL"
                           class="upload-span"
                           @click="colImgChange(item,index)"
-                        >+ 添加图片</span>
+                        >+ 添加图片
+                          <form
+                            role="form"
+                            method="POST"
+                            enctype="multipart/form-data"
+                          >
+                            <div>
+                              <input
+                                :id="'colImg'+objId+index"
+                                type="file"
+                                style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;display: none"
+                                @change.stop="uploadColorChange(item,index)"
+                              >
+                            </div>
+                          </form>
+                        </span>
+                       
                         <div
                           v-if="item.URL"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'64px',width:'64px'}"
                           :title="item.NAME" 
                         />
                         <div
+                          v-if="item.URL=== ''"
                           slot="content"
                           :style="{backgroundSize:'auto 100%',backgroundImage: 'url('+item.URL+'?x-oss-process=image/quality,q_80)',height:'300px',width:'300px'}"
                           :title="item.NAME"
@@ -195,12 +205,37 @@
         </Panel>
       </Collapse>
     </div>
+    <!-- <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :title-align="dialogConfig.titleAlign"
+    /> -->
+    <Modal
+      v-model="dialogShow"
+      title="视频上传教程"
+      :width="1100"
+      :height="560"
+      :footer-hide="true"
+      :closable="true"
+    >
+      <div class="dialog-scroll">
+        <img
+          src="/src/assets/image/course.jpg"
+          width="100%"
+        >
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
   import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
+  import Dialog from '../../__component__/Dialog';
 
   export default {
     name: 'ProDesc',
@@ -216,6 +251,10 @@
     mounted() {
       const { tableName, tableId, itemId } = this.$route.params;
       this.objId = itemId;
+      window.addEventListener('objectSaveClick', (event) => {
+        console.log('🍇', event.detail);
+        this.objectSave();
+      }, false);
     //   this.$dragging.$on('dragged', ({ value }) => {});
     //   this.$dragging.$on('dragend', ({ value }) => {
     //     this.saveObj.IMAGE = JSON.stringify(this.proImg);
@@ -227,29 +266,15 @@
     },
     data() {
       return {
-         ImageUploadData: {
-                url: '', // 上传地址
-                sendData: {}, // 上传参数
-                width: 150,
-                height: 150,
-                colname: 'IMAGE',
-                readonly: false,
-                valuedata: [
-                    {
-                        NAME: '1.jpg',
-                        URL:
-                            'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1561364661&di=766d38b55df12b23516f195942aa0055&src=http://img.zhiribao.com/upload/images/201607/6/6b0152a5b29f309f3f92f52adc6cd017eae73133.jpg'
-                        },
-                        {
-                        NAME: '2.jpg',
-                        URL:
-                            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561374887838&di=8027dfa1209bc0033b5168958c4608b2&imgtype=0&src=http%3A%2F%2Fimg.sccnn.com%2Fbimg%2F337%2F31662.jpg'
-                        }
-
-                ],
-                loadIconPosition: true,
-                name: '上传'
-         },
+        dialogShow: false,
+        // dialogConfig: {
+        //   title: '提示',
+        //   mask: true,
+        //   footerHide: false,
+        //   contentText: '',
+        //   confirm: () => {
+        //   }
+        // }, // 弹框配置信息
         objId: '',
         openCollapse: '1',
         ChineseDictionary: {},
@@ -310,42 +335,12 @@
         saveObj: {
         // 保存数据
         },
-        pictureDialog: { show: false },
         uploadImage: 'http://signin.aliyun.com/qiaodan/login.htm'
       };
     },
     components: {
     },
     methods: {
-      reaptData(obj) {
-        // 深拷贝
-        if (obj instanceof Array) {
-          // array
-          const temp = [];
-          obj.forEach((item, index) => {
-            const temp2 = [];
-            if (item instanceof Array) {
-              item.forEach((item2, index) => {
-                temp2.push(item2);
-              });
-              temp.push(temp2);
-            } else {
-              temp.push(item);
-            }
-          });
-          return temp;
-        } 
-        // obj
-        const temp = {};
-
-        for (const item in obj) {
-          temp[item] = obj[item];
-        }
-
-        return temp;
-      },
-     
-    
       getData() {
         // 获取数据
        
@@ -425,14 +420,105 @@
           });
         });
       },
-     
+      reaptData(obj) { // 深拷贝
+        if (obj instanceof Array) { // array
+          const temp = [];
+          obj.forEach((item, index) => {
+            const temp2 = [];
+            if (item instanceof Array) {
+              item.forEach((item2, index) => {
+                temp2.push(item2);
+              });
+              temp.push(temp2);
+            } else {
+              temp.push(item);
+            }
+          });
+          return temp;
+        } // obj
+        const temp = {};
+
+        for (const item in obj) {
+          temp[item] = obj[item];
+        }
+
+        return temp;
+      },
+      objectSave() { // 保存
+        this.proImg.forEach(((item) => {
+          item.flag = false;
+        }));
+        if (this.saveObj.IMAGE_SKU) {
+          const arr = this.reaptData(JSON.parse(this.saveObj.IMAGE_SKU));
+
+          if (arr.length > 0) {
+            arr.forEach((index, item) => {
+              if (index.URL == '') {
+                index.URL = null;
+              }
+
+              delete index.flag;
+            });
+
+            this.saveObj.IMAGE_SKU = JSON.stringify(arr);
+          }
+        }
+
+        if (this.saveObj.IMAGE) {
+          if (JSON.parse(this.saveObj.IMAGE).length > 0) {
+            const arr = JSON.parse(this.saveObj.IMAGE);
+            if (arr.length > 0) {
+              arr.forEach((index, item) => {
+                delete index.flag;
+              });
+              if (arr.length == 0) {
+                this.saveObj.IMAGE = null;
+              } else {
+                this.saveObj.IMAGE = JSON.stringify(arr);
+              }
+            }
+          } else {
+            this.saveObj.IMAGE = null;
+          }
+        }
+
+
+        if (this.video) this.saveObj.VIDEO = this.video;
+        else this.saveObj.VIDEO = '';
+
+        const obj = {
+          table: 'PS_C_PRO',
+          objid: this.objId,
+          data: JSON.stringify({ PS_C_PRO: this.saveObj })
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(obj)).then((res) => {
+          const message = res.data.message;
+          const data = {
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Message.success(data);
+          this.saveObj = {};
+          this.getData();
+        });
+
+        // this.$ajax.dataAjax('/p/cs/objectSave', obj, (res) => {
+        //   this.$message({
+        //     message: res.message,
+        //     type: 'success'
+        //   });
+        //   this.saveObj = {};
+        //   this.getData();
+        // });
+      },
       proImgDelect(item, index) {
         // 商品主图删除
         this.proImg.splice(index, 1);
         this.saveObj.IMAGE = JSON.stringify(this.proImg);
       },
       proImgChange() {
-        $(`#proImg${this.objId}`).trigger('click');
+        const dom = document.getElementById(`proImg${this.objId}`);
+        dom.click();
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
@@ -441,102 +527,95 @@
         const isLt2M = file.size / 1024 / 1024 < 2;
 
         if (!isJPG && !isGIF && !isPNG) {
-          this.$message.error('上传图片只能是 JPG,PNG,GIF 格式!');
-          $(`#proImg${this.objId}`).val('');
-          $(`#colImg${this.objId}`).val('');
+          const message = '上传图片只能是 JPG,PNG,GIF 格式!';
+          const data = {
+            mask: true,
+            title: '错误',
+            content: `${message}`
+          };
+          this.$Modal.fcError(data);
+          document.querySelector(`#proImg${this.objId}`).value = '';
+          document.querySelector(`#colImg${this.objId}`).value = '';
         } else if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
-          $(`#proImg${this.objId}`).val('');
-          $(`#colImg${this.objId}`).val('');
+          const message = '上传图片大小不能超过 2MB!';
+          const data = {
+            mask: true,
+            title: '错误',
+            content: `${message}`
+          };
+          this.$Modal.fcError(data);
+          document.querySelector(`#proImg${this.objId}`).value = '';
+          document.querySelector(`#colImg${this.objId}`).value = '';
         }
-
         return (isJPG || isGIF || isPNG) && isLt2M;
       },
       uploadFileChange() {
         // 主图上传
-        const list = $(`#proImg${this.objId}`)[0].files;
-        let value = '';
-
+        const dom = document.querySelector(`#proImg${this.objId}`);
+        const list = [...dom.files];
+        const values = dom.files[0];
         if (this.proImg.length + list.length > 15) {
-          this.$message.error(`最多上传${15 - this.proImg.length}张图片`);
-          $(`#proImg${this.objId}`).val('');
-
+          const message = `最多上传${15 - this.proImg.length}张图片`;
+          const data = {
+            mask: true,
+            title: '错误',
+            content: `${message}`
+          };
+          this.$Modal.fcError(data);
+          document.querySelector(`#proImg${this.objId}`).value = '';
           return;
         }
-        for (let i = 0; i < list.length; i++) {
-          value = list[i];
+        list.forEach((value) => { // 循环调用接口上传
           if (!this.beforeAvatarUpload(value)) {
             return;
           }
-
           const data = new FormData();
           const path = `PS_C_PRO/${this.objId}/`;
-          data.append('file', value);
+          data.append('file', values);
           data.append('path', path);
-          if (value == undefined) {
+          if (value === undefined) {
             return;
           }
-
-          this.$ajax.formAjax(
-            '/p/cs/upload2',
-            data,
-            (res) => {
-              this.uploadProgress(res.data.UploadId, () => {
-                this.proImg.push({
-                  NAME: res.data.Name,
-                  URL: res.data.Url,
-                  flag: false
-                });
-                this.saveObj.IMAGE = JSON.stringify(this.proImg);
-              });
-            },
-            false
-          );
-
+          network.post('/p/cs/upload2', data).then((res) => {
+                                                     this.proImg.push({
+                                                       NAME: res.data.Name,
+                                                       URL: res.data.Url,
+                                                       flag: false
+                                                     });
+                                                     this.saveObj.IMAGE = JSON.stringify(this.proImg);
+                                                   },
+                                                   false);
           setTimeout(() => {
-            $(`#proImg${this.objId}`).val('');
+            document.querySelector(`#proImg${this.objId}`).value = '';
           }, 200);
-        }
+        });
       },
       uploadProgress(uploadid, cb) {
         // 主图上传进度
         const callback = cb;
-        $.ajax({
-          url: '/p/cs/uploadProgress',
-          type: 'post',
-          dataType: 'json',
-          async: false,
-          data: { uploadId: uploadid },
-          success(res) {
-            if (res.code == 0) {
-              if (res.data == 100) {
-                callback();
-              } else {
-                setTimeout(() => {
-                  this.uploadProgress(uploadid, cb);
-                }, 50);
-              }
+        network.post('/p/cs/uploadProgress', urlSearchParams({ uploadId: uploadid })).then((res) => {
+          if (res.data.code === 0) {
+            if (res.data.data === 100) {
+              callback();
             } else {
-              $(`#proImg${this.objId}`).val('');
+              setTimeout(() => {
+                this.uploadProgress(uploadid, cb);
+              }, 50);
             }
-          },
-          error(res) {
-            $(`#proImg${this.objId}`).val('');
+          } else {
+            document.querySelector(`#proImg${this.objId}`).value = '';
           }
+        }).catch(() => {
+          document.querySelector(`#proImg${this.objId}`).value = '';
         });
       },
       colImgChange(item, index) {
         const dom = document.getElementById(`colImg${this.objId}${index}`);
-        const myEvent = new Event('click');
-        dom.dispatchEvent(myEvent);
-        console.log(`colImg${this.objId}${index}`);
-        // dom.click();
-        // $(`#colImg${this.objId}${index}`).trigger('click');
+        dom.click();
       },
       uploadColorChange(item, index) {
         // 颜色图上传
-
-        const value = $(`#colImg${this.objId}${index}`)[0].files[0];
+        const value = document.querySelector(`#colImg${this.objId}${index}`).files[0];
         if (!value || !this.beforeAvatarUpload(value)) {
           return;
         }
@@ -545,34 +624,26 @@
         const path = `PS_C_SKU/${this.objId}/`;
         data.append('file', value);
         data.append('path', path);
-        if (value == undefined) {
+        if (value === undefined) {
           return;
         }
-
-        this.$ajax.formAjax(
-          '/p/cs/upload2',
-          data,
-          (res) => {
-            this.uploadProgress(res.data.UploadId, () => {
-              this.$set(this.colorList[index], 'URL', res.data.Url);
-              this.saveObj.IMAGE_SKU = JSON.stringify(this.colorList);
-            });
-          },
-          false
-        );
+        network.post('/p/cs/upload2', data).then((res) => {
+                                                   this.uploadProgress(res.data.data.UploadId, () => {
+                                                     this.$set(this.colorList[index], 'URL', res.data.data.Url);
+                                                     console.log(444, this.colorList);
+                                                     this.saveObj.IMAGE_SKU = JSON.stringify(this.colorList);
+                                                   });
+                                                 },
+                                                 false);
 
         setTimeout(() => {
-          $(`#colImg${this.objId}${index}`).val('');
+          document.querySelector(`#colImg${this.objId}${index}`).value = '';
         }, 200);
       },
       colImgDelete(item, index) {
         // 颜色图的删除
         this.$set(this.colorList[index], 'URL', '');
         this.saveObj.IMAGE_SKU = JSON.stringify(this.colorList);
-      },
-      getChangeItem(value) {
-        // 富文本的修改
-        this.saveObj.DETAILDESC = value.valuedata;
       },
       proImgDrag(item) {
         // this.proImg[index].flag = true
@@ -595,16 +666,16 @@
         this.$set(item, 'flag', false);
       },
       showPicture() {
-        this.pictureDialog.show = true;
+        this.dialogShow = true;
+        // this.$refs.dialogRef.open();
+        // const title = '视频上传教程';
+        // this.dialogConfig = {
+        //   title,
+        //   footerHide: true,
+        //   titleAlign: 'center'
+        // };
       },
-      fetchCover() {
-        if (this.video) {
-          fetch(`/p/cs/videoInfo?videoId=${this.video}`).then((res) => {
-            console.log(res.data.ret);
-            this.videoCover = res.data.ret.coverURL;
-          });
-        }
-      }
+     
     }
   };
 </script>
@@ -920,15 +991,11 @@
                         transform: scale(0.9);
                       }
   }
-  .pictureDialog {
-    .el-dialog__body {
-      padding: 0;
-      .dialog-scroll {
-        height: 560px;
+  
+}
+.dialog-scroll {
+    height: 560px;
         width: 1000px;
         overflow: auto;
-      }
-    }
   }
-}
 </style>

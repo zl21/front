@@ -96,7 +96,7 @@ axios.interceptors.response.use(
       }
     }
     delete pendingRequestMap[requestMd5];
-    if (response.data.code === -1) {
+    if (response.data.code === -1 || response.data.code === -2) {
       // window.vm.$Modal.fcError({
       //   mask: true,
       //   title: '错误',

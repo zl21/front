@@ -358,7 +358,7 @@
         }
 
         // 如果配置tabrelation为1:1 去除导入和删除
-        if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
           buttonGroupShow.forEach((item, index) => {
             if (item.eName !== 'actionEXPORT') {
               buttonGroupShow.splice(index, 1);

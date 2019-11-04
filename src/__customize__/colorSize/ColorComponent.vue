@@ -1,3 +1,4 @@
+/* eslint-disable vue/html-self-closing */
 <template>
   <div class="color_container">
     <div class="left_container">
@@ -56,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-        >
+        />
         <Button
           slot="prepend"
           @click="addColor"
@@ -182,16 +183,29 @@
         this.rightTableSelectIndex = index;
       }, // 右边表格单选触发
       listAllColor() {
+        const { itemId } = this.$route.params;
         const params = {
           param: {
-            PS_C_PRO_ID: '22103',
+            PS_C_PRO_ID: itemId,
             FLAG: 1
           }
         };
         network.get('/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
-              this.leftTableData = res.data.data;
+              const colorData = res.data.data;
+              if (this.rightTableData.length > 0) {
+                colorData.forEach((data) => {
+                  this.rightTableData.forEach((item, index) => {
+                    if (item.ID === data.ID) {
+                      colorData.splice(index, 1);
+                      this.leftTableData = colorData;
+                    } 
+                  });
+                });
+              } else {
+                this.leftTableData = colorData;
+              }
             }
           });
       }, // 列出所有颜色按钮点击
@@ -202,12 +216,50 @@
 
       }, // 手动新增颜色输入框改变时触发
       addIconClick() {
-
+        const { itemId } = this.$route.params;
+        let ecodes = [];
+        if (this.rightTableData.length > 0) {
+          ecodes = this.rightTableData.map(item => item.ECODE);
+        } else {
+          ecodes = [];
+        }
+        if (this.addColorInputValue === '') {
+          this.$Message.warning('输入框内容不能为空');
+          return;
+        }
+        const params = {
+          PS_C_PRO_ID: itemId, // 主表表名
+          COLOR: this.addColorInputValue,
+          SELECTED: JSON.stringify(ecodes)
+        };
+        network.get('/p/cs/cclrquery', { params })
+          .then((res) => {
+            if (res.data.code === 0) {
+              const result = res.data;
+              const message = result.message;
+              const data = {
+                title: '成功',
+                content: `${message}`
+              };
+              if (this.leftTableData.length > 0) {
+                res.data.data.forEach((rightData) => {
+                  this.leftTableData.forEach((leftData, index) => {
+                    if (rightData.ID === leftData.ID) {
+                      this.leftTableData.splice(index, 1);
+                    }
+                  });
+                });
+              }
+              this.rightTableData = res.data.data;
+              this.$Message.success(data);
+            }
+          });
       }, // 手动新增颜色，新增icon点击时触发
       getRightTableData() {
+        const { tableName, tableId, itemId } = this.$route.params;
         const params = {
           param: {
-            PS_C_PRO_ID: '22103'
+            PS_C_PRO_ID: itemId
           }
         };
         network.get('/p/cs/cprospecload', { params })
@@ -268,7 +320,7 @@
   };
 </script>
 
-<style lang="less">
+<style lang="less" scope="this api replaced by slot-scope in 2.5.0+">
     .color_container {
         height: 100%;
         padding: 10px;
