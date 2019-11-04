@@ -19,6 +19,7 @@
         :tab-margin-left="20"
         :tab-height="26"
         :tab-panels="tabPanels"
+        @getData="getData"
       />
     </div>
   </div>
@@ -38,19 +39,29 @@
             label: '颜色', // tab标签名字
             component: ColorComponent, // tab标签里的组件
             ref: 'color', // tab标签里的组件的ref
-            componentAttribute: {}, // 组件属性
+            componentAttribute: {
+              getData: (val) => {
+                this.getData(val);
+              }
+            }, // 组件属性
             cilckCallback: (index, name, instance) => { // 点击标签时的回调方法，index为tabPanelsData数组下标，name为当前标签名称，instance为当前标签内的组件实例
+              this.clickTabPanelsColor(index, name, instance);
             }
           },
           {
             label: '尺寸', // tab标签名字
             component: SizeComponent, // tab标签里的组件
             ref: 'size', // tab标签里的组件的ref
-            componentAttribute: {}, // 组件属性
+            componentAttribute: {
+
+            }, // 组件属性
             cilckCallback: (index, name, instance) => { // 点击标签时的回调方法，index为tabPanelsData数组下标，name为当前标签名称，instance为当前标签内的组件实例
+              this.clickTabPanelsSize(index, name, instance);
             }
           }
         ],
+        colorData: [],
+        sizeData: []
       };
     },
     name: 'Standard',
@@ -73,7 +84,20 @@
         });
     },
     methods: {
-      produceCode() {},
+      getData(val) {
+        this.colorData = val;
+      },
+      produceCode(val) {
+
+      },
+      clickTabPanelsColor(index, name, instance) {
+        this.colorData = instance.rightTableData;
+        console.log('🍓', this.colorData);
+        console.log('🍓', this.sizeData);
+      },
+      clickTabPanelsSize(index, name, instance) {
+        this.sizeData = instance.rightTableData;
+      },
       backMainTab() {
         const { tableId, tableName } = this.$route.params;
         const param = {
@@ -85,7 +109,7 @@
       }
     },
     watch: {},
-    computed: {}
+    
   };
 </script>
 
@@ -95,9 +119,6 @@
         display: flex;
         flex-direction: column;
         padding: 10px 0px;
-        .button_group {
-
-        }
         .tabs_container{
             flex: 1;
             margin-top: 10px;

@@ -1,54 +1,60 @@
 <template>
-    <div class="size_container">
-        <div class="left_container">
-            <div class="left_table" ref="leftTable">
-                <Table
-                        :columns="leftTableColumns"
-                        :height="leftTableHeight"
-                        :data="leftTableData"
-                        highlight-row
-                        @on-row-click="leftTableRowClick"
-                />
-            </div>
-        </div>
-        <div class="center_container">
-            <div class="right_single">
-                <i
-                        class="iconfont iconbj_right"
-                        @click="rightSingle()"
-                />
-            </div>
-            <div class="right_double">
-                <i
-                        class="iconfont iconbj_transfer_right"
-                        @click="rightDouble()"
-                />
-            </div>
-            <div class="left_single">
-                <i
-                        class="iconfont iconbj_left"
-                        @click="leftSingle()"
-                />
-            </div>
-            <div class="left_double">
-                <i
-                        class="iconfont iconbj_transfer_left"
-                        @click="leftDouble()"
-                />
-            </div>
-        </div>
-        <div class="right_container">
-            <div class="right_table" ref="rightTable">
-                <Table
-                        :columns="rightTableColumns"
-                        :height="rightTableHeight"
-                        :data="rightTableData"
-                        highlight-row
-                        @on-row-click="rightTableRowClick"
-                />
-            </div>
-        </div>
+  <div class="size_container">
+    <div class="left_container">
+      <div
+        ref="leftTable"
+        class="left_table"
+      >
+        <Table
+          :columns="leftTableColumns"
+          :height="leftTableHeight"
+          :data="leftTableData"
+          highlight-row
+          @on-row-click="leftTableRowClick"
+        />
+      </div>
     </div>
+    <div class="center_container">
+      <div class="right_single">
+        <i
+          class="iconfont iconbj_right"
+          @click="rightSingle()"
+        />
+      </div>
+      <div class="right_double">
+        <i
+          class="iconfont iconbj_transfer_right"
+          @click="rightDouble()"
+        />
+      </div>
+      <div class="left_single">
+        <i
+          class="iconfont iconbj_left"
+          @click="leftSingle()"
+        />
+      </div>
+      <div class="left_double">
+        <i
+          class="iconfont iconbj_transfer_left"
+          @click="leftDouble()"
+        />
+      </div>
+    </div>
+    <div class="right_container">
+      <div
+        ref="rightTable"
+        class="right_table"
+      >
+        <Table
+          :columns="rightTableColumns"
+          :height="rightTableHeight"
+          :data="rightTableData"
+          highlight-row
+          @on-row-click="rightTableRowClick"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -100,7 +106,14 @@
     },
     name: 'SizeComponent',
     components: {},
-    watch: {},
+    watch: {
+      rightTableData: {
+        handler(val) {
+          this.$emit('getData', val);
+        },
+        deep: true
+      },
+    },
     computed: {},
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight + 1;
@@ -140,9 +153,10 @@
         this.rightTableSelectIndex = index;
       }, // 右边表格单选触发
       getLeftTableData() {
+        const { itemId } = this.$route.params;
         const params = {
           param: {
-            PS_C_PRO_ID: '22103',
+            PS_C_PRO_ID: itemId,
             FLAG: 2
           }
         };
@@ -154,9 +168,11 @@
           });
       }, // 获取左边表格的数据
       getSizeRightTableData() {
+        const { itemId } = this.$route.params;
+
         const params = {
           param: {
-            PS_C_PRO_ID: '22103'
+            PS_C_PRO_ID: itemId
           }
         };
         network.get('/p/cs/cprospecload', { params })

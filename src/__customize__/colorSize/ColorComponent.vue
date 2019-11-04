@@ -144,7 +144,20 @@
     },
     name: 'ColorComponent',
     components: {},
-    watch: {},
+    props: {
+      getData: {
+        type: Function,
+        default: () => {}
+      },
+    },
+    watch: {
+      rightTableData: {
+        handler(val) {
+          this.getData(val);
+        },
+        deep: true
+      },
+    },
     computed: {},
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight;
@@ -193,16 +206,15 @@
         network.get('/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
-              const colorData = res.data.data;
+              let colorData = res.data.data;
+
               if (this.rightTableData.length > 0) {
-                colorData.forEach((data) => {
-                  this.rightTableData.forEach((item, index) => {
-                    if (item.ID === data.ID) {
-                      colorData.splice(index, 1);
-                      this.leftTableData = colorData;
-                    } 
-                  });
+                colorData = colorData.filter((item) => {
+                  const idList = this.rightTableData.map(v => v.id);
+                  return !idList.includes(item.id);
                 });
+
+                this.leftTableData = colorData;
               } else {
                 this.leftTableData = colorData;
               }
@@ -242,12 +254,9 @@
                 content: `${message}`
               };
               if (this.leftTableData.length > 0) {
-                res.data.data.forEach((rightData) => {
-                  this.leftTableData.forEach((leftData, index) => {
-                    if (rightData.ID === leftData.ID) {
-                      this.leftTableData.splice(index, 1);
-                    }
-                  });
+                res.data.data = res.data.data.filter((item) => {
+                  const idList = this.leftTableData.map(v => v.id);
+                  return !idList.includes(item.id);
                 });
               }
               this.rightTableData = res.data.data;
