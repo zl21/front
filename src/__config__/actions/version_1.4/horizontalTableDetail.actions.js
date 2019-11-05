@@ -44,8 +44,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-        console.log(2, resData);
-
         if (resData.tabfilter && resData.tabfilter.length > 0) {
           const defaultObj = resData.tabfilter.find(item => item.default);
           if (defaultObj) {
