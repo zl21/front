@@ -19,7 +19,6 @@
         :tab-margin-left="20"
         :tab-height="26"
         :tab-panels="tabPanels"
-        @getData="getData"
       />
     </div>
   </div>
@@ -31,18 +30,29 @@
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
+    name: 'Standard',
     data() {
       return {
         actionFlag: { produceFlag: false }, // 动作权限
-        tabPanels: [
+      
+        colorData: [],
+        sizeData: [],
+        rightTableDataForSize: [],
+        rightTableDataForColor: [],
+      };
+    },
+    computed: {
+      tabPanels() {
+        const tabPanel = [
           {
             label: '颜色', // tab标签名字
             component: ColorComponent, // tab标签里的组件
             ref: 'color', // tab标签里的组件的ref
             componentAttribute: {
               getData: (val) => {
-                this.getData(val);
-              }
+                this.getColorData(val);
+              },
+              rightTableDataForColor: this.rightTableDataForColor
             }, // 组件属性
             cilckCallback: (index, name, instance) => { // 点击标签时的回调方法，index为tabPanelsData数组下标，name为当前标签名称，instance为当前标签内的组件实例
               this.clickTabPanelsColor(index, name, instance);
@@ -53,19 +63,26 @@
             component: SizeComponent, // tab标签里的组件
             ref: 'size', // tab标签里的组件的ref
             componentAttribute: {
+              getData: (val) => {
+                this.getSizeData(val);
+              },
+              rightTableDataForSize: this.rightTableDataForSize
 
             }, // 组件属性
             cilckCallback: (index, name, instance) => { // 点击标签时的回调方法，index为tabPanelsData数组下标，name为当前标签名称，instance为当前标签内的组件实例
               this.clickTabPanelsSize(index, name, instance);
             }
           }
-        ],
-        colorData: [],
-        sizeData: []
-      };
+        ];
+        // tabPanel.concat([]);
+        return tabPanel;
+      }
     },
-    name: 'Standard',
+
     components: {},
+    created() {
+      this.getSizeAndColorRightTableData();
+    },
     mounted() {
       const params = {
         param: {
@@ -84,11 +101,71 @@
         });
     },
     methods: {
-      getData(val) {
-        this.colorData = val;
-      },
-      produceCode(val) {
+      getSizeAndColorRightTableData() {
+        const { itemId } = this.$route.params;
 
+        const params = {
+          param: {
+            PS_C_PRO_ID: itemId
+          }
+        };
+        network.get('/p/cs/cprospecload', { params })
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.rightTableDataForSize = res.data.data.SIZE;
+              this.rightTableDataForColor = res.data.data.COLOR;
+            }
+          });
+      }, // 获取颜色和尺寸数据
+      getColorData(val) {
+        this.colorData = val;
+        this.colorData = val.map((item) => {
+          let obj = {};
+          obj = {
+            PS_C_CLR_ID: item.ID,
+            MAINCOLOR: (item.MAINCOLOR === 'null' ? null : item.MAINCOLOR),
+            FABCOLOR: item.FABCOLOR || null
+          };
+          return obj;
+        });
+      },
+      getSizeData(val) {
+        this.sizeData = val.map((item) => {
+          const obj = {
+            PS_C_SIZE_ID: item.ID
+          };
+          return obj;
+        });
+      },
+      produceCode() {
+        const { tableName, itemId } = this.$route.params;
+        if (this.sizeData.length === 0) {
+          this.getSizeData(this.rightTableDataForSize);
+        }
+        const params = {
+          param: {
+            table: tableName,
+            objid: itemId,
+            PS_C_PRO_ID: itemId,
+            COLOR: this.colorData,
+            SIZE: this.sizeData,
+          },
+          webaction: 'CskuGenerateCmd',
+          actionid: '2005'
+        };
+        network.post('/p/cs/exeAction', urlSearchParams(params))
+          .then((res) => {
+            if (res.data.code === 0) {
+              // debugger;
+              const result = res.data;
+              const message = result.message;
+              const data = {
+                title: '成功',
+                content: `${message}`
+              };
+              this.$Message.success(data);
+            }
+          });
       },
       clickTabPanelsColor(index, name, instance) {
         this.colorData = instance.rightTableData;

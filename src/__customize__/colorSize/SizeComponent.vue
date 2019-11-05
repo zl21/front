@@ -61,6 +61,7 @@
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
+    name: 'SizeComponent',
     data() {
       return {
         leftTableColumns: [
@@ -104,12 +105,23 @@
         rightTableSelectIndex: null, // 右侧的表格选中的下标
       };
     },
-    name: 'SizeComponent',
+    props: {
+      getData: {
+        type: Function,
+        default: () => {}
+      },
+      rightTableDataForSize: {
+        type: Array,
+        default: () => ([])
+      }
+    },
     components: {},
     watch: {
-      rightTableData: {
+      rightTableDataForSize: {
         handler(val) {
-          this.$emit('getData', val);
+          console.log('🐻', val);
+          this.rightTableData = val;
+          this.getData(val);
         },
         deep: true
       },
@@ -118,10 +130,11 @@
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight + 1;
       this.rightTableHeight = this.$refs.rightTable.offsetHeight + 1;
+      this.rightTableData = this.rightTableDataForSize;
+      this.getData(this.rightTableDataForSize);
     },
     created() {
       this.getLeftTableData();
-      this.getSizeRightTableData();
     },
     methods: {
       rightSingle() {
@@ -167,21 +180,21 @@
             }
           });
       }, // 获取左边表格的数据
-      getSizeRightTableData() {
-        const { itemId } = this.$route.params;
+      // getSizeRightTableData() {
+      //   const { itemId } = this.$route.params;
 
-        const params = {
-          param: {
-            PS_C_PRO_ID: itemId
-          }
-        };
-        network.get('/p/cs/cprospecload', { params })
-          .then((res) => {
-            if (res.data.code === 0) {
-              this.rightTableData = res.data.data.SIZE;
-            }
-          });
-      }, // 获取右边表格的数据
+      //   const params = {
+      //     param: {
+      //       PS_C_PRO_ID: itemId
+      //     }
+      //   };
+      //   network.get('/p/cs/cprospecload', { params })
+      //     .then((res) => {
+      //       if (res.data.code === 0) {
+      //         this.rightTableData = res.data.data.SIZE;
+      //       }
+      //     });
+      // }, // 获取右边表格的数据
     }
   };
 </script>

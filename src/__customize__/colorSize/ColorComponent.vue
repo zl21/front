@@ -57,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-        />
+              >
         <Button
           slot="prepend"
           @click="addColor"
@@ -149,10 +149,16 @@
         type: Function,
         default: () => {}
       },
+      rightTableDataForColor: {
+        type: Array,
+        default: () => ([])
+      },
+      
     },
     watch: {
-      rightTableData: {
+      rightTableDataForColor: {
         handler(val) {
+          this.rightTableData = val;
           this.getData(val);
         },
         deep: true
@@ -162,9 +168,11 @@
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight;
       this.rightTableHeight = this.$refs.rightTable.offsetHeight;
+      this.rightTableData = this.rightTableDataForColor;
+      this.getData(this.rightTableDataForColor);
     },
     created() {
-      this.getRightTableData();
+      // this.getRightTableData();
     },
     methods: {
       rightSingle() {
@@ -264,20 +272,20 @@
             }
           });
       }, // 手动新增颜色，新增icon点击时触发
-      getRightTableData() {
-        const { tableName, tableId, itemId } = this.$route.params;
-        const params = {
-          param: {
-            PS_C_PRO_ID: itemId
-          }
-        };
-        network.get('/p/cs/cprospecload', { params })
-          .then((res) => {
-            if (res.data.code === 0) {
-              this.rightTableData = res.data.data.COLOR;
-            }
-          });
-      }, // 获取右边表格的数据
+      // getRightTableData() {
+      //   const { tableName, tableId, itemId } = this.$route.params;
+      //   const params = {
+      //     param: {
+      //       PS_C_PRO_ID: itemId
+      //     }
+      //   };
+      //   network.get('/p/cs/cprospecload', { params })
+      //     .then((res) => {
+      //       if (res.data.code === 0) {
+      //         this.rightTableData = res.data.data.COLOR;
+      //       }
+      //     });
+      // }, // 获取右边表格的数据
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {

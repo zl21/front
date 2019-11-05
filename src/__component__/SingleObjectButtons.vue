@@ -1530,11 +1530,20 @@
       },
       objectSave(obj) { // 按钮保存操作
         if (this.itemInfo.webact) {
-          DispatchEvent('objectSaveClick', {
-            detail: {
-              a: '刷新'
-            }
-          });
+          if (this.objectType === 'vertical') {
+            // this.determineSaveType(obj);
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                a: '刷新'
+              }
+            });
+          } else {
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                a: '刷新'
+              }
+            });
+          }
         } else {
           this.determineSaveType(obj);
         }
@@ -1850,6 +1859,13 @@
           stop = false;
           removeMessage = false;
           this.saveAfter(type, tableName, stop, removeMessage);
+          if (this.objectType === 'vertical') { // 上下结构半定制界面需要走完主表保存，再走定制界面保存
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                a: '刷新'
+              }
+            });
+          }
         }, () => {
           stop = true;
           removeMessage = true;
