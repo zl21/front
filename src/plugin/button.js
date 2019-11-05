@@ -58,7 +58,7 @@ function clickFunction(e) {
         control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
       });
         break;
-      case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
+      case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
         break;
       case '6': // 重启流程
         restartProcess();
