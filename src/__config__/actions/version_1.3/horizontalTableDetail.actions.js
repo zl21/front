@@ -216,25 +216,33 @@ export default {
         const defaultForSaveArray = [];
         const defaultForSave = {};
         const dufaultDataForSave = {};
-        itemModify[itemName].forEach((modifyItem) => {
-          itemDefault[itemName].forEach((defaultItem) => {
-            if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-              Object.keys(defaultItem).reduce((obj, item) => { 
-                Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-                  if (item === modifyDataItem) {
-                    let itemDefault = {};
-                    defaultForSave[modifyDataItem] = defaultItem[item];
-                    itemDefault = Object.assign({}, modifyItem, defaultForSave);  
-                    defaultForSaveArray.push(itemDefault);
-                  }
-                  return modifyDataObj;
+        console.log('🍇', itemModify);
+        if (typeof itemModify[itemName] === 'object') {
+
+        } else {
+          itemModify[itemName].forEach((modifyItem) => {
+            itemDefault[itemName].forEach((defaultItem) => {
+              if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+                Object.keys(defaultItem).reduce((obj, item) => { 
+                  Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+                    if (item === modifyDataItem) {
+                      let itemDefault = {};
+                      defaultForSave[modifyDataItem] = defaultItem[item];
+                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+                      defaultForSaveArray.push(itemDefault);
+                    }
+                    return modifyDataObj;
+                  }, {});
+                  return obj;
                 }, {});
-                return obj;
-              }, {});
-              defaultData.push(defaultItem);
-            }
+                defaultData.push(defaultItem);
+              }
+            });
           });
-        });
+        }
+        
+       
+        debugger;
         dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,

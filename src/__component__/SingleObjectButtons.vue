@@ -190,7 +190,7 @@
                   });
                 }
 
-                if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
                       if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
@@ -488,10 +488,22 @@
 
         //   console.log(event.detail);
         // }, false);
-        
-        this.clearEditData();
-        const message = '刷新成功';
-        this.upData(`${message}`);
+      
+        if (this.itemInfo.webact) { // 兼容半定制界面
+          const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
+          if (webactType !== 'order') {
+            DispatchEvent('clickButtonsRefresh', {
+              detail: {
+                a: '刷新'
+              }
+            });
+            this.clearEditData();
+          }
+        } else {
+          this.clearEditData();
+          const message = '刷新成功';
+          this.upData(`${message}`);
+        }
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
@@ -1517,7 +1529,26 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        this.determineSaveType(obj);
+        if (this.itemInfo.webact) {
+          if (this.objectType === 'vertical') {
+            this.determineSaveType(obj);
+            // DispatchEvent('objectSaveClick', {
+            //   detail: {
+            //     a: '刷新'
+            //   }
+            // });
+          } else {
+            this.saveParameters();
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                mainTableParame: this.currentParameter,
+                itemTableParame: this.itemCurrentParameter
+              }
+            });
+          }
+        } else {
+          this.determineSaveType(obj);
+        }
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -1830,6 +1861,13 @@
           stop = false;
           removeMessage = false;
           this.saveAfter(type, tableName, stop, removeMessage);
+          if (this.objectType === 'vertical') { // 上下结构半定制界面需要走完主表保存，再走定制界面保存
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                a: '刷新'
+              }
+            });
+          }
         }, () => {
           stop = true;
           removeMessage = true;
@@ -2026,7 +2064,7 @@
                 });
               }
             }
-            if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+            if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                 this.tabcmd.cmds.forEach((item, index) => {
                   if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
@@ -2058,7 +2096,9 @@
           }
         });
       }
-      this.buttonsReorganization(this.tabcmd);
+      if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+        this.buttonsReorganization(this.tabcmd);
+      }
       this.waListButtons(this.tabwebact);
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

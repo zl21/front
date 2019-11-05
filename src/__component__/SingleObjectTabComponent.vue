@@ -44,6 +44,7 @@
       <component
         :is="customizeComponent"
         v-if="componentName"
+        :item-info="itemInfo"
       />
       <compositeForm
         v-if="panelData.isShow"

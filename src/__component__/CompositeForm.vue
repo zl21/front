@@ -496,6 +496,9 @@
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
+                  if (current.display === 'textarea') {
+                    return;
+                  }
                   this.focusItem(index, current, array);
                 }
                 this.searchClickData();
@@ -1453,6 +1456,7 @@
             height: 120,
             readonly,
             ImageSize,
+            name: '上传',
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {

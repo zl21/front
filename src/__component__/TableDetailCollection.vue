@@ -53,7 +53,7 @@
               :label="item.name"
               :value="item.isfk ? item.inputname : item.colname"
             >
-              {{ item.label }}
+              {{ item.name }}
             </Option>
           </Select>
           <div class="detail-search-input">
@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+               >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -358,7 +358,7 @@
         }
 
         // 如果配置tabrelation为1:1 去除导入和删除
-        if (this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
           buttonGroupShow.forEach((item, index) => {
             if (item.eName !== 'actionEXPORT') {
               buttonGroupShow.splice(index, 1);

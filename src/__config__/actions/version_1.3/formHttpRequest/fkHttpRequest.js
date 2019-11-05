@@ -1,5 +1,7 @@
 
 import network, { urlSearchParams } from '../../../../__utils__/network';
+import router from '../../../router.config';
+
 
 export const fkQueryList = function fkQueryList(params) {
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
@@ -89,7 +91,21 @@ export const fkQueryListPop = function fkQueryListPop(params) {
   });
 };
 export const itemTableDelete = function itemTableDelete({ params, path, success }) { // 表格删除方法
-  network.post(path || '/p/cs/objectDelete', params).then((res) => {
+  const { itemId } = router.currentRoute.params;
+  let arrayID = [];
+  const objItem = {};
+  Object.keys(params.tabItem).reduce((obj, crr) => {
+    arrayID = params.tabItem[crr].map(item => item.ID.toString());
+    objItem[crr] = arrayID;
+    return obj;
+  }, {});
+  const paramsValue = {
+    table: params.table,
+    objid: itemId,
+    isdelmtable: false,
+    data: objItem
+  };
+  network.post('/p/cs/objectDelete', urlSearchParams(paramsValue)).then((res) => {
     if (typeof success === 'function') {
       success(res);
     }

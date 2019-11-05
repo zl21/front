@@ -1,60 +1,67 @@
 <template>
-    <div class="size_container">
-        <div class="left_container">
-            <div class="left_table" ref="leftTable">
-                <Table
-                        :columns="leftTableColumns"
-                        :height="leftTableHeight"
-                        :data="leftTableData"
-                        highlight-row
-                        @on-row-click="leftTableRowClick"
-                />
-            </div>
-        </div>
-        <div class="center_container">
-            <div class="right_single">
-                <i
-                        class="iconfont iconbj_right"
-                        @click="rightSingle()"
-                />
-            </div>
-            <div class="right_double">
-                <i
-                        class="iconfont iconbj_transfer_right"
-                        @click="rightDouble()"
-                />
-            </div>
-            <div class="left_single">
-                <i
-                        class="iconfont iconbj_left"
-                        @click="leftSingle()"
-                />
-            </div>
-            <div class="left_double">
-                <i
-                        class="iconfont iconbj_transfer_left"
-                        @click="leftDouble()"
-                />
-            </div>
-        </div>
-        <div class="right_container">
-            <div class="right_table" ref="rightTable">
-                <Table
-                        :columns="rightTableColumns"
-                        :height="rightTableHeight"
-                        :data="rightTableData"
-                        highlight-row
-                        @on-row-click="rightTableRowClick"
-                />
-            </div>
-        </div>
+  <div class="size_container">
+    <div class="left_container">
+      <div
+        ref="leftTable"
+        class="left_table"
+      >
+        <Table
+          :columns="leftTableColumns"
+          :height="leftTableHeight"
+          :data="leftTableData"
+          highlight-row
+          @on-row-click="leftTableRowClick"
+        />
+      </div>
     </div>
+    <div class="center_container">
+      <div class="right_single">
+        <i
+          class="iconfont iconbj_right"
+          @click="rightSingle()"
+        />
+      </div>
+      <div class="right_double">
+        <i
+          class="iconfont iconbj_transfer_right"
+          @click="rightDouble()"
+        />
+      </div>
+      <div class="left_single">
+        <i
+          class="iconfont iconbj_left"
+          @click="leftSingle()"
+        />
+      </div>
+      <div class="left_double">
+        <i
+          class="iconfont iconbj_transfer_left"
+          @click="leftDouble()"
+        />
+      </div>
+    </div>
+    <div class="right_container">
+      <div
+        ref="rightTable"
+        class="right_table"
+      >
+        <Table
+          :columns="rightTableColumns"
+          :height="rightTableHeight"
+          :data="rightTableData"
+          highlight-row
+          @on-row-click="rightTableRowClick"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
 
   export default {
+    name: 'SizeComponent',
     data() {
       return {
         leftTableColumns: [
@@ -98,17 +105,36 @@
         rightTableSelectIndex: null, // 右侧的表格选中的下标
       };
     },
-    name: 'SizeComponent',
+    props: {
+      getData: {
+        type: Function,
+        default: () => {}
+      },
+      rightTableDataForSize: {
+        type: Array,
+        default: () => ([])
+      }
+    },
     components: {},
-    watch: {},
+    watch: {
+      rightTableDataForSize: {
+        handler(val) {
+          console.log('🐻', val);
+          this.rightTableData = val;
+          this.getData(val);
+        },
+        deep: true
+      },
+    },
     computed: {},
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight + 1;
       this.rightTableHeight = this.$refs.rightTable.offsetHeight + 1;
+      this.rightTableData = this.rightTableDataForSize;
+      this.getData(this.rightTableDataForSize);
     },
     created() {
       this.getLeftTableData();
-      this.getSizeRightTableData();
     },
     methods: {
       rightSingle() {
@@ -140,9 +166,10 @@
         this.rightTableSelectIndex = index;
       }, // 右边表格单选触发
       getLeftTableData() {
+        const { itemId } = this.$route.params;
         const params = {
           param: {
-            PS_C_PRO_ID: '22103',
+            PS_C_PRO_ID: itemId,
             FLAG: 2
           }
         };
@@ -153,19 +180,21 @@
             }
           });
       }, // 获取左边表格的数据
-      getSizeRightTableData() {
-        const params = {
-          param: {
-            PS_C_PRO_ID: '22103'
-          }
-        };
-        network.get('/p/cs/cprospecload', { params })
-          .then((res) => {
-            if (res.data.code === 0) {
-              this.rightTableData = res.data.data.SIZE;
-            }
-          });
-      }, // 获取右边表格的数据
+      // getSizeRightTableData() {
+      //   const { itemId } = this.$route.params;
+
+      //   const params = {
+      //     param: {
+      //       PS_C_PRO_ID: itemId
+      //     }
+      //   };
+      //   network.get('/p/cs/cprospecload', { params })
+      //     .then((res) => {
+      //       if (res.data.code === 0) {
+      //         this.rightTableData = res.data.data.SIZE;
+      //       }
+      //     });
+      // }, // 获取右边表格的数据
     }
   };
 </script>

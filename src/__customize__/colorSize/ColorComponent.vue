@@ -1,3 +1,4 @@
+/* eslint-disable vue/html-self-closing */
 <template>
   <div class="color_container">
     <div class="left_container">
@@ -56,7 +57,7 @@
           icon="ios-add-circle-outline"
           @on-change="addColorInputChange"
           @on-click="addIconClick"
-        >
+              >
         <Button
           slot="prepend"
           @click="addColor"
@@ -143,14 +144,35 @@
     },
     name: 'ColorComponent',
     components: {},
-    watch: {},
+    props: {
+      getData: {
+        type: Function,
+        default: () => {}
+      },
+      rightTableDataForColor: {
+        type: Array,
+        default: () => ([])
+      },
+      
+    },
+    watch: {
+      rightTableDataForColor: {
+        handler(val) {
+          this.rightTableData = val;
+          this.getData(val);
+        },
+        deep: true
+      },
+    },
     computed: {},
     mounted() {
       this.leftTableHeight = this.$refs.leftTable.offsetHeight;
       this.rightTableHeight = this.$refs.rightTable.offsetHeight;
+      this.rightTableData = this.rightTableDataForColor;
+      this.getData(this.rightTableDataForColor);
     },
     created() {
-      this.getRightTableData();
+      // this.getRightTableData();
     },
     methods: {
       rightSingle() {
@@ -182,16 +204,28 @@
         this.rightTableSelectIndex = index;
       }, // 右边表格单选触发
       listAllColor() {
+        const { itemId } = this.$route.params;
         const params = {
           param: {
-            PS_C_PRO_ID: '22103',
+            PS_C_PRO_ID: itemId,
             FLAG: 1
           }
         };
         network.get('/p/cs/cspecobjload', { params })
           .then((res) => {
             if (res.data.code === 0) {
-              this.leftTableData = res.data.data;
+              let colorData = res.data.data;
+
+              if (this.rightTableData.length > 0) {
+                colorData = colorData.filter((item) => {
+                  const idList = this.rightTableData.map(v => v.id);
+                  return !idList.includes(item.id);
+                });
+
+                this.leftTableData = colorData;
+              } else {
+                this.leftTableData = colorData;
+              }
             }
           });
       }, // 列出所有颜色按钮点击
@@ -202,21 +236,56 @@
 
       }, // 手动新增颜色输入框改变时触发
       addIconClick() {
-
-      }, // 手动新增颜色，新增icon点击时触发
-      getRightTableData() {
+        const { itemId } = this.$route.params;
+        let ecodes = [];
+        if (this.rightTableData.length > 0) {
+          ecodes = this.rightTableData.map(item => item.ECODE);
+        } else {
+          ecodes = [];
+        }
+        if (this.addColorInputValue === '') {
+          this.$Message.warning('输入框内容不能为空');
+          return;
+        }
         const params = {
-          param: {
-            PS_C_PRO_ID: '22103'
-          }
+          PS_C_PRO_ID: itemId, // 主表表名
+          COLOR: this.addColorInputValue,
+          SELECTED: JSON.stringify(ecodes)
         };
-        network.get('/p/cs/cprospecload', { params })
+        network.get('/p/cs/cclrquery', { params })
           .then((res) => {
             if (res.data.code === 0) {
-              this.rightTableData = res.data.data.COLOR;
+              const result = res.data;
+              const message = result.message;
+              const data = {
+                title: '成功',
+                content: `${message}`
+              };
+              if (this.leftTableData.length > 0) {
+                res.data.data = res.data.data.filter((item) => {
+                  const idList = this.leftTableData.map(v => v.id);
+                  return !idList.includes(item.id);
+                });
+              }
+              this.rightTableData = res.data.data;
+              this.$Message.success(data);
             }
           });
-      }, // 获取右边表格的数据
+      }, // 手动新增颜色，新增icon点击时触发
+      // getRightTableData() {
+      //   const { tableName, tableId, itemId } = this.$route.params;
+      //   const params = {
+      //     param: {
+      //       PS_C_PRO_ID: itemId
+      //     }
+      //   };
+      //   network.get('/p/cs/cprospecload', { params })
+      //     .then((res) => {
+      //       if (res.data.code === 0) {
+      //         this.rightTableData = res.data.data.COLOR;
+      //       }
+      //     });
+      // }, // 获取右边表格的数据
       mainColorRender() {
         return (h, params) => h('Select', {
           style: {
@@ -268,7 +337,7 @@
   };
 </script>
 
-<style lang="less">
+<style lang="less" scope="this api replaced by slot-scope in 2.5.0+">
     .color_container {
         height: 100%;
         padding: 10px;

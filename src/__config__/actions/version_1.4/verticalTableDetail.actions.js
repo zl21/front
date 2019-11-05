@@ -85,12 +85,22 @@ export default {
               if (resData.reftabs[0].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    const fixedcolumns = {};
+                    if (resData.tabfilter && resData.tabfilter.length > 0) {
+                      const defaultObj = resData.tabfilter.find(item => item.default);
+                      if (defaultObj) {
+                        fixedcolumns[defaultObj.colname] = defaultObj.default;
+                      }
+                    }
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
                       searchdata: {
-                        column_include_uicontroller: true
+                        column_include_uicontroller: true,
+                        startindex: 0,
+                        range: 10,
+                        fixedcolumns
                       },
                       tabIndex
                     };
