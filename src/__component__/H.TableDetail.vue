@@ -51,6 +51,7 @@
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+              obj.componentAttribute.itemInfo = item;
             } else {
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             }

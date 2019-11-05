@@ -1531,16 +1531,18 @@
       objectSave(obj) { // 按钮保存操作
         if (this.itemInfo.webact) {
           if (this.objectType === 'vertical') {
-            // this.determineSaveType(obj);
-            DispatchEvent('objectSaveClick', {
-              detail: {
-                a: '刷新'
-              }
-            });
+            this.determineSaveType(obj);
+            // DispatchEvent('objectSaveClick', {
+            //   detail: {
+            //     a: '刷新'
+            //   }
+            // });
           } else {
+            this.saveParameters();
             DispatchEvent('objectSaveClick', {
               detail: {
-                a: '刷新'
+                mainTableParame: this.currentParameter,
+                itemTableParame: this.itemCurrentParameter
               }
             });
           }
@@ -2094,7 +2096,9 @@
           }
         });
       }
-      this.buttonsReorganization(this.tabcmd);
+      if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+        this.buttonsReorganization(this.tabcmd);
+      }
       this.waListButtons(this.tabwebact);
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

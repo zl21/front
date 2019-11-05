@@ -233,27 +233,25 @@
 </template>
 
 <script>
-  import ChineseDictionary from '../../assets/js/ChineseDictionary';
   import network, { urlSearchParams } from '../../__utils__/network';
   import Dialog from '../../__component__/Dialog';
 
   export default {
     name: 'ProDesc',
     created() {
-      this.ChineseDictionary = ChineseDictionary;
+      const { tableName, tableId, itemId } = this.$route.params;
 
-      if (this.status) {
-        this.buttonGroup.splice(0, 1);
+      if (itemId !== 'New') {
+        this.getData();
       }
-
-      this.getData();
     },
     mounted() {
-      const { tableName, tableId, itemId } = this.$route.params;
+      const { itemId } = this.$route.params;
       this.objId = itemId;
       window.addEventListener('objectSaveClick', (event) => {
         console.log('🍇', event.detail);
-        this.objectSave();
+        this.saveParams = event.detail;
+        this.objectSave(event.detail);
       }, false);
     //   this.$dragging.$on('dragged', ({ value }) => {});
     //   this.$dragging.$on('dragend', ({ value }) => {
@@ -261,11 +259,16 @@
     //   });
     },
     props: {
+      itemInfo: {// 当前子表信息
+        type: Object,
+        default: () => ({})
+      },
     },
     watch: {
     },
     data() {
       return {
+        saveParams: {},
         dialogShow: false,
         // dialogConfig: {
         //   title: '提示',
@@ -277,52 +280,6 @@
         // }, // 弹框配置信息
         objId: '',
         openCollapse: '1',
-        ChineseDictionary: {},
-        currentView: '', // 控制富文本
-        buttonGroup: [
-          {
-            name: '保存',
-            icon: '',
-            defbutton: 'N',
-            action: ''
-          },
-          {
-            name: '刷新',
-            icon: '',
-            defbutton: 'J',
-            action: ''
-          },
-          {
-            name: '返回',
-            icon: '',
-            defbutton: null,
-            action: ''
-          }
-        ], // 按钮组
-        itemdata: {
-          // 富文本的传值
-          colid: this.objId,
-          valuedata: ''
-        },
-        storageItem: {
-          name: 'PS_C_PRO',
-          id: this.objId
-        },
-        formObj: {
-        // 日志数据
-        },
-        childs: [
-          // 控制收缩
-          {
-            show: true
-          },
-          {
-            show: true
-          },
-          {
-            show: true
-          }
-        ],
         video: '',
         videoCover: '',
         proImg: [
@@ -344,7 +301,7 @@
       getData() {
         // 获取数据
        
-        const { tableName, tableId, itemId } = this.$route.params;
+        const { itemId } = this.$route.params;
 
         // 获取主图
         network.post('/p/cs/proImage', urlSearchParams({
@@ -390,7 +347,7 @@
               if (col.data.data.COLOR.length > 0) {
                 col.data.data.COLOR.forEach((item) => {
                   if (res.data.data) {
-                    if (!res.data.data.IMAGE_SKU || res.data.data.IMAGE_SKU.length == 0) {
+                    if (!res.data.data.IMAGE_SKU || res.data.data.IMAGE_SKU.length === 0) {
                       // if (this.modify) {
                       //   this.$set(item, 'URL', '');
                       //   this.$set(item, 'flag', false);
@@ -444,7 +401,7 @@
 
         return temp;
       },
-      objectSave() { // 保存
+      objectSave(params) { // 保存
         this.proImg.forEach(((item) => {
           item.flag = false;
         }));
@@ -481,11 +438,10 @@
             this.saveObj.IMAGE = null;
           }
         }
-
-
+        console.log(444, this.itemInfo);
+        this.saveObj.DETAILDESC = params.itemTableParame.modify[this.itemInfo.tablename];
         if (this.video) this.saveObj.VIDEO = this.video;
         else this.saveObj.VIDEO = '';
-
         const obj = {
           table: 'PS_C_PRO',
           objid: this.objId,
@@ -578,8 +534,8 @@
           }
           network.post('/p/cs/upload2', data).then((res) => {
                                                      this.proImg.push({
-                                                       NAME: res.data.Name,
-                                                       URL: res.data.Url,
+                                                       NAME: res.data.data.Name,
+                                                       URL: res.data.data.Url,
                                                        flag: false
                                                      });
                                                      this.saveObj.IMAGE = JSON.stringify(this.proImg);
@@ -630,7 +586,6 @@
         network.post('/p/cs/upload2', data).then((res) => {
                                                    this.uploadProgress(res.data.data.UploadId, () => {
                                                      this.$set(this.colorList[index], 'URL', res.data.data.Url);
-                                                     console.log(444, this.colorList);
                                                      this.saveObj.IMAGE_SKU = JSON.stringify(this.colorList);
                                                    });
                                                  },

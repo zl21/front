@@ -1456,6 +1456,7 @@
             height: 120,
             readonly,
             ImageSize,
+            name: '上传',
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {
