@@ -176,6 +176,7 @@
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
+
   export default {
     data() {
       return {

@@ -67,7 +67,8 @@ export default () => ({
         'updateDeleteData',
         'updateObjTabActionSlientConfirm',
         'updateTableSearchData',
-        'updateRefreshButton'
+        'updateRefreshButton',
+        'updateButtonsDataForCustomization'
       ]),
   },
   beforeDestroy() {

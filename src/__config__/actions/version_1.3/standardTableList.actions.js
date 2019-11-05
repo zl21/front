@@ -159,8 +159,12 @@ export default {
   batchVoidForButtons({ commit }, {
     tableName, ids, resolve, reject 
   }) { // 调用作废接口
-    network.post('/p/cs/batchVoid', 
-      { tableName, ids }).then((res) => {
+    network.post('/p/cs/batchVoid', urlSearchParams(
+      { 
+        table: tableName,
+        objids: ids.join(',')
+      }
+    )).then((res) => {
       const data = res.data;
       if (res.data.code === 0) {
         resolve();
@@ -176,10 +180,10 @@ export default {
   batchSubmitForButtons({ commit }, {
     url, tableName, ids, resolve, reject 
   }) { // 调用提交接口
-    network.post(url || '/p/cs/batchSubmit', {
-      tableName, 
-      ids
-    }).then((res) => {
+    network.post(url || '/p/cs/batchSubmit', urlSearchParams({
+      table: tableName, 
+      objids: ids.join(',')
+    })).then((res) => {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
