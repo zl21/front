@@ -11,6 +11,7 @@ export default () => ({
   },
   computed: {
     ...mapState(getComponentName(), {
+      childReadonly: ({ childTableReadonly }) => childTableReadonly,
       buttonsData: ({ buttonsData }) => buttonsData,
       tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,

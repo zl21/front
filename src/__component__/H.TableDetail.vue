@@ -36,10 +36,12 @@
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.isMainTable = true;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
+            } else {
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
             }
 
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
-            obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
@@ -47,7 +49,7 @@
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
             obj.componentAttribute.type = 'horizontal';
 
-            
+
             if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
@@ -62,7 +64,7 @@
             if (webactType === 'order') { // 如果是自定义tab全定制界面时，不需要引入公共组件
               this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
               // obj.componentAttribute.buttonsData.isShow = false;
-            } 
+            }
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
@@ -118,7 +120,7 @@
                 table: tablename, objid: itemId, refcolid, tabIndex: index
               });
             }
-          } 
+          }
         }
       }, // tab切换触发的方法
       getMainTable(index, isNotFirstRequest) {

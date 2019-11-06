@@ -15,6 +15,7 @@ export default () => ({
       keepAliveLists: ({ keepAliveLists }) => keepAliveLists
     }),
     ...mapState(getComponentName(), {
+      childReadonly: ({ childTableReadonly }) => childTableReadonly,
       buttonsData: ({ buttonsData }) => buttonsData,
       mainFormInfo: ({ mainFormInfo }) => mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
