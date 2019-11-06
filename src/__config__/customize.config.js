@@ -14,10 +14,12 @@ import standard from '../__customize__/colorSize/Standard.vue';
 
 export default {
   functionPermission: {
-    component: functionPermission
+    component: functionPermission,
   },
   pro_desc: {
-    component: proDesc
+    component: proDesc,
+    labelName: '你好'
+
   },
   standard: {
     component: standard

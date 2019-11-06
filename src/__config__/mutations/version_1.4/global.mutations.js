@@ -10,6 +10,8 @@ import {
   enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
+import customizeSingleObjectConfig from '../../customizeSingleObject.config';
+
 
 export default {
   changeNavigatorSetting(state, data) {
@@ -70,6 +72,7 @@ export default {
         }
         return a;
       }, {});
+    // console.log('🐻', customizeSingleObjectConfig[]);
     state.serviceIdMap = menuLists.map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .map(d => d.children)
@@ -211,7 +214,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId, url, label
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -227,7 +230,16 @@ export default {
       });
     }
     if (type === 'tableDetailAction') {
-      path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      if (url) {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${url.toUpperCase()}`;
+        const routeInfo = {
+          path,
+          query: { label }
+        };
+        router.push(routeInfo);
+      } else {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      }
       router.push({
         path
       });
