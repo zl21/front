@@ -1131,6 +1131,7 @@
           } else if (webconf.display === 'jsonmaker') {
             // 拓展属性
             item.type = 'ExtentionInput';
+            item.props.supportType = '';
           }
         }
         // 上传文件插件
