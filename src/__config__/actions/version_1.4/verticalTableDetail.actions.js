@@ -3,6 +3,8 @@ import network, {
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
+let childTableFixedcolumns = {};
+
 export default {
   getObjectForMainTableForm({
     dispatch,
@@ -85,13 +87,7 @@ export default {
               if (resData.reftabs[0].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                    const fixedcolumns = {};
-                    if (resData.tabfilter && resData.tabfilter.length > 0) {
-                      const defaultObj = resData.tabfilter.find(item => item.default);
-                      if (defaultObj) {
-                        fixedcolumns[defaultObj.colname] = defaultObj.default;
-                      }
-                    }
+                    
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
@@ -100,11 +96,12 @@ export default {
                         column_include_uicontroller: true,
                         startindex: 0,
                         range: 10,
-                        fixedcolumns
+                        fixedcolumns: childTableFixedcolumns
                       },
                       tabIndex
                     };
                     this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                    childTableFixedcolumns = {};
                   }
                 });
               } else if (resData.reftabs[0].tabrelation === '1:1') {
@@ -141,9 +138,27 @@ export default {
       ismaintable: 'n'
     })).then((res) => {
       if (res.data.code === 0) {
-        rec();
         const resData = res.data.data;
+        if (tabIndex === 0) {
+          if (resData.tabfilter && resData.tabfilter.length > 0) {
+            const defaultObj = resData.tabfilter.find(item => item.default);
+            if (defaultObj) {
+              childTableFixedcolumns[defaultObj.colname] = defaultObj.default;
+            }
+          }
+        }
+        if (resData.tabfilter && resData.tabfilter.length > 0) {
+          const defaultObj = resData.tabfilter.find(item => item.default);
+          if (defaultObj) {
+            const searchData = {
+              selectedValue: defaultObj.colname,
+              inputValue: defaultObj.default
+            };
+            commit('updateTableSearchData', searchData);
+          }
+        }
         resData.tabIndex = tabIndex;
+        rec();
         commit('updateRefButtonsData', resData);
       } else {
         rej();
