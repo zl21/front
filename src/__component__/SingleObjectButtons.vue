@@ -1147,18 +1147,23 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          tabwebact.objbutton.forEach((item, index) => {
+        if (this.itemName === this.tableName) {
+          this.webactButton(tabwebact.objbutton);
+        } else {
+          this.webactButton(tabwebact.objtabbutton);
+        }
+      },
+      webactButton(buttonData) { // 自定义按钮渲染
+        if (buttonData && buttonData.length > 0) {
+          buttonData.forEach((item, index) => {
             if (item.ishide) {
-              tabwebact.objbutton.splice(index);
+              buttonData.splice(index);
             }
-
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
             this.isrefrsh = item.isrefrsh;
           });
         }
       },
-
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {

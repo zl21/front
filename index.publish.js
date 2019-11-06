@@ -12,6 +12,8 @@ import WaterMark from './src/__component__/WaterMark';
 import SearchForm from './src/__component__/form/SearchForm';
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
+import CompositeForm from './src/__component__/CompositeForm';
+
 import { menuClick } from './src/__config__/event.config';
 
 
@@ -21,7 +23,7 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.4.9',
+  version: '1.5.0',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -99,6 +101,7 @@ export default {
     WaterMark,
     SearchForm,
     FilterTree,
-    SelectTree
+    SelectTree,
+    CompositeForm
   }
 };
