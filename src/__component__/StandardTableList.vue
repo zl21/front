@@ -210,7 +210,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -267,12 +267,12 @@
         } else if (this.ag.tableurl) {
           // const type = 'tableDetailAction';
           // const tab = {
-          //     type,
-          //     label: colDef.customerurl.reftabdesc,
-          //     customizedModuleName: colDef.customerurl.tableurl,
-          //     customizedModuleId: colDef.customerurl.reftableid
-          //   };
+          //   type,
+          //   customizedModuleName: 'pro_desc',
+          //   customizedModuleId: id
+          // };
           // this.tabOpen(tab);
+          // this.addKeepAliveLabelMaps({ { name:, label }})
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';

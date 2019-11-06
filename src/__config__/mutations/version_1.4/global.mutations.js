@@ -72,7 +72,7 @@ export default {
         }
         return a;
       }, {});
-    // console.log('🐻', customizeSingleObjectConfig);
+    // console.log('🐻', customizeSingleObjectConfig[]);
     state.serviceIdMap = menuLists.map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .map(d => d.children)
