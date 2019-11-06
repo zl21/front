@@ -689,6 +689,9 @@
           return timeRange;
         }
         if (item.display === 'OBJ_DATE') {
+          if (item.default === '-1') {
+            return '';
+          }
           const timeRange = [
             `${new Date().setNewFormt(new Date()
               .minusDays(Number(item.daterange))
