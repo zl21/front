@@ -43,7 +43,6 @@ export default (router) => {
     const fromCustomizedModuleId = from.params.customizedModuleId;
     const fromPluginModuleName = from.params.pluginModuleName;
     const fromLinkName = from.params.linkName;
-
     const { routePrefix } = to.meta;
 
     const fromRoutePrefix = from.meta.routePrefix;
@@ -116,7 +115,7 @@ export default (router) => {
         break;
 
       
-      // Condition Seven: 来自单对象界面
+        // Condition Seven: 来自单对象界面
      
       default:
         break;
@@ -183,7 +182,6 @@ export default (router) => {
       }
       return false;
     })[0];
-
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -236,6 +234,7 @@ export default (router) => {
           //   label=
             
           // }
+        
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,

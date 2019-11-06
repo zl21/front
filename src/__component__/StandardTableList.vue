@@ -264,6 +264,15 @@
             id
           };
           this.tabHref(tab);
+        } else if (this.ag.tableurl) {
+          // const type = 'tableDetailAction';
+          // const tab = {
+          //     type,
+          //     label: colDef.customerurl.reftabdesc,
+          //     customizedModuleName: colDef.customerurl.tableurl,
+          //     customizedModuleId: colDef.customerurl.reftableid
+          //   };
+          // this.tabOpen(tab);
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';

@@ -11,7 +11,10 @@ export default {
   updateTableStatus4css({
     ag
   }, data) {
-    ag.status4css = data;
+    if (data.tableurl) {
+      ag.tableurl = data.tableurl;
+    }
+    ag.status4css = data.status4css;
   },
   // setAgTableErrorMessage({ ag }, errorData) { // ag iconfont
   //   ag.datas.deleteFailInfo = Object.assign({}, ag.datas.deleteFailInfo, errorData);

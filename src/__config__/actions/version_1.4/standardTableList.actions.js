@@ -42,7 +42,7 @@ export default {
         resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
-        commit('updateTableStatus4css', queryData.datas.status4css);
+        commit('updateTableStatus4css', queryData.datas);
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
