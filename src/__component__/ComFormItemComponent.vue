@@ -67,7 +67,12 @@
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                if (items.item.value[0].ID) {
+                if (items.item.value.length > 1) {
+                  // option[items.item.field] = items.item.value.reduce((arr, item) => {
+                  //   arr.push(item.ID);
+                  //   return arr;
+                  // }, []);
+                } else if (items.item.value[0].ID) {
                   option[items.item.field] = items.item.value[0].ID;
                 }
               } else if (items.item.value[0]) {
