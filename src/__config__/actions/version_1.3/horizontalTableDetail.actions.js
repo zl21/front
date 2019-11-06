@@ -216,7 +216,6 @@ export default {
         const defaultForSaveArray = [];
         const defaultForSave = {};
         const dufaultDataForSave = {};
-        console.log('🍇', itemModify);
         if (typeof itemModify[itemName] === 'object') {
 
         } else {
@@ -242,7 +241,6 @@ export default {
         }
         
        
-        debugger;
         dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
