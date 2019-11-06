@@ -8,6 +8,7 @@
       ref="input"
       :value="value"
       readonly
+      :disabled="disabled"
       @on-keydown="onKeydown"
     />
     <ul
@@ -22,14 +23,15 @@
         <li
           v-if="!item.hide"
           :key="index"
-          :class="{ picked: itemPicked[index] }"
-          @click="itemClick(index)"
+          :class="{ picked: itemPicked[index], disabled: $route.params.itemId !== 'New' && !item.clickableWhenEdit }"
+          @click="itemClick(index, item)"
         >
           {{ item.text }}
         </li>
       </template>
       <li
         class="pickedAll"
+        :class="{ disabled: $route.params.itemId !== 'New' }"
         @click="pickAll"
       >
         {{ pickedAll ? '清空' : '全选' }}
@@ -57,6 +59,10 @@
     }),
     name: 'EnumerableInput',
     props: {
+      disabled: {
+        type: Boolean,
+        default: false
+      },
       enumerableConfig: {
         type: Object,
         default: () => ({
@@ -91,7 +97,10 @@
         this.value = v;
         return v;
       },
-      itemClick(index) {
+      itemClick(index, item) {
+        if (this.$route.params.itemId !== 'New' && !item.clickableWhenEdit) {
+          return;
+        }
         if (!this.itemPicked[index]) {
           this.itemPicked[index] = true;
         } else {
@@ -121,10 +130,13 @@
         this.fixPosition();
       },
       toggleDropdownShow() {
-        this.dropdownShow = !this.dropdownShow;
-        this.fixPosition();
+        if (!this.disabled) {
+          this.dropdownShow = !this.dropdownShow;
+          this.fixPosition();
+        }
       },
       pickAll() {
+        if (this.$route.params.itemId !== 'New') { return; }
         this.enumerableLists.forEach((d, i) => {
           this.itemPicked[i] = !this.pickedAll;
         });
@@ -202,6 +214,7 @@
     opacity: 0.8;
   }
   ul {
+    border-radius: 2px;
     padding: 5px;
     position: fixed;
     min-width: 210px;
@@ -219,6 +232,7 @@
       cursor: pointer;
       border: 1px solid orangered;
       color: orangered;
+      border-radius: 2px;
     }
     li:hover {
       opacity: 0.7;
@@ -227,6 +241,12 @@
       border: 1px solid orangered;
       background-color: orangered;
       color: #fff;
+    }
+    li.disabled {
+      border: 1px solid #d8d8d8;
+      background-color: #f4f4f4;
+      color: #c3c3c3;
+      cursor: not-allowed;
     }
   }
   .arrow:before{
@@ -242,6 +262,12 @@
   .pickedAll {
     padding: 6px 7px;
     cursor: pointer;
+  }
+  .pickedAll.disabled {
+    border: 1px solid #d8d8d8;
+    background-color: #f4f4f4;
+    color: #c3c3c3;
+    cursor: not-allowed;
   }
   .pickedAll:hover {
     opacity: 0.75;
