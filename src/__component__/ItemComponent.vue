@@ -258,15 +258,18 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :default-value="_items.value"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
+      <!--扩展属性  -->
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :default-data="_items.value"
+        :web-config="_items.props"
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
