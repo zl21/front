@@ -189,6 +189,16 @@
                     }
                   });
                 }
+
+                if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                    this.tabcmd.cmds.forEach((item, index) => {
+                      if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                        this.tabcmd.prem[index] = false;
+                      }
+                    });
+                  }
+                }
               });
               if (this.itemName !== this.tableName) { // 子表
                 const { tabrelation } = this.itemInfo;
@@ -478,10 +488,22 @@
 
         //   console.log(event.detail);
         // }, false);
-        
-        this.clearEditData();
-        const message = '刷新成功';
-        this.upData(`${message}`);
+      
+        if (this.itemInfo.webact) { // 兼容半定制界面
+          const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
+          if (webactType !== 'order') {
+            DispatchEvent('clickButtonsRefresh', {
+              detail: {
+                a: '刷新'
+              }
+            });
+            this.clearEditData();
+          }
+        } else {
+          this.clearEditData();
+          const message = '刷新成功';
+          this.upData(`${message}`);
+        }
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
@@ -597,7 +619,8 @@
             onOk: () => {
               this.saveButtonPath = obj.requestUrlPath;
               const dom = document.getElementById('actionMODIFY');
-              dom.click();
+              const myEvent = new Event('click');
+              dom.dispatchEvent(myEvent);
               this.saveEventAfter = 'submit';
             }
           };
@@ -1061,6 +1084,9 @@
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
+                  } else {
+                    this.updateRefreshButton(true);
+                    this.dataArray.refresh = this.refreshButtons;
                   }
                 });
               }
@@ -1083,7 +1109,6 @@
                         }
                       }
                       this.updateRefreshButton(true);
-                      console.log(this.refreshButtons);
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1122,18 +1147,23 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          tabwebact.objbutton.forEach((item, index) => {
+        if (this.itemName === this.tableName) {
+          this.webactButton(tabwebact.objbutton);
+        } else {
+          this.webactButton(tabwebact.objtabbutton);
+        }
+      },
+      webactButton(buttonData) { // 自定义按钮渲染
+        if (buttonData && buttonData.length > 0) {
+          buttonData.forEach((item, index) => {
             if (item.ishide) {
-              tabwebact.objbutton.splice(index);
+              buttonData.splice(index);
             }
-
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
             this.isrefrsh = item.isrefrsh;
           });
         }
       },
-
       addButtonShow(tabcmd) { // 判断按钮显示的条件是否为新增
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
@@ -1504,7 +1534,26 @@
         // }, 2000);
       },
       objectSave(obj) { // 按钮保存操作
-        this.determineSaveType(obj);
+        if (this.itemInfo.webact) {
+          if (this.objectType === 'vertical') {
+            this.determineSaveType(obj);
+            // DispatchEvent('objectSaveClick', {
+            //   detail: {
+            //     a: '刷新'
+            //   }
+            // });
+          } else {
+            this.saveParameters();
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                mainTableParame: this.currentParameter,
+                itemTableParame: this.itemCurrentParameter
+              }
+            });
+          }
+        } else {
+          this.determineSaveType(obj);
+        }
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -1573,28 +1622,30 @@
         const path = obj.requestUrlPath;
         const type = 'modify';
         const objId = this.itemId;
-
         if (this.objectType === 'vertical') {
           // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
           // } else {
           //   this.itemTableValidation = true;
           // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
-            if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length < 1 && Object.values(this.updateData[itemName].add[itemName]).length < 1) {
+            let itemModify = [];
+            let itemAdd = [];
+            if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
+              itemModify = Object.values(this.updateData[itemName].modify[itemName]);
+            }
+            if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+              itemAdd = Object.values(this.updateData[itemName].add[itemName]);
+            }
+            // if (this.updateData[itemName] && this.updateData[itemName].modify[itemName] && Object.values(this.updateData[itemName].modify[itemName]).length === 0 && Object.values(this.updateData[itemName].add[itemName]).length === 0) {
+            if (itemModify.length === 0 && itemAdd.length === 0) {
+              // if (!this.updateData[itemName].modify[itemName] && !this.updateData[itemName].add[itemName]) { // 主表修改保存（判断子表无新增且无修改）
               if (obj.requestUrlPath) { // 配置path
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               } else { // 没有配置path    if (this.verifyRequiredInformation()) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
+              // }
             } else {
-              let itemModify = [];
-              let itemAdd = [];
-              if (this.updateData[itemName].modify && this.updateData[itemName].modify[itemName]) {
-                itemModify = Object.values(this.updateData[itemName].modify[itemName]);
-              }
-              if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
-                itemAdd = Object.values(this.updateData[itemName].add[itemName]);
-              }
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
                 if (this.itemTableCheckFunc()) {
@@ -1608,6 +1659,15 @@
               if (itemAdd.length > 0 && itemModify.length > 0) {
                 if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
+                }
+              }
+              if (Version() === '1.3') {
+                let mainModify = [];
+                if (this.updateData[this.tableName].modify) {
+                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+                }
+                if (mainModify.length > 0) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
                 }
               }
             }
@@ -1659,6 +1719,16 @@
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
+              }
+            }
+
+            if (Version() === '1.3') {
+              let mainModify = [];
+              if (this.updateData[this.tableName].modify) {
+                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              }
+              if (mainModify.length > 0) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
               }
             }
           }
@@ -1796,6 +1866,13 @@
           stop = false;
           removeMessage = false;
           this.saveAfter(type, tableName, stop, removeMessage);
+          if (this.objectType === 'vertical') { // 上下结构半定制界面需要走完主表保存，再走定制界面保存
+            DispatchEvent('objectSaveClick', {
+              detail: {
+                a: '刷新'
+              }
+            });
+          }
         }, () => {
           stop = true;
           removeMessage = true;
@@ -1805,8 +1882,9 @@
         });
       },
       saveAfter(type, tableName, stop, removeMessage) {
-        this.clearEditData();// 清空store update数据
-
+        if (!stop) { // 保存失败时，不清空store里面存的参数，
+          this.clearEditData();// 清空store update数据
+        }
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
@@ -1991,6 +2069,16 @@
                 });
               }
             }
+            if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+              if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                this.tabcmd.cmds.forEach((item, index) => {
+                  if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                    this.tabcmd.prem[index] = false;
+                  }
+                });
+              }
+            }
+        
             const { tabinlinemode } = this.itemInfo;
             if (tabinlinemode === 'N') {
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
@@ -2013,7 +2101,9 @@
           }
         });
       }
-      this.buttonsReorganization(this.tabcmd);
+      if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+        this.buttonsReorganization(this.tabcmd);
+      }
       this.waListButtons(this.tabwebact);
       if (this.jflowPluginDataArray) {
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;

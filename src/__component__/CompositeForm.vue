@@ -85,13 +85,9 @@
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
 
-  const {
-    fkQueryList,
-    fkFuzzyquerybyak,
-    fkGetMultiQuery,
-    fkDelMultiQuery
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  
   export default {
     name: 'CompositeForm',
     components: {},
@@ -194,7 +190,7 @@
         formData: {}, // 监听form变化
         formDataDef: {}, // 监听form 变化有value 和 文字
         VerificationForm: [], // 校验form
-        VerificationFormItem: [],
+        VerificationFormItem: [], // 需要验证的组件
         defaultFormData: {}, // form 默认值
         Mapping: {}, // 设置映射关系
         mapData: {}, // 全部联动关系
@@ -202,10 +198,10 @@
         mountNumber: 0, // 页面是否刷新
         verifyMessItem: {}, // 空form        watchComputFormList:[],
         FormItemComponent,
-        refcolvaData: {},
-        refcolvalAll: {},
-        conditiontype: '',
-        childFormData: [],
+        refcolvaData: {}, // 当前组件修改后和当前
+        refcolvalAll: {}, // 关联当前页面的 所有数据
+        conditiontype: '', // 是查询还是保存界面
+        childFormData: [],    
         computdefaultData: [], // form
         pathArry: [], // path 数组
         show: true,
@@ -219,9 +215,13 @@
         handler() {
           // 开启  默认值(刷新界面))
           this.mountChecked = false;
+          // 清空界面的 默认值
+          this.defaultFormData = {};
           // 开启 (刷新界面))
           this.mountNumber = (Math.random() * 1000).toFixed(0);
+          // 组件重组
           this.computdefaultData = this.reorganizeForm();
+
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
         },
@@ -339,14 +339,15 @@
                 array2.push(option);
                 return array2;
               }, []);
-
-              array.push({
-                childs: tem.concat([]),
-                hrdisplay: current.hrdisplay,
-                parentdesc: current.parentdesc,
-                parentname: current.parentname,
-                isTitleShow: !current.isTitleShow
-              });
+              if (array !== undefined) {
+                array.push({
+                  childs: tem.concat([]),
+                  hrdisplay: current.hrdisplay,
+                  parentdesc: current.parentdesc,
+                  parentname: current.parentname,
+                  isTitleShow: !current.isTitleShow
+                });
+              }
               return array;
             }
           }, []);
@@ -368,7 +369,9 @@
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
-          data[current.item.field] = data[current.item.field].toUpperCase();
+          if (typeof data[current.item.field] === 'string') { 
+            data[current.item.field] = data[current.item.field].toUpperCase();
+          }
         }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
@@ -456,7 +459,6 @@
           }
           return arr;
         }, {});
-
         // 外部change的值(复制修改过后的值 去修改 页面)
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
@@ -494,6 +496,9 @@
                 if (this.type === 'PanelForm') {
                   // 是否是面板
                   //  组建是否获取光标
+                  if (current.display === 'textarea') {
+                    return;
+                  }
                   this.focusItem(index, current, array);
                 }
                 this.searchClickData();
@@ -522,14 +527,14 @@
               }
             },
             'on-delete': ($this, item, key) => {
-              fkDelMultiQuery({
+              fkHttpRequest().fkDelMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid,
                   modelname: key
                 },
                 serviceId: current.serviceId,
                 success: () => {
-                  fkGetMultiQuery({
+                  fkHttpRequest().fkGetMultiQuery({
                     searchObject: {
                       tableid: item.props.fkobj.reftableid
                     },
@@ -568,7 +573,7 @@
             },
             'popper-show': ($this, item) => {
               // 当气泡拉展开时去请求数据
-              fkGetMultiQuery({
+              fkHttpRequest().fkGetMultiQuery({
                 searchObject: {
                   tableid: item.props.fkobj.reftableid
                 },
@@ -631,7 +636,7 @@
                   range: $this.pageSize
                 };
               }
-              fkQueryList({
+              fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
@@ -704,7 +709,7 @@
                   range: $this.pageSize
                 };
               }
-              fkQueryList({
+              fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
                 success: (res) => {
@@ -770,7 +775,7 @@
           };
         }
 
-        fkFuzzyquerybyak({
+        fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
           serviceId: current.serviceId,
           success: (res) => {
@@ -986,9 +991,11 @@
             }
           } catch (err) {
             if (typeof item.valuedata === 'string') {
-              arr = [{
-                URL: item.valuedata
-              }];
+              if (item.valuedata.length > 0) {
+                arr = [{
+                  URL: item.valuedata
+                }];
+              }
             } else {
               arr = [];
             }
@@ -1449,6 +1456,7 @@
             height: 120,
             readonly,
             ImageSize,
+            name: '上传',
             masterName: this.masterName,
             objId: this.masterId,
             sendData: {

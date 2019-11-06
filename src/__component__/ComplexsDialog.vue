@@ -29,8 +29,7 @@
 <script>
   import { Version } from '../constants/global';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  const multipleComple = require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
+  const multipleComple = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
 
   export default {
     name: 'ComplexSelect',
@@ -751,7 +750,7 @@
         this.multipleSelectionTable(this.sendMessage, 0);
       },
       multipleSetMultiQuery(obj) {
-        multipleComple.multipleSetMultiQuery({
+        multipleComple().multipleSetMultiQuery({
           searchObject: obj,
           serviceId: this.fkobj.serviceId,
           success: (res) => {
@@ -762,7 +761,7 @@
         });
       },
       multipleSelectionTree(obj) {
-        multipleComple.multipleSelectionTree({
+        multipleComple().multipleSelectionTree({
           searchObject: {
             param: {
               TABLENAME: obj.reftable
@@ -777,7 +776,7 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
-        multipleComple.multipleSelectionTable({
+        multipleComple().multipleSelectionTable({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
@@ -809,7 +808,7 @@
         } else {
           CONDITION = obj.CONDITION;
         }
-        multipleComple.multipleScreenResultCheck({
+        multipleComple().multipleScreenResultCheck({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
@@ -832,7 +831,7 @@
       multipleScreenResultCheckFiter(obj, index, type) {
         this.IN = obj.IN;
         this.NOTIN = obj.NOTIN;
-        multipleComple.multipleScreenResultCheck({
+        multipleComple().multipleScreenResultCheck({
           searchObject: {
             param: {
               TABLENAME: obj.TABLENAME,

@@ -171,7 +171,11 @@
 
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
-  import network, { urlSearchParams } from '../../__utils__/network';
+  // import network, { urlSearchParams } from '../../__utils__/network';
+  import { Version } from '../../constants/global';
+
+  const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
+
 
   export default {
     data() {
@@ -619,18 +623,32 @@
         return false;
       }, // 校验是否有未保存的数据
       getButtonData() {
-        network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
-          .then((res) => {
+        const params = { AD_ACTION_NAME: 'functionPermission' };
+        functionPowerActions().fetchActionsInCustomizePage({
+          params,
+          success: (res) => {
             if (res.data.code === 0) {
               this.buttonsData = res.data.data;
-              this.buttonsData.push({
-                webdesc: '刷新'
-              });
+              if (Version() === '1.4') {
+                this.buttonsData.push({
+                  webdesc: '刷新'
+                });
+              }
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.buttonsData = res.data.data;
+        //       this.buttonsData.push({
+        //         webdesc: '刷新'
+        //       });
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 获取按钮数据
       menuClick(index, item) {
         this.menuHighlightIndex = index;
@@ -660,8 +678,8 @@
         }
       }, // 左侧树点击
       getTreeData(resolve, reject) {
-        network.post('/p/cs/getMenuTree', urlSearchParams({}))
-          .then((res) => {
+        functionPowerActions().getMenuTree({
+          success: (res) => {
             if (res.data.code === 0) {
               resolve();
               const resData = res.data.data;
@@ -670,11 +688,23 @@
             } else {
               reject();
             }
-          })
-          .catch((err) => {
-            reject();
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/getMenuTree', urlSearchParams({}))
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       resolve();
+        //       const resData = res.data.data;
+        //       this.restructureTreeDada(resData);
+        //       this.treeData = [...resData];
+        //     } else {
+        //       reject();
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     reject();
+        //     throw err;
+        //   });
       }, // 获取树数据
       restructureTreeDada(data) {
         data.map((item) => {
@@ -685,7 +715,7 @@
             this.adTableCateId = item.ad_tablecategory_id;
           }
           item.title = item.description;
-          if (item.children && item.children.length > 0 && item.children[0].children.length > 0) {
+          if (item.children && item.children.length > 0 && item.children.find(cur => cur.children.length > 0)) {
             this.restructureTreeDada(item.children);
           } else {
             delete item.children;
@@ -694,25 +724,37 @@
         });
       }, //  整合树数据
       getMenuData(resolve, reject) {
-        network.post('/p/cs/groupTreeload', urlSearchParams({}))
-          .then((res) => {
+        functionPowerActions().groupTreeload({
+          success: (res) => {
             if (res.data.code === 0) {
               resolve();
-              // this.menuHighlightIndex = 0;
-              // this.menuList = res.data.data;
-              // this.groupId = this.menuList[this.menuHighlightIndex].ID;
-
               this.groupId = res.data.data[0].ID;
               this.newGroupId = res.data.data[0].ID;
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
             }
-          })
-          .catch((err) => {
-            reject();
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/groupTreeload', urlSearchParams({}))
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       resolve();
+        //       // this.menuHighlightIndex = 0;
+        //       // this.menuList = res.data.data;
+        //       // this.groupId = this.menuList[this.menuHighlightIndex].ID;
+        //
+        //       this.groupId = res.data.data[0].ID;
+        //       this.newGroupId = res.data.data[0].ID;
+        //       this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
+        //     } else {
+        //       reject();
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     reject();
+        //     throw err;
+        //   });
       }, // 获取菜单数据
       restructureMenuTreeData(data, first) {
         return data.map((item, idx) => {
@@ -740,8 +782,9 @@
             GROUP_ID: this.groupId
           };
         }
-        network.post('/p/cs/queryMenuPermission', obj)
-          .then((res) => {
+        functionPowerActions().queryMenuPermission({
+          params: obj,
+          success: (res) => {
             this.spinShow = false;
             if (res.data.code === 0) {
               if (res.data.data) {
@@ -801,11 +844,74 @@
                 });
               }
             }
-          })
-          .catch((err) => {
-            this.spinShow = false;
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/queryMenuPermission', obj)
+        //   .then((res) => {
+        //     this.spinShow = false;
+        //     if (res.data.code === 0) {
+        //       if (res.data.data) {
+        //         const resData = res.data.data;
+        //         this.tableData = resData.reduce((acc, cur) => {
+        //           const disabledArr = cur.mask.split('');
+        //           const valueArr = this.toBin(cur.permission).split('');
+        //           // 查看
+        //           cur.seeDisabled = disabledArr[0] === '0';
+        //           cur.seeValue = valueArr[0] === '1';
+        //
+        //           // 编辑
+        //           cur.editDisabled = disabledArr[1] === '0';
+        //           cur.editValue = valueArr[1] === '1';
+        //
+        //           // 删除
+        //           cur.deleteDisabled = disabledArr[2] === '0';
+        //           cur.deleteValue = valueArr[2] === '1';
+        //
+        //           // 作废
+        //           cur.toVoidDisabled = disabledArr[3] === '0';
+        //           cur.toVoidValue = valueArr[3] === '1';
+        //
+        //           // 提交
+        //           cur.commitDisabled = disabledArr[4] === '0';
+        //           cur.commitValue = valueArr[4] === '1';
+        //
+        //           // 反提交
+        //           cur.unCommitDisabled = disabledArr[5] === '0';
+        //           cur.unCommitValue = valueArr[5] === '1';
+        //
+        //           // 导出
+        //           cur.exportDisabled = disabledArr[6] === '0';
+        //           cur.exportValue = valueArr[6] === '1';
+        //
+        //           // 打印
+        //           cur.printDisabled = disabledArr[7] === '0';
+        //           cur.printValue = valueArr[7] === '1';
+        //
+        //           // 扩展
+        //           cur.extendDisabled = cur.actionList.length === 0;
+        //           cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
+        //
+        //           acc.push(cur);
+        //           return acc;
+        //         }, []);
+        //         this.getExtendTableData(this.tableData[0], 0);
+        //         this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
+        //         this.tableDefaultSelectedRowIndex = 0;
+        //
+        //         this.allTabthSelected();
+        //       } else {
+        //         this.$Modal.fcWarning({
+        //           title: '提示',
+        //           mask: true,
+        //           content: res.data.message,
+        //         });
+        //       }
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     this.spinShow = false;
+        //     throw err;
+        //   });
       }, // 获取表格数据
       getExtendValue(data) {
         const arr = data.reduce((acc, cur) => {
@@ -911,8 +1017,9 @@
           targetids: this.multiplePermissionId,
           type: this.copyType
         };
-        network.post('/p/cs/copyPermission', obj)
-          .then((res) => {
+        functionPowerActions().copyPermission({
+          params: obj,
+          success: (res) => {
             if (res.data.code === 0) {
               this.singlePermissionId = null;
               this.multiplePermissionId = null;
@@ -922,10 +1029,23 @@
                 content: res.data.message
               });
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/copyPermission', obj)
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.singlePermissionId = null;
+        //       this.multiplePermissionId = null;
+        //       this.copyType = '';
+        //       this.getTableData();
+        //       this.$Message.success({
+        //         content: res.data.message
+        //       });
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 复制权限弹框确定按钮
       rowCheckboxChange(currentValue, params) {
         // 选中该行数据
@@ -946,7 +1066,7 @@
           }
         } else {
           // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
-          this.selectedSeeColumn(params.index, currentValue);
+          this.selectedSeeColumn(params, currentValue);
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
@@ -981,10 +1101,11 @@
         const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
         this.tableData[findIndex] = params.row;
       }, // 取消整行的选中
-      selectedSeeColumn(index, currentValue) {
+      selectedSeeColumn(params, currentValue) {
         if (currentValue) {
-          this.tableData[index].seeValue = currentValue;
+          this.tableData[params.index].seeValue = currentValue;
         }
+        this.tabthCheckboxSelected(this.columns[1], 'see');
       }, // 选中查看列
       editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
@@ -1091,6 +1212,7 @@
               // this.columns[findIndex][`${columnKey}Value`] = false;
             }
           }
+          this.columns = this.columns.concat([]);
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {
@@ -1362,8 +1484,9 @@
             GROUPID: this.groupId,
             CP_C_GROUPPERM: this.tableSaveData
           };
-          network.post('/p/cs/savePermission', obj)
-            .then((res) => {
+          functionPowerActions().savePermission({
+            params: obj,
+            success: (res) => {
               if (res.data.code === 0) {
                 if (type === 'refresh') {
                   this.refresh();
@@ -1377,10 +1500,27 @@
                   content: res.data.message
                 });
               }
-            })
-            .catch((err) => {
-              throw err;
-            });
+            }
+          });
+          // network.post('/p/cs/savePermission', obj)
+          //   .then((res) => {
+          //     if (res.data.code === 0) {
+          //       if (type === 'refresh') {
+          //         this.refresh();
+          //       } else {
+          //         this.groupId = this.newGroupId;
+          //         this.adSubsystemId = this.newAdSubsystemId;
+          //         this.adTableCateId = this.newAdTableCateId;
+          //         this.getTableData();
+          //       }
+          //       this.$Message.success({
+          //         content: res.data.message
+          //       });
+          //     }
+          //   })
+          //   .catch((err) => {
+          //     throw err;
+          //   });
         }
       }, // 保存数据
       getSaveData() {
@@ -1419,18 +1559,29 @@
         }, []);
       }, // 获得保存的数据
       getCopyPermissionData() {
-        network.post('/p/cs/cgroupsquery', { NAME: '' })
-          .then((res) => {
+        functionPowerActions().cgroupsquery({
+          params: { NAME: '' },
+          success: (res) => {
             if (res.data.code === 0) {
               this.backupsDropData = res.data.data;
               this.totalRowCount = res.data.data.length;
               this.getSingleDropSelectData(1, res.data.data);
               this.getMultipleDropSelectData(1, res.data.data);
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/cgroupsquery', { NAME: '' })
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.backupsDropData = res.data.data;
+        //       this.totalRowCount = res.data.data.length;
+        //       this.getSingleDropSelectData(1, res.data.data);
+        //       this.getMultipleDropSelectData(1, res.data.data);
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 获取复制权限外键的数据
       getSingleDropSelectData(pageValue, data) {
         const start = (pageValue - 1) * this.dropPageSize;

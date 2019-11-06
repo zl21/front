@@ -20,7 +20,7 @@
             class="detail-buttons"
           >
             <a
-              v-for="item in buttonGroups"
+              v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
@@ -53,7 +53,7 @@
               :label="item.name"
               :value="item.isfk ? item.inputname : item.colname"
             >
-              {{ item.label }}
+              {{ item.name }}
             </Option>
           </Select>
           <div class="detail-search-input">
@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+               >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -132,10 +132,7 @@
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
-  const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
-    // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -155,6 +152,7 @@
     },
     data() {
       return {
+        buttonData: [],
         currentPage: 1, // 当前页码
         isRefreshClick: false, // 是否点击了刷新
 
@@ -310,16 +308,18 @@
         if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
           if (tabcmd.cmds) {
             // 取主表path用于子表
-            this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
-              if (this.mainFormInfo.buttonsData.data.tabcmd.paths) {
-                this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-                  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                  if (index === i) {
-                    this.buttonPath[cmd] = path;
-                  }
-                });
-              }
-            });
+            if (this.mainFormInfo && this.mainFormInfo.buttonsData && this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd) {
+              this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
+                if (this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+                  this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+                    if (index === i) {
+                      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                      this.buttonPath[cmd] = path;
+                    }
+                  });
+                }
+              });
+            }
 
             tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
@@ -349,13 +349,25 @@
             });
           }
         }
+       
 
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
           buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
         }
-        return buttonGroupShow;
+
+        // 如果配置tabrelation为1:1 去除导入和删除
+        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+          buttonGroupShow.forEach((item, index) => {
+            if (item.eName !== 'actionEXPORT') {
+              buttonGroupShow.splice(index, 1);
+            }
+          });
+        }
+        const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        const b = JSON.parse(a);
+        return b;
       },
       isMainTableReadonly() {
         if (this.type === pageType.Vertical) {
@@ -375,6 +387,12 @@
       }
     },
     watch: {
+      buttonGroups: {
+        handler(val) {
+          this.buttonData = val;
+        },
+        deep: true
+      },
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
       },
@@ -562,7 +580,7 @@
               };
             }
 
-            itemTableDelete({
+            fkHttpRequest().itemTableDelete({
               params,
               path,
               success: (res) => {
@@ -1075,7 +1093,7 @@
                   value.transferDefaultSelected = [];
                 }
                 this.fkAutoData = [];
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -1190,22 +1208,22 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                            cur.childs.forEach((item) => {
-                              acc.push(item);
-                            });
-                            return acc;
-                          }, [])
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
-                          return acc;
-                        }, [])
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
                       this.$Message.info(`请选择${obj.name}`);
                     }
@@ -1261,7 +1279,7 @@
                   value.transferDefaultSelected = [];
                 }
                 this.fkAutoData = [];
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -1569,7 +1587,7 @@
                                             value: '导入',
                                             lable: 2
                                           }];
-                fkGetMultiQuery({
+                fkHttpRequest().fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
                   },
@@ -1623,7 +1641,7 @@
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                   return;
                 }
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.copyDataSource.row[params.index][cellData.colname].colid,
@@ -1808,7 +1826,6 @@
                   id: data.refobjid
                 });
               } else if (cellData.objdistype === 'tabpanle') {
-
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
@@ -1846,7 +1863,6 @@
                   id: params.row[data.refobjid]
                 });
               } else if (data.objdistype === 'tabpanle') {
-
                 this.tabHref({
                   type: 'tableDetailHorizontal',
                   tableName: data.reftablename,
@@ -2089,15 +2105,17 @@
       reloadErrorTips(data) {
         // const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
         this.dataSource.row.map((ele) => {
-          const exceptFlag = data.every((item) => {
-            if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
-              return true;
+          if (data.every) {
+            const exceptFlag = data.every((item) => {
+              if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
+                return true;
+              }
+              ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
+              return false;
+            });
+            if (exceptFlag) {
+              ele.errorTips = '';
             }
-            ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
-            return false;
-          });
-          if (exceptFlag) {
-            ele.errorTips = '';
           }
           return ele;
         });
@@ -2225,7 +2243,7 @@
           startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize,
           range: this.fkDropPageInfo.pageSize
         };
-        fkQueryList({
+        fkHttpRequest().fkQueryList({
           searchObject: searchdata,
           success: (res) => {
             this.fkData = res.data.data;
@@ -2301,7 +2319,19 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
             } else {
-              fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // debugger;
+              // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // 上下结构子表
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
             }
           }
         }
@@ -2529,6 +2559,7 @@
 
     },
     mounted() {
+      this.buttonData = this.buttonGroups;
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
           this.isRefreshClick = true;

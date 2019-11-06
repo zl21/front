@@ -9,20 +9,25 @@
       @on-page-size-change="pageSizeChange"
     />
     <div
-      ref="agGridTableContainer"
       v-if="!isCommonTable"
+      ref="agGridTableContainer"
       class="detailTable"
     />
-    <div class="common-table" v-if="isCommonTable">
-      <CommonTable :datas="datas"
-                   ref="commonTable"
-                   @CustomizedDialog="customizedDialog"
-                   :cssStatus="cssStatus"
-                   :errorArr="errorArr"
-                   :onRowDoubleClick="onRowDoubleClick"
-                   :onSortChanged="onSortChanged"
-                   :onSelectionChanged="onSelectionChanged"
-                   :onRowSingleClick="onRowSingleClick"></CommonTable>
+    <div
+      v-if="isCommonTable"
+      class="common-table"
+    >
+      <CommonTable
+        ref="commonTable"
+        :datas="datas"
+        :css-status="cssStatus"
+        :error-arr="errorArr"
+        :on-row-double-click="onRowDoubleClick"
+        :on-sort-changed="onSortChanged"
+        :on-selection-changed="onSelectionChanged"
+        :on-row-single-click="onRowSingleClick"
+        @CustomizedDialog="customizedDialog"
+      />
     </div>
     <div class="queryDesc">
       <div

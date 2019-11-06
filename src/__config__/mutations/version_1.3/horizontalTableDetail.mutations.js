@@ -68,9 +68,11 @@ export default {
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateButtonsData(state, data) {
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.buttonsData.isShow = true;
-    componentAttribute.buttonsData.data = data;
+    if (!state.instanceId) {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data = data;
+    }
   }, // 更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -79,7 +81,10 @@ export default {
     }
     componentAttribute.formData.data = data;
   }, //
-
+  updateButtonsDataForCustomization(state, { tabIndex, isShowValue }) {
+    const { componentAttribute } = state.tabPanels[tabIndex];
+    componentAttribute.buttonsData.isShow = isShowValue;
+  }, // 全定制tab更新按钮数据
   updatePanelData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.panelData.isShow = true;
@@ -181,13 +186,42 @@ export default {
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     // state.defaultDataForCopy = copyData;
     const copySaveDataForParam = {};// 整合changeData所需数据格式
+    const hidecolunmArray = [];
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         d.childs.forEach((c) => {
           item.childs.forEach((b) => {
+            if (c.hidecolumn) {
+              if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
+                if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
+                  c.valuedata = '';
+                  hidecolunmArray.push(c);
+                }
+              } 
+            }         
             if (b.name === c.name) {
               b.readonly = c.readonly;
-              if (b.webconf && b.webconf.clearWhenHidden) { // 去除配置了clearWhenHidden的
+              if (hidecolunmArray.length > 0) {
+                hidecolunmArray.forEach((hidecolumnItem) => {
+                  if (b.colname !== hidecolumnItem.colname) {
+                    if (c.readonly === true) {
+                      if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                        copySaveDataForParam[b.colname] = c.defval;
+                      } else {
+                        b.valuedata = '';// 将配置为不可编辑的值置空
+                      }
+                    } else if (b.valuedata) {
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                        copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                      } else if (b.fkdisplay === 'mop') {
+                        const number = JSON.parse(b.valuedata).lists.result.length;
+                        copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                      } else {
+                        copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                      }
+                    }
+                  }
+                });
               } else if (c.readonly === true) {
                 if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                   copySaveDataForParam[b.colname] = c.defval;
@@ -218,16 +252,21 @@ export default {
     //     });
     //   });
     // });
+    state.updateData[tableName].changeData.add = {}; 
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
+
     copyDatas.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
       if (item.parentdesc !== '日志') {
-        item.childs.forEach((itemValue, index) => {
-          if (itemValue.webconf) {
-            if (itemValue.webconf.clearWhenHidden) {
-              item.childs.splice(index, 1);
+        item.childs.forEach((itemValue) => {
+          item.childs.forEach((childValue) => {
+            if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
+              if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
+                itemValue.valuedata = '';
+                delete (itemValue.refobjid);
+              }
             }
-          }
+          });
         });
       }
     });
@@ -294,8 +333,12 @@ export default {
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
 
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
+    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     if (buttonAnother) { 
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;

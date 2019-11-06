@@ -67,11 +67,11 @@
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                if (items.item.value[0].ID) {
-                  option[items.item.field] = items.item.value[0].ID;
-                }
+                option[items.item.field] = items.item.value[0].ID;
               } else if (items.item.value[0]) {
                 if (items.item.type === 'ImageUpload') {
+                  option[items.item.field] = JSON.stringify(items.item.value);
+                } else if (items.item.type === 'docfile') {
                   option[items.item.field] = JSON.stringify(items.item.value);
                 } else {
                   option[items.item.field] = items.item.value[0];
@@ -81,9 +81,7 @@
               if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
                 option[items.item.field] = items.item.props.Selected[0].ID;
               } else {
-                option[items.item.field] = items.item.value 
-                  || items.item.props.valuedata
-                  || items.item.props.defval;
+                option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
               }
             }
 
@@ -491,7 +489,9 @@
                 .join(',');
               if (Version() === '1.3') {
                 //  id 转number
-                obj[current.item.field] = Number(obj[current.item.field]);
+                if (current.item.value.length < 2) {
+                  obj[current.item.field] = Number(obj[current.item.field]);
+                } 
               }
             } else if (this.condition !== '') {
               // 模糊查询

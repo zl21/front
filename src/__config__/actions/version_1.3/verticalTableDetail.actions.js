@@ -216,10 +216,10 @@ export default {
       tableName
     } = parame;
     const {
-      objId
+      add
     } = parame;
     const {
-      path
+      objId
     } = parame;
     const {
       type
@@ -239,14 +239,68 @@ export default {
     const { sataType } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
-      const { add } = parame;
-      parames = {
-        table: tableName, // 主表表名
-        objid: objId, // 固定传值-1 表示新增
-        data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-          ...add
+      if (isreftabs) { // 存在子表
+        if (itemNameGroup.length > 0) {
+          const itemAdd = itemCurrentParameter.add;
+          const {
+            addDefault
+          } = itemCurrentParameter;
+
+          if (Object.values(itemAdd[itemName]).length > 0) {
+            const itemTableAdd = Object.assign({}, itemAdd);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
+            ];
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+                ...itemTableAdd,
+              }
+            };
+          } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
+            const itemTableAdd = Object.assign({}, addDefault);
+            itemTableAdd[itemName].ID = objId;
+            itemTableAdd[itemName] = [
+              itemTableAdd[itemName]
+            ];
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+                ...itemTableAdd,
+              }
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objid: objId, // 固定传值-1 表示新增
+              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...add,
+              }
+            };
+          }
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, 
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...add,
+            }
+          };
         }
-      };
+      } else {
+        parames = {
+          table: tableName, // 主表表名
+          objid: objId, // 固定传值-1 表示新增
+          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            ...add
+          }
+        };
+      }
       network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
@@ -261,15 +315,15 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const itemModify = itemCurrentParameter.modify;// 子表修改
+      const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
 
-      const itemDefault = itemCurrentParameter.default;
-      const itemAdd = itemCurrentParameter.add;// 子表新增
+      const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
+      const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       const sataTypeName = sataType ? sataType.sataType : '';
       const dufault = parame.default;
       if (sataTypeName === 'add') { // 子表新增
-        const addDefault = itemCurrentParameter.addDefault;
+        const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
         Object.assign(itemAdd[itemName], add);
         const itemTableAdd = Object.assign({}, itemAdd);
@@ -336,7 +390,7 @@ export default {
         });
       } else if (sataTypeName === 'addAndModify') {
         if (Object.values(itemAdd[itemName]).length > 0) {
-          const addDefault = itemCurrentParameter.addDefault;
+          const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
           const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);

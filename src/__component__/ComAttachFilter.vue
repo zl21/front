@@ -46,13 +46,7 @@
   import dataProp from '../__config__/props.config';
   import { Version } from '../constants/global';
 
-
-  const {
-    fkFuzzyquerybyak,
-    fkGetMultiQuery,
-    fkDelMultiQuery
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ComAttachFilter',
@@ -130,7 +124,7 @@
         if (!value) {
           return false;
         }
-        fkFuzzyquerybyak({
+        fkHttpRequest().fkFuzzyquerybyak({
           searchObject: {
             ak: value,
             colid: this.propsData.fkobj.colid || this.propsData.colid,
@@ -195,14 +189,14 @@
             this.filterDate = JSON.parse(row.label);
           }
         } else if (targName === 'I') {
-          fkDelMultiQuery({
+          fkHttpRequest().fkDelMultiQuery({
             searchObject: {
               tableid: this.propsData.fkobj.reftableid,
               modelname: row.key
             },
             serviceId: this.propsData.serviceId,
             success: () => {
-              fkGetMultiQuery({
+              fkHttpRequest().fkGetMultiQuery({
                 searchObject: {
                   tableid: this.propsData.fkobj.reftableid
                 },
@@ -248,7 +242,7 @@
           });
         }        
         if (instance.showModal === false) {
-          fkGetMultiQuery({
+          fkHttpRequest().fkGetMultiQuery({
             searchObject: {
               tableid: this.propsData.fkobj.reftableid
             },

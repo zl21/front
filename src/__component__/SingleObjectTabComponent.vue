@@ -37,10 +37,14 @@
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
     />
-    <div style="overflow-y: auto;flex:1;">
+    <div
+      v-if="componentName"
+      style="overflow-y: auto;flex:1;"
+    >
       <component
         :is="customizeComponent"
         v-if="componentName"
+        :item-info="itemInfo"
       />
       <compositeForm
         v-if="panelData.isShow"
@@ -62,7 +66,25 @@
         @VerifyMessage="verifyFormPanel"
       />
     </div>
-    
+    <compositeForm
+      v-if="panelData.isShow&&!componentName"
+      :is-main-table="isMainTable"
+      :object-type="type"
+      :objreadonly="objreadonly"
+      :default-set-value="changeData"
+      :master-name="$route.params.tableName"
+      :master-id="$route.params.itemId"
+      :module-form-type="type"
+      :class="type === 'vertical' ? 'verticalFormPanel' : 'formPanel'"
+      type="PanelForm"
+      :default-data="panelData.data"
+      :paths="formPaths"
+      :isreftabs="isreftabs"
+      :child-table-name="tableName"
+      @formChange="formPanelChange"
+      @InitializationForm="initFormPanel"
+      @VerifyMessage="verifyFormPanel"
+    />
     <component
       :is="objectTableComponent"
       v-if="tableData.isShow"
@@ -238,11 +260,11 @@
           if (Vue.component(buttonComponent) === undefined) {
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
           }
-          if(this.componentName) {
-            Vue.component(this.componentName, CustomizeModule[this.componentName].component);
+        }
+        if(this.componentName) {
+          Vue.component(this.componentName, CustomizeModule[this.componentName].component);
 
-            this.customizeComponent = this.componentName;
-          }
+          this.customizeComponent = this.componentName;
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
@@ -285,6 +307,8 @@
             savePath = this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.buttonsData.data.tabcmd.paths[1];
             this.determineSaveType(savePath);
           }
+        }else{
+          this.determineSaveType();
         }
       }, // 表单回车触发
       subtables() {

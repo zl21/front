@@ -12,20 +12,22 @@ function CreateButton(obj, buttons, id, store) {
   const stateTimeout = setInterval(() => {
     if (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) {
       clearInterval(stateTimeout);
-      const buttonsData = Object.assign(window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
-      buttonsData.data.tabcmd.prem.map(item => false);
+      const buttonsData = JSON.parse(JSON.stringify(window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData));
+      buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(item => false);
       const newButtons = [];
       const buttonAnother = [];
       window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
-      window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
+      window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
+        buttonsData: buttonsData.data.tabcmd.prem, newButtons, buttonAnother, instanceId: obj.instanceId 
+      });
     }
   }, 100);
 
-  window.addEventListener('jflowPlugin', (e) => {
-    if (e.detail.type === 'fresh') {
-      buttons(id);
-    }
-  }, false);
+  // window.addEventListener('jflowPlugin', (e) => {
+  //   if (e.detail.type === 'fresh') {
+  //     buttons(id);
+  //   }
+  // }, false);
   // const MODULE_COMPONENT_NAME = window.location.pathname.split('/').slice(3).join('.');
   // // -1, "撤销"
   // // 0, "同意"

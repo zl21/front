@@ -24,14 +24,57 @@ let businessStatus = 0; // 流程状态  -2时正在发起流程
 
 
 function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
-  const arr = JSON.parse(window.localStorage.getItem('businessTypes'));
-  tabcmd.cmds.map((item, index) => {
-    if (item === 'actionSUBMIT' && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
-      arr.push(tabcmd.paths[index]);
+  if (tabcmd) {
+    let businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+    let arr = [];
+    businessTypes.map((item) => {
+      if (item.businessType === router.currentRoute.params.tableId) {
+        arr = item.action;
+      }
+      return item;
+    });
+    tabcmd.cmds.map((item, index) => {
+      if (item === 'actionSUBMIT' && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
+        arr.push(tabcmd.paths[index]);
+      }
+      return item;
+    });
+    if (businessTypes.length > 0) {
+      businessTypes.map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          item.action = arr;
+        }
+        return item;
+      });
+    } else {
+      businessTypes = [{
+        action: arr,
+        businessType: router.currentRoute.params.tableId,
+        moduleId: null
+      }];
     }
-    return item;
-  });
-  window.localStorage.setItem('businessTypes', JSON.stringify(arr));
+    
+
+    window.localStorage.setItem('businessTypes', JSON.stringify(businessTypes));
+    // window.localStorage.setItem('businessTypes', JSON.stringify(arr));
+  } else {
+    axios.post('/jflow/p/cs/task/businessType/list', {}).then((res) => {
+      if (res.data.resultCode === 0) {
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes')) ? JSON.parse(window.localStorage.getItem('businessTypes')) : [];
+        res.data.data.businessTypes.map((item) => {
+          businessTypes.map((temp) => {
+            if (temp.businessType === item.businessType) {
+              item.action.concat(temp.action);
+            }
+            return temp;
+          });
+
+          return item;
+        });
+        window.localStorage.setItem('businessTypes', JSON.stringify(res.data.data.businessTypes));
+      }
+    });
+  }
 }
 
 function thirdlogin() { // 三方登录  获取accessToken
@@ -39,7 +82,7 @@ function thirdlogin() { // 三方登录  获取accessToken
     username: 'guest'
   }).then(() => {
     window.jflowPlugin.jflowIp = jflowIp;
-    window.localStorage.setItem('businessTypes', JSON.stringify(['/p/cs/batchSubmit', '/p/cs/objectSubmit']));
+    getConfigMap();
   });
 }
 
@@ -93,7 +136,9 @@ function RoutingGuard(router) { // 路由守卫
         jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
           next();
           setTimeout(() => {
-            CreateButton(res.data.data, jflowButtons, to.query.id);
+            if (res.data.resultCode === 0) {
+              CreateButton(res.data.data, jflowButtons, to.query.id);
+            }
           }, 300);
         });
         configurationFlag = true;
@@ -122,17 +167,18 @@ async function jflowsave(flag, request) {
           businessType: router.currentRoute.params.tableId,
           businessTypeName: router.currentRoute.params.tableName,
           initiator: userInfo.id,
+          userName: userInfo.name,
           instanceId,
           initiatorName: userInfo.name,
           changeUser: userInfo.id,
-          userName: userInfo.name,
           businessUrl: request.url,
           ruleField: 'V'
         }).then((res) => {
         if (res.data.data.records && res.data.data.records[0].notice) {
           window.vm.$Modal.fcError({
             title: '错误',
-            content: res.data.data.records[0].notice
+            content: res.data.data.records[0].notice,
+            mask: true
           });
           reject(response);
           return;
@@ -141,13 +187,16 @@ async function jflowsave(flag, request) {
           if (response.objids) {
             window.vm.$Modal.fcWarning({
               title: '提示',
-              content: '请稍等,正在审批······'
+              content: '请稍等,正在审批······',
+              mask: true
             });
           }
           instanceId = res.data.data.instanceId;
-          jflowButtons(response.objid);
-          if (document.getElementsByClassName('button-group')[0]) {
-            const children = document.getElementsByClassName('button-group')[0].children;
+
+          
+          if (document.getElementsByClassName('R3-button-group')[0]) {
+            jflowButtons(router.currentRoute.params.itemId);
+            const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.innerText === '刷新') {
                 const style = document.createElement('style');
@@ -168,8 +217,6 @@ async function jflowsave(flag, request) {
                 }, 5000);
               }
             }
-
-            jflowButtons(response.objId);
           }
           reject(response);
         } else {
@@ -215,7 +262,13 @@ function AxiosGuard(axios) { // axios拦截
     const type = router.currentRoute.path.split('/')[3];// 获取组件类型
 
     if (configurationFlag) { // 配置了流程图并判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
-      const launchConfig = JSON.parse(window.localStorage.getItem('businessTypes'));
+      let launchConfig = [];
+      JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          launchConfig = item.action;
+        }
+        return item;
+      });
       // jflow流程发起
       const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
       for (let i = 0; i < launchConfig.length; i++) {
@@ -265,17 +318,17 @@ function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配
     data.addcolums.map((item) => {
       if (item.childs) {
         item.childs.map((temp) => {
-          temp.readonly = true;
-          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0) {
+          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
             temp.readonly = false;
+          } else {
+            temp.readonly = true;
           }
           return temp;
         });
+      } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
+        item.child.readonly = false;
       } else {
         item.child.readonly = true;
-        if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0) {
-          item.child.readonly = false;
-        }
       }
       
       return item;

@@ -85,12 +85,22 @@ export default {
               if (resData.reftabs[0].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    const fixedcolumns = {};
+                    if (resData.tabfilter && resData.tabfilter.length > 0) {
+                      const defaultObj = resData.tabfilter.find(item => item.default);
+                      if (defaultObj) {
+                        fixedcolumns[defaultObj.colname] = defaultObj.default;
+                      }
+                    }
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
                       searchdata: {
-                        column_include_uicontroller: true
+                        column_include_uicontroller: true,
+                        startindex: 0,
+                        range: 10,
+                        fixedcolumns
                       },
                       tabIndex
                     };
@@ -237,6 +247,7 @@ export default {
       itemNameGroup
     } = parame;
     let parames = {};
+    
 
     if (type === 'add') { // 新增保存参数
       const {
@@ -437,7 +448,12 @@ export default {
             };
           }
         } else if (path) { // 主表保存有path的参数
-          modify[tableName].ID = objId; // 主表id
+          if (!modify[tableName]) {
+            modify[tableName] = {};
+            modify[tableName].ID = objId; // 主表id
+          } else {
+            modify[tableName].ID = objId; // 主表id
+          }
           parames = {
             ...modify
           };

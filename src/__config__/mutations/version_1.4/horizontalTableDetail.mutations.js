@@ -68,10 +68,16 @@ export default {
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateButtonsData(state, data) {
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.buttonsData.isShow = true;
-    componentAttribute.buttonsData.data = data;
+    if (!state.instanceId) {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.buttonsData.isShow = true;
+      componentAttribute.buttonsData.data = data;
+    }
   }, // 更新按钮数据
+  updateButtonsDataForCustomization(state, { tabIndex, isShowValue }) {
+    const { componentAttribute } = state.tabPanels[tabIndex];
+    componentAttribute.buttonsData.isShow = isShowValue;
+  }, // 全定制tab更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     if (data.inpubobj) {
@@ -182,26 +188,43 @@ export default {
             }         
             if (b.name === c.name) {
               b.readonly = c.readonly;
-              hidecolunmArray.forEach((hidecolumnItem) => {
-                if (b.colname !== hidecolumnItem.colname) {
-                  if (c.readonly === true) {
-                    if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
-                      copySaveDataForParam[b.colname] = c.defval;
-                    } else {
-                      b.valuedata = '';// 将配置为不可编辑的值置空
-                    }
-                  } else if (b.valuedata) {
-                    if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
-                      copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                    } else if (b.fkdisplay === 'mop') {
-                      const number = JSON.parse(b.valuedata).lists.result.length;
-                      copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                    } else {
-                      copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+              if (hidecolunmArray.length > 0) {
+                hidecolunmArray.forEach((hidecolumnItem) => {
+                  if (b.colname !== hidecolumnItem.colname) {
+                    if (c.readonly === true) {
+                      if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                        copySaveDataForParam[b.colname] = c.defval;
+                      } else {
+                        b.valuedata = '';// 将配置为不可编辑的值置空
+                      }
+                    } else if (b.valuedata) {
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                        copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                      } else if (b.fkdisplay === 'mop') {
+                        const number = JSON.parse(b.valuedata).lists.result.length;
+                        copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                      } else {
+                        copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                      }
                     }
                   }
+                });
+              } else if (c.readonly === true) {
+                if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                  copySaveDataForParam[b.colname] = c.defval;
+                } else {
+                  b.valuedata = '';// 将配置为不可编辑的值置空
                 }
-              });
+              } else if (b.valuedata) {
+                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                  copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                } else if (b.fkdisplay === 'mop') {
+                  const number = JSON.parse(b.valuedata).lists.result.length;
+                  copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                } else {
+                  copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                }
+              }
             }
           });
         });
@@ -216,6 +239,7 @@ export default {
     //     });
     //   });
     // });
+    state.updateData[tableName].add = {};
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
 
@@ -226,6 +250,7 @@ export default {
             if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
               if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
                 itemValue.valuedata = '';
+                delete (itemValue.refobjid);
               }
             }
           });
@@ -294,8 +319,12 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
-  jflowPlugin(state, { buttonsData, newButtons, buttonAnother }) { // jflowPlugin按钮逻辑
+  jflowPlugin(state, {
+    buttonsData, newButtons, buttonAnother, instanceId 
+  }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
+    state.instanceId = instanceId;
+    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     if (buttonAnother) { 
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;

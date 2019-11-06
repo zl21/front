@@ -317,12 +317,7 @@
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
-  const {
-    fkQueuploadProgressry,
-    fkObjectSave,
-    deleteImg
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ItemComponent',
@@ -611,7 +606,7 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
-        if (!value[0].ID) {
+        if (!value[0].ID || value[0].ID === '-1') {
           value.splice(0, 1);
         }
         this._items.value = value;
@@ -1125,7 +1120,7 @@
       upSavefile(obj, fixedData, path) {
         // 保存文件
 
-        fkObjectSave({
+        fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
           },
@@ -1143,7 +1138,7 @@
       },
       deleteImgData(obj, index) {
         // 删除图片
-        deleteImg({
+        fkHttpRequest().deleteImg({
           params: {
             ...obj
           },
@@ -1171,7 +1166,7 @@
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
         }
-        fkQueuploadProgressry({
+        fkHttpRequest().fkQueuploadProgressry({
           searchObject: {
             uploadId: resultData.data.UploadId
           },
@@ -1330,7 +1325,7 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        fkObjectSave({
+        fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
           },

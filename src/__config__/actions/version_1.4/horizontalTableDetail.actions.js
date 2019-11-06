@@ -14,7 +14,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);
@@ -33,7 +32,7 @@ export default {
     });
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, {
-    maintable, table, objid, tabIndex
+    maintable, table, objid, tabIndex, resolve, reject
   }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -45,8 +44,23 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        if (resData.tabfilter && resData.tabfilter.length > 0) {
+          const defaultObj = resData.tabfilter.find(item => item.default);
+          if (defaultObj) {
+            const searchData = {
+              selectedValue: defaultObj.colname,
+              inputValue: defaultObj.default
+            };
+            commit('updateTableSearchData', searchData);
+          }
+        }
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
+        if (resolve) {
+          resolve();
+        }
+      } else if (reject) {
+        reject();
       }
     });
   }, // 获取子表按钮

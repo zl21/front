@@ -3,7 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -62,11 +62,24 @@ axios.interceptors.response.use(
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
+    let data = {};
+
+    if (config.method === 'get' && config) {
+      if (config.params) {
+        data = config.params;
+      } else {
+        data = config.data;
+      }
+    } else {
+      data = config.data;
+    }
+    
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(config.data) : config.data,
+      data: isJson ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
+
     // 记录每次网络请求的时间
     if (pendingRequestMap[requestMd5]) {
       try {
@@ -83,7 +96,7 @@ axios.interceptors.response.use(
       }
     }
     delete pendingRequestMap[requestMd5];
-    if (response.data.code === -1) {
+    if (response.data.code === -1 || response.data.code === -2) {
       // window.vm.$Modal.fcError({
       //   mask: true,
       //   title: '错误',
@@ -297,15 +310,24 @@ function NetworkConstructor() {
     const gateWay = matchGateWay(url);
     // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
-
-    console.log(config);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
       method: 'post'
     });
     if (pendingRequestMap[requestMd5]) {
-      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      if (enableJflow()) {
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+        businessTypes.forEach((actionUrls) => {
+          actionUrls.action.forEach((jflowUrl) => {
+            if (jflowUrl === url) {
+              return axios.post(matchedUrl, config);
+            }
+          });
+        });
+      } else {
+        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      }
     }
     const now = new Date();
     pendingRequestMap[requestMd5] = {
@@ -318,11 +340,18 @@ function NetworkConstructor() {
   this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
     const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
+    let data = {};
+    if (config && config.params) {
+      data = config.params;
+    } else {
+      data = config;
+    }
     const requestMd5 = getRequestMd5({
-      data: config,
+      data,
       url: matchedUrl,
       method: 'get'
     });
+    
     if (pendingRequestMap[requestMd5]) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }

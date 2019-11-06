@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="searchFormContainer">
         <DownComponent :searchFoldnum="searchFoldnum" :setHeight="setHeight" :rowAll="rowAll">
-            <FormLayout slot="dwonContent"
+            <FormLayout slot="dwonContent" class="formLayout"
                         :defaultColumn="defaultColumn"
                         :defaultconfig="defaultconfig" ref="FormLayout"></FormLayout>
         </DownComponent>
@@ -62,4 +62,9 @@
 </script>
 
 <style lang="less">
+    .searchFormContainer {
+        .formLayout {
+            margin-top: 10px;
+        }
+    }
 </style>
