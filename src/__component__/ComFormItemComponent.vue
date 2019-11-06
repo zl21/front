@@ -289,11 +289,17 @@
           if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
             return;
           }
+
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
 
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+            //  扩展属性 来源
+            if (item.props.webconf && item.props.webconf.targetField) {
+              item.props.supportType = val[item.props.webconf.targetField];
+            }
+           
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if (
                 val[item.validate.dynamicforcompute.computecolumn]
@@ -372,7 +378,11 @@
             srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
             input: this.inputget(this.formIndex, i, items)
           });
-          
+          //  扩展属性 来源
+          if (item.props.webconf && item.props.webconf.targetField) {
+            item.props.supportType = val[item.props.webconf.targetField];
+          }
+           
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // this.dynamicforcompute(item, val, i);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
