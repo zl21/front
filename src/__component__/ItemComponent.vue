@@ -13,6 +13,19 @@
         width="200"
         :content="_items.props.comment"
       >
+        <div
+          slot="content"
+          class="api"
+        >
+          <span><span>{{ _items.props.comment }}</span>
+            <a
+              v-if="_items.props.webconf && _items.props.webconf.Outside"
+              style=""
+              :href="_items.props.webconf.Outside"
+              target="_blank"
+            >...</a>
+          </span>
+        </div>  
         <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
@@ -258,15 +271,18 @@
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
         :default-value="_items.value"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
+      <!--扩展属性  -->
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
         :default-data="_items.value"
+        :web-config="_items.props"
         @keydown="enumerKeydown"
         @valueChange="extentionValueChange"
       />
@@ -606,7 +622,7 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
-        if (!value[0].ID) {
+        if (!value[0].ID || value[0].ID === '-1') {
           value.splice(0, 1);
         }
         this._items.value = value;
@@ -1070,8 +1086,7 @@
       filechange(value) {
         // 上传文件
         const _value = value.length > 0 ? value : '';
-        // this._items.value = _value;
-
+        
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
@@ -1104,9 +1119,14 @@
           } else {
             this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = fixedData;
-            this._items.value = JSON.stringify([
-              ...this._items.props.itemdata.valuedata
-            ]);
+            if (this._items.props.itemdata.valuedata.length > 0) {
+              this._items.value = JSON.stringify([
+                ...this._items.props.itemdata.valuedata
+              ]);
+            } else {
+              this._items.value = '';
+            }
+           
             this.upSavefile(parms, fixedData, path, value);
             this.valueChange();
           }
@@ -1114,6 +1134,13 @@
           const _fixedData = fixedData || '';
           this._items.props.itemdata.valuedata = [];
           this._items.props.itemdata.valuedata = _fixedData;
+          if (this._items.props.itemdata.valuedata.length > 0) {
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+          } else {
+            this._items.value = '';
+          }
           this.valueImgChange();
         }
       },

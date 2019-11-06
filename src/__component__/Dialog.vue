@@ -79,7 +79,7 @@
       }, // 是否可以滚动
       closable: {
         type: Boolean,
-        default: () => true
+        default: () => false
       }, // 是否可以按esc关闭
       draggable: {
         type: Boolean,

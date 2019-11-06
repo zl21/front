@@ -67,9 +67,7 @@
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                if (items.item.value[0].ID) {
-                  option[items.item.field] = items.item.value[0].ID;
-                }
+                option[items.item.field] = items.item.value[0].ID;
               } else if (items.item.value[0]) {
                 if (items.item.type === 'ImageUpload') {
                   option[items.item.field] = JSON.stringify(items.item.value);
@@ -291,11 +289,17 @@
           if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
             return;
           }
+
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
 
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
+            //  扩展属性 来源
+            if (item.props.webconf && item.props.webconf.targetField) {
+              item.props.supportType = val[item.props.webconf.targetField];
+            }
+           
             if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
               if (
                 val[item.validate.dynamicforcompute.computecolumn]
@@ -374,7 +378,11 @@
             srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
             input: this.inputget(this.formIndex, i, items)
           });
-          
+          //  扩展属性 来源
+          if (item.props.webconf && item.props.webconf.targetField) {
+            item.props.supportType = val[item.props.webconf.targetField];
+          }
+           
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // this.dynamicforcompute(item, val, i);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
@@ -491,7 +499,9 @@
                 .join(',');
               if (Version() === '1.3') {
                 //  id 转number
-                obj[current.item.field] = Number(obj[current.item.field]);
+                if (current.item.value.length < 2) {
+                  obj[current.item.field] = Number(obj[current.item.field]);
+                } 
               }
             } else if (this.condition !== '') {
               // 模糊查询

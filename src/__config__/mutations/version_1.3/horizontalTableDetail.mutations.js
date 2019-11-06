@@ -82,7 +82,10 @@ export default {
     }
     componentAttribute.formData.data = data;
   }, //
-
+  updateButtonsDataForCustomization(state, { tabIndex, isShowValue }) {
+    const { componentAttribute } = state.tabPanels[tabIndex];
+    componentAttribute.buttonsData.isShow = isShowValue;
+  }, // 全定制tab更新按钮数据
   updatePanelData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.panelData.isShow = true;

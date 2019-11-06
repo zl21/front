@@ -46,14 +46,24 @@
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
             obj.componentAttribute.type = 'horizontal';
-            if (obj.vuedisplay === 'TabItem') {
+
+            
+            if (obj.vuedisplay === 'TabItem') { // 引入自定义组件
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+              obj.componentAttribute.itemInfo = item;
             } else {
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             }
+            let webactType = '';
+            if (obj.webact) { // 自定义tab全定制，tab切换时不需要请求
+              webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/'));
+            }
+            if (webactType === 'order') { // 如果是自定义tab全定制界面时，不需要引入公共组件
+              this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
+              // obj.componentAttribute.buttonsData.isShow = false;
+            } 
             obj.component = `tapComponent.${item.tablename}`;
-
             obj.cilckCallback = this.tabClick;
             arr.push(obj);
           });
@@ -64,45 +74,51 @@
     methods: {
       tabClick(index) {
         this.updateTabCurrentIndex(index);
-        if (index === 0) {
+        if (index === 0) { // 主表
           this.getMainTable(index, true);
-        } else {
-          if (this.tabPanel[index].tabrelation === '1:m') {
-            const { tableName, itemId } = this.$route.params;
-            const {
-              tablename, refcolid, tableSearchData, tabinlinemode
-            } = this.tabPanel[index];
-            if (this.tabPanel[index].refcolid !== -1) {
-              this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
-            }
-            new Promise((resolve, reject) => {
-              this.getObjectTabForChildTableButtons({
-                maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
-              });
-            }).then(() => {
-              this.getObjectTableItemForTableData({
-                table: tablename,
-                objid: itemId,
-                refcolid,
-                searchdata: {
-                  column_include_uicontroller: true,
-                  startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                  range: this.tablePageInfo.pageSize,
-                  fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
-                },
-                tabIndex: index
-              });
-            });
-          } else if (this.tabPanel[index].tabrelation === '1:1') {
-            const { tableName, itemId } = this.$route.params;
-            const { tablename, refcolid } = this.tabPanel[index];
-            this.getObjectTabForChildTableButtons({
-              maintable: tableName, table: tablename, objid: itemId, tabIndex: index
-            });
-            this.getItemObjForChildTableForm({
-              table: tablename, objid: itemId, refcolid, tabIndex: index
-            });
+        } else { // 子表
+          let webactType = '';
+          if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
+            webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
           }
+          if (webactType !== 'order') {
+            if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
+              const { tableName, itemId } = this.$route.params;
+              const {
+                tablename, refcolid, tableSearchData, tabinlinemode
+              } = this.tabPanel[index];
+              if (this.tabPanel[index].refcolid !== -1) {
+                this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
+              }
+              new Promise((resolve, reject) => {
+                this.getObjectTabForChildTableButtons({
+                  maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                });
+              }).then(() => {
+                this.getObjectTableItemForTableData({
+                  table: tablename,
+                  objid: itemId,
+                  refcolid,
+                  searchdata: {
+                    column_include_uicontroller: true,
+                    startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                    range: this.tablePageInfo.pageSize,
+                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
+                  },
+                  tabIndex: index
+                });
+              });
+            } else if (this.tabPanel[index].tabrelation === '1:1') { // 无表格只有面板
+              const { tableName, itemId } = this.$route.params;
+              const { tablename, refcolid } = this.tabPanel[index];
+              this.getObjectTabForChildTableButtons({
+                maintable: tableName, table: tablename, objid: itemId, tabIndex: index
+              });
+              this.getItemObjForChildTableForm({
+                table: tablename, objid: itemId, refcolid, tabIndex: index
+              });
+            }
+          } 
         }
       }, // tab切换触发的方法
       getMainTable(index, isNotFirstRequest) {

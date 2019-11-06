@@ -78,6 +78,10 @@ export default {
       componentAttribute.buttonsData.data = data;
     }
   }, // 更新按钮数据
+  updateButtonsDataForCustomization(state, { tabIndex, isShowValue }) {
+    const { componentAttribute } = state.tabPanels[tabIndex];
+    componentAttribute.buttonsData.isShow = isShowValue;
+  }, // 全定制tab更新按钮数据
   updateFormData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     if (data.inpubobj) {

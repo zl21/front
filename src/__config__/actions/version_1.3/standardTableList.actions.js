@@ -42,7 +42,7 @@ export default {
         resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
-        commit('updateTableStatus4css', queryData.datas.status4css);
+        commit('updateTableStatus4css', queryData.datas);
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
@@ -180,10 +180,10 @@ export default {
   batchSubmitForButtons({ commit }, {
     url, tableName, ids, resolve, reject 
   }) { // 调用提交接口
-    network.post(url || '/p/cs/batchSubmit', {
-      tableName, 
-      ids
-    }).then((res) => {
+    network.post(url || '/p/cs/batchSubmit', urlSearchParams({
+      table: tableName, 
+      objids: ids.join(',')
+    })).then((res) => {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
