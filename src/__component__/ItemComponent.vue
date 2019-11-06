@@ -13,6 +13,19 @@
         width="200"
         :content="_items.props.comment"
       >
+        <div
+          slot="content"
+          class="api"
+        >
+          <span><span>{{ _items.props.comment }}</span>
+            <a
+              v-if="_items.props.webconf && _items.props.webconf.Outside"
+              style=""
+              :href="_items.props.webconf.Outside"
+              target="_blank"
+            >...</a>
+          </span>
+        </div>  
         <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
       <span
