@@ -10,3 +10,4 @@ dist/
 *.tgz
 # project.config.js
 burgeon-r3-*/
+*.log

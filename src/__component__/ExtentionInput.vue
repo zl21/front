@@ -9,6 +9,7 @@
       :rows="rows"
       :placeholder="''"
       readonly
+      :disabled="disabled"
       @on-keydown="onKeydown"
     />
     <Icon
@@ -48,6 +49,10 @@
       ExtentionProperty
     },
     props: {
+      webConfig: { // 用于控制字段表，赋值方式字段的取值，决定了扩展属性的可配置列表。
+        type: Object,
+        default: () => ({})
+      },
       extentionConfig: {
         type: Array,
         default: () => ([])
@@ -61,6 +66,10 @@
         default: () => ({
           rows: 8
         })
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -69,8 +78,24 @@
         showModal: false,
         transformedData: {},
         rows: 8,
-        options: {}
       };
+    },
+    computed: {
+      options() {
+        let configOptions = [];
+        // 这里逻辑是写死的，专门针对“表”、“字段”的扩展属性
+        if (this.$route.params.tableName === 'AD_COLUMN') {
+          configOptions = extentionForColumn();
+          if (this.webConfig.supportType && this.webConfig.supportType !== 'ALL') {
+            configOptions = configOptions.filter((d) => d.supportType && d.supportType.indexOf(this.webConfig.supportType) !== -1);
+          }
+        } else if (this.$route.params.tableName === 'AD_TABLE') {
+          configOptions = extentionForTable();
+        } else {
+          configOptions = this.extentionConfig;
+        }
+        return configOptions;
+      }
     },
     methods: {
       onKeydown(e) {
@@ -83,6 +108,7 @@
         this.currentValue = val;
       },
       popUp() {
+        if (this.disabled) { return false; }
         this.showModal = true;
       },
       onOk() {
@@ -99,16 +125,6 @@
       onCancel() {
         this.showModal = false;
       },
-    },
-    created() {
-      // 这里逻辑是写死的，专门针对“表”、“字段”的扩展属性
-      if (this.$route.params.tableName === 'AD_COLUMN') {
-        this.options = extentionForColumn();
-      } else if (this.$route.params.tableName === 'AD_TABLE') {
-        this.options = extentionForTable();
-      } else {
-        this.options = this.extentionConfig;
-      }
     },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
