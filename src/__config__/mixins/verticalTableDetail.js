@@ -1,10 +1,14 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
-import { MODULE_COMPONENT_NAME } from '../../constants/global';
+import router from '../router.config';
+import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
 
 export default () => ({
-  provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
+  provide: {
+    [MODULE_COMPONENT_NAME]: getComponentName(),
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+  },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
