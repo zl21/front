@@ -87,7 +87,7 @@
         if (this.$route.params.tableName === 'AD_COLUMN') {
           configOptions = extentionForColumn();
           if (this.webConfig.supportType && this.webConfig.supportType !== 'ALL') {
-            configOptions = configOptions.filter((d) => d.supportType && d.supportType.indexOf(this.webConfig.supportType) !== -1);
+            configOptions = configOptions.filter(d => !d.supportType || (d.supportType && d.supportType.indexOf(this.webConfig.supportType) !== -1));
           }
         } else if (this.$route.params.tableName === 'AD_TABLE') {
           configOptions = extentionForTable();
@@ -108,7 +108,7 @@
         this.currentValue = val;
       },
       popUp() {
-        if (this.disabled) { return false; }
+        if (this.disabled) { return; }
         this.showModal = true;
       },
       onOk() {

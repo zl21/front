@@ -81,19 +81,17 @@ export default {
         a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
-    // const url = this.state.global.tableurl;
-    // console.log('🐻', this);
-
-    // const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
-
-    // Object.keys(customize).forEach((customizeName) => {
-    //   const nameToUpperCase = customizeName.toUpperCase();
-    //   if (nameToUpperCase === customizedModuleName) {
-    //     const labelName = customize[customizeName].labelName;
-    //     const name = `C.${customizedModuleName}.${656}`;
-    //     state.keepAliveLabelMaps[name] = `${labelName}`;
-    //   }
-    // });
+    const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
+    if (customizedMessage) {
+      Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
+        const nameToUpperCase = customizeName.toUpperCase();
+        if (nameToUpperCase === customizedMessage.customizedModuleName) {
+          const labelName = customize[customizeName].labelName;
+          const name = `C.${customizedMessage.customizedModuleName}.${customizedMessage.id}`;
+          state.keepAliveLabelMaps[name] = `${labelName}`;
+        }
+      });
+    }
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
