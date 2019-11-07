@@ -288,7 +288,7 @@
               const name = `C.${customizedModuleName}.${id}`;
               this.addKeepAliveLabelMaps({ name, label: labelName });
             // this.addServiceIdMap({ name, label: labelName });
-            }else {
+            } else {
               
             }
           });
@@ -708,6 +708,9 @@
           return timeRange;
         }
         if (item.display === 'OBJ_DATE') {
+          if (item.default === '-1') {
+            return '';
+          }
           const timeRange = [
             `${new Date().setNewFormt(new Date()
               .minusDays(Number(item.daterange))

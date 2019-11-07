@@ -239,7 +239,7 @@ export default {
     //     });
     //   });
     // });
-    state.updateData[tableName].add = {};
+    // state.updateData[tableName].add = {};
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
 
