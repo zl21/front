@@ -1147,9 +1147,9 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (this.itemName === this.tableName || !this.itemName) {
+        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
           this.webactButton(tabwebact.objbutton);
-        } else if (this.tableName !== this.itemName) {
+        } else if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
           this.webactButton(tabwebact.objtabbutton);
         }
       },

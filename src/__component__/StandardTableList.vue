@@ -269,13 +269,18 @@
           const type = 'tableDetailAction';
           const url = this.ag.tableurl;
           const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
-          
+
           const tab = {
             type,
             customizedModuleName,
             customizedModuleId: id
           };
           this.tabOpen(tab);
+          const obj = {
+            customizedModuleName,
+            id
+          };
+          window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
           Object.keys(customize).forEach((customizeName) => {
             const nameToUpperCase = customizeName.toUpperCase();
             if (nameToUpperCase === customizedModuleName) {
@@ -283,6 +288,8 @@
               const name = `C.${customizedModuleName}.${id}`;
               this.addKeepAliveLabelMaps({ name, label: labelName });
             // this.addServiceIdMap({ name, label: labelName });
+            }else {
+              
             }
           });
         } else {

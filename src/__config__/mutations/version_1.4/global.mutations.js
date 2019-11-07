@@ -82,15 +82,22 @@ export default {
         return a;
       }, {});
     // const url = this.state.global.tableurl;
-    // console.log('🐻', this);
 
     // const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
+    // const customizedMessage = window.sessionStorage.getItem('customizedMessage');
 
+    // // const customizedModuleName = 'FUNCTIONPERMISSION';
     // Object.keys(customize).forEach((customizeName) => {
     //   const nameToUpperCase = customizeName.toUpperCase();
-    //   if (nameToUpperCase === customizedModuleName) {
+
+    //   console.log('🍓', nameToUpperCase, customizedMessage);
+    //   if (nameToUpperCase === customizedMessage.customizedModuleNamecustomizedModuleName) {
     //     const labelName = customize[customizeName].labelName;
-    //     const name = `C.${customizedModuleName}.${656}`;
+    //     console.log('🌲', labelName);
+
+    //     const name = `C.${customizedMessage.name}.${customizedMessage.id}`;
+    //     console.log('🐻', customizedMessage.customizedModuleName);
+
     //     state.keepAliveLabelMaps[name] = `${labelName}`;
     //   }
     // });
@@ -297,6 +304,7 @@ export default {
   },
   addKeepAliveLabelMaps(state, { name, label }) {
     state.keepAliveLabelMaps[name] = `${label}`;
+    console.log(1, state.keepAliveLabelMaps);
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
