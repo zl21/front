@@ -15,10 +15,10 @@ import standard from '../__customize__/colorSize/Standard.vue';
 export default {
   functionPermission: {
     component: functionPermission,
+    labelName: '用户角色编辑'
   },
   pro_desc: {
     component: proDesc,
-    labelName: '你好'
 
   },
   standard: {
