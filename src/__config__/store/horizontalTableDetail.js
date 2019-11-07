@@ -23,6 +23,7 @@ export default () => ({
       currentPageIndex: 1,
       pageSize: 10
     },
+    childTableReadonly: false, // 子表是否为只读状态
     objTabActionSlientConfirmData: {},
     LinkageForm: [], // form 校验
     mappStatus: {}, // 校验联动图
