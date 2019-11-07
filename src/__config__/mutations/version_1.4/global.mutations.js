@@ -82,14 +82,16 @@ export default {
         return a;
       }, {});
     const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
-    Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
-      const nameToUpperCase = customizeName.toUpperCase();
-      if (nameToUpperCase === customizedMessage.customizedModuleName) {
-        const labelName = customize[customizeName].labelName;
-        const name = `C.${customizedMessage.customizedModuleName}.${customizedMessage.id}`;
-        state.keepAliveLabelMaps[name] = `${labelName}`;
-      }
-    });
+    if (customizedMessage) {
+      Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
+        const nameToUpperCase = customizeName.toUpperCase();
+        if (nameToUpperCase === customizedMessage.customizedModuleName) {
+          const labelName = customize[customizeName].labelName;
+          const name = `C.${customizedMessage.customizedModuleName}.${customizedMessage.id}`;
+          state.keepAliveLabelMaps[name] = `${labelName}`;
+        }
+      });
+    }
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
