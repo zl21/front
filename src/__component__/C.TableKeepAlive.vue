@@ -63,17 +63,9 @@
           this.currentModule = componentName;
         }
       },
-      a() {
-        this.addKeepAliveLabelMaps({ name: 'C.FUNCTIONPERMISSION.656', label: '用户角色编辑' });
-      }
     },
     mounted() {
       this.generateComponent();
-      console.log(this);
-      this.a();
-      // C.FUNCTIONPERMISSION.656:"用户角色编辑"
-      // const { customizedModuleId } = this.$route.params;
-      // this.updateAccessHistory({ type: 'action', id: customizedModuleId });
     },
     watch: {
       $route() {
