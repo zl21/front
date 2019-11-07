@@ -349,7 +349,7 @@
             });
           }
         }
-       
+
 
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
@@ -358,7 +358,7 @@
         }
 
         // 如果配置tabrelation为1:1 去除导入和删除
-        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { 
+        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') {
           buttonGroupShow.forEach((item, index) => {
             if (item.eName !== 'actionEXPORT') {
               buttonGroupShow.splice(index, 1);
@@ -370,14 +370,14 @@
         return b;
       },
       isMainTableReadonly() {
-        if (this.type === pageType.Vertical) {
-          if (this.mainFormInfo.buttonsData) {
-            return this.mainFormInfo.buttonsData.data.objreadonly;
-          }
-        } else {
-          return this.objreadonly;
-        }
-        return false;
+        // if (this.type === pageType.Vertical) {
+        //   if (this.mainFormInfo.buttonsData) {
+        //     return this.mainFormInfo.buttonsData.data.objreadonly;
+        //   }
+        // } else {
+        //   return this.objreadonly;
+        // }
+        return this.objreadonly;
       },
       pageInfo() {
         return this.tablePageInfo;

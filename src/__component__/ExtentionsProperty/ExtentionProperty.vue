@@ -12,6 +12,7 @@
           <br>
           {{ item.key === '__root__' ? '' : item.key }}
         </li>
+        <li v-if="options.length === 0">暂无可配置项</li>
       </ul>
     </div>
     <div class="middle">

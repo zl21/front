@@ -10,7 +10,7 @@ import {
   enableKeepAlive
 } from '../../../constants/global';
 import router from '../../router.config';
-import customizeSingleObjectConfig from '../../customizeSingleObject.config';
+import customize from '../../customize.config';
 
 
 export default {
@@ -72,7 +72,6 @@ export default {
         }
         return a;
       }, {});
-    // console.log('🐻', customizeSingleObjectConfig[]);
     state.serviceIdMap = menuLists.map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .map(d => d.children)
@@ -82,6 +81,19 @@ export default {
         a[c.value.toUpperCase()] = c.serviceId;
         return a;
       }, {});
+    // const url = this.state.global.tableurl;
+    // console.log('🐻', this);
+
+    // const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
+
+    // Object.keys(customize).forEach((customizeName) => {
+    //   const nameToUpperCase = customizeName.toUpperCase();
+    //   if (nameToUpperCase === customizedModuleName) {
+    //     const labelName = customize[customizeName].labelName;
+    //     const name = `C.${customizedModuleName}.${656}`;
+    //     state.keepAliveLabelMaps[name] = `${labelName}`;
+    //   }
+    // });
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
