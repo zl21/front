@@ -345,7 +345,7 @@
       },
     },
     props: {
-      watermarkimg: {
+      watermarkimg: {// 水印
         type: String,
         default: ''
       },
@@ -356,15 +356,15 @@
         type: Boolean,
         default: false
       }, // 是否显示水印图标
-      tabcmd: {
+      tabcmd: {// 标准类型按钮
         type: Object,
         default: () => ({})
       },
-      tabwebact: {
+      tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
       },
-      objectType: {
+      objectType: {// 单对象类型
         type: String,
         default: ''
       },
@@ -372,11 +372,11 @@
         type: Boolean,
         // default: false
       }, // 是否存在子表
-      itemName: {
+      itemName: {// 当前表名
         type: String,
         default: ''
       },
-      itemNameGroup: {
+      itemNameGroup: {// 所有子表表名
         type: Array,
         default: () => ([])
       },
@@ -388,11 +388,11 @@
         type: String,
         default: ''
       },
-      itemTableCheckFunc: {
+      itemTableCheckFunc: {// 子表明细校验
         type: Function,
         default: () => {}
       },
-      clearItemTableSearchValue: {
+      clearItemTableSearchValue: {// 清空子表搜索框内容
         type: Function,
         default: () => {}
       },
