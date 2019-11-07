@@ -67,8 +67,11 @@ export default {
     });
     state.tabPanels = arr;
   }, // 更新按钮数据
+  updateDefaultButton(state, data) {
+    state.defaultButtonData = data;
+  },
   updateButtonsData(state, data) {
-    this.commit('updateDefaultButton', JSON.parse(JSON.stringify(data)));
+    state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {
       const { componentAttribute } = state.tabPanels[data.tabIndex];
       componentAttribute.buttonsData.isShow = true;
@@ -348,5 +351,8 @@ export default {
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
+  },
+  updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
+    state.childTableReadonly = value;
   }
 };

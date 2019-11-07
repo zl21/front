@@ -190,25 +190,13 @@ async function jflowsave(flag, request) {
           
         if (document.getElementsByClassName('R3-button-group')[0]) {
           jflowButtons(router.currentRoute.params.itemId);
+
+          // 流程发起成功刷新界面
           const children = document.getElementsByClassName('R3-button-group')[0].children;
           for (const child of children) {
-            if (child.innerText === '刷新') {
-              const style = document.createElement('style');
-              const styleStr = `
-                    .burgeon-message {
-                      display: none!important;
-                    }`;
-              style.type = 'text/css';
-              style.innerHTML = styleStr;
-              document.getElementsByTagName('head').item(0).appendChild(style);
+            if (child.getAttribute('id') === 'refresh') {
               const myEvent = new Event('click');
               child.dispatchEvent(myEvent);
-
-              setTimeout(() => {
-                const parent = document.getElementsByTagName('head').item(0);
-                const thisNode = parent.children[parent.children.length - 1];
-                parent.removeChild(thisNode);
-              }, 5000);
             }
           }
         }

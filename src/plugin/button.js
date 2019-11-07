@@ -6,7 +6,19 @@ function mutipleOperate(url, instanceId, buttons, id) {
   window.jflowPlugin.axios.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
-      buttons(id);
+      buttons(id).then(() => {
+        const children = document.getElementsByClassName('R3-button-group')[0].children;
+        for (const child of children) {
+          if (child.getAttribute('id') === 'refresh') {
+            const myEvent = new Event('click');
+            child.dispatchEvent(myEvent);
+
+            const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
+            const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
+            window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
+          }
+        }
+      });
     } else {
       window.vm.$Message.warning(res.data.resultMsg);
     }
@@ -136,6 +148,9 @@ function CreateButton(obj, buttons, id) {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId 
         });
         buttonAddEventListener(buttons, obj, id);
+
+        // 控制字表为只读
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
       }
     }, 100);
   } else {
@@ -150,100 +165,12 @@ function CreateButton(obj, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: defaultButtonData, newButtons, instanceId: null
         });
+
+        // 控制字表为只读
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       }
     });
   }
-  
-
-  // window.addEventListener('jflowPlugin', (e) => {
-  //   if (e.detail.type === 'fresh') {
-  //     buttons(id);
-  //   }
-  // }, false);
-  // const MODULE_COMPONENT_NAME = window.location.pathname.split('/').slice(3).join('.');
-  // // -1, "撤销"
-  // // 0, "同意"
-  // // 1, "驳回"
-  // // 2, "结束流程"
-  // // 3, "转派"
-  // // 4, "保存单据修改" 这个按钮不展示
-  // // 5,"详情页面"
-  // if (obj.instanceId !== null && obj.buttons && obj.buttons !== null && obj.buttons.length > 0) {
-  //   let buttonAnother = [];
-  //   let operateData = {};
-  //   let buttonsData = [];
-  //   const hasDataTime = setInterval(() => {
-  //     if (window.location.pathname.split('/')[3] === 'V') {
-  //       if (store.state[MODULE_COMPONENT_NAME].mainFormInfo && store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd && store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem) {
-  //         clearInterval(hasDataTime);
-  //         buttonAnother = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem;
-  //         operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData);
-  //         buttonsData = operateData.data.tabcmd.prem.map(item => false);
-  //         if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
-  //           buttonsData[1] = true;
-  //         } else {
-  //           buttonsData[1] = false;
-  //         }
-  //         const newButtons = obj.buttons;
-  //         store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
-  //       }
-  //     } else if (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem) {
-  //       clearInterval(hasDataTime);
-  //       buttonAnother = store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem;
-  //       operateData = Object.assign({}, store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData);
-  //       buttonsData = operateData.data.tabcmd.prem.map(item => false);
-  //       if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
-  //         buttonsData[1] = true;
-  //       } else {
-  //         buttonsData[1] = false;
-  //       }
-  //       const newButtons = obj.buttons;
-  //       store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons, buttonAnother });
-  //     }
-  //   }, 300);
-
-  //   window.addEventListener('jflowPlugin', (e) => {
-  //     if (e.detail.type === 'fresh') {
-  //       buttons(id);
-  //       return; 
-  //     }
-  //     const item = e.detail.obj;
-  //     if (item.button !== '4') {
-  //       switch (item.button) {
-  //         case '-1':
-  //         case '2': mutipleOperate(item.url, obj.instanceId, buttons, id); break;
-  //         case '1': window.jflowPlugin.open({
-  //           control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
-  //         });
-  //           break;
-  //         case '0':
-  //         case '3': window.jflowPlugin.open({// 同意和转派
-  //           control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
-  //         });
-  //           break;
-  //         case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${obj.instanceId}`, '_blank', 'width=800,height=800');
-  //           break;
-  //       }
-  //     }
-  //   }, false);
-  // } else {
-  //   let buttonsData = [];
-  //   const hasDataTime = setInterval(() => {
-  //     if (window.location.pathname.split('/')[3] === 'V') {
-  //       if (store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem) {
-  //         clearInterval(hasDataTime);
-  //         buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd.prem;
-  //         const newButtons = [];
-  //         store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons });
-  //       }
-  //     } else if (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem) {
-  //       clearInterval(hasDataTime);
-  //       buttonsData = store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem;
-  //       const newButtons = [];
-  //       store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, { buttonsData, newButtons });
-  //     }
-  //   }, 300);
-  // }
 }
 
 

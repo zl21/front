@@ -422,6 +422,14 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+
+            const children = document.getElementsByClassName('R3-button-group')[0].children;
+            for (const child of children) {
+              if (child.getAttribute('id') === 'refresh') {
+                const myEvent = new Event('click');
+                child.dispatchEvent(myEvent);
+              }
+            }
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -455,6 +463,13 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            const children = document.getElementsByClassName('R3-button-group')[0].children;
+            for (const child of children) {
+              if (child.getAttribute('id') === 'refresh') {
+                const myEvent = new Event('click');
+                child.dispatchEvent(myEvent);
+              }
+            }
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -482,6 +497,13 @@
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            const children = document.getElementsByClassName('R3-button-group')[0].children;
+            for (const child of children) {
+              if (child.getAttribute('id') === 'refresh') {
+                const myEvent = new Event('click');
+                child.dispatchEvent(myEvent);
+              }
+            }
           } else {
             this.$Modal.fcWarning({
               title: '警告',
