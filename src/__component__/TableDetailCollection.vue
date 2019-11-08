@@ -227,6 +227,10 @@
       };
     },
     props: {
+      tabwebact: {// 自定义类型按钮
+        type: Object,
+        default: () => ({})
+      },
       dataSource: {
         // 总数据源
         type: Object,
