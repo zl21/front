@@ -55,24 +55,18 @@ export default {
               } else if (item.default !== '-1' && item.default) {
                 childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
               } else {
-                childTableFixedcolumns[item.colname] = `
-                      ${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}
-                      ~
-                      ${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
               }
             } else if (item.display === 'OBJ_DATE') {
               if (item.default === '-1') {
                 childTableFixedcolumns[item.colname] = '';
               } else {
-                childTableFixedcolumns[item.colname] = `
-                      ${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '/')} 00:00:00
-                      ~
-                      ${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`;
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '/')} 00:00:00~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`;
               }
             } else if (item.display === 'OBJ_SELECT' && item.default) {
               childTableFixedcolumns[item.colname] = [`=${item.default}`];
-            } else if (item.display === 'OBJ_FK' && item.default) {
-              childTableFixedcolumns[item.colname] = [`${item.default}`];
+            } else if (item.display === 'OBJ_FK' && item.refobjid) {
+              childTableFixedcolumns[item.colname] = [`${item.refobjid}`];
             } else if (item.default) {
               childTableFixedcolumns[item.colname] = item.default;
             }

@@ -505,16 +505,14 @@
               }
             },
             clear: () => {
-              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
+              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
               const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
               this.getStateData(); // 获取主表信息
               Object.keys(mappStatus).forEach((item) => {
-                if (!this.refcolvalAll[mappStatus[item]]) {
-                  const Index = LinkageForm.findIndex(option => option.key === item);
-                  if (LinkageForm[Index].input) {
-                    // console.log(LinkageForm[Index].input);
-                    // LinkageForm[Index].input.value = '';
-                  }
+                const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
+                const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+                if (LinkageFormInput) {
+                  LinkageFormInput.click();
                 }
               });
             },
@@ -603,13 +601,14 @@
                 if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
                   refcolval = this.defaultFormData[current.refcolval.srccol];
                 }
-                const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
-                const Index = LinkageForm.findIndex(item => item.key === current.refcolval.srccol);
+                const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+                const LinkageFormInput = LinkageForm[current.refcolval.srccol];
                 if (!refcolval) {
-                  if (Index !== -1) {
-                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
-                    if (LinkageForm[Index].input) {
-                      LinkageForm[Index].input.focus();
+                  if (LinkageFormInput) {
+                    this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+                    const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+                    if (LinkageFormfocus) {
+                      LinkageFormfocus.focus();
                       return false;
                     }
                   } else {
@@ -721,6 +720,12 @@
           validate: this.validateList(current)
         };
         this.propsType(current, obj.item);
+        // ignoreDisableWhenEdit 去除不可编辑的状态 
+        if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+          obj.item.props.disabled = false;
+          obj.item.props.readonly = false;
+        }
+
         return obj;
       },
       hidecolumn(current, array) {
@@ -812,21 +817,6 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
-        // if (this.objreadonly ) {
-        //   // 页面只读标记
-        //   if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
-        //      item.readonly === true;
-        //   }
-        //   //return str;
-        // }
-        // if (item.readonly === true && item.fkdisplay) {
-        //   //  不可编辑 变成 input
-        //      if(item.fkdisplay === 'drp' || item.fkdisplay === 'mop'|| item.fkdisplay === 'pop' || item.fkdisplay === 'mrp' ){
-        //         str = "input";
-        //          return str;
-        //      }
-
-        // }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           if (
@@ -895,15 +885,6 @@
       },
       defaultValue(item) {
         // 组件的默认值  
-        if (this.objreadonly) {
-          // 页面只读标记
-
-          // if (item.display === "select" || item.display === "OBJ_SELECT") {
-          //   const value = item.defval || item.valuedata;
-          //   const index = item.combobox.findIndex(x => x.limitval === value);
-          //   return item.combobox[index].limitdesc || "";
-          // }
-        }
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
 
@@ -1335,13 +1316,14 @@
                 if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
                   refcolval = that.defaultFormData[currentThat.refcolval.srccol];
                 }
-                const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || [];
-                const Index = LinkageForm.findIndex(itemI => itemI.key === currentThat.refcolval.srccol);
+                const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+                const LinkageFormInput = LinkageForm[currentThat.refcolval.srccol];
                 if (!refcolval) {
-                  if (Index !== -1) {
-                    this.$Message.info(`请先选择${LinkageForm[Index].name}`);
-                    if (LinkageForm[Index].input) {
-                      LinkageForm[Index].input.focus();
+                  if (LinkageFormInput) {
+                    this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+                    const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+                    if (LinkageFormfocus) {
+                      LinkageFormfocus.focus();
                       return false;
                     }
                   } else {
@@ -1404,9 +1386,12 @@
             break;
           case 'mop':
             item.props.type = 'AttachFilter';
+            // 是否回车
             item.props.enterType = true;
             item.props.show = true;
+            // 模糊查询数据
             item.props.AutoData = [];
+            //  弹窗的配置
             item.props.dialog = {
               model: {
                 width: 920,
@@ -1430,8 +1415,11 @@
                 `${current.serviceId ? (`/${current.serviceId}`) : ''
                 }/p/cs/menuimport`
             };
+            // 右边的气泡数据
             item.props.datalist = [];
+            // 选中值
             item.props.Selected = [];
+            // 过滤值
             item.props.filterDate = {};
             if (!item.props.readonly && !this.objreadonly) {
               item.value = this.defaultValue(current)[1];
@@ -1472,6 +1460,9 @@
         }
         if ((item.props.readonly === true && item.props.fkdisplay) || (this.objreadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
+          if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+            return false;
+          }
           if (
             item.props.fkdisplay === 'drp'
             || item.props.fkdisplay === 'mop'
@@ -1678,6 +1669,7 @@
         this.setdefaultColumnCol();
       }
       this.conditiontype = this.condition;
+
       window.addEventListener('resize', () => {
         if (this.$el) {
           this.setdefaultColumnCol();
@@ -1686,6 +1678,18 @@
       if (!this.$el) {
         window.removeaddEventListener('resize');
       }
+      if (this.type === 'PanelForm') {
+        return false;
+      }
+      // if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`]) {
+      //   console.log(this);
+
+      //   const data = {
+      //     name: `${this[MODULE_COMPONENT_NAME]}`,
+      //     vm: ''
+      //   };
+      //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`, data);
+      // }  
     },
     created() {
       this.computdefaultData = this.reorganizeForm();

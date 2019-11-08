@@ -62,6 +62,7 @@
     <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
       <Input
         v-if="_items.type === 'input'"
+        :ref="_items.field"
         v-model="_items.value"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
@@ -88,6 +89,7 @@
 
       <Checkbox
         v-if="_items.type === 'checkbox'"
+        :ref="_items.field"
         v-model="_items.value"
         :disabled="_items.props.disabled"
         :true-value="_items.props.trueValue"
@@ -99,6 +101,7 @@
 
       <Select
         v-if="_items.type === 'select'"
+        :ref="_items.field"
         v-model="_items.value"
         :clearable="_items.props.clearable"
         :multiple="_items.props.multiple"
@@ -127,6 +130,7 @@
 
       <DatePicker
         v-if="_items.type === 'DatePicker'"
+        :ref="_items.field"
         :value="_items.value"
         :type="_items.props.type"
         :transfer="_items.props.transfer"
@@ -146,6 +150,7 @@
       />
       <TimePicker
         v-if="_items.type === 'TimePicker'"
+        :ref="_items.field"
         v-model="_items.value"
         :type="_items.props.type"
         :transfer="_items.props.transfer"
@@ -166,6 +171,7 @@
       <template v-if="_items.type === 'DropDownSelectFilter'">
         <DropDownSelectFilter
           v-if="_items.props.fk_type === 'drp'"
+          :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
           :total-row-count="_items.props.totalRowCount"
@@ -191,6 +197,7 @@
         />
         <DropMultiSelectFilter
           v-if="_items.props.fk_type === 'mrp'"
+          :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
           :total-row-count="_items.props.totalRowCount"
@@ -216,6 +223,7 @@
       </template>
       <ComAttachFilter
         v-if="_items.type === 'AttachFilter'"
+        :ref="_items.field"
         :default-value="_items.value"
         :default-selected="_items.props.Selected"
         :propstype="_items.props"
@@ -265,6 +273,7 @@
  -->
       <ImageUpload
         v-if="_items.type === 'ImageUpload'"
+        :ref="_items.field"
         :dataitem="_items.props.itemdata"
         @upload-file-change="uploadFileChange"
         @deleteImg="deleteImg"
@@ -274,6 +283,7 @@
       <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
+        :ref="_items.field"
         :default-value="_items.value"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
@@ -281,6 +291,7 @@
       <!--扩展属性  -->
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
+        :ref="_items.field"
         :default-data="_items.value"
         :web-config="_items.props"
         @keydown="enumerKeydown"
@@ -291,6 +302,7 @@
           :is="_items.componentType"
           v-if="_items.type === 'Wangeditor'"
           :key="index"
+          :ref="_items.field"
           :is-actives="_items.props.readonly"
           :valuedata="_items.value"
           :item="_items.props"
@@ -307,6 +319,7 @@
 
       <Docfile
         v-if="_items.type === 'docfile'"
+        :ref="_items.field"
         :dataitem="_items.props.itemdata"
         @filechange="filechange"
       />
@@ -734,6 +747,15 @@
       attachFilterInput(item) {
         this._items.value = item.value;
         this._items.props.Selected = item.selected;
+        if (item.value === '') {
+          if (
+            Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+            && typeof this._items.event.clear === 'function'
+          ) {
+            console.log(item);
+            this._items.event.clear();
+          }
+        }
         this.valueChange();
         // if (
         //   Object.prototype.hasOwnProperty.call(
@@ -1478,6 +1500,9 @@ textarea.burgeon-input{
   overflow: auto;
   padding: 2px 5px;
   height: 100%;
+}
+.auto-com-table tr td{
+  max-width:500px!important;
 }
 .attachfiter-pop{
     .burgeon-select-item{
