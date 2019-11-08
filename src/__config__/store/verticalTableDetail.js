@@ -35,7 +35,8 @@ export default () => ({
       pageSize: 10
     },
     objTabActionSlientConfirmData: {},
-    LinkageForm: [], // 所有form
+    LinkageForm: {}, // 所有form
+    CompositeForm: {}, // 表单实例
     mappStatus: {},
     anotherData: [], // 按钮显示的备份数据
     jflowPluginDataArray: [],
