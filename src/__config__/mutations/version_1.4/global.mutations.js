@@ -89,6 +89,9 @@ export default {
         return a;
       }, {});
     const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
+    const tableDetailUrlMessage = JSON.parse(window.sessionStorage.getItem('tableDetailUrlMessage'));
+
+    
     if (customizedMessage) {
       Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
         const nameToUpperCase = customizeName.toUpperCase();
@@ -98,6 +101,16 @@ export default {
           state.keepAliveLabelMaps[name] = `${labelName}`;
         }
       });
+    }
+    if (tableDetailUrlMessage) {
+      const labelName = tableDetailUrlMessage.linkName;
+      const name = `C.${tableDetailUrlMessage.linkName}.${tableDetailUrlMessage.linkId}`;
+      state.keepAliveLabelMaps[name] = `${labelName}`;
+
+      const linkUrl = {};
+      linkUrl[tableDetailUrlMessage.linkId] = tableDetailUrlMessage.linkUrl;
+      state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
+      state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
