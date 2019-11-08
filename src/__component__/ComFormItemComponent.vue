@@ -296,7 +296,13 @@
 
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
-            //  扩展属性 来源
+            // 筛选字段
+            if (item.props.webconf && item.props.webconf.filtercolval) {
+              // 主控字段的值
+              this.filtercolumn(item, i, val);
+            }
+
+            //  扩展属性 来源字段
             if (item.props.webconf && item.props.webconf.targetField) {
               item.props.supportType = val[item.props.webconf.targetField];
             }
@@ -670,6 +676,31 @@
         );
         if (this.newFormItemLists[_index]) {
           this.newFormItemLists[_index].item.value = eval(str);
+        }
+      },
+      filtercolumn(item, formindex, val) {
+        const filterValue = val[item.props.webconf.filtercolval.col];
+        if (item.type === 'select') {
+          if (!item.olderOptions) {
+            item.olderOptions = item.options;
+          }
+          const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === item.value);
+          const optionsArr = item.olderOptions.reduce((arr, option) => {
+            const index = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === option.value);
+            if (index !== -1) {
+              arr.push(option);
+            }
+            return arr;
+          }, []);
+          item.options = optionsArr.concat([]);
+          // this.dataProcessing(this.newFormItemLists[formindex], formindex);
+          if (checkout !== -1) { 
+            return false;
+          }
+          if (this.newFormItemLists[formindex] && checkout === -1) {
+            this.newFormItemLists[formindex].item.value = -1;
+          }
+          // input.innerText = '';
         }
       },
       hidecolumn(items, index) {

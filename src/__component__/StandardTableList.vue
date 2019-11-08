@@ -117,9 +117,21 @@
   import myTree from './Tree/Tree';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
-  import { Version } from '../constants/global';
+  import {
+    Version,
+    VERTICAL_TABLE_DETAIL_PREFIX,
+    HORIZONTAL_TABLE_DETAIL_PREFIX,
+    STANDARD_TABLE_LIST_PREFIX,
+    STANDARD_TABLE_COMPONENT_PREFIX,
+    CUSTOMIZED_MODULE_COMPONENT_PREFIX,
+    CUSTOMIZED_MODULE_PREFIX,
+    LINK_MODULE_COMPONENT_PREFIX,
+    LINK_MODULE_PREFIX,
+    enableKeepAlive
+  } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
+  import router from '../__config__/router.config';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -874,11 +886,7 @@
       webactionClick(type, obj) {
         // 点击自定义按钮 创建table
         this.setActiveTabActionValue(obj);
-        if (obj.vuedisplay === 'native') {
-          // 接口返回有url地址
-          // eslint-disable-next-line no-restricted-globals
-          location.href = obj.action;
-        } else if (obj.vuedisplay === 'slient') {
+        if (obj.vuedisplay === 'slient') {
           // 静默程序            if(obj.confirm){  //有提示
           if (obj.confirm) {
             // 有提示
@@ -1646,27 +1654,84 @@
         this.setErrorModalValue({ errorDialogvalue });
       },
       objTabActionNavbar(tab) {
-        // 判断跳转到哪个页面
-        const url = tab.action;
-        const index = url.lastIndexOf('\/');
-        const customizedModuleName = url.substring(index + 1, url.length);
-        const label = tab.webdesc;
-        const type = 'tableDetailAction';
-        const name = Object.keys(this.keepAliveLabelMaps);
-        let customizedModuleId = '';
-        name.forEach((item) => {
-          if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-            customizedModuleId = item.split(/\./)[2];
-          }
-        });
+        console.log(tab);
+        //    action: "https://www.baidu.com/"
+        // actiontype: "url"
+        // confirm: null
+        // cuscomponent: null
+        // ishide: false
+        // isrefrsh: false
+        // vuedisplay: "navbar"
+        // webdesc: "外链list"
+        // webicon: null
+        // webid: 2296
+        // webname: "listbuttonout"     
+      
         if (tab.action) {
-          this.tabOpen({
-            type,
-            customizedModuleName,
-            customizedModuleId,
-            label
-          });
+          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+          if (actionType === 'SYSTEM') {
+            const path = `/${tab.action}`;
+            router.push(
+              path
+            );
+          } else if (actionType === 'https:' || actionType === 'http:') {
+            const type = 'tableDetailUrl';
+            this.tabOpen({
+              type,
+              linkName: tab.webname,
+              linkId: tab.webid
+            });
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const linkUrl = tab.action;
+            const linkId = tab.webid;
+            
+            if (!this.LinkUrl[linkId]) {
+              this.increaseLinkUrl({ linkId, linkUrl });
+            }
+            const obj = {
+              linkName: tab.webname,
+              linkId: tab.webid,
+              linkUrl,
+              linkLabel: name
+            };
+            window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+          } else {
+            class Person {
+              constructor(wrong, eg, url) {
+                this.wrong = wrong;
+                this.correctURL = eg;
+                this.url = url;
+              }
+            }
+            const me = new Person('url配置错误', 'SYSTEM/TABLE_DETAIL/V/DL_B_PUR/23792/New', info.url);
+            console.table(me);
+          }
         }
+
+
+        // 判断跳转到哪个页面
+        // const url = tab.action;
+        // const index = url.lastIndexOf('\/');
+        // const customizedModuleName = url.substring(index + 1, url.length);
+        // const label = tab.webdesc;
+        // const type = 'tableDetailAction';
+        // const name = Object.keys(this.keepAliveLabelMaps);
+        // let customizedModuleId = '';
+        // name.forEach((item) => {
+        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+        //     customizedModuleId = item.split(/\./)[2];
+        //   }
+        // });
+        // if (tab.action) {
+        //   this.tabOpen({
+        //     type,
+        //     customizedModuleName,
+        //     customizedModuleId,
+        //     label
+        //   });
+        // }
       },
 
       // network 监听函数

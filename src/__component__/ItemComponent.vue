@@ -1501,6 +1501,9 @@ textarea.burgeon-input{
   padding: 2px 5px;
   height: 100%;
 }
+.auto-com-table tr td{
+  max-width:500px!important;
+}
 .attachfiter-pop{
     .burgeon-select-item{
         display: flex;
