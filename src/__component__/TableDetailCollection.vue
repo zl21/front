@@ -1927,10 +1927,24 @@
       },
       docRender(cellData, tag) {
         const that = this;
-        return (h, params) => h('div', [
+        return (h, params) => h('div', {
+          style: {
+            display: 'flex'
+          },
+        }, [
+          h('div', {
+            style: {
+              display: 'flex',
+              'align-items': 'center'
+            },
+            domProps: {
+            },
+          },`${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+            acc.push(`【${cur.name}】`);
+            return acc;
+          }, []).join('') : ''}`),
           h(tag, {
             style: {
-              width: '100%',
               'text-align': 'center',
               cursor: 'pointer',
               color: '#2D8CF0'
@@ -1941,12 +1955,14 @@
               content: 'content'
             },
             scopedSlots: {
-              default: () => h('span', '操作', {
+              default: () => h('div', {
                 style: {
-                  width: '100%',
-                  'text-align': 'center',
-                  color: '#2D8CF0'
+                  'padding-left': '10px',
+                  'padding-right': '10px',
                 },
+                domProps: {
+                  innerHTML: `<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>`
+                }
               }),
               content: () => h('TableDocFile', {
                 props: {
