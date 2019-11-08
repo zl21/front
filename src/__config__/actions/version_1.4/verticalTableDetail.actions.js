@@ -159,8 +159,8 @@ export default {
               }
             } else if (item.display === 'OBJ_SELECT' && item.default) {
               childTableFixedcolumns[item.colname] = [`=${item.default}`];
-            } else if (item.display === 'OBJ_FK' && item.default) {
-              childTableFixedcolumns[item.colname] = [`${item.default}`];
+            } else if (item.display === 'OBJ_FK' && item.refobjid) {
+              childTableFixedcolumns[item.colname] = [`${item.refobjid}`];
             } else if (item.default) {
               childTableFixedcolumns[item.colname] = item.default;
             }
