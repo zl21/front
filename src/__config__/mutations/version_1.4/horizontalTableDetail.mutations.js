@@ -320,6 +320,11 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+  updateTableFixedcolumns(state, data) {
+    // const { tableDefaultFixedcolumns } = state.tabPanels[state.tabCurrentIndex];
+    state.tabPanels[state.tabCurrentIndex].tableDefaultFixedcolumns = data;
+    // tableDefaultFixedcolumns = data;
+  }, // 修改单对象表格默认搜索条件
   jflowPlugin(state, {
     buttonsData, newButtons, buttonAnother, instanceId
   }) { // jflowPlugin按钮逻辑
