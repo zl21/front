@@ -87,7 +87,7 @@
             if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
               const { tableName, itemId } = this.$route.params;
               const {
-                tablename, refcolid, tableSearchData, tabinlinemode
+                tablename, refcolid, tableSearchData, tabinlinemode, childTableFixedcolumns
               } = this.tabPanel[index];
               if (this.tabPanel[index].refcolid !== -1) {
                 this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
@@ -105,7 +105,7 @@
                     column_include_uicontroller: true,
                     startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
                     range: this.tablePageInfo.pageSize,
-                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
+                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : childTableFixedcolumns
                   },
                   tabIndex: index
                 });

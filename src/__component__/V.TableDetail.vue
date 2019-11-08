@@ -180,6 +180,7 @@
           this.getFormDataForRefTable(formParam);
         }
         if (refTab.tabrelation === '1:m') {
+          console.log(refTab);
           getButtonDataPromise.then(() => {
             this.getObjectTableItemForTableData({
               table: refTab.tablename,
@@ -189,7 +190,7 @@
                 column_include_uicontroller: true,
                 startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
                 range: this.tablePageInfo.pageSize,
-                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : {}
+                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
               },
               tabIndex: index
             });
