@@ -10,7 +10,7 @@
 
 <script>
   import Vue from 'vue';
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapActions, mapMutations } from 'vuex';
   import PageNotFound from './PageNotFound';
   import CustomizeModule from '../__config__/customize.config';
   import { CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX } from '../constants/global';
@@ -34,6 +34,8 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
+      ...mapMutations('global', ['addKeepAliveLabelMaps']),
+
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
@@ -60,12 +62,10 @@
         } else {
           this.currentModule = componentName;
         }
-      }
+      },
     },
     mounted() {
       this.generateComponent();
-      // const { customizedModuleId } = this.$route.params;
-      // this.updateAccessHistory({ type: 'action', id: customizedModuleId });
     },
     watch: {
       $route() {

@@ -316,9 +316,10 @@
                 return false;
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
-
-              const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
+              const arrIndex = _refval.indexOf(val[_refcolumn] || '');
+              const checkVal = arrIndex !== -1 ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
+
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
               // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
@@ -678,7 +679,7 @@
               const value = Array.isArray(option.item.value)
                 ? option.item.value.toString()
                 : option.item.value;
-              if (JSON.stringify(refval) === JSON.stringify(value)) {
+              if (JSON.stringify(refval).indexOf(JSON.stringify(value)) !== -1) {
                 this.newFormItemLists[index].show = true;
               } else {
                 this.newFormItemLists[index].show = false;

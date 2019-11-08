@@ -90,6 +90,8 @@ export default {
                       objid,
                       refcolid: firstReftab.refcolid,
                       searchdata: {
+                        startindex: 0,
+                        range: 10,
                         column_include_uicontroller: true
                       },
                       tabIndex
@@ -286,7 +288,7 @@ export default {
         } else {
           parames = {
             table: tableName, // 主表表名
-            objid: objId, 
+            objid: objId,
             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
               ...add,
             }
@@ -355,12 +357,12 @@ export default {
         itemModify[itemName].forEach((modifyItem) => {
           itemDefault[itemName].forEach((defaultItem) => {
             if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-              Object.keys(defaultItem).reduce((obj, item) => { 
+              Object.keys(defaultItem).reduce((obj, item) => {
                 Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
                   if (item === modifyDataItem) {
                     let itemDefault = {};
                     defaultForSave[modifyDataItem] = defaultItem[item];
-                    itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+                    itemDefault = Object.assign({}, modifyItem, defaultForSave);
                     defaultForSaveArray.push(itemDefault);
                   }
                   return modifyDataObj;
@@ -414,7 +416,7 @@ export default {
               reject();
             }
           });
-        } 
+        }
         if (Object.values(itemModify[itemName]).length > 0) {
           const defaultData = [];
           const defaultForSaveArray = [];
@@ -423,12 +425,12 @@ export default {
           itemModify[itemName].forEach((modifyItem) => {
             itemDefault[itemName].forEach((defaultItem) => {
               if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-                Object.keys(defaultItem).reduce((obj, item) => { 
+                Object.keys(defaultItem).reduce((obj, item) => {
                   Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
                     if (item === modifyDataItem) {
                       let itemDefault = {};
                       defaultForSave[modifyDataItem] = defaultItem[item];
-                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+                      itemDefault = Object.assign({}, modifyItem, defaultForSave);
                       defaultForSaveArray.push(itemDefault);
                     }
                     return modifyDataObj;
@@ -461,7 +463,7 @@ export default {
         const dufaultData = dufault[tableName];
         const defaultForSave = {};
         const dufaultDataForSave = {};
-        Object.keys(dufaultData).reduce((obj, item) => { 
+        Object.keys(dufaultData).reduce((obj, item) => {
           const modifyData = modify[tableName];
           Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
             if (item === modifyDataItem) {

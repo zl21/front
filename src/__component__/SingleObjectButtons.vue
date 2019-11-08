@@ -345,7 +345,7 @@
       },
     },
     props: {
-      watermarkimg: {
+      watermarkimg: {// 水印
         type: String,
         default: ''
       },
@@ -356,15 +356,15 @@
         type: Boolean,
         default: false
       }, // 是否显示水印图标
-      tabcmd: {
+      tabcmd: {// 标准类型按钮
         type: Object,
         default: () => ({})
       },
-      tabwebact: {
+      tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
       },
-      objectType: {
+      objectType: {// 单对象类型
         type: String,
         default: ''
       },
@@ -372,11 +372,11 @@
         type: Boolean,
         // default: false
       }, // 是否存在子表
-      itemName: {
+      itemName: {// 当前表名
         type: String,
         default: ''
       },
-      itemNameGroup: {
+      itemNameGroup: {// 所有子表表名
         type: Array,
         default: () => ([])
       },
@@ -388,11 +388,11 @@
         type: String,
         default: ''
       },
-      itemTableCheckFunc: {
+      itemTableCheckFunc: {// 子表明细校验
         type: Function,
         default: () => {}
       },
-      clearItemTableSearchValue: {
+      clearItemTableSearchValue: {// 清空子表搜索框内容
         type: Function,
         default: () => {}
       },
@@ -521,16 +521,22 @@
             this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
-            this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+              });
             });
-            const searchdata = {
-              column_include_uicontroller: true,
-              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
-              range: this.tablePageInfo.pageSize,
-            };
-            this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+
+            promise.then(() => {
+              const searchdata = {
+                column_include_uicontroller: true,
+                startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                range: this.tablePageInfo.pageSize,
+                fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
+              };
+              this.getObjectTableItemForTableData({
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+              });
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
@@ -1147,9 +1153,9 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (this.itemName === this.tableName) {
+        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
           this.webactButton(tabwebact.objbutton);
-        } else {
+        } else if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
           this.webactButton(tabwebact.objtabbutton);
         }
       },
