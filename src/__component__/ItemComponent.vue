@@ -752,7 +752,6 @@
             Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
             && typeof this._items.event.clear === 'function'
           ) {
-            console.log(item);
             this._items.event.clear();
           }
         }
@@ -1336,8 +1335,6 @@
         }
         if (!isreftabs && pathcheck === '') {
           // 单主表  无path
-          console.log('单主表 有sspath');
-
           const fixedData = {
             fixedData: {
               [this._items.props.itemdata.masterName]: {
