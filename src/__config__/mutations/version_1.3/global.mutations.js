@@ -232,11 +232,12 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName, linkId, url
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+
       router.push({
         path
       });
@@ -248,14 +249,18 @@ export default {
       });
     }
     if (type === 'tableDetailAction') {
-      path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      if (url) {
+        path = `/${url}`;
+      } else {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      }
       router.push({
         path
       });
     }
   
     if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
+      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
       router.push({
         path
       });
