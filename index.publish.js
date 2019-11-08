@@ -13,6 +13,8 @@ import SearchForm from './src/__component__/form/SearchForm';
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
 import CompositeForm from './src/__component__/CompositeForm';
+import SingleObjectButtons from './src/__component__/SingleObjectButtons';
+
 
 import { menuClick } from './src/__config__/event.config';
 
@@ -102,6 +104,7 @@ export default {
     SearchForm,
     FilterTree,
     SelectTree,
-    CompositeForm
+    CompositeForm,
+    SingleObjectButtons
   }
 };

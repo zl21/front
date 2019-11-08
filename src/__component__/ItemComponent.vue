@@ -1086,8 +1086,7 @@
       filechange(value) {
         // 上传文件
         const _value = value.length > 0 ? value : '';
-        // this._items.value = _value;
-
+        
         const fixedData = Array.isArray(_value) ? [..._value] : '';
         let parms = {
           objId: this._items.props.itemdata.objId,
@@ -1120,9 +1119,14 @@
           } else {
             this._items.props.itemdata.valuedata = [];
             this._items.props.itemdata.valuedata = fixedData;
-            this._items.value = JSON.stringify([
-              ...this._items.props.itemdata.valuedata
-            ]);
+            if (this._items.props.itemdata.valuedata.length > 0) {
+              this._items.value = JSON.stringify([
+                ...this._items.props.itemdata.valuedata
+              ]);
+            } else {
+              this._items.value = '';
+            }
+           
             this.upSavefile(parms, fixedData, path, value);
             this.valueChange();
           }
@@ -1130,6 +1134,13 @@
           const _fixedData = fixedData || '';
           this._items.props.itemdata.valuedata = [];
           this._items.props.itemdata.valuedata = _fixedData;
+          if (this._items.props.itemdata.valuedata.length > 0) {
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+          } else {
+            this._items.value = '';
+          }
           this.valueImgChange();
         }
       },

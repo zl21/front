@@ -14,10 +14,12 @@ import standard from '../__customize__/colorSize/Standard.vue';
 
 export default {
   functionPermission: {
-    component: functionPermission
+    component: functionPermission,
+    labelName: '用户角色编辑'
   },
   pro_desc: {
-    component: proDesc
+    component: proDesc,
+
   },
   standard: {
     component: standard

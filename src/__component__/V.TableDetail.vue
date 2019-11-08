@@ -17,7 +17,7 @@
       v-if="mainFormInfo.formData.isShow"
       object-type="vertical"
       :is-main-table="true"
-      :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
+      :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -75,7 +75,7 @@
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
           obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
@@ -169,7 +169,7 @@
           // 获取子表表单
           getButtonDataPromise = new Promise((rec, rej) => {
             this.getObjectTabForRefTable({
-              table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej 
+              table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
             });
           });
           const formParam = {
@@ -180,6 +180,7 @@
           this.getFormDataForRefTable(formParam);
         }
         if (refTab.tabrelation === '1:m') {
+          console.log(refTab);
           getButtonDataPromise.then(() => {
             this.getObjectTableItemForTableData({
               table: refTab.tablename,
@@ -189,7 +190,7 @@
                 column_include_uicontroller: true,
                 startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
                 range: this.tablePageInfo.pageSize,
-                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : {}
+                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
               },
               tabIndex: index
             });

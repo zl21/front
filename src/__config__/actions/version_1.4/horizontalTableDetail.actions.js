@@ -45,14 +45,38 @@ export default {
       if (res.data.code === 0) {
         const resData = res.data.data;
         if (resData.tabfilter && resData.tabfilter.length > 0) {
-          const defaultObj = resData.tabfilter.find(item => item.default);
-          if (defaultObj) {
-            const searchData = {
-              selectedValue: defaultObj.colname,
-              inputValue: defaultObj.default
-            };
-            commit('updateTableSearchData', searchData);
-          }
+          const childTableFixedcolumns = {};
+          resData.tabfilter.forEach((item) => {
+            if (item.display === 'OBJ_DATENUMBER') {
+              // 日期控件
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else if (item.default !== '-1' && item.default) {
+                childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+              } else {
+                childTableFixedcolumns[item.colname] = `
+                      ${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}
+                      ~
+                      ${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+              }
+            } else if (item.display === 'OBJ_DATE') {
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else {
+                childTableFixedcolumns[item.colname] = `
+                      ${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '/')} 00:00:00
+                      ~
+                      ${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`;
+              }
+            } else if (item.display === 'OBJ_SELECT' && item.default) {
+              childTableFixedcolumns[item.colname] = [`=${item.default}`];
+            } else if (item.display === 'OBJ_FK' && item.default) {
+              childTableFixedcolumns[item.colname] = [`${item.default}`];
+            } else if (item.default) {
+              childTableFixedcolumns[item.colname] = item.default;
+            }
+          });
+          commit('updateTableFixedcolumns', JSON.parse(JSON.stringify(childTableFixedcolumns)));
         }
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
