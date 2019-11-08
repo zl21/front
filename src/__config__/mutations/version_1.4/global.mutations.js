@@ -57,10 +57,6 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        // if (c.type === 'action' && c.vuedisplay !== 'external') {
-        //   // 自定义界面的处理
-        //   a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-        // } else
         if (c.type === 'action') {
           // 外部跳转链接URL的处理
           if (c.url) {
@@ -70,7 +66,7 @@ export default {
               linkUrl[c.id] = c.url;
               state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
               a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-            } else if (actionType === 'CUSTOMIZED') {
+            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
               a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             }

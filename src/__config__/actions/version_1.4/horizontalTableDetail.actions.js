@@ -46,7 +46,8 @@ export default {
         const resData = res.data.data;
         if (resData.tabfilter && resData.tabfilter.length > 0) {
           const childTableFixedcolumns = {};
-          resData.tabfilter.forEach((item) => {
+          const tabfilterData = JSON.parse(JSON.stringify(resData));
+          tabfilterData.tabfilter.forEach((item) => {
             if (item.display === 'OBJ_DATENUMBER') {
               // 日期控件
               if (item.default === '-1') {
