@@ -521,16 +521,22 @@
             this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
-            this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+              });
             });
-            const searchdata = {
-              column_include_uicontroller: true,
-              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
-              range: this.tablePageInfo.pageSize,
-            };
-            this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+
+            promise.then(() => {
+              const searchdata = {
+                column_include_uicontroller: true,
+                startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                range: this.tablePageInfo.pageSize,
+                fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
+              };
+              this.getObjectTableItemForTableData({
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+              });
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
