@@ -1994,7 +1994,22 @@
       },
       docReadonlyRender(cellData, tag) {
         const that = this;
-        return (h, params) => h('div', [
+        return (h, params) => h('div', {
+          style: {
+            display: 'flex'
+          },
+        }, [
+          h('div', {
+            style: {
+              display: 'flex',
+              'align-items': 'center'
+            },
+            domProps: {
+            },
+          },`${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+            acc.push(`【${cur.name}】`);
+            return acc;
+          }, []).join('') : '暂无文件'}`),
           h(tag, {
             style: {
               width: '100%',
@@ -2008,12 +2023,14 @@
               content: 'content'
             },
             scopedSlots: {
-              default: () => h('span', '查看', {
+              default: () => h('div', {
                 style: {
-                  width: '100%',
-                  'text-align': 'center',
-                  color: '#2D8CF0'
+                  'padding-left': '10px',
+                  'padding-right': '10px',
                 },
+                domProps: {
+                  innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? `<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>` : ''
+                }
               }),
               content: () => {
                 if (params.row[cellData.colname]) {
