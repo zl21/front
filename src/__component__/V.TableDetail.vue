@@ -180,7 +180,6 @@
           this.getFormDataForRefTable(formParam);
         }
         if (refTab.tabrelation === '1:m') {
-          console.log(refTab);
           getButtonDataPromise.then(() => {
             this.getObjectTableItemForTableData({
               table: refTab.tablename,
