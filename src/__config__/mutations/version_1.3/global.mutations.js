@@ -67,7 +67,9 @@ export default {
               a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
-              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+              const index = c.url.lastIndexOf('/');
+              const customizedModuleName = c.url.substring(index + 1, c.url.length);
+              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
             }
           }
         } else if (c.type === 'table') {

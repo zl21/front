@@ -9,6 +9,7 @@
       <div
         v-for="(item,index) in dataColRol"
         v-show="item.show !== false"
+        :id="item.item.field"
         :key="index"
         class="FormItemComponent-item"
         :style="setDiv(item)"
@@ -377,8 +378,8 @@
             key: items.item.field,
             name: items.item.title,
             srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
-            input: this.inputget(this.formIndex, i, items)
           });
+         
           //  扩展属性 来源
           if (item.props.webconf && item.props.webconf.targetField) {
             item.props.supportType = val[item.props.webconf.targetField];
@@ -413,7 +414,11 @@
         });
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
+            const data = {
+              formList: this.LinkageForm,
+              formIndex: this.formIndex
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
       },  
