@@ -52,12 +52,8 @@
           type
         } = data;
         const {
-          value, id, url, vuedisplay 
+          value, id, url 
         } = data;
-      
-        // if (vuedisplay && vuedisplay === 'external') {
-        //   type = vuedisplay;
-        // }
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });

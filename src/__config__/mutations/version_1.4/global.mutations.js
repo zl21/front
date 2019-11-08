@@ -68,7 +68,7 @@ export default {
               a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
-              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+              a[`${c.url.toUpperCase()}.${c.id}`] = c.label;
             }
           }
         } else if (c.type === 'table') {
