@@ -1682,10 +1682,13 @@
               linkId: tab.webid
             });
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
             const linkUrl = tab.action;
             const linkId = tab.webid;
-            this.increaseLinkUrl({ linkId, linkUrl });
+            
+            if (!this.LinkUrl[linkId]) {
+              this.increaseLinkUrl({ linkId, linkUrl });
+            }
             const obj = {
               linkName: tab.webname,
               linkId: tab.webid,
