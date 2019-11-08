@@ -276,7 +276,8 @@ export default {
     }
   
     if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+      path = '/LINK/BAIDU_MENU/2266'
+      console.log("🧜‍♀️",path)
       router.push({
         path
       });

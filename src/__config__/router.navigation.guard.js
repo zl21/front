@@ -81,8 +81,6 @@ export default (router) => {
       default:
         originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
     }
-
-
     switch (fromRoutePrefix) {
       // Condition One: 来自标准列表界面
       case STANDARD_TABLE_LIST_PREFIX:
