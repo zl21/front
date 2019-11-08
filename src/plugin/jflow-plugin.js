@@ -3,6 +3,8 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-return-await */
 import Vue from 'vue';
+
+import { Version } from '../constants/global';
 import CreateButton from './button';
 import todoList from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
@@ -24,7 +26,7 @@ let businessStatus = 0; // 流程状态  -2时正在发起流程
 
 
 function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
-  if (tabcmd) {
+  if (tabcmd && Version() === '1.4') {
     let businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
     let arr = [];
     businessTypes.map((item) => {

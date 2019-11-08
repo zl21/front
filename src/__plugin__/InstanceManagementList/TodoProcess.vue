@@ -102,7 +102,7 @@
   import ItemComponent from './ItemComponent';
   import StandardTable from './StandardTable';
   import mutipleSelectPop from './MutipleSelectPop';
-  // import ProcessNodeConfig from '../__component__/ProcessNodeConfig'
+  import { Version } from '../../constants/global';
 
   export default {
     name: 'TodoProcess',
@@ -311,9 +311,17 @@
                     on: {
                       click: () => {
                         params.row.loadType = 0;
-                        window.jflowPlugin.router.push({
-                          path: params.row.formUrl
-                        });
+                        if (Version() === '1.4') {
+                          window.jflowPlugin.router.push({
+                            path: params.row.formUrl
+                          });
+                        } else {
+                          const query = this.urlParse(params.row.formUrl);
+                          const formUrl = `/SYSTEM/TABLE_DETAIL/V/${query.tableName}/${query.pid}/${query.id}`;
+                          window.jflowPlugin.router.push({
+                            path: formUrl
+                          });
+                        }
                       }
                     }
                   },
