@@ -1654,26 +1654,42 @@
         this.setErrorModalValue({ errorDialogvalue });
       },
       objTabActionNavbar(tab) {
-        console.log(tab);
-        //    action: "https://www.baidu.com/"
-        // actiontype: "url"
-        // confirm: null
-        // cuscomponent: null
-        // ishide: false
-        // isrefrsh: false
-        // vuedisplay: "navbar"
-        // webdesc: "外链list"
-        // webicon: null
-        // webid: 2296
-        // webname: "listbuttonout"     
-      
         if (tab.action) {
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
           if (actionType === 'SYSTEM') {
-            const path = `/${tab.action}`;
-            router.push(
-              path
-            );
+            if (singleEditType === ':itemId') {
+              if (this.buttons.selectIdArr.length === 0) {
+                // const data = {
+                //   title: '警告',
+                //   mask: true,
+                //   content: '确认执行删除?',
+                //   showCancel: true,
+                //   onOk: () => {
+                   
+                //   }
+                // };
+                // this.$Modal.fcWarning(data);
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.buttons.selectIdArr.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              let itemId = '';
+              this.buttons.selectIdArr.forEach((id) => {
+                itemId = id;
+              });
+              const path = `/${tab.action.replace(/:itemId/, itemId)}`;
+              router.push(
+                path
+              );
+            } else {
+              const path = `/${tab.action}`;
+              router.push(
+                path
+              );
+            }
           } else if (actionType === 'https:' || actionType === 'http:') {
             const type = 'tableDetailUrl';
             this.tabOpen({
@@ -1682,7 +1698,7 @@
               linkId: tab.webid
             });
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
-            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
             const linkUrl = tab.action;
             const linkId = tab.webid;
             
@@ -1693,21 +1709,23 @@
               linkName: tab.webname,
               linkId: tab.webid,
               linkUrl,
-              linkLabel: name
+              linkLabel: tab.webdesc
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          } else {
-            class Person {
-              constructor(wrong, eg, url) {
-                this.wrong = wrong;
-                this.correctURL = eg;
-                this.url = url;
-              }
-            }
-            const me = new Person('url配置错误', 'SYSTEM/TABLE_DETAIL/V/DL_B_PUR/23792/New', info.url);
-            console.table(me);
-          }
+            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            const obj = {
+              customizedName: name,
+              customizedLabel: tab.webdesc
+            };
+            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            router.push(
+              path
+            );
+          } 
         }
 
 
