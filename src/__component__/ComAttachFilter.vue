@@ -53,17 +53,20 @@
     props: {
       defaultValue: {
         type: String,
+        // 后台传参
         default() {
           return '';
         }
       },
       defaultSelected: {
+        // 默认选中值
         type: Array,
         default() {
           return [];
         }
       },
       propstype: {
+        // 各种props
         type: Object,
         default() {
           return {};

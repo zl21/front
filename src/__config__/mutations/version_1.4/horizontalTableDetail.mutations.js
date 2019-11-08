@@ -286,18 +286,35 @@ export default {
   },
   updateLinkageForm(state, data) {
     let mappStatus = {};
-    if (data.length > 0) {
-      mappStatus = data.reduce((arry, item) => {
+
+    const LinkageForm = {};
+    if (data.formList && data.formList.length > 0) {
+      mappStatus = data.formList.reduce((arry, item) => {
+        LinkageForm[item.key] = {
+          index: [data.formIndex],
+          item
+        };
         if (item.srccol) {
           arry[item.key] = item.srccol;
-        }
+          arry[item.srccol] = item.key;
+        }  
         return arry;
       }, {});
-      state.LinkageForm = state.LinkageForm.concat(data);
+      state.LinkageForm = Object.assign(state.LinkageForm, LinkageForm);
       state.mappStatus = Object.assign(state.mappStatus, mappStatus);
     } else {
-      state.LinkageForm = [];
+      state.LinkageForm = {};
       state.mappStatus = {};
+    }
+  },
+  updateCompositeForm(state, data) {
+    // 实例挂载
+    const CompositeForm = {};
+    if (data && data.name) {
+      CompositeForm[data.name] = data.vm;
+      state.CompositeForm = Object.assign(state.CompositeForm, CompositeForm);
+    } else {
+      state.CompositeForm = {};
     }
   },
   updateMaping(state, data) {
