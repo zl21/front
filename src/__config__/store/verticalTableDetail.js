@@ -34,6 +34,7 @@ export default () => ({
       currentPageIndex: 1,
       pageSize: 10
     },
+    childTableReadonly: false, // 子表是否为只读状态
     objTabActionSlientConfirmData: {},
     LinkageForm: {}, // 所有form
     CompositeForm: {}, // 表单实例

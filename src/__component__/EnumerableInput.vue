@@ -8,6 +8,7 @@
       ref="input"
       :value="value"
       readonly
+      :disabled="disabled"
       @on-keydown="onKeydown"
     />
     <ul
@@ -22,14 +23,15 @@
         <li
           v-if="!item.hide"
           :key="index"
-          :class="{ picked: itemPicked[index] }"
-          @click="itemClick(index)"
+          :class="{ picked: itemPicked[index], disabled: isDefault && !item.clickableWhenEdit }"
+          @click="itemClick(index, item)"
         >
           {{ item.text }}
         </li>
       </template>
       <li
         class="pickedAll"
+        :class="{ disabled: isDefault }"
         @click="pickAll"
       >
         {{ pickedAll ? '清空' : '全选' }}
@@ -39,10 +41,12 @@
 </template>
 
 <script>
+  import { VERTICAL_TABLE_DETAIL_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../constants/global';
   import enumerableForColumn from '../constants/enumerateInputForColumn';
   import enumerableForTable from '../constants/enumerateInputForTable';
   
   export default {
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE],
     data: () => ({
       scrollTimeoutTick: -1,
       style: {
@@ -57,6 +61,10 @@
     }),
     name: 'EnumerableInput',
     props: {
+      disabled: {
+        type: Boolean,
+        default: false
+      },
       enumerableConfig: {
         type: Object,
         default: () => ({
@@ -91,7 +99,10 @@
         this.value = v;
         return v;
       },
-      itemClick(index) {
+      itemClick(index, item) {
+        if (this.isDefault && !item.clickableWhenEdit) {
+          return;
+        }
         if (!this.itemPicked[index]) {
           this.itemPicked[index] = true;
         } else {
@@ -121,10 +132,13 @@
         this.fixPosition();
       },
       toggleDropdownShow() {
-        this.dropdownShow = !this.dropdownShow;
-        this.fixPosition();
+        if (!this.disabled) {
+          this.dropdownShow = !this.dropdownShow;
+          this.fixPosition();
+        }
       },
       pickAll() {
+        if (this.isDefault) { return; }
         this.enumerableLists.forEach((d, i) => {
           this.itemPicked[i] = !this.pickedAll;
         });
@@ -137,6 +151,15 @@
       hasPickedAll() {
         // 基于当前选中值判断是否处理全选状态。
         return !this.enumerableLists.some((d, i) => !this.itemPicked[i]);
+      }
+    },
+    computed: {
+      isDefault() {
+        // isdefault 是后台/p/cs/getObject接口的返回值，用于控制系统默认字段不可编辑。此处用于判断读写打印规则的设置逻辑。
+        if (this[INSTANCE_ROUTE].indexOf(VERTICAL_TABLE_DETAIL_PREFIX) > -1) {
+          return this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.formData.data.isdefault;
+        }
+        return this.$store.state[this[MODULE_COMPONENT_NAME]].copyDataForReadOnly.isdefault;
       }
     },
     created() {
@@ -202,6 +225,7 @@
     opacity: 0.8;
   }
   ul {
+    border-radius: 2px;
     padding: 5px;
     position: fixed;
     min-width: 210px;
@@ -219,6 +243,7 @@
       cursor: pointer;
       border: 1px solid orangered;
       color: orangered;
+      border-radius: 2px;
     }
     li:hover {
       opacity: 0.7;
@@ -227,6 +252,12 @@
       border: 1px solid orangered;
       background-color: orangered;
       color: #fff;
+    }
+    li.disabled {
+      border: 1px solid #d8d8d8;
+      background-color: #f4f4f4;
+      color: #c3c3c3;
+      cursor: not-allowed;
     }
   }
   .arrow:before{
@@ -242,6 +273,12 @@
   .pickedAll {
     padding: 6px 7px;
     cursor: pointer;
+  }
+  .pickedAll.disabled {
+    border: 1px solid #d8d8d8;
+    background-color: #f4f4f4;
+    color: #c3c3c3;
+    cursor: not-allowed;
   }
   .pickedAll:hover {
     opacity: 0.75;

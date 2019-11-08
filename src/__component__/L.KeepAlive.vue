@@ -46,7 +46,9 @@
         const { linkModuleName, linkModuleId } = this.$route.params;
         if (this.LinkUrl.length > 0) {
           this.LinkUrl.forEach((url) => {
-            this.urlName = url[linkModuleId];
+            if (url[linkModuleId]) {
+              this.urlName = url[linkModuleId];
+            }
           });
         }
         const { routePrefix } = this.$route.meta;

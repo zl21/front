@@ -115,11 +115,12 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
   import myTree from './Tree/Tree';
-
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import { Version } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import customize from '../__config__/customize.config';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -210,7 +211,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory']),
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -265,14 +266,32 @@
           };
           this.tabHref(tab);
         } else if (this.ag.tableurl) {
-          // const type = 'tableDetailAction';
-          // const tab = {
-          //   type,
-          //   customizedModuleName: 'pro_desc',
-          //   customizedModuleId: id
-          // };
-          // this.tabOpen(tab);
-          // this.addKeepAliveLabelMaps({ { name:, label }})
+          const type = 'tableDetailAction';
+          const url = this.ag.tableurl;
+          const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
+
+          const tab = {
+            type,
+            customizedModuleName,
+            customizedModuleId: id
+          };
+          this.tabOpen(tab);
+          const obj = {
+            customizedModuleName,
+            id
+          };
+          window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+          Object.keys(customize).forEach((customizeName) => {
+            const nameToUpperCase = customizeName.toUpperCase();
+            if (nameToUpperCase === customizedModuleName) {
+              const labelName = customize[customizeName].labelName;
+              const name = `C.${customizedModuleName}.${id}`;
+              this.addKeepAliveLabelMaps({ name, label: labelName });
+            // this.addServiceIdMap({ name, label: labelName });
+            } else {
+              
+            }
+          });
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';

@@ -52,6 +52,7 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
     arr.forEach((item) => {
@@ -184,8 +185,8 @@ export default {
                   c.valuedata = '';
                   hidecolunmArray.push(c);
                 }
-              } 
-            }         
+              }
+            }
             if (b.name === c.name) {
               b.readonly = c.readonly;
               if (hidecolunmArray.length > 0) {
@@ -239,7 +240,7 @@ export default {
     //     });
     //   });
     // });
-    state.updateData[tableName].add = {};
+    // state.updateData[tableName].add = {};
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);// 用于通过改变changeData触发form抛出值，以便保存时可以拿到add里面的值作为参数
     state.updateData = Object.assign({}, state.updateData);
 
@@ -336,13 +337,18 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+  updateTableFixedcolumns(state, data) {
+    // const { tableDefaultFixedcolumns } = state.tabPanels[state.tabCurrentIndex];
+    state.tabPanels[state.tabCurrentIndex].tableDefaultFixedcolumns = data;
+    // tableDefaultFixedcolumns = data;
+  }, // 修改单对象表格默认搜索条件
   jflowPlugin(state, {
-    buttonsData, newButtons, buttonAnother, instanceId 
+    buttonsData, newButtons, buttonAnother, instanceId
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
     state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-    if (buttonAnother) { 
+    if (buttonAnother) {
       state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
       state.anotherData = buttonAnother;
     } else if (state.anotherData.length > 0) {
