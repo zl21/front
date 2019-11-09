@@ -1367,7 +1367,7 @@
               item.props.optionTip = false;
               item.props.enterType = true;
               item.props.show = false;
-
+              // 失去光标是否保存
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,

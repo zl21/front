@@ -659,12 +659,15 @@
                 break;
               case 'pop':
                 obj.item.props.fkobj = current.fkobj;
+                obj.item.props.blurType = false;
+
                 obj.item.props.fkobj.colid = current.colid;
                 obj.item.props.Selected = [];
                 break;
               case 'mop':
                 obj.item.props.fkobj = current.fkobj;
                 obj.item.props.fkobj.colid = current.colid;
+                obj.item.props.blurType = false;
                 // obj.item.props.fkobj.saveType = 'object';
                 obj.item.props.fkobj.url = `/${obj.item.props.fkobj.serviceId}/p/cs/menuimport`;
                 obj.item.props.datalist = [];
