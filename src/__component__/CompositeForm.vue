@@ -1458,7 +1458,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 220 : 160,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 160,
             height: 120,
             readonly,
             ImageSize,
