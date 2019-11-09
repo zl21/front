@@ -364,8 +364,25 @@
         }
         return items;
       },
+      setChangeValue(data, current) {
+        // 修改联动值
+        const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
+        const key = mappStatus[Object.keys(data)[0]];
+        if (!document.querySelector(`#${key}`) || Object.hasOwnProperty.call(current.item.validate, 'refcolval')) {
+          return false;
+        }
+        const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+        if (LinkageFormInput) {
+          LinkageFormInput.click();
+        }
+        return true;
+      },
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
+        // 修改联动的值
+        if (!Object.hasOwnProperty.call(current.item.validate, 'refcolval')) {
+          this.setChangeValue(data, current);
+        }
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -505,16 +522,16 @@
               }
             },
             clear: () => {
-              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-              const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
-              this.getStateData(); // 获取主表信息
-              Object.keys(mappStatus).forEach((item) => {
-                const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
-                const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
-                if (LinkageFormInput) {
-                  LinkageFormInput.click();
-                }
-              });
+              // const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+              // const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
+              // this.getStateData(); // 获取主表信息
+              // Object.keys(mappStatus).forEach((item) => {
+              //   const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
+              //   const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+              //   if (LinkageFormInput) {
+              //     // LinkageFormInput.click();
+              //   }
+              // });
             },
             change: (value) => {
               if (current.fkdisplay) {
@@ -1350,7 +1367,7 @@
               item.props.optionTip = false;
               item.props.enterType = true;
               item.props.show = false;
-
+              // 失去光标是否保存
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1441,7 +1458,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 220 : 160,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 160,
             height: 120,
             readonly,
             ImageSize,
