@@ -1676,10 +1676,7 @@
                 this.$Message.warning('只能勾选单个ID');
                 return;
               }
-              let itemId = '';
-              this.buttons.selectIdArr.forEach((id) => {
-                itemId = id;
-              });
+              const itemId = this.buttons.selectIdArr.filter(item => item);
               const path = `/${tab.action.replace(/:itemId/, itemId)}`;
               router.push(
                 path
