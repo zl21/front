@@ -318,15 +318,15 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
               if (val[_refcolumn] === undefined) {
                 return false;
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
-              const arrIndex = _refval.indexOf(val[_refcolumn] || '');
+
+              const arrIndex = _refval.indexOf(val[_refcolumn]);
               const checkVal = arrIndex !== -1 ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
-
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
               // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
@@ -395,7 +395,7 @@
             // this.dynamicforcompute(item, val, i);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
             const _refcolumn = item.validate.hidecolumn.refcolumn;
-            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
             if (val[_refcolumn] === undefined) {
               if (_refval === 'Y') {
                 val[_refcolumn] = 'N';
@@ -407,7 +407,7 @@
                 val[_refcolumn] = 'false';
               }
             }
-            const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
+            const checkVal = _refval.indexOf(val[_refcolumn]) !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
             if (checkVal !== checkShow) {
               this.hidecolumn(item, i);
@@ -702,6 +702,7 @@
           }
           // input.innerText = '';
         }
+        return true;
       },
       hidecolumn(items, index) {
         // 隐藏
@@ -709,13 +710,14 @@
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
         // this.newFormItemLists[index].show = false;
+
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item) {
               const value = Array.isArray(option.item.value)
                 ? option.item.value.toString()
                 : option.item.value;
-              if (JSON.stringify(refval).indexOf(JSON.stringify(value)) !== -1) {
+              if (refval.indexOf(value) !== -1) {
                 this.newFormItemLists[index].show = true;
               } else {
                 this.newFormItemLists[index].show = false;
