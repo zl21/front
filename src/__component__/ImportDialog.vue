@@ -197,8 +197,7 @@
       clearFile() {
         this.fileName = '';
         this.loading = false;
-        this.files = [];
-        // this.errorMsg={};
+        // this.files = [];
       },
       fileChange(e) {
         this.files = e.target.files[0];
@@ -256,6 +255,12 @@
         this.uploadFileChange();
       },
       uploadFileChange() {
+        this.errorMsg = {
+          // 错误信息
+          errorUrl: '',
+          message: '',
+          errorList: []
+        };
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
