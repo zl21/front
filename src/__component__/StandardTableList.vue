@@ -284,8 +284,7 @@
 
           const tab = {
             type,
-            customizedModuleName,
-            customizedModuleId: id
+            url
           };
           this.tabOpen(tab);
           const obj = {
@@ -300,9 +299,7 @@
               const name = `C.${customizedModuleName}.${id}`;
               this.addKeepAliveLabelMaps({ name, label: labelName });
             // this.addServiceIdMap({ name, label: labelName });
-            } else {
-              
-            }
+            } 
           });
         } else {
           // 单对象上下结构

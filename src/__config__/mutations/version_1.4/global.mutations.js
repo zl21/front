@@ -68,9 +68,7 @@ export default {
               a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
-              const index = c.url.lastIndexOf('/');
-              const customizedModuleName = c.url.substring(index + 1, c.url.length);
-              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             }
           }
         } else if (c.type === 'table') {
@@ -89,29 +87,12 @@ export default {
         return a;
       }, {});
     const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
-    const tableDetailUrlMessage = JSON.parse(window.sessionStorage.getItem('tableDetailUrlMessage'));
-    const customizedMessageForbutton = JSON.parse(window.sessionStorage.getItem('customizedMessageForbutton'));
-    if (customizedMessageForbutton) { // 取按钮跳转定制界面label
-      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
-    }
-
-    if (tableDetailUrlMessage) { // 取按钮跳转外链label
-      const labelName = tableDetailUrlMessage.linkName;
-      const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
-      state.keepAliveLabelMaps[name] = `${labelName}`;
-      const linkUrl = {};
-      linkUrl[tableDetailUrlMessage.linkId] = tableDetailUrlMessage.linkUrl;
-      state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
-      state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
-    }
-
-    
     if (customizedMessage) {
       Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
         const nameToUpperCase = customizeName.toUpperCase();
         if (nameToUpperCase === customizedMessage.customizedModuleName) {
           const labelName = customize[customizeName].labelName;
-          const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
+          const name = `C.${customizedMessage.customizedModuleName}.${customizedMessage.id}`;
           state.keepAliveLabelMaps[name] = `${labelName}`;
         }
       });
@@ -248,12 +229,11 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName, linkId, url
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId, url, label
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-
       router.push({
         path
       });
@@ -266,7 +246,12 @@ export default {
     }
     if (type === 'tableDetailAction') {
       if (url) {
-        path = `/${url}`;
+        path = `${url.toUpperCase()}`;
+        const routeInfo = {
+          path,
+          query: { label }
+        };
+        router.push(routeInfo);
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
@@ -276,8 +261,7 @@ export default {
     }
   
     if (type === 'tableDetailUrl') {
-      path = '/LINK/BAIDU_MENU/2266'
-      console.log("🧜‍♀️",path)
+      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
       router.push({
         path
       });
