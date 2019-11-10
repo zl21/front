@@ -195,12 +195,11 @@
 
     methods: {
       clearFile() {
-        this.fileName = '';
+        // this.fileName = '';
         this.loading = false;
-        this.files = [];
+        // this.files = [];
       },
       fileChange(e) {
-        debugger
         this.files = e.target.files[0];
         this.fileName = e.target.files[0].name;
         this.fileSize = e.target.files[0].size;
@@ -294,6 +293,12 @@
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
+          this.fileName = '';
+          this.$Modal.fcSuccess({
+            title: '成功',
+            mask: true,
+            content: response.message
+          });
         } else {
           if (response.data.path === 'undefined ===') {
             this.errorMsg.errorUrl = '';
