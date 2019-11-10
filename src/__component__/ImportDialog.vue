@@ -200,6 +200,7 @@
         this.files = [];
       },
       fileChange(e) {
+        debugger
         this.files = e.target.files[0];
         this.fileName = e.target.files[0].name;
         this.fileSize = e.target.files[0].size;
