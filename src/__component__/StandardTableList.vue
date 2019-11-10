@@ -306,15 +306,12 @@
             //   path
             // );
 
-            const type = 'tableDetailAction';
-            const url = this.ag.tableurl;
-            const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
-
-            const tab = {
-              type,
-              url
-            };
-            this.tabOpen(tab);
+            const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
+            const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
+            const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
+            router.push({
+              path
+            });
             const obj = {
               customizedModuleName,
               id
