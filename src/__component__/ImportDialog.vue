@@ -203,6 +203,12 @@
         fileDom.value = '';
       },
       fileChange(e) {
+        this.errorMsg = {
+          // 错误信息
+          errorUrl: '',
+          message: '',
+          errorList: []
+        };
         this.files = e.target.files[0];
         this.fileName = e.target.files[0].name;
         this.fileSize = e.target.files[0].size;
