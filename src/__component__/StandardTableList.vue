@@ -278,29 +278,58 @@
           };
           this.tabHref(tab);
         } else if (this.ag.tableurl) {
-          const type = 'tableDetailAction';
-          const url = this.ag.tableurl;
-          const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
-
-          const tab = {
-            type,
-            url
-          };
-          this.tabOpen(tab);
-          const obj = {
-            customizedModuleName,
-            id
-          };
-          window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-          Object.keys(customize).forEach((customizeName) => {
-            const nameToUpperCase = customizeName.toUpperCase();
-            if (nameToUpperCase === customizedModuleName) {
-              const labelName = customize[customizeName].labelName;
-              const name = `C.${customizedModuleName}.${id}`;
-              this.addKeepAliveLabelMaps({ name, label: labelName });
-            // this.addServiceIdMap({ name, label: labelName });
+          const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
+          const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+          if (actionType === 'SYSTEM') {
+            if (singleEditType === 'itemId') {
+              const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
+              router.push(
+                path
+              );
+            } else {
+              const path = `/${this.ag.tableurl}`;
+              router.push(
+                path
+              );
             } 
-          });
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            // const obj = {
+            //   customizedName: name,
+            //   customizedLabel: tab.webdesc
+            // };
+            // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            // router.push(
+            //   path
+            // );
+
+            const type = 'tableDetailAction';
+            const url = this.ag.tableurl;
+            const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
+
+            const tab = {
+              type,
+              url
+            };
+            this.tabOpen(tab);
+            const obj = {
+              customizedModuleName,
+              id
+            };
+            window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+            Object.keys(customize).forEach((customizeName) => {
+              const nameToUpperCase = customizeName.toUpperCase();
+              if (nameToUpperCase === customizedModuleName) {
+                const labelName = customize[customizeName].labelName;
+                const name = `C.${customizedModuleName}.${id}`;
+                this.addKeepAliveLabelMaps({ name, label: labelName });
+                // this.addServiceIdMap({ name, label: labelName });
+              } 
+            });
+          } 
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';

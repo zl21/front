@@ -197,8 +197,7 @@
       clearFile() {
         this.fileName = '';
         this.loading = false;
-        this.files =[];
-        // this.errorMsg={};
+        // this.files = [];
       },
       fileChange(e) {
         this.files = e.target.files[0];
@@ -245,10 +244,10 @@
       },
       // 提交上传文件请求
       submitUpload() {
-
-        if ( this.files.length === 0) {
+        if (this.files.length === 0) {
           this.$Modal.fcWarning({
             title: '警告',
+            mask: true,
             content: '请先选择要导入的文件！'
           });
           return;
@@ -256,6 +255,12 @@
         this.uploadFileChange();
       },
       uploadFileChange() {
+        this.errorMsg = {
+          // 错误信息
+          errorUrl: '',
+          message: '',
+          errorList: []
+        };
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
