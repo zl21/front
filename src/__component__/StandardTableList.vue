@@ -282,7 +282,7 @@
           const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
           if (actionType === 'SYSTEM') {
             if (singleEditType === 'itemId') {
-              const path = `/${this.ag.tableurl.replace(/itemId/, id)}`;
+              const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
               router.push(
                 path
               );
