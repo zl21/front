@@ -67,8 +67,9 @@ export default {
               state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
               a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              const customizedType = c.url.substring(c.url.lastIndexOf('/') + 1, c.url.length);
               // 自定义界面的处理
-              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedType.toUpperCase()}.${c.id}`] = c.label;
             }
           }
         } else if (c.type === 'table') {
