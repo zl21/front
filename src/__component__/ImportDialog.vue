@@ -30,6 +30,7 @@
             </Button>
 
             <input
+              id="file"
               class="fileInput"
               type="file"
               name
@@ -195,9 +196,11 @@
 
     methods: {
       clearFile() {
-        // this.fileName = '';
+        this.fileName = '';
         this.loading = false;
-        // this.files = [];
+        this.files = [];
+        const fileDom = document.getElementById('file');
+        fileDom.value = '';
       },
       fileChange(e) {
         this.files = e.target.files[0];
