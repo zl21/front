@@ -197,7 +197,7 @@
       clearFile() {
         this.fileName = '';
         this.loading = false;
-        // this.files = [];
+        this.files = [];
       },
       fileChange(e) {
         this.files = e.target.files[0];
