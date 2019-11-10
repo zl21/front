@@ -1283,7 +1283,7 @@
             const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
             if (actionType === 'SYSTEM') {
               if (singleEditType === ':itemId') {
-                const path = `/${this.ag.tableurl.replace(/:itemId/, 'NEW')}`;
+                const path = `/${this.ag.tableurl.replace(/:itemId/, 'New')}`;
                 router.push(
                   path
                 );
@@ -1296,20 +1296,20 @@
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
               const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
-              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/NEW`;
+              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
               router.push({
                 path
               });
               const obj = {
                 customizedModuleName,
-                id: 'NEW'
+                id: 'New'
               };
               window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
               Object.keys(customize).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {
                   const labelName = customize[customizeName].labelName;
-                  const name = `C.${customizedModuleName}.NEW`;
+                  const name = `C.${customizedModuleName}.New`;
                   this.addKeepAliveLabelMaps({ name, label: labelName });
                   // this.addServiceIdMap({ name, label: labelName });
                 } 

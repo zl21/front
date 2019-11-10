@@ -19,7 +19,7 @@ export default {
   },
   updateAccessHistory({ commit }, { type, id }) {
     if (enableHistoryAndFavorite()) {
-      if (id === 'NEW') {
+      if (id === 'New') {
         id = '-1';
       }
       network.post('/p/cs/recHistory', urlSearchParams({ type, id })).then((res) => {
