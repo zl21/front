@@ -336,10 +336,20 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
               this.refcolval(item, val, i);
+              
             // this.formDataChange();
             }
             return items;
           });
+          if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+            if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+              const data = {
+                formList: this.LinkageForm,
+                formIndex: this.formIndex
+              };
+              this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+            }  
+          }
         },
         deep: true
       },
@@ -391,7 +401,11 @@
           if (item.props.webconf && item.props.webconf.targetField) {
             item.props.supportType = val[item.props.webconf.targetField];
           }
-           
+          // 筛选字段
+          if (item.props.webconf && item.props.webconf.filtercolval) {
+            // 主控字段的值
+            this.filtercolumn(item, i, val);
+          } 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // this.dynamicforcompute(item, val, i);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
@@ -658,10 +672,11 @@
           if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
-              this.newFormItemLists[index].item.value = '';
-              this.newFormItemLists[index].item.props.defaultSelected = [];
+              // this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
-              this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.value = '';
+              console.log(1);
             }
           }
         }
