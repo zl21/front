@@ -323,15 +323,16 @@
                 return false;
               }
               // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
-
-              const arrIndex = _refval.indexOf(val[_refcolumn]);
+              const refvalArr = _refval.split(',');
+             
+              const arrIndex = refvalArr.findIndex(x => x === val[_refcolumn]);
               const checkVal = arrIndex !== -1 ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
               // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
               if (checkVal !== checkShow) {
-                this.hidecolumn(item, i);
+                this.hidecolumn(item, i, val);
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
               this.refcolval(item, val, i);
@@ -407,10 +408,13 @@
                 val[_refcolumn] = 'false';
               }
             }
-            const checkVal = _refval.indexOf(val[_refcolumn]) !== -1 ? 1 : 0;
+            const refvalArr = _refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x === val[_refcolumn]);
+            const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
+
             if (checkVal !== checkShow) {
-              this.hidecolumn(item, i);
+              this.hidecolumn(item, i, val);
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
             this.refcolval(item, val, i);
@@ -704,20 +708,23 @@
         }
         return true;
       },
-      hidecolumn(items, index) {
+      hidecolumn(items, index, json) {
         // 隐藏
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
         // this.newFormItemLists[index].show = false;
-
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item) {
-              const value = Array.isArray(option.item.value)
-                ? option.item.value.toString()
-                : option.item.value;
-              if (refval.indexOf(value) !== -1) {
+              const value = jsonArr[refcolumn];
+              const refvalArr = refval.split(',');
+             
+              const refIndex = refvalArr.findIndex(x => x === value);
+
+              if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
               } else {
                 this.newFormItemLists[index].show = false;

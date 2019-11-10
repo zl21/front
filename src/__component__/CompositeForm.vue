@@ -498,6 +498,7 @@
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
         obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? this.hidecolumn(current, array) : true;
+        obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -758,7 +759,9 @@
               val = option.item.value[0];
             }
           }
-          return option.item.field === refcolumn && val === refval;
+          const refvalArr = refval.split(',');
+          const arrIndex = refvalArr.findIndex(x => x === val[refcolumn]);
+          return option.item.field === refcolumn && arrIndex !== -1;
         });
         return check;
       },
