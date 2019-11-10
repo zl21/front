@@ -1275,31 +1275,71 @@
         // this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
-        const { tableName, tableId } = this.$route.params;
+        const { tableName, tableId, } = this.$route.params;
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
-          const id = 'New';
-          const label = `${this.activeTab.label}新增`;
-          if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
-            const type = 'tableDetailHorizontal';
-            this.tabHref({
-              type,
-              tableName,
-              tableId,
-              label,
-              id
-            });
+          if (this.ag.tableurl) {
+            const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
+            const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+            if (actionType === 'SYSTEM') {
+              if (singleEditType === ':itemId') {
+                const path = `/${this.ag.tableurl.replace(/:itemId/, 'NEW')}`;
+                router.push(
+                  path
+                );
+              } else {
+                const path = `/${this.ag.tableurl}`;
+                router.push(
+                  path
+                );
+              } 
+            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
+              const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
+              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/NEW`;
+              router.push({
+                path
+              });
+              const obj = {
+                customizedModuleName,
+                id: 'NEW'
+              };
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+              Object.keys(customize).forEach((customizeName) => {
+                const nameToUpperCase = customizeName.toUpperCase();
+                if (nameToUpperCase === customizedModuleName) {
+                  const labelName = customize[customizeName].labelName;
+                  const name = `C.${customizedModuleName}.NEW`;
+                  this.addKeepAliveLabelMaps({ name, label: labelName });
+                  // this.addServiceIdMap({ name, label: labelName });
+                } 
+              });
+              return;
+            } 
           } else {
-            const type = 'tableDetailVertical'; // 左右结构的单对项页面
-            this.tabHref({
-              type,
-              tableName,
-              tableId,
-              label,
-              id
-            });
+            const id = 'New';
+            const label = `${this.activeTab.label}新增`;
+            if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+              const type = 'tableDetailHorizontal';
+              this.tabHref({
+                type,
+                tableName,
+                tableId,
+                label,
+                id
+              });
+            } else {
+              const type = 'tableDetailVertical'; // 左右结构的单对项页面
+              this.tabHref({
+                type,
+                tableName,
+                tableId,
+                label,
+                id
+              });
+            }
+            return;
           }
-          return;
         }
         if (obj.name === this.buttonMap.CMD_DELETE.name) {
           // 删除动作  对用网络请求
