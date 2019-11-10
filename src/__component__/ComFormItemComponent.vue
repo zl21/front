@@ -336,10 +336,20 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
               this.refcolval(item, val, i);
+              
             // this.formDataChange();
             }
             return items;
           });
+          if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+            if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+              const data = {
+                formList: this.LinkageForm,
+                formIndex: this.formIndex
+              };
+              this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+            }  
+          }
         },
         deep: true
       },
