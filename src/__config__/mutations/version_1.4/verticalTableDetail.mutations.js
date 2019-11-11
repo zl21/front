@@ -54,6 +54,7 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
     state.tabPanels = arr;
@@ -159,8 +160,8 @@ export default {
                       c.valuedata = '';
                       hidecolunmArray.push(c);
                     }
-                  } 
-                }               
+                  }
+                }
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
                   if (hidecolunmArray.length > 0) {
@@ -305,18 +306,35 @@ export default {
     //  LinkageForm.push([...data]);
     // form 联动校验 存值
     let mappStatus = {};
-    if (data.length > 0) {
-      mappStatus = data.reduce((arry, item) => {
+
+    const LinkageForm = {};
+    if (data.formList && data.formList.length > 0) {
+      mappStatus = data.formList.reduce((arry, item) => {
+        LinkageForm[item.key] = {
+          index: [data.formIndex],
+          item
+        };
         if (item.srccol) {
-          arry[item.key] = item.srccol;
+          // arry[item.key] = item.srccol;
+          arry[item.srccol] = item.key;
         }  
         return arry;
       }, {});
-      state.LinkageForm = state.LinkageForm.concat(data);
+      state.LinkageForm = Object.assign(state.LinkageForm, LinkageForm);
       state.mappStatus = Object.assign(state.mappStatus, mappStatus);
     } else {
-      state.LinkageForm = [];
+      state.LinkageForm = {};
       state.mappStatus = {};
+    }
+  },
+  updateCompositeForm(state, data) {
+    // 实例挂载
+    const CompositeForm = {};
+    if (data && data.name) {
+      CompositeForm[data.name] = data.vm;
+      state.CompositeForm = CompositeForm;
+    } else {
+      state.CompositeForm = {};
     }
   },
   updateTableSearchData(state, data) {
@@ -324,6 +342,11 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
+  updateTableFixedcolumns(state, data) {
+    // const { tableDefaultFixedcolumns } = state.tabPanels[state.tabCurrentIndex];
+    state.tabPanels[state.tabCurrentIndex].tableDefaultFixedcolumns = data;
+    // tableDefaultFixedcolumns = data;
+  }, // 修改单对象表格默认搜索条件
   // resetFormReadOnlyAttribute(state,) { // 提交成功后重置form的readonly属性，使其全部设置为不可编辑状态
   //   state.mainFormInfo.formData.data.addcolums.forEach((addcolums) => {
   //     addcolums.childs.forEach((expand) => {

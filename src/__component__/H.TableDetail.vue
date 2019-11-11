@@ -97,6 +97,9 @@
                   maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
                 });
               }).then(() => {
+                const {
+                  tableDefaultFixedcolumns
+                } = this.tabPanel[index];
                 this.getObjectTableItemForTableData({
                   table: tablename,
                   objid: itemId,
@@ -105,7 +108,7 @@
                     column_include_uicontroller: true,
                     startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
                     range: this.tablePageInfo.pageSize,
-                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : {}
+                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : tableDefaultFixedcolumns
                   },
                   tabIndex: index
                 });

@@ -36,7 +36,8 @@ export default () => ({
     },
     childTableReadonly: false, // 子表是否为只读状态
     objTabActionSlientConfirmData: {},
-    LinkageForm: [], // 所有form
+    LinkageForm: {}, // 所有form
+    CompositeForm: {}, // 表单实例
     mappStatus: {},
     defaultButtonData: [], // 业务系统按钮默认数据
     jflowPluginDataArray: [],

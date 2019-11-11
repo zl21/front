@@ -6,7 +6,6 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
-
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -38,14 +37,33 @@ export const routeTo = ({ type, info }, cb) => {
   let path = '/';
   switch (type) {
     case 'action':
-      path = `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
+      if (info.url) {
+        const actionType = info.url.substring(0, info.url.indexOf('/'));
+        if (actionType === 'SYSTEM') {
+          path =`/${info.url}` ;
+        } else if (actionType === 'https:' || actionType === 'http:') {
+          path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
+        } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+          path = `/${info.url.toUpperCase()}/${info.tableId}`;
+        } else {
+          class Person {
+            constructor(wrong, eg, url) {
+              this.wrong = wrong;
+              this.correctURL = eg;
+              this.url = url;
+            }
+          }
+          const me = new Person('url配置错误', 'SYSTEM/TABLE_DETAIL/V/DL_B_PUR/23792/New', info.url);
+          console.table(me);
+        }
+      }
       break;
     case 'table':
       path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
-    case 'external':
-      path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
-      break;
+    // case 'external':
+    //   path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
+    //   break;
     default:
       break;
   }

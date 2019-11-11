@@ -81,8 +81,6 @@ export default (router) => {
       default:
         originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
     }
-
-
     switch (fromRoutePrefix) {
       // Condition One: 来自标准列表界面
       case STANDARD_TABLE_LIST_PREFIX:
@@ -227,14 +225,6 @@ export default (router) => {
         const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
         if (ready) {
           clearInterval(tempInterval);
-          // let label = '';
-          // if(routePrefix === PLUGIN_MODULE_PREFIX ){
-          //   label=pluginModules[pluginModuleName].name
-          // }else if(routePrefix ===LINK_MODULE_PREFIX){
-          //   label=
-            
-          // }
-        
           commit('global/increaseOpenedMenuLists', {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,

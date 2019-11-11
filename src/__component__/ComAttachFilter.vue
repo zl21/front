@@ -53,17 +53,20 @@
     props: {
       defaultValue: {
         type: String,
+        // 后台传参
         default() {
           return '';
         }
       },
       defaultSelected: {
+        // 默认选中值
         type: Array,
         default() {
           return [];
         }
       },
       propstype: {
+        // 各种props
         type: Object,
         default() {
           return {};
@@ -158,7 +161,7 @@
         this.$emit('on-focus', event, $this);
       },
       attachFilterInputBlur(event, $this) {
-        if (!this.selected[0] && this.propsData.fkobj.saveType) {
+        if (!this.selected[0] && this.propsData.blurType !== false) {
           this.value = '';
           this.selected = [
             {
@@ -168,7 +171,7 @@
           ];
           this.filterDate = {};
         }
-        // this.valueChange('blur');
+        this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {

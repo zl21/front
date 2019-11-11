@@ -91,7 +91,9 @@
   import Dialog from './Dialog.vue';
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import {
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX
+  } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
@@ -191,9 +193,9 @@
                 }
 
                 if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
-                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
-                      if (item !== 'actionMODIFY' || item !== 'actionEXPORT') {
+                      if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
                         this.tabcmd.prem[index] = false;
                       }
                     });
@@ -208,8 +210,13 @@
                       val.prem[index] = true;
                     }
                   });
-                }
+                } 
+
+
               }
+
+
+
               if (this.disableExport) {
                 if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                   this.tabcmd.cmds.forEach((item, index) => {
@@ -268,6 +275,9 @@
         copyDatas: ({ copyDatas }) => copyDatas,
         modifyData: ({ modifyData }) => modifyData,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
+        LinkUrl: ({ LinkUrl }) => LinkUrl,
+
+        
       }),
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
@@ -521,16 +531,22 @@
             this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
-            this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+              });
             });
-            const searchdata = {
-              column_include_uicontroller: true,
-              startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
-              range: this.tablePageInfo.pageSize,
-            };
-            this.getObjectTableItemForTableData({
-              table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+
+            promise.then(() => {
+              const searchdata = {
+                column_include_uicontroller: true,
+                startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
+                range: this.tablePageInfo.pageSize,
+                fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
+              };
+              this.getObjectTableItemForTableData({
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+              });
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
@@ -686,9 +702,9 @@
         case 'navbar':
           this.objTabActionNavbar(tab);
           break;
-        case 'external':
-          this.objTabActionUrl(tab);
-          break;
+        // case 'external':
+        //   this.objTabActionUrl(tab);
+        //   break;
         case 'edit':
           this.objTabActionEdit(tab);
           break;
@@ -744,61 +760,114 @@
       // },
 
       objTabActionNavbar(tab) {
-        // 判断跳转到哪个页面
-        const url = tab.action;
-        const index = url.lastIndexOf('/');
-        const customizedModuleName = url.substring(index + 1, url.length);
-        const label = tab.webdesc;
-        const type = 'tableDetailAction';
-        const name = Object.keys(this.keepAliveLabelMaps);
-        let customizedModuleId = '';
-        name.forEach((item) => {
-          if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-            customizedModuleId = item.split(/\./)[2];
-          }
-        });
-        // if (tab.actiontype === 'url') {
-        //   this.objTabActionUrl(tab);
-        // } else
         if (tab.action) {
-          this.tabOpen({
-            type,
-            customizedModuleName,
-            customizedModuleId,
-            label
-          });
+          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          if (actionType === 'SYSTEM') {
+            if (singleEditType === ':itemId') {
+              const path = `/${tab.action.replace(/:itemId/, this.itemId)}`;
+              router.push(
+                path
+              );
+            } else {
+              const path = `/${tab.action}`;
+              router.push(
+                path
+              );
+            }
+          } else if (actionType === 'https:' || actionType === 'http:') {
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const linkUrl = tab.action;
+            const linkId = tab.webid;
+            if (!this.LinkUrl[linkId]) {
+              this.increaseLinkUrl({ linkId, linkUrl });
+            }
+            const obj = {
+              linkName: tab.webname,
+              linkId: tab.webid,
+              linkUrl,
+              linkLabel: tab.webdesc
+            };
+            window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const type = 'tableDetailUrl';
+            this.tabOpen({
+              type,
+              linkName: tab.webname,
+              linkId: tab.webid
+            });
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            const obj = {
+              customizedName: name,
+              customizedLabel: tab.webdesc
+            };
+            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            router.push(
+              path
+            );
+          } 
         }
-      },
-      objTabActionUrl(tab) { // 外链类型
-        // const linkUrl = tab.action;
-        // const linkId = tab.webid;
-        // this.increaseLinkUrl({ linkId, linkUrl });
-        // const label = `${tab.webdesc}`;
-        // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
-        // this.addKeepAliveLabelMaps({ name, label });
-        // const linkInfo = {
-        //   linkUrl: tab.action,
-        //   linkId: tab.webid,
-        //   label,
-        //   name
-        // };
-        // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
-        // setTimeout(() => {
+
+
+        // // 判断跳转到哪个页面
+        // const url = tab.action;
+        // const index = url.lastIndexOf('/');
+        // const customizedModuleName = url.substring(index + 1, url.length);
+        // const label = tab.webdesc;
+        // const type = 'tableDetailAction';
+        // const name = Object.keys(this.keepAliveLabelMaps);
+        // let customizedModuleId = '';
+        // name.forEach((item) => {
+        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+        //     customizedModuleId = item.split(/\./)[2];
+        //   }
+        // });
+        // // if (tab.actiontype === 'url') {
+        // //   this.objTabActionUrl(tab);
+        // // } else
+        // if (tab.action) {
         //   this.tabOpen({
-        //     type: 'tableDetailUrl',
-        //     tableName: tab.webname.toUpperCase(),
-        //     tableId: tab.webid,
-        //     label: tab.webdesc,
-        //     url: tab.action
+        //     type,
+        //     customizedModuleName,
+        //     customizedModuleId,
+        //     label
         //   });
-        // }, 500);
-        const eleLink = document.createElement('a');
-        eleLink.href = tab.action;
-        eleLink.target = '_blank';
-        document.body.appendChild(eleLink);
-        eleLink.click();
-        document.body.removeChild(eleLink);
+        // }
       },
+      // objTabActionUrl(tab) { // 外链类型
+      //   // const linkUrl = tab.action;
+      //   // const linkId = tab.webid;
+      //   // this.increaseLinkUrl({ linkId, linkUrl });
+      //   // const label = `${tab.webdesc}`;
+      //   // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
+      //   // this.addKeepAliveLabelMaps({ name, label });
+      //   // const linkInfo = {
+      //   //   linkUrl: tab.action,
+      //   //   linkId: tab.webid,
+      //   //   label,
+      //   //   name
+      //   // };
+      //   // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
+      //   // setTimeout(() => {
+      //   //   this.tabOpen({
+      //   //     type: 'tableDetailUrl',
+      //   //     tableName: tab.webname.toUpperCase(),
+      //   //     tableId: tab.webid,
+      //   //     label: tab.webdesc,
+      //   //     url: tab.action
+      //   //   });
+      //   // }, 500);
+      //   const eleLink = document.createElement('a');
+      //   eleLink.href = tab.action;
+      //   eleLink.target = '_blank';
+      //   document.body.appendChild(eleLink);
+      //   eleLink.click();
+      //   document.body.removeChild(eleLink);
+      // },
       objTabActionSlient(tab) { // 动作定义静默
         const self = this;
         // tab.confirm = true

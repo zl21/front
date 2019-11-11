@@ -48,14 +48,13 @@
         this.changeSelectedPrimaryMenu(1);
       },
       routeTo(data) {
-        let {
+        const {
           type
         } = data;
-        const { value, id, vuedisplay } = data;
-        if (vuedisplay && vuedisplay === 'external') {
-          type = vuedisplay;
-        }
-        routeTo({ type, info: { tableName: value, tableId: id } }, () => {
+        const {
+          value, id, url 
+        } = data;
+        routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });
       },

@@ -56,15 +56,22 @@ export default {
       .map(d => d.children)
       .reduce((a, c) => a.concat(c))
       .reduce((a, c) => {
-        if (c.type === 'action' && c.vuedisplay !== 'external') {
-          // 自定义界面的处理
-          a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-        } else if (c.type === 'action' && c.vuedisplay === 'external') {
+        if (c.type === 'action') {
           // 外部跳转链接URL的处理
-          const linkUrl = {};
-          linkUrl[c.id] = c.url;
-          state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
-          a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+          if (c.url) {
+            const actionType = c.url.substring(0, c.url.indexOf('/'));
+            if (actionType === 'https:' || actionType === 'http:') {
+              const linkUrl = {};
+              linkUrl[c.id] = c.url;
+              state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
+              a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              // 自定义界面的处理
+              const index = c.url.lastIndexOf('/');
+              const customizedModuleName = c.url.substring(index + 1, c.url.length);
+              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+            }
+          }
         } else if (c.type === 'table') {
           // 标准列表的处理
           a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -81,12 +88,29 @@ export default {
         return a;
       }, {});
     const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
+    const tableDetailUrlMessage = JSON.parse(window.sessionStorage.getItem('tableDetailUrlMessage'));
+    const customizedMessageForbutton = JSON.parse(window.sessionStorage.getItem('customizedMessageForbutton'));
+    if (customizedMessageForbutton) { // 取按钮跳转定制界面label
+      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
+    }
+
+    if (tableDetailUrlMessage) { // 取按钮跳转外链label
+      const labelName = tableDetailUrlMessage.linkName;
+      const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
+      state.keepAliveLabelMaps[name] = `${labelName}`;
+      const linkUrl = {};
+      linkUrl[tableDetailUrlMessage.linkId] = tableDetailUrlMessage.linkUrl;
+      state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
+      state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
+    }
+
+    
     if (customizedMessage) {
       Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
         const nameToUpperCase = customizeName.toUpperCase();
         if (nameToUpperCase === customizedMessage.customizedModuleName) {
           const labelName = customize[customizeName].labelName;
-          const name = `C.${customizedMessage.customizedModuleName}.${customizedMessage.id}`;
+          const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
           state.keepAliveLabelMaps[name] = `${labelName}`;
         }
       });
@@ -225,7 +249,8 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId,
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId,linkName,
+    linkId, url, label
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -241,14 +266,23 @@ export default {
       });
     }
     if (type === 'tableDetailAction') {
-      path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      if (url) {
+        path = `${url.toUpperCase()}`;
+        const routeInfo = {
+          path,
+          query: { label }
+        };
+        router.push(routeInfo);
+      } else {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+      }
       router.push({
         path
       });
     }
   
     if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${tableName.toUpperCase()}/${tableId}`;
+      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
       router.push({
         path
       });

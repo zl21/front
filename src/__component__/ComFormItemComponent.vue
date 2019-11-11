@@ -9,6 +9,7 @@
       <div
         v-for="(item,index) in dataColRol"
         v-show="item.show !== false"
+        :id="item.item.field"
         :key="index"
         class="FormItemComponent-item"
         :style="setDiv(item)"
@@ -295,7 +296,13 @@
 
           this.newFormItemLists.map((items, i) => {
             const item = items.item;
-            //  扩展属性 来源
+            // 筛选字段
+            if (item.props.webconf && item.props.webconf.filtercolval) {
+              // 主控字段的值
+              this.filtercolumn(item, i, val);
+            }
+
+            //  扩展属性 来源字段
             if (item.props.webconf && item.props.webconf.targetField) {
               item.props.supportType = val[item.props.webconf.targetField];
             }
@@ -311,27 +318,37 @@
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
               const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
               if (val[_refcolumn] === undefined) {
                 return false;
               }
-              // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
-              const arrIndex = _refval.indexOf(val[_refcolumn] || '');
+              const refvalArr = _refval.split(',');
+              const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+
               const checkVal = arrIndex !== -1 ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
-
               // console.log(_refval , val[_refcolumn]);
               // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
               // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
               if (checkVal !== checkShow) {
-                this.hidecolumn(item, i);
+                this.hidecolumn(item, i, val);
               }
             } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
               this.refcolval(item, val, i);
+              
             // this.formDataChange();
             }
             return items;
           });
+          if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+            if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+              const data = {
+                formList: this.LinkageForm,
+                formIndex: this.formIndex
+              };
+              this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+            }  
+          }
         },
         deep: true
       },
@@ -377,18 +394,22 @@
             key: items.item.field,
             name: items.item.title,
             srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
-            input: this.inputget(this.formIndex, i, items)
           });
+         
           //  扩展属性 来源
           if (item.props.webconf && item.props.webconf.targetField) {
             item.props.supportType = val[item.props.webconf.targetField];
           }
-           
+          // 筛选字段
+          if (item.props.webconf && item.props.webconf.filtercolval) {
+            // 主控字段的值
+            this.filtercolumn(item, i, val);
+          } 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // this.dynamicforcompute(item, val, i);
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
             const _refcolumn = item.validate.hidecolumn.refcolumn;
-            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval.toString().trim();
+            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
             if (val[_refcolumn] === undefined) {
               if (_refval === 'Y') {
                 val[_refcolumn] = 'N';
@@ -400,10 +421,13 @@
                 val[_refcolumn] = 'false';
               }
             }
-            const checkVal = _refval === (val[_refcolumn] || '').toString().trim() ? 1 : 0;
+            const refvalArr = _refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+            const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
+
             if (checkVal !== checkShow) {
-              this.hidecolumn(item, i);
+              this.hidecolumn(item, i, val);
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
             this.refcolval(item, val, i);
@@ -413,7 +437,11 @@
         });
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, this.LinkageForm);
+            const data = {
+              formList: this.LinkageForm,
+              formIndex: this.formIndex
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
       },  
@@ -643,10 +671,11 @@
           if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
-              this.newFormItemLists[index].item.value = '';
-              this.newFormItemLists[index].item.props.defaultSelected = [];
+              // this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
-              this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.value = '';
+              console.log(1);
             }
           }
         }
@@ -667,8 +696,36 @@
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
-      hidecolumn(items, index) {
+      filtercolumn(item, formindex, val) {
+        const filterValue = val[item.props.webconf.filtercolval.col];
+        if (item.type === 'select') {
+          if (!item.olderOptions) {
+            item.olderOptions = item.options;
+          }
+          const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === item.value);
+          const optionsArr = item.olderOptions.reduce((arr, option) => {
+            const index = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === option.value);
+            if (index !== -1) {
+              arr.push(option);
+            }
+            return arr;
+          }, []);
+          item.options = optionsArr.concat([]);
+          // this.dataProcessing(this.newFormItemLists[formindex], formindex);
+          if (checkout !== -1) { 
+            return false;
+          }
+          if (this.newFormItemLists[formindex] && checkout === -1) {
+            this.newFormItemLists[formindex].item.value = -1;
+          }
+          // input.innerText = '';
+        }
+        return true;
+      },
+      hidecolumn(items, index, json) {
         // 隐藏
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
@@ -676,10 +733,11 @@
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item) {
-              const value = Array.isArray(option.item.value)
-                ? option.item.value.toString()
-                : option.item.value;
-              if (JSON.stringify(refval).indexOf(JSON.stringify(value)) !== -1) {
+              const value = jsonArr[refcolumn];
+              const refvalArr = refval.split(',');
+              const refIndex = refvalArr.findIndex(x => x.toString() === value.toString());
+
+              if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
               } else {
                 this.newFormItemLists[index].show = false;
