@@ -138,12 +138,11 @@
         }
       },
       routeTo(data) {
-        const { value, id } = data;
-        let type = data.type;
-        if (data.vuedisplay === 'external') { // 外链型取vuedisplay类型external，除外链类型全部取type
-          type = 'external';
-        }
-        routeTo({ type, info: { tableName: value, tableId: id } });
+        const {
+          type
+        } = data;
+        const { value, id, url } = data;
+        routeTo({ type, info: { tableName: value, tableId: id, url } });
       },
     },
     mounted() {

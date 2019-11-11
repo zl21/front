@@ -30,6 +30,7 @@
             </Button>
 
             <input
+              id="file"
               class="fileInput"
               type="file"
               name
@@ -197,10 +198,17 @@
       clearFile() {
         this.fileName = '';
         this.loading = false;
-        this.files =[];
-        // this.errorMsg={};
+        this.files = [];
+        const fileDom = document.getElementById('file');
+        fileDom.value = '';
       },
       fileChange(e) {
+        this.errorMsg = {
+          // 错误信息
+          errorUrl: '',
+          message: '',
+          errorList: []
+        };
         this.files = e.target.files[0];
         this.fileName = e.target.files[0].name;
         this.fileSize = e.target.files[0].size;
@@ -245,10 +253,10 @@
       },
       // 提交上传文件请求
       submitUpload() {
-
-        if ( this.files.length === 0) {
+        if (this.files.length === 0) {
           this.$Modal.fcWarning({
             title: '警告',
+            mask: true,
             content: '请先选择要导入的文件！'
           });
           return;
@@ -256,6 +264,12 @@
         this.uploadFileChange();
       },
       uploadFileChange() {
+        this.errorMsg = {
+          // 错误信息
+          errorUrl: '',
+          message: '',
+          errorList: []
+        };
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
@@ -288,6 +302,12 @@
         this.loading = false;
         if (response.code === 0) {
           this.closeDialog();
+          this.fileName = '';
+          this.$Modal.fcSuccess({
+            title: '成功',
+            mask: true,
+            content: response.message
+          });
         } else {
           if (response.data.path === 'undefined ===') {
             this.errorMsg.errorUrl = '';

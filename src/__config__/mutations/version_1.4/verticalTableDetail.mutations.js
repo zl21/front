@@ -315,7 +315,7 @@ export default {
           item
         };
         if (item.srccol) {
-          arry[item.key] = item.srccol;
+          // arry[item.key] = item.srccol;
           arry[item.srccol] = item.key;
         }  
         return arry;

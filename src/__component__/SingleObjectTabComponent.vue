@@ -18,7 +18,7 @@
       :isreftabs="isreftabs"
     />
     <compositeForm
-      v-if="formData.isShow"
+      v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
       :is-main-table="isMainTable"

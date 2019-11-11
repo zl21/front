@@ -216,7 +216,7 @@
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (this.$route.query.isBack && !this._inactive) {
-            this.searchClickData();
+            this.searchClickData({ value: 'true' });
           }
         }, 0);
       },
@@ -278,32 +278,55 @@
           };
           this.tabHref(tab);
         } else if (this.ag.tableurl) {
-          const type = 'tableDetailAction';
-          const url = this.ag.tableurl;
-          const customizedModuleName = url.substring(0, url.lastIndexOf('/'));
-
-          const tab = {
-            type,
-            customizedModuleName,
-            customizedModuleId: id
-          };
-          this.tabOpen(tab);
-          const obj = {
-            customizedModuleName,
-            id
-          };
-          window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-          Object.keys(customize).forEach((customizeName) => {
-            const nameToUpperCase = customizeName.toUpperCase();
-            if (nameToUpperCase === customizedModuleName) {
-              const labelName = customize[customizeName].labelName;
-              const name = `C.${customizedModuleName}.${id}`;
-              this.addKeepAliveLabelMaps({ name, label: labelName });
-            // this.addServiceIdMap({ name, label: labelName });
+          const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
+          const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+          if (actionType === 'SYSTEM') {
+            if (singleEditType === ':itemId') {
+              const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
+              router.push(
+                path
+              );
             } else {
-              
-            }
-          });
+              const path = `/${this.ag.tableurl}`;
+              router.push(
+                path
+              );
+            } 
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            // const obj = {
+            //   customizedName: name,
+            //   customizedLabel: tab.webdesc
+            // };
+            // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            // router.push(
+            //   path
+            // );
+
+            const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
+            const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
+            const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
+            router.push({
+              path
+            });
+            const obj = {
+              customizedModuleName,
+              id
+            };
+            window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+            Object.keys(customize).forEach((customizeName) => {
+              const nameToUpperCase = customizeName.toUpperCase();
+              if (nameToUpperCase === customizedModuleName) {
+                const labelName = customize[customizeName].labelName;
+                const name = `C.${customizedModuleName}.${id}`;
+                this.addKeepAliveLabelMaps({ name, label: labelName });
+                // this.addServiceIdMap({ name, label: labelName });
+              } 
+            });
+          } 
         } else {
           // 单对象上下结构
           const type = 'tableDetailVertical';
@@ -1227,9 +1250,11 @@
           return obj;
         }, {});
       },
-      searchClickData() {
+      searchClickData(value) {
         // 按钮查找 查询第一页数据
-        this.searchData.startIndex = 0;
+        if (!value) { // 返回时查询之前页码
+          this.searchData.startIndex = 0;
+        }
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
@@ -1252,31 +1277,71 @@
         // this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
-        const { tableName, tableId } = this.$route.params;
+        const { tableName, tableId, } = this.$route.params;
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
-          const id = 'New';
-          const label = `${this.activeTab.label}新增`;
-          if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
-            const type = 'tableDetailHorizontal';
-            this.tabHref({
-              type,
-              tableName,
-              tableId,
-              label,
-              id
-            });
+          if (this.ag.tableurl) {
+            const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
+            const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+            if (actionType === 'SYSTEM') {
+              if (singleEditType === ':itemId') {
+                const path = `/${this.ag.tableurl.replace(/:itemId/, 'New')}`;
+                router.push(
+                  path
+                );
+              } else {
+                const path = `/${this.ag.tableurl}`;
+                router.push(
+                  path
+                );
+              } 
+            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+              const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
+              const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
+              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
+              router.push({
+                path
+              });
+              const obj = {
+                customizedModuleName,
+                id: 'New'
+              };
+              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+              Object.keys(customize).forEach((customizeName) => {
+                const nameToUpperCase = customizeName.toUpperCase();
+                if (nameToUpperCase === customizedModuleName) {
+                  const labelName = customize[customizeName].labelName;
+                  const name = `C.${customizedModuleName}.New`;
+                  this.addKeepAliveLabelMaps({ name, label: labelName });
+                  // this.addServiceIdMap({ name, label: labelName });
+                } 
+              });
+              return;
+            } 
           } else {
-            const type = 'tableDetailVertical'; // 左右结构的单对项页面
-            this.tabHref({
-              type,
-              tableName,
-              tableId,
-              label,
-              id
-            });
+            const id = 'New';
+            const label = `${this.activeTab.label}新增`;
+            if (this.ag.datas.objdistype === 'tabpanle') { // 单对象左右结构
+              const type = 'tableDetailHorizontal';
+              this.tabHref({
+                type,
+                tableName,
+                tableId,
+                label,
+                id
+              });
+            } else {
+              const type = 'tableDetailVertical'; // 左右结构的单对项页面
+              this.tabHref({
+                type,
+                tableName,
+                tableId,
+                label,
+                id
+              });
+            }
+            return;
           }
-          return;
         }
         if (obj.name === this.buttonMap.CMD_DELETE.name) {
           // 删除动作  对用网络请求

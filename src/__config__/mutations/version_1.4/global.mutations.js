@@ -248,12 +248,12 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName, linkId, url
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId,linkName,
+    linkId, url, label
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-
       router.push({
         path
       });
@@ -266,7 +266,12 @@ export default {
     }
     if (type === 'tableDetailAction') {
       if (url) {
-        path = `/${url}`;
+        path = `${url.toUpperCase()}`;
+        const routeInfo = {
+          path,
+          query: { label }
+        };
+        router.push(routeInfo);
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
@@ -276,8 +281,7 @@ export default {
     }
   
     if (type === 'tableDetailUrl') {
-      path = '/LINK/BAIDU_MENU/2266'
-      console.log("🧜‍♀️",path)
+      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
       router.push({
         path
       });

@@ -364,11 +364,12 @@
         }
         return items;
       },
-      setChangeValue(data, current) {
+      setChangeValue(data) {
         // 修改联动值
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const key = mappStatus[Object.keys(data)[0]];
-        if (!document.querySelector(`#${key}`) || Object.hasOwnProperty.call(current.item.validate, 'refcolval')) {
+        // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
+        if (!document.querySelector(`#${key}`)) {
           return false;
         }
         const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
@@ -380,9 +381,7 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 修改联动的值
-        if (!Object.hasOwnProperty.call(current.item.validate, 'refcolval')) {
-          this.setChangeValue(data, current);
-        }
+        this.setChangeValue(data, current);
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -747,20 +746,25 @@
       },
       hidecolumn(current, array) {
         //  隐藏判断
-        const check = array.some((option) => {
-          const refcolumn = current.hidecolumn.refcolumn;
-          const refval = current.hidecolumn.refval;
-          let val = option.item.value;
-          if (Array.isArray(option.item.value) && option.item.value[0]) {
-            if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
-              val = option.item.value[0].ID;
-            } else {
-              val = option.item.value[0];
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          const check = array.some((option) => {
+            const refcolumn = current.hidecolumn.refcolumn;
+            const refval = current.hidecolumn.refval;
+            let val = option.item.value;
+            if (Array.isArray(option.item.value) && option.item.value[0]) {
+              if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
+                val = option.item.value[0].ID;
+              } else {
+                val = option.item.value[0];
+              }
             }
-          }
-          return option.item.field === refcolumn && val === refval;
-        });
-        return check;
+            const refvalArr = refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val.toString());
+            return option.item.field === refcolumn && arrIndex !== -1;
+          });
+          return check;
+        }
+        return true;
       },
       focusChange(value, current, index) {
         // 外键的模糊搜索
@@ -869,7 +873,7 @@
           || item.display === 'xml'
           || item.display === 'OBJ_FK'
         ) {
-          const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.searchmodel);
+          const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.fkdisplay);
           switch (casefkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -1033,6 +1037,9 @@
           return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        if (item.fkobj) {
+          item.fkdisplay = item.fkobj.fkdisplay;
+        }
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
@@ -1310,9 +1317,9 @@
             item.props.type = 'datetime';
           }
         }
-
-        if (current.display === 'text' || current.display === 'xml') {
-          switch (current.fkdisplay) {
+        if (current.display === 'text' || current.display === 'xml' || current.display === 'OBJ_FK') {
+          const casefkdisplay = current.fkdisplay || (current.fkobj && current.fkobj.fkdisplay);
+          switch (casefkdisplay) {
           case 'drp':
             item.props.single = true;
             item.props.data = {};
