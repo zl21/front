@@ -216,7 +216,7 @@
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (this.$route.query.isBack && !this._inactive) {
-            this.searchClickData();
+            this.searchClickData({ value: 'true' });
           }
         }, 0);
       },
@@ -1250,9 +1250,11 @@
           return obj;
         }, {});
       },
-      searchClickData() {
+      searchClickData(value) {
         // 按钮查找 查询第一页数据
-        this.searchData.startIndex = 0;
+        if (!value) { // 返回时查询之前页码
+          this.searchData.startIndex = 0;
+        }
         this.searchData.fixedcolumns = this.dataProcessing();
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
