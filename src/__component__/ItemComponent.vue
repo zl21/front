@@ -32,7 +32,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if=" _items.props.fkdisplay === 'pop'">
+      <template v-if=" _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value">
           <i
@@ -44,7 +44,7 @@
         </template>
 
       </template>
-      <template v-if=" _items.props.fkdisplay === 'drp'">
+      <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID">
           <i

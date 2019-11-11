@@ -364,11 +364,10 @@
         }
         return items;
       },
-      setChangeValue(data, current) {
+      setChangeValue(data) {
         // 修改联动值
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const key = mappStatus[Object.keys(data)[0]];
-        console.log(key, 'key--');
         // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
         if (!document.querySelector(`#${key}`)) {
           return false;
@@ -498,7 +497,6 @@
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
         obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? this.hidecolumn(current, array) : true;
-        obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -748,22 +746,25 @@
       },
       hidecolumn(current, array) {
         //  隐藏判断
-        const check = array.some((option) => {
-          const refcolumn = current.hidecolumn.refcolumn;
-          const refval = current.hidecolumn.refval;
-          let val = option.item.value;
-          if (Array.isArray(option.item.value) && option.item.value[0]) {
-            if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
-              val = option.item.value[0].ID;
-            } else {
-              val = option.item.value[0];
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          const check = array.some((option) => {
+            const refcolumn = current.hidecolumn.refcolumn;
+            const refval = current.hidecolumn.refval;
+            let val = option.item.value;
+            if (Array.isArray(option.item.value) && option.item.value[0]) {
+              if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
+                val = option.item.value[0].ID;
+              } else {
+                val = option.item.value[0];
+              }
             }
-          }
-          const refvalArr = refval.split(',');
-          const arrIndex = refvalArr.findIndex(x => x === val[refcolumn]);
-          return option.item.field === refcolumn && arrIndex !== -1;
-        });
-        return check;
+            const refvalArr = refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val.toString());
+            return option.item.field === refcolumn && arrIndex !== -1;
+          });
+          return check;
+        }
+        return true;
       },
       focusChange(value, current, index) {
         // 外键的模糊搜索
