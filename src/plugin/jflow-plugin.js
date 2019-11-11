@@ -31,20 +31,30 @@ function getQueryButtons(data) {
   const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete'];
   if (Version() === '1.3') {
     let businessTypes = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
-    businessTypes.map((temp) => {
+    
+    businessTypes = businessTypes.map((temp) => {
       if (temp.businessType === router.currentRoute.params.tableId) {
-        temp.checkUrls = defaultUrls;
+        const arr = temp.checkUrls;
+        // 处理静默程序的动作定义按钮
+        if (waListButtons) {
+          waListButtons.map((item) => {
+            if (item.vuedisplay === 'slient') {
+              arr.push(item.action);
+            }
+            return item;
+          });
+        }
+        temp.checkUrls = arr;
       }
       return temp;
     });
-
     if (businessTypes.length > 0) {
-      businessTypes.map((item) => {
-        if (item.businessType === router.currentRoute.params.tableId) {
-          item.checkUrls = defaultUrls;
-        }
-        return item;
-      });
+      // businessTypes.map((item) => {
+      //   if (item.businessType === router.currentRoute.params.tableId) {
+      //     item.checkUrls = defaultUrls;
+      //   }
+      //   return item;
+      // });
     } else {
       businessTypes = [{
         checkUrls: defaultUrls,
@@ -68,6 +78,7 @@ function getQueryButtons(data) {
         if (item.vuedisplay === 'slient') {
           arr.push(item.action);
         }
+        return item;
       });
     }
 
@@ -155,7 +166,7 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
         arr.map((item) => {
           if (checkUrls.length > 0) {
             checkUrls.map((temp) => {
-              if (temp.businessType === item.businessType) {
+              if (temp.businessType === item.businessType && !item.checkUrls) {
                 item.checkUrls = defaultUrls;
                 item.checkUrls.concat(temp.checkUrls);
               }

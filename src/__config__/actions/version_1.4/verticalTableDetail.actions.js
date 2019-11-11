@@ -45,6 +45,7 @@ export default {
       objid: id,
       ismaintable: 'y'
     })).then((res) => {
+      
       if (res.data.code === 0) {
         const resData = res.data.data;
         if (type === 'copy') {
@@ -84,7 +85,7 @@ export default {
                 this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
               // 获取第一个tab的子表列表数据
-              if (resData.reftabs[0].tabrelation === '1:m') {
+              if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                     
@@ -104,7 +105,7 @@ export default {
                     childTableFixedcolumns = {};
                   }
                 });
-              } else if (resData.reftabs[0].tabrelation === '1:1') {
+              } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                 // 获取子表面板数据
                 if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                   const tableParam = {
