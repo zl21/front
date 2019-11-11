@@ -11,7 +11,6 @@ import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
 import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
 import InstanceManagementList from '../__plugin__/InstanceManagementList/InstanceManagementList';
-import { async } from 'q';
 
 
 let axios = {}; // axios请求
@@ -28,7 +27,7 @@ let businessStatus = 0; // 流程状态  -2时正在发起流程
 function getQueryButtons(data) {
   const tabcmd = data.tabcmd;
   const waListButtons = data.waListButtons;
-  const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete'];
+  const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
   if (Version() === '1.3') {
     let businessTypes = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
     
@@ -38,7 +37,7 @@ function getQueryButtons(data) {
         // 处理静默程序的动作定义按钮
         if (waListButtons) {
           waListButtons.map((item) => {
-            if (item.vuedisplay === 'slient') {
+            if (item.vuedisplay === 'slient' && arr.indexOf(item.action) < 0) {
               arr.push(item.action);
             }
             return item;
@@ -48,14 +47,7 @@ function getQueryButtons(data) {
       }
       return temp;
     });
-    if (businessTypes.length > 0) {
-      // businessTypes.map((item) => {
-      //   if (item.businessType === router.currentRoute.params.tableId) {
-      //     item.checkUrls = defaultUrls;
-      //   }
-      //   return item;
-      // });
-    } else {
+    if (businessTypes.length === 0) {
       businessTypes = [{
         checkUrls: defaultUrls,
         businessType: router.currentRoute.params.tableId,
@@ -75,7 +67,7 @@ function getQueryButtons(data) {
     // 处理静默程序的动作定义按钮
     if (waListButtons) {
       waListButtons.map((item) => {
-        if (item.vuedisplay === 'slient') {
+        if (item.vuedisplay === 'slient' && arr.indexOf(item.action) < 0) {
           arr.push(item.action);
         }
         return item;
@@ -162,13 +154,16 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
 
         const checkUrls = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
         const arr = [].concat(res.data.data.businessTypes);
-        const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete'];
+        const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
         arr.map((item) => {
           if (checkUrls.length > 0) {
             checkUrls.map((temp) => {
-              if (temp.businessType === item.businessType && !item.checkUrls) {
-                item.checkUrls = defaultUrls;
-                item.checkUrls.concat(temp.checkUrls);
+              if (temp.businessType === item.businessType) {
+                if (!temp.checkUrls) {
+                  item.checkUrls = defaultUrls;
+                } else {
+                  item.checkUrls = temp.checkUrls;
+                }
               }
               return temp;
             });
@@ -263,7 +258,8 @@ async function jflowsave(flag, request) {
     const response = changeDetail;
     axios.post('/jflow/p/cs/process/launch',
       {
-        businessCodes: response.ids ? response.ids : response.objId,
+        // eslint-disable-next-line no-nested-ternary
+        businessCodes: response.ids ? response.ids : (response.objId ? response.objId : response.objids),
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
@@ -336,11 +332,21 @@ async function checkProcess(request) { // check校验
           businessCheckData: response.ids.split(',')
         };
       }
-    } else {
-      bodyObj = {
-        businessType: router.currentRoute.params.tableId,
-        businessCheckData: response.objids ? response.objids.split(',') : response.ids.split(',')
-      };
+    } 
+    
+    if (Version() === '1.3') { // 1.3版本
+      // 判断是否为动作定义
+      if (response.actionid) {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: JSON.parse(response.param).ids
+        };
+      } else {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: response.objids ? response.objids.split(',') : response.ids.split(',')
+        };
+      }
     }
     axios.post('/jflow/p/cs/process/check',
       bodyObj)
@@ -356,7 +362,24 @@ async function checkProcess(request) { // check校验
             return;
           }
           if (Version() === '1.3') {
-            if (response.objids) {
+            if (response.actionid) {
+              const responseCopy = JSON.parse(response.param);
+              responseCopy.ids = res.data.data.businessCheckData;
+              const obj = {
+                actionid: response.actionid,
+                webaction: response.webaction,
+                param: responseCopy
+              };
+              const requestBody = new URLSearchParams();
+              Object.keys(obj).forEach((key) => {
+                const dataType = Object.prototype.toString.call(obj[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  obj[key] = JSON.stringify(obj[key]);
+                }
+                requestBody.append(key, obj[key]);
+              });
+              request.data = requestBody;
+            } else if (response.objids) {
               response.objids = res.data.data.businessCheckData.join(',');
               const requestBody = new URLSearchParams();
               Object.keys(response).forEach((key) => {
@@ -371,11 +394,30 @@ async function checkProcess(request) { // check校验
               response.ids = res.data.data.businessCheckData;
               request.data = response;
             }
-          } else if (response.actionid) {
-            JSON.parse(response.param).ids = res.data.data.businessCheckData;
-          } else {
-            response.ids = res.data.data.businessCheckData;
-            request.data = response;
+          }
+
+          if (Version() === '1.4') {
+            if (response.actionid) {
+              const responseCopy = JSON.parse(response.param);
+              responseCopy.ids = res.data.data.businessCheckData;
+              const obj = {
+                actionid: response.actionid,
+                webaction: response.webaction,
+                param: responseCopy
+              };
+              const requestBody = new URLSearchParams();
+              Object.keys(obj).forEach((key) => {
+                const dataType = Object.prototype.toString.call(obj[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  obj[key] = JSON.stringify(obj[key]);
+                }
+                requestBody.append(key, obj[key]);
+              });
+              request.data = requestBody;
+            } else {
+              response.ids = res.data.data.businessCheckData;
+              request.data = response;
+            }
           }
           
           resolve();
