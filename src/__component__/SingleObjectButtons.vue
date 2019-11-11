@@ -415,19 +415,6 @@
           this.upData();
         }
       },
-      // subtables() {
-      //   if (Version() === 1.4) {
-      //     if (this.isreftabs) {
-      //       return true;
-      //     }
-      //     return false;
-      //   } if (Version() === 1.3) {
-      //     if (this.itemNameGroup.length > 0) {
-      //       return true;
-      //     }
-      //     return false;
-      //   }
-      // },
       subtables() {
         if (Version() === '1.4') {
           if (this.isreftabs) {
@@ -558,6 +545,12 @@
           }
         } else { // 纵向布局
           this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
+
+          // if (tabrelation === '1:m') {
+
+          // }else if (tabrelation === '1:1') {
+
+          // }
           this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
         }
         setTimeout(() => {
