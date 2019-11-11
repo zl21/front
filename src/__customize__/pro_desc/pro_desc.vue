@@ -240,7 +240,6 @@
     name: 'ProDesc',
     created() {
       const { tableName, tableId, itemId } = this.$route.params;
-
       if (itemId !== 'New') {
         this.getData();
       }

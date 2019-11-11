@@ -422,7 +422,8 @@
               }
             }
             const refvalArr = _refval.split(',');
-            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+            const _valx = val[_refcolumn] || '';
+            const arrIndex = refvalArr.findIndex(x => x.toString() === _valx.toString());
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
 
@@ -698,6 +699,9 @@
       },
       filtercolumn(item, formindex, val) {
         const filterValue = val[item.props.webconf.filtercolval.col];
+        if (!filterValue) {
+          return false;
+        }
         if (item.type === 'select') {
           if (!item.olderOptions) {
             item.olderOptions = item.options;

@@ -494,7 +494,8 @@
                 a: '刷新'
               }
             });
-            this.clearEditData();
+            this.upData();
+            // this.clearEditData();
           }
         } else {
           this.clearEditData();
