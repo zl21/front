@@ -285,6 +285,7 @@
         v-if="_items.type === 'EnumerableInput'"
         :ref="_items.field"
         :default-value="_items.value"
+        :disabled="_items.props.disabled"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
