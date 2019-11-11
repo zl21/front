@@ -322,10 +322,9 @@
               if (val[_refcolumn] === undefined) {
                 return false;
               }
-              // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
               const refvalArr = _refval.split(',');
-             
-              const arrIndex = refvalArr.findIndex(x => x === val[_refcolumn]);
+              const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+
               const checkVal = arrIndex !== -1 ? 1 : 0;
               const checkShow = items.show ? 1 : 0;
               // console.log(_refval , val[_refcolumn]);
@@ -423,7 +422,7 @@
               }
             }
             const refvalArr = _refval.split(',');
-            const arrIndex = refvalArr.findIndex(x => x === val[_refcolumn]);
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
 
@@ -736,8 +735,7 @@
             if (option.item) {
               const value = jsonArr[refcolumn];
               const refvalArr = refval.split(',');
-             
-              const refIndex = refvalArr.findIndex(x => x === value);
+              const refIndex = refvalArr.findIndex(x => x.toString() === value.toString());
 
               if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
