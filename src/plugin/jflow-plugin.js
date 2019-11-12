@@ -260,7 +260,7 @@ async function jflowsave(flag, request) {
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: response.ids ? response.ids : (response.objId ? response.objId : response.objids),
+        businessCodes: response.ids ? response.ids : router.currentRoute.params.itemId,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
