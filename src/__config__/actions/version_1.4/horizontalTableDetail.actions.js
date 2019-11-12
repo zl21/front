@@ -414,7 +414,6 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
@@ -444,13 +443,12 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
         objId,
         table
-      };
+      }
 
     network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
@@ -474,7 +472,6 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
