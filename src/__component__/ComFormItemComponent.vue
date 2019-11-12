@@ -705,9 +705,14 @@
         }
       },
       filtercolumn(item, formindex, val) {
+        // 过滤筛选
         const filterValue = val[item.props.webconf.filtercolval.col];
         if (!filterValue) {
           return false;
+        }
+        let itemValue = item.value;
+        if (Array.isArray(itemValue)) {
+          itemValue = itemValue.join('');
         }
         if (item.type === 'select') {
           if (!item.olderOptions) {
@@ -716,7 +721,7 @@
           if (!Array.isArray(item.props.webconf.filtercolval.map[filterValue])) {
             return false;
           }
-          const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === item.value);
+          const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === itemValue);
           const optionsArr = item.olderOptions.reduce((arr, option) => {
             const index = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === option.value);
             if (index !== -1) {
@@ -729,8 +734,6 @@
           if (checkout !== -1) { 
             return false;
           }
-          console.log(checkout, item.props.webconf.filtercolval.map[filterValue], item.value, 'filterValue');
-
           if (this.newFormItemLists[formindex] && checkout === -1) {
             this.newFormItemLists[formindex].item.value = -1;
           }
