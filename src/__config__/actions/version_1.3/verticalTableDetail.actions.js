@@ -540,10 +540,10 @@ export default {
     reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    network.post(path || '/p/cs/objectSubmit', urlSearchParams({
+      table,
+      objid: objId
+    })).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -565,10 +565,10 @@ export default {
     reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    network.post(path || '/p/cs/objectUnSubmit', urlSearchParams({
+      table,
+      objid: objId
+    })).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -590,10 +590,10 @@ export default {
     reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', {
-      objId,
-      table
-    }).then((res) => {
+    network.post(path || '/p/cs/objectVoid', urlSearchParams({
+      table,
+      objid: objId
+    })).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();

@@ -595,7 +595,10 @@ export default {
     //     table
     //   };
     // }
-    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
+    network.post(path || '/p/cs/objectSubmit', {
+      objId,
+      table 
+    }).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
