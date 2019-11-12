@@ -713,6 +713,9 @@
           if (!item.olderOptions) {
             item.olderOptions = item.options;
           }
+          if (!Array.isArray(item.props.webconf.filtercolval.map[filterValue])) {
+            return false;
+          }
           const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === item.value);
           const optionsArr = item.olderOptions.reduce((arr, option) => {
             const index = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === option.value);
@@ -726,6 +729,8 @@
           if (checkout !== -1) { 
             return false;
           }
+          console.log(checkout, item.props.webconf.filtercolval.map[filterValue], item.value, 'filterValue');
+
           if (this.newFormItemLists[formindex] && checkout === -1) {
             this.newFormItemLists[formindex].item.value = -1;
           }
