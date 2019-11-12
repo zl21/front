@@ -644,7 +644,7 @@
             this.saveButtonPath = obj.requestUrlPath;
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs , resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             promise.then(() => {
@@ -1118,7 +1118,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1141,12 +1143,16 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   } else {
-                    this.updateRefreshButton(true);
+                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                     this.dataArray.refresh = this.refreshButtons;
                   }
                 });
@@ -1169,7 +1175,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1195,7 +1203,9 @@
                         this.saveButtonPath = tabcmd.paths[index];
                       }
                     }
-                    this.updateRefreshButton(true);
+                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
