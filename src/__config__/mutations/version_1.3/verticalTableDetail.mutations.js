@@ -166,46 +166,47 @@ export default {
  
   savaCopyData(state, { copyDatas, tableName, modifyData }) { // 执行按钮复制操作存储form默认值数据
     const copySaveDataForParam = {};
-    const hidecolunmArray = [];
+    // const hidecolunmArray = [];
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
         if (d.childs) {
           d.childs.forEach((c) => {
             if (item.childs) {
               item.childs.forEach((b) => {
-                if (c.hidecolumn) {
-                  if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
-                    if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
-                      c.valuedata = '';
-                      hidecolunmArray.push(c);
-                    }
-                  } 
-                }               
+                // if (c.hidecolumn) {
+                //   if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
+                //     if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
+                //       c.valuedata = '';
+                //       hidecolunmArray.push(c);
+                //     }
+                //   }
+                // }
                 if (b.name === c.name) {
                   b.readonly = c.readonly;
-                  if (hidecolunmArray.length > 0) {
-                    hidecolunmArray.forEach((hidecolumnItem) => {
-                      if (b.colname !== hidecolumnItem.colname) {
-                        if (c.readonly === true) {
-                          if (c.defval) {
-                            copySaveDataForParam[b.colname] = c.defval;
-                          } else {
-                            b.valuedata = '';// 将配置为不可编辑的值置空
-                          }
-                        } else if (b.valuedata) {
-                          if (b.display === 'doc') {
-                          } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
-                            copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                          } else if (b.fkdisplay === 'mop') {
-                            const number = JSON.parse(b.valuedata).lists.result.length;
-                            copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                          } else {
-                            copySaveDataForParam[b.colname] = b.valuedata;
-                          }
-                        }
-                      }
-                    });
-                  } else if (c.readonly === true) {
+                  // if (hidecolunmArray.length > 0) {
+                  //   hidecolunmArray.forEach((hidecolumnItem) => {
+                  //     if (b.colname !== hidecolumnItem.colname) {
+                  //       if (c.readonly === true) {
+                  //         if (c.defval) {
+                  //           copySaveDataForParam[b.colname] = c.defval;
+                  //         } else {
+                  //           b.valuedata = '';// 将配置为不可编辑的值置空
+                  //         }
+                  //       } else if (b.valuedata) {
+                  //         if (b.display === 'doc') {
+                  //         } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                  //           copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                  //         } else if (b.fkdisplay === 'mop') {
+                  //           const number = JSON.parse(b.valuedata).lists.result.length;
+                  //           copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  //         } else {
+                  //           copySaveDataForParam[b.colname] = b.valuedata;
+                  //         }
+                  //       }
+                  //     }
+                  //   });
+                  // } else 
+                  if (c.readonly === true) {
                     if (c.defval) {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
@@ -236,20 +237,20 @@ export default {
 
     
     const data = Object.assign({}, copyDatas, state.copyDataForReadOnly);
-    data.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
-      if (item.parentdesc !== '日志') {
-        item.childs.forEach((itemValue,) => {
-          item.childs.forEach((childValue) => {
-            if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
-              if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
-                // itemValue.valuedata = '';
-                // delete (itemValue.refobjid);
-              }
-            }
-          });
-        });
-      }
-    });
+    // data.data.addcolums.forEach((item) => { // 去除配置了clearWhenHidden的
+    //   if (item.parentdesc !== '日志') {
+    //     item.childs.forEach((itemValue,) => {
+    //       item.childs.forEach((childValue) => {
+    //         if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
+    //           // if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
+    //           //   itemValue.valuedata = '';
+    //           //   delete (itemValue.refobjid);
+    //           // }
+    //         }
+    //       });
+    //     });
+    //   }
+    // });
 
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums.concat([]);
   },
