@@ -478,6 +478,7 @@ export default {
         objId,
         table
       };
+    }
     network.post(path || '/p/cs/objectVoid',param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
