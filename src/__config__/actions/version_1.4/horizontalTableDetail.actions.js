@@ -410,7 +410,18 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -428,7 +439,18 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      }
+    }
+    network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -446,7 +468,17 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      };
+    network.post(path || '/p/cs/objectVoid',param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -463,7 +495,7 @@ export default {
   },
   getObjTabActionSlientConfirm({ commit }, {
     params, path, resolve, reject
-  }) { // 获取作废数据
+  }) { //静默请求
     network.post(path, params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;

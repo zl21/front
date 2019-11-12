@@ -211,6 +211,9 @@
       };
     },
     watch: {
+      childTableName(val) {
+        console.log(val);
+      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -364,6 +367,21 @@
         }
         return items;
       },
+      setChangeValue(data) {
+        // 修改联动值
+        this.getStateData();
+        const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
+        const key = mappStatus[Object.keys(data)[0]];
+        // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
+        if (!document.querySelector(`#${key}`)) {
+          return false;
+        }
+        const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+        if (LinkageFormInput) {
+          LinkageFormInput.click();
+        }
+        return true;
+      },
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
         // 表单数据修改  判断vuex 里面是否有input name
@@ -378,7 +396,8 @@
           // 区分是否是默认值的change 拦截
           return false;
         }
-
+        // 修改联动的值
+        this.setChangeValue(data, current);
         if (Array.isArray(data)) {
           data = data[0];
         }
@@ -505,16 +524,14 @@
               }
             },
             clear: () => {
-              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-              const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
               this.getStateData(); // 获取主表信息
-              Object.keys(mappStatus).forEach((item) => {
-                const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
-                const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
-                if (LinkageFormInput) {
-                  LinkageFormInput.click();
-                }
-              });
+              // Object.keys(mappStatus).forEach((item) => {
+              //   const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
+              //   const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+              //   if (LinkageFormInput) {
+              //     // LinkageFormInput.click();
+              //   }
+              // });
             },
             change: (value) => {
               if (current.fkdisplay) {
@@ -721,29 +738,37 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
+       
         if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
-          obj.item.props.disabled = false;
-          obj.item.props.readonly = false;
+          if (this.defaultData.isdefault && !current.disabled && !current.readonly) {
+            obj.item.props.disabled = false;
+            obj.item.props.readonly = false;
+          }
         }
 
         return obj;
       },
       hidecolumn(current, array) {
         //  隐藏判断
-        const check = array.some((option) => {
-          const refcolumn = current.hidecolumn.refcolumn;
-          const refval = current.hidecolumn.refval;
-          let val = option.item.value;
-          if (Array.isArray(option.item.value) && option.item.value[0]) {
-            if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
-              val = option.item.value[0].ID;
-            } else {
-              val = option.item.value[0];
+        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
+          const check = array.some((option) => {
+            const refcolumn = current.hidecolumn.refcolumn;
+            const refval = current.hidecolumn.refval;
+            let val = option.item.value;
+            if (Array.isArray(option.item.value) && option.item.value[0]) {
+              if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
+                val = option.item.value[0].ID;
+              } else {
+                val = option.item.value[0];
+              }
             }
-          }
-          return option.item.field === refcolumn && val === refval;
-        });
-        return check;
+            const refvalArr = refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val.toString());
+            return option.item.field === refcolumn && arrIndex !== -1;
+          });
+          return check;
+        }
+        return true;
       },
       focusChange(value, current, index) {
         // 外键的模糊搜索
@@ -852,7 +877,7 @@
           || item.display === 'xml'
           || item.display === 'OBJ_FK'
         ) {
-          const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.searchmodel);
+          const casefkdisplay = item.fkdisplay || (item.fkobj && item.fkobj.fkdisplay);
           switch (casefkdisplay) {
           case 'drp':
             str = 'DropDownSelectFilter';
@@ -1016,6 +1041,9 @@
           return this.defaultSetValue[item.colname] || item.valuedata || item.default || item.defval || '';
         }
         const fkdisplayValue = this.defaultSetValue[item.colname] && this.defaultSetValue[item.colname][0];
+        if (item.fkobj) {
+          item.fkdisplay = item.fkobj.fkdisplay;
+        }
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
@@ -1048,7 +1076,6 @@
             // arr = [...option];
             return option;
           }
-
 
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
@@ -1293,9 +1320,9 @@
             item.props.type = 'datetime';
           }
         }
-
-        if (current.display === 'text' || current.display === 'xml') {
-          switch (current.fkdisplay) {
+        if (current.display === 'text' || current.display === 'xml' || current.display === 'OBJ_FK') {
+          const casefkdisplay = current.fkdisplay || (current.fkobj && current.fkobj.fkdisplay);
+          switch (casefkdisplay) {
           case 'drp':
             item.props.single = true;
             item.props.data = {};
@@ -1350,7 +1377,7 @@
               item.props.optionTip = false;
               item.props.enterType = true;
               item.props.show = false;
-
+              // 失去光标是否保存
               item.props.dialog = {
                 model: {
                   title: current.fkdesc,
@@ -1441,7 +1468,7 @@
           readonly = this.objreadonly ? true : readonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 220 : 160,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 160,
             height: 120,
             readonly,
             ImageSize,
@@ -1696,11 +1723,11 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {
-      if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-        if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
-        }
-      }
+      // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+      //   if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
+      //     this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
+      //   }
+      // }
     }
   };
 </script>

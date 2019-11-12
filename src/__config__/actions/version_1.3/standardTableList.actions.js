@@ -98,7 +98,13 @@ export default {
   getExeActionDataForButtons({ commit }, {
     item, obj, resolve, reject 
   }) {
-    network.post(item.action || '/p/cs/exeAction', urlSearchParams({
+    let actionName = '';
+    if (item.action.search('/') !== -1) {
+      actionName = item.action;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),
@@ -196,10 +202,14 @@ export default {
     });
   },
  
-  batchUnSubmitForButtons({ commit }, 
+  batchUnSubmitForButtons({ commit },
     { obj, resolve, reject }) {
-    network.post('/p/cs/batchUnSubmit',
-      obj).then((res) => {
+    network.post('/p/cs/batchUnSubmit', urlSearchParams(
+      { 
+        table: obj.tableName,
+        objids: obj.ids.join()
+      }
+    )).then((res) => {
       if (res.data.code === 0) {
         resolve(res);
         commit('updateButtonbatchUnSubmitData', res.data.message);

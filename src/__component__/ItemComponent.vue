@@ -32,7 +32,7 @@
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <template v-if=" _items.props.fkdisplay === 'pop'">
+      <template v-if=" _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value">
           <i
@@ -44,7 +44,7 @@
         </template>
 
       </template>
-      <template v-if=" _items.props.fkdisplay === 'drp'">
+      <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
         <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID">
           <i
@@ -285,6 +285,7 @@
         v-if="_items.type === 'EnumerableInput'"
         :ref="_items.field"
         :default-value="_items.value"
+        :disabled="_items.props.disabled"
         @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
@@ -752,7 +753,6 @@
             Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
             && typeof this._items.event.clear === 'function'
           ) {
-            console.log(item);
             this._items.event.clear();
           }
         }
@@ -1336,8 +1336,6 @@
         }
         if (!isreftabs && pathcheck === '') {
           // 单主表  无path
-          console.log('单主表 有sspath');
-
           const fixedData = {
             fixedData: {
               [this._items.props.itemdata.masterName]: {

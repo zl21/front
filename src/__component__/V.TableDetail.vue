@@ -89,6 +89,7 @@
           } else {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
+
           obj.component = `tapComponent.${item.tablename}`;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
@@ -163,44 +164,51 @@
         if (index === this.tabCurrentIndex) {
           return;
         }
-        this.updateTabCurrentIndex(index);
-        const { itemId } = this.$route.params;
-        const refTab = this.tabPanel[index];
-        let getButtonDataPromise = null;
-        if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
-          // 获取子表表单
-          getButtonDataPromise = new Promise((rec, rej) => {
-            this.getObjectTabForRefTable({
-              table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
-            });
-          });
-          const formParam = {
-            table: refTab.tablename,
-            inlinemode: refTab.tabinlinemode,
-            tabIndex: index
-          };
-          this.getFormDataForRefTable(formParam);
+        let webactType = '';
+        if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
+          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
         }
-        if (refTab.tabrelation === '1:m') {
-          getButtonDataPromise.then(() => {
-            this.getObjectTableItemForTableData({
-              table: refTab.tablename,
-              objid: itemId,
-              refcolid: refTab.refcolid,
-              searchdata: {
-                column_include_uicontroller: true,
-                startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                range: this.tablePageInfo.pageSize,
-                fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
-              },
-              tabIndex: index
+        if (webactType !== 'order') {
+          this.updateTabCurrentIndex(index);
+          const { itemId } = this.$route.params;
+          const refTab = this.tabPanel[index];
+          let getButtonDataPromise = null;
+          if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
+            // 获取子表表单
+            getButtonDataPromise = new Promise((rec, rej) => {
+              this.getObjectTabForRefTable({
+                table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+              });
             });
-          });
-        } else if (refTab.tabrelation === '1:1') {
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-          this.getItemObjForChildTableForm({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
-          });
+            const formParam = {
+              table: refTab.tablename,
+              inlinemode: refTab.tabinlinemode,
+              tabIndex: index
+            };
+            this.getFormDataForRefTable(formParam);
+          }
+          if (refTab.tabrelation === '1:m') {
+            getButtonDataPromise.then(() => {
+              this.getObjectTableItemForTableData({
+                table: refTab.tablename,
+                objid: itemId,
+                refcolid: refTab.refcolid,
+                searchdata: {
+                  column_include_uicontroller: true,
+                  startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                  range: this.tablePageInfo.pageSize,
+                  fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
+                },
+                tabIndex: index
+              });
+            });
+          } else if (refTab.tabrelation === '1:1') {
+            this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
+            console.log("📖",refTab)
+            this.getItemObjForChildTableForm({
+              table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+            });
+          }
         }
       },
     },

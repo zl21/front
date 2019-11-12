@@ -8,6 +8,7 @@ export const interlocks = () => (window.ProjectConfig && typeof window.ProjectCo
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
 export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectConfig.jflowRequestDomain ? window.ProjectConfig.jflowRequestDomain : project.jflowRequestDomain);
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
+export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
 export const jflowTabShow = () => (window.ProjectConfig && typeof window.ProjectConfig.showTab === 'boolean' ? window.ProjectConfig.showTab : project.showTab);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
@@ -30,6 +31,7 @@ export const CUSTOMIZED_MODULE_COMPONENT_PREFIX = 'C';
 export const PLUGIN_MODULE_COMPONENT_PREFIX = 'P';
 export const LINK_MODULE_COMPONENT_PREFIX = 'L';
 
+export const REQUEST_PENDDING_EXPIRE = 1000 * 10;
 export const KEEP_MODULE_STATE_WHEN_CLICK_MENU = true; // 控制点击按钮菜单时如何显示已经打开的模块
 export const KEEP_SAVE_ITEM_TABLE_MANDATORY = false;// 控制当子表没有必填项点击保存时是否必须填写子表信息
 export const INSTANCE_ROUTE = 'instanceRoute';

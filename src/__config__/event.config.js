@@ -40,11 +40,11 @@ export const routeTo = ({ type, info }, cb) => {
       if (info.url) {
         const actionType = info.url.substring(0, info.url.indexOf('/'));
         if (actionType === 'SYSTEM') {
-          path = info.url;
+          path =`/${info.url}` ;
         } else if (actionType === 'https:' || actionType === 'http:') {
           path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          path = `${info.url.toUpperCase()}/${info.tableId}`;
+          path = `/${info.url.toUpperCase()}/${info.tableId}`;
         } else {
           class Person {
             constructor(wrong, eg, url) {

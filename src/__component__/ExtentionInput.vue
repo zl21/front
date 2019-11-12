@@ -8,8 +8,8 @@
       type="textarea"
       :rows="rows"
       :placeholder="''"
-      readonly
-      :disabled="disabled"
+      :readonly="webConfig.readonly"
+      :disabled="webConfig.disabled"
       @on-keydown="onKeydown"
     />
     <Icon
@@ -108,7 +108,7 @@
         this.currentValue = val;
       },
       popUp() {
-        if (this.disabled) { return; }
+        if (this.webConfig.disabled) { return; }
         this.showModal = true;
       },
       onOk() {

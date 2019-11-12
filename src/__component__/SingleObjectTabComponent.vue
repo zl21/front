@@ -18,7 +18,7 @@
       :isreftabs="isreftabs"
     />
     <compositeForm
-      v-if="formData.isShow"
+      v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
       :is-main-table="isMainTable"
@@ -33,7 +33,7 @@
       :paths="formPaths"
       :isreftabs="isreftabs"
       :child-table-name="tableName"
-      @on-formEnter="formEnter"
+      @on-formEnter="enterClick"
       @formChange="formChange"
       @InitializationForm="initForm"
       @VerifyMessage="verifyForm"
@@ -101,6 +101,7 @@
       :readonly="buttonsData.data.objreadonly"
       :objreadonly="objreadonly"
       :status="status"
+      :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
       @tableDataChange="tableDataChange"
@@ -287,6 +288,11 @@
           this.$refs.objectTableRef.clearSearchData();
         }
       }, // 清空表格搜索框的值
+      enterClick() {
+        if(this.itemInfo && this.itemInfo.tabrelation && this.itemInfo.tabrelation !== '1:1') {
+          this.formEnter();
+        }
+      },
       formEnter() {
         this.isclick = false;
         let savePath = '';

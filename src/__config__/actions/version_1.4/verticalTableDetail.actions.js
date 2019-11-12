@@ -84,10 +84,9 @@ export default {
                 this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
               // 获取第一个tab的子表列表数据
-              if (resData.reftabs[0].tabrelation === '1:m') {
+              if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                    
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
@@ -104,7 +103,7 @@ export default {
                     childTableFixedcolumns = {};
                   }
                 });
-              } else if (resData.reftabs[0].tabrelation === '1:1') {
+              } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                 // 获取子表面板数据
                 if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                   const tableParam = {
@@ -584,10 +583,18 @@ export default {
     reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -609,10 +616,18 @@ export default {
     reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -634,10 +649,18 @@ export default {
     reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      param[table] = {
+        ID: objId,
+      };
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectVoid',param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
