@@ -113,6 +113,13 @@
           return false;
         }
       },
+      readonly: {
+        // 界面是否配置了readonly
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       defaultSetValue: {
         // change 复制后的传值
         type: Object,
@@ -211,9 +218,6 @@
       };
     },
     watch: {
-      childTableName(val) {
-        console.log(val);
-      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -740,7 +744,7 @@
         // ignoreDisableWhenEdit 去除不可编辑的状态 
        
         if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
-          if (this.defaultData.isdefault && !current.disabled && !current.readonly) {
+          if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.readonly) {
             obj.item.props.disabled = false;
             obj.item.props.readonly = false;
           }
