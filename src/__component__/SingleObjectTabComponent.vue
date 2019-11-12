@@ -23,6 +23,7 @@
       :object-type="type"
       :is-main-table="isMainTable"
       :objreadonly="objreadonly"
+      :readonly="formReadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -51,6 +52,7 @@
         :is-main-table="isMainTable"
         :object-type="type"
         :objreadonly="objreadonly"
+        :readonly="formReadonly"
         :default-set-value="changeData"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -71,6 +73,7 @@
       :is-main-table="isMainTable"
       :object-type="type"
       :objreadonly="objreadonly"
+      :readonly="formReadonly"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -163,6 +166,10 @@
       objreadonly: {
         type: Boolean,
       },
+      formReadonly: {
+        type: Boolean,
+        default: false
+      }, // 表单objreadonly
       isactive: {
         type: Boolean,
       },
@@ -214,7 +221,7 @@
         type: String,
         default: ''
       }, // 版定制界面自定义组件名称
-      
+
     },
     inject: [MODULE_COMPONENT_NAME],
     watch: {},

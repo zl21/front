@@ -43,6 +43,7 @@
 
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
