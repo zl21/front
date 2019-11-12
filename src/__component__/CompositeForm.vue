@@ -211,6 +211,9 @@
       };
     },
     watch: {
+      childTableName(val) {
+        console.log(val);
+      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -366,6 +369,7 @@
       },
       setChangeValue(data) {
         // 修改联动值
+        this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const key = mappStatus[Object.keys(data)[0]];
         // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
@@ -380,8 +384,6 @@
       },
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
-        // 修改联动的值
-        this.setChangeValue(data, current);
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -394,7 +396,8 @@
           // 区分是否是默认值的change 拦截
           return false;
         }
-
+        // 修改联动的值
+        this.setChangeValue(data, current);
         if (Array.isArray(data)) {
           data = data[0];
         }
@@ -521,9 +524,7 @@
               }
             },
             clear: () => {
-              // const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-              // const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
-              // this.getStateData(); // 获取主表信息
+              this.getStateData(); // 获取主表信息
               // Object.keys(mappStatus).forEach((item) => {
               //   const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
               //   const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
@@ -737,9 +738,12 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
+       
         if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
-          obj.item.props.disabled = false;
-          obj.item.props.readonly = false;
+          if (this.defaultData.isdefault && !current.disabled && !current.readonly) {
+            obj.item.props.disabled = false;
+            obj.item.props.readonly = false;
+          }
         }
 
         return obj;
@@ -1072,7 +1076,6 @@
             // arr = [...option];
             return option;
           }
-
 
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
@@ -1720,11 +1723,11 @@
       this.mountNumber = (Math.random() * 1000).toFixed(0);
     },
     deactivated() {
-      if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-        if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
-        }
-      }
+      // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+      //   if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
+      //     this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);
+      //   }
+      // }
     }
   };
 </script>

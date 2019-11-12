@@ -45,7 +45,6 @@ export default {
       objid: id,
       ismaintable: 'y'
     })).then((res) => {
-      
       if (res.data.code === 0) {
         const resData = res.data.data;
         if (type === 'copy') {
@@ -88,7 +87,6 @@ export default {
               if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                 getObjectTabPromise.then(() => {
                   if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                    
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
@@ -585,10 +583,19 @@ export default {
     reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    // let param = {};
+    // if (path) {
+    //   param[table] = {
+    //     ID: objId,
+    //     table
+    //   };
+    // } else {
+    //   param = {
+    //     objId,
+    //     table
+    //   };
+    // }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();

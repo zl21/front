@@ -3,7 +3,7 @@ import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
 import {
-  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
@@ -315,7 +315,8 @@ function NetworkConstructor() {
       url: matchedUrl,
       method: 'post'
     });
-    if (pendingRequestMap[requestMd5]) {
+    const now = new Date();
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
       if (enableJflow()) {
         const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
         businessTypes.forEach((actionUrls) => {
@@ -329,7 +330,6 @@ function NetworkConstructor() {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
       }
     }
-    const now = new Date();
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
@@ -351,11 +351,10 @@ function NetworkConstructor() {
       url: matchedUrl,
       method: 'get'
     });
-    
-    if (pendingRequestMap[requestMd5]) {
+    const now = new Date();
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
       return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
-    const now = new Date();
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
