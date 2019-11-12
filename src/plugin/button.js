@@ -41,6 +41,7 @@ let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
 function clickFunction(e) {
+  console.log(e);
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
