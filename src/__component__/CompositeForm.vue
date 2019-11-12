@@ -738,9 +738,12 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
+       
         if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
-          obj.item.props.disabled = false;
-          obj.item.props.readonly = false;
+          if (this.defaultData.isdefault && !current.disabled && !current.readonly) {
+            obj.item.props.disabled = false;
+            obj.item.props.readonly = false;
+          }
         }
 
         return obj;

@@ -92,7 +92,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
@@ -193,7 +193,7 @@
                 }
 
                 if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
-                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
                       if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
                         this.tabcmd.prem[index] = false;
@@ -210,11 +210,8 @@
                       val.prem[index] = true;
                     }
                   });
-                } 
-
-
+                }
               }
-
 
 
               if (this.disableExport) {
@@ -1933,6 +1930,13 @@
             DispatchEvent('objectSaveClick', {
               detail: {
                 a: '刷新'
+              }
+            });
+          }
+          if (enableJflow()) { // jflow开启时，保存成功需通知
+            DispatchEvent('jflowPlugin', {
+              detail: {
+                type: 'save'
               }
             });
           }
