@@ -407,14 +407,20 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path, isreftabs,resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,
@@ -436,14 +442,20 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,
@@ -465,14 +477,20 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,

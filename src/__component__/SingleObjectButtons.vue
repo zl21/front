@@ -579,7 +579,7 @@
           this.objectTrySubmit(obj);
           break;
         case 'actionUNSUBMIT': // 取消提交
-          this.objectTryUnSubmit();
+          this.objectTryUnSubmit(obj);
           break;
         case 'actionVOID': // 作废
           this.objectTryVoid(obj);
@@ -634,16 +634,17 @@
           this.$Modal.fcWarning(data);
         }
       },
-      objectTryUnSubmit() { // 按钮取消提交操作
+      objectTryUnSubmit(obj) { // 按钮取消提交操作
         const data = {
           title: '警告',
           mask: true,
           content: '确认执行取消提交?',
           showCancel: true,
           onOk: () => {
+            this.saveButtonPath = obj.requestUrlPath;
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
-                objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs , resolve, reject
               });
             });
             promise.then(() => {
@@ -2036,7 +2037,7 @@
           if (this.saveEventAfter === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             // let message = '';
@@ -2055,7 +2056,7 @@
           } else if (this.saveEventAfter === 'invalid') {
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryInvalid({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             // let message = '';

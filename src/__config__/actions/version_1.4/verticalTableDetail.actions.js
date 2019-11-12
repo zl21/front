@@ -579,15 +579,22 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,
@@ -612,15 +619,22 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,
@@ -645,22 +659,29 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
     if (path) {
-      param[table] = {
-        ID: objId,
-      };
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
     } else {
       param = {
         objId,
         table
       };
     }
-    network.post(path || '/p/cs/objectVoid',param).then((res) => {
+    network.post(path || '/p/cs/objectVoid', param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
