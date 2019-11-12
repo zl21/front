@@ -449,7 +449,7 @@ export default {
         objId,
         table
       }
-
+    }
     network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
