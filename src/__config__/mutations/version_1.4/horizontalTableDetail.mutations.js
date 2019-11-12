@@ -250,8 +250,8 @@ export default {
           item.childs.forEach((childValue) => {
             if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
               if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
-                itemValue.valuedata = '';
-                delete (itemValue.refobjid);
+                // itemValue.valuedata = '';
+                // delete (itemValue.refobjid);
               }
             }
           });
