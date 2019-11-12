@@ -431,6 +431,7 @@ function AxiosGuard(axios) { // axios拦截
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
     }
+
     // const type = router.currentRoute.path.split('/')[3];// 获取组件类型
 
     if (configurationFlag) { // 配置了流程图并

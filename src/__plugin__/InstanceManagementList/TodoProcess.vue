@@ -149,15 +149,16 @@
             item: {
               type: 'input',
               title: '查询索引',
-              filed: 'businessNumber'
-            },
-            event: {
-              keydown: (event) => {
-                if (event.keyCode === 13) {
-                  this.queryLists();
+              filed: 'businessNumber',
+              event: {
+                keydown: (event) => {
+                  if (event.keyCode === 13) {
+                    this.queryLists();
+                  }
                 }
               }
             }
+            
           },
 
           {
