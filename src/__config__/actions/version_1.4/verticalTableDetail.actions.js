@@ -587,7 +587,6 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
@@ -621,7 +620,6 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
@@ -655,7 +653,6 @@ export default {
     if (path) {
       param[table] = {
         ID: objId,
-        table
       };
     } else {
       param = {
