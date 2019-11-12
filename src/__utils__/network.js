@@ -319,13 +319,21 @@ function NetworkConstructor() {
     if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
       if (enableJflow()) {
         const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+        let flag = false;
         businessTypes.forEach((actionUrls) => {
-          actionUrls.action.forEach((jflowUrl) => {
-            if (jflowUrl === url) {
-              return axios.post(matchedUrl, config);
-            }
-          });
+          if (!flag) { // 处理多个模版问题，存在一张表多个模版
+            actionUrls.action.forEach((jflowUrl) => {
+              if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
+                flag = true;
+                return axios.post(matchedUrl, config);
+              }
+            });
+          }
         });
+
+        if (flag) {
+          return; 
+        }
       } else {
         return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
       }

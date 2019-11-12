@@ -41,10 +41,18 @@ let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
 function clickFunction(e) {
-  console.log(e);
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
+  
+  if (e.detail.obj.button === 'save') { // 监听保存按钮
+    window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
+      instance_id: window.jflowPlugin.objInstanceId,
+      business_code: window.jflowPlugin.router.currentRoute.params.itemId,
+      business_type: window.jflowPlugin.router.currentRoute.params.tableId
+    });
+  }
+
   if (e.detail.obj.button === 'fresh') {
     buttons(id).then(() => {
       const children = document.getElementsByClassName('R3-button-group')[0].children;
@@ -114,6 +122,7 @@ function CreateButton(obj, buttons, id) {
         buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
         const newButtons = [];
         
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1
         });
@@ -167,6 +176,7 @@ function CreateButton(obj, buttons, id) {
           buttonsData: defaultButtonData, newButtons, instanceId: null
         });
 
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       }

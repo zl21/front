@@ -1936,7 +1936,9 @@
           if (enableJflow()) { // jflow开启时，保存成功需通知
             DispatchEvent('jflowPlugin', {
               detail: {
-                type: 'save'
+                obj: {
+                  button: 'save'
+                }
               }
             });
           }

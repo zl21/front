@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-constant-condition */
@@ -431,9 +432,6 @@ function AxiosGuard(axios) { // axios拦截
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
     }
-
-    // const type = router.currentRoute.path.split('/')[3];// 获取组件类型
-
     if (configurationFlag) { // 配置了流程图并
       // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
       let launchConfig = [];
@@ -446,7 +444,7 @@ function AxiosGuard(axios) { // axios拦截
       // jflow流程发起
       const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
       for (let i = 0; i < launchConfig.length; i++) {
-        if (`/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0) {
+        if (serviceId ? `/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0 : launchConfig[i].indexOf(config.url) >= 0) {
           await jflowsave(true, config);
         }
       }
