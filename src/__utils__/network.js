@@ -320,15 +320,18 @@ function NetworkConstructor() {
       if (enableJflow()) {
         const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
         let flag = false;
-        businessTypes.forEach((actionUrls) => {
+        businessTypes.every((actionUrls) => {
           if (!flag) { // 处理多个模版问题，存在一张表多个模版
-            actionUrls.action.forEach((jflowUrl) => {
+            actionUrls.action.every((jflowUrl) => {
               if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
                 flag = true;
                 return axios.post(matchedUrl, config);
               }
+
+              return true;
             });
           }
+          return true;
         });
 
         if (flag) {
