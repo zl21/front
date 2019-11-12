@@ -261,10 +261,10 @@ export default {
         item.childs.forEach((itemValue) => {
           item.childs.forEach((childValue) => {
             if (itemValue.hidecolumn && itemValue.hidecolumn.refcolumn === childValue.colname) {
-              if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
-                itemValue.valuedata = '';
-                delete (itemValue.refobjid);
-              }
+              // if (itemValue.hidecolumn && itemValue.hidecolumn.refval !== childValue.valuedata) {
+              //   itemValue.valuedata = '';
+              //   delete (itemValue.refobjid);
+              // }
             }
           });
         });
@@ -298,17 +298,24 @@ export default {
   },
   updateLinkageForm(state, data) {
     let mappStatus = {};
-    if (data.length > 0) {
-      mappStatus = data.reduce((arry, item) => {
+
+    const LinkageForm = {};
+    if (data.formList && data.formList.length > 0) {
+      mappStatus = data.formList.reduce((arry, item) => {
+        LinkageForm[item.key] = {
+          index: [data.formIndex],
+          item
+        };
         if (item.srccol) {
-          arry[item.key] = item.srccol;
-        }
+          // arry[item.key] = item.srccol;
+          arry[item.srccol] = item.key;
+        }  
         return arry;
       }, {});
-      state.LinkageForm = state.LinkageForm.concat(data);
+      state.LinkageForm = Object.assign(state.LinkageForm, LinkageForm);
       state.mappStatus = Object.assign(state.mappStatus, mappStatus);
     } else {
-      state.LinkageForm = [];
+      state.LinkageForm = {};
       state.mappStatus = {};
     }
   },

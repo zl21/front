@@ -105,6 +105,13 @@
               );
             }
           }
+          // 初始化隐藏字段clearWhenHidden 清除功能 
+          if (items.item.props.webconf && items.item.props.webconf.clearWhenHidden) {
+            if (items.show === false) {
+              option[items.item.field] = '';
+            }
+          }
+
           return option;
         }, {});
 
