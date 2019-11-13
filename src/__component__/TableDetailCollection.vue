@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -369,8 +369,15 @@
             }
           });
         }
+
+        // if (this.tabwebact && this.tabwebact.objtabbutton) {
+        // }
+        // buttonGroupShow.concat(this.tabwebact.objtabbutton);
+        
         const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
         const b = JSON.parse(a);
+        // console.log('🍓', b);
+
         return b;
       },
       isMainTableReadonly() {
@@ -1943,7 +1950,7 @@
             },
             domProps: {
             },
-          },`${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
           }, []).join('') : ''}`),
@@ -1965,7 +1972,7 @@
                   'padding-right': '10px',
                 },
                 domProps: {
-                  innerHTML: `<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>`
+                  innerHTML: '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>'
                 }
               }),
               content: () => h('TableDocFile', {
@@ -2010,7 +2017,7 @@
             },
             domProps: {
             },
-          },`${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
             acc.push(`【${cur.name}】`);
             return acc;
           }, []).join('') : '暂无文件'}`),
@@ -2033,7 +2040,7 @@
                   'padding-right': '10px',
                 },
                 domProps: {
-                  innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? `<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>` : ''
+                  innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>' : ''
                 }
               }),
               content: () => {
