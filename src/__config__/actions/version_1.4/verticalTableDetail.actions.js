@@ -721,7 +721,13 @@ export default {
     path,
     resolve, reject
   }) {
-    network.post(path || '/p/cs/exeAction', params).then((res) => {
+    let actionName = '';
+    if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = path;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();

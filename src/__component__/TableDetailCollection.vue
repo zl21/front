@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -369,8 +369,8 @@
             }
           });
         }
-        let a = '';
-        if (this.tabwebact && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
+        let buttons = '';
+        if (this.tabwebact && this.tabwebact.objtabbutton && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
           const buttonArray = buttonGroupShow.concat(this.tabwebact.objtabbutton);
           const newButtonArray = buttonArray.map((item) => {
             const objs = Object.keys(item).reduce((newData, key) => {
@@ -384,12 +384,11 @@
             }, {});
             return objs;
           });
-          a = JSON.stringify(newButtonArray);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+          buttons = JSON.stringify(newButtonArray);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
         } else {
-          a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+          buttons = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
         }
-        const b = JSON.parse(a);
-        return b;
+        return JSON.parse(buttons);
       },
       isMainTableReadonly() {
         // if (this.type === pageType.Vertical) {
@@ -559,10 +558,118 @@
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
           break;
-        
+        case 'slient':
+          this.objTabActionSlient(obj);// 静默类型
+          break;
+        case 'download':
+          this.objTabActiondDownload(obj);// 下载类型
+          break;
+        case 'dialog':
+          this.objTabActionDialog(obj);// 自定义弹出框类型
+          break;
+        case 'navbar':
+          this.objTabActionNavbar(obj);// 跳转类型
+          break;
         default:
           break;
         }
+      },
+      objTabActionSlient(tab) { // 动作定义静默
+        const self = this;
+        // tab.confirm = true
+        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
+        if (!tab) tab = self.activeTabAction;
+        if (tab.confirm) {
+          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+            const data = {
+              title: '警告',
+              mask: true,
+              content: tab.confirm,
+              onOk: () => {
+                this.objTabActionSlientConfirm(tab);
+              }
+            };
+            this.$Modal.fcWarning(data);
+          } else if (JSON.parse(tab.confirm).desc) {
+            //            确定后执行下一步操作
+            //            判断是否先执行保存
+            if (JSON.parse(tab.confirm).isSave) {
+              console.log('暂时未处理配置isSave的相关逻辑');
+              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+            } else {
+              const data = {
+                title: '警告',
+                mask: true,
+                showCancel: true, 
+                content: JSON.parse(tab.confirm).desc,
+                onOk: () => {
+                  this.objTabActionSlientConfirm(tab);
+                }
+              };
+              this.$Modal.fcWarning(data);
+            }
+            // self.confirmTips({
+            //   action: 'confirm',
+            //   title: tab.webdesc,
+            //   type: 'warning',
+            //   list: [],
+            //   isAction: true,
+            //   desc: JSON.parse(tab.confirm).desc,
+            // });
+            // 清除提示信息
+          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+            self.beforeObjectSubmit(() => {
+              self.objTabActionSlientConfirm(tab);
+            });
+          } else { // 静默直接执行
+            self.objTabActionSlientConfirm(tab);
+          }
+        } else {
+          self.objTabActionSlientConfirm(tab);
+        }
+      },
+      // 动作定义静默执行
+      objTabActionSlientConfirm(tab) {
+        const params = {};
+        const itemName = this.itemInfo.tablename;
+        const { tableName, tableId, itemId } = router.currentRoute.params;
+        params[tableName] = {
+          ID: itemId
+        };
+        const promise = new Promise((resolve, reject) => {
+          this.getObjTabActionSlientConfirm({
+            params, path: tab.action, resolve, reject
+          });
+          this.$loading.show();
+        });
+
+        promise.then(() => {
+          this.$loading.hide();
+          const message = this.objTabActionSlientConfirmData.message;
+          const data = {
+            mask: true,
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
+          if (this.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
+            const dom = document.getElementById('hideRefresh');
+            const myEvent = new Event('click');
+            dom.dispatchEvent(myEvent);
+          }
+        }, () => {
+          this.$loading.hide();
+        });
+      },
+      
+      objTabActiondDownload(obj) {
+        
+      },
+      objTabActionDialog(obj) {
+        
+      },
+      objTabActionNavbar(obj) {
+        
       },
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {

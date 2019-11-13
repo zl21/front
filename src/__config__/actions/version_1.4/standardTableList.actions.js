@@ -96,7 +96,13 @@ export default {
   getExeActionDataForButtons({ commit }, {
     item, obj, resolve, reject
   }) {
-    network.post(item.action || '/p/cs/exeAction', urlSearchParams({
+    let actionName = '';
+    if (item.action.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = item.action;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', urlSearchParams({
       actionid: item.webid,
       webaction: null,
       param: JSON.stringify(obj),

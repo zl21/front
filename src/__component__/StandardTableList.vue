@@ -979,9 +979,11 @@
               this.objTabActionNavbar(obj); // 新标签跳转
             }
           }
-        } else if (obj.vuedisplay === 'external') {
-          this.objTabActionUrl(obj);
-        } else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
+        }
+        //  else if (obj.vuedisplay === 'external') {
+        //   this.objTabActionUrl(obj);
+        // }
+         else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
           this.objTabActionDialog(obj);
           // this.setActionDialog(obj);
           // const componentName = obj.action.split('?')[0].replace(/\//g, '/');
@@ -1050,27 +1052,27 @@
         }
       },
 
-      objTabActionUrl(tab) { // 外链类型
-        // const linkUrl = tab.action;
-        // const linkId = tab.webid;
-        // this.increaseLinkUrl({ linkId, linkUrl });
-        // setTimeout(() => {
-        //   this.tabOpen({
-        //     type: 'tableDetailUrl',
-        //     tableName: tab.webname.toUpperCase(),
-        //     tableId: tab.webid,
-        //     label: tab.webdesc,
-        //     url: tab.action
-        //   });
-        // }, 500);
+      // objTabActionUrl(tab) { // 外链类型
+      //   // const linkUrl = tab.action;
+      //   // const linkId = tab.webid;
+      //   // this.increaseLinkUrl({ linkId, linkUrl });
+      //   // setTimeout(() => {
+      //   //   this.tabOpen({
+      //   //     type: 'tableDetailUrl',
+      //   //     tableName: tab.webname.toUpperCase(),
+      //   //     tableId: tab.webid,
+      //   //     label: tab.webdesc,
+      //   //     url: tab.action
+      //   //   });
+      //   // }, 500);
 
-        const eleLink = document.createElement('a');
-        eleLink.href = tab.action;
-        eleLink.target = '_blank';
-        document.body.appendChild(eleLink);
-        eleLink.click();
-        document.body.removeChild(eleLink);
-      },
+      //   const eleLink = document.createElement('a');
+      //   eleLink.href = tab.action;
+      //   eleLink.target = '_blank';
+      //   document.body.appendChild(eleLink);
+      //   eleLink.click();
+      //   document.body.removeChild(eleLink);
+      // },
       objTabActiondDownload(tab) {
         // const filename = tab.webname;
         const selectIdArr = this.buttons.selectIdArr;
