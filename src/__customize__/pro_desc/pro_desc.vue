@@ -247,15 +247,10 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      window.addEventListener('objectSaveClick', (event) => {
-        console.log('🍇', event.detail);
+      window.addEventListener('customizeClick', (event) => {
         this.saveParams = event.detail;
         this.objectSave(event.detail);
       }, false);
-    //   this.$dragging.$on('dragged', ({ value }) => {});
-    //   this.$dragging.$on('dragend', ({ value }) => {
-    //     this.saveObj.IMAGE = JSON.stringify(this.proImg);
-    //   });
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -437,7 +432,6 @@
             this.saveObj.IMAGE = null;
           }
         }
-        console.log(444, this.itemInfo);
         this.saveObj.DETAILDESC = params.itemTableParame.modify[this.itemInfo.tablename];
         if (this.video) this.saveObj.VIDEO = this.video;
         else this.saveObj.VIDEO = '';

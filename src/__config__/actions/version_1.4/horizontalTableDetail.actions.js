@@ -53,7 +53,8 @@ export default {
               if (item.default === '-1') {
                 childTableFixedcolumns[item.colname] = '';
               } else if (item.default !== '-1' && item.default) {
-                childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+                // childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
               } else {
                 childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
               }
@@ -407,10 +408,27 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path, isreftabs,resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -425,10 +443,27 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      }
+    }
+    network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -443,10 +478,27 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectVoid',param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -461,13 +513,24 @@ export default {
       reject();
     });
   },
-  getObjTabActionSlientConfirm({ commit }, {
-    params, path, resolve, reject
-  }) { // 获取作废数据
-    network.post(path, params).then((res) => {
+  getObjTabActionSlientConfirm({
+    commit
+  }, {
+    params,
+    path,
+    resolve, reject
+  }) {
+    let actionName = '';
+    if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = path;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
+
         commit('updateObjTabActionSlientConfirm', invalidData);
       } else {
         reject();

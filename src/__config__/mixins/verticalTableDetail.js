@@ -30,6 +30,7 @@ export default () => ({
       pageInfo: ({ pageInfo }) => pageInfo,
       objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+      instanceId: ({ instanceId }) => instanceId,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,

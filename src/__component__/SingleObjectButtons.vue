@@ -486,9 +486,9 @@
         if (this.itemInfo.webact) { // 兼容半定制界面
           const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
           if (webactType !== 'order') {
-            DispatchEvent('clickButtonsRefresh', {
+            DispatchEvent('customizeClick', {
               detail: {
-                a: '刷新'
+                type: 'refresh'
               }
             });
             this.upData();
@@ -579,7 +579,7 @@
           this.objectTrySubmit(obj);
           break;
         case 'actionUNSUBMIT': // 取消提交
-          this.objectTryUnSubmit();
+          this.objectTryUnSubmit(obj);
           break;
         case 'actionVOID': // 作废
           this.objectTryVoid(obj);
@@ -634,16 +634,17 @@
           this.$Modal.fcWarning(data);
         }
       },
-      objectTryUnSubmit() { // 按钮取消提交操作
+      objectTryUnSubmit(obj) { // 按钮取消提交操作
         const data = {
           title: '警告',
           mask: true,
           content: '确认执行取消提交?',
           showCancel: true,
           onOk: () => {
+            this.saveButtonPath = obj.requestUrlPath;
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryUnSubmit({
-                objId: this.itemId, table: this.tableName, path: this.requestUrlPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             promise.then(() => {
@@ -1117,7 +1118,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1140,12 +1143,16 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
                   } else {
-                    this.updateRefreshButton(true);
+                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                      this.updateRefreshButton(true);
+                    }
                     this.dataArray.refresh = this.refreshButtons;
                   }
                 });
@@ -1168,7 +1175,9 @@
                           this.saveButtonPath = tabcmd.paths[index];
                         }
                       }
-                      this.updateRefreshButton(true);
+                      if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                        this.updateRefreshButton(true);
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1194,7 +1203,9 @@
                         this.saveButtonPath = tabcmd.paths[index];
                       }
                     }
-                    this.updateRefreshButton(true);
+                    if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
+                      this.updateRefreshButton(true);
+                    }
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
@@ -1560,6 +1571,13 @@
           };
           this.$Modal.fcWarning(data);
         }
+        if (this.itemInfo.webact) { // 兼容半定制界面
+          DispatchEvent('customizeClick', {
+            detail: {
+              type: 'delete'
+            }
+          });
+        }
       },
 
       objectAdd() { // 新增
@@ -1593,27 +1611,8 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 按钮保存操作
-        if (this.itemInfo.webact) {
-          if (this.objectType === 'vertical') {
-            this.determineSaveType(obj);
-            // DispatchEvent('objectSaveClick', {
-            //   detail: {
-            //     a: '刷新'
-            //   }
-            // });
-          } else {
-            this.saveParameters();
-            DispatchEvent('objectSaveClick', {
-              detail: {
-                mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter
-              }
-            });
-          }
-        } else {
-          this.determineSaveType(obj);
-        }
+      objectSave(obj) { // 按钮保存操作               
+        this.determineSaveType(obj);        
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -1926,10 +1925,12 @@
           stop = false;
           removeMessage = false;
           this.saveAfter(type, tableName, stop, removeMessage);
-          if (this.objectType === 'vertical') { // 上下结构半定制界面需要走完主表保存，再走定制界面保存
-            DispatchEvent('objectSaveClick', {
+          if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
+            DispatchEvent('customizeClick', {
               detail: {
-                a: '刷新'
+                type: 'save',
+                mainTableParame: this.currentParameter,
+                itemTableParame: this.itemCurrentParameter
               }
             });
           }
@@ -2036,7 +2037,7 @@
           if (this.saveEventAfter === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             // let message = '';
@@ -2055,7 +2056,7 @@
           } else if (this.saveEventAfter === 'invalid') {
             const promise = new Promise((resolve, reject) => {
               this.getObjectTryInvalid({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, resolve, reject
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
             // let message = '';

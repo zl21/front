@@ -27,6 +27,7 @@ export default () => ({
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
+      instanceId: ({ instanceId }) => instanceId,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {

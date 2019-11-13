@@ -18,6 +18,7 @@
       object-type="vertical"
       :is-main-table="true"
       :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
+      :readonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -76,6 +77,7 @@
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
           obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
+          obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
           obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
@@ -202,7 +204,6 @@
             });
           } else if (refTab.tabrelation === '1:1') {
             this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-            console.log("📖",refTab)
             this.getItemObjForChildTableForm({
               table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
             });

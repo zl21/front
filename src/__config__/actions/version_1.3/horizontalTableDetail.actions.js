@@ -443,10 +443,20 @@ export default {
       reject();
     });
   },
-  getObjTabActionSlientConfirm({ commit }, {
-    params, path, resolve, reject
-  }) { // 获取作废数据
-    network.post(path, params).then((res) => {
+  getObjTabActionSlientConfirm({
+    commit
+  }, {
+    params,
+    path,
+    resolve, reject
+  }) {
+    let actionName = '';
+    if (path.search('/') !== -1) {
+      actionName = path;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -458,4 +468,5 @@ export default {
       reject();
     });
   },
+ 
 };
