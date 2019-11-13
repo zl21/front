@@ -1,6 +1,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
-import { STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME , INSTANCE_ROUTE } from '../../constants/global';
+import { STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
 import store from '../store.config';
 
 const getComponentName = () => {
@@ -12,6 +12,9 @@ export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
     [INSTANCE_ROUTE]: router.currentRoute.fullPath
+  },
+  created() {
+    this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   
   mounted() {

@@ -218,9 +218,6 @@
       };
     },
     watch: {
-      childTableName(val) {
-        console.log(val);
-      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -748,8 +745,8 @@
        
         if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
           if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.readonly) {
-            // obj.item.props.disabled = false;
-            // obj.item.props.readonly = false;
+            obj.item.props.disabled = false;
+            obj.item.props.readonly = false;
           }
         }
 
