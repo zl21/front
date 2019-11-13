@@ -146,7 +146,8 @@ export default {
               if (item.default === '-1') {
                 childTableFixedcolumns[item.colname] = '';
               } else if (item.default !== '-1' && item.default) {
-                childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+                // childTableFixedcolumns[item.colname] = new Date().setNewFormt(new Date().minusDays(item.default).toIsoDateString(), '-', '');
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
               } else {
                 childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
               }

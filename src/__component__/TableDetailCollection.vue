@@ -108,6 +108,20 @@
       @confirmImport="importsuccess"
       @closeDialog="closeImportDialog"
     />
+    <!-- 自定义弹出框 -->
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :isrefrsh="isrefrsh"
+      :dialog-component-name="dialogComponentName"
+      :obj-list="dialogComponentName?objList:[]"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
+      @clearDialogComponentName="clearDialogComponentName"
+    />
   </div>
 </template>
 
@@ -118,7 +132,7 @@
   import { mapState, mapMutations } from 'vuex';
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
-  import { Version } from '../constants/global';
+  import { Version , MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
@@ -128,7 +142,6 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
@@ -152,6 +165,8 @@
     },
     data() {
       return {
+        isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
+        dialogComponentName: null,
         buttonData: [],
         currentPage: 1, // 当前页码
         isRefreshClick: false, // 是否点击了刷新
@@ -276,7 +291,18 @@
       ...mapState('global', {
         // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         // menuLists: ({ menuLists }) => menuLists
+         LinkUrl: ({ LinkUrl }) => LinkUrl,
       }),
+      objList() { // 返回克隆表定制弹框所需数据
+        if (this.type === 'horizontal') { // 横向布局
+          return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        } if (this.type === 'vertical') {
+          if (this.mainFormInfo.formData.data) {
+            return this.mainFormInfo.formData.data.addcolums;
+          }
+        }
+        return [];
+      },
       filterList() {
         return this.columns.filter(
           ele => ele.name !== EXCEPT_COLUMN_NAME && ele.isfilter
@@ -449,9 +475,7 @@
 
     },
     methods: {
-
-      ...mapMutations('global', ['tabHref']),
-      //   ...mapActions('global', ['getMenuLists']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       getEditAbleId(data) {
         this.columnEditElementId = {};
         this.editElementId = [];
@@ -631,8 +655,8 @@
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
         const params = {};
-        const itemName = this.itemInfo.tablename;
-        const { tableName, tableId, itemId } = router.currentRoute.params;
+        // const itemName = this.itemInfo.tablename;
+        const { tableName, itemId } = router.currentRoute.params;
         params[tableName] = {
           ID: itemId
         };
@@ -652,7 +676,7 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          if (this.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
+          if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
             const dom = document.getElementById('hideRefresh');
             const myEvent = new Event('click');
             dom.dispatchEvent(myEvent);
@@ -661,16 +685,120 @@
           this.$loading.hide();
         });
       },
-      
-      objTabActiondDownload(obj) {
-        
+      objTabActiondDownload(tab) {
+        const { itemId } = router.currentRoute.params;
+        const downloadId = itemId;
+        const paths = tab.action.replace('$objid$', downloadId);
+        const eleLink = document.createElement('a');
+        const path = getGateway(`${paths}`);
+        eleLink.setAttribute('href', path);
+        eleLink.style.display = 'none';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
       },
-      objTabActionDialog(obj) {
-        
+      objTabActionDialog(tab) { // 动作定义弹出框
+        this.$refs.dialogRef.open();
+        this.isrefrsh = tab.isrefrsh;
+        this.dialogConfig.title = tab.name;
+        this.dialogConfig.footerHide = true;
+        const url = tab.action;
+        const index = url.lastIndexOf('/');
+        const filePath = url.substring(index + 1, url.length);
+        // Vue.component(filePath, CustomizeModule[filePath].component);
+        this.dialogComponentName = filePath;
+        // }
       },
-      objTabActionNavbar(obj) {
-        
+      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+        if (this.isrefrsh) {
+          const dom = document.getElementById('hideRefresh');
+          const myEvent = new Event('click');
+          dom.dispatchEvent(myEvent);
+        }
       },
+      clearDialogComponentName() {
+        this.dialogComponentName = null;
+      },
+      objTabActionNavbar(tab) {
+        if (tab.action) {
+          const { itemId } = router.currentRoute.params;
+          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          if (actionType === 'SYSTEM') {
+            if (singleEditType === ':itemId') {
+              const path = `/${tab.action.replace(/:itemId/, itemId)}`;
+              router.push(
+                path
+              );
+            } else {
+              const path = `/${tab.action}`;
+              router.push(
+                path
+              );
+            }
+          } else if (actionType === 'https:' || actionType === 'http:') {
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.name });
+            const linkUrl = tab.action;
+            const linkId = tab.webid;
+            if (!this.LinkUrl[linkId]) {
+              this.increaseLinkUrl({ linkId, linkUrl });
+            }
+            const obj = {
+              linkName: tab.webname,
+              linkId: tab.webid,
+              linkUrl,
+              linkLabel: tab.name
+            };
+            window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const type = 'tableDetailUrl';
+            this.tabOpen({
+              type,
+              linkName: tab.webname,
+              linkId: tab.webid
+            });
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.name });
+            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            const obj = {
+              customizedName: name,
+              customizedLabel: tab.name
+            };
+            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            router.push(
+              path
+            );
+          } 
+        }
+
+
+        // // 判断跳转到哪个页面
+        // const url = tab.action;
+        // const index = url.lastIndexOf('/');
+        // const customizedModuleName = url.substring(index + 1, url.length);
+        // const label = tab.webdesc;
+        // const type = 'tableDetailAction';
+        // const name = Object.keys(this.keepAliveLabelMaps);
+        // let customizedModuleId = '';
+        // name.forEach((item) => {
+        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+        //     customizedModuleId = item.split(/\./)[2];
+        //   }
+        // });
+        // // if (tab.actiontype === 'url') {
+        // //   this.objTabActionUrl(tab);
+        // // } else
+        // if (tab.action) {
+        //   this.tabOpen({
+        //     type,
+        //     customizedModuleName,
+        //     customizedModuleId,
+        //     label
+        //   });
+        // }
+      }, 
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
