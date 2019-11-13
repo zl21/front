@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+               >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -369,15 +369,26 @@
             }
           });
         }
-
-        // if (this.tabwebact && this.tabwebact.objtabbutton) {
-        // }
-        // buttonGroupShow.concat(this.tabwebact.objtabbutton);
-        
-        const a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        let a = '';
+        if (this.tabwebact && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
+          const buttonArray = buttonGroupShow.concat(this.tabwebact.objtabbutton);
+          const newButtonArray = buttonArray.map((item) => {
+            const objs = Object.keys(item).reduce((newData, key) => {
+              if (newData.webdesc) {
+                newData.name = newData.webdesc;
+                delete (newData.webdesc);
+              }
+              newData.eName = newData.vuedisplay;
+              newData[key] = item[key];
+              return newData;
+            }, {});
+            return objs;
+          });
+          a = JSON.stringify(newButtonArray);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        } else {
+          a = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        }
         const b = JSON.parse(a);
-        // console.log('🍓', b);
-
         return b;
       },
       isMainTableReadonly() {
@@ -548,6 +559,7 @@
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
           break;
+        
         default:
           break;
         }
