@@ -1,3 +1,5 @@
+import { DispatchEvent } from '../__utils__/dispatchEvent';
+
 // 撤销/结束/详情
 function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
@@ -7,17 +9,14 @@ function mutipleOperate(url, instanceId, buttons, id) {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
       buttons(id).then(() => {
-        const children = document.getElementsByClassName('R3-button-group')[0].children;
-        for (const child of children) {
-          if (child.getAttribute('id') === 'refresh') {
-            const myEvent = new Event('click');
-            child.dispatchEvent(myEvent);
-
-            const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
-            const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
-            window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
+        DispatchEvent('jflowClick', {
+          detail: {
+            type: 'refresh'
           }
-        }
+        });
+        const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
+        const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       });
     } else {
       window.vm.$Message.warning(res.data.resultMsg);
@@ -28,13 +27,11 @@ function mutipleOperate(url, instanceId, buttons, id) {
 // 重启流程
 function restartProcess() {
   // 通过模拟点击一下actionSUBMIT按钮重新发起流程
-  const children = document.getElementsByClassName('R3-button-group')[0].children;
-  for (const child of children) {
-    if (child.getAttribute('id') === 'actionSUBMIT') {
-      const myEvent = new Event('click');
-      child.dispatchEvent(myEvent);
+  DispatchEvent('jflowClick', {
+    detail: {
+      type: 'submit'
     }
-  }
+  });
 }
 
 let jflowbuttons = [];
@@ -57,13 +54,11 @@ function clickFunction(e) {
 
   if (e.detail.obj.button === 'fresh') {
     buttons(id).then(() => {
-      const children = document.getElementsByClassName('R3-button-group')[0].children;
-      for (const child of children) {
-        if (child.getAttribute('id') === 'refresh') {
-          const myEvent = new Event('click');
-          child.dispatchEvent(myEvent);
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'refresh'
         }
-      }
+      });
     });
     return; 
   }

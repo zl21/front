@@ -4,7 +4,7 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-return-await */
 import Vue from 'vue';
-
+import { DispatchEvent } from '../__utils__/dispatchEvent';
 import { Version } from '../constants/global';
 import CreateButton from './button';
 import todoList from './todoList';
@@ -295,13 +295,11 @@ async function jflowsave(flag, request) {
           jflowButtons(router.currentRoute.params.itemId);
 
           // 流程发起成功刷新界面
-          const children = document.getElementsByClassName('R3-button-group')[0].children;
-          for (const child of children) {
-            if (child.getAttribute('id') === 'refresh') {
-              const myEvent = new Event('click');
-              child.dispatchEvent(myEvent);
+          DispatchEvent('jflowClick', {
+            detail: {
+              type: 'refresh'
             }
-          }
+          });
         }
         reject(response);
       } else {

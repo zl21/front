@@ -1151,8 +1151,8 @@
                     }
                   } else {
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      this.updateRefreshButton(true);
+                    }
                     this.dataArray.refresh = this.refreshButtons;
                   }
                 });
@@ -1204,8 +1204,8 @@
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
-                        this.updateRefreshButton(true);
-                      }
+                      this.updateRefreshButton(true);
+                    }
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
@@ -2134,6 +2134,34 @@
       // }
     },  
     mounted() {
+      if (!this._inactive) {
+        window.addEventListener('jflowClick', (event) => {
+          if (event.detail.type === 'submit') {
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTrySubmit({
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+              });
+            });
+            promise.then(() => {
+                           const message = this.buttonsData.submitData.message;
+                           if (message) {
+                             this.upData(`${message}`);
+                           } else {
+                             this.upData();
+                           }
+                         },
+                         () => { // 状态为rejected时执行
+                           this.upData();
+                           this.saveEventAfter = '';
+                         });
+          }
+
+          if (event.detail.type === 'refresh') {
+            this.clickButtonsRefresh();
+          }
+        }, false);
+      }
+       
       // this.dataArray.refresh = this.refreshButtons;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局
