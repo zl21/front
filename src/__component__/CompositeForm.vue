@@ -619,8 +619,9 @@
                 const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
                 const LinkageFormInput = LinkageForm[current.refcolval.srccol];
                 if (!refcolval) {
-                  if (LinkageFormInput) {
+                  if (LinkageFormInput && LinkageFormInput.item.show) {
                     this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+
                     const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
                     if (LinkageFormfocus) {
                       LinkageFormfocus.focus();
@@ -647,6 +648,18 @@
                       range: $this.pageSize
                     };
                   }
+                } else {
+                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+
+                  searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    fixedcolumns: {
+                      [current.refcolval.fixcolumn]: query
+                    },
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
                 }
               } else {
                 searchObject = {
@@ -705,9 +718,11 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
+              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+              const LinkageFormInput = LinkageForm[current.refcolval.srccol];
 
               let searchObject = {};
-              if (current.refcolval && current.refcolval.srccol) {
+              if (current.refcolval && current.refcolval.srccol && LinkageFormInput && LinkageFormInput.item.show) {
                 const refcolval = this.refcolvalAll[current.refcolval.srccol]
                   ? this.refcolvalAll[current.refcolval.srccol]
                   : '';
@@ -753,6 +768,7 @@
         this.LinkageForm.push({
           key: obj.item.field,
           name: obj.item.title,
+          show: obj.show,
           srccol: obj.item.validate.refcolval && obj.item.validate.refcolval.srccol,
         });
          
@@ -1356,8 +1372,9 @@
                 }
                 const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
                 const LinkageFormInput = LinkageForm[currentThat.refcolval.srccol];
+
                 if (!refcolval) {
-                  if (LinkageFormInput) {
+                  if (LinkageFormInput && LinkageFormInput.item.show) {
                     this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
                     const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
                     if (LinkageFormfocus) {

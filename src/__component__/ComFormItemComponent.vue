@@ -616,6 +616,9 @@
         const data = {
           ASSIGN
         };
+        if (!conf.url) {
+          return false;
+        }
         fkHttpRequest().equalformRequest({
           url: conf.url,
           searchObject: data,
@@ -623,6 +626,7 @@
             window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
           }
         });
+        return true;
       },
       resetForm() {
         // 重置表单
