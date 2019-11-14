@@ -32,6 +32,9 @@
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
+
   export default {
     name: 'FormItemComponent',
     computed: {
@@ -595,6 +598,31 @@
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
+        //  change 值 走后台接口赋值
+        if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          console.log(current.item.props.webconf.formRequest);
+          this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+        }
+      },
+      formRequest(obj, current, conf) {
+        // 走后台接口
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const refcolumn = conf.refcolumn.split(',');
+        const ASSIGN = refcolumn.reduce((arr, item) => {
+          arr[item] = jsonArr[item] || '';
+          return arr;
+        }, {});
+        //          ID: obj[current.field] || obj[current.inputname],
+        const data = {
+          ASSIGN
+        };
+        fkHttpRequest().equalformRequest({
+          url: conf.url,
+          searchObject: data,
+          success: (res) => {
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+          }
+        });
       },
       resetForm() {
         // 重置表单
@@ -624,7 +652,6 @@
               // this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
               // this.newFormItemLists[index].item.value = '';
-              console.log(1);
             }
           }
         }
@@ -753,8 +780,11 @@
 
               if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
+                // 添加小组件的字段配置
+                this.newFormItemLists[index].item.props.showCol = true;
               } else {
                 this.newFormItemLists[index].show = false;
+                this.newFormItemLists[index].item.props.showCol = false;
               }
               if (items.props.webconf && items.props.webconf.clearWhenHidden) {
                 //   清除页面 联动的值

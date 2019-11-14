@@ -15,6 +15,7 @@
       >
         <Panel
           :key="index"
+          class="Rburgeon-collapse-content-box"
           :is-title-show="item.isTitleShow"
           title-type="center"
           :name="item.hrdisplay ==='expand' ? 'expand' :'false'"
@@ -510,7 +511,7 @@
           field: current.colname,
           value: this.defaultValue(current),
           inputname: current.inputname,
-          props: { ...current },
+          props: { ...current, showCol: obj.show },
           event: {
             keydown: (event) => {
               // 输入框的keydown event, $this
@@ -625,22 +626,28 @@
                       LinkageFormfocus.focus();
                       return false;
                     }
-                  } else {
-                    this.$Message.info('请先选择关联的表');
-                  }
-                  return false;
-                }
-                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                    const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
 
-                searchObject = {
-                  isdroplistsearch: true,
-                  refcolid: current.colid,
-                  fixedcolumns: {
-                    [current.refcolval.fixcolumn]: query
-                  },
-                  startindex: 0,
-                  range: $this.pageSize
-                };
+                    searchObject = {
+                      isdroplistsearch: true,
+                      refcolid: current.colid,
+                      fixedcolumns: {
+                        [current.refcolval.fixcolumn]: query
+                      },
+                      startindex: 0,
+                      range: $this.pageSize
+                    };
+                  } else {
+                    // this.$Message.info('请先选择关联的表');
+                    // return true;
+                    searchObject = {
+                      isdroplistsearch: true,
+                      refcolid: current.colid,
+                      startindex: 0,
+                      range: $this.pageSize
+                    };
+                  }
+                }
               } else {
                 searchObject = {
                   isdroplistsearch: true,
@@ -736,7 +743,7 @@
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
        
-        if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+        if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
           if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.readonly) {
             obj.item.props.disabled = false;
             obj.item.props.readonly = false;
@@ -1135,7 +1142,7 @@
 
 
         // 前端自定义标记
-        if (current.webconf) {
+        if (current.webconf && this.conditiontype !== 'list') {
           const webconf = current.webconf;
           // 读写规则
           if (webconf.display === 'enumerate') {
@@ -1358,7 +1365,8 @@
                       return false;
                     }
                   } else {
-                    this.$Message.info('请先选择关联的表');
+                    // this.$Message.info('请先选择关联的表');
+                    return true;
                   }
                   return false;
                 }
@@ -1491,7 +1499,7 @@
         }
         if ((item.props.readonly === true && item.props.fkdisplay) || (this.objreadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
-          if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+          if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
             return false;
           }
           if (
@@ -1776,6 +1784,9 @@
   background: #f8f7f7;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+}
+.Rburgeon-collapse-content-box .burgeon-collapse-content > .burgeon-collapse-content-box{
+   padding-top: 8px!important;
 }
 .burgeon-collapse {
   margin-bottom: 10px;
