@@ -31,7 +31,6 @@
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
           class="pop-formPanel"
-          :condition="Condition"
           type=""
           @formChange="formChange"
         />
