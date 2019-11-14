@@ -99,7 +99,7 @@ export default {
     item, obj, resolve, reject 
   }) {
     let actionName = '';
-    if (item.action.search('/') !== -1) {
+    if (item.action.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
       actionName = item.action;
     } else {
       actionName = '';

@@ -204,7 +204,6 @@
             });
           } else if (refTab.tabrelation === '1:1') {
             this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-            console.log("📖",refTab)
             this.getItemObjForChildTableForm({
               table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
             });

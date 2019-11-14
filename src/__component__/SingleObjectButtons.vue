@@ -486,9 +486,9 @@
         if (this.itemInfo.webact) { // 兼容半定制界面
           const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
           if (webactType !== 'order') {
-            DispatchEvent('clickButtonsRefresh', {
+            DispatchEvent('customizeClick', {
               detail: {
-                a: '刷新'
+                type: 'refresh'
               }
             });
             this.upData();
@@ -1571,6 +1571,13 @@
           };
           this.$Modal.fcWarning(data);
         }
+        if (this.itemInfo.webact) { // 兼容半定制界面
+          DispatchEvent('customizeClick', {
+            detail: {
+              type: 'delete'
+            }
+          });
+        }
       },
 
       objectAdd() { // 新增
@@ -1604,27 +1611,8 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 按钮保存操作
-        if (this.itemInfo.webact) {
-          if (this.objectType === 'vertical') {
-            this.determineSaveType(obj);
-            // DispatchEvent('objectSaveClick', {
-            //   detail: {
-            //     a: '刷新'
-            //   }
-            // });
-          } else {
-            this.saveParameters();
-            DispatchEvent('objectSaveClick', {
-              detail: {
-                mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter
-              }
-            });
-          }
-        } else {
-          this.determineSaveType(obj);
-        }
+      objectSave(obj) { // 按钮保存操作               
+        this.determineSaveType(obj);        
       },
       determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
@@ -1937,10 +1925,12 @@
           stop = false;
           removeMessage = false;
           this.saveAfter(type, tableName, stop, removeMessage);
-          if (this.objectType === 'vertical') { // 上下结构半定制界面需要走完主表保存，再走定制界面保存
-            DispatchEvent('objectSaveClick', {
+          if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
+            DispatchEvent('customizeClick', {
               detail: {
-                a: '刷新'
+                type: 'save',
+                mainTableParame: this.currentParameter,
+                itemTableParame: this.itemCurrentParameter
               }
             });
           }

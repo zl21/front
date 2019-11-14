@@ -82,6 +82,13 @@
         v-text="refresh"
       />
       <Button
+        id="hideRefresh"
+        class="hide"
+        type="fcdefault"
+        @click="btnclick('refresh')"
+        v-text="refresh"
+      />
+      <Button
         v-if="dataArray.back"
         id="back"
         type="fcdefault"
@@ -331,6 +338,7 @@
 <style lang="less" scope>
 .R3-buttonList {
   padding: 8px 0px;
+  
   > div {
     display: inline-block;
   }
@@ -341,6 +349,9 @@
     text-align: right;
     overflow: hidden;
     flex-wrap: wrap;
+    .hide{
+      display:none;
+    }
     .burgeon-select-dropdown {
       .burgeon-dropdown-menu {
         min-width: 58px;
