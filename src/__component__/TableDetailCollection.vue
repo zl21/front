@@ -133,7 +133,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -144,6 +144,8 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import ChineseDictionary from '../assets/js/ChineseDictionary';
+
 
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
@@ -477,6 +479,9 @@
       }
 
     },
+    created() {
+      this.ChineseDictionary = ChineseDictionary;
+    },
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       getEditAbleId(data) {
@@ -575,6 +580,66 @@
         return total;
       },
       buttonClick(obj) {
+        if (obj.confirm) {
+          // 有提示
+          if (obj.confirm.indexOf('{') >= 0) {
+            if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (
+                JSON.parse(obj.confirm).isradio
+                && this.tableRowSelectedIds.length !== 1
+              ) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                this.dialogMessage(title, contentText, obj);
+              } else if (JSON.parse(obj.confirm).desc) {
+                const title = this.ChineseDictionary.WARNING;
+                const content = `${JSON.parse(obj.confirm).desc}`;
+                let contentText = '';
+                const confirm = JSON.parse(obj.confirm);
+                if (content.indexOf('{isselect}') !== '-1') {
+                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                } else {
+                  contentText = `${JSON.parse(obj.confirm).desc}`;
+                }
+                this.dialogMessage(title, contentText, obj);
+              } else {
+                this.buttonEvent(obj);
+              }
+            }
+          } else {
+            const title = this.ChineseDictionary.WARNING;
+            const contentText = `${obj.confirm}`;
+            this.dialogMessage(title, contentText, obj);
+          }
+        } else {
+          this.buttonEvent(obj);
+        }
+      },
+      dialogMessage(title, contentText, obj) {
+        const data = {
+          mask: true,
+          title,
+          content: contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+      },
+      errorconfirmDialog(obj) {
+        this.buttonEvent(obj);
+      },
+      buttonEvent(obj) {
         switch (obj.eName) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
@@ -602,10 +667,8 @@
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
-        const self = this;
-        // tab.confirm = true
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        if (!tab) tab = self.activeTabAction;
+        if (!tab) tab = this.activeTabAction;
         if (tab.confirm) {
           if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
             const data = {
@@ -622,7 +685,6 @@
             //            判断是否先执行保存
             if (JSON.parse(tab.confirm).isSave) {
               console.log('暂时未处理配置isSave的相关逻辑');
-              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
             } else {
               const data = {
                 title: '警告',
@@ -635,24 +697,16 @@
               };
               this.$Modal.fcWarning(data);
             }
-            // self.confirmTips({
-            //   action: 'confirm',
-            //   title: tab.webdesc,
-            //   type: 'warning',
-            //   list: [],
-            //   isAction: true,
-            //   desc: JSON.parse(tab.confirm).desc,
-            // });
             // 清除提示信息
           } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-            self.beforeObjectSubmit(() => {
-              self.objTabActionSlientConfirm(tab);
+            this.beforeObjectSubmit(() => {
+              this.objTabActionSlientConfirm(tab);
             });
           } else { // 静默直接执行
-            self.objTabActionSlientConfirm(tab);
+            this.objTabActionSlientConfirm(tab);
           }
         } else {
-          self.objTabActionSlientConfirm(tab);
+          this.objTabActionSlientConfirm(tab);
         }
       },
       // 动作定义静默执行
@@ -689,8 +743,7 @@
         });
       },
       objTabActiondDownload(tab) {
-        const { itemId } = router.currentRoute.params;
-        const downloadId = itemId;
+        const downloadId = this.tableRowSelectedIds.map(item => item.ID).toString();
         const paths = tab.action.replace('$objid$', downloadId);
         const eleLink = document.createElement('a');
         const path = getGateway(`${paths}`);

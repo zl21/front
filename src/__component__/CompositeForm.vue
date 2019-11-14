@@ -214,6 +214,7 @@
         show: true,
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
+        LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
       };
     },
@@ -376,7 +377,6 @@
         this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const key = mappStatus[Object.keys(data)[0]];
-        // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
         if (!document.querySelector(`#${key}`)) {
           return false;
         }
@@ -529,13 +529,6 @@
             },
             clear: () => {
               this.getStateData(); // 获取主表信息
-              // Object.keys(mappStatus).forEach((item) => {
-              //   const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
-              //   const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
-              //   if (LinkageFormInput) {
-              //     // LinkageFormInput.click();
-              //   }
-              // });
             },
             change: (value) => {
               if (current.fkdisplay) {
@@ -749,6 +742,13 @@
             obj.item.props.readonly = false;
           }
         }
+        // 获取全部
+        this.LinkageForm.push({
+          key: obj.item.field,
+          name: obj.item.title,
+          srccol: obj.item.validate.refcolval && obj.item.validate.refcolval.srccol,
+        });
+         
 
         return obj;
       },
@@ -1696,6 +1696,17 @@
     },
     mounted() {
       this.Comparison();
+      setTimeout(() => {
+        if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+          if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            const data = {
+              formList: this.LinkageForm,
+              formIndex: this.formIndex
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+          }  
+        }
+      }, 500);
       if (this.$el) {
         this.setdefaultColumnCol();
       }
@@ -1712,6 +1723,7 @@
       if (this.type === 'PanelForm') {
         return false;
       }
+      
       // if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`]) {
       //   console.log(this);
 
@@ -1721,10 +1733,25 @@
       //   };
       //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`, data);
       // }  
+      
+     
+      return true;
     },
     created() {
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
+      window.eventType = function eventType(name, docm, obj) {
+        const event = document.createEvent('HTMLEvents');
+        // initEvent接受3个参数：
+        // 事件类型，是否冒泡，是否阻止浏览器的默认行为
+        // 初始化新创建的 Event
+        // 触发document上绑定的click事件
+        event.initEvent(name, false, true);
+        if (docm) {
+          event.value = obj;
+          docm.dispatchEvent(event);
+        }
+      };
     },
     deactivated() {
       // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
