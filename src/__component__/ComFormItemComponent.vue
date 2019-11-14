@@ -691,6 +691,11 @@
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
+          if (item.oldProps.required) {
+            item.required = true;
+          } else {
+            item.required = false;
+          }
         }
         return true;
       },
