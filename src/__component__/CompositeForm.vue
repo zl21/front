@@ -719,7 +719,10 @@
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
               const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-              const LinkageFormInput = LinkageForm[current.refcolval.srccol];
+              let LinkageFormInput = '';
+              if (current.refcolval && current.refcolval.srccol) {
+                LinkageFormInput = LinkageForm[current.refcolval.srccol];
+              }
 
               let searchObject = {};
               if (current.refcolval && current.refcolval.srccol && LinkageFormInput && LinkageFormInput.item.show) {

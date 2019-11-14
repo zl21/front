@@ -790,6 +790,23 @@
                 this.newFormItemLists[index].show = false;
                 this.newFormItemLists[index].item.props.showCol = false;
               }
+              if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                  const data = {
+                    formList: [
+                      { 
+                        key: items.field,
+                        name: items.title,
+                        show: this.newFormItemLists[index].show,
+                        srccol: items.validate.refcolval && items.validate.refcolval.srccol,
+
+                      }
+                    ],
+                    formIndex: ''
+                  };
+                  this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+                }  
+              }
               if (items.props.webconf && items.props.webconf.clearWhenHidden) {
                 //   清除页面 联动的值
                 this.newFormItemLists[index].item.value = '';
