@@ -275,7 +275,7 @@
                     },
                     on: {
                       click: () => {
-                        window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`, '_blank', 'width=800,height=800');
+                        window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`, '_blank', 'width=861,height=612');
                       }
                     }
                   },
