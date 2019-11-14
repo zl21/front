@@ -343,9 +343,10 @@
   import Docfile from './docfile/DocFileComponent';
 
 
-  import { Version } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1432,6 +1433,17 @@
     },
     created() {
     // console.log(this.type,this.formIndex);
+    },
+    mounted() {
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        if (this._items.field === e.value.field) {
+          if (e.value.value === '') {
+            if (this.$refs[e.value.field]) {
+              this.$refs[e.value.field].handleClear();
+            }
+          }
+        }
+      });
     }
   };
 </script>
