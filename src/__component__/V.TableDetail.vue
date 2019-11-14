@@ -166,9 +166,9 @@
         }
         let webactType = '';
         if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
-          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
+          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
         }
-        if (webactType !== 'order') {
+        if (webactType !== 'ALL') {
           this.updateTabCurrentIndex(index);
           const { itemId } = this.$route.params;
           const refTab = this.tabPanel[index];

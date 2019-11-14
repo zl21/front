@@ -132,7 +132,9 @@
   import { mapState, mapMutations } from 'vuex';
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
-  import { Version , MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, } from '../constants/global';
+  import {
+    Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+  } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
@@ -142,6 +144,7 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
@@ -291,7 +294,7 @@
       ...mapState('global', {
         // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         // menuLists: ({ menuLists }) => menuLists
-         LinkUrl: ({ LinkUrl }) => LinkUrl,
+        LinkUrl: ({ LinkUrl }) => LinkUrl,
       }),
       objList() { // 返回克隆表定制弹框所需数据
         if (this.type === 'horizontal') { // 横向布局
@@ -721,11 +724,19 @@
       },
       objTabActionNavbar(tab) {
         if (tab.action) {
-          const { itemId } = router.currentRoute.params;
+          // const { itemId } = router.currentRoute.params;
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
           const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
+              if (this.tableRowSelectedIds.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.tableRowSelectedIds.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
               const path = `/${tab.action.replace(/:itemId/, itemId)}`;
               router.push(
                 path
