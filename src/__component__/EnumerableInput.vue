@@ -41,7 +41,12 @@
 </template>
 
 <script>
-  import { VERTICAL_TABLE_DETAIL_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../constants/global';
+  import {
+    VERTICAL_TABLE_DETAIL_PREFIX,
+    HORIZONTAL_TABLE_DETAIL_PREFIX,
+    MODULE_COMPONENT_NAME,
+    INSTANCE_ROUTE
+  } from '../constants/global';
   import enumerableForColumn from '../constants/enumerateInputForColumn';
   import enumerableForTable from '../constants/enumerateInputForTable';
   
@@ -132,10 +137,18 @@
         this.fixPosition();
       },
       toggleDropdownShow() {
+        const modalDom = this.findDomByClass(this.$refs.enumerableInput, 'burgeon-modal-content-drag');
+        if (modalDom && modalDom.style.transform) {
+          modalDom.style.transform = 'unset';
+          modalDom.style.top = `${(document.body.clientHeight - modalDom.offsetHeight) / 2}px`;
+        }
         if (!this.disabled) {
           this.dropdownShow = !this.dropdownShow;
           this.fixPosition();
         }
+        setTimeout(() => {
+          this.fixPosition();
+        }, 100);
       },
       pickAll() {
         if (this.isDefault) { return; }
@@ -151,6 +164,12 @@
       hasPickedAll() {
         // 基于当前选中值判断是否处理全选状态。
         return !this.enumerableLists.some((d, i) => !this.itemPicked[i]);
+      },
+      findDomByClass(dom, className) {
+        if (dom.offsetParent && dom.offsetParent.classList.toString().indexOf(className) === -1) {
+          return this.findDomByClass(dom.offsetParent, className);
+        }
+        return dom.offsetParent;
       }
     },
     computed: {
@@ -159,7 +178,10 @@
         if (this[INSTANCE_ROUTE].indexOf(VERTICAL_TABLE_DETAIL_PREFIX) > -1) {
           return this.$store.state[this[MODULE_COMPONENT_NAME]].mainFormInfo.formData.data.isdefault;
         }
-        return this.$store.state[this[MODULE_COMPONENT_NAME]].copyDataForReadOnly.isdefault;
+        if (this[INSTANCE_ROUTE].indexOf(HORIZONTAL_TABLE_DETAIL_PREFIX) > -1) {
+          return this.$store.state[this[MODULE_COMPONENT_NAME]].copyDataForReadOnly.isdefault;
+        }
+        return false;
       }
     },
     created() {
@@ -175,6 +197,7 @@
       }
     },
     mounted() {
+      this.$refs.enumerableInput.instance = this;
       this.computeValue();
       if (this.defaultValue !== undefined) {
         this.value = this.defaultValue;
