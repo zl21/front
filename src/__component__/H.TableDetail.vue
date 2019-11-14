@@ -60,9 +60,9 @@
             }
             let webactType = '';
             if (obj.webact) { // 自定义tab全定制，tab切换时不需要请求
-              webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/'));
+              webactType = obj.webact.substring(0, obj.webact.lastIndexOf('/')).toUpperCase();
             }
-            if (webactType === 'order') { // 如果是自定义tab全定制界面时，不需要引入公共组件
+            if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件
               this.updateButtonsDataForCustomization({ tabIndex: index, isShowValue: false });
               // obj.componentAttribute.buttonsData.isShow = false;
             }

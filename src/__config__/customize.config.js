@@ -15,7 +15,7 @@ import standard from '../__customize__/colorSize/Standard.vue';
 export default {
   functionPermission: {
     component: functionPermission,
-    labelName: '采购单编辑'
+    labelName: '功能权限'
   },
   pro_desc: {
     component: proDesc,
