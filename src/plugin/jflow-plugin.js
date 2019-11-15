@@ -281,7 +281,7 @@ async function jflowsave(flag, request) {
         return;
       }
       if (res.data.resultCode === 0) {
-        if (response.objids) {
+        if (res.objids) {
           window.vm.$Modal.fcWarning({
             title: '提示',
             content: '请稍等,正在审批······',
@@ -290,10 +290,9 @@ async function jflowsave(flag, request) {
         }
         instanceId = res.data.data.instanceId;
 
-          
-        if (document.getElementsByClassName('R3-button-group')[0]) {
+        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
+        if (type === 'H' || type === 'V') {
           jflowButtons(router.currentRoute.params.itemId);
-
           // 流程发起成功刷新界面
           DispatchEvent('jflowClick', {
             detail: {
@@ -301,6 +300,12 @@ async function jflowsave(flag, request) {
             }
           });
         }
+
+        DispatchEvent('jflowEvent', {
+          detail: {
+            type: 'search'
+          }
+        });
         reject(response);
       } else {
         resolve();
