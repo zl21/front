@@ -82,7 +82,7 @@
       }, // 设置标题是否居中 // center left
       width: {
         type: Number,
-        default: () => 900
+        default: () => 940
       }, // 设置标题是否居中 // center left
     },
     created() {
