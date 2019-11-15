@@ -679,20 +679,19 @@
       webactionClick(obj) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
+          let selete = [];
+          if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
+            selete = this.updateData[this.itemName].delete[this.itemName];
+          }
           if (obj.confirm.indexOf('{') >= 0) {
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length === 0) {
+              if (selete && selete.length === 0) {
                 const title = this.ChineseDictionary.WARNING;
-                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                const data = {
-                  mask: true,
-                  title,
-                  content: contentText
-                };
-                this.$Modal.fcWarning(data);
+                const contentText = `${JSON.parse(obj.confirm).desc}`;
+                this.dialogMessage(title, contentText, obj);
               } else if (
                 JSON.parse(obj.confirm).isradio
-                && this.updateData[this.itemName].delete[this.itemName].length !== 1
+                && selete.length !== 1
               ) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
@@ -708,7 +707,7 @@
                 let contentText = '';
                 const confirm = JSON.parse(obj.confirm);
                 if (content.indexOf('{isselect}') !== '-1') {
-                  contentText = `${confirm.desc.replace('{isselect}', this.updateData[this.itemName].delete[this.itemName].length)}`;
+                  contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
                 }
