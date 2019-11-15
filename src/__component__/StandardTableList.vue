@@ -1,18 +1,6 @@
 
 <!--suppress ALL -->
 <template>
-  <!-- <div class="StandardTableList"> -->
-  <!-- <div class="tree">
-      <Input
-        search
-        placeholder="请输入机构编号或名称"
-      />
-      <my-tree
-        :list="list"
-        :search="search"
-        @getItemData="getItemData"
-      />
-    </div> -->
   <div class="StandardTableListRootDiv">
     <ButtonGroup
       :data-array="buttons.dataArray"
@@ -114,7 +102,6 @@
   import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
-  import myTree from './Tree/Tree';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import {
@@ -139,7 +126,6 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
-      myTree
     },
     data() {
       return {

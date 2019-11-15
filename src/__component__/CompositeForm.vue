@@ -806,7 +806,12 @@
           return false;
         }
         let sendData = {};
-        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+        let LinkageFormInput = '';
+        if (current.refcolval && current.refcolval.srccol) {
+          LinkageFormInput = LinkageForm[current.refcolval.srccol];
+        }
+        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
             : '';

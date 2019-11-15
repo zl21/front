@@ -600,8 +600,9 @@
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          console.log(current.item.props.webconf.formRequest);
-          this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+          if(obj[current.item.field] || obj[current.item.field] === ''){
+            this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+          }
         }
       },
       formRequest(obj, current, conf) {
