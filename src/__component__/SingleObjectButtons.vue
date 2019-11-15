@@ -1004,7 +1004,9 @@
               };
             }
           } else { // 没有子表
-            // params.ID = this.itemId;
+            obj[this.tableName] = {
+              ID: this.itemId
+            };
           }
         } else if (this.subtables()) { // 有子表   左右结构
           if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
