@@ -1004,7 +1004,7 @@
               };
             }
           } else { // 没有子表
-            obj[this.tableName] = {
+            obj= {
               ID: this.itemId
             };
           }
