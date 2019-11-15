@@ -126,6 +126,31 @@
         this.showModal = false;
       },
     },
+    watch: {
+      defaultData: {
+        handler(val) {
+          this.rows = this.ctrlOptions.rows || this.rows;
+          if (Object.prototype.toString.call(val) === '[object String]' && val !== '') {
+            try {
+              this.transformedData = JSON.parse(val);
+            } catch (e) {
+              throw e;
+            }
+          } else {
+            this.transformedData = val || {};
+          }
+          if (val === '') {
+            this.currentValue = '';
+          } else {
+            this.currentValue = JSON.stringify(this.transformedData, null, 2);
+          }
+          setTimeout(() => {
+            this.setFormatedValue();
+          }, 10);
+        },
+        deep: true
+      },
+    },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
       if (Object.prototype.toString.call(this.defaultData) === '[object String]' && this.defaultData !== '') {

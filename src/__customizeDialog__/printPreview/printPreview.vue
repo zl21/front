@@ -10,13 +10,13 @@
 <script>
   import { mapState } from 'vuex';
   import router from '../../__config__/router.config';
-  import getComponentName from '../../__utils__/getModuleName';
   import { MODULE_COMPONENT_NAME } from '../../constants/global';
   import network from '../../__utils__/network';
 
   export default {
     name: 'PrintPreview',
-    provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
+    inject: [MODULE_COMPONENT_NAME],
+
     data() {
       return {
         src: ''
@@ -58,7 +58,7 @@
       const { tableName } = router.currentRoute.params;// 明细ID
       let printIds = [];
 
-      if (getComponentName()[0] === 'S') {
+      if (this[MODULE_COMPONENT_NAME][0] === 'S') {
         printIds = this.idArray;
       } else {
         printIds = this.itemId;
@@ -71,9 +71,6 @@
       // }).catch(() => {
       //   this.$emit('closeActionDialog', false); // 关闭弹框
       // });
-    },
-    created() {
-      this[MODULE_COMPONENT_NAME] = getComponentName();
     },
     destroyed() {
       this.$emit('clearSelectIdArray');
