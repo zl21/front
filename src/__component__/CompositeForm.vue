@@ -705,10 +705,28 @@
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
                     if (item.value[0].ID === '' || item.value[0].ID === undefined) {
-                      Fitem[index].item.props.defaultSelected = [];
+                      Fitem[index].item.props.defaultSelected = [{
+                        label: '',
+                        ID: ''
+                      }];
+                      Fitem[index].item.value = [{
+                        label: '',
+                        ID: ''
+                      }];
+                      this.formData[Fitem[index].item.field] = '';
                     }
                   } else {
-                    Fitem[index].item.props.defaultSelected = [];
+                    Fitem[index].item.props.defaultSelected = [
+                      {
+                        label: '',
+                        ID: ''
+                      }
+                    ];
+                    Fitem[index].item.value = [{
+                        label: '',
+                        ID: ''
+                      }];
+                    this.formData[Fitem[index].item.field] = '';
                   }
                 }
               }
@@ -806,6 +824,8 @@
           return false;
         }
         let sendData = {};
+        this.getStateData();
+
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
         let LinkageFormInput = '';
 
@@ -819,9 +839,19 @@
           if (this.formData[current.refcolval.srccol] === undefined) {
             refcolval = this.defaultFormData[current.refcolval.srccol];
           }
+          console.log(refcolval, this.formData, 'refcolval');
           if (!refcolval) {
-            this.$Message.info('请选择关联表字段');
-            return false;
+            if (LinkageFormInput && LinkageFormInput.item.show) {
+              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+             
+              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+              if (LinkageFormfocus) {
+                LinkageFormfocus.focus();
+                return false;
+              }
+
+              return false;
+            } 
           }
           const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
           sendData = {
