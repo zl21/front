@@ -4,7 +4,7 @@
       search
       placeholder="请输入机构编号或名称"
     />
-    <!-- <StandardTableList /> -->
+    <StandardTableList />
   </div>
 </template>
 <script>

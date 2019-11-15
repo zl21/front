@@ -979,32 +979,40 @@
       objTabActionSlientConfirm(tab) {
         let obj = {};
         let ids = [];
+        let deleteData = [];
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          deleteData = this.updateData[this.itemName].delete[this.itemName];
           ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
         }
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
           if (this.subtables()) { // 有子表
-            if (this.itemName === this.tableName) { // 主表静默逻辑
-              if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-                obj[this.itemName] = {
-                  ...childTableParams[this.itemName]
-                };
-              }
-            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
-              obj = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
-            } else { // 有表格
-              obj = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
-            }
+            // this.itemName当前子表表名
+            // if (!this.itemName) { // 主表静默逻辑
+            //   if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            //     childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+            //     obj[this.itemName] = {
+            //       ...childTableParams[this.itemName]
+            //     };
+            //   }
+            // } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // } else { // 有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // }
+            // childTableParams[this.itemName] = deleteData.map(d => (d));// 子表选中项
+
+            obj[this.tableName] = {
+              ID: this.itemId
+            };
           } else { // 没有子表
-            obj= {
+            obj = {
               ID: this.itemId
             };
           }
