@@ -1447,28 +1447,35 @@
                 // 数组形式
                 if (this._items.props.defaultSelected) {
                   this._items.props.defaultSelected = [{
-                    ID: item.LABLE_VALUES[0].VALUE,
-                    Label: item.LABLE_VALUES[0].LABLE
+                    ID: item.LABLE_VALUES[0].VALUE || '',
+                    Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
                   this._items.value = this._items.props.defaultSelected;
                 } else if (this._items.props.selected) {
                   this._items.props.selected = [{
-                    ID: item.LABLE_VALUES[0].VALUE,
-                    Label: item.LABLE_VALUES[0].LABLE
+                    ID: item.LABLE_VALUES[0].VALUE || '',
+                    Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
                   this._items.value = item.LABLE_VALUES[0].LABLE;
                 } else if (this._items.type === 'select') {
-                  this._items.value = item.LABLE_VALUES[0].VALUE;
+                  this._items.value = item.LABLE_VALUES[0].VALUE || '';
                 }
               } else if (item.COLUMN_TYPE === 1) {
                 // INPUT 
-                this._items.value = item.LABLE_VALUES[0].VALUE;
+                if (this._items.type === 'checkbox') {
+                  this._items.value = item.LABLE_VALUES[0].VALUE || this._items.props.falseValue;
+                } else {
+                  this._items.value = item.LABLE_VALUES[0].VALUE || '';
+                }
               } else if (item.COLUMN_TYPE === 2) {
                 this._items.props.defaultSelected = item.LABLE_VALUES.reduce((arr, options) => {
-                  arr.push({
-                    ID: options.VALUE,
-                    Label: options.LABLE
-                  });
+                  if (options.VALUE) {
+                    arr.push({
+                      ID: options.VALUE || '',
+                      Label: options.LABLE || ''
+                    });
+                  }
+                 
                   return arr;
                 }, []);
               }
@@ -1481,6 +1488,14 @@
             if (this.$refs[e.value.field]) {
               this.$refs[e.value.field].handleClear();
             }
+          } else if (Array.isArray(e.value.value)) {
+            this._items.props.selected = e.value.value;
+            this._items.props.defaultSelected = e.value.value;
+            this._items.value = e.value.value;
+            this.valueChange();
+          } else {
+            this._items.value = e.value.value || '';
+            this.valueChange();
           }
         }
       });
