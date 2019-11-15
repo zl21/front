@@ -25,6 +25,8 @@ export default {
   standard: {
     component: standard
   },
-  
+  AD_TABLE: {
+    component: AD_TABLE
+  },
   
 };

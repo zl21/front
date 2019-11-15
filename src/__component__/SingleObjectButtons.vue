@@ -679,11 +679,19 @@
       webactionClick(obj) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
+          let selete = [];
+          if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
+            selete = this.updateData[this.itemName].delete[this.itemName];
+            if(Object.keys(selete).length===0){
+                selete=[]
+            }
+          }
+
           if (obj.confirm.indexOf('{') >= 0) {
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length === 0) {
-                const title = this.ChineseDictionary.WARNING;
+              if (selete && selete.length === 0) {
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                 const title = this.ChineseDictionary.WARNING;
                 const data = {
                   mask: true,
                   title,
@@ -692,7 +700,7 @@
                 this.$Modal.fcWarning(data);
               } else if (
                 JSON.parse(obj.confirm).isradio
-                && this.updateData[this.itemName].delete[this.itemName].length !== 1
+                && selete.length !== 1
               ) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
@@ -708,7 +716,7 @@
                 let contentText = '';
                 const confirm = JSON.parse(obj.confirm);
                 if (content.indexOf('{isselect}') !== '-1') {
-                  contentText = `${confirm.desc.replace('{isselect}', this.updateData[this.itemName].delete[this.itemName].length)}`;
+                  contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
                 }
@@ -978,31 +986,61 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const obj = {};
+        let obj = {};
+        let ids = [];
+        let deleteData = [];
+        if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          deleteData = this.updateData[this.itemName].delete[this.itemName];
+          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+        }
         if (this.objectType === 'vertical') { // 上下结构
-          // const childTableParams = [];
+          const childTableParams = [];
           if (this.subtables()) { // 有子表
-            // if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-            //   childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-            //   params[this.itemName] = {
-            //     ...childTableParams[this.itemName]
+            // this.itemName当前子表表名
+            // if (!this.itemName) { // 主表静默逻辑
+            //   if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            //     childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+            //     obj[this.itemName] = {
+            //       ...childTableParams[this.itemName]
+            //     };
+            //   }
+            // } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // } else { // 有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
             //   };
             // }
-            const ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
-            const obj = {
-              tableName: this.itemName,
+            // childTableParams[this.itemName] = deleteData.map(d => (d));// 子表选中项
+
+            obj[this.tableName] = {
+              ID: this.itemId
+            };
+          } else { // 没有子表
+            obj = {
+              ID: this.itemId
+            };
+          }
+        } else if (this.subtables()) { // 有子表   左右结构
+          if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
+            obj[this.tableName] = {
+              ID: this.itemId
+            };
+          } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
+            obj = {
+              tableName: this.itemName, // 子表表名
               ids
             };
-            // params[this.tableName] = {
-            //   ID: this.itemId
-            // };
-          } else { // 没有子表
-            // params.ID = this.itemId;
+          } else { // 有表格
+            obj = {
+              tableName: this.itemName, // 子表表名
+              ids
+            };
           }
-        } else { // 左右结构
-          // params[this.tableName] = {
-          //   ID: this.itemId
-          // };
         }
         
         const promise = new Promise((resolve, reject) => {
