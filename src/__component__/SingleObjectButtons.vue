@@ -99,7 +99,6 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
 
 
-
   export default {
     data() {
       return {
@@ -979,7 +978,7 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
+        const obj = {};
         if (this.objectType === 'vertical') { // 上下结构
           // const childTableParams = [];
           if (this.subtables()) { // 有子表
@@ -989,26 +988,26 @@
             //     ...childTableParams[this.itemName]
             //   };
             // }
-             const ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
-              const obj = {
-                tableName: this.itemName,
-                ids
-              };
+            const ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            const obj = {
+              tableName: this.itemName,
+              ids
+            };
             // params[this.tableName] = {
             //   ID: this.itemId
             // };
           } else { // 没有子表
-            params.ID = this.itemId;
+            // params.ID = this.itemId;
           }
         } else { // 左右结构
-          params[this.tableName] = {
-            ID: this.itemId
-          };
+          // params[this.tableName] = {
+          //   ID: this.itemId
+          // };
         }
-
+        
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject
+            obj, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
