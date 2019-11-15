@@ -47,6 +47,7 @@
         v-if="componentName"
         :item-info="itemInfo"
       />
+      <!-- 自定义组件 -->
       <compositeForm
         v-if="panelData.isShow"
         :is-main-table="isMainTable"
@@ -269,8 +270,15 @@
             Vue.component(buttonComponent, Vue.extend(Object.assign({ mixins: [horizontalMixins()] }, singleObjectButtons)));
           }
         }
-        if(this.componentName) {
-          Vue.component(this.componentName, CustomizeModule[this.componentName].component);
+        if(this.componentName) { // 定制tab自定义组件
+          Object.keys(CustomizeModule).every((customizeName) => {
+            const nameToUpperCase = customizeName.toUpperCase();
+            if (nameToUpperCase === this.componentName) {
+              Vue.component(this.componentName, CustomizeModule[customizeName].component);
+              return false;
+            }
+            return true;
+          });
 
           this.customizeComponent = this.componentName;
         }
@@ -701,7 +709,7 @@
     }
     .formPanel {
       flex: 1;
-      overflow-y: auto;
+      overflow:auto;
     }
     .verticalFormPanel {
       margin: 10px 16px;

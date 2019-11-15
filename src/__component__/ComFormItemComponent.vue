@@ -32,6 +32,9 @@
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
+
   export default {
     name: 'FormItemComponent',
     computed: {
@@ -264,7 +267,9 @@
       //   this.formValueItem = {};
 
       //   this.mapData = this.setMapping(this.Mapping);
-      
+      window.addEventListener('setValue', (value) => {
+        console.log(value);
+      });
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -294,68 +299,12 @@
             return;
           }
           //   拦截默认值
-          if (!this.actived || Object.keys(this.refcolvalData).length < 2) {
+          if (!this.actived || Object.keys(this.refcolvalData).length < 1) {
             return;
           }
-
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
-
-          this.newFormItemLists.map((items, i) => {
-            const item = items.item;
-            // 筛选字段
-            if (item.props.webconf && item.props.webconf.filtercolval) {
-              // 主控字段的值
-              this.filtercolumn(item, i, val);
-            }
-
-            //  扩展属性 来源字段
-            if (item.props.webconf && item.props.webconf.targetField) {
-              item.props.supportType = val[item.props.webconf.targetField];
-            }
-           
-            if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              if (
-                val[item.validate.dynamicforcompute.computecolumn]
-                === old[item.validate.dynamicforcompute.computecolumn]
-              ) {
-                this.dynamicforcompute(item, val, i);
-              } else {
-              // this.formDataChange();
-              }
-            } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-              const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
-              if (val[_refcolumn] === undefined) {
-                return false;
-              }
-              const refvalArr = _refval.split(',');
-              const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
-
-              const checkVal = arrIndex !== -1 ? 1 : 0;
-              const checkShow = items.show ? 1 : 0;
-              // console.log(_refval , val[_refcolumn]);
-              // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
-              // console.log(item.title, checkVal, checkShow, _refval, _refcolumn, val, val[_refcolumn].toString().trim());
-              if (checkVal !== checkShow) {
-                this.hidecolumn(item, i, val);
-              }
-            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
-              this.refcolval(item, val, i);
-              
-            // this.formDataChange();
-            }
-            return items;
-          });
-          if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
-            if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-              const data = {
-                formList: this.LinkageForm,
-                formIndex: this.formIndex
-              };
-              this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-            }  
-          }
+          this.computFormLinkage(val, old);
         },
         deep: true
       },
@@ -379,6 +328,57 @@
       }
     },
     methods: {
+      computFormLinkage(val, old) {
+        // 页面计算关系
+        this.newFormItemLists.map((items, i) => {
+          const item = items.item;
+          // 筛选字段
+          if (item.props.webconf && item.props.webconf.filtercolval) {
+            this.filtercolumn(item, i, val);
+          }
+          // 设置属性
+          if (item.props.webconf && item.props.webconf.setAttributes) {
+            this.setAttributes(item, i, val);
+          }
+
+          //  扩展属性 来源字段
+          if (item.props.webconf && item.props.webconf.targetField) {
+            item.props.supportType = val[item.props.webconf.targetField];
+          }
+           
+          if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+            // 计算
+            if (
+              val[item.validate.dynamicforcompute.computecolumn]
+              === old[item.validate.dynamicforcompute.computecolumn]
+            ) {
+              this.dynamicforcompute(item, val, i);
+            } else {
+              // this.formDataChange();
+            }
+          } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
+            //  联动隐藏
+            
+            const _refcolumn = item.validate.hidecolumn.refcolumn;
+
+            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
+            if (val[_refcolumn] === undefined) {
+              return false;
+            }
+            const refvalArr = _refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+            const checkVal = arrIndex !== -1 ? 1 : 0;
+            const checkShow = items.show ? 1 : 0;
+            if (checkVal !== checkShow) {
+              this.hidecolumn(item, i, val);
+            }
+          } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+            // 来源字段
+            this.refcolval(item, val, i);
+          }
+          return items;
+        });
+      },
       inputget(formIndex, index, items) {
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
@@ -395,63 +395,7 @@
       },  
       formInit() {
         const val = this.getStateData();
-        this.newFormItemLists.map((items, i) => {
-          const item = items.item;
-          this.LinkageForm.push({
-            key: items.item.field,
-            name: items.item.title,
-            srccol: items.item.validate.refcolval && items.item.validate.refcolval.srccol,
-          });
-         
-          //  扩展属性 来源
-          if (item.props.webconf && item.props.webconf.targetField) {
-            item.props.supportType = val[item.props.webconf.targetField];
-          }
-          // 筛选字段
-          if (item.props.webconf && item.props.webconf.filtercolval) {
-            // 主控字段的值
-            this.filtercolumn(item, i, val);
-          } 
-          if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-            // this.dynamicforcompute(item, val, i);
-          } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-            const _refcolumn = item.validate.hidecolumn.refcolumn;
-            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
-            if (val[_refcolumn] === undefined) {
-              if (_refval === 'Y') {
-                val[_refcolumn] = 'N';
-              }
-              if (_refval === '1') {
-                val[_refcolumn] = '0';
-              }
-              if (_refval === true) {
-                val[_refcolumn] = 'false';
-              }
-            }
-            const refvalArr = _refval.split(',');
-            const _valx = val[_refcolumn] || '';
-            const arrIndex = refvalArr.findIndex(x => x.toString() === _valx.toString());
-            const checkVal = arrIndex !== -1 ? 1 : 0;
-            const checkShow = items.show ? 1 : 0;
-
-            if (checkVal !== checkShow) {
-              this.hidecolumn(item, i, val);
-            }
-          } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
-            this.refcolval(item, val, i);
-            // this.formDataChange();
-          }
-          return items;
-        });
-        if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
-          if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-            const data = {
-              formList: this.LinkageForm,
-              formIndex: this.formIndex
-            };
-            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-          }  
-        }
+        this.computFormLinkage(val);
       },  
       mountdataFormInt() {
         this.actived = false;
@@ -654,6 +598,35 @@
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
+        //  change 值 走后台接口赋值
+        if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          console.log(current.item.props.webconf.formRequest);
+          this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+        }
+      },
+      formRequest(obj, current, conf) {
+        // 走后台接口
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const refcolumn = conf.refcolumn.split(',');
+        const ASSIGN = refcolumn.reduce((arr, item) => {
+          arr[item] = jsonArr[item] || '';
+          return arr;
+        }, {});
+        //          ID: obj[current.field] || obj[current.inputname],
+        const data = {
+          ASSIGN
+        };
+        if (!conf.url) {
+          return false;
+        }
+        fkHttpRequest().equalformRequest({
+          url: conf.url,
+          searchObject: data,
+          success: (res) => {
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+          }
+        });
+        return true;
       },
       resetForm() {
         // 重置表单
@@ -671,7 +644,7 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      refcolval(items, json, index) {
+      refcolval(items, json) {
         if (interlocks() === true) {
           const srccol = items.validate.refcolval.srccol;
           
@@ -683,7 +656,6 @@
               // this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
               // this.newFormItemLists[index].item.value = '';
-              console.log(1);
             }
           }
         }
@@ -703,6 +675,60 @@
         if (this.newFormItemLists[_index]) {
           this.newFormItemLists[_index].item.value = eval(str);
         }
+      },
+      setAttributes(item, formindex, val) {
+        //  设置属性
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+        const field = item.props.webconf.setAttributes.field;
+        if (!Array.isArray(field)) {
+          return false;
+        }
+
+        const checkout = field.every((option) => {
+          let optionValue = jsonArr[option.refcolumn];
+          if (!optionValue) {
+            optionValue = '';
+          }
+          if (typeof optionValue !== 'string') {
+            optionValue = optionValue.toString();
+            optionValue = optionValue.replace(/^\s+|\s+$/g, '');
+          }
+          if (typeof option.refval === 'string') {
+            option.refval = option.refval.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+          }
+          const refval = option.refval.split(',');
+          const refIndex = refval.findIndex(x => x.toString() === optionValue);
+
+          return refIndex !== -1;
+        });
+        if (!item.oldProps) {
+          item.oldProps = JSON.parse(JSON.stringify(item.props));
+        }
+        const props = JSON.parse(JSON.stringify(item.props));
+
+        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
+        if (checkout && !checkoutProps) {
+          if (item.props.webconf.setAttributes.props.value === '') {
+            item.value = '';
+          }
+          if (item.props.webconf.setAttributes.props.required) {
+            item.required = true;
+          } else {
+            item.required = false;
+          }
+          this.VerificationFormInt();
+
+          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+          this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+        } else if (checkout !== true && checkoutProps) {
+          this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
+          if (item.oldProps.required) {
+            item.required = true;
+          } else {
+            item.required = false;
+          }
+        }
+        return true;
       },
       filtercolumn(item, formindex, val) {
         // 过滤筛选
@@ -758,8 +784,28 @@
 
               if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
+                // 添加小组件的字段配置
+                this.newFormItemLists[index].item.props.showCol = true;
               } else {
                 this.newFormItemLists[index].show = false;
+                this.newFormItemLists[index].item.props.showCol = false;
+              }
+              if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                  const data = {
+                    formList: [
+                      { 
+                        key: items.field,
+                        name: items.title,
+                        show: this.newFormItemLists[index].show,
+                        srccol: items.validate.refcolval && items.validate.refcolval.srccol,
+
+                      }
+                    ],
+                    formIndex: ''
+                  };
+                  this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+                }  
               }
               if (items.props.webconf && items.props.webconf.clearWhenHidden) {
                 //   清除页面 联动的值

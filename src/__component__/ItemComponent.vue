@@ -343,9 +343,10 @@
   import Docfile from './docfile/DocFileComponent';
 
 
-  import { Version } from '../constants/global';
+  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1432,6 +1433,57 @@
     },
     created() {
     // console.log(this.type,this.formIndex);
+    },
+    mounted() {
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        if (e.value.type === 'equal') {
+          // 表单赋值
+          e.value.list.forEach((item) => {
+            if (this._items.field === item.COLUMN_NAME || this._items.inputname === item.COLUMN_NAME) {
+              if (!this._items.props.showCol) {
+                return false;
+              }
+              if (item.COLUMN_TYPE === 0) {
+                // 数组形式
+                if (this._items.props.defaultSelected) {
+                  this._items.props.defaultSelected = [{
+                    ID: item.LABLE_VALUES[0].VALUE,
+                    Label: item.LABLE_VALUES[0].LABLE
+                  }];
+                  this._items.value = this._items.props.defaultSelected;
+                } else if (this._items.props.selected) {
+                  this._items.props.selected = [{
+                    ID: item.LABLE_VALUES[0].VALUE,
+                    Label: item.LABLE_VALUES[0].LABLE
+                  }];
+                  this._items.value = item.LABLE_VALUES[0].LABLE;
+                } else if (this._items.type === 'select') {
+                  this._items.value = item.LABLE_VALUES[0].VALUE;
+                }
+              } else if (item.COLUMN_TYPE === 1) {
+                // INPUT 
+                this._items.value = item.LABLE_VALUES[0].VALUE;
+              } else if (item.COLUMN_TYPE === 2) {
+                this._items.props.defaultSelected = item.LABLE_VALUES.reduce((arr, options) => {
+                  arr.push({
+                    ID: options.VALUE,
+                    Label: options.LABLE
+                  });
+                  return arr;
+                }, []);
+              }
+              this.valueChange();
+            }
+          });
+        } else if (this._items.field === e.value.field) {
+          // 表单修改属性
+          if (e.value.value === '') {
+            if (this.$refs[e.value.field]) {
+              this.$refs[e.value.field].handleClear();
+            }
+          }
+        }
+      });
     }
   };
 </script>

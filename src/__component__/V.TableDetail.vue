@@ -83,13 +83,12 @@
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
-          if (obj.vuedisplay === 'TabItem') {
+          if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
           } else {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
-
           obj.component = `tapComponent.${item.tablename}`;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
@@ -166,9 +165,9 @@
         }
         let webactType = '';
         if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
-          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
+          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
         }
-        if (webactType !== 'order') {
+        if (webactType !== 'ALL') {
           this.updateTabCurrentIndex(index);
           const { itemId } = this.$route.params;
           const refTab = this.tabPanel[index];

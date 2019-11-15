@@ -139,3 +139,12 @@ export const batchUploadProgress = function batchUploadProgress(params) {
     }
   });
 };
+
+export const equalformRequest = function equalformRequest(params) {
+  // 服务端赋值
+  network.post(params.url, params.searchObject, { serviceId: '' }).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res.data);
+    }
+  });
+};

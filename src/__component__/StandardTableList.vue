@@ -119,15 +119,9 @@
   import modifyDialog from './ModifyModal';
   import {
     Version,
-    VERTICAL_TABLE_DETAIL_PREFIX,
-    HORIZONTAL_TABLE_DETAIL_PREFIX,
-    STANDARD_TABLE_LIST_PREFIX,
-    STANDARD_TABLE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
     LINK_MODULE_COMPONENT_PREFIX,
-    LINK_MODULE_PREFIX,
-    enableKeepAlive
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -1730,16 +1724,6 @@
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
               if (this.buttons.selectIdArr.length === 0) {
-                // const data = {
-                //   title: '警告',
-                //   mask: true,
-                //   content: '确认执行删除?',
-                //   showCancel: true,
-                //   onOk: () => {
-                   
-                //   }
-                // };
-                // this.$Modal.fcWarning(data);
                 this.$Message.warning('请勾选ID');
                 return;
               } if (this.buttons.selectIdArr.length > 1) {
