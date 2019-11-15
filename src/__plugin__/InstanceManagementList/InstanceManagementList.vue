@@ -70,8 +70,8 @@
             name: '我发起的'
           }, 
           {
-            label: '抄送人',
-            name: '抄送人'
+            label: '抄送我的',
+            name: '抄送我的'
           }
         ]
       };
@@ -85,7 +85,7 @@
         } else if (val === 3) {
           this.tabalive = ' 我发起的';
         } else if (val === 4) {
-          this.tabalive = ' 抄送人';
+          this.tabalive = ' 抄送我的';
         }
       },
       // tab切换点击事件

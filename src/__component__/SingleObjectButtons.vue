@@ -2103,6 +2103,31 @@
           }
         }
       },
+      jflowClick(event) {
+        if (event.detail.type === 'submit') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTrySubmit({
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            });
+          });
+          promise.then(() => {
+                         const message = this.buttonsData.submitData.message;
+                         if (message) {
+                           this.upData(`${message}`);
+                         } else {
+                           this.upData();
+                         }
+                       },
+                       () => { // 状态为rejected时执行
+                         this.upData();
+                         this.saveEventAfter = '';
+                       });
+        }
+
+        if (event.detail.type === 'refresh') {
+          this.clickButtonsRefresh();
+        }
+      }
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
       //     if (button.vuedisplay === 'edit') {
@@ -2123,33 +2148,12 @@
       //   });
       // }
     },  
+    beforeDestroy() {
+      window.removeEventListener('jflowClick', this.jflowClick);
+    },
     mounted() {
       if (!this._inactive) {
-        window.addEventListener('jflowClick', (event) => {
-          if (event.detail.type === 'submit') {
-            const promise = new Promise((resolve, reject) => {
-              this.getObjectTrySubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
-              });
-            });
-            promise.then(() => {
-                           const message = this.buttonsData.submitData.message;
-                           if (message) {
-                             this.upData(`${message}`);
-                           } else {
-                             this.upData();
-                           }
-                         },
-                         () => { // 状态为rejected时执行
-                           this.upData();
-                           this.saveEventAfter = '';
-                         });
-          }
-
-          if (event.detail.type === 'refresh') {
-            this.clickButtonsRefresh();
-          }
-        }, false);
+        window.addEventListener('jflowClick', this.jflowClick);
       }
        
       // this.dataArray.refresh = this.refreshButtons;
