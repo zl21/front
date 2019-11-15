@@ -715,6 +715,7 @@
                       }];
                       this.formData[Fitem[index].item.field] = '';
                     }
+                    
                   } else {
                     Fitem[index].item.props.defaultSelected = [
                       {
@@ -722,10 +723,7 @@
                         ID: ''
                       }
                     ];
-                    Fitem[index].item.value = [{
-                        label: '',
-                        ID: ''
-                      }];
+                    Fitem[index].item.value = [];
                     this.formData[Fitem[index].item.field] = '';
                   }
                 }
@@ -839,14 +837,16 @@
           if (this.formData[current.refcolval.srccol] === undefined) {
             refcolval = this.defaultFormData[current.refcolval.srccol];
           }
-          console.log(refcolval, this.formData, 'refcolval');
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
               this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
              
               const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
               if (LinkageFormfocus) {
-                LinkageFormfocus.focus();
+                
+                setTimeout(() => {
+                  LinkageFormfocus.focus();
+                }, 100);
                 return false;
               }
 
