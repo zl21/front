@@ -1082,11 +1082,20 @@
       //   document.body.removeChild(eleLink);
       // },
       webActionSlient(item) {
-        const obj = {
-          tableid: this.buttons.tableId,
-          ids: this.buttons.selectIdArr,
-          menu: this.buttons.tabledesc
-        };
+        let obj = {};
+        if (Version() === '1.3') {
+          obj = {
+            tableid: this.buttons.tableId,
+            ids: this.buttons.selectIdArr,
+            menu: this.buttons.tabledesc
+          };
+        } else {
+          obj = {
+            tableName: this.buttons.tableName,
+            ids: this.buttons.selectIdArr.map(d => parseInt(d))
+          };
+        }
+       
         let promise = new Promise((resolve, reject) => {
           this.$loading.show();
           this.getExeActionDataForButtons({

@@ -460,6 +460,20 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
+        // const serviceIdMap = this.$store.state.global.serviceIdMap;
+        // if (!serviceIdMap[tableName] && props.serviceId) {
+        //   const data = {
+        //     tableName,
+        //     gateWay: props.serviceId
+        //   }; 
+        //   const labels = {
+        //     name: tableName,
+        //     label
+        //   };
+        //   this.$store.commit('global/addKeepAliveLabelMaps', labels);
+        //   this.$store.commit('global/addServiceIdMap', data);
+
+        // }
 
         let id = 0;
         if (!props.readonly) {
@@ -1478,6 +1492,7 @@
                  
                   return arr;
                 }, []);
+                this._items.value = this._items.props.defaultSelected;
               }
               this.valueChange();
             }
