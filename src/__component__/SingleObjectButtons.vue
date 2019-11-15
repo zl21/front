@@ -682,13 +682,22 @@
           let selete = [];
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
+            if(Object.keys(selete).length===0){
+                selete=[]
+            }
           }
+
           if (obj.confirm.indexOf('{') >= 0) {
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
               if (selete && selete.length === 0) {
-                const title = this.ChineseDictionary.WARNING;
-                const contentText = `${JSON.parse(obj.confirm).desc}`;
-                this.dialogMessage(title, contentText, obj);
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                 const title = this.ChineseDictionary.WARNING;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
               } else if (
                 JSON.parse(obj.confirm).isradio
                 && selete.length !== 1
