@@ -33,8 +33,8 @@
           />
         </TabPane>
         <TabPane
-          label="抄送人"
-          name="抄送人"
+          label="抄送我的"
+          name="抄送我的"
         >
           <CopyPersonList :tabalive="tabalive" />
         </TabPane>
