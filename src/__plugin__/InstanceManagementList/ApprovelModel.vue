@@ -515,7 +515,7 @@
       }
     },
     created() {
-      if (this.config.type === 3) {
+      if (this.config.type === '3') {
         this.getTreeData();
       }
     }
