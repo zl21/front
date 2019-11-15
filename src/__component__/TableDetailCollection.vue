@@ -583,7 +583,7 @@
         if (obj.confirm) {
           // 有提示
           if (obj.confirm.indexOf('{') >= 0) {
-            if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+            if (JSON.parse(obj.confirm).isselect) {
               if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
@@ -619,6 +619,10 @@
               } else {
                 this.buttonEvent(obj);
               }
+            } else if (JSON.parse(obj.confirm).desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText, obj);
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -672,59 +676,62 @@
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
+        this.objTabActionSlientConfirm(tab);
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        if (!tab) tab = this.activeTabAction;
-        if (tab.confirm) {
-          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            const data = {
-              title: '警告',
-              mask: true,
-              content: tab.confirm,
-              onOk: () => {
-                this.objTabActionSlientConfirm(tab);
-              }
-            };
-            this.$Modal.fcWarning(data);
-          } else if (JSON.parse(tab.confirm).desc) {
-            //            确定后执行下一步操作
-            //            判断是否先执行保存
-            if (JSON.parse(tab.confirm).isSave) {
-              console.log('暂时未处理配置isSave的相关逻辑');
-            } else {
-              const data = {
-                title: '警告',
-                mask: true,
-                showCancel: true, 
-                content: JSON.parse(tab.confirm).desc,
-                onOk: () => {
-                  this.objTabActionSlientConfirm(tab);
-                }
-              };
-              this.$Modal.fcWarning(data);
-            }
-            // 清除提示信息
-          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-            this.beforeObjectSubmit(() => {
-              this.objTabActionSlientConfirm(tab);
-            });
-          } else { // 静默直接执行
-            this.objTabActionSlientConfirm(tab);
-          }
-        } else {
-          this.objTabActionSlientConfirm(tab);
-        }
+        // if (!tab) tab = this.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     this.beforeObjectSubmit(() => {
+        //       this.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     this.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   this.objTabActionSlientConfirm(tab);
+        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
         // const itemName = this.itemInfo.tablename;
-        const { tableName, itemId } = router.currentRoute.params;
-        params[tableName] = {
-          ID: itemId
+        // const { tableName, itemId } = router.currentRoute.params;
+        const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
+        // const ids = itemId.map(d => parseInt(d));
+        const obj = {
+          tableName: this.tableName,
+          ids
         };
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject
+            obj, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });

@@ -14,8 +14,8 @@ import AD_TABLE from '../__customize__/queryStandardTableList/queryStandardTable
 
 
 export default {
-  AD_TABLE: {
-    component: AD_TABLE,
+  FunctionPower: {
+    component: FunctionPower,
     labelName: '功能权限'
   },
   pro_desc: {

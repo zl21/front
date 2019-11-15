@@ -922,58 +922,58 @@
       //   document.body.removeChild(eleLink);
       // },
       objTabActionSlient(tab) { // 动作定义静默
-        const self = this;
+        this.objTabActionSlientConfirm(tab);
         // tab.confirm = true
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        if (!tab) tab = self.activeTabAction;
-        if (tab.confirm) {
-          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            const data = {
-              title: '警告',
-              mask: true,
-              content: tab.confirm,
-              onOk: () => {
-                this.objTabActionSlientConfirm(tab);
-              }
-            };
-            this.$Modal.fcWarning(data);
-          } else if (JSON.parse(tab.confirm).desc) {
-            //            确定后执行下一步操作
-            //            判断是否先执行保存
-            if (JSON.parse(tab.confirm).isSave) {
-              console.log('暂时未处理配置isSave的相关逻辑');
-              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
-            } else {
-              const data = {
-                title: '警告',
-                mask: true,
-                showCancel: true, 
-                content: JSON.parse(tab.confirm).desc,
-                onOk: () => {
-                  this.objTabActionSlientConfirm(tab);
-                }
-              };
-              this.$Modal.fcWarning(data);
-            }
-            // self.confirmTips({
-            //   action: 'confirm',
-            //   title: tab.webdesc,
-            //   type: 'warning',
-            //   list: [],
-            //   isAction: true,
-            //   desc: JSON.parse(tab.confirm).desc,
-            // });
-            // 清除提示信息
-          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-            self.beforeObjectSubmit(() => {
-              self.objTabActionSlientConfirm(tab);
-            });
-          } else { // 静默直接执行
-            self.objTabActionSlientConfirm(tab);
-          }
-        } else {
-          self.objTabActionSlientConfirm(tab);
-        }
+        // if (!tab) tab = self.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //       // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // self.confirmTips({
+        //     //   action: 'confirm',
+        //     //   title: tab.webdesc,
+        //     //   type: 'warning',
+        //     //   list: [],
+        //     //   isAction: true,
+        //     //   desc: JSON.parse(tab.confirm).desc,
+        //     // });
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     self.beforeObjectSubmit(() => {
+        //       self.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     self.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   self.objTabActionSlientConfirm(tab);
+        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
