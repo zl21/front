@@ -2117,6 +2117,7 @@
                            } else {
                              this.upData();
                            }
+                           this.saveEventAfter = '';
                          },
                          () => { // 状态为rejected时执行
                            this.upData();
@@ -2136,6 +2137,7 @@
               } else {
                 this.upData();
               }
+              this.saveEventAfter = '';
             }, () => { // 状态为rejected时执行
               this.upData();
               this.saveEventAfter = '';
@@ -2184,6 +2186,7 @@
                          } else {
                            this.upData();
                          }
+                         this.saveEventAfter = '';
                        },
                        () => { // 状态为rejected时执行
                          this.upData();
@@ -2193,6 +2196,10 @@
 
         if (event.detail.type === 'refresh') {
           this.clickButtonsRefresh();
+        }
+
+        if (event.detail.type === 'clearSubmit') {
+          this.saveEventAfter = '';
         }
       }
       // clickKeepAliveLabelMaps(buttonData) {
