@@ -502,11 +502,11 @@
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
-        DispatchEvent('jflowPlugin', {
-          detail: {
-            type: 'fresh'
-          }
-        });
+        // DispatchEvent('jflowPlugin', {
+        //   detail: {
+        //     type: 'fresh'
+        //   }
+        // });
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
@@ -675,30 +675,91 @@
           this.$Modal.fcWarning(data);
         }
       },
-      webactionClick(tab) { // 动作定义执行
-        this.activeTabAction = tab;
-        switch (tab.vuedisplay) {
-        case 'native': // 跳转url
-          // eslint-disable-next-line no-restricted-globals
-          location.href = tab.action;
-          break;
+      webactionClick(obj) { // 动作定义执行
+        if (obj.confirm) {
+          // 有提示
+          if (obj.confirm.indexOf('{') >= 0) {
+            if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (
+                JSON.parse(obj.confirm).isradio
+                && this.tableRowSelectedIds.length !== 1
+              ) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (JSON.parse(obj.confirm).desc) {
+                const title = this.ChineseDictionary.WARNING;
+                const content = `${JSON.parse(obj.confirm).desc}`;
+                let contentText = '';
+                const confirm = JSON.parse(obj.confirm);
+                if (content.indexOf('{isselect}') !== '-1') {
+                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                } else {
+                  contentText = `${JSON.parse(obj.confirm).desc}`;
+                }
+                this.dialogMessage(title, contentText, obj);
+              } else {
+                this.buttonEvent(obj);
+              }
+            }
+          } else {
+            const title = this.ChineseDictionary.WARNING;
+            const contentText = `${obj.confirm}`;
+            this.dialogMessage(title, contentText, obj);
+          }
+        } else {
+          this.buttonEvent(obj);
+        }
+      },
+      dialogMessage(title, contentText, obj) {
+        const data = {
+          mask: true,
+          title,
+          content: contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+      },
+      errorconfirmDialog(obj) {
+        this.buttonEvent(obj);
+      },
+      buttonEvent(obj) {
+        this.activeTabAction = obj;
+        switch (obj.vuedisplay) {
         case 'slient':
-          this.objTabActionSlient(tab);
+          this.objTabActionSlient(obj);
           break;
         case 'download':
-          this.objTabActiondDownload(tab);
+          this.objTabActiondDownload(obj);
           break;
         case 'dialog':
-          this.objTabActionDialog(tab);
+          this.objTabActionDialog(obj);
           break;
         case 'navbar':
-          this.objTabActionNavbar(tab);
+          this.objTabActionNavbar(obj);
           break;
         // case 'external':
         //   this.objTabActionUrl(tab);
         //   break;
         case 'edit':
-          this.objTabActionEdit(tab);
+          this.objTabActionEdit(obj);
           break;
         default:
           break;
@@ -861,58 +922,58 @@
       //   document.body.removeChild(eleLink);
       // },
       objTabActionSlient(tab) { // 动作定义静默
-        const self = this;
+        this.objTabActionSlientConfirm(tab);
         // tab.confirm = true
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        if (!tab) tab = self.activeTabAction;
-        if (tab.confirm) {
-          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            const data = {
-              title: '警告',
-              mask: true,
-              content: tab.confirm,
-              onOk: () => {
-                this.objTabActionSlientConfirm(tab);
-              }
-            };
-            this.$Modal.fcWarning(data);
-          } else if (JSON.parse(tab.confirm).desc) {
-            //            确定后执行下一步操作
-            //            判断是否先执行保存
-            if (JSON.parse(tab.confirm).isSave) {
-              console.log('暂时未处理配置isSave的相关逻辑');
-              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
-            } else {
-              const data = {
-                title: '警告',
-                mask: true,
-                showCancel: true, 
-                content: JSON.parse(tab.confirm).desc,
-                onOk: () => {
-                  this.objTabActionSlientConfirm(tab);
-                }
-              };
-              this.$Modal.fcWarning(data);
-            }
-            // self.confirmTips({
-            //   action: 'confirm',
-            //   title: tab.webdesc,
-            //   type: 'warning',
-            //   list: [],
-            //   isAction: true,
-            //   desc: JSON.parse(tab.confirm).desc,
-            // });
-            // 清除提示信息
-          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-            self.beforeObjectSubmit(() => {
-              self.objTabActionSlientConfirm(tab);
-            });
-          } else { // 静默直接执行
-            self.objTabActionSlientConfirm(tab);
-          }
-        } else {
-          self.objTabActionSlientConfirm(tab);
-        }
+        // if (!tab) tab = self.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //       // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // self.confirmTips({
+        //     //   action: 'confirm',
+        //     //   title: tab.webdesc,
+        //     //   type: 'warning',
+        //     //   list: [],
+        //     //   isAction: true,
+        //     //   desc: JSON.parse(tab.confirm).desc,
+        //     // });
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     self.beforeObjectSubmit(() => {
+        //       self.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     self.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   self.objTabActionSlientConfirm(tab);
+        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
@@ -1937,7 +1998,9 @@
           if (enableJflow()) { // jflow开启时，保存成功需通知
             DispatchEvent('jflowPlugin', {
               detail: {
-                type: 'save'
+                obj: {
+                  button: 'save'
+                }
               }
             });
           }
@@ -2101,6 +2164,31 @@
           }
         }
       },
+      jflowClick(event) {
+        if (event.detail.type === 'submit') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTrySubmit({
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            });
+          });
+          promise.then(() => {
+                         const message = this.buttonsData.submitData.message;
+                         if (message) {
+                           this.upData(`${message}`);
+                         } else {
+                           this.upData();
+                         }
+                       },
+                       () => { // 状态为rejected时执行
+                         this.upData();
+                         this.saveEventAfter = '';
+                       });
+        }
+
+        if (event.detail.type === 'refresh') {
+          this.clickButtonsRefresh();
+        }
+      }
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
       //     if (button.vuedisplay === 'edit') {
@@ -2121,7 +2209,14 @@
       //   });
       // }
     },  
+    beforeDestroy() {
+      window.removeEventListener('jflowClick', this.jflowClick);
+    },
     mounted() {
+      if (!this._inactive) {
+        window.addEventListener('jflowClick', this.jflowClick);
+      }
+       
       // this.dataArray.refresh = this.refreshButtons;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
       if (this.objectType === 'horizontal') { // 横向布局

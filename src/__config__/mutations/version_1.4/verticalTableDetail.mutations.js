@@ -1,5 +1,4 @@
-import { stringify } from 'querystring';
-import { cpus } from 'os';
+
 import router from '../../router.config';
 
 export default {
@@ -62,6 +61,7 @@ export default {
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
     // state.mainFormInfo.buttonsData.isShow = true;
+    state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {
       state.mainFormInfo.buttonsData.data = data;
     }
@@ -356,21 +356,21 @@ export default {
   //   });
   // }
   jflowPlugin(state, {
-    buttonsData, newButtons, buttonAnother, instanceId
+    buttonsData, newButtons, instanceId 
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
-    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-    if (buttonAnother) {
-      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
-      state.anotherData = buttonAnother;
-    } else if (state.anotherData.length > 0) {
-      state.mainFormInfo.buttonsData.data.tabcmd.prem = state.anotherData;
+    if (instanceId) {
+      state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
     } else {
-      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+      state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
     }
+    state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
+  },
+  updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
+    state.childTableReadonly = value;
   }
 };

@@ -1,18 +1,6 @@
 
 <!--suppress ALL -->
 <template>
-  <!-- <div class="StandardTableList"> -->
-  <!-- <div class="tree">
-      <Input
-        search
-        placeholder="请输入机构编号或名称"
-      />
-      <my-tree
-        :list="list"
-        :search="search"
-        @getItemData="getItemData"
-      />
-    </div> -->
   <div class="StandardTableListRootDiv">
     <ButtonGroup
       :data-array="buttons.dataArray"
@@ -114,20 +102,13 @@
   import dialogComponent from './Dialog.vue';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import ImportDialog from './ImportDialog';
-  import myTree from './Tree/Tree';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
   import {
     Version,
-    VERTICAL_TABLE_DETAIL_PREFIX,
-    HORIZONTAL_TABLE_DETAIL_PREFIX,
-    STANDARD_TABLE_LIST_PREFIX,
-    STANDARD_TABLE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
     LINK_MODULE_COMPONENT_PREFIX,
-    LINK_MODULE_PREFIX,
-    enableKeepAlive
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -145,7 +126,6 @@
       ErrorModal,
       modifyDialog,
       dialogComponent,
-      myTree
     },
     data() {
       return {
@@ -983,7 +963,7 @@
         //  else if (obj.vuedisplay === 'external') {
         //   this.objTabActionUrl(obj);
         // }
-         else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
+        else if (!obj.confirm || !JSON.parse(obj.confirm).isselect) {
           this.objTabActionDialog(obj);
           // this.setActionDialog(obj);
           // const componentName = obj.action.split('?')[0].replace(/\//g, '/');
@@ -1730,16 +1710,6 @@
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
               if (this.buttons.selectIdArr.length === 0) {
-                // const data = {
-                //   title: '警告',
-                //   mask: true,
-                //   content: '确认执行删除?',
-                //   showCancel: true,
-                //   onOk: () => {
-                   
-                //   }
-                // };
-                // this.$Modal.fcWarning(data);
                 this.$Message.warning('请勾选ID');
                 return;
               } if (this.buttons.selectIdArr.length > 1) {
@@ -1843,10 +1813,17 @@
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           this.searchClickData();
         }
+      },
+      // 监听jflow事件
+      jflowEvent(event) {
+        if (event.detail.type === 'search') {
+          this.searchClickData({ value: 'true' });
+        }
       }
     },
     mounted() {
       window.addEventListener('network', this.networkEventListener);
+      window.addEventListener('jflowEvent', this.jflowEvent);
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -1869,6 +1846,7 @@
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
+      window.removeEventListener('jflowEvent', this.jflowEvent);
     }
   };
 </script>

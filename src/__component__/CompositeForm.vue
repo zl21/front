@@ -15,6 +15,7 @@
       >
         <Panel
           :key="index"
+          class="Rburgeon-collapse-content-box"
           :is-title-show="item.isTitleShow"
           title-type="center"
           :name="item.hrdisplay ==='expand' ? 'expand' :'false'"
@@ -214,6 +215,7 @@
         show: true,
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
+        LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
       };
     },
@@ -376,7 +378,6 @@
         this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const key = mappStatus[Object.keys(data)[0]];
-        // Object.hasOwnProperty.call(current.item.validate, 'refcolval')
         if (!document.querySelector(`#${key}`)) {
           return false;
         }
@@ -510,7 +511,7 @@
           field: current.colname,
           value: this.defaultValue(current),
           inputname: current.inputname,
-          props: { ...current },
+          props: { ...current, showCol: obj.show },
           event: {
             keydown: (event) => {
               // 输入框的keydown event, $this
@@ -529,13 +530,6 @@
             },
             clear: () => {
               this.getStateData(); // 获取主表信息
-              // Object.keys(mappStatus).forEach((item) => {
-              //   const key = LinkageForm[mappStatus[mappStatus[item]]].item.key;
-              //   const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
-              //   if (LinkageFormInput) {
-              //     // LinkageFormInput.click();
-              //   }
-              // });
             },
             change: (value) => {
               if (current.fkdisplay) {
@@ -625,29 +619,48 @@
                 const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
                 const LinkageFormInput = LinkageForm[current.refcolval.srccol];
                 if (!refcolval) {
-                  if (LinkageFormInput) {
+                  if (LinkageFormInput && LinkageFormInput.item.show) {
                     this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+
                     const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
                     if (LinkageFormfocus) {
                       LinkageFormfocus.focus();
                       return false;
                     }
-                  } else {
-                    this.$Message.info('请先选择关联的表');
-                  }
-                  return false;
-                }
-                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+                    const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
 
-                searchObject = {
-                  isdroplistsearch: true,
-                  refcolid: current.colid,
-                  fixedcolumns: {
-                    [current.refcolval.fixcolumn]: query
-                  },
-                  startindex: 0,
-                  range: $this.pageSize
-                };
+                    searchObject = {
+                      isdroplistsearch: true,
+                      refcolid: current.colid,
+                      fixedcolumns: {
+                        [current.refcolval.fixcolumn]: query
+                      },
+                      startindex: 0,
+                      range: $this.pageSize
+                    };
+                  } else {
+                    // this.$Message.info('请先选择关联的表');
+                    // return true;
+                    searchObject = {
+                      isdroplistsearch: true,
+                      refcolid: current.colid,
+                      startindex: 0,
+                      range: $this.pageSize
+                    };
+                  }
+                } else {
+                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+
+                  searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    fixedcolumns: {
+                      [current.refcolval.fixcolumn]: query
+                    },
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
+                }
               } else {
                 searchObject = {
                   isdroplistsearch: true,
@@ -705,9 +718,14 @@
             },
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
+              const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+              let LinkageFormInput = '';
+              if (current.refcolval && current.refcolval.srccol) {
+                LinkageFormInput = LinkageForm[current.refcolval.srccol];
+              }
 
               let searchObject = {};
-              if (current.refcolval && current.refcolval.srccol) {
+              if (current.refcolval && current.refcolval.srccol && LinkageFormInput && LinkageFormInput.item.show) {
                 const refcolval = this.refcolvalAll[current.refcolval.srccol]
                   ? this.refcolvalAll[current.refcolval.srccol]
                   : '';
@@ -743,12 +761,20 @@
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
        
-        if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+        if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
           if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.readonly) {
             obj.item.props.disabled = false;
             obj.item.props.readonly = false;
           }
         }
+        // 获取全部
+        this.LinkageForm.push({
+          key: obj.item.field,
+          name: obj.item.title,
+          show: obj.show,
+          srccol: obj.item.validate.refcolval && obj.item.validate.refcolval.srccol,
+        });
+         
 
         return obj;
       },
@@ -780,7 +806,12 @@
           return false;
         }
         let sendData = {};
-        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+        let LinkageFormInput = '';
+        if (current.refcolval && current.refcolval.srccol) {
+          LinkageFormInput = LinkageForm[current.refcolval.srccol];
+        }
+        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
             : '';
@@ -1135,7 +1166,7 @@
 
 
         // 前端自定义标记
-        if (current.webconf) {
+        if (current.webconf && this.conditiontype !== 'list') {
           const webconf = current.webconf;
           // 读写规则
           if (webconf.display === 'enumerate') {
@@ -1349,8 +1380,9 @@
                 }
                 const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
                 const LinkageFormInput = LinkageForm[currentThat.refcolval.srccol];
+
                 if (!refcolval) {
-                  if (LinkageFormInput) {
+                  if (LinkageFormInput && LinkageFormInput.item.show) {
                     this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
                     const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
                     if (LinkageFormfocus) {
@@ -1358,7 +1390,8 @@
                       return false;
                     }
                   } else {
-                    this.$Message.info('请先选择关联的表');
+                    // this.$Message.info('请先选择关联的表');
+                    return true;
                   }
                   return false;
                 }
@@ -1491,7 +1524,7 @@
         }
         if ((item.props.readonly === true && item.props.fkdisplay) || (this.objreadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
-          if (current.webconf && current.webconf.ignoreDisableWhenEdit) {
+          if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
             return false;
           }
           if (
@@ -1696,6 +1729,17 @@
     },
     mounted() {
       this.Comparison();
+      setTimeout(() => {
+        if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
+          if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            const data = {
+              formList: this.LinkageForm,
+              formIndex: this.formIndex
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+          }  
+        }
+      }, 500);
       if (this.$el) {
         this.setdefaultColumnCol();
       }
@@ -1712,6 +1756,7 @@
       if (this.type === 'PanelForm') {
         return false;
       }
+      
       // if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`]) {
       //   console.log(this);
 
@@ -1721,10 +1766,25 @@
       //   };
       //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`, data);
       // }  
+      
+     
+      return true;
     },
     created() {
       this.computdefaultData = this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
+      window.eventType = function eventType(name, docm, obj) {
+        const event = document.createEvent('HTMLEvents');
+        // initEvent接受3个参数：
+        // 事件类型，是否冒泡，是否阻止浏览器的默认行为
+        // 初始化新创建的 Event
+        // 触发document上绑定的click事件
+        event.initEvent(name, false, true);
+        if (docm) {
+          event.value = obj;
+          docm.dispatchEvent(event);
+        }
+      };
     },
     deactivated() {
       // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
@@ -1749,6 +1809,9 @@
   background: #f8f7f7;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+}
+.Rburgeon-collapse-content-box .burgeon-collapse-content > .burgeon-collapse-content-box{
+   padding-top: 8px!important;
 }
 .burgeon-collapse {
   margin-bottom: 10px;

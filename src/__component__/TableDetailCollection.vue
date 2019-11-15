@@ -132,7 +132,9 @@
   import { mapState, mapMutations } from 'vuex';
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
-  import { Version , MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, } from '../constants/global';
+  import {
+    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+  } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
@@ -142,6 +144,9 @@
   import ComAttachFilter from './ComAttachFilter';
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import ChineseDictionary from '../assets/js/ChineseDictionary';
+
+
   Vue.component('ComAttachFilter', ComAttachFilter);
   Vue.component('TableDocFile', Docfile);
 
@@ -291,7 +296,7 @@
       ...mapState('global', {
         // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         // menuLists: ({ menuLists }) => menuLists
-         LinkUrl: ({ LinkUrl }) => LinkUrl,
+        LinkUrl: ({ LinkUrl }) => LinkUrl,
       }),
       objList() { // 返回克隆表定制弹框所需数据
         if (this.type === 'horizontal') { // 横向布局
@@ -474,6 +479,9 @@
       }
 
     },
+    created() {
+      this.ChineseDictionary = ChineseDictionary;
+    },
     methods: {
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       getEditAbleId(data) {
@@ -572,6 +580,75 @@
         return total;
       },
       buttonClick(obj) {
+        if (obj.confirm) {
+          // 有提示
+          if (obj.confirm.indexOf('{') >= 0) {
+            if (JSON.parse(obj.confirm).isselect) {
+              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (
+                JSON.parse(obj.confirm).isradio
+                && this.tableRowSelectedIds.length !== 1
+              ) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (JSON.parse(obj.confirm).desc) {
+                const title = this.ChineseDictionary.WARNING;
+                const content = `${JSON.parse(obj.confirm).desc}`;
+                let contentText = '';
+                const confirm = JSON.parse(obj.confirm);
+                if (content.indexOf('{isselect}') !== '-1') {
+                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                } else {
+                  contentText = `${JSON.parse(obj.confirm).desc}`;
+                }
+                this.dialogMessage(title, contentText, obj);
+              } else {
+                this.buttonEvent(obj);
+              }
+            } else if (JSON.parse(obj.confirm).desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText, obj);
+            }
+          } else {
+            const title = this.ChineseDictionary.WARNING;
+            const contentText = `${obj.confirm}`;
+            this.dialogMessage(title, contentText, obj);
+          }
+        } else {
+          this.buttonEvent(obj);
+        }
+      },
+      dialogMessage(title, contentText, obj) {
+        const data = {
+          mask: true,
+          title,
+          content: contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+      },
+      errorconfirmDialog(obj) {
+        this.buttonEvent(obj);
+      },
+      buttonEvent(obj) {
         switch (obj.eName) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
@@ -599,70 +676,62 @@
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
-        const self = this;
-        // tab.confirm = true
+        this.objTabActionSlientConfirm(tab);
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        if (!tab) tab = self.activeTabAction;
-        if (tab.confirm) {
-          if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-            const data = {
-              title: '警告',
-              mask: true,
-              content: tab.confirm,
-              onOk: () => {
-                this.objTabActionSlientConfirm(tab);
-              }
-            };
-            this.$Modal.fcWarning(data);
-          } else if (JSON.parse(tab.confirm).desc) {
-            //            确定后执行下一步操作
-            //            判断是否先执行保存
-            if (JSON.parse(tab.confirm).isSave) {
-              console.log('暂时未处理配置isSave的相关逻辑');
-              // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
-            } else {
-              const data = {
-                title: '警告',
-                mask: true,
-                showCancel: true, 
-                content: JSON.parse(tab.confirm).desc,
-                onOk: () => {
-                  this.objTabActionSlientConfirm(tab);
-                }
-              };
-              this.$Modal.fcWarning(data);
-            }
-            // self.confirmTips({
-            //   action: 'confirm',
-            //   title: tab.webdesc,
-            //   type: 'warning',
-            //   list: [],
-            //   isAction: true,
-            //   desc: JSON.parse(tab.confirm).desc,
-            // });
-            // 清除提示信息
-          } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-            self.beforeObjectSubmit(() => {
-              self.objTabActionSlientConfirm(tab);
-            });
-          } else { // 静默直接执行
-            self.objTabActionSlientConfirm(tab);
-          }
-        } else {
-          self.objTabActionSlientConfirm(tab);
-        }
+        // if (!tab) tab = this.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     this.beforeObjectSubmit(() => {
+        //       this.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     this.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   this.objTabActionSlientConfirm(tab);
+        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
         // const itemName = this.itemInfo.tablename;
-        const { tableName, itemId } = router.currentRoute.params;
-        params[tableName] = {
-          ID: itemId
+        // const { tableName, itemId } = router.currentRoute.params;
+        const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
+        // const ids = itemId.map(d => parseInt(d));
+        const obj = {
+          tableName: this.tableName,
+          ids
         };
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject
+            obj, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
@@ -686,8 +755,7 @@
         });
       },
       objTabActiondDownload(tab) {
-        const { itemId } = router.currentRoute.params;
-        const downloadId = itemId;
+        const downloadId = this.tableRowSelectedIds.map(item => item.ID).toString();
         const paths = tab.action.replace('$objid$', downloadId);
         const eleLink = document.createElement('a');
         const path = getGateway(`${paths}`);
@@ -721,11 +789,19 @@
       },
       objTabActionNavbar(tab) {
         if (tab.action) {
-          const { itemId } = router.currentRoute.params;
+          // const { itemId } = router.currentRoute.params;
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
           const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
           if (actionType === 'SYSTEM') {
             if (singleEditType === ':itemId') {
+              if (this.tableRowSelectedIds.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.tableRowSelectedIds.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
               const path = `/${tab.action.replace(/:itemId/, itemId)}`;
               router.push(
                 path

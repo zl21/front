@@ -11,7 +11,7 @@
       <Button
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :id="item.eName"
-        :key="index"
+        :key="item.eName"
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick('fix', item,index)"
@@ -27,8 +27,8 @@
         v-text="item.webdesc" 
       />
       <Button
-        v-for="(item,index) in dataArray.jflowPluginDataArray"
-        :key="index"
+        v-for="(item) in dataArray.jflowPluginDataArray"
+        :key="item.button"
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
@@ -115,13 +115,12 @@
   
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
-  import getComponentName from '../__utils__/getModuleName';
   import network from '../__utils__/network';
   import { MODULE_COMPONENT_NAME } from '../constants/global';
 
   export default {
     name: 'ButtonList',
-    provide: { [MODULE_COMPONENT_NAME]: getComponentName() },
+    inject: [MODULE_COMPONENT_NAME],
     props: {
       dataArray: {
         type: Object,
@@ -257,7 +256,7 @@
           }
         });
         let printIdArray = [];
-        if (getComponentName()[0] === 'S') { // 只有列表界面需要勾选明细
+        if (this[MODULE_COMPONENT_NAME][0] === 'S') { // 只有列表界面需要勾选明细
           printIdArray = this.idArray;
           if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
             const data = {
@@ -280,7 +279,7 @@
          
           network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
             if (res.status === 200) {
-              if (getComponentName()[0] === 'S') {
+              if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
                   this.objTabActionDialog(tab);
                 } else { 
@@ -329,7 +328,7 @@
         
     },
     created() {
-      this[MODULE_COMPONENT_NAME] = getComponentName();
+      // this[MODULE_COMPONENT_NAME] = getComponentName();
     },
    
   };
