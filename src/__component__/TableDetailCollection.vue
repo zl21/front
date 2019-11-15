@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-               >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -599,7 +599,12 @@
               ) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
-                this.dialogMessage(title, contentText, obj);
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
               } else if (JSON.parse(obj.confirm).desc) {
                 const title = this.ChineseDictionary.WARNING;
                 const content = `${JSON.parse(obj.confirm).desc}`;
