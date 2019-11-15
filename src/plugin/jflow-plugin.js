@@ -271,6 +271,11 @@ async function jflowsave(flag, request) {
         businessUrl: request.url,
         ruleField: 'V'
       }).then((res) => {
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'clearSubmit'
+        }
+      });
       if (res.data.data.records && res.data.data.records[0].notice) {
         window.vm.$Modal.fcError({
           title: '错误',
