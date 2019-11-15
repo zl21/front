@@ -721,10 +721,7 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        // const itemName = this.itemInfo.tablename;
-        // const { tableName, itemId } = router.currentRoute.params;
         const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
-        // const ids = itemId.map(d => parseInt(d));
         const obj = {
           tableName: this.tableName,
           ids

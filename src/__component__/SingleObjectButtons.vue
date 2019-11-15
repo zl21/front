@@ -96,6 +96,7 @@
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import ChineseDictionary from '../assets/js/ChineseDictionary';
 
 
   export default {
@@ -680,7 +681,7 @@
           // 有提示
           if (obj.confirm.indexOf('{') >= 0) {
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+              if (this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length === 0) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
                 const data = {
@@ -691,7 +692,7 @@
                 this.$Modal.fcWarning(data);
               } else if (
                 JSON.parse(obj.confirm).isradio
-                && this.tableRowSelectedIds.length !== 1
+                && this.updateData[this.itemName].delete[this.itemName].length !== 1
               ) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
@@ -707,7 +708,7 @@
                 let contentText = '';
                 const confirm = JSON.parse(obj.confirm);
                 if (content.indexOf('{isselect}') !== '-1') {
-                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                  contentText = `${confirm.desc.replace('{isselect}', this.updateData[this.itemName].delete[this.itemName].length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
                 }
@@ -977,31 +978,36 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
+        const obj = {};
         if (this.objectType === 'vertical') { // 上下结构
-          const childTableParams = [];
+          // const childTableParams = [];
           if (this.subtables()) { // 有子表
-            if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-              childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-              params[this.itemName] = {
-                ...childTableParams[this.itemName]
-              };
-            }
-            params[this.tableName] = {
-              ID: this.itemId
+            // if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            //   childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+            //   params[this.itemName] = {
+            //     ...childTableParams[this.itemName]
+            //   };
+            // }
+            const ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            const obj = {
+              tableName: this.itemName,
+              ids
             };
+            // params[this.tableName] = {
+            //   ID: this.itemId
+            // };
           } else { // 没有子表
-            params.ID = this.itemId;
+            // params.ID = this.itemId;
           }
         } else { // 左右结构
-          params[this.tableName] = {
-            ID: this.itemId
-          };
+          // params[this.tableName] = {
+          //   ID: this.itemId
+          // };
         }
-
+        
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject
+            obj, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
@@ -2279,6 +2285,7 @@
     beforeCreate() {
     },
     created() {
+      this.ChineseDictionary = ChineseDictionary;
       window.addEventListener('network', this.networkEventListener);// 监听接口
       const { tableName, tableId, itemId } = router.currentRoute.params;
       this.tableName = tableName;

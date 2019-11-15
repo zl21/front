@@ -808,10 +808,11 @@
         let sendData = {};
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
         let LinkageFormInput = '';
+
         if (current.refcolval && current.refcolval.srccol) {
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
-        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput) {
+        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
             : '';
