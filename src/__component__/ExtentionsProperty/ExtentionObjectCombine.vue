@@ -1,6 +1,9 @@
 <template>
   <div class="extentionObjectCombine">
-    <Description :option="option" />
+    <Description
+      :option="option"
+      @removeOption="removeOption"
+    />
     <div class="content">
       <template v-for="(o, i) in option.objectInfo">
         <div
@@ -69,6 +72,9 @@
       };
     },
     methods: {
+      removeOption(keyArray) {
+        this.$emit('removeOption', keyArray || []);
+      },
       cloneObject(obj) {
         return JSON.parse(JSON.stringify(obj));
       },

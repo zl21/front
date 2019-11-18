@@ -70,7 +70,7 @@ const input = {
     // 添加正则后，校验出错的时候触发
     regxCheck: (value, $this, errorValue) => {}
   }
-}
+};
 // 下拉框
 const select = {
   type: 'select', // 必填!
@@ -110,7 +110,7 @@ const select = {
     transfer: true,
     optionsVisible: true
   }
-}
+};
 // 复选框组件
 // const checkboxGroup = {
 //   type: 'checkboxGroup', // 必填!
@@ -145,7 +145,7 @@ const radiobox = {
     // 是否禁用当前项
     disabled: false
   }
-}
+};
 // 复选框
 const checkbox = {
   type: 'checkbox', // 必填!
@@ -169,7 +169,7 @@ const checkbox = {
   event: {
     change: (event, $this) => {}
   }
-}
+};
 // 日期选择
 const DatePicker = {
   type: 'DatePicker', // 必填!
@@ -205,7 +205,7 @@ const DatePicker = {
     // 是否将弹层放置于 body 内，在 Tabs、带有 fixed 的 Table 列内使用时，建议添加此属性，它将不受父级样式影响，从而达到更好的效果
     transfer: true
   }
-}
+};
 
 // 时间点选择
 const TimePicker = {
@@ -239,7 +239,7 @@ const TimePicker = {
     editable: false,
     transfer: true
   }
-}
+};
 // 下拉框
 const DropDownSelectFilter = {
   type: 'DropDownSelectFilter', // 必填!
@@ -249,6 +249,7 @@ const DropDownSelectFilter = {
   props: {
     // 是否是单选，可选值为 true、false
     single: true,
+    isShowPopTip: () => true, // form 不展示
     // 下拉气泡表格里数据
     data: {},
     // 数据总条数
@@ -264,9 +265,41 @@ const DropDownSelectFilter = {
     // 下拉多选 默认选中数据
     defaultSelected: [],
     // 是否将弹层放置于 body 内
-    transfer: true
+    transfer: true,
+    // 是否开启回车默认选中第一条
+    enterType: false
   }
-}
+};
+// 下拉框
+const DropMultiSelectFilter = {
+  type: 'DropMultiSelectFilter', // 必填!
+  field: '', // 必填!
+  title: '', // 必填!
+  value: '',
+  props: {
+    // 是否是单选，可选值为 true、false
+    single: true,
+    isShowPopTip: () => true, // form 不展示
+    // 下拉气泡表格里数据
+    data: {},
+    // 数据总条数
+    totalRowCount: 0,
+    // 每页条数
+    pageSize: 10,
+    // 模糊搜索的数据
+    AutoData: [],
+    // 模糊搜索要显示的列
+    columns: [],
+    // 无数据的时候提示
+    dataEmptyMessage: '暂无数据',
+    // 下拉多选 默认选中数据
+    defaultSelected: [],
+    // 是否将弹层放置于 body 内
+    transfer: true,
+    // 是否开启回车默认选中第一条
+    enterType: false
+  }
+};
 
 // 弹框多选
 const AttachFilter = {
@@ -283,12 +316,14 @@ const AttachFilter = {
     filterTip: true,
     // 是否选中后禁止编辑 true、false
     placeholder: null,
-    // 模糊查询的文字信息，支持多列
-    AuotData: [],
+    // 模糊查询的文字信息，支持多列              item.props.AutoData = [];
+    AutoData: [],
     // 定义选中展示的文字的key
     hideColumnsKey: ['id'],
     //
     disabled: false,
+    // 是否开启回车默认选中第一条
+    enterType: false,
     filterDate: {},
     // 配置弹窗的配置项 model
     dialog: {
@@ -313,7 +348,7 @@ const AttachFilter = {
       }
     ]
   }
-}
+};
 // 弹框多选
 const ImageUpload = {
   type: 'ImageUpload', // 必填!
@@ -331,7 +366,7 @@ const ImageUpload = {
       valuedata: []
     }
   }
-}
+};
 
 // 文本编辑器
 const Wangeditor = {
@@ -342,7 +377,7 @@ const Wangeditor = {
   props: {
     height: 200
   }
-}
+};
 // 读写规则
 const EnumerableInput = {
   type: 'EnumerableInput', // 必填!
@@ -352,9 +387,9 @@ const EnumerableInput = {
   props: {
     height: 200
   }
-}
+};
 
-// 扩展属性 
+// 扩展属性
 const ExtentionInput = {
   type: 'ExtentionInput', // 必填!
   field: '', // 必填!
@@ -363,7 +398,7 @@ const ExtentionInput = {
   props: {
     height: 200
   }
-}
+};
 
 const dataProp = {
   DropDownSelectFilter,
@@ -378,7 +413,8 @@ const dataProp = {
   ImageUpload,
   Wangeditor,
   EnumerableInput,
-  ExtentionInput
+  ExtentionInput,
+  DropMultiSelectFilter
 
-}
-export default dataProp
+};
+export default dataProp;

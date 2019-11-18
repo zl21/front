@@ -93,6 +93,7 @@ export default [
         name: '排序信息',
         key: 'orderby',
         type: 'object-group',
+        showLabel: true,
         enableIncrease: true,
         objectInfo: [
           {
@@ -131,7 +132,7 @@ export default [
     description: '表的数据由定制服务查询写入，而非标准的数据，不支持导出，则可隐藏导出按钮'
   },
   {
-    name: '导入',
+    name: '导入模板外键字段可选择',
     key: 'smalltable',
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
@@ -195,6 +196,22 @@ export default [
     description: '直接配置字段名，中越往后的字段优先级越高'
   },
   {
+    name: '状态合并查询',
+    key: 'integrationstatus',
+    type: 'input-group',
+    inputLists: [{
+      name: '合并后的查询字段名称',
+      type: 'input',
+      key: 'name'
+    }, {
+      name: '合并字段',
+      key: 'status',
+      type: 'input',
+      outputValueType: 'Array'
+    }],
+    description: '在列表界面将多个下拉选项状态字段的值合并到一个查询字段中显示'
+  },
+  {
     name: '列表样式优先级',
     key: 'status4css_priority',
     type: 'input',
@@ -208,6 +225,13 @@ export default [
     description: '外键关联下拉列表每页显示行数'
   },
   {
+    name: '新增界面可显示动作定义',
+    key: 'showaction',
+    type: 'radio',
+    enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
+    description: '新增单对象可显示符合显示条件的动作定义按钮'
+  },
+  {
     name: '列表定制查询',
     key: 'cusQResult',
     type: 'input-group',
@@ -219,5 +243,12 @@ export default [
       }
     ],
     description: '表的数据由定制服务查询写入，而非标准的数据'
+  },
+  {
+    name: '前端自定义参数',
+    key: 'webconf',
+    type: 'input',
+    outputValueType: 'JSON',
+    description: '自定义参数格式及内容'
   },
 ];

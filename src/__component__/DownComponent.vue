@@ -1,29 +1,33 @@
 <template>
+  <div
+    ref="downComponent"
+    class="downComponent-context"
+  >
     <div
-            ref="downComponent"
-            class="downComponent"
-            :style="downComponent"
+      v-if="rowAll > searchFoldnum"
+      class="tag-close"
     >
-        <div
-                v-if="rowAll > searchFoldnum"
-                class="tag-close"
-        >
-            <Icon
-                    :class="className"
-                    @click="toggle"
-            />
-        </div>
-        <div
-                v-if="title"
-                class="downComponent-h5"
-                @click="toggle"
-        >
-            {{ title }}<Icon :class="icon" />
-        </div>
-        <div :class="downContent">
-            <slot name="dwonContent" />
-        </div>
+      <Icon
+        :class="className"
+        @click="toggle"
+      />
     </div>
+    <div
+      class="downComponent"
+      :style="downComponent"
+    >
+      <div
+        v-if="title"
+        class="downComponent-h5"
+        @click="toggle"
+      >
+        {{ title }}<Icon :class="icon" />
+      </div>
+      <div :class="downContent">
+        <slot name="dwonContent" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,7 +47,7 @@
           return 0;
         }
       },
-      rowAll:{
+      rowAll: {
         type: [Number, String],
         default() {
           return 0;
@@ -69,7 +73,7 @@
     },
     computed: {
       className() {
-        return `${this.dowClass === false ? ' iconfont  icon-xiajiantou' : 'iconfont  icon-xiajiantou icon-xiadown'}`;
+        return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       },
       downComponent() {
         return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
@@ -87,7 +91,7 @@
         // 调整ag表格高度
         setTimeout(() => {
           const detailTable = document.querySelector('.detailTable');
-          if (detailTable.agTable) {
+          if (detailTable && detailTable.agTable) {
             detailTable.agTable.fixContainerHeight();
           }
         }, 300);
@@ -98,8 +102,10 @@
 </script>
 
 <style lang="less">
-    .downComponent{
+    .downComponent-context{
         position: relative;
+    }
+    .downComponent{
         border: 1px solid #d8d8d8;
         transition: height .5s;
         box-sizing: border-box;

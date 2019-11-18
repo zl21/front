@@ -1,5 +1,8 @@
 <template>
-  <div class="navigator">
+  <div
+    v-if="showModule.Navigator"
+    class="navigator"
+  >
     <div
       class="left"
       :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
@@ -32,64 +35,111 @@
       >
     </div>
     <div class="middle">
-      <NavigatorPrimaryMenu
-        v-for="(menu, index) in menuLists"
-        :key="`primary-menu-${index}`"
-        :data="menu"
-        :index="index"
+      <div style="display: flex;">
+        <NavigatorPrimaryMenu
+          v-for="(menu, index) in menuLists"
+          :key="`primary-menu-${index}`"
+          :data="menu"
+          :index="index"
+          @togglePrimaryMenu="togglePrimaryMenu"
+        />
+      </div>
+    </div>
+    <transition name="fade">
+      <NavigatorSubMenu
+        v-show="primaryMenuIndex!==-1"
+        :data="togglePrimaryMenuData || []"
       />
+    </transition>
+    <div
+      v-if="navigatorSetting.length > 0"
+      class="tag right"
+    >
+      <Badge 
+        v-for="(item,index) in navigatorSetting" 
+        :key="index"
+        style="width:50px;height:50px"
+        :offset="['6px','-8px']"
+        :count="item.count"
+        @click.native="item.callback"
+      >
+        <i 
+          class="iconfont"
+          :class="item.icon"
+        />
+      </Badge>
     </div>
     <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
       <template v-if="searchBtn === false">
-<AutoComplete
+        <AutoComplete
           ref="AutoComplete"
           v-model="keyWord"
           class="nav-search"
           icon="ios-search"
-            @on-select="routerNext"
+          placeholder="请输入要查询的功能名"
+          @on-click="searchBtn = true"
           @click="setBtn"
-          placeholder="请输入要查询的功能名" 
-            @input="searchData"
+          @on-keydown="enter"
+          @on-change="searchData"
         >
-          <Option v-for="(item,index) in searchList"
-:value="item.desc" :key="index" :lable="item">
-{{ item.desc }}
-</Option>
+          <Option
+            v-for="(item,index) in searchList"
+            :key="index"
+            :value="index"
+            :lable="item.desc"
+            @on-select-selected="routerNext"
+          >
+            {{ item.desc }}
+          </Option>
         </AutoComplete>
-</template>
-
-
-      <i v-if="searchBtn === true"
-class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
+      </template>
+      
+      
+      <i
+        v-if="searchBtn === true"
+        class="iconfont iconbj_search"
+        @click="searchBtn = false"
+      />
     </div>
     <div class="tag right">
-      <i class="iconfont icon-yonghu-"
-@click="show = true" />
+      <i
+        class="iconfont iconmd-person"
+        @click="show = true"
+      />
     </div>
-    <Drawer v-model="show">
-      <SetPanel :panel="setPanel"
-@changePwdBox="changePwdBox" />
+    <Drawer
+      v-model="show"
+      :closable="false"
+    >
+      <SetPanel
+        :panel="setPanel"
+        @changePwdBox="changePwdBox"
+      />
     </Drawer>
-    <Dialog ref="dialogRef"
-:title="dialogConfig.title" :mask="dialogConfig.mask" :content-text="dialogConfig.contentText" :footer-hide="dialogConfig.footerHide" :confirm="dialogConfig.confirm" :dialog-component-name="dialogComponentName" />
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+    />
   </div>
 </template>
 
 <script>
-  import { mapState, mapMutations, mapActions } from 'vuex';
-  import Vue from 'vue';
+  import { mapState, mapMutations } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import Dialog from './Dialog.vue';
-  import CustomizeModule from '../__config__/customizeDialog.config';
   import closedImg from '../assets/image/closed@2x.png';
   import openedImg from '../assets/image/open@2x.png';
   import logoImg from '../assets/image/logo.png';
   import bannerImg from '../assets/image/banner.png';
   import { routeTo } from '../__config__/event.config';
-
-  import { enableGateWay } from '../constants/global';
   import network, { urlSearchParams } from '../__utils__/network';
+  import NavigatorSubMenu from './NavigatorSubMenu';
 
   export default {
     name: 'Navigator',
@@ -97,9 +147,12 @@ class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
       NavigatorPrimaryMenu,
       SetPanel,
       Dialog,
+      NavigatorSubMenu
     },
+    
     data() {
       return {
+        // primaryMenuShow: false,
         imgSrc: {
           closedImg,
           openedImg,
@@ -119,44 +172,96 @@ class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
           mask: true,
           footerHide: false,
           contentText: '',
-          confirm: () => {},
+          confirm: () => {
+          },
         }, // 弹框配置信息
         dialogComponentName: null,
+        togglePrimaryMenuData: []
       };
     },
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         menuLists: ({ menuLists }) => menuLists,
+        navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
+        showModule: ({ showModule }) => showModule,
+        primaryMenuIndex: state => state.primaryMenuIndex,
       }),
+      
+    },
+    watch: {
+      showModule(val) {
+        if (!val.Navigator) {
+          this.$el.parentElement.hidden = true;
+          this.$el.parentElement.parentElement.hidden = true;
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+        }
+      },
+      searchBtn(val) {
+        if (val === false) {
+          setTimeout(() => {
+            this.$refs.AutoComplete.$el.querySelector('input').focus();
+          }, 300);
+        }
+      }
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
-      ...mapActions('global', ['getMenuLists']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu']),
+      togglePrimaryMenu(data, index) {
+        this.togglePrimaryMenuData = data;
+        if (index === this.primaryMenuIndex) {
+          this.hideMenu();
+        } else {
+          this.changeSelectedPrimaryMenu(index);
+        }
+      },
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();
         this.dialogConfig.title = '修改密码';
         this.dialogConfig.footerHide = true;
-        Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
+        // Vue.component('ChangePassword', CustomizeModule.ChangePassword.component);
         this.dialogComponentName = 'ChangePassword';
       },
-      routeTo(data) {
+      enter(event) {
+        if (event.keyCode === 13) {
+          let index = 0;
+          if (this.$refs.AutoComplete.$refs.select.focusIndex !== -1) {
+            index = this.$refs.AutoComplete.$refs.select.focusIndex;
+          } else {
+            index = 0;
+          }  
+          const routerItem = this.searchList[index];
+          if (routerItem) {
+            this.routeTonext(routerItem);
+          }
+        }
+      },
+      routeTonext(data) {
         const type = data.type;
+        let tabid = 0;
+        if (type === 'table') {
+          tabid = data.tabid;
+        } else {
+          tabid = data.actid;
+        }
         routeTo(
-          { type, info: { tableName: data.name, tableId: data.tabid } },
+          { type, info: { tableName: data.name, tableId: tabid } },
           () => {
             this.keyWord = '';
-            this.searchList = [];
+            setTimeout(() => {
+              this.searchList = [];
+            }, 100);
           }
         );
       },
       searchData(value) {
+        this.searchList = [];
+
         if (value === undefined || value.length < 1) {
-          this.searchList = [];
-          return false;
+          return;
         }
-        const globalServiceId = window.sessionStorage.getItem('serviceId');
         network
           .post(
             '/p/cs/SearchWords',
@@ -166,19 +271,19 @@ class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
           )
           .then((r) => {
             if (r.status === 200 && r.data.code === 0) {
-              this.searchList = r.data.data.concat([]);
+              this.searchList = r.data.data || r.data.datas;
             }
           });
       },
-      setBtn() {},
+      setBtn() {
+      },
       routerNext(name) {
-        console.log(name);
-        const index = this.searchList.findIndex(x => x.desc === name);
+        const index = name.value;
         const routerItem = this.searchList[index];
         if (routerItem) {
-          this.routeTo(routerItem);
+          this.routeTonext(routerItem);
         }
-      //
+        //
       },
       loadEnterpriseConfig() {
         const image = (window.ProjectConfig || {}).image || {
@@ -193,114 +298,140 @@ class="iconfont icon-kuangjia-sousuo" @click="searchBtn = false" />
     },
     mounted() {
       this.loadEnterpriseConfig();
-      this.getMenuLists();
     },
   };
 </script>
 
 <style lang="less">
-.burgeon-drawer-content {
-  //重置BurgeonUI样式
-  border-top-left-radius: 0px !important;
-  border-top-right-radius: 0px !important;
-}
-
-.burgeon-drawer-body {
-  //重置BurgeonUI样式
-  padding: 0px !important;
-}
-
-.navigator {
-  height: 100%;
-  display: flex;
-  background-color: #1f272c;
-  .left {
-    img.trigger {
-      height: 50px;
-    }
-    img.logo {
-      position: absolute;
-      width: 30px;
-      top: 10px;
-      left: 18px;
-    }
-    img.banner {
-      width: 76px;
-      height: 30px;
-      position: absolute;
-      top: 11px;
-      left: 64px;
-    }
-    img:hover {
-      cursor: pointer;
-    }
+  .burgeon-drawer-content {
+    //重置BurgeonUI样式
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
   }
-  .middle {
-    margin-left: 10px;
-    position: relative;
+  
+  .burgeon-drawer-body {
+    //重置BurgeonUI样式
+    padding: 0px !important;
+  }
+  
+  .navigator {
+    height: 100%;
     display: flex;
-    flex: 1 1 1px;
-  }
-  .nav-search {
-    input {
-      display: inline-block;
-      width: 100%;
-      padding: 0 8px;
-      border: solid 1px #fff;
-      border-radius: 15px;
-      background: #4f5356;
-      height: 28px;
-      line-height: 28px;
-      color: #fff;
-      font-size: 13px;
-    }
-    i {
-      color: #c0c4cc;
-      padding-top: 2px;
-    }
-  }
-  .tag {
-    width: 50px;
-    float: left;
-    font-size: 24px;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-    color: #fff;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    i {
-      font-size: 22px;
-    }
-  }
-  .tag-search {
-    width: 192px;
-    line-height: 40px;
-  }
-  .tag:hover {
-    background: #2e373c;
-  }
-}
-.Poptip-nav {
-  ul {
-    li {
-      &:hover {
-        background: #f4f4f4;
+    background-color: #1f272c;
+    
+    .left {
+      img.trigger {
+        height: 50px;
       }
-      padding: 0 20px;
-      text-align: left;
-      margin: 0;
-      line-height: 34px;
+      
+      img.logo {
+        position: absolute;
+        width: 30px;
+        top: 10px;
+        left: 18px;
+      }
+      
+      img.banner {
+        width: 76px;
+        height: 30px;
+        position: absolute;
+        top: 11px;
+        left: 64px;
+      }
+      
+      img:hover {
+        cursor: pointer;
+      }
+    }
+    
+    .middle {
+      margin-left: 10px;
+      position: relative;
+      display: flex;
+      flex: 1 1 1px;
+      overflow: auto;
+    }
+     .middle::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .nav-search {
+      input {
+        display: inline-block;
+        width: 100%;
+        padding: 0 8px;
+        border: solid 1px #fff;
+        border-radius: 15px;
+        background: #4f5356;
+        height: 28px;
+        line-height: 28px;
+        color: #fff;
+        font-size: 13px;
+        transition: all 0.25s;
+
+        &:hover{
+            font-size: 12px;
+            padding: 0px 14px;
+            transition: all 0.25s;
+        }
+      }
+      
+      i {
+        color: #c0c4cc;
+        padding-top: 2px;
+      }
+    }
+    
+    .tag {
+      width: 50px;
+      float: left;
+      font-size: 24px;
+      text-align: center;
+      line-height: 50px;
       cursor: pointer;
-      color: #606266;
-      font-size: 14px;
-      list-style: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: #fff;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      
+      i {
+        font-size: 22px;
+      }
+    }
+    
+    .tag-search {
+      width: 192px;
+      line-height: 40px;
+      .burgeon-select{
+          text-align: left;
+      }
+    }
+    
+    .tag:hover {
+      background: #2e373c;
     }
   }
-}
+  
+  .Poptip-nav {
+    ul {
+      li {
+        &:hover {
+          background: #f4f4f4;
+        }
+        
+        padding: 0 20px;
+        text-align: left;
+        margin: 0;
+        line-height: 34px;
+        cursor: pointer;
+        color: #606266;
+        font-size: 14px;
+        list-style: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 </style>

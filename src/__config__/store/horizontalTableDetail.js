@@ -1,8 +1,10 @@
+/* eslint-disable import/no-dynamic-require */
 // import actions from '../actions/horizontalTableDetail.actions';
-import mutations from '../mutations/horizontalTableDetail.mutations';
+// import mutations from '../mutations/horizontalTableDetail.mutations';
 import { Version } from '../../constants/global';
 
-const actions = require(`../actions/version_${Version}/horizontalTableDetail.actions`).default;
+const mutations = () => require(`../mutations/version_${Version()}/horizontalTableDetail.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/horizontalTableDetail.actions`).default;
 
 
 export default () => ({
@@ -18,11 +20,19 @@ export default () => ({
     copyDataForReadOnly: {}, // 复制按钮操作用作判断是否是只读类型
     tooltipForItemTable: [], // 子表操作失败提示
     tablePageInfo: {
-      currentPageIndex: 0,
+      currentPageIndex: 1,
       pageSize: 10
     },
-    objTabActionSlientConfirmData: {}
+    childTableReadonly: false, // 子表是否为只读状态
+    objTabActionSlientConfirmData: {},
+    LinkageForm: {}, // form 校验
+    mappStatus: {}, // 校验联动图
+    CompositeForm: {}, // 表单实例
+    anotherData: [], // 按钮显示的备份数据
+    jflowPluginDataArray: [],
+    instanceId: null, // jflow流程标志
+    refreshButton: true, // 为方便jflow控制，改为全局状态调用
   },
-  actions,
-  mutations
+  actions: actions(),
+  mutations: mutations()
 });

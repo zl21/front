@@ -17,7 +17,8 @@
       v-if="mainFormInfo.formData.isShow"
       object-type="vertical"
       :is-main-table="true"
-      :objreadonly="mainFormInfo.buttonsData.data.objreadonly"
+      :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
+      :readonly="mainFormInfo.buttonsData.data.objreadonly"
       :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -75,14 +76,20 @@
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
+          obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
           obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
           obj.componentAttribute.type = 'vertical';
-          Vue.component(`${item.tablename}_TapComponent`, Vue.extend(tabComponent));
-          obj.component = `${item.tablename}_TapComponent`;
+          if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
+            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+            obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
+          } else {
+            Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+          }
+          obj.component = `tapComponent.${item.tablename}`;
           obj.cilckCallback = this.tabClick;
           arr.push(obj);
         });
@@ -125,53 +132,81 @@
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        if (itemId === 'New') {
-          this.updateAddData({ tableName, value: obj });
+        if (itemId) {
+          if (itemId === 'New') {
+            this.updateAddData({ tableName, value: obj });
+          }
+          this.updateDefaultData({ tableName, value: obj });
         }
-        this.updateDefaultData({ tableName, value: obj });
       },
       formChange(val, changeVal) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
         obj[tableName] = val;
-        this.updateChangeData({ tableName, value: changeVal });
-        if (itemId === 'New') {
-          this.updateAddData({ tableName, value: obj });
-        } else {
-          this.updateModifyData({ tableName, value: obj });
+        if (itemId) {
+          this.updateChangeData({ tableName, value: changeVal });
+          if (itemId === 'New') {
+            this.updateAddData({ tableName, value: obj });
+          } else {
+            this.updateModifyData({ tableName, value: obj });
+          }
         }
       },
       verifyFormPanelMain(data) {
-        const { tableName } = this.$route.params;
-        this.updateCheckedInfoData({ tableName, value: data });
+        const { tableName, itemId } = this.$route.params;
+        if (itemId) {
+          this.updateCheckedInfoData({ tableName, value: data });
+        }
       },
       tabClick(index) {
         // tab点击
         if (index === this.tabCurrentIndex) {
           return;
         }
-        this.updateTabCurrentIndex(index);
-        const { itemId } = this.$route.params;
-        const refTab = this.tabPanel[index];
-        if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
-          // 获取子表表单
-          const formParam = {
-            table: refTab.tablename,
-            inlinemode: refTab.tabinlinemode,
-            tabIndex: index
-          };
-          this.getFormDataForRefTable(formParam);
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
+        let webactType = '';
+        if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
+          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
         }
-        if (refTab.tabrelation === '1:m') {
-          this.getObjectTableItemForTableData({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, searchdata: { column_include_uicontroller: true }, tabIndex: index
-          });
-        } else if (refTab.tabrelation === '1:1') {
-          this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-          this.getItemObjForChildTableForm({
-            table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
-          });
+        if (webactType !== 'ALL') {
+          this.updateTabCurrentIndex(index);
+          const { itemId } = this.$route.params;
+          const refTab = this.tabPanel[index];
+          let getButtonDataPromise = null;
+          if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
+            // 获取子表表单
+            getButtonDataPromise = new Promise((rec, rej) => {
+              this.getObjectTabForRefTable({
+                table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+              });
+            });
+            const formParam = {
+              table: refTab.tablename,
+              inlinemode: refTab.tabinlinemode,
+              tabIndex: index
+            };
+            this.getFormDataForRefTable(formParam);
+          }
+          if (refTab.tabrelation === '1:m') {
+            getButtonDataPromise.then(() => {
+              this.getObjectTableItemForTableData({
+                table: refTab.tablename,
+                objid: itemId,
+                refcolid: refTab.refcolid,
+                searchdata: {
+                  column_include_uicontroller: true,
+                  startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                  range: this.tablePageInfo.pageSize,
+                  fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
+                },
+                tabIndex: index
+              });
+            });
+          } else if (refTab.tabrelation === '1:1') {
+            this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
+            this.getItemObjForChildTableForm({
+              table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+            });
+          }
         }
       },
     },

@@ -5,26 +5,33 @@
 </template>
 
 <script>
-  import { hideMenu } from './__config__/event.config';
+  import { hideMenu, launchNetworkMonitor } from './__config__/event.config';
+  import { emptyRecord } from './__utils__/indexedDB';
   import network from './__utils__/network';
+  import { enableInitializationRequest } from './constants/global';
+
   
   export default {
     name: 'App',
     mounted() {
       hideMenu();
+      launchNetworkMonitor();
+      emptyRecord(Date.now() - 1000 * 60 * 60);
     },
     created() {
       this.getUserInfo();
     },
     methods: {
       getUserInfo() {
-        network.get('/p/cs/hello').then((res) => {
-          if (res.status === 200 && res.data.code === 0) {
-            this.$store.commit('global/updataUserInfoMessage', {
-              userInfo: res.data
-            });
-          }
-        });
+        if (enableInitializationRequest()) {
+          network.get('/p/cs/hello').then((res) => {
+            if (res.status === 200 && res.data.code === 0) {
+              this.$store.commit('global/updataUserInfoMessage', {
+                userInfo: res.data
+              });
+            }
+          });
+        }
       }
     },
   };

@@ -1,5 +1,7 @@
 
 import network, { urlSearchParams } from '../../../../__utils__/network';
+import router from '../../../router.config';
+
 
 export const fkQueryList = function fkQueryList(params) {
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
@@ -50,22 +52,60 @@ export const fkObjectSave = function fkObjectSave(params) {
     }
   });
 };
+export const fkModify = function fkModify(params) {
+  // 弹窗批量 请求
+  network
+    .post('/p/cs/getObjectForUpTmp', urlSearchParams(params.searchObject))
+    .then((res) => {
+      if (typeof params.success === 'function') {
+        params.success(res);
+      }
+    });
+};
+export const fksaveModify = function fksaveModify(params) {
+  // 弹窗批量 保存
+  network.post('/p/cs/batchSave', params.searchObject).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res);
+    }
+  });
+};
 export const getTableQuery = function getTableQuery(params) {
+  // 弹窗单选 表格
   network.post('/p/cs/getTableQuery', urlSearchParams(params.searchObject)).then((res) => {
     if (typeof params.success === 'function') {
+      // res.data.data = res.data && res.data;
+      res.data.data = res.data;
+      // res.data.data.datas = res.data && res.data.datas;
       params.success(res);
     }
   });
 };
 export const fkQueryListPop = function fkQueryListPop(params) {
+  // 弹窗单选 请求
   network.post('/p/cs/QueryList', urlSearchParams({ searchdata: params.searchObject }), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
+      res.data.data = res.data && res.data.datas;
       params.success(res);
     }
   });
 };
 export const itemTableDelete = function itemTableDelete({ params, path, success }) { // 表格删除方法
-  network.post(path || '/p/cs/objectDelete', params).then((res) => {
+  const { itemId } = router.currentRoute.params;
+  let arrayID = [];
+  const objItem = {};
+  Object.keys(params.tabItem).reduce((obj, crr) => {
+    arrayID = params.tabItem[crr].map(item => item.ID.toString());
+    objItem[crr] = arrayID;
+    return obj;
+  }, {});
+  const paramsValue = {
+    table: params.table,
+    objid: itemId,
+    isdelmtable: false,
+    data: objItem
+  };
+  network.post('/p/cs/objectDelete', urlSearchParams(paramsValue)).then((res) => {
     if (typeof success === 'function') {
       success(res);
     }
@@ -88,6 +128,23 @@ export const deleteImg = function deleteImg({ params, success }) { // 删除图�
   network.post(path || '/p/cs/users/save', params).then((res) => {
     if (typeof success === 'function') {
       success(res);
+    }
+  });
+};
+export const batchUploadProgress = function batchUploadProgress(params) {
+  // 上传文件进度
+  network.post('/p/cs/batchUploadProgress', urlSearchParams(params.searchObject)).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res.data);
+    }
+  });
+};
+
+export const equalformRequest = function equalformRequest(params) {
+  // 服务端赋值
+  network.post(params.url, params.searchObject, { serviceId: '' }).then((res) => {
+    if (typeof params.success === 'function') {
+      params.success(res.data);
     }
   });
 };

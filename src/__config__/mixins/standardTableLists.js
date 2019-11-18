@@ -1,6 +1,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
-import { STANDARD_TABLE_COMPONENT_PREFIX } from '../../constants/global';
+import { STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
 import store from '../store.config';
 
 const getComponentName = () => {
@@ -10,6 +10,10 @@ const getComponentName = () => {
 
 
 export default () => ({
+  provide: {
+    [MODULE_COMPONENT_NAME]: getComponentName(),
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+  },
   mounted() {
     this.moduleComponentName = getComponentName();
   },
@@ -53,6 +57,7 @@ export default () => ({
         'setActionDialog',
         'closeImportDialog',
         'setAgTableErrorMessage',
+        'setPrintValueForButtons'
       
         
       ]),
@@ -70,7 +75,8 @@ export default () => ({
         'show-total': true
       }),
       formItems: ({ formItems }) => formItems,
-      buttons: ({ buttons }) => buttons
+      buttons: ({ buttons }) => buttons,
+      webconf: ({ webconf }) => webconf
     }),
   },
   beforeDestroy() {

@@ -68,6 +68,7 @@
               <Table
                       class="table"
                       highlight-row
+                      :height="true"
                       :data="extendTableData"
                       :columns="columnsBottom"
               />
@@ -80,15 +81,15 @@
             v-model="copyPermission"
             closable
             :width="420"
-            footer-hide
             mask
+            footer-hide
             title="复制权限"
     >
       <div class="modalContent">
         <div class="itemContent">
           <div class="labelContent">
             <div class="labelTip">*</div>
-            <div>源角色:</div>
+            <div>原角色:</div>
           </div>
           <DropDownSelectFilter class="itemCom"
                                 :totalRowCount="totalRowCount"
@@ -96,6 +97,7 @@
                                 :AutoData="singleAutoData"
                                 :columnsKey="['NAME']"
                                 :hidecolumns="['ID']"
+                                :defaultSelected="singleDefaultSelected"
                                 @on-fkrp-selected="singleDropSelected"
                                 @on-page-change="singleDropPageChange"
                                 @on-popper-hide="singlePopperHide"
@@ -115,6 +117,8 @@
                                 :pageSize="dropPageSize"
                                 :columnsKey="['NAME']"
                                 :hidecolumns="['ID']"
+                                :defaultSelected="multipleDefaultSelected"
+                                :AutoData="multipleAutoData"
                                 @on-fkrp-selected="multipleDropSelected"
                                 @on-page-change="multipleDropPageChange"
                                 @on-popper-hide="multiplePopperHide"
@@ -167,7 +171,11 @@
 
 <script>
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
-  import network, { urlSearchParams } from '../../__utils__/network';
+  // import network, { urlSearchParams } from '../../__utils__/network';
+  import { Version } from '../../constants/global';
+
+  const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
+
 
   export default {
     data() {
@@ -181,6 +189,8 @@
         backupsDropData: [], // 备份复制权限外键数据
         singleDropDownSelectFilterData: {}, // 复制权限外键单选数据
         singleAutoData: [], // 复制权限外键单选模糊搜索数据
+        singleDefaultSelected: [], // 复制权限单选默认数据
+        multipleDefaultSelected: [], // 复制权限多选默认数据
         multipleDropDownSelectFilterData: {}, // 复制权限外键多选数据
         multipleAutoData: [], // 复制权限外键多选模糊搜索数据
         totalRowCount: 0, // 复制权限外键数据的totalRowCount
@@ -190,6 +200,7 @@
         menuHighlightIndex: 0, // 菜单高亮的index
         menuList: [], // 菜单数据
         groupId: '', // 菜单id
+        newGroupId: '', // 切换菜单时，当前切换的id
 
         menuTreeData: [], // 菜单树数据
         menuTreeQuery: '', // 菜单树检索的值
@@ -197,6 +208,8 @@
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
         adTableCateId: null, // 树子节点ID
+        newAdSubsystemId: '', // 树节点ID
+        newAdTableCateId: null, // 树子节点ID
 
         tableDefaultSelectedRowIndex: 0, // 表格默认选中的行的index
         tableData: [], // 表格数据
@@ -230,18 +243,23 @@
 
               })
             ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.seeValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '查看')
-            ]),
+            renderHeader: (h, params) => {
+              return h('div', [
+                h('Checkbox', {
+                  style: {},
+                  attrs: {
+                    dataChecked: params.column.seeValue
+                  },
+                  props: {
+                    value: params.column.seeValue
+                  },
+                  on: {
+                    'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
+                  }
+                }),
+                h('Span', '查看')
+              ]);
+            },
           },
           {
             key: 'edit',
@@ -548,6 +566,12 @@
       copyPermission(val) {
         if (val) {
           this.getCopyPermissionData();
+        } else {
+          this.singleDefaultSelected = [];
+          this.multipleDefaultSelected = [];
+          this.singleAutoData = [];
+          this.multipleAutoData = [];
+          this.copyType = '';
         }
       }
     },
@@ -567,12 +591,12 @@
         });
       }, // 刷新数据
       refreshButtonClick() {
-        if (this.checkNoSaveData()) {
+        if (this.checkNoSaveData('refresh')) {
         } else {
           this.refresh();
         }
       }, // 刷新按钮
-      checkNoSaveData() {
+      checkNoSaveData(type) {
         this.getSaveData();
         if (this.tableSaveData.length > 0) {
           this.$Modal.fcWarning({
@@ -581,10 +605,17 @@
             showCancel: true,
             content: '是否保存修改的数据！',
             onOk: () => {
-              this.savePermission();
+              this.savePermission(type);
             },
             onCancel: () => {
-              this.refresh();
+              if (type === 'refresh') {
+                this.refresh();
+              } else {
+                this.groupId = this.newGroupId;
+                this.adSubsystemId = this.newAdSubsystemId;
+                this.adTableCateId = this.newAdTableCateId;
+                this.getTableData();
+              }
             }
           });
           return true;
@@ -592,18 +623,32 @@
         return false;
       }, // 校验是否有未保存的数据
       getButtonData() {
-        network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
-          .then((res) => {
+        const params = { AD_ACTION_NAME: 'functionPermission' };
+        functionPowerActions().fetchActionsInCustomizePage({
+          params,
+          success: (res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data.reverse();
-              this.buttonsData.push({
-                webdesc: '刷新'
-              });
+              this.buttonsData = res.data.data;
+              if (Version() === '1.4') {
+                this.buttonsData.push({
+                  webdesc: '刷新'
+                });
+              }
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/fetchActionsInCustomizePage', { AD_ACTION_NAME: 'functionPermission' })
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.buttonsData = res.data.data;
+        //       this.buttonsData.push({
+        //         webdesc: '刷新'
+        //       });
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 获取按钮数据
       menuClick(index, item) {
         this.menuHighlightIndex = index;
@@ -619,6 +664,7 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        this.newGroupId = item.ID;
         if (this.checkNoSaveData()) {
         } else {
           this.spinShow = true;
@@ -632,8 +678,8 @@
         }
       }, // 左侧树点击
       getTreeData(resolve, reject) {
-        network.post('/p/cs/getMenuTree', urlSearchParams({}))
-          .then((res) => {
+        functionPowerActions().getMenuTree({
+          success: (res) => {
             if (res.data.code === 0) {
               resolve();
               const resData = res.data.data;
@@ -642,11 +688,23 @@
             } else {
               reject();
             }
-          })
-          .catch((err) => {
-            reject();
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/getMenuTree', urlSearchParams({}))
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       resolve();
+        //       const resData = res.data.data;
+        //       this.restructureTreeDada(resData);
+        //       this.treeData = [...resData];
+        //     } else {
+        //       reject();
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     reject();
+        //     throw err;
+        //   });
       }, // 获取树数据
       restructureTreeDada(data) {
         data.map((item) => {
@@ -657,7 +715,7 @@
             this.adTableCateId = item.ad_tablecategory_id;
           }
           item.title = item.description;
-          if (item.children && item.children.length > 0 && item.children[0].children.length > 0) {
+          if (item.children && item.children.length > 0 && item.children.find(cur => cur.children.length > 0)) {
             this.restructureTreeDada(item.children);
           } else {
             delete item.children;
@@ -666,24 +724,37 @@
         });
       }, //  整合树数据
       getMenuData(resolve, reject) {
-        network.post('/p/cs/groupTreeload', urlSearchParams({}))
-          .then((res) => {
+        functionPowerActions().groupTreeload({
+          success: (res) => {
             if (res.data.code === 0) {
               resolve();
-              // this.menuHighlightIndex = 0;
-              // this.menuList = res.data.data;
-              // this.groupId = this.menuList[this.menuHighlightIndex].ID;
-
               this.groupId = res.data.data[0].ID;
+              this.newGroupId = res.data.data[0].ID;
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
             }
-          })
-          .catch((err) => {
-            reject();
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/groupTreeload', urlSearchParams({}))
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       resolve();
+        //       // this.menuHighlightIndex = 0;
+        //       // this.menuList = res.data.data;
+        //       // this.groupId = this.menuList[this.menuHighlightIndex].ID;
+        //
+        //       this.groupId = res.data.data[0].ID;
+        //       this.newGroupId = res.data.data[0].ID;
+        //       this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
+        //     } else {
+        //       reject();
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     reject();
+        //     throw err;
+        //   });
       }, // 获取菜单数据
       restructureMenuTreeData(data, first) {
         return data.map((item, idx) => {
@@ -711,8 +782,9 @@
             GROUP_ID: this.groupId
           };
         }
-        network.post('/p/cs/queryMenuPermission', obj)
-          .then((res) => {
+        functionPowerActions().queryMenuPermission({
+          params: obj,
+          success: (res) => {
             this.spinShow = false;
             if (res.data.code === 0) {
               if (res.data.data) {
@@ -759,7 +831,7 @@
                   acc.push(cur);
                   return acc;
                 }, []);
-                this.getExtendTableData(this.tableData[0]);
+                this.getExtendTableData(this.tableData[0], 0);
                 this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
                 this.tableDefaultSelectedRowIndex = 0;
 
@@ -772,11 +844,74 @@
                 });
               }
             }
-          })
-          .catch((err) => {
-            this.spinShow = false;
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/queryMenuPermission', obj)
+        //   .then((res) => {
+        //     this.spinShow = false;
+        //     if (res.data.code === 0) {
+        //       if (res.data.data) {
+        //         const resData = res.data.data;
+        //         this.tableData = resData.reduce((acc, cur) => {
+        //           const disabledArr = cur.mask.split('');
+        //           const valueArr = this.toBin(cur.permission).split('');
+        //           // 查看
+        //           cur.seeDisabled = disabledArr[0] === '0';
+        //           cur.seeValue = valueArr[0] === '1';
+        //
+        //           // 编辑
+        //           cur.editDisabled = disabledArr[1] === '0';
+        //           cur.editValue = valueArr[1] === '1';
+        //
+        //           // 删除
+        //           cur.deleteDisabled = disabledArr[2] === '0';
+        //           cur.deleteValue = valueArr[2] === '1';
+        //
+        //           // 作废
+        //           cur.toVoidDisabled = disabledArr[3] === '0';
+        //           cur.toVoidValue = valueArr[3] === '1';
+        //
+        //           // 提交
+        //           cur.commitDisabled = disabledArr[4] === '0';
+        //           cur.commitValue = valueArr[4] === '1';
+        //
+        //           // 反提交
+        //           cur.unCommitDisabled = disabledArr[5] === '0';
+        //           cur.unCommitValue = valueArr[5] === '1';
+        //
+        //           // 导出
+        //           cur.exportDisabled = disabledArr[6] === '0';
+        //           cur.exportValue = valueArr[6] === '1';
+        //
+        //           // 打印
+        //           cur.printDisabled = disabledArr[7] === '0';
+        //           cur.printValue = valueArr[7] === '1';
+        //
+        //           // 扩展
+        //           cur.extendDisabled = cur.actionList.length === 0;
+        //           cur.extendValue = cur.actionList.length > 0 ? this.getExtendValue(cur.actionList) : false;
+        //
+        //           acc.push(cur);
+        //           return acc;
+        //         }, []);
+        //         this.getExtendTableData(this.tableData[0], 0);
+        //         this.backupsTableData = JSON.parse(JSON.stringify(this.tableData));
+        //         this.tableDefaultSelectedRowIndex = 0;
+        //
+        //         this.allTabthSelected();
+        //       } else {
+        //         this.$Modal.fcWarning({
+        //           title: '提示',
+        //           mask: true,
+        //           content: res.data.message,
+        //         });
+        //       }
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     this.spinShow = false;
+        //     throw err;
+        //   });
       }, // 获取表格数据
       getExtendValue(data) {
         const arr = data.reduce((acc, cur) => {
@@ -794,6 +929,8 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        this.newAdSubsystemId = obj.ad_subsystem_id;
+        this.newAdTableCateId = obj.ad_tablecategory_id;
         if (this.checkNoSaveData()) {
         } else {
           this.spinShow = true;
@@ -816,11 +953,15 @@
       }, // 复制权限
       tableRowClick(row, index) {
         this.tableDefaultSelectedRowIndex = index;
-        this.getExtendTableData(this.tableData[index]);
+        this.getExtendTableData(this.tableData[index], index);
       }, // 表格单击某一行
-      getExtendTableData(row) {
+      getExtendTableData(row, index) {
         if (row && row.actionList && row.actionList.length > 0) {
-          this.extendTableData = row.actionList;
+          this.extendTableData = row.actionList.reduce((acc, cur) => {
+            cur.extendIndex = index;
+            acc.push(cur);
+            return acc;
+          }, []);
         } else {
           this.extendTableData = [];
         }
@@ -848,7 +989,7 @@
       modalConfirm() {
         if (this.singlePermissionId === null) {
           this.$Message.warning({
-            content: '请选择源角色！'
+            content: '请选择原角色！'
           });
           return;
         }
@@ -876,8 +1017,9 @@
           targetids: this.multiplePermissionId,
           type: this.copyType
         };
-        network.post('/p/cs/copyPermission', obj)
-          .then((res) => {
+        functionPowerActions().copyPermission({
+          params: obj,
+          success: (res) => {
             if (res.data.code === 0) {
               this.singlePermissionId = null;
               this.multiplePermissionId = null;
@@ -887,10 +1029,23 @@
                 content: res.data.message
               });
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/copyPermission', obj)
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.singlePermissionId = null;
+        //       this.multiplePermissionId = null;
+        //       this.copyType = '';
+        //       this.getTableData();
+        //       this.$Message.success({
+        //         content: res.data.message
+        //       });
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 复制权限弹框确定按钮
       rowCheckboxChange(currentValue, params) {
         // 选中该行数据
@@ -911,20 +1066,24 @@
           }
         } else {
           // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
-          this.selectedSeeColumn(params.index, currentValue);
+          this.selectedSeeColumn(params, currentValue);
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((item) => {
             params.row[`${item}Value`] = false;
           });
+        // 表头取消选中
+        this.columns.forEach((item) => {
+          this.tabthCheckboxSelected(item, item.key);
+        });
         // 如果该行有扩展功能的表格的数据，取消下边表格的选中状态
         if (params.row.actionList && params.row.actionList.length > 0) {
           params.row.actionList.map((item) => {
@@ -942,10 +1101,11 @@
         const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
         this.tableData[findIndex] = params.row;
       }, // 取消整行的选中
-      selectedSeeColumn(index, currentValue) {
+      selectedSeeColumn(params, currentValue) {
         if (currentValue) {
-          this.tableData[index].seeValue = currentValue;
+          this.tableData[params.index].seeValue = currentValue;
         }
+        this.tabthCheckboxSelected(this.columns[1], 'see');
       }, // 选中查看列
       editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
@@ -981,23 +1141,25 @@
         }
       }, // 获取下边表格的保存数据
       editTableExtendData(permission, row) {
-        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
-        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
           tableObj.actionList[actionListIndex].permission = permission;
-          this.tableData[tableIndex] = tableObj;
+          this.tableData[row.extendIndex] = tableObj;
         }
-      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
+      }, // 下边表格扩展功能数据修改
       editTableDataForFunction(permission, row) {
-        const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
-        const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        // const tableIndex = this.tableData.findIndex(item => item.ad_table_id === row.ad_table_id);
+        // const tableObj = this.tableData.find(item => item.ad_table_id === row.ad_table_id);
+        const tableObj = this.tableData[row.extendIndex];
         if (tableObj.actionList && tableObj.actionList.length > 0) {
           const actionListIndex = tableObj.actionList.findIndex(item => item.ad_action_id === row.ad_action_id);
           tableObj.actionList[actionListIndex].children[0].permission = permission;
-          this.tableData[tableIndex] = tableObj;
+          this.tableData[row.extendIndex] = tableObj;
         }
-      }, // 修改上边表格数据中用来判断下边表格里扩展功能的数据
+      }, // 下边表格功能数据修改
       getSavePermission(index) {
         const arr = this.columns.reduce((acc, cur, idx) => {
           if (idx > 0 && idx !== 9) {
@@ -1014,6 +1176,9 @@
       allTabthSelected() {
         this.columns.forEach((item) => {
           this.tabthCheckboxSelected(item, item.key);
+          // if (item.key !== 'see') {  // 注释掉的这个代码是默认的查看列没有选中
+          //   this.tabthCheckboxSelected(item, item.key);
+          // }
         });
       }, // 判断所有表头是不是应该选中
       tabthCheckboxSelected(column, columnKey) {
@@ -1036,6 +1201,7 @@
               if (!column[`${columnKey}Value`]) {
                 column[`${columnKey}Value`] = true;
                 this.columns[findIndex] = column;
+                // this.columns[findIndex][`${columnKey}Value`] = true;
               }
             }
           } else {
@@ -1043,8 +1209,10 @@
             if (column[`${columnKey}Value`]) {
               column[`${columnKey}Value`] = false;
               this.columns[findIndex] = column;
+              // this.columns[findIndex][`${columnKey}Value`] = false;
             }
           }
+          this.columns = this.columns.concat([]);
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {
@@ -1057,11 +1225,21 @@
             }
             return item;
           });
+          const findColumnIndex = this.columns.findIndex((item) => item.key === params.column.key);
+          this.columns[findColumnIndex][`${params.column.key}Value`] = currentValue;
         }
         // 点击查看列的表头，并且是取消选中的状态
         if (params.column.key === 'see' && currentValue === false) {
+          this.columns[1].seeValue = false;
+          this.columns = [].concat(this.columns);
           this.cancelAllSelected();
         }
+
+        // 点击查看列的表头，并且是选中的状态
+        if (params.column.key === 'see' && currentValue === true) {
+          this.columns[1].seeValue = true;
+        }
+
         // 选中表头以及表体里的数据
         params.column[`${params.column.key}Value`] = currentValue;
         this.tableData.map((item) => {
@@ -1078,11 +1256,11 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-          if (idx > 1) {
-            acc.push(cur.key);
-          }
-          return acc;
-        }, [])
+            if (idx > 1) {
+              acc.push(cur.key);
+            }
+            return acc;
+          }, [])
           .forEach((key) => {
             // const columns = this.columns.map((item) => {
             //   if (item[`${key}Value`]) {
@@ -1231,9 +1409,9 @@
           }
           return acc;
         }, []);
-
         // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
-        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        const findIndex = params.row.extendIndex;
         if (arr.length > 0) {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = false;
@@ -1262,8 +1440,40 @@
           this.editTableDataForFunction(0, params.row);
         }
         this.extendTableData[params.index] = params.row;
+
+        // 判断下边表格中是否全部选中，如果有没有选中的就存到数组里
+        const arr = this.extendTableData.reduce((acc, cur) => {
+          if (cur.permission === 0) {
+            acc.push(cur.permission);
+          }
+          if (cur.children && cur.children.length > 0) {
+            cur.children.forEach((item) => {
+              if (item.permission === 0) {
+                acc.push(item.permission);
+              }
+            });
+          }
+          return acc;
+        }, []);
+        // 如果下边表格里全部选中，将上边表格对应的扩展选中，如果没有全部选中就取消选中
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        const findIndex = params.row.extendIndex;
+        if (arr.length > 0) {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = false;
+            this.selectedSeeColumn(findIndex, false);
+          }
+        } else {
+          if (findIndex > -1) {
+            this.tableData[findIndex].extendValue = true;
+            this.selectedSeeColumn(findIndex, true);
+          }
+        }
+
+        // 判断扩展该列是否全选
+        this.tabthCheckboxSelected(this.columns[9], 'extend');
       }, // 下边表格功能列checkbox改变时触发
-      savePermission() {
+      savePermission(type) {
         this.getSaveData();
         if (this.tableSaveData.length === 0) {
           this.$Message.info({
@@ -1274,23 +1484,48 @@
             GROUPID: this.groupId,
             CP_C_GROUPPERM: this.tableSaveData
           };
-          network.post('/p/cs/savePermission', obj)
-            .then((res) => {
+          functionPowerActions().savePermission({
+            params: obj,
+            success: (res) => {
               if (res.data.code === 0) {
-                this.getTableData();
+                if (type === 'refresh') {
+                  this.refresh();
+                } else {
+                  this.groupId = this.newGroupId;
+                  this.adSubsystemId = this.newAdSubsystemId;
+                  this.adTableCateId = this.newAdTableCateId;
+                  this.getTableData();
+                }
                 this.$Message.success({
                   content: res.data.message
                 });
               }
-            })
-            .catch((err) => {
-              throw err;
-            });
+            }
+          });
+          // network.post('/p/cs/savePermission', obj)
+          //   .then((res) => {
+          //     if (res.data.code === 0) {
+          //       if (type === 'refresh') {
+          //         this.refresh();
+          //       } else {
+          //         this.groupId = this.newGroupId;
+          //         this.adSubsystemId = this.newAdSubsystemId;
+          //         this.adTableCateId = this.newAdTableCateId;
+          //         this.getTableData();
+          //       }
+          //       this.$Message.success({
+          //         content: res.data.message
+          //       });
+          //     }
+          //   })
+          //   .catch((err) => {
+          //     throw err;
+          //   });
         }
       }, // 保存数据
       getSaveData() {
         this.tableSaveData = this.tableData.reduce((acc, cur, idx) => {
-          if (this.getSavePermission(idx) !== this.toBin(this.backupsTableData[idx].permission)) {
+          if (cur.ad_menu_id === this.backupsTableData[idx].ad_menu_id && this.getSavePermission(idx) !== this.toBin(this.backupsTableData[idx].permission)) {
             acc.push({
               AD_MENU_ID: cur.ad_menu_id,
               DATA_SOURCE: cur.data_source,
@@ -1324,18 +1559,29 @@
         }, []);
       }, // 获得保存的数据
       getCopyPermissionData() {
-        network.post('/p/cs/cgroupsquery', { NAME: '' })
-          .then((res) => {
+        functionPowerActions().cgroupsquery({
+          params: { NAME: '' },
+          success: (res) => {
             if (res.data.code === 0) {
               this.backupsDropData = res.data.data;
               this.totalRowCount = res.data.data.length;
               this.getSingleDropSelectData(1, res.data.data);
               this.getMultipleDropSelectData(1, res.data.data);
             }
-          })
-          .catch((err) => {
-            throw err;
-          });
+          }
+        });
+        // network.post('/p/cs/cgroupsquery', { NAME: '' })
+        //   .then((res) => {
+        //     if (res.data.code === 0) {
+        //       this.backupsDropData = res.data.data;
+        //       this.totalRowCount = res.data.data.length;
+        //       this.getSingleDropSelectData(1, res.data.data);
+        //       this.getMultipleDropSelectData(1, res.data.data);
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     throw err;
+        //   });
       }, // 获取复制权限外键的数据
       getSingleDropSelectData(pageValue, data) {
         const start = (pageValue - 1) * this.dropPageSize;
@@ -1459,7 +1705,6 @@
 </script>
 
 <style lang="less">
-  @import "../../../src/assets/theme/custom.less";
   .burgeon-spin-fix{
     z-index: 999;
     .demo-spin-icon-load{
@@ -1482,13 +1727,17 @@
     .buttonGroup {
       display: flex;
       .Button {
-        padding: 6px 8px;
+        min-width: 0;
+        padding: 0 8px;
         border-radius:2px;
         font-size:12px;
-        font-family:PingFangSC-Regular;
         font-weight:400;
         box-sizing: border-box;
         margin-right: 10px;
+        height: 22px;
+        span {
+          vertical-align: initial;
+        }
       }
     }
     .content {
@@ -1500,7 +1749,7 @@
         width: 240px;
         height: 100%;
         padding: 10px;
-        border: solid 1px #B4B4B4;
+        border: solid 1px #d8d8d8;
         border-radius: 6px;
         margin-right: 10px;
         display: flex;
@@ -1532,14 +1781,14 @@
       .contentRight {
         height: 100%;
         flex: 1;
-        border: solid 1px #B4B4B4;
+        border: solid 1px #d8d8d8;
         border-radius: 6px;
         display: flex;
         width: 100%;
         .left-tree {
           width: 200px;
           padding: 10px;
-          border-right: solid 1px #B4B4B4;
+          border-right: solid 1px #d8d8d8;
           overflow: auto;
           .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
             background-color: rgb(196, 226, 255);
@@ -1552,11 +1801,17 @@
           .upper-part {
             height: 60%;
             padding: 10px;
-            border-bottom: solid 1px #B4B4B4;
+            border-bottom: solid 1px #d8d8d8;
             .upper-table {
               height: 100%;
               .table {
                 border: 0;
+                tbody tr.burgeon-table-row-hover td{
+                  background-color: #ecf0f1;
+                }
+                .burgeon-table-row-highlight {
+                  background-color: rgb(196, 226, 255);
+                }
               }
             }
           }
@@ -1566,6 +1821,7 @@
             .bottom-table {
               height: 100%;
               .table {
+                height: 100%;
                 border: 0;
               }
             }
@@ -1578,6 +1834,7 @@
     .itemContent {
       display: flex;
       margin-bottom: 10px;
+      overflow: hidden;
       .labelContent {
         margin-right: 4px;
         width: 100px;
@@ -1601,6 +1858,16 @@
       justify-content: flex-end;
       .Button {
         margin-left: 10px;
+        min-width: 0;
+        padding: 0 8px;
+        border-radius:2px;
+        font-size:12px;
+        font-weight:400;
+        box-sizing: border-box;
+        height: 22px;
+        span {
+          vertical-align: initial;
+        }
       }
     }
   }

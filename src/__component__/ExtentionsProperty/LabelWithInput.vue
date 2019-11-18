@@ -10,6 +10,7 @@
         @input="inputChange"
       >
     </div>
+    <div class="logInfo" v-if="logInfo !== ''">{{logInfo}}</div>
   </div>
 </template>
 
@@ -29,7 +30,9 @@
         } else if (this.item.outputValueType === 'JSON' && e.target.value !== '') {
           try {
             value = JSON.parse(e.target.value);
-          } catch {
+            this.logInfo = '';
+          } catch (exception) {
+            this.logInfo = `JSON格式错误：${exception}`;
             return;
           }
         } else if (this.item.inputType === 'Number') {
@@ -43,6 +46,11 @@
         });
       }
     },
+    data() {
+      return {
+        logInfo: ''
+      };
+    },
     props: {
       item: {
         type: Object,
@@ -54,7 +62,11 @@
       }
     },
     mounted() {
-      this.$refs.input.value = this.defaultData;
+      if (this.item.outputValueType === 'JSON' && this.defaultData !== '') {
+        this.$refs.input.value = JSON.stringify(this.defaultData);
+      } else {
+        this.$refs.input.value = this.defaultData;
+      }
     }
   };
 </script>

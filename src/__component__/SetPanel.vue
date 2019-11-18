@@ -3,20 +3,19 @@
     <div class="panel-main">
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-yonghu-" />
-          <span>欢迎: {{ userInfo.ename }}</span>
+          <i class="iconfont iconmd-contact explanatory" />
+          欢迎: {{ userInfo.ename }}
         </p>
       </div>
       <div class="panel-item">
         <p @click="changePwd">
-          <i class="iconfont icon-xiugaimima" />
-          <span>修改密码</span>
+          <i class="iconfont iconmd-key explanatory" />修改密码
         </p>
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-liebiao-shoucang left-icon" />
-          <span>是否展开收藏夹</span>
+          <i class="iconfont iconmd-book explanatory" />
+          是否展开收藏夹
           <i-switch
             v-model="showFavorites"
             class="switch"
@@ -26,8 +25,8 @@
       </div>
       <div class="panel-item">
         <p>
-          <i class="iconfont icon-zhankaichaxuntiaojian" />
-          <span>折叠查询条件</span>
+          <i class="iconfont iconmd-apps explanatory" />
+          折叠查询条件
           <i-switch
             v-model="switchValue"
             class="switch"
@@ -40,8 +39,8 @@
         class="panel-item"
       >
         <p>
-          <i class="iconfont icon-xiugaimima" />
-          <span>查询条件默认显示行数</span>
+          <i class="iconfont iconmd-list explanatory" />
+          查询条件默认显示行数
           <InputNumber
             v-model="num7"
             :max="10"
@@ -52,8 +51,8 @@
       </div>
       <div class="panel-item">
         <p @click="signout">
-          <i class="iconfont icon-tuichu" />
-          <span>退出</span>
+          <i class="iconfont iconmd-exit explanatory" />
+          退出
         </p>
       </div>
     </div>
@@ -62,7 +61,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-
+  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -100,7 +99,7 @@
       };
     },
     mounted() {
-      const showFavorites = JSON.parse(window.sessionStorage.getItem('showFavorites'));
+      const showFavorites = JSON.parse(window.localStorage.getItem('showFavorites'));
       if (showFavorites !== null) {
         this.showFavorites = showFavorites;
         this.operationFavorites(showFavorites);
@@ -110,24 +109,26 @@
     methods: {
       ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
       setDefaultSearchFoldnum() {
-        network
-          .post('/p/cs/getParamList')
-          .then((res) => {
-            if (res.data.code === 0) {
-              if (res.data.data.length > 0) {
-                res.data.data.forEach((param) => {
-                  if (param.name === 'isFoldCond') {
-                    this.switchValue = JSON.parse(param.value);
-                  } else if (param.name === 'queryDisNumber') {
-                    this.num7 = Number(param.value);
-                    if (moduleName().indexOf('S', 0) === 0) {
-                      this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
-                    } 
-                  }
-                });
+        if (enableInitializationRequest()) {
+          network
+            .post('/p/cs/getParamList')
+            .then((res) => {
+              if (res.data.code === 0) {
+                if (res.data.data.length > 0) {
+                  res.data.data.forEach((param) => {
+                    if (param.name === 'isFoldCond') {
+                      this.switchValue = JSON.parse(param.value);
+                    } else if (param.name === 'queryDisNumber') {
+                      this.num7 = Number(param.value);
+                      if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                        this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
+                      } 
+                    }
+                  });
+                }
               }
-            }
-          });
+            });
+        }
       },
       changePwd() {
         this.$emit('changePwdBox');
@@ -144,7 +145,7 @@
           });
       },
       operationFavorites(showFavorites) {
-        window.sessionStorage.setItem('showFavorites', showFavorites);
+        window.localStorage.setItem('showFavorites', showFavorites);
         this.doCollapseHistoryAndFavorite({ showFavorites });
       },
       changeNum() {
@@ -156,7 +157,11 @@
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then((res) => {
             if (res.data.code === 0) {
-              this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+              if (moduleName()) {
+                if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                  this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+                }
+              }
             }
           });
       },
@@ -164,10 +169,10 @@
         network
           .get('/p/cs/logout')
           .then(() => {
-            router.push({ path: '/login' });
+            router.push({ path: getTouristRoute() });
           })
           .catch(() => {
-            router.push({ path: '/login' });
+            router.push({ path: getTouristRoute() });
           });
       }
     }
@@ -183,10 +188,15 @@
       line-height: 49px;
       border-bottom: solid 1px #d8d8d8;
       position: relative;
+      .explanatory{
+         position: relative;
+         top: 2px;
+      }
       .set-panel-number{
          position: absolute;
         right: 15px;
         top: 15px;
+        width:50px;
       }
       cursor: pointer;
       p {

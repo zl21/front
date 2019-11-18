@@ -61,3 +61,11 @@ Date.prototype.getEndOfNextMonth = function getEndOfNextMonth() {
   newDate.setDate(0); // 再退回上个月的最后一天
   return newDate;
 };
+/**
+ * 返回yyyy-MM-dd hh:mm:ss 或者 yyyy-MM-dd格式的日期字符串
+ * 如："2016-09-22T08:37:43.438Z" --> "2016-09-22 08:37:43"
+ * 传参格式: yyyy-MM-dd hh:mm:ss yyyy-MM-dd
+ */
+Date.prototype.setNewFormt = function (fmt,from,to) { 
+  return fmt.replace(new RegExp(from,'g'), to); 
+};  

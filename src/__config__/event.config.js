@@ -2,10 +2,10 @@ import store from './store.config';
 import router from './router.config';
 
 import {
-  HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX,
-  CUSTOMIZED_MODULE_PREFIX
+  CUSTOMIZED_MODULE_PREFIX,
+  PLUGIN_MODULE_PREFIX,
+  LINK_MODULE_PREFIX,
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -16,47 +16,68 @@ export const hideMenu = () => {
   });
 };
 
+export const launchNetworkMonitor = () => {
+  window.addEventListener('keydown', (e) => {
+    if (e.altKey && e.key.toLowerCase() === 'n') {
+      router.push({
+        path: `${PLUGIN_MODULE_PREFIX}/NETWORKMONITOR`
+      });
+    }
+  });
+};
+
 /**
- *
+ *  主要用于点击菜单的路由跳转
  * @param type 路由目标类型
- * @param info 路由目标信息
+ * @param info 路由目标信息 { tableName: "表名|自定义界面组件名", tableId: "表ID|自定义界面动作定义ID" }
  * @param cb   回调函数
  */
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
+  let path = '/';
   switch (type) {
-    case 'tableDetailAction':
-      router.push({
-        path: `${info.moduleName}/${info.tableName}/${info.tableId}`,
-      });
-      break;
     case 'action':
-      router.push({
-        path: `${CUSTOMIZED_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`,
-      });
+      if (info.url) {
+        const actionType = info.url.substring(0, info.url.indexOf('/'));
+        if (actionType === 'SYSTEM') {
+          path =`/${info.url}` ;
+        } else if (actionType === 'https:' || actionType === 'http:') {
+          path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
+        } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+          path = `/${info.url.toUpperCase()}/${info.tableId}`;
+        } else {
+          class Person {
+            constructor(wrong, eg, url) {
+              this.wrong = wrong;
+              this.correctURL = eg;
+              this.url = url;
+            }
+          }
+          const me = new Person('url配置错误', 'SYSTEM/TABLE_DETAIL/V/DL_B_PUR/23792/New', info.url);
+          console.table(me);
+        }
+      }
       break;
     case 'table':
-      router.push({
-        path: `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`,
-      });
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
-    case 'tableDetailVertical':
-      router.push({
-        path: `${VERTICAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
-    case 'tableDetailHorizontal':
-      router.push({
-        path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${info.tableName}/${info.tableId}/${info.itemId}`,
-      });
-      break;
-  
+    // case 'external':
+    //   path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
+    //   break;
     default:
-      router.push({
-        path: '/',
-      });
       break;
+  }
+  if (router.currentRoute.fullPath !== path) {
+    router.push({ path }).catch((e) => { console.error(e); });
   }
 };
 
-export default { hideMenu, routeTo };
+export const menuClick = (data, cb) => {
+  if (typeof cb === 'function') { cb(); }
+  const {
+    type, value, id, vuedisplay 
+  } = data;
+  routeTo({ type: vuedisplay && vuedisplay === 'external' ? vuedisplay : type, info: { tableName: value, tableId: id } }, cb);
+};
+
+export default { hideMenu, routeTo, menuClick };

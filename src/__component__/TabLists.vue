@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="openedMenuLists.length > 0"
+    v-if="openedMenuLists.length > 0 && showModule.TabLists"
     ref="openedMenuLists"
     class="openedMenuLists"
   >
@@ -11,10 +11,11 @@
     >
       <img
         src="../assets/image/leftArrow.png"
-        alt=""
+        alt
         @click="prevClick"
       >
     </span>
+    
     <ul
       ref="tabList"
       class="tab-list"
@@ -23,23 +24,25 @@
         v-for="(tag, index) in openedMenuLists"
         :key="index"
         ref="tabBox"
-        :class="{active:tag.isActive === true}"
         class="tabBox"
         :title="tag.label"
         @click="switchTab(tag,index)"
       >
-        <div
+        <span
+          :class="{active:tag.isActive === true}"
           class="openedMenuListsItem"
         >
           {{ tag.label }}
           <span
             class="close"
             @click.stop="handleClose(tag,index)"
-          ><img
-            src="../assets/image/iconX.png"
-            alt=""
-          ></span>
-        </div>
+          >
+            <img
+              src="../assets/image/iconX.png"
+              alt
+            >
+          </span>
+        </span>
       </a>
     </ul>
     <span
@@ -49,21 +52,18 @@
     >
       <img
         src="../assets/image/rightArrow.png"
-        alt=""
+        alt
       >
     </span>
-    <router-link to="/">
-      <span
-        class="emptying"
-        @click="emptyClick"
+    <span
+      class="emptying"
+      @click="emptyClick"
+    >
+      <img
+        src="../assets/image/delete.png"
+        alt
       >
-        <img
-          src="../assets/image/delete.png"
-          alt=""
-        >
-      
-      </span>
-    </router-link>
+    </span>
   </div>
 </template>
 
@@ -77,46 +77,60 @@
     data() {
       return {
         clickShow: true,
-        tagIndex: 0,
+        tagIndex: 0
       };
     },
     computed: {
       ...mapState('global', {
         openedMenuLists: ({ openedMenuLists }) => openedMenuLists,
+        showModule: ({ showModule }) => showModule
       }),
+      menuLists() {
+        const openedMenuListsLength = this.openedMenuLists.length;
+        return openedMenuListsLength;
+      }
     },
     watch: {
-      openedMenuLists: {
+      menuLists: {
         handler(val) {
           this.$nextTick(() => {
             const tabOpenedMenuLists = this.$refs.openedMenuLists;
             if (tabOpenedMenuLists) {
-              const length = Math.floor((tabOpenedMenuLists.offsetWidth - 75) / 122); 
+              const length = Math.floor(
+                (tabOpenedMenuLists.offsetWidth - 75) / 122
+              );
               const width = tabOpenedMenuLists.offsetWidth - 75;
-              const tagWidth = this.openedMenuLists.length * 122;
+              const tagWidth = this.menuLists * 122;
               const left = Math.abs(tagWidth - width);
-              if (val.length > length) {
+              if (val > length) {
                 this.clickShow = true;
-                this.$refs.tabBox.forEach((item) => { 
-                  item.style.left = `-${left}px`; 
+                this.$refs.tabBox.forEach((item) => {
+                  item.style.left = `-${left}px`;
                 });
               } else {
                 this.clickShow = false;
-                this.$refs.tabBox.forEach((item) => { 
+                this.$refs.tabBox.forEach((item) => {
                   item.style.left = '0px';
                 });
               }
             }
           });
-        },
-      },
+        }
+      }
     },
     methods: {
-      ...mapMutations('global', ['tabCloseAppoint', 'addExcludedComponents', 'emptyTabs', 'switchTabForActiveTab']),
+      ...mapMutations('global', [
+        'tabCloseAppoint',
+        'addExcludedComponents',
+        'emptyTabs',
+        'switchTabForActiveTab'
+      ]),
       switchTab(item, index) {
         const tag = this.openedMenuLists[index];
-        router.push({ path: tag.routeFullPath });
-        this.switchTabForActiveTab(item);
+        if (router.currentRoute.fullPath !== tag.routeFullPath) {
+          router.push({ path: tag.routeFullPath });
+          this.switchTabForActiveTab(item);
+        }
       },
       handleClose(tag) {
         this.tabCloseAppoint(tag);
@@ -127,7 +141,7 @@
       },
 
       prevClick() {
-        this.$refs.tabBox.forEach((item) => { 
+        this.$refs.tabBox.forEach((item) => {
           const tabBoxRight = Number(item.style.left.replace('px', '').replace('-', '')) - 122;
           if (tabBoxRight < 0) {
             item.style.left = '0px';
@@ -142,29 +156,34 @@
         const tabWidth = this.openedMenuLists.length * 122;
         tabBoxs.forEach((item) => {
           const tabBoxLeft = Number(item.style.left.replace('px', '').replace('-', '')) + 122;
-          if (tabBoxLeft >= (tabWidth - domWidth)) {
+          if (tabBoxLeft >= tabWidth - domWidth) {
             item.style.left = `-${tabWidth - domWidth}px`;
           } else {
             item.style.left = `-${tabBoxLeft}px`;
           }
         });
-      },
-    },
-  
+      }
+    }
   };
 </script>
 
 <style scoped lang="less">
-
+.active {
+  border-top: 2px solid #fd6442 !important;
+  border-bottom: 2px solid white !important;
+  color: #fd6442 !important;
+}
 .openedMenuLists {
   background-color: #fff;
-  border-bottom: 1px solid #dfdfdf;
   display: flex;
   box-sizing: border-box;
-  >span{
+  height: 33px;
+    border-bottom: 1px solid #dfdfdf;
+
+  > span {
     display: inline-block;
     width: 20px;
-    height: 33px;
+    height: 100%;
     margin: 0;
     box-sizing: border-box;
     vertical-align: middle;
@@ -174,40 +193,34 @@
     z-index: 22;
     position: relative;
     cursor: pointer;
-    .next{
-       border-left: 1px solid #dfdfdf;
+    .next {
+      border-left: 1px solid #dfdfdf;
     }
-    .prev{
+    .prev {
       border-right: 1px solid #dfdfdf;
     }
   }
-  .active {
-    border-top: 2px solid #fd6442;
-    border-bottom: 1px solid white;
-      color: #fd6442 !important;
 
-    // .burgeon-tag-text {
-    // }
-  }
-  .tab-list{
+  .tab-list {
     margin: 0px;
     padding: 0;
     display: inline-block;
     flex: 1;
-    height: 34px;
     position: relative;
     z-index: 0;
     display: flex;
     overflow: hidden;
-    a{
+    user-select: none;
+    height: 34px;
+    a {
       display: inline-block;
       text-decoration: none;
       position: relative;
       cursor: pointer;
       color: #000;
-    
-      .openedMenuListsItem{
-        height: 31px;
+
+      .openedMenuListsItem {
+        height: 28px;
         width: 81px;
         display: block;
         padding-left: 20px;
@@ -224,12 +237,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        border-bottom: 1px solid #dfdfdf;
+        // border-bottom: 1px solid #dfdfdf;
         margin: 0;
-        .close{
-          position: absolute!important;
-          top: 7px!important;
-          right: 2px!important;
+        .close {
+          position: absolute !important;
+          top: 7px !important;
+          right: 2px !important;
           line-height: 16px;
           border-radius: 2px;
           opacity: 0;
@@ -239,50 +252,41 @@
           font-size: 12px;
           height: 16px;
           width: 16px;
-          >img{
+          > img {
             position: relative;
             left: -2px;
             top: -2px;
             width: 19px;
           }
         }
-        .close:hover{
-              opacity: 1;
-              background-color: #d4d4d4;
-              color: #000000;
-            }
-      } 
-    }
-     .tabBox:hover{
-          .close{
-              opacity: 1;
-              color: #000000;
-            }
-       }
-      
-    
-  } 
-  >a{
-    color: black;
-    width: 34px;
-    height: 33px;
-    border-left: 1px solid #dfdfdf;
-    text-align: center;
-    line-height: 44px;
-    text-decoration: none;
-    .emptying{
-      width: 35px;
-      height: 33px;
-      display: inline-block;
-      
-      img{
-        width: 17px;
-        height: 20px;
+        .close:hover {
+          opacity: 1;
+          background-color: #d4d4d4;
+          color: #000000;
+        }
       }
-   }
-   .emptying:hover{
-     opacity: 0.6;
-   }
+    }
+    .tabBox:hover {
+      .close {
+        opacity: 1;
+        color: #000000;
+      }
+    }
+  }
+
+  .emptying {
+    width: 34px;
+    border-left: 1px solid #dfdfdf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 17px;
+      height: 20px;
+    }
+  }
+  .emptying:hover {
+    opacity: 0.6;
   }
 }
 </style>

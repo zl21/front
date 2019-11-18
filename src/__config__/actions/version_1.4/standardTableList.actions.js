@@ -42,14 +42,20 @@ export default {
         resolve();
         commit('updateButtonsTabcmd', queryData.tabcmd);
         commit('updateButtonWaListButtons', queryData.waListButtons);
-        commit('updateTableStatus4css', queryData.datas.status4css);
+        commit('updateTableStatus4css', queryData.datas);
         commit('updateDefaultFormItemsLists', queryData.datas.dataarry);
         commit('updateDefaultButtonsdatas', queryData.datas);
         commit('updateDefaultSearchFoldnum', queryData.datas.searchFoldnum);
+        if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
+          commit('updateWebconfCommonTable', queryData.datas.webconf);
+        }
+        if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
+          commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+        }
       }
     });
   },
-  getExportQueryForButtons({ commit }, 
+  getExportQueryForButtons({ commit },
     { OBJ, resolve, reject }) {
     network.post('/p/cs/export', urlSearchParams(
       OBJ
@@ -66,7 +72,7 @@ export default {
     });
   },
   getBatchDeleteForButtons({ commit }, {
-    tableName, selectIdArr, resolve, reject 
+    tableName, selectIdArr, resolve, reject
   }) { // 调用删除明细接口
     const ids = selectIdArr.map(d => parseInt(d));
     network.post('/p/cs/batchDelete',
@@ -91,13 +97,15 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, {
-    item, obj, resolve, reject 
+    item, obj, resolve, reject
   }) {
-    network.post(item.action || '/p/cs/exeAction', urlSearchParams({
-      actionid: item.webid,
-      webaction: null,
-      param: JSON.stringify(obj),
-    })).then((res) => {
+    let actionName = '';
+    if (item.action.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = item.action;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction',obj).then((res) => {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonExeActionData', res.data.message);
@@ -105,6 +113,8 @@ export default {
         commit('updateButtonExeActionData', res.data.message);
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   getActionDataForButtons({ commit }, { param, resolve }) {
@@ -150,9 +160,9 @@ export default {
     });
   },
   batchVoidForButtons({ commit }, {
-    tableName, ids, resolve, reject 
+    tableName, ids, resolve, reject
   }) { // 调用作废接口
-    network.post('/p/cs/batchVoid', 
+    network.post('/p/cs/batchVoid',
       { tableName, ids }).then((res) => {
       const data = res.data;
       if (res.data.code === 0) {
@@ -167,10 +177,10 @@ export default {
     });
   },
   batchSubmitForButtons({ commit }, {
-    url, tableName, ids, resolve, reject 
+    url, tableName, ids, resolve, reject
   }) { // 调用提交接口
     network.post(url || '/p/cs/batchSubmit', {
-      tableName, 
+      tableName,
       ids
     }).then((res) => {
       if (res.data.code === 0) {
@@ -185,7 +195,7 @@ export default {
     });
   },
  
-  batchUnSubmitForButtons({ commit }, 
+  batchUnSubmitForButtons({ commit },
     { obj, resolve, reject }) {
     network.post('/p/cs/batchUnSubmit',
       obj).then((res) => {

@@ -2,13 +2,20 @@
 import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
+import router from '../router.config';
+import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
 
 export default () => ({
-  mounted() {
-    this.moduleComponentName = getComponentName();
+  provide: {
+    [MODULE_COMPONENT_NAME]: getComponentName(),
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+  },
+  created() {
+    this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   computed: {
     ...mapState(getComponentName(), {
+      childReadonly: ({ childTableReadonly }) => childTableReadonly,
       buttonsData: ({ buttonsData }) => buttonsData,
       tabPanel: ({ ...tabPanels }) => tabPanels.tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
@@ -20,6 +27,9 @@ export default () => ({
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       copyDataForReadOnly: ({ copyDataForReadOnly }) => copyDataForReadOnly,
+      instanceId: ({ instanceId }) => instanceId,
+      jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
+      refreshButton: ({ refreshButton }) => refreshButton,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -40,7 +50,10 @@ export default () => ({
         'performMainTableSaveAction',
         'performMainTableDeleteAction',
         'getExportQueryForButtons',
-        'getObjTabActionSlientConfirm'
+        'getObjTabActionSlientConfirm',
+        'getObjectTrySubmit',
+        'getObjectTryUnSubmit',
+        'getObjectTryInvalid'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -58,8 +71,10 @@ export default () => ({
         'updateAddDefaultData',
         'updateAddData',
         'updateDeleteData',
-        'updateObjTabActionSlientConfirm'
-
+        'updateObjTabActionSlientConfirm',
+        'updateTableSearchData',
+        'updateRefreshButton',
+        'updateButtonsDataForCustomization'
       ]),
   },
   beforeDestroy() {

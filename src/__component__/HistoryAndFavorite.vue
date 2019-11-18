@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="showModule.HistoryAndFavorite"
     class="history-and-favorite"
     :style="{ width: collapseHistoryAndFavorite ? '50px' : '180px' }"
   >
@@ -15,18 +16,17 @@
           @click="collapseFavorite = !collapseFavorite"
         >
           <i
-            class="iconfont icon-liebiao-shoucang left-icon"
+            class="iconfont iconbj_col left-icon"
           />
           <span v-if="!collapseHistoryAndFavorite">
             收藏夹
-           
             <i
               v-if="!collapseFavorite"
-              class="iconfont icon-shangjiantou arrow-icon"
+              class="iconfont iconios-arrow-up arrow-icon"
             />
             <i
               v-if="collapseFavorite"
-              class="iconfont icon-xiajiantou arrow-icon"
+              class="iconfont iconios-arrow-down arrow-icon"
             />
           </span>
         </div>
@@ -57,18 +57,18 @@
           @click="collapseHistory = !collapseHistory"
         >
           <i
-            class="iconfont icon-record left-icon"
+            class="iconfont iconbj_record left-icon"
           />
           <span v-if="!collapseHistoryAndFavorite">
             最近使用
            
             <i
               v-if="!collapseHistory"
-              class="iconfont icon-shangjiantou arrow-icon"
+              class="iconfont iconios-arrow-up arrow-icon"
             />
             <i
               v-if="collapseHistory"
-              class="iconfont icon-xiajiantou arrow-icon"
+              class="iconfont iconios-arrow-down arrow-icon"
             />
           </span>
         </div>
@@ -111,7 +111,8 @@
       ...mapState('global', {
         collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         history: ({ history }) => history.concat([]).reverse(),
-        favorite: ({ favorite }) => favorite.concat([]).reverse()
+        favorite: ({ favorite }) => favorite.concat([]).reverse(),
+        showModule: ({ showModule }) => showModule,
       })
     },
     methods: {
@@ -137,8 +138,11 @@
         }
       },
       routeTo(data) {
-        const { type, value, id } = data;
-        routeTo({ type, info: { tableName: value, tableId: id } });
+        const {
+          type
+        } = data;
+        const { value, id, url } = data;
+        routeTo({ type, info: { tableName: value, tableId: id, url } });
       },
     },
     mounted() {
@@ -197,7 +201,7 @@
         left: 60px;
         background: white;
         top: 60px;
-        z-index: 10;
+        z-index: 1000;
         padding-left:0;
         border-radius: 2px;
        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);

@@ -10,10 +10,14 @@
 
 <script>
   import Vue from 'vue';
-  import { mapState } from 'vuex';
+  import { mapState, mapActions, mapMutations } from 'vuex';
   import PageNotFound from './PageNotFound';
   import CustomizeModule from '../__config__/customize.config';
   import { CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX } from '../constants/global';
+  import mixins from '../__config__/mixins/customize';
+  import moduleName from '../__utils__/getModuleName';
+
+
   
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -31,6 +35,9 @@
       ...mapState('global', ['keepAliveLists'])
     },
     methods: {
+      ...mapActions('global', ['updateAccessHistory']),
+      ...mapMutations('global', ['addKeepAliveLabelMaps']),
+
       generateComponent() {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const { customizedModuleName, customizedModuleId } = this.$route.params;
@@ -39,10 +46,25 @@
         const componentName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
         if (Vue.component(componentName) === undefined) {
           const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
-          Vue.component(componentName, target ? target.component : Vue.extend(Object.assign({}, PageNotFound)));
+          if (target) {
+            if (typeof target.component === 'function') {
+              Vue.component(componentName, target.component);
+              Vue.component(componentName)().then((result) => {
+                Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, result.default)));
+              });
+              this.currentModule = componentName;
+            } else {
+              Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()] }, target.component)));
+              this.currentModule = componentName;
+            }
+          } else {
+            Vue.component(componentName, PageNotFound);
+            this.currentModule = componentName;
+          }
+        } else {
+          this.currentModule = componentName;
         }
-        this.currentModule = componentName;
-      }
+      },
     },
     mounted() {
       this.generateComponent();

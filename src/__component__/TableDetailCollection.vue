@@ -20,7 +20,7 @@
             class="detail-buttons"
           >
             <a
-              v-for="item in buttonGroups"
+              v-for="item in buttonData"
               :key="item.name"
               @click="buttonClick(item)"
             >
@@ -44,6 +44,7 @@
             v-model="searchCondition"
             clearable
             placeholder="查询条件"
+            @on-change="selectedChange"
             @on-clear="searchCondition=null"
           >
             <Option
@@ -52,7 +53,7 @@
               :label="item.name"
               :value="item.isfk ? item.inputname : item.colname"
             >
-              {{ item.label }}
+              {{ item.name }}
             </Option>
           </Select>
           <div class="detail-search-input">
@@ -60,8 +61,9 @@
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
+              @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -79,8 +81,9 @@
           :height="tableHeight? tableHeight :true"
           border
           :columns="columns"
-          :data="data"
-          :total-data="totalData"
+          :loading="loading"
+          :data="tabledata"
+          :total-data="totalDataNumber"
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
         />
@@ -105,26 +108,49 @@
       @confirmImport="importsuccess"
       @closeDialog="closeImportDialog"
     />
+    <!-- 自定义弹出框 -->
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :isrefrsh="isrefrsh"
+      :dialog-component-name="dialogComponentName"
+      :obj-list="dialogComponentName?objList:[]"
+      @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
+      @clearDialogComponentName="clearDialogComponentName"
+    />
   </div>
 </template>
 
 <script>
-  /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return */
+  /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return,no-else-return */
+  import Vue from 'vue';
 
   import { mapState, mapMutations } from 'vuex';
+  // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
-  import { Version } from '../constants/global';
+  import {
+    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+  } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
   import Dialog from './Dialog.vue';
   import ImportDialog from './ImportDialog';
   import router from '../__config__/router.config';
   import { getGateway } from '../__utils__/network';
+  import ComAttachFilter from './ComAttachFilter';
+  import Docfile from './docfile/DocFileComponent';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import ChineseDictionary from '../assets/js/ChineseDictionary';
 
-  const {
-    fkQueryList, fkFuzzyquerybyak, fkGetMultiQuery, itemTableDelete
-    // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+
+  Vue.component('ComAttachFilter', ComAttachFilter);
+  Vue.component('TableDocFile', Docfile);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   const EXCEPT_COLUMN_NAME = 'ID'; // 排除显示列（ID）
   const COLLECTION_INDEX = 'COLLECTION_INDEX'; // 序号
@@ -144,16 +170,21 @@
     },
     data() {
       return {
+        isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
+        dialogComponentName: null,
+        buttonData: [],
         currentPage: 1, // 当前页码
+        isRefreshClick: false, // 是否点击了刷新
 
         fkSelectedChangeData: [], // 保存外键修改的数据
         verifyTipObj: {}, // 保存校验对象
         isTableRender: false, // 表格是否重新渲染
-
+        loading: true,
         buttonPath: {},
         tableRowSelectedIds: [], // 表格选中的ID
-        // columns: [],
-        // data: [],
+        columns: [],
+        tabledata: [],
+        totalDataNumber: [],
         searchInfo: '', // 输入框搜索内容
         searchCondition: null, // 查询条件
         // pageInfo: { // 列表的分页
@@ -181,12 +212,14 @@
           check: { tag: 'Checkbox', event: this.checkboxRender },
           select: { tag: 'Select', event: this.selectRender },
           drp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mrp: { tag: 'DropDownSelectFilter', event: this.dropDownSelectFilterRender },
-          mop: { tag: 'AttachFilter', event: this.attachFilterRender },
+          mrp: { tag: 'DropMultiSelectFilter', event: this.dropMultiSelectFilterRender },
+          mop: { tag: 'ComAttachFilter', event: this.comAttachFilterRender },
+          pop: { tag: 'ComAttachFilter', event: this.comAttachFilterpopRender },
           OBJ_DATENUMBER: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_DATE: { tag: 'DatePicker', event: this.datePickertRender },
           OBJ_TIME: { tag: 'TimePicker', event: this.timePickerRender },
-          image: { tag: 'Poptip', event: this.imageRender }
+          image: { tag: 'Poptip', event: this.imageRender },
+          doc: { tag: 'Poptip', event: this.docRender }
         },
         _beforeSendData: {}, // 之前的数据
         get beforeSendData() {
@@ -208,9 +241,16 @@
           confirm: () => {
           }
         },
+
+        columnEditElementId: {}, // 保存每列的可编辑元素的id
+        editElementId: [], // 表格可编辑元素id 用于回车键使用
       };
     },
     props: {
+      tabwebact: {// 自定义类型按钮
+        type: Object,
+        default: () => ({})
+      },
       dataSource: {
         // 总数据源
         type: Object,
@@ -256,7 +296,18 @@
       ...mapState('global', {
         // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         // menuLists: ({ menuLists }) => menuLists
+        LinkUrl: ({ LinkUrl }) => LinkUrl,
       }),
+      objList() { // 返回克隆表定制弹框所需数据
+        if (this.type === 'horizontal') { // 横向布局
+          return this.itemInfo.componentAttribute.panelData.data.addcolums;
+        } if (this.type === 'vertical') {
+          if (this.mainFormInfo.formData.data) {
+            return this.mainFormInfo.formData.data.addcolums;
+          }
+        }
+        return [];
+      },
       filterList() {
         return this.columns.filter(
           ele => ele.name !== EXCEPT_COLUMN_NAME && ele.isfilter
@@ -264,76 +315,46 @@
       },
       data() {
         // this.filterBeforeData();
-        return this.filterData(this.dataSource.row); // 每列的数据
+        // return this.filterData(this.dataSource.row); // 每列的数据
       },
       copyDataSource() {
         return JSON.parse(JSON.stringify(this.dataSource));
       },
-      columns() {
-        const isTableRender = this.isTableRender;
-        return this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
-      },
+      //   columns() {
+      //     const isTableRender = this.isTableRender;
+      //     console.log(this.filterColumns(this.dataSource.tabth, isTableRender));
+      //     return this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+      //   },
       isFullRangeSubTotalEnabled() { // 是否显示总计
         return this.dataSource.isFullRangeSubTotalEnabled;
       },
       isSubTotalEnabled() { // 是否显示合计
         return this.dataSource.isSubTotalEnabled;
       },
-      totalData() {
-        const total = [];
-        if (this.dataSource.isSubTotalEnabled) {
-          const cell = {
-            COLLECTION_INDEX: '合计'
-          };
-          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          needSubtotalList.map((ele) => {
-            const needSubtotalDatas = [];
-            this.data.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-            cell[ele.colname] = `${totalNumber}`;
-            return ele;
-          });
-          total.push(cell);
-        }
-        // if (this.isHorizontal) {
-        if (this.dataSource.isFullRangeSubTotalEnabled) {
-          // 总计
-          const cell = {
-            COLLECTION_INDEX: '总计',
-          };
-          if (this.dataSource.fullRangeSubTotalRow) {
-            for (const key in this.dataSource.fullRangeSubTotalRow) {
-              if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
-                const element = this.dataSource.fullRangeSubTotalRow[key];
-                cell[key] = element.val;
-              }
-            }
-          }
-          total.push(cell);
-        }
-        // }
-        return total;
-      },
       isHorizontal() { // 是否是左右结构
         return this.type === pageType.Horizontal;
       },
       buttonGroups() { // 按钮组的数据组合
-        const { tabcmd } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        const { tabcmd, DisableEXPORT } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
         const buttonGroupShow = [];
-        if (!this.objreadonly) {
+        if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
           if (tabcmd.cmds) {
             // 取主表path用于子表
-            this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
-              this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                if (index === i) {
-                  this.buttonPath[cmd] = path;
+            if (this.mainFormInfo && this.mainFormInfo.buttonsData && this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd) {
+              this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
+                if (this.mainFormInfo.buttonsData.data.tabcmd.paths) {
+                  this.mainFormInfo.buttonsData.data.tabcmd.paths.forEach((path, i) => {
+                    if (index === i) {
+                      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                      this.buttonPath[cmd] = path;
+                    }
+                  });
                 }
               });
-            });
+            }
 
             tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
@@ -363,17 +384,52 @@
             });
           }
         }
-        buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
-        buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
-        return buttonGroupShow;
+
+
+        // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
+        if (!DisableEXPORT) {
+          buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
+          buttonGroupShow.push(buttonmap.CMD_EXPORT_LIST); // 默认有导出
+        }
+
+        // 如果配置tabrelation为1:1 去除导入和删除
+        if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') {
+          buttonGroupShow.forEach((item, index) => {
+            if (item.eName !== 'actionEXPORT') {
+              buttonGroupShow.splice(index, 1);
+            }
+          });
+        }
+        let buttons = '';
+        if (this.tabwebact && this.tabwebact.objtabbutton && this.tabwebact.objtabbutton.length > 0) { // 接入自定义按钮渲染逻辑
+          const buttonArray = buttonGroupShow.concat(this.tabwebact.objtabbutton);
+          const newButtonArray = buttonArray.map((item) => {
+            const objs = Object.keys(item).reduce((newData, key) => {
+              if (newData.webdesc) {
+                newData.name = newData.webdesc;
+                delete (newData.webdesc);
+              }
+              newData.eName = newData.vuedisplay;
+              newData[key] = item[key];
+              return newData;
+            }, {});
+            return objs;
+          });
+          buttons = JSON.stringify(newButtonArray);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        } else {
+          buttons = JSON.stringify(buttonGroupShow);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        }
+        return JSON.parse(buttons);
       },
       isMainTableReadonly() {
-        if (this.type === pageType.Vertical) {
-          if (this.mainFormInfo.buttonsData) {
-            return this.mainFormInfo.buttonsData.data.objreadonly;
-          }
-        }
-        return false;
+        // if (this.type === pageType.Vertical) {
+        //   if (this.mainFormInfo.buttonsData) {
+        //     return this.mainFormInfo.buttonsData.data.objreadonly;
+        //   }
+        // } else {
+        //   return this.objreadonly;
+        // }
+        return this.objreadonly;
       },
       pageInfo() {
         return this.tablePageInfo;
@@ -383,6 +439,12 @@
       }
     },
     watch: {
+      buttonGroups: {
+        handler(val) {
+          this.buttonData = val;
+        },
+        deep: true
+      },
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
       },
@@ -394,25 +456,199 @@
       },
       dataSource: {
         handler(val) {
-          this.afterSendData = {};
-          this.verifyTipObj = {};
-          this.fkSelectedChangeData = [];
+          if (this.isRefreshClick) {
+            this.afterSendData = {};
+            this.verifyTipObj = {};
+            this.fkSelectedChangeData = [];
+          }
+          const isTableRender = this.isTableRender;
+          this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          setTimeout(() => {
+            this.tabledata = this.filterData(this.dataSource.row); // 每列的数据
+            this.totalDataNumber = this.totalData();
+          }, 50);
+
           this.tableRowSelectedIds = [];
           if (val.row) {
             this.filterBeforeData();
           }
+          this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
         },
         deep: true,
         immediate: true
       }
 
     },
+    created() {
+      this.ChineseDictionary = ChineseDictionary;
+    },
     methods: {
-
-      ...mapMutations('global', ['tabHref']),
-      //   ...mapActions('global', ['getMenuLists']),
-
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      getEditAbleId(data) {
+        this.columnEditElementId = {};
+        this.editElementId = [];
+        data.row.forEach((rowItem, rowIdx) => {
+          data.tabth.forEach((tabthItem, tabthIdx) => {
+            if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
+              || tabthItem.fkdisplay === 'mop' || tabthItem.fkdisplay === 'pop') {
+              if (tabthItem.ismodify) {
+                this.editElementId.push(`${rowIdx}-${tabthIdx}`);
+                if (!this.columnEditElementId[tabthIdx]) {
+                  this.columnEditElementId[tabthIdx] = [];
+                }
+                this.columnEditElementId[tabthIdx].push(`${rowIdx}-${tabthIdx}`);
+              }
+            }
+          });
+        });
+      }, // 获取表格里可编辑元素的id
+      tableCellFocusByEnter(elementId) {
+        const findIndex = this.editElementId.findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (findIndex !== this.editElementId.length - 1) {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.editElementId[elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+          focusDom.getElementsByTagName('input')[0].select();
+        } else {
+          this.tableCellFocusByEnter(this.editElementId[elementIndex]);
+        }
+        // document.getElementById(this.editElementId[elementIndex]).querySelectorAll('input')[0].focus();
+      }, // 回车的时候聚焦下一个可编辑的输入框
+      tableCellFocusByUpOrDown(elementId, currentColumn, type) {
+        const findIndex = this.columnEditElementId[currentColumn].findIndex(item => item === elementId);
+        let elementIndex = 0;
+        if (type === 'up') {
+          if (findIndex === 0) {
+            elementIndex = this.columnEditElementId[currentColumn].length - 1;
+          } else {
+            elementIndex = findIndex - 1;
+          }
+        } else if (type === 'down') {
+          elementIndex = findIndex + 1;
+        }
+        const focusDom = document.getElementById(this.columnEditElementId[currentColumn][elementIndex]);
+        if (focusDom && !focusDom.getElementsByTagName('input')[0].disabled) {
+          focusDom.getElementsByTagName('input')[0].focus();
+          setTimeout(() => {
+            focusDom.getElementsByTagName('input')[0].select();
+          }, 0);
+        } else {
+          this.tableCellFocusByUpOrDown(this.columnEditElementId[currentColumn][elementIndex], currentColumn, type);
+        }
+      }, // 按下上键或者下键的时候聚焦下一个可编辑的输入框
+      clearSearchData() {
+        this.searchCondition = null;
+        this.searchInfo = '';
+        this.currentPage = 1;
+      }, // 清空搜索框里的值
+      totalData() {
+        const total = [];
+        if (this.dataSource.isSubTotalEnabled) {
+          const cell = {
+            COLLECTION_INDEX: '合计'
+          };
+          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          needSubtotalList.map((ele) => {
+            const needSubtotalDatas = [];
+            this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            cell[ele.colname] = `${totalNumber}`;
+            return ele;
+          });
+          total.push(cell);
+        }
+        // if (this.isHorizontal) {
+        if (this.dataSource.isFullRangeSubTotalEnabled) {
+          // 总计
+          const cell = {
+            COLLECTION_INDEX: '总计',
+          };
+          if (this.dataSource.fullRangeSubTotalRow) {
+            for (const key in this.dataSource.fullRangeSubTotalRow) {
+              if (Object.prototype.hasOwnProperty.call(this.dataSource.fullRangeSubTotalRow, key)) {
+                const element = this.dataSource.fullRangeSubTotalRow[key];
+                cell[key] = element.val;
+              }
+            }
+          }
+          total.push(cell);
+        }
+        // }
+        return total;
+      },
       buttonClick(obj) {
+        if (obj.confirm) {
+          // 有提示
+          if (obj.confirm.indexOf('{') >= 0) {
+            if (JSON.parse(obj.confirm).isselect) {
+              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (
+                JSON.parse(obj.confirm).isradio
+                && this.tableRowSelectedIds.length !== 1
+              ) {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
+              } else if (JSON.parse(obj.confirm).desc) {
+                const title = this.ChineseDictionary.WARNING;
+                const content = `${JSON.parse(obj.confirm).desc}`;
+                let contentText = '';
+                const confirm = JSON.parse(obj.confirm);
+                if (content.indexOf('{isselect}') !== '-1') {
+                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                } else {
+                  contentText = `${JSON.parse(obj.confirm).desc}`;
+                }
+                this.dialogMessage(title, contentText, obj);
+              } else {
+                this.buttonEvent(obj);
+              }
+            } else if (JSON.parse(obj.confirm).desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText, obj);
+            }
+          } else {
+            const title = this.ChineseDictionary.WARNING;
+            const contentText = `${obj.confirm}`;
+            this.dialogMessage(title, contentText, obj);
+          }
+        } else {
+          this.buttonEvent(obj);
+        }
+      },
+      dialogMessage(title, contentText, obj) {
+        const data = {
+          mask: true,
+          title,
+          content: contentText,
+          showCancel: true,
+          onOk: () => {
+            this.errorconfirmDialog(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+      },
+      errorconfirmDialog(obj) {
+        this.buttonEvent(obj);
+      },
+      buttonEvent(obj) {
         switch (obj.eName) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
@@ -423,10 +659,219 @@
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
           break;
+        case 'slient':
+          this.objTabActionSlient(obj);// 静默类型
+          break;
+        case 'download':
+          this.objTabActiondDownload(obj);// 下载类型
+          break;
+        case 'dialog':
+          this.objTabActionDialog(obj);// 自定义弹出框类型
+          break;
+        case 'navbar':
+          this.objTabActionNavbar(obj);// 跳转类型
+          break;
         default:
           break;
         }
       },
+      objTabActionSlient(tab) { // 动作定义静默
+        this.objTabActionSlientConfirm(tab);
+        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
+        // if (!tab) tab = this.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     this.beforeObjectSubmit(() => {
+        //       this.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     this.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   this.objTabActionSlientConfirm(tab);
+        // }
+      },
+      // 动作定义静默执行
+      objTabActionSlientConfirm(tab) {
+        const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
+        const obj = {
+          tableName: this.tableName,
+          ids
+        };
+        const promise = new Promise((resolve, reject) => {
+          this.getObjTabActionSlientConfirm({
+            obj, path: tab.action, resolve, reject
+          });
+          this.$loading.show();
+        });
+
+        promise.then(() => {
+          this.$loading.hide();
+          const message = this.objTabActionSlientConfirmData.message;
+          const data = {
+            mask: true,
+            title: '成功',
+            content: `${message}`
+          };
+          this.$Modal.fcSuccess(data);
+          if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
+            const dom = document.getElementById('hideRefresh');
+            const myEvent = new Event('click');
+            dom.dispatchEvent(myEvent);
+          }
+        }, () => {
+          this.$loading.hide();
+        });
+      },
+      objTabActiondDownload(tab) {
+        const downloadId = this.tableRowSelectedIds.map(item => item.ID).toString();
+        const paths = tab.action.replace('$objid$', downloadId);
+        const eleLink = document.createElement('a');
+        const path = getGateway(`${paths}`);
+        eleLink.setAttribute('href', path);
+        eleLink.style.display = 'none';
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        document.body.removeChild(eleLink);
+      },
+      objTabActionDialog(tab) { // 动作定义弹出框
+        this.$refs.dialogRef.open();
+        this.isrefrsh = tab.isrefrsh;
+        this.dialogConfig.title = tab.name;
+        this.dialogConfig.footerHide = true;
+        const url = tab.action;
+        const index = url.lastIndexOf('/');
+        const filePath = url.substring(index + 1, url.length);
+        // Vue.component(filePath, CustomizeModule[filePath].component);
+        this.dialogComponentName = filePath;
+        // }
+      },
+      dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
+        if (this.isrefrsh) {
+          const dom = document.getElementById('hideRefresh');
+          const myEvent = new Event('click');
+          dom.dispatchEvent(myEvent);
+        }
+      },
+      clearDialogComponentName() {
+        this.dialogComponentName = null;
+      },
+      objTabActionNavbar(tab) {
+        if (tab.action) {
+          // const { itemId } = router.currentRoute.params;
+          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          if (actionType === 'SYSTEM') {
+            if (singleEditType === ':itemId') {
+              if (this.tableRowSelectedIds.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.tableRowSelectedIds.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              const itemId = this.tableRowSelectedIds.map(item => item.ID).toString();
+              const path = `/${tab.action.replace(/:itemId/, itemId)}`;
+              router.push(
+                path
+              );
+            } else {
+              const path = `/${tab.action}`;
+              router.push(
+                path
+              );
+            }
+          } else if (actionType === 'https:' || actionType === 'http:') {
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.name });
+            const linkUrl = tab.action;
+            const linkId = tab.webid;
+            if (!this.LinkUrl[linkId]) {
+              this.increaseLinkUrl({ linkId, linkUrl });
+            }
+            const obj = {
+              linkName: tab.webname,
+              linkId: tab.webid,
+              linkUrl,
+              linkLabel: tab.name
+            };
+            window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+            const type = 'tableDetailUrl';
+            this.tabOpen({
+              type,
+              linkName: tab.webname,
+              linkId: tab.webid
+            });
+          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            this.addKeepAliveLabelMaps({ name, label: tab.name });
+            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            const obj = {
+              customizedName: name,
+              customizedLabel: tab.name
+            };
+            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            router.push(
+              path
+            );
+          } 
+        }
+
+
+        // // 判断跳转到哪个页面
+        // const url = tab.action;
+        // const index = url.lastIndexOf('/');
+        // const customizedModuleName = url.substring(index + 1, url.length);
+        // const label = tab.webdesc;
+        // const type = 'tableDetailAction';
+        // const name = Object.keys(this.keepAliveLabelMaps);
+        // let customizedModuleId = '';
+        // name.forEach((item) => {
+        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+        //     customizedModuleId = item.split(/\./)[2];
+        //   }
+        // });
+        // // if (tab.actiontype === 'url') {
+        // //   this.objTabActionUrl(tab);
+        // // } else
+        // if (tab.action) {
+        //   this.tabOpen({
+        //     type,
+        //     customizedModuleName,
+        //     customizedModuleId,
+        //     label
+        //   });
+        // }
+      }, 
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
@@ -437,10 +882,12 @@
           return;
         }
         // this.$refs.dialogRef.showModal = true;
-        this.$refs.dialogRef.open();
-        this.dialogConfig = {
-          contentText: '确认执行删除?',
-          confirm: () => {
+        this.$Modal.fcWarning({
+          title: '提示',
+          mask: true,
+          showCancel: true,
+          content: '确认执行删除?',
+          onOk: () => {
             let params = {};
             const { tableName, tableId, itemId } = router.currentRoute.params;
             const path = obj.path;
@@ -464,7 +911,7 @@
               };
             }
 
-            itemTableDelete({
+            fkHttpRequest().itemTableDelete({
               params,
               path,
               success: (res) => {
@@ -492,8 +939,67 @@
                 }
               }
             });
+          },
+          onCancel: () => {
           }
-        };
+        });
+        // this.$refs.dialogRef.open();
+        // this.dialogConfig = {
+        //   contentText: '确认执行删除?',
+        //   confirm: () => {
+        //     let params = {};
+        //     const { tableName, tableId, itemId } = router.currentRoute.params;
+        //     const path = obj.path;
+        //     const itemTable = this.updateData[this.tableName].delete;
+        //     if (obj.path) {
+        //       const mainTable = this.updateData[tableName].delete;
+        //
+        //       mainTable[tableName].ID = itemId;
+        //       mainTable[tableName].isdelmtable = false;
+        //
+        //       params = {
+        //         ...mainTable,
+        //         ...itemTable
+        //       };
+        //     } else {
+        //       params = {
+        //         delMTable: false,
+        //         objId: tableId,
+        //         tabItem: { ...itemTable },
+        //         table: tableName
+        //       };
+        //     }
+        //
+        //     itemTableDelete({
+        //       params,
+        //       path,
+        //       success: (res) => {
+        //         if (res.data.code === -1) {
+        //           // 删除失败
+        //           this.reloadErrorTips(res.data.data);
+        //         } else {
+        //           const deleteMessage = res.data.message;
+        //           this.$Message.success(`${deleteMessage}`);
+        //           const { refcolid } = this.itemInfo;
+        //           const tabIndex = this.tabCurrentIndex;
+        //           this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
+        //           this.getObjectTableItemForTableData({
+        //             table: this.tableName,
+        //             objid: itemId,
+        //             refcolid,
+        //             searchdata: {
+        //               column_include_uicontroller: true,
+        //               startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+        //               range: this.pageInfo.pageSize,
+        //               fixedcolumns: {}
+        //             },
+        //             tabIndex
+        //           });
+        //         }
+        //       }
+        //     });
+        //   }
+        // };
       },
       filterColumns(data) {
         if (!data) {
@@ -510,7 +1016,9 @@
             if (ele.isorder) {
               param.sortable = 'custom';
             }
-
+            if (ele.comment) {
+              param.renderHeader = this.tooltipRenderHeader();
+            }
             // warning 2019/06/17注释 数据后端已经排序好了 但是 ！！！ 点击后排序  刷新列表 默认展示的排序的图标颜色显示也会丢失
             // if (this.dataSource.ordids && this.dataSource.ordids.length > 0) {
             //   this.dataSource.ordids.map((order) => {
@@ -540,6 +1048,35 @@
         ];
         return headColumn.concat(renderColumns);
       },
+      tooltipRenderHeader() {
+        return (h, params) => h('span', [
+          h('Poptip', {
+            style: {},
+            props: {
+              trigger: 'hover',
+              transfer: true,
+              wordWrap: true,
+              content: 'content',
+              placement: 'top'
+
+            },
+            scopedSlots: {
+              default: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<i class="iconfont iconios-information-circle-outline" style="color: orangered; font-size: 13px"></i> <span>${params.column.name}</span>`
+                }
+              }),
+              content: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<span>${params.column.comment}</span>`
+                }
+              }),
+            },
+          })
+        ]);
+      }, // 表头提示的render
       filterData(rows) {
         if (!rows) {
           return [];
@@ -560,6 +1097,9 @@
           }
           return item;
         });
+        setTimeout(() => {
+          this.loading = false;
+        }, 200);
         return data;
       },
       filterBeforeData() {
@@ -626,16 +1166,23 @@
         return renderColumns;
       },
       collectionCellRender(cellData) {
+        if (cellData.customerurl && Object.keys(cellData.customerurl).length > 0) {
+          return this.customerurlRender(cellData);
+        }
         // 给cell赋render
-        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly) {
+        if (!cellData.ismodify || this.readonly || this.isMainTableReadonly || this.itemInfo.tabinlinemode === 'N') {
           // 不可编辑状态 显示label
-          if (cellData.isfk) {
+          if (cellData.isfk && cellData.fkdisplay !== 'mrp' && cellData.fkdisplay !== 'mop') {
             // 如果是外键关联 显示 别针icon
             return this.fkIconRender(cellData);
           }
           if (cellData.display === 'image') {
             // 不可编辑话 图片也是能照常render出来的
             return this.imageRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
+          }
+          if (cellData.display === 'doc') {
+            // 不可编辑话 文件也是能照常render出来的，只能下载
+            return this.docReadonlyRender(cellData, this.DISPLAY_ENUM[cellData.display].tag);
           }
           return null;
         }
@@ -657,24 +1204,44 @@
             style: {
               width: '100px'
             },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
             props: {
-              value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
+              // value: this.afterSendData[this.tableName] && this.afterSendData[this.tableName][params.index] && this.afterSendData[this.tableName][params.index][cellData.colname] !== undefined ? this.afterSendData[this.tableName][params.index][cellData.colname] : params.row[cellData.colname],
+              value: this.copyDataSource.row[params.index] ? this.copyDataSource.row[params.index][cellData.colname].val : '',
               regx: this.inputRegx(cellData, params),
               maxlength: cellData.length
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, data) => {
-                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
+                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+              },
+              'on-focus': (e, i) => {
+              },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  // 回车
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
               }
-              // 'on-focus': (event) => {
-              //   event.stopPropagation();
-              //   event.preventDefault();
-              // }
             }
           })
         ]);
@@ -694,9 +1261,9 @@
               )[0].limitdis : null
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (currentValue, data) => {
@@ -706,7 +1273,7 @@
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
 
-                this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -725,25 +1292,53 @@
                 value: this.getSelectValue(params, cellData)
               },
               nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
+                // click: (e) => {
+                //   e.stopPropagation();
+                // }
               },
               on: {
                 'on-change': (event, data) => {
-                  this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                  this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 }
               }
             },
             this.getSelectValueCombobox(h, cellData))
         ]);
       },
-
+      dropDownIsShowPopTip(cellData, params) {
+        if (cellData.refcolval.maintable) {
+          const { tableName } = this.$router.currentRoute.params;
+          const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[tableName];
+          const defaultValue = mainTablePanelData.default;
+          const modifyValue = mainTablePanelData.modify;
+          // 先从修改里找 如果修改的里面没有 就从默认值里取
+          if (modifyValue[tableName] && modifyValue[tableName][cellData.refcolval.srccol]) {
+            return true;
+          }
+          if (modifyValue[tableName]) {
+            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0) {
+              return false;
+            }
+          } else {
+            // 默认值取
+            const colname = defaultValue[tableName][cellData.refcolval.srccol];
+            if (colname) {
+              return true;
+            }
+          }
+        } else if (cellData.refcolval && this.copyDataSource.row[params.index][cellData.refcolval.srccol].val === '') {
+          return false;
+        }
+        return true;
+      }, // 下拉外键是否显示弹出框
       dropDownSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
         return (h, params) => h('div', [
           h(tag, {
             style: {
               width: '100px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
             },
             props: {
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
@@ -752,7 +1347,41 @@
               pageSize: this.fkDropPageInfo.pageSize,
               totalRowCount: this.fkData.totalRowCount,
               data: this.fkData,
+              isShowPopTip: () => {
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择${obj.name}`);
+                    }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
+                  }
+                  return this.dropDownIsShowPopTip(cellData, params);
+                }
+                return true;
+              },
               transfer: true,
+              enterType: true,
               AutoData: this.fkAutoData,
               hidecolumns: ['id', 'value']
             },
@@ -767,17 +1396,35 @@
                 this.fkAutoData = [];
                 this.getFKList(params, cellData);
               },
+              'on-popper-hide': () => {
+                this.fkData = {};
+              },
               'on-page-change': (value) => {
                 // debugger;
                 this.fkDropPageInfo.currentPageIndex = value;
                 this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: data,
+                      ID: ''
+                    }]
+                  });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                    [cellData.key]: [{
+                      Label: data,
+                      ID: ''
+                    }]
+                  });
+                }
                 if (!value.inputValue) {
                   value.transferDefaultSelected = [];
                 }
                 this.fkAutoData = [];
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.dataSource.row[params.index][cellData.colname].colid,
@@ -797,7 +1444,24 @@
                   }
                 });
               },
+              'on-keydown': (e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
+              },
               'on-blur': () => {
+                this.fkAutoData = [];
                 // if (value.notAutoData) {
                 //   // autodata中没有 清空输入框 及上次选中的值
                 //   value.inputValue = '';
@@ -811,7 +1475,6 @@
                 //     Label: autoData[0].value
                 //   }];
                 // }
-                // this.fkAutoData = [];
                 // let ids = null;
                 // if (value.transferDefaultSelected.length > 0) {
                 //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
@@ -819,6 +1482,7 @@
                 // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
               },
               'on-fkrp-selected': (data, value) => {
+                this.fkAutoData = [];
                 if (this.fkSelectedChangeData[params.index]) {
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: data });
                 } else {
@@ -828,11 +1492,373 @@
                 if (value.transferDefaultSelected.length > 0) {
                   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
                 }
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
+                  acc.push(cur.Label);
+                  return acc;
+                }, []).join(',');
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               },
               'on-clear': (value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: '',
+                      ID: ''
+                    }]
+                  });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: '', ID: '' }] });
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+              }
+            }
+          })
+        ]);
+      },
+      dropMultiSelectFilterRender(cellData, tag) { // 外键关联下拉选择(drp mrp)
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '100px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultSelected: this.dropDefaultSelectedData(params, cellData),
+              // defaultSelected: () =>{},
+              single: cellData.fkdisplay === 'drp',
+              pageSize: this.fkDropPageInfo.pageSize,
+              totalRowCount: this.fkData.totalRowCount,
+              data: this.fkData,
+              isShowPopTip: () => {
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择${obj.name}`);
+                    }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
+                  }
+                  return this.dropDownIsShowPopTip(cellData, params);
+                }
+                return true;
+              },
+              transfer: true,
+              enterType: true,
+              AutoData: this.fkAutoData,
+              hidecolumns: ['id', 'value']
+            },
+            // nativeOn: {
+            //   click: (e) => {
+            //     e.stopPropagation();
+            //   }
+            // },
+            on: {
+              'on-popper-show': () => {
+                this.fkDropPageInfo.currentPageIndex = 1;
+                this.fkAutoData = [];
+                this.getFKList(params, cellData);
+              },
+              'on-popper-hide': () => {
+                this.fkData = {};
+              },
+              'on-page-change': (value) => {
+                // debugger;
+                this.fkDropPageInfo.currentPageIndex = value;
+                this.getFKList(params, cellData);
+              },
+              'on-input-value-change': (data, value) => {
+                // if (this.fkSelectedChangeData[params.index]) {
+                //   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                //     [cellData.key]: [{
+                //       Label: data,
+                //       ID: ''
+                //     }]
+                //   });
+                // } else {
+                //   this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                //     [cellData.key]: [{
+                //       Label: data,
+                //       ID: ''
+                //     }]
+                //   });
+                // }
+                if (!value.inputValue) {
+                  value.transferDefaultSelected = [];
+                }
+                this.fkAutoData = [];
+                fkHttpRequest().fkFuzzyquerybyak({
+                  searchObject: {
+                    ak: data,
+                    colid: this.dataSource.row[params.index][cellData.colname].colid,
+                    fixedcolumns: {
+                      whereKeys: this.getMainRefobjid(params, cellData)
+                    }
+                  },
+                  success: (res) => {
+                    this.fkAutoData = res.data.data;
+                    const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                    if (autoData.length === 0) {
+                      // autodata中没有 清空输入框
+                      value.notAutoData = true;
+                    } else {
+                      delete value.notAutoData;
+                    }
+                  }
+                });
+              },
+              'on-keydown': (e, i) => {
+                // if (e.keyCode === 13) {
+                //   const elementId = i.$el.id;
+                //   this.tableCellFocusByEnter(elementId);
+                // } else if (e.keyCode === 40) {
+                //   // 下键
+                //   const elementId = i.$el.id;
+                //   const currentColumn = params.column._index - 1;
+                //   this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                // } else if (e.keyCode === 38) {
+                //   // 上键
+                //   const elementId = i.$el.id;
+                //   const currentColumn = params.column._index - 1;
+                //   this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                // }
+              },
+              'on-blur': () => {
+                this.fkAutoData = [];
+                // if (value.notAutoData) {
+                //   // autodata中没有 清空输入框 及上次选中的值
+                //   value.inputValue = '';
+                //   delete value.notAutoData;
+                // } else if (this.fkAutoData.length > 0) {
+                //   // 当选择模糊搜索结果的时候
+                //   const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                //   value.inputValue = autoData[0].value;
+                //   value.transferDefaultSelected = [{
+                //     ID: autoData[0].id,
+                //     Label: autoData[0].value
+                //   }];
+                // }
+                // let ids = null;
+                // if (value.transferDefaultSelected.length > 0) {
+                //   ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                // }
+                // this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+              },
+              'on-fkrp-selected': (data, value) => {
+                this.fkAutoData = [];
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: data });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: data });
+                }
+                let ids = null;
+                if (value.transferDefaultSelected.length > 0) {
+                  ids = value.transferDefaultSelected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur.ID}` : cur.ID), []);
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = data.reduce((acc, cur) => {
+                  acc.push(cur.Label);
+                  return acc;
+                }, []).join(',');
+                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+              },
+              'on-clear': (value) => {
+                if (this.fkSelectedChangeData[params.index]) {
+                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                    [cellData.key]: [{
+                      Label: '',
+                      ID: ''
+                    }]
+                  });
+                } else {
+                  this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: [{ Label: '', ID: '' }] });
+                }
+                this.copyDataSource.row[params.index][cellData.colname].val = '';
+                this.fkAutoData = [];
+                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+              }
+            }
+          })
+        ]);
+      },
+      comAttachFilterRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              propstype: {
+                optionTip: true,
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: '弹窗多选',
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
+                  show: true,
+                  url: `${cellData.serviceId ? +'/' + cellData.serviceId : ''}/p/cs/menuimport`
+
+                },
+                datalist: this.popFilterDataList,
+                ...cellData,
+                // 模糊查询的文字信息，支持多列
+              },
+
+            },
+            on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
+              },
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                }
+              }
+            }
+          })
+        ]);
+      },
+      comAttachFilterpopRender(cellData, tag) {
+        return (h, params) => h('div', [
+          h(tag, {
+            style: {
+              width: '130px'
+            },
+            domProps: {
+              id: `${params.index}-${params.column._index - 1}`
+            },
+            props: {
+              defaultValue: this.copyDataSource.row[params.index][cellData.colname].val,
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : [],
+              propstype: {
+                // 是否显示输入完成后是否禁用 true、false
+                show: true,
+                // 是否显示筛选提示弹窗 true、false
+                filterTip: true,
+                // 是否选中后禁止编辑 true、false
+                enterType: true,
+                // 是否回车选中第一行
+                disabled: false,
+                // 默认提示框
+                placeholder: null,
+                // 定义选中展示的文字的key
+                hideColumnsKey: ['id'],
+                // 配置弹窗的配置项 model
+                dialog: {
+                  model: {
+                    title: cellData.fkdesc,
+                    mask: true,
+                    draggable: true,
+                    scrollable: true,
+                    'footer-hide': true,
+                    width: 920
+                  }
+                },
+                fkobj: {
+                  refobjid: cellData.refobjid,
+                  reftable: cellData.reftable,
+                  colid: this.dataSource.row[params.index][cellData.colname].colid,
+                  reftableid: cellData.reftableid,
+                  saveType: 'object',
+                  show: true,
+                },
+                ...cellData,
+                // 模糊查询的文字信息，支持多列
+              },
+
+            },
+            on: {
+              'on-keydown': (v, e, i) => {
+                if (e.keyCode === 13) {
+                  const elementId = i.$parent.$el.id;
+                  this.tableCellFocusByEnter(elementId);
+                } else if (e.keyCode === 40) {
+                  // 下键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'down');
+                } else if (e.keyCode === 38) {
+                  // 上键
+                  const elementId = i.$parent.$el.id;
+                  const currentColumn = params.column._index - 1;
+                  this.tableCellFocusByUpOrDown(elementId, currentColumn, 'up');
+                }
+              },
+              valuechange: (item) => {
+                this.copyDataSource.row[params.index][cellData.colname].val = item.value;
+                this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
+                if (item.selected[0]) {
+                  this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                } else {
+                  this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                }
               }
             }
           })
@@ -853,6 +1879,8 @@
               // 是否显示筛选提示弹窗 true、false
               filterTip: true,
               // 是否选中后禁止编辑 true、false
+              enterType: true,
+              // 是否回车选中第一行
               disabled: false,
               // 默认提示框
               placeholder: null,
@@ -871,12 +1899,14 @@
               datalist: this.popFilterDataList,
               ...cellData,
               // 模糊查询的文字信息，支持多列
-              AuotData: this.fkAutoData
+              AuotData: this.fkAutoData,
+              // 选中的数据
+              defaultSelected: this.copyDataSource.row[params.index][cellData.colname].defaultSelected ? this.copyDataSource.row[params.index][cellData.colname].defaultSelected : []
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-show': (value, item) => { // 当气泡拉展开时去请求数据
@@ -888,7 +1918,7 @@
                                             value: '导入',
                                             lable: 2
                                           }];
-                fkGetMultiQuery({
+                fkHttpRequest().fkGetMultiQuery({
                   searchObject: {
                     tableid: cellData.reftableid
                   },
@@ -904,20 +1934,27 @@
                   this.copyDataSource.row[params.index][cellData.colname].val = value;
                   this.copyDataSource.row[params.index][cellData.colname].Selected = $this._data.IN;
                   this.copyDataSource.row[params.index][cellData.colname].inputComponent.InputVale = value;
+                  this.copyDataSource.row[params.index][cellData.colname].defaultSelected = $this._data.IN.reduce((acc, cur) => {
+                    acc.push({
+                      Label: value,
+                      ID: cur
+                    });
+                    return acc;
+                  }, []);
                 } else {
                   this.copyDataSource.row[params.index][cellData.colname].val = '';
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                 }
-                let ids = null;
-                if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
-                  ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
-                }
-                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                // if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
+                //   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
+                // }
+                const ids = $this.savObjemessage();
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-clear': () => {
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [];
-                this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(null, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-popclick': (event, row, targName, $this) => {
                 if (targName !== 'I' && event !== 1) {
@@ -935,7 +1972,7 @@
                   this.copyDataSource.row[params.index][cellData.colname].Selected = [];
                   return;
                 }
-                fkFuzzyquerybyak({
+                fkHttpRequest().fkFuzzyquerybyak({
                   searchObject: {
                     ak: data,
                     colid: this.copyDataSource.row[params.index][cellData.colname].colid,
@@ -971,13 +2008,13 @@
                 if (this.copyDataSource.row[params.index][cellData.colname].Selected && this.copyDataSource.row[params.index][cellData.colname].Selected.length > 0) {
                   ids = this.copyDataSource.row[params.index][cellData.colname].Selected.reduce((acc, cur) => (typeof acc !== 'object' ? `${acc},${cur}` : cur), []);
                 }
-                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(ids, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               },
               'on-select': (data) => {
                 this.fkAutoData = [];
                 this.copyDataSource.row[params.index][cellData.colname].val = data.label;
                 this.copyDataSource.row[params.index][cellData.colname].Selected = [data.value];
-                this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(data.value, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           }, [
@@ -1011,9 +2048,9 @@
               transfer: true
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, dateType, data) => {
@@ -1024,7 +2061,7 @@
                     value = value.replace(/\-/g, '');
                   }
                 }
-                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -1043,13 +2080,13 @@
               transfer: true
             },
             nativeOn: {
-              click: (e) => {
-                e.stopPropagation();
-              }
+              // click: (e) => {
+              //   e.stopPropagation();
+              // }
             },
             on: {
               'on-change': (event, dateType, data) => {
-                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+                this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
               }
             }
           })
@@ -1064,11 +2101,12 @@
             return h('div', [
               h('Poptip', {
                 style: {
-                  width: '60px'
+                  width: '60px',
                 },
                 props: {
                   trigger: 'hover',
                   transfer: true,
+                  wordWrap: true,
                   content: 'content',
                   placement: 'right'
 
@@ -1078,7 +2116,7 @@
                     style: {},
                     domProps: {
                       innerHTML: `<span>${index}</span>
-                            <i class="iconfont icon-jinggao" style="margin-left:5px; color: red" />`
+                            <i class="iconfont iconios-warning-outlin" style="margin-left:5px; color: red" />`
                     }
                   }),
                   content: () => h('div', {
@@ -1104,20 +2142,67 @@
         // 外键关联到icon
         return (h, params) => h('div', {
           domProps: {
-            innerHTML: params.row[cellData.colname] ? `<i class="iconfont" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" >&#xe625;</i>${params.row[cellData.colname]}` : ''
+            innerHTML: params.row[cellData.colname] ? `<i class="iconfont iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px" ></i>${params.row[cellData.colname]}` : ''
           },
           on: {
             click: (event) => {
               // TODO 外键关联跳转
               const data = this.dataSource.row[params.index][cellData.colname];
-              this.tabHref({
-                type: 'tableDetailVertical',
-                tableName: data.reftablename,
-                tableId: data.reftableid,
-                label: data.reftabdesc,
-                id: this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val
-              });
-              event.stopPropagation();
+              if (cellData.objdistype === 'object') {
+                this.tabHref({
+                  type: 'tableDetailVertical',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: data.refobjid
+                });
+              } else if (cellData.objdistype === 'tabpanle') {
+                this.tabHref({
+                  type: 'tableDetailHorizontal',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: data.refobjid
+                });
+              }
+              // event.stopPropagation();
+            }
+          }
+        });
+      },
+      customerurlRender(cellData) {
+        // 外键关联到icon
+        return (h, params) => h('div', {
+          style: {
+            color: '#0f8ee9',
+            'text-decoration': 'underline',
+            cursor: 'pointer'
+          },
+          domProps: {
+            innerHTML: params.row[cellData.colname] ? `${params.row[cellData.colname]}` : ''
+          },
+          on: {
+            click: (event) => {
+              // customerurl跳转
+              const data = cellData.customerurl;
+              if (data.objdistype === 'object') {
+                this.tabHref({
+                  type: 'tableDetailVertical',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: params.row[data.refobjid]
+                });
+              } else if (data.objdistype === 'tabpanle') {
+                this.tabHref({
+                  type: 'tableDetailHorizontal',
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  label: data.reftabdesc,
+                  id: params.row[data.refobjid]
+                });
+              }
+              // event.stopPropagation();
             }
           }
         });
@@ -1158,9 +2243,9 @@
                 }),
               },
               nativeOn: {
-                click: (e) => {
-                  e.stopPropagation();
-                }
+                // click: (e) => {
+                //   e.stopPropagation();
+                // }
               },
               // on: {
               //   'on-change': (event, dateType, data) => {
@@ -1171,22 +2256,163 @@
           ]);
         };
       },
+      docRender(cellData, tag) {
+        const that = this;
+        return (h, params) => h('div', {
+          style: {
+            display: 'flex'
+          },
+        }, [
+          h('div', {
+            style: {
+              display: 'flex',
+              'align-items': 'center'
+            },
+            domProps: {
+            },
+          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+            acc.push(`【${cur.name}】`);
+            return acc;
+          }, []).join('') : ''}`),
+          h(tag, {
+            style: {
+              'text-align': 'center',
+              cursor: 'pointer',
+              color: '#2D8CF0'
+            },
+            props: {
+              trigger: 'click',
+              transfer: true,
+              content: 'content'
+            },
+            scopedSlots: {
+              default: () => h('div', {
+                style: {
+                  'padding-left': '10px',
+                  'padding-right': '10px',
+                },
+                domProps: {
+                  innerHTML: '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>'
+                }
+              }),
+              content: () => h('TableDocFile', {
+                props: {
+                  dataitem: {
+                    filesLength: Number(params.column.webconf && params.column.webconf.filesLength),
+                    sendData: {
+                      path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                    },
+                    url: getGateway('/p/cs/batchUpload'),
+                    valuedata: this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val) : []
+                  }
+                },
+                on: {
+                  filechange: (val) => {
+                    this.copyDataSource.row[params.index][cellData.colname].val = JSON.stringify(val);
+                    this.putDataFromCell(val.length > 0 ? JSON.stringify(val) : '', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    DispatchEvent('childTableSaveFile', { detail: { type: 'save' } });
+                  }
+                }
+              }),
+            },
+            // on: {
+            //   'on-change': (event, dateType, data) => {
+            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
+            // }
+          })
+        ]);
+      },
+      docReadonlyRender(cellData, tag) {
+        const that = this;
+        return (h, params) => h('div', {
+          style: {
+            display: 'flex'
+          },
+        }, [
+          h('div', {
+            style: {
+              display: 'flex',
+              'align-items': 'center'
+            },
+            domProps: {
+            },
+          }, `${this.copyDataSource.row[params.index][cellData.colname].val ? JSON.parse(this.copyDataSource.row[params.index][cellData.colname].val).reduce((acc, cur) => {
+            acc.push(`【${cur.name}】`);
+            return acc;
+          }, []).join('') : '暂无文件'}`),
+          h(tag, {
+            style: {
+              width: '100%',
+              'text-align': 'center',
+              cursor: 'pointer',
+              color: '#2D8CF0'
+            },
+            props: {
+              trigger: 'click',
+              transfer: true,
+              content: 'content'
+            },
+            scopedSlots: {
+              default: () => h('div', {
+                style: {
+                  'padding-left': '10px',
+                  'padding-right': '10px',
+                },
+                domProps: {
+                  innerHTML: this.copyDataSource.row[params.index][cellData.colname].val ? '<i class="iconfont iconbj_listedit" style="color: #2D8CF0; font-size: 16px"></i>' : ''
+                }
+              }),
+              content: () => {
+                if (params.row[cellData.colname]) {
+                  return h('TableDocFile', {
+                    props: {
+                      dataitem: {
+                        readonly: true,
+                        sendData: {
+                          path: `${that.$route.params.tableName}/${that.$route.params.itemId}/`
+                        },
+                        url: getGateway('/p/cs/batchUpload'),
+                        valuedata: params.row[cellData.colname]
+                      }
+                    },
+                  });
+                }
+                return h('div', {
+                  domProps: {
+                    innerHTML: '暂无文件'
+                  },
+                });
+              },
+            },
+            // on: {
+            //   'on-change': (event, dateType, data) => {
+            //     this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val);
+            //   }
+            // }
+          })
+        ]);
+      },
       dropDefaultSelectedData(params, cellData) {
         // drp mrp 初始数据赋值
         let defaultData = [];
         if (cellData.fkdisplay === 'drp') {
-          if (this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
+          if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname] && this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key][0]) {
             defaultData.push(this.fkSelectedChangeData[params.index][cellData.key][0]);
-          } else if (this.dataSource.row[params.index][cellData.colname]) {
+          } else if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname]) {
             const data = {
-              ID: this.dataSource.row[params.index][cellData.colname].refobjid,
+              ID: this.dataSource.row[params.index][cellData.colname].refobjid.toString(),
               Label: params.row[cellData.colname]
             };
             defaultData.push(data);
           }
-        } else if (this.dataSource.row[params.index][cellData.colname]) {
+        } else if (this.dataSource.row[params.index] && this.dataSource.row[params.index][cellData.colname]) {
           if (this.fkSelectedChangeData[params.index] && this.fkSelectedChangeData[params.index][cellData.key] && this.fkSelectedChangeData[params.index][cellData.key].length > 0) {
-            defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            if (this.fkSelectedChangeData[params.index][cellData.key][0].ID) {
+              defaultData = this.fkSelectedChangeData[params.index][cellData.key];
+            } else {
+              defaultData = [];
+            }
           } else {
             let ids = [];
             const refobjid = this.dataSource.row[params.index][cellData.colname].refobjid;
@@ -1199,7 +2425,7 @@
                 val.split(',').map((item, ind) => {
                   if (index === ind) {
                     defaultData.push({
-                      ID: ele,
+                      ID: ele.toString(),
                       Label: item
                     });
                   }
@@ -1243,15 +2469,17 @@
       reloadErrorTips(data) {
         // const indexColumn = this.columns.filter(ele => ele.key === COLLECTION_INDEX);
         this.dataSource.row.map((ele) => {
-          const exceptFlag = data.every((item) => {
-            if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
-              return true;
+          if (data.every) {
+            const exceptFlag = data.every((item) => {
+              if (Number(ele[EXCEPT_COLUMN_NAME].val) !== Number(item.objid)) {
+                return true;
+              }
+              ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
+              return false;
+            });
+            if (exceptFlag) {
+              ele.errorTips = '';
             }
-            ele.errorTips = item.message; // 通过error字段去区分是否有错误提示
-            return false;
-          });
-          if (exceptFlag) {
-            ele.errorTips = '';
           }
           return ele;
         });
@@ -1277,8 +2505,20 @@
         }
         return null;
       },
-      putDataFromCell(currentValue, oldValue, colname, IDValue) {
+      putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
         // 组装数据 存入store
+        if (!currentValue) {
+          if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
+            currentValue = '';
+          } else if (fkdisplay === 'drp' || fkdisplay === 'pop') {
+            currentValue = 0;
+          } else if (type === 'NUMBER') {
+            currentValue = 0;
+          } else if (type !== 'NUMBER') {
+            currentValue = '';
+          }
+        }
+
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           if (rowDatas.length > 0) {
@@ -1318,6 +2558,18 @@
         // 表单验证
         this.verifyMessage();
       },
+      selectedChange(val) {
+        this.updateTableSearchData({
+          selectedValue: val,
+          inputValue: this.searchInfo
+        });
+      }, // 查询条件下拉框改变时触发
+      onInputChange(e) {
+        this.updateTableSearchData({
+          selectedValue: this.searchCondition,
+          inputValue: e.target.value
+        });
+      }, // 输入框值改变时触发
       searTabelList() {
         this.currentPage = 1;
         this.getTabelList(1);
@@ -1355,7 +2607,7 @@
           startindex: (this.fkDropPageInfo.currentPageIndex - 1) * this.fkDropPageInfo.pageSize,
           range: this.fkDropPageInfo.pageSize
         };
-        fkQueryList({
+        fkHttpRequest().fkQueryList({
           searchObject: searchdata,
           success: (res) => {
             this.fkData = res.data.data;
@@ -1368,8 +2620,43 @@
         const row = this.dataSource.row[params.index][cellData.colname];
         if (cellData.refcolval) {
           if (this.type === pageType.Horizontal) {
-            // 左右结构取行内的colid
-            fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
+            const express = cellData.refcolval.expre === 'equal' ? '=' : '';
+            if (cellData.refcolval.maintable) {
+              // 需要从主表取
+              const { tableName } = this.$router.currentRoute.params;
+              const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[tableName];
+              const defaultValue = mainTablePanelData.default;
+              const modifyValue = mainTablePanelData.modify;
+              // 先从修改里找 如果修改的里面没有 就从默认值里取
+              if (modifyValue[tableName] && modifyValue[tableName][cellData.refcolval.srccol]) {
+                const colname = modifyValue[tableName][cellData.refcolval.srccol];
+                if (colname) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
+                }
+              } else {
+                // 默认值取
+                const colname = defaultValue[tableName][cellData.refcolval.srccol];
+                if (colname) {
+                  fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
+                }
+              }
+              const colname = mainTablePanelData[cellData.refcolval.srccol];
+              if (colname && mainTablePanelData.isfk) {
+                fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+              }
+            } else if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
+            }
+            // fixedcolumns[cellData.refcolval.fixcolumn] = row.colid;
           } else {
             // 先判断主表是否有关联字段  没有则取行的colid
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
@@ -1379,7 +2666,7 @@
               const defaultValue = mainTablePanelData.default;
               const modifyValue = mainTablePanelData.modify;
               // 先从修改里找 如果修改的里面没有 就从默认值里取
-              if (modifyValue[cellData.refcolval.srccol] && modifyValue[cellData.refcolval.srccol].length > 0) {
+              if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol]) {
                 const colname = modifyValue[this.mainFormInfo.tablename][cellData.refcolval.srccol];
                 if (colname) {
                   fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${colname}`;
@@ -1396,7 +2683,19 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
             } else {
-              fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // debugger;
+              // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+              // 上下结构子表
+              // 左右结构取行内的colid
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item[cellData.refcolval.srccol] !== undefined) : undefined;
+              if (obj) {
+                // 有修改过的，取修改过的。
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
+              } else {
+                // ，没有修改过的取默认的
+                // this.$Message.info('请选择关联的表字段');
+                fixedcolumns[cellData.refcolval.fixcolumn] = express + this.dataSource.row[params.index][cellData.refcolval.srccol].refobjid;
+              }
             }
           }
         }
@@ -1425,9 +2724,9 @@
         const data = this.afterSendData[this.tableName] ? JSON.parse(JSON.stringify(this.afterSendData[this.tableName])) : [];
         const tabthData = JSON.parse(JSON.stringify(this.dataSource.tabth)).reverse();
         data.map((ele) => {
-          tabthData.forEach((col) =>{
-            if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME) {
-              if (ele[col.colname] === '') {
+          tabthData.forEach((col) => {
+            if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME && ele[col.colname] !== undefined) {
+              if (ele[col.colname] === '' || ele[col.colname] === 0) {
                 this.verifyTipObj[ele.ID] = `${col.name}不能为空，请输入！`;
               }
             }
@@ -1529,6 +2828,9 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
+            this.searchCondition = null;
+            this.searchInfo = '';
+            this.currentPage = 1;
             const eleLink = document.createElement('a');
             const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
             eleLink.setAttribute('href', path);
@@ -1536,6 +2838,7 @@
             document.body.appendChild(eleLink);
             eleLink.click();
             document.body.removeChild(eleLink);
+            this.getTabelList(1);
           }
         });
       },
@@ -1590,7 +2893,23 @@
       },
       getSelectValue(params, cellData) { // 做SelectValueCombobox 判空处理
         if (cellData.combobox) {
-          if (params.row[cellData.colname]) {
+          if (this.afterSendData[this.tableName]) {
+            const dataArry = this.afterSendData[this.tableName];
+            const findIndex = dataArry.findIndex(item => item.ID === params.row.ID);
+            if (findIndex > -1 && dataArry[findIndex] && dataArry[findIndex][cellData.colname] !== undefined) {
+              if (!dataArry[findIndex][cellData.colname]) {
+                return null;
+              }
+              return dataArry[findIndex][cellData.colname];
+            } else if (params.row[cellData.colname]) {
+              const result = cellData.combobox.filter(
+                ele => ele.limitdesc === params.row[cellData.colname]
+              );
+              if (result.length > 0) {
+                return result[0].limitval;
+              }
+            }
+          } else if (params.row[cellData.colname]) {
             const result = cellData.combobox.filter(
               ele => ele.limitdesc === params.row[cellData.colname]
             );
@@ -1604,7 +2923,16 @@
 
     },
     mounted() {
+      this.buttonData = this.buttonGroups;
+      window.addEventListener('tabRefreshClick', () => {
+        if (!this._inactive) {
+          this.isRefreshClick = true;
+        }
+      });
     },
+    activated() {
+      this.isRefreshClick = false;
+    }
   };
 </script>
 
@@ -1682,22 +3010,37 @@
     }
 </style>
 <style lang="less">
-  .table-in {
-    flex: 1;
-    .burgeon-input-wrapper >input{
-      height: 22px;
+    .table-in {
+        flex: 1;
+        tbody tr.burgeon-table-row-hover td {
+            background-color: #ecf0f1;
+        }
+        thead th {
+            font-weight: 400;
+        }
+        .burgeon-input-wrapper > input {
+            height: 22px;
+        }
+        .burgeon-select-selection {
+            height: 22px;
+        }
+        .burgeon-table th, .burgeon-table td {
+            height: 26px;
+        }
+        .burgeon-fkrp-select-icon {
+            top: 2px;
+        }
+        .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
+            top: -2px;
+        }
+        .burgeon-fkrp-poptip .fkrp-poptip-text {
+            top: 2px;
+        }
+        .fkrp-poptip-two .burgeon-icon-ios-close-circle {
+            top: -2px;
+        }
+        .burgeon-input-icon {
+            top: -2px;
+        }
     }
-    .burgeon-select-selection {
-      height: 22px;
-    }
-    .burgeon-table th, .burgeon-table td {
-      height: 26px;
-    }
-    .burgeon-fkrp-select-icon {
-      top: 2px;
-    }
-    .burgeon-fkrp-select .burgeon-icon-ios-close-circle {
-      top: -1px;
-    }
-  }
 </style>

@@ -1,6 +1,9 @@
 <template>
   <div class="extentionRadio">
-    <Description :option="option" />
+    <Description
+      :option="option"
+      @removeOption="removeOption"
+    />
     <div class="content">
       <EnumerateRadioItem
         :default-data="defaultData"
@@ -22,6 +25,9 @@
       EnumerateRadioItem
     },
     methods: {
+      removeOption(keyArray) {
+        this.$emit('removeOption', keyArray || []);
+      },
       radioValueChange({ key, value }) {
         this.$emit('dataChange', { key, value });
       }

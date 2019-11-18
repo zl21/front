@@ -2,20 +2,28 @@ import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
 import store from '../__config__/store/global.store';
-import { ignoreGateWay, enableGateWay, globalGateWay } from '../constants/global';
+import {
+  ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
+} from '../constants/global';
+import { addNetwork } from './indexedDB';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
+
+const getProjectQuietRoutes = () => {
+  const { quietRoutes } = window.ProjectConfig || {};
+  return (defaultQuietRoutes.concat(quietRoutes || [])) || [];
+};
 
 const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
   // eslint-disable-next-line no-empty
-  if (!enableGateWay) {
+  if (!enableGateWay()) {
     return undefined;
   }
-  if (ignoreGateWay.includes(url)) {
+  if (ignoreGateWay.includes(url) || ignorePattern().some(d => url.match(d))) {
     return undefined;
   }
   if (globalGateWay.includes(url)) {
@@ -54,16 +62,94 @@ axios.interceptors.response.use(
   (response) => {
     const { config } = response;
     const isJson = (config.headers['Content-Type'] || '').indexOf('application/json') > -1;
+    let data = {};
+
+    if (config.method === 'get' && config) {
+      if (config.params) {
+        data = config.params;
+      } else {
+        data = config.data;
+      }
+    } else {
+      data = config.data;
+    }
+    
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(config.data) : config.data,
+      data: isJson ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
+
+    // 记录每次网络请求的时间
+    if (pendingRequestMap[requestMd5]) {
+      try {
+        addNetwork([{
+          timecost: Date.now() - pendingRequestMap[requestMd5].reqTime,
+          url: config.url,
+          data: isJson ? JSON.parse(config.data) : config.data,
+          method: config.method,
+          isJson,
+          reqTime: pendingRequestMap[requestMd5].reqTime
+        }]);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
     delete pendingRequestMap[requestMd5];
-    if (response.data.code === -1) {
+    if (response.data.code === -1 || response.data.code === -2) {
+      // window.vm.$Modal.fcError({
+      //   mask: true,
+      //   title: '错误',
+      //   content: response.data.message || response.data.msg || 'No Error Message.'
+      // });
       window.vm.$Modal.fcError({
+        mask: true,
+        titleAlign: 'center',
         title: '错误',
-        content: response.data.message || 'No Error Message.'
+        // content: formatJsonEmg
+        render: h => h('div', {
+          style: {
+            padding: '10px 20px 0',
+            display: 'flex',
+            // alignItems: 'center',
+            lineHeight: '16px'
+          }
+        }, [
+          
+          h('i', {
+            props: {
+            },
+            style: {
+              marginRight: '5px',
+              display: 'inline-block',
+              'font-size': '28px',
+              'margin-right': ' 10px',
+              'line-height': ' 1',
+              padding: ' 10px 0',
+              color: 'red'
+            },
+            class: 'iconfont iconbj_error fcError '
+          }),
+          h('div', {
+            attrs: {
+              // rows: 8,
+              // readonly: 'readonly',
+            },
+            domProps: {
+              // value: formatJsonEmg,
+            },
+            style: `width: 80%;
+                margin: 1px;
+                margin-bottom: -8px;
+                box-sizing: border-box;
+                padding: 5px;
+                resize: none;
+                max-height: 100px;
+                max-width: 300px;
+                overflow: auto;
+                `
+          }, response.data.message || response.data.msg || 'No Error Message.')
+        ])
       });
     }
     dispatchR3Event({
@@ -85,8 +171,10 @@ axios.interceptors.response.use(
       }));
       delete pendingRequestMap[requestMd5];
       if (status === 403) {
-        router.push('/login');
-      } else if (status === 500) {
+        if (getProjectQuietRoutes().indexOf(router.currentRoute.path) === -1) {
+          router.push(getTouristRoute());
+        }
+      } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message;
         let formatJsonEmg = null;
@@ -97,25 +185,70 @@ axios.interceptors.response.use(
             formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
           }
         }
-        window.vm.$Modal.info({
+        window.vm.$Modal.fcError({
           mask: true,
           titleAlign: 'center',
           title: '错误',
-          render: createElement => createElement('textarea', {
-            domProps: {
-              value: formatJsonEmg,
-              rows: 8,
-              style: `width: 100%;
-              margin-bottom: -8px;
-              box-sizing: border-box;
-              padding: 5px;
-              resize: none;
-              `
-            },
-            attrs: {
-              readonly: 'readonly',
+          // content: formatJsonEmg
+          render: h => h('div', {
+            style: {
+              padding: '10px 20px 0',
+              display: 'flex',
+              // alignItems: 'center',
+              lineHeight: '16px'
             }
-          })
+          }, [
+            
+            h('i', {
+              props: {
+              },
+              style: {
+                marginRight: '5px',
+                display: 'inline-block',
+                'font-size': '28px',
+                'margin-right': ' 10px',
+                'line-height': ' 1',
+                padding: ' 10px 0',
+                color: 'red'
+              },
+              class: 'iconfont iconbj_error fcError '
+            }),
+            h('div', {
+              attrs: {
+                // rows: 8,
+                // readonly: 'readonly',
+              },
+              domProps: {
+                // value: formatJsonEmg,
+              },
+              style: `width: 80%;
+                  margin: 1px;
+                  margin-bottom: -8px;
+                  box-sizing: border-box;
+                  padding: 5px;
+                  resize: none;
+                  max-height: 100px;
+                  max-width: 300px;
+                  overflow: auto;
+                  `
+            }, formatJsonEmg)
+          ])
+          // render: createElement => createElement('textarea', {
+          //   domProps: {
+          //     value: formatJsonEmg,
+          //     rows: 8,
+          //     style: `width: 99%;
+          //     margin: 1px;
+          //     margin-bottom: -8px;
+          //     box-sizing: border-box;
+          //     padding: 5px;
+          //     resize: none;
+          //     `
+          //   },
+          //   attrs: {
+          //     readonly: 'readonly',
+          //   }
+          // })
         });
       }
       dispatchR3Event({
@@ -133,7 +266,7 @@ export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.serviceIdMap;
   const serviceName = store.state.activeTab.tableName;
-  if (!enableGateWay) {
+  if (!(enableGateWay())) {
     return url;
   }
   if (ignoreGateWay.includes(url)) {
@@ -163,42 +296,67 @@ export const urlSearchParams = (data) => {
   });
   return params;
 };
+//  判断网关
+function setUrlSeverId(gateWay, url, serviceconfig) {
+  if (gateWay && serviceconfig && serviceconfig.serviceId) {
+    return serviceconfig.serviceId ? `/${serviceconfig.serviceId}${url}` : url;
+  }
+  return gateWay ? `/${gateWay}${url}` : url;
+}
 
 function NetworkConstructor() {
   // equals to axios.post(url, config)
-  this.post = (url, config) => {
+  this.post = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    // 判断菜单网关 gateWay ？ serviceId 外键网关 ？
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
     const requestMd5 = getRequestMd5({
       data: config instanceof URLSearchParams ? config.toString() : config,
       url: matchedUrl,
       method: 'post'
     });
-    if (pendingRequestMap[requestMd5]) {
-      console.warn(`request [${requestMd5}]: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+    const now = new Date();
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
+      if (enableJflow()) {
+        const businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
+        businessTypes.forEach((actionUrls) => {
+          actionUrls.action.forEach((jflowUrl) => {
+            if (jflowUrl === url) {
+              return axios.post(matchedUrl, config);
+            }
+          });
+        });
+      } else {
+        return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
+      }
     }
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTime: now.getTime()
     };
     return axios.post(matchedUrl, config);
   };
 
   // equals to axios.get(url, config)
-  this.get = (url, config) => {
+  this.get = (url, config, serviceconfig) => {
     const gateWay = matchGateWay(url);
-    const matchedUrl = gateWay ? `/${gateWay}${url}` : url;
+    const matchedUrl = setUrlSeverId(gateWay, url, serviceconfig);
+    let data = {};
+    if (config && config.params) {
+      data = config.params;
+    } else {
+      data = config;
+    }
     const requestMd5 = getRequestMd5({
-      data: config,
+      data,
       url: matchedUrl,
       method: 'get'
     });
-    if (pendingRequestMap[requestMd5]) {
-      console.warn(`request: [${matchedUrl}] is pending.`);
-      return { then: () => {} };
+    const now = new Date();
+    if (pendingRequestMap[requestMd5] && now.getTime() - pendingRequestMap[requestMd5].reqTime < REQUEST_PENDDING_EXPIRE) {
+      return Promise.reject(new Error(`request: [${matchedUrl}] is pending.`));
     }
     pendingRequestMap[requestMd5] = {
-      reqTime: Date.now()
+      reqTime: now.getTime()
     };
     return axios.get(matchedUrl, config);
   };

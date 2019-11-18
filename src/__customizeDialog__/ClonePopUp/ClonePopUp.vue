@@ -98,9 +98,13 @@
       getVersion() {
         const searchdata = {
           isdroplistsearch: true,
-          refcolid: 165894,
+          table: 'AD_VERSION',
           startindex: 0,
-          range: 10
+          range: 10,
+          fixedcolumns: {
+            ISACTIVE: ['=Y'],
+            STATUS: ['=1']
+          }
         };
         network
           .post('/p/cs/QueryList', urlSearchParams({ searchdata }))
@@ -115,7 +119,7 @@
       fuzzyquerybyak(value) {
         const searchdata = {
           ak: value,
-          colid: ' 165884',
+          colid: '99467',
           fixedcolumns: {}
         };
         network
@@ -129,7 +133,8 @@
       save() {
         if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
           const data = {
-            title: 'warning',
+            mask: true,
+            title: '警告',
             content: '请输入目标表名或目标描述'
           };
           this.$Modal.fcWarning(data);
@@ -143,20 +148,20 @@
         };
         network.post('/p/cs/clone', searchdata)
           .then((res) => {
-            const res_data = res.data;
-            if (res_data.code !== 0) {
+            if (res.data.code !== 0) {
               return;
             }
             const data = {
-              title: 'success',
+              mask: true,
+              title: '成功',
               content: '克隆成功'
             };
-            this.$Modal.fcWarning(data);
-            this.$emit('closeActionDialog'); // 关闭弹框
+            this.$Modal.fcSuccess(data);
+            this.$emit('closeActionDialog', true); // 关闭弹框
           });
       }, // 确定
       cancel() {
-        this.$emit('closeActionDialog'); // 关闭弹框
+        this.$emit('closeActionDialog', false); // 关闭弹框
       }, // 取消
       findName(data, name, val) {
         for (const i of data) {
@@ -169,16 +174,20 @@
           }
         }
       },
-      errorDialogClose() {
-        this.errorDialog = false;
-      } // 关闭弹框
+
     },
     created() {
       this.chineseName = ChineseDictionary;
     },
     mounted() {
       this.o_table_name = this.findName(this.objList, '基本信息', '名称');
-    }
+    },
+    destroyed() {
+      const dom = document.getElementById('dropDownSelectPopper');
+      if (dom) {
+        dom.parentNode.removeChild(dom);
+      }
+    },
   };
 </script>
 <style lang="less" scoped type="text/less">

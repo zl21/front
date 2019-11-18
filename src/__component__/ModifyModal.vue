@@ -5,7 +5,7 @@
   >
     <ModalConfirm
       ref="Modal"
-      :title="title"
+      :title="poptitle"
       :width="width"
       :loading="loading"
       :title-align="titleAlign"
@@ -27,12 +27,11 @@
           已选中批量修改记录数：{{ ids }}行
         </div>
         <component 
-          :is="'CompositeForm'"
+          :is="'CompositeFormpop'"
           :default-data="newformList"
           :default-column-col="formList.objviewcol"
-          class="formPanel"
-          :condition = "Condition"
-          type="PanelForm"
+          class="pop-formPanel"
+          type=""
           @formChange="formChange"
         />
       </div>
@@ -43,11 +42,8 @@
   import { Version } from '../constants/global';
   import ModalConfirm from './Dialog/Confirm.vue';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  const {
-    fkModify, fksaveModify
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ModifyDialog',
@@ -60,8 +56,9 @@
         newformList: {},
         formChangeData: {},
         fixedcolumns: {},
-        Condition:'list',
+        Condition: 'list',
         objids: [],
+        poptitle: '批量修改',
         loading: false,
         type: false, // 判断是勾选 还是批量
         router: {},
@@ -85,7 +82,7 @@
       }, // 设置标题是否居中 // center left
       width: {
         type: Number,
-        default: () => 900
+        default: () => 940
       }, // 设置标题是否居中 // center left
     },
     created() {
@@ -111,14 +108,18 @@
             }, []);
             childs = childs.flat();
             this.newformList = {
-              addcolums: [{
-                hrdisplay: 'expand',
-                parentdesc: '批量修改',
-                parentname: val.addcolums[0].parentname,
-                childs
-              }],
+              inpubobj: childs,
               objviewcol: val.objviewcol
             };
+            // this.newformList = {
+            //   addcolums: [{
+            //     hrdisplay: 'expand',
+            //     parentdesc: '批量修改',
+            //     parentname: val.addcolums[0].parentname,
+            //     childs
+            //   }],
+            //   objviewcol: val.objviewcol
+            // };
           }
         },
         deep: true
@@ -127,7 +128,7 @@
     },
     methods: {
       getData(searchObject) {
-        fkModify({
+        fkHttpRequest().fkModify({
           searchObject,
           success: (res) => {
             if (res.data.code === 0) {
@@ -146,18 +147,18 @@
         const localdata = {
           table: this.router.tableName, // 表名
           column_include_uicontroller: true, //
-          reffixedcolumns:{}, // 左边树
+          reffixedcolumns: {}, // 左边树
         };
         if (!this.type) {
           localdata.objids = this.objids;
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
-        };
+        }
         const searchObject = {
           fixedData: this.formChangeData,
           searchdata: localdata
         };
-        fksaveModify({
+        fkHttpRequest().fksaveModify({
           searchObject,
           success: (res) => {
             this.loading = false;
@@ -198,7 +199,7 @@
     }
   };
 </script>
-<style lang="less" scope>
+<style lang="less" scoped>
 .modify-tip {
     display: inline-block;
     margin-left: 20px;
@@ -206,5 +207,9 @@
     margin: 0px 0 10px;
     height: 24px;
     line-height:24px;
+}
+.pop-formPanel{
+    padding: 16px;
+    border: 1px solid #dcdee2
 }
 </style>

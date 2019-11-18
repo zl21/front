@@ -1,18 +1,27 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
+import router from '../router.config';
+import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
 
 export default () => ({
-  mounted() {
-    this.moduleComponentName = getComponentName();
+  provide: {
+    [MODULE_COMPONENT_NAME]: getComponentName(),
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+  },
+  created() {
+    this[MODULE_COMPONENT_NAME] = getComponentName();
+  },
+  activated() {
   },
   computed: {
     ...mapState('global', {
       keepAliveLists: ({ keepAliveLists }) => keepAliveLists
     }),
     ...mapState(getComponentName(), {
+      childReadonly: ({ childTableReadonly }) => childTableReadonly,
       buttonsData: ({ buttonsData }) => buttonsData,
-      mainFormInfo: ({ ...mainFormInfo }) => mainFormInfo.mainFormInfo,
+      mainFormInfo: ({ mainFormInfo }) => mainFormInfo,
       tabPanel: ({ tabPanels }) => tabPanels,
       tabCurrentIndex: ({ tabCurrentIndex }) => tabCurrentIndex,
       updateData: ({ updateData }) => updateData,
@@ -21,13 +30,15 @@ export default () => ({
       pageInfo: ({ pageInfo }) => pageInfo,
       objTabActionSlientConfirmData: ({ objTabActionSlientConfirmData }) => objTabActionSlientConfirmData,
       defaultDataForCopy: ({ defaultDataForCopy }) => defaultDataForCopy,
+      instanceId: ({ instanceId }) => instanceId,
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
+      jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
+      refreshButton: ({ refreshButton }) => refreshButton,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
       }, []),
     }),
-
   },
   methods: {
     ...mapActions(getComponentName(),
@@ -65,22 +76,16 @@ export default () => ({
         'updateTableListForRefTable',
         'updateTablePageInfo',
         'updateAddDefaultData',
-        'updateObjTabActionSlientConfirm'
+        'updateObjTabActionSlientConfirm',
+        'updateTableSearchData',
+        'updateRefreshButton'
         // 'resetFormReadOnlyAttribute'
 
       ]),
   },
-  deactivated() {
-    if (this.$options.isKeepAliveModel) {
-      if (this.keepAliveLists.indexOf(this.moduleComponentName) === -1) {
-        console.log(`${this.moduleComponentName} deactivated.`);
-      }
-    }
-  },
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
-        console.log(`${this.moduleComponentName} before destroy`);
         store.unregisterModule(this.moduleComponentName);
       }
     } catch (e) {

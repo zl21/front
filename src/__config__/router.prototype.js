@@ -6,7 +6,9 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
-  VERTICAL_TABLE_DETAIL_PREFIX
+  VERTICAL_TABLE_DETAIL_PREFIX,
+  PLUGIN_MODULE_PREFIX,
+  LINK_MODULE_PREFIX,
 } from '../constants/global';
 
 const routes = [
@@ -40,7 +42,7 @@ const routes = [
           /* webpackMode: 'eager' */
           '../__component__/V.TableDetailKeepAlive'
         ), // 上下结构的单对象界面
-        meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX }
+        meta: { routePrefix: VERTICAL_TABLE_DETAIL_PREFIX } 
       }, {
         path: `${CUSTOMIZED_MODULE_PREFIX}/:customizedModuleName/:customizedModuleId`,
         component: () => import(
@@ -49,6 +51,22 @@ const routes = [
           '../__component__/C.TableKeepAlive'
         ), // 定制界面
         meta: { routePrefix: CUSTOMIZED_MODULE_PREFIX }
+      }, {
+        path: `${PLUGIN_MODULE_PREFIX}/:pluginModuleName`,
+        component: () => import(
+          /* webpackChunkName: 'P.KeepAlive' */
+          /* webpackMode: 'eager' */
+          '../__component__/P.KeepAlive'
+        ), // 定制界面
+        meta: { routePrefix: PLUGIN_MODULE_PREFIX }
+      }, {
+        path: `${LINK_MODULE_PREFIX}/:linkModuleName/:linkModuleId`,
+        component: () => import(
+          /* webpackChunkName: 'P.KeepAlive' */
+          /* webpackMode: 'eager' */
+          '../__component__/L.KeepAlive'
+        ), // 外链界面
+        meta: { routePrefix: LINK_MODULE_PREFIX },
       }]
   },
   {
@@ -59,6 +77,6 @@ const routes = [
     path: '/ComponentPrototype',
     component: ComponentProtoType
   }
+  
 ];
-
 export default routes;

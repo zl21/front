@@ -14,7 +14,6 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
-
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);
@@ -33,7 +32,7 @@ export default {
     });
   }, // 获取主表按钮和子表信息
   getObjectTabForChildTableButtons({ commit }, {
-    maintable, table, objid, tabIndex
+    maintable, table, objid, tabIndex, resolve, reject
   }) {
     // 参数说明 maintable主表表名，table 子表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -45,8 +44,43 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        if (resData.tabfilter && resData.tabfilter.length > 0) {
+          const childTableFixedcolumns = {};
+          const tabfilterData = JSON.parse(JSON.stringify(resData));
+          tabfilterData.tabfilter.forEach((item) => {
+            if (item.display === 'OBJ_DATENUMBER') {
+              // 日期控件
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else if (item.default !== '-1' && item.default) {
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+                // childTableFixedcolumns[item.colname] = new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+              } else {
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+              }
+            } else if (item.display === 'OBJ_DATE') {
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else {
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '/')} 00:00:00~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`;
+              }
+            } else if (item.display === 'OBJ_SELECT' && item.default) {
+              childTableFixedcolumns[item.colname] = [`=${item.default}`];
+            } else if (item.display === 'OBJ_FK' && item.refobjid) {
+              childTableFixedcolumns[item.colname] = [`${item.refobjid}`];
+            } else if (item.default) {
+              childTableFixedcolumns[item.colname] = item.default;
+            }
+          });
+          commit('updateTableFixedcolumns', JSON.parse(JSON.stringify(childTableFixedcolumns)));
+        }
         resData.tabIndex = tabIndex;
         commit('updateButtonsData', resData);
+        if (resolve) {
+          resolve();
+        }
+      } else if (reject) {
+        reject();
       }
     });
   }, // 获取子表按钮
@@ -68,11 +102,11 @@ export default {
   updateObjectForMainTableForm({ commit }) {
     commit('updateFormDataForRefshow');
   },
-  getInputForitemForChildTableForm({ commit }, { table, tabIndex }) {
+  getInputForitemForChildTableForm({ commit }, { table, tabIndex, tabinlinemode }) {
     // 参数说明 table 子表表名
     network.post('/p/cs/inputForitem', urlSearchParams({
       table,
-      inlinemode: 'Y'
+      inlinemode: tabinlinemode
     })).then((res) => {
       if (res.data.code === 0) {
         const formData = res.data.data;
@@ -129,6 +163,7 @@ export default {
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
+
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       if (path) { // 没有子表    有path的参数
@@ -146,21 +181,15 @@ export default {
         };
       }
     } else if (type === 'modify') { // 编辑保存参数
-      // const { sataType } = parame;
       if (isreftabs) {
         const itemModify = itemCurrentParameter.modify;
         const itemAdd = itemCurrentParameter.add;// 子表新增
         const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-
         if (path) { // 有path的参数
           const { modify } = parame;
-          // const itmValues = itemModify[itemName];
-
           if (itemNameGroup.map(item => item.tableName).includes(itemName)) {
-            // itemModify[itemName].ID = objId;
-            // const add = Object.assign({}, itemDefault, itemAdd);// 整合子表新增和默认值数据
             if (sataTypeName === 'addAndModify') {
-              const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
               // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
@@ -181,9 +210,8 @@ export default {
                 ...addAndModifyParames
               };
             } else if (sataTypeName === 'add') { // 子表新增
-              const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+              const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
               Object.assign(itemAdd[itemName], add);
-              // modify[tableName].ID = objId;// 主表id
               const itemTableAdd = Object.assign({}, itemAdd);
 
               itemTableAdd[itemName].ID = -1;
@@ -215,7 +243,7 @@ export default {
             };
           }
         } else if (sataTypeName === 'addAndModify') {
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
           const itemTableAdd = Object.assign({}, itemAdd);
           itemTableAdd[itemName].ID = -1;
@@ -233,11 +261,9 @@ export default {
             }
           };
         } else if (sataTypeName === 'add') { // 子表新增
-          const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]);// 整合子表新增和默认值数据
+          const add = Object.assign({}, itemDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
           Object.assign(itemAdd[itemName], add);
-          // modify[tableName].ID = objId;// 主表id
           const itemTableAdd = Object.assign({}, itemAdd);
-
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
@@ -250,20 +276,20 @@ export default {
             }
           };
         } else if (sataTypeName === 'modify') { // 子表编辑
-          const { modify } = parame;
-          parames = {
-            table: tableName, // 主表表名
-            objId, // 明细id
-            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...modify
-            }
-          };
-        } else {
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
             fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
               ...itemModify
+            }
+          };
+        } else {
+          const itemValue = itemModify;
+          parames = {
+            table: tableName, // 主表表名
+            objId, // 明细id
+            fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...itemValue
             }
           };
         }
@@ -289,24 +315,52 @@ export default {
     });
   },
   performMainTableDeleteAction({ commit }, {
-    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter
+    path, table, objId, currentParameter, itemName, itemNameGroup, itemCurrentParameter, resolve, reject
   }) { // 主表删除
     let parames = {};
     if (itemNameGroup && itemNameGroup.length > 0) {
-      const mainTable = currentParameter.delete;
-      mainTable[table].ID = objId;
-      mainTable[table].isdelmtable = false;
       const itemDelete = itemCurrentParameter.delete;
-      if (path) {
-        parames = {
-          ...mainTable,
+      if (itemName !== table) {
+        if (path) {
+          if (currentParameter && currentParameter.delete) {
+            const mainTable = currentParameter.delete;
+            mainTable[table].ID = objId;
+            mainTable[table].isdelmtable = false;
+            parames = {
+              ...mainTable,
+              ...itemDelete
+            };
+          }
+        } else {
+          const tabItem = {
+            ...itemDelete
+          };
+          parames = {
+            table, // 主表表名
+            objId,
+            delMTable: false,
+            tabItem
+          };
+        }
+      } else if (path) {
+        if (currentParameter && currentParameter.delete) {
+          const mainTable = currentParameter.delete;
+          mainTable[table].ID = objId;
+          mainTable[table].isdelmtable = true;
+          parames = {
+            ...mainTable,
+            ...itemDelete
+          };
+        }
+      } else {
+        const tabItem = {
           ...itemDelete
         };
-      } else {
         parames = {
           table, // 主表表名
           objId,
-          delMTable: true
+          delMTable: true,
+          tabItem
         };
       }
     } else if (path) {
@@ -325,9 +379,11 @@ export default {
    
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
+        resolve();
         const data = res.data;
         commit('updateNewMainTableDeleteData', data);
       } else if (res.data.code === -1) {
+        reject();
         const data = res.data.data;
         commit('updatetooltipForItemTableData', data);
       }
@@ -352,10 +408,27 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path, isreftabs,resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -370,10 +443,27 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      }
+    }
+    network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -388,10 +478,27 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path,isreftabs, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectVoid',param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -406,15 +513,30 @@ export default {
       reject();
     });
   },
-  getObjTabActionSlientConfirm({ commit }, {
-    params, path, resolve, reject
-  }) { // 获取作废数据
-    network.post(path, params).then((res) => {
+  getObjTabActionSlientConfirm({
+    commit
+  }, {
+    obj,
+    path,
+    resolve, reject
+  }) {
+    let actionName = '';
+    if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = path;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
+
         commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
 };

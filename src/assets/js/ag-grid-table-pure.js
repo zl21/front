@@ -106,159 +106,6 @@ const localeText = {
   ctrlV: 'ctrl+V',
 };
 
-/*
-const setCommonStyles = (options) => {
-  const commonStyles = document.createElement('style');
-  const styleArray = [
-    // modify on 2019/06/27 based on the optimization by LiYue.
-    '.ag-theme-balham .ag-floating-filter-button { float: right; line-height: 16px; margin-top: 8px; }',
-    `.ag-theme-balham .ag-floating-filter-body {
-      float: left;
-      height: 100%;
-      margin-right: 0;
-      width: calc(100% - 20px);
-    }`,
-    // `.ag-theme-balham .ag-ltr .ag-cell-last-left-pinned {
-    //   border-right: 0px solid #BDC3C7;
-    // }`,
-    `.ag-theme-balham .ag-row-selected {
-      background-color:#e6eaef ;
-      border-bottom-color: #d9dcde;
-    }`,
-    `.ag-floating-filter-body input {
-      height: 22px;
-      margin: 0;
-      width: 100%;
-      border: 1px solid #d8d8d8;
-      border-radius: 2px;
-    }`,
-    '.ag-floating-filter-input:read-only { background-color: #fff; }',
-    `.ag-theme-balham .ag-header-cell::after, .ag-theme-balham .ag-header-group-cell::after {
-      border-right: 1px solid #BDC3C7;
-      content: "";
-      height: 16px;
-      margin-top: 8px;
-      position: absolute;
-      right: 0;
-      text-indent: -2000px;
-      top: 0;
-      opacity: 0;
-    }
-`,
-    '', // modify end
-    '.ag-bl-overlay { pointer-events: auto; user-select: none; }',
-    '.ag-body-viewport::-webkit-scrollbar, .ag-column-container::-webkit-scrollbar { width: 8px; height: 8px; }',
-    '.ag-body-viewport::-webkit-scrollbar-thumb, .ag-column-container::-webkit-scrollbar-thumb { background-color: #c5c2c2; border-radius: 5px; }',
-    '.ag-body-viewport::-webkit-scrollbar-track, .ag-column-container::-webkit-scrollbar-track { box-shadow: inset 0 0 15px lightgray; background-color: #f8f7f7; border-radius: 5px; }',
-    '.ag-theme-balham .ag-header { background-color: #F5F6FA; border-bottom: 1px solid #d8d8d8; }',
-    '.ag-theme-balham .ag-icon-checkbox-unchecked, .ag-theme-balham .ag-icon-checkbox-checked, .ag-theme-balham .ag-icon-checkbox-indeterminate { background-size: 14px 14px; }',
-    '.ag-theme-balham .ag-header-cell-label .ag-header-cell-text { font-weight: normal; color: #575757; }',
-    // '.ag-theme-balham .ag-header-cell, .ag-theme-balham .ag-header-group-cell { padding-left: 4px; padding-right: 4px;}',
-    // '.ag-theme-balham .ag-cell { padding-left: 4px; padding-right: 4px;}',
-    '.ag-theme-balham .ag-root { border: none; }',
-    '.ag-theme-balham .ag-header-select-all { margin-right: 4px; }',
-    '.ag-theme-balham .ag-selection-checkbox span { margin-right: 4px; }',
-    '.ag-menu { overflow: hidden; }',
-    '.fc-ag-table-container span { font-family: \'Microsoft YaHei\' !important; }',
-    `${options && options.showAgToolPanelItem ? '' : '.ag-column-tool-panel-item { display: none; } .ag-filter-body { padding-left: 4px }'}`, // 禁止隐藏全部列
-    `.${cssFeatures.hover} { cursor: pointer; }`,
-    `.${cssFeatures.imagePreviewBox} {
-      width: ${config.previewImageSize}px;
-      height: ${config.previewImageSize}px;
-      border: 0px solid black;
-      position: absolute;
-      bottom: 0;
-      right: 10000px;
-      background-color: #fff;
-      z-index: 999999;
-      box-shadow: 0 0 1px gray;
-      transition-duration: 0.3s;
-    }`,
-    `.${cssFeatures.tooltipBox} {
-        pointer-events: none;
-        background-color: black;
-        position: absolute;
-        z-index: 99999;
-        color: #fff;
-        font-size: 12px;
-        padding: 5px 10px;
-        border-radius: 4px;
-        display: block;
-        border: 1px solid black;
-        max-width: 200px;
-        word-break: break-all;
-        text-align: left;
-        left: -10000px;
-    }`,
-    `.${cssFeatures.tooltipBox}::before {
-        pointer-events: none;
-        display: block;
-        content: '';
-        top: 8px;
-        float: left;
-        position: absolute;
-        left: -11px;
-        border-right: 5px solid black;
-        border-left: 5px solid transparent;
-        border-top: 5px solid transparent;
-        border-bottom: 5px solid transparent;
-    }`,
-    `.${cssFeatures.tooltipTopBox} {
-        pointer-events: none;
-        background-color: #fff;
-        position: absolute;
-        z-index: 99999;
-        color: #575757;
-        font-size: 12px;
-        padding: 5px 10px;
-        border-radius: 4px;
-        display: block;
-        box-shadow: 0px 2px 2px lightgrey;
-        max-width: 200px;
-        word-break: break-all;
-        text-align: center;
-        left: -10000px;
-    }`,
-    `.arrow-down:before, .arrow-down:after {
-        pointer-events: none;
-        display: block;
-        content: '';
-        width: 0;
-        height: 0;
-        position: absolute;
-        border: 6px solid transparent;
-     }
-     .arrow-down:before {
-        top: 100%;
-        left: 48%;
-        border-top-color: lightgray;
-     }
-    .arrow-down:after {
-        top: calc(100% - 1px);
-        left: 48%;
-        border-top-color: #fff;
-    }`,
-    `.text-right { text-align: right }
-    .attachment-wrapper {
-        display: inline-block;
-        margin-right: 5px;
-    }
-    a.attachment {
-        text-decoration: none;
-        color: inherit
-    }
-    a.attachment:hover {
-        border-bottom: 1px solid black;
-    }
-    a.attachment i {
-        color: rgb(32, 160, 255);
-    }`,
-  ];
-  commonStyles.innerHTML = styleArray.join('\r\n');
-  return commonStyles;
-};
- */
-
 // for image
 const imageComponent = function () {
 };
@@ -325,7 +172,7 @@ fkComponent.prototype.init = function (params) {
   const { value } = params;
   // 设置fk icon 的样式
   const template = value !== null && value !== ''
-    ? `<i class="iconfont ${cssFeatures.hover}" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px">&#xe625;</i> ${params.value || ''}`
+    ? `<i class="iconfont ${cssFeatures.hover} iconbj_link" data-target-tag="fkIcon" style="color: #0f8ee9; font-size: 12px"></i> ${params.value || ''}`
     : '';
 
   if (params.data && params.data.ID.val !== '合计' && params.data.ID.val !== '总计') {
@@ -375,7 +222,7 @@ attachmentComponent.prototype.init = function (params) {
   this.eGui = eGui;
   const { value } = params;
   if (Object.prototype.toString.call(JSON.parse(value)) === '[object Array]') {
-    eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont">&#xe649;</i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
+    eGui.innerHTML = JSON.parse(value).map(d => `<span class="attachment-wrapper"><a class="attachment" href="${d.url || ''}"><i class="iconfont iconmd-document"></i> ${d.name} ${d.Size ? `(${d.Size})` : ''}</a></span>`).join(' ');
   }
 };
 
@@ -415,9 +262,9 @@ sequenceComponent.prototype.init = function (params) {
   // for tooltip icon
   if (failIds && failIds.indexOf(`${value}`) > -1) {
     const toolTipIcon = document.createElement('i');
-    toolTipIcon.setAttribute('class', `iconfont ${cssFeatures.hover}`);
+    toolTipIcon.setAttribute('class', `iconfont iconbj_listwarning ${cssFeatures.hover}`);
     toolTipIcon.style.color = 'red';
-    toolTipIcon.innerHTML = '&#xe61b;';
+    // toolTipIcon.innerHTML = '&#xe61b;';
     toolTipIcon.onmouseenter = function (e) {
       const { target } = e;
       const offsetLeft = target.getBoundingClientRect().left - agGridDiv.getBoundingClientRect().left;
@@ -475,7 +322,7 @@ customHeader.prototype.init = function (params) {
     </span>
     <div ref="eLabel" class="ag-header-cell-label" role="presentation" style="${enableMenu ? '' : 'width: 100%;'}">
         <span ref="eText" class="ag-header-cell-text" role="columnheader">
-          ${params.column.colDef.comment ? `<i class="iconfont comment ${cssFeatures.hover}" style="color: orangered">&#xe640;</i> ` : ''} ${displayName}
+          ${params.column.colDef.comment ? `<i class="iconfont comment iconios-information-circle-outline ${cssFeatures.hover}" style="color: orangered"></i> ` : ''} ${displayName}
         </span>
         <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>
         <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon ${params.column.colDef.isorder && params.column.colDef.sort === 'asc' ? '' : 'ag-hidden'}" >
@@ -494,7 +341,6 @@ customHeader.prototype.init = function (params) {
   this.eSortOrderDesc = eGui.querySelector('.ag-sort-descending-icon');
   this.eSortNone = eGui.querySelector('.ag-sort-none-icon');
   this.eComment = eGui.querySelector('i.comment');
-
   if (this.eComment) {
     this.eComment.onmouseenter = (e) => {
       const { target } = e;
@@ -700,7 +546,7 @@ const initializeAgTable = (container, opt) => {
         if (columnItem.fkdisplay === 'mop') {
 
           return 'mopFkComponent';
-        } else {
+        } else if(columnItem.fkdisplay === 'drp' || columnItem.fkdisplay === 'pop') {
           return 'fkComponent';
         }
       }
@@ -1365,6 +1211,11 @@ const initializeAgTable = (container, opt) => {
         }, 50);
       }
       return agTable;
+    };
+    
+    // 清空选中所有列
+    agTable.deselectAll = () => {
+      api.deselectAll();
     };
 
     // 暴露ag showOverlay方法

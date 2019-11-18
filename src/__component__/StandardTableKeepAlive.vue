@@ -14,7 +14,6 @@
   import StandardTableList from './StandardTableList';
   import moduleName from '../__utils__/getModuleName';
 
-
   export default {
     name: `${STANDARD_TABLE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {

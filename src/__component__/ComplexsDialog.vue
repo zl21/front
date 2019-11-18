@@ -1,10 +1,10 @@
 <template>
   <div class="dialog">
     <Complexs-dialog
-      :treedata="Tree"
-      :loading="loading"
-      :tree-loading="tree_loading"   
       ref="dialog"
+      :treedata="Tree"
+      :loading="loading"   
+      :tree-loading="tree_loading"
       :table-loading="tableLoading"
       :component-data="componentData"
       :result-data="resultData"
@@ -29,8 +29,7 @@
 <script>
   import { Version } from '../constants/global';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  const multipleComple = require(`../__config__/actions/version_${Version}/formHttpRequest/compleHttpRequest.js`).default;
+  const multipleComple = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/compleHttpRequest.js`).default;
 
   export default {
     name: 'ComplexSelect',
@@ -75,8 +74,41 @@
             pageOptions: [10, 20, 50, 100],
             pageSize: 10,
             total: 0,
+            tableprops: {
+              tabindex: true,
+              ctrlAdd: (obj) => {
+                this.listData.list = [];
+                this.listData.id = [];
+                this.tdData.list = [];
+                this.tdData.id = '';
+                obj.forEach((item) => {
+                  this.listData.list.push({
+                    exclude: !this.checkbox,
+                    id_list: [item.ID],
+                    screen: item.ID,
+                    screen_string: this.toStringName(item, this.akname)
+                  });
+                  this.listData.id.push(item.ID);
+                });
+              },
+              shiftAdd: (obj) => {
+                this.listData.list = [];
+                this.listData.id = [];
+                this.tdData.list = [];
+                this.tdData.id = '';
+                obj.forEach((item) => {
+                  this.listData.list.push({
+                    exclude: !this.checkbox,
+                    id_list: [item.ID],
+                    screen: item.ID,
+                    screen_string: this.toStringName(item, this.akname)
+                  });
+                  this.listData.id.push(item.ID);
+                });
+              }
+            },
             pageNum: 1,
-            height: 340,
+            height: true,
             searchName: '全局检索',
             checked: false
           },
@@ -87,14 +119,19 @@
             pageSize: 10,
             total: 0,
             pageNum: 1,
-            height: 340,
+            tableprops: {
+              tabindex: false,
+            },  
+            height: true,
             pageOptions: [10, 20, 50, 100],
             search: '',
             searchName: '查询结果'
           }
         ],
+        CONDITIONList: [], // 组织树 选中值
+        CONDITIONTable: {}, // 组织树 --查询条件 
         sendMessage: {
-          CONDITION: '', // 组织树
+          CONDITION: [], // 组织树 -- 选中结果查询条件
           GLOBAL: '', //  文字查询
           PAGENUM: 1, // 当前页码
           PAGESIZE: 50 // 显示条数
@@ -106,6 +143,7 @@
         IN: [], // 选中的id
         NOTIN: [], // 点击排除按钮 选中的id
         EXCLUDE: [],
+        chooseTreeData: [], // 选中节点
         open: false,
         refresh: false,
         checkbox: false,
@@ -124,20 +162,32 @@
           id: '',
           index: -1,
           list: []
-        }
+        },
+        listData: {
+          id: [],
+          list: [] 
+        },
+        idslist: [] // 选中所有的id
       };
     },
     methods: {
       treeRestructure(data) {
         // tree_lists 树形结构重新组合
-        this.AKNAME = data.data[0].AKNAME;
-        this.treedata = data.data.map((obj) => {
+        this.AKNAME = data.data.reduce((arr, item) => {
+          arr.push(item.AKNAME);
+          return arr;
+        }, []);
+       
+        this.treedata = data.data.map((obj, i) => {
           const option = {};
           option.title = obj.NAME;
           option.expand = !!obj.expand;
+          option.AKNAME = obj.AKNAME;
           option.children = [...obj.VALUE];
           option.children.forEach((item) => {
-            item.title = item.NAME;
+            item.title = item.NAME.toString();
+            item.index = i;
+            item.AKNAME = obj.AKNAME;
           });
           return option;
         });
@@ -159,23 +209,9 @@
       },
       treeChecked() {
         // tree_lists 树形结构重新组合
-        const self = this;
         this.treedata.forEach((item, index) => {
           this.$refs.dialog.$refs.Tree.handleCheck({ checked: false, nodeKey: this.treedata[`${index}`].nodeKey });
         });
-        // ((option) => {
-        //   option.checked = false;
-        //   option.children.map((item) => {
-        //     if ((item.ID.toString()).indexOf(self.HRORG_ID.join(',')) === -1) {
-        //       item.checked = true;
-        //     } else {
-        //       item.checked = false;
-
-        //       return item;
-        //     }
-        //   });
-        //   return option;
-        // });
       },
       dateRestructure(data, index, type, name) {
         // 表格数据的 重新组合
@@ -184,27 +220,18 @@
         }
         if (name !== 'clear') {
           if (type !== 'search') {
-            this.IN = data.ids || [];
+            // this.IN = data.ids || [];
           }
           if (index === 1 && type !== 'search') {
             const check = !!this.filter.text;
             this.resultData.list = JSON.parse(JSON.stringify(this.text.result));
             this.resultData.list.map((item) => {
-              if (item.exclude) {
-                item.exclude = false;
-              } else {
-                item.exclude = true;
-              }
-                
-              
-              item.string = item.screen_string;
-              item.ID = item.id_list;
+              item.ID = item.id_list[0] ? item.id_list[0] : item.id_list;
               return item;
             });
             this.resultData.total = data.data.total;
           }
         }
-        // console.log(type,this.resultData.total);
         if (type !== 'search') {
           this.componentData[index] = Object.assign(this.componentData[index], data.data);
         } else if (index === 1) {
@@ -220,11 +247,14 @@
         const header = JSON.parse(data.header);
         this.componentData[0].columns = this.columnsDate(header, 0);
         this.componentData[1].columns = this.columnsDate(header, 1);
+        if (data.ids) {
+          this.idslist = data.ids.flat();
+        }
         // console.log(this.IN,'this.INthis.IN');
       },
-      columnsDate(columns, index) {
+      columnsDate(columns) {
         // 表格头部 数据重组
-        return Object.keys(columns).reduce((item, option, key) => {
+        return Object.keys(columns).reduce((item, option) => {
           if (option.toUpperCase() === 'ID') {
             item.unshift({
               key: 'ID',
@@ -241,30 +271,30 @@
               key: option,
               title: columns[option]
             });
-            if (index === 1 && (Object.keys(columns).length - 2) === key) {
-              item.push({
-                title: '操作',
-                key: 'action',
-                render: h => h('div', {
-                  domProps: {
-                    innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
-                  },
-                  on: {
-                    click: () => {
-                      const row = this.componentData[1].list[key - 1];
-                      this.NOTIN.push(row.ID);
-                      this.text.result.push({
-                        exclude: false,
-                        id_list: row.ID,
-                        screen: row.ID,
-                        screen_string: this.toStringName(row, this.akname)
-                      });
-                      this.deleteLi(key - 1, row, 'td');
-                    }
-                  }
-                })
-              });
-            }
+            // if (index === 1 && (Object.keys(columns).length - 2) === key) {
+            //   item.push({
+            //     title: '操作',
+            //     key: 'action',
+            //     render: h => h('div', {
+            //       domProps: {
+            //         innerHTML: '<span class ="span_action" ><i class="iconfont icon-bj_delete2"></i></span>'
+            //       },
+            //       on: {
+            //         click: () => {
+            //           const row = this.componentData[1].list[key - 1];
+            //           this.NOTIN.push(row.ID);
+            //           this.text.result.push({
+            //             exclude: true, // 排除
+            //             id_list: [row.ID],
+            //             screen: row.ID,
+            //             screen_string: this.toStringName(row, this.akname)
+            //           });
+            //           this.deleteLi(key - 1, row, 'td');
+            //         }
+            //       }
+            //     })
+            //   });
+            // }
           }
           return item;
         }, []);
@@ -281,33 +311,71 @@
         }, []);
       },
       toStringName(row, akname) {
-        const aknameArr = akname.split(',');
-        const items = aknameArr.reduce((arr, item) => {
-          arr.push(row[item]);
-          return arr;
-        }, []);
-        return items.join('');
+        const aknameArr = akname.split(',')[0];
+        // const items = aknameArr.reduce((arr, item) => {
+        //   arr.push(row[item]);
+        //   return arr;
+        // }, []);
+        return row[aknameArr];
       },
       changeTtree(obj) {
         this.treeId(obj);
         this.treeSelectData = obj;
-        if (this.HRORG_ID.length > 0) {
-          this.sendMessage.CONDITION = {};
-          this.sendMessage.CONDITION[this.AKNAME] = this.HRORG_ID;
-        } else {
-          this.sendMessage.CONDITION = '';
-        }
+        this.chooseTreeData = obj;
+        this.setConDitions('obj');
+
         this.tableLoading = true;
-       
         this.multipleSelectionTable(this.sendMessage, 0);
+      },
+      setConDitions(type) {
+        //  计算 this.sendMessage.CONDITION
+        const ids = {};
+        this.chooseTreeData.forEach((item) => {
+          ids[item.AKNAME] = [];
+        });
+        Object.keys(ids).forEach((item) => {
+          ids[item] = this.chooseTreeData.reduce((arr, option) => {
+            if (option.AKNAME === item && option.ID) {
+              arr.push(option.ID);
+            } 
+            return arr;
+          }, []);
+        });
+        if (type === 'obj') {
+          this.CONDITIONTable = ids;
+        } else {
+          if (!Array.isArray(this.sendMessage.CONDITION)) {
+            this.sendMessage.CONDITION = [];
+          }
+          this.sendMessage.CONDITION.push(ids);
+          const _ids = { ...ids };
+          _ids.indexI = this.text.result.length;
+          this.CONDITIONList.push(_ids);
+        }
       },
       clickTab(index) {
         // 点击切换tab
         this.index = index;
       },
+      selectId() {
+        // 查询条件 所有id
+        // const ids = this.CONDITIONList.reduce((arr, item) => {
+        //   Object.keys(item).forEach((option) => {
+        //     console.log(arr,'arr');
+        //     let options = item[option];
+        //     arr = arr.concat(options);
+        //   });
+        //   return arr;
+        // }, []);
+        // return ids.concat(this.IN);
+
+      },
       changePage(index) {
         // 点击页面
         this.tableLoading = true;
+        if (!this.sendMessage.PAGENUM) {
+          this.sendMessage.PAGENUM = 1;
+        }
         if (index === this.sendMessage.PAGENUM) {
           return false;
         }
@@ -317,6 +385,7 @@
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
         }
+        return true;
       },
       changePageSize(index) {
         // 点击显示条数
@@ -329,31 +398,39 @@
         } else {
           this.multipleScreenResultCheck(this.sendMessage, this.index, 'search');
         }
+        return true;
       },
       rowdbclick(row) {
         // 表格双击
         if (this.index === 0) {
-          this.clickChoose(row);
+          this.listData.list = [];
+          this.listData.id = [];
+          this.clickChoose(row, '', 'rowdbclick');
           row.string = this.toStringName(row, this.akname);
+          this.componentData[0].list = this.componentData[0].list.concat([]);
+
           this.multipleScreenResultCheck(this.sendMessage, 1);
         }
       },
       rowclick(row, rowIndex) {
         if (this.index === 0) {
+          this.listData.list = [];
+          this.listData.id = [];
           this.clickChoose(row, rowIndex, 'click');
         }
       },
       clickChoose(row, rowIndex, type) {
         // 单击或者双击的选中id
+        const tip = type !== 'click' ? 'tip' : '';  
         if (this.checkbox) {
-          const checkd = this.verify(this.NOTIN, row.ID);
+          const checkd = this.verify(this.NOTIN, row.ID, tip);
           if (checkd) {
             if (type === 'click') {
               this.tdData.id = row.ID;
               this.tdData.index = rowIndex;
               this.tdData.list[0] = {
-                exclude: false,
-                id_list: row.ID,
+                exclude: true,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
 
@@ -361,22 +438,24 @@
             } else {
               this.NOTIN.push(row.ID);
               this.text.result.push({
-                exclude: false,
-                id_list: row.ID,
+                exclude: true,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
+              this.tdData.id = '';
+              this.tdData.list = [];
             }
           }
         } else {
-          const checkdIN = this.verify(this.IN, row.ID);
+          const checkdIN = this.verify(this.IN, row.ID, tip);
           if (checkdIN) {
             if (type === 'click') {
               this.tdData.id = row.ID;
               this.tdData.index = rowIndex;
               this.tdData.list[0] = {
-                exclude: true,
-                id_list: row.ID,
+                exclude: false,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
 
@@ -384,11 +463,13 @@
             } else {
               this.IN.push(row.ID);
               this.text.result.push({
-                exclude: true,
-                id_list: row.ID,
+                exclude: false,
+                id_list: [row.ID],
                 screen: row.ID,
                 screen_string: this.toStringName(row, this.akname)
               });
+              this.tdData.id = '';
+              this.tdData.list = [];
             }
           }
         }
@@ -399,11 +480,13 @@
         }
         return false;
       },
-      verify(arr, id) {
+      verify(arr, id, type) {
         if (!arr.some(x => x === id)) {
           return true;
         }
-        this.$Message.info('该记录已在已选中列表中');
+        if (type === 'tip') {
+          this.$Message.info('该记录已在已选中列表中');
+        }
         return false;
       },
       inputsearch(event) {
@@ -414,7 +497,7 @@
           str = event.match(/[A-Za-z0-9]*/g);
         }
         this.sendMessage.GLOBAL = str[0].trim();
-        this.sendMessage.CONDITION = {};
+        this.CONDITIONTable = {};
         this.clearIndexPage();
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -438,35 +521,38 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         // this.sendMessage = 
+        this.setConDitions();
+
+        this.chooseTreeData = [];
         if (this.HRORG_ID.length > 0) {
           this.loading = true;
           if (!this.checkbox) {
-            this.sendMessage.CONDITION = [];
+            // this.sendMessage.CONDITION = [];
+            // Object.keys(this.sendMessage.CONDITION).forEach((item) => {
+            //   if (item) {
+            //     this.CONDITIONList[item] = this.sendMessage.CONDITION[item];
+            //   }
+            // });
             this.EXCLUDE = '';
-            this.HRORG_ID.forEach((x) => {
-              this.sendMessage.CONDITION.push({
-                [this.AKNAME]: [x]
-              });
-            });
             this.text.result.push({
-              exclude: true,
-              id_list: this.HRORG_ID,
+              exclude: false,
+              id_list: [this.HRORG_ID],
               screen: this.sendMessage.CONDITION,
               screen_string: this.HRORG_STRING.join(',')
             });
+            
             this.multipleScreenResultCheck(this.sendMessage, 1, 'all');
             this.clearTree();
           } else {
             this.EXCLUDE = [];
-            this.sendMessage.CONDITION = '';
             this.HRORG_ID.forEach((x) => {
               this.EXCLUDE.push({
                 [this.AKNAME]: [x]
               });
             });
             this.text.result.push({
-              exclude: false,
-              id_list: this.HRORG_ID,
+              exclude: true,
+              id_list: [this.HRORG_ID],
               screen: this.EXCLUDE,
               screen_string: this.HRORG_STRING.join(',')
             });
@@ -475,37 +561,75 @@
             this.clearTree();
           }
         } else {
-          this.sendMessage.CONDITION = '';
           this.sendMessage.EXCLUDE = '';
           this.clearIndexPage();
           return false;
         }
       },
       transfer() {
-        if (this.tdData.id!=='') {
-          if (this.checkbox) {
-            if (this.verify(this.NOTIN, this.tdData.id)) {
-              this.NOTIN.push(this.tdData.id);
-            }
-          } else if (this.verify(this.IN, this.tdData.id)) {
-            this.IN.push(this.tdData.id);
-          }
-        }
-        
-       
         if (this.tdData.id !== '') {
-          setTimeout(() => {
-            this.$refs.dialog.$refs.Table[0].objData[this.tdData.index]._isHighlight = false;
-            this.tdData.id = '';
-            this.tdData.list = [];
-            this.tdData.index = -1;
-          }, 200);
-          this.text.result.push(this.tdData.list[0]);
-          this.multipleScreenResultCheck(this.sendMessage, 1);
+          this.tdresultdata('tip');
         }
+        if (this.listData.id !== '') {
+          this.listtdata('tip');
+        }
+      },
+      listtdata() {
+        if (this.checkbox) {
+          this.listData.id.forEach((id, i) => {
+            const index = this.NOTIN.findIndex(x => x === id);
+            if (index === -1) {
+              this.NOTIN.push(id);
+              this.listData.list[i].exclude = true;
+              this.text.result.push(this.listData.list[i]);
+            }
+          });  
+        } else {
+          this.listData.id.forEach((id, i) => {
+            const eq = this.IN.findIndex(x => x === id);
+            if (eq === -1) {
+              this.IN.push(id);
+              this.listData.list[i].exclude = false;
+              this.text.result.push(this.listData.list[i]);
+            }
+          });
+          setTimeout(() => {
+            this.componentData[0].list = this.componentData[0].list.concat([]);
+          }, 50);
+        }
+        this.multipleScreenResultCheck(this.sendMessage, 1);
+
+        this.listData.list = [];
+        this.listData.id = [];
+      },
+      tdresultdata(type) {
+        if (this.checkbox) {
+          if (this.verify(this.NOTIN, this.tdData.id, type)) {
+            this.NOTIN.push(this.tdData.id);
+            this.tdData.list[0].exclude = true;
+          }
+        } else if (this.verify(this.IN, this.tdData.id, type)) {
+          this.IN.push(this.tdData.id);
+          this.tdData.list[0].exclude = false;
+        }
+        setTimeout(() => {
+          this.componentData[0].list = this.componentData[0].list.concat([]);
+        }, 100);
+        this.text.result.push(this.tdData.list[0]);
+        this.multipleScreenResultCheck(this.sendMessage, 1);
+        this.tdData.id = '';
+        this.tdData.list = [];
       },
       deleteLi(index, row, type) {
         if (type !== 'td') {
+          if (Array.isArray(row.ID)) {
+            this.CONDITIONList.forEach((item, i) => {
+              if (item.indexI === index) {
+                this.CONDITIONList.splice(i, 1);
+                this.sendMessage.CONDITION.splice(i, 1);
+              }
+            });
+          }
           this.text.result.splice(index, 1);
         }
         if (!row.exclude) {
@@ -519,7 +643,7 @@
             this.NOTIN.splice(indexI, 1);
           }
         }
-        if (this.resultData.total > 1) {
+        if (this.text.result.length > 0) {
           this.multipleScreenResultCheck(this.sendMessage, 1);
         } else {
           this.resultData.total = 0;
@@ -537,18 +661,20 @@
         this.IN = [];
         this.NOTIN = [];
         this.resultData.total = 0;
-        this.sendMessage.CONDITION = '';
+        this.sendMessage.CONDITION = [];
+        this.CONDITIONTable = {};
         this.EXCLUDE = '';
         this.componentData[1].list = [];
         this.componentData[1].total = 0;
         this.componentData[1].pageNum = 1;
         this.componentData[1].pageSize = 50;
-
         this.clearIndexPage();
       },
       savemessage() {
+        //   初始化 默认值
         this.sendMessage.TABLENAME = this.sendMessage.reftable;
         const s_value = this.sendMessage;
+        
         s_value.IN = this.IN;
         s_value.NOTIN = this.NOTIN;
         return {
@@ -556,7 +682,7 @@
           text: JSON.stringify(this.text)
         };
       },
-      savObjemessage() {
+      savObjemessage() {  
         const sendMessage = {
           idArray: [],
           lists: {
@@ -577,24 +703,20 @@
       },
       setvalueData(obj) {
         const data = obj;
-        if (data) {
+        if (Object.keys(data).length > 1) {
           this.sendMessage = Object.assign(this.sendMessage, data.value);
-          this.text.result = data.lists.result.map((item) => {
-            if (item.exclude) {
-              item.exclude = false;
-            } else {
-              item.exclude = true;
-            }
-            return item;
-          });
+          this.text.result = data.lists.result;
           this.EXCLUDE = data.value.EXCLUDE;
           this.IN = data.value.IN;
           this.NOTIN = data.value.NOTIN;
           this.resultData.total = data.total;
 
           this.multipleScreenResultCheck(this.sendMessage, 1, 'result');
+        } else {
+          this.deleBtn();
         }
       },
+      // eslint-disable-next-line consistent-return
       saveBtn(value) {
         if (value.length < 1) {
           this.$Message.info('模板名称不能为空');
@@ -617,7 +739,8 @@
         this.multipleSetMultiQuery(savemessage);
       },
       refreshFun() {
-        this.sendMessage.CONDITION = '';
+        this.sendMessage.CONDITION = [];
+        this.CONDITIONTable = {};
         this.HRORG_ID = [];
         this.sendMessage.GLOBAL = '';
         this.sendMessage.PAGENUM = 1;
@@ -627,7 +750,7 @@
         this.multipleSelectionTable(this.sendMessage, 0);
       },
       multipleSetMultiQuery(obj) {
-        multipleComple.multipleSetMultiQuery({
+        multipleComple().multipleSetMultiQuery({
           searchObject: obj,
           serviceId: this.fkobj.serviceId,
           success: (res) => {
@@ -638,7 +761,7 @@
         });
       },
       multipleSelectionTree(obj) {
-        multipleComple.multipleSelectionTree({
+        multipleComple().multipleSelectionTree({
           searchObject: {
             param: {
               TABLENAME: obj.reftable
@@ -653,14 +776,14 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
-        multipleComple.multipleSelectionTable({
+        multipleComple().multipleSelectionTable({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
-              CONDITION: obj.CONDITION,
+              CONDITION: this.CONDITIONTable,
               GLOBAL: obj.GLOBAL,
-              PAGENUM: obj.PAGENUM,
-              PAGESIZE: obj.PAGESIZE
+              PAGENUM: obj.PAGENUM || 1,
+              PAGESIZE: obj.PAGESIZE || 10
             }
           },
           serviceId: this.fkobj.serviceId,
@@ -674,19 +797,22 @@
       },
       multipleScreenResultCheck(obj, index, type) {
         if (type !== 'all') {
-          obj.CONDITION = '';
+          // obj.CONDITION = '';
         }
-        // setTimeout(() =>{
-        //   this.loading = false, // z最大loading
-        //   this.tree_loading =  false, // 左边的 的loading
-        //   this.tableLoading =  false, // 中间的 的loading
-        // },300)
-        
-        multipleComple.multipleScreenResultCheck({
+        let CONDITION = [];
+        if (!Array.isArray(obj.CONDITION)) {
+          CONDITION = Object.keys(obj.CONDITION).reduce((arr, item) => {
+            arr.push({ [item]: obj.CONDITION[item] });
+            return arr;
+          }, []);
+        } else {
+          CONDITION = obj.CONDITION;
+        }
+        multipleComple().multipleScreenResultCheck({
           searchObject: {
             param: {
               TABLENAME: this.sendMessage.reftable,
-              CONDITION: obj.CONDITION,
+              CONDITION,
               GLOBAL: obj.GLOBAL,
               PAGENUM: obj.PAGENUM,
               PAGESIZE: obj.PAGESIZE,
@@ -698,7 +824,6 @@
           serviceId: this.fkobj.serviceId,
           success: (res) => {
             this.tableLoading = false;
-            console.log(type, 'type');
             this.dateRestructure(res.data.data, index, type);
           }
         });
@@ -706,7 +831,7 @@
       multipleScreenResultCheckFiter(obj, index, type) {
         this.IN = obj.IN;
         this.NOTIN = obj.NOTIN;
-        multipleComple.multipleScreenResultCheck({
+        multipleComple().multipleScreenResultCheck({
           searchObject: {
             param: {
               TABLENAME: obj.TABLENAME,
@@ -727,7 +852,9 @@
       },
       init() {
         this.multipleSelectionTree(this.fkobj);
+        this.sendMessage.reftable = this.fkobj.reftable;
         const tableData = Object.assign(this.sendMessage, this.fkobj);
+
         this.sendMessage = tableData;
         this.multipleSelectionTable(tableData, 0);
         if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
@@ -736,9 +863,11 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = this.filter.value;
-          
-          this.multipleScreenResultCheckFiter(this.filter.value, 1);
+          this.sendMessage = { ...this.filter.value };  
+          this.sendMessage.PAGENUM = 1;
+          this.sendMessage.PAGESIZE = 10;
+          this.sendMessage.TABLENAME = this.fkobj.reftable;
+          this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
       }
 
@@ -746,11 +875,12 @@
     activated() {
     },
     mounted() {
+      this.$refs.dialog.$refs.Table[0].$el.focus();
       /**/
-      console.log('激活');
     },
     created() {
       this.loading = true;
+     
       this.init();
     }
 
@@ -768,15 +898,28 @@
     .burgeon-tabs{
       overflow: visible;
     }
-}
-  .burgeon--dialog .dialog_center .dialog_center_bottom{
+    .dialog_center .dialog_center_bottom{
     margin-top: 10px;
     height: 44px;
-  }
-  .burgeon--dialog .dialog_center .table{
-         margin-bottom: 10px;
-         height: 338px;
-  }
+    }
+
+    .dialog_center .dialog_center_bottom{
+        height: 26px!important;
+        line-height: 26px!important;
+
+    }
+    .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+        height: 26px!important;
+        line-height: 26px!important;  
+    }
+    .dialog_center{
+      overflow: hidden;
+    }
+    .burgeon--dialog .dialog_center .table{
+        height: 345px!important; 
+    }
+}
+  
 </style>
 <style lang="less" scoped>
   .burgeon-select-item{
@@ -836,5 +979,17 @@
           }
       }
   }
+ .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+      height: 26px;
+      line-height: 26px;
+ }
+ .dialog_center .dialog_center_bottom .dialog_center_bottom_fix input{
+      height: 26px;
+      line-height: 26px;
+ }
+ .burgeon--dialog .dialog_center .dialog_center_bottom{
+     height: 26px;
+      line-height: 26px;
+ }
 
 </style>

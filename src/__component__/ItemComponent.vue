@@ -4,7 +4,6 @@
     <span
       class="itemLabel"
       :style="labelStyle"
-     
     >
       <Poptip
         v-if="_items.props.comment"
@@ -14,29 +13,56 @@
         width="200"
         :content="_items.props.comment"
       >
-        <i class="iconfont icon-tishi1" />
+        <div
+          slot="content"
+          class="api"
+        >
+          <span><span>{{ _items.props.comment }}</span>
+            <a
+              v-if="_items.props.webconf && _items.props.webconf.Outside"
+              style=""
+              :href="_items.props.webconf.Outside"
+              target="_blank"
+            >...</a>
+          </span>
+        </div>  
+        <i class="iconfont iconios-information-circle-outline" />
       </Poptip>
-       <template v-if=" _items.props.fkdisplay === 'pop'">
-         <!-- 路由跳转 -->
-          <template v-if=" !!_items.value">
-            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
-          </template>
-       </template>
-       <template v-if=" _items.props.fkdisplay === 'drp'">
-         <!-- 路由跳转 -->
-          <template v-if=" !!_items.value && _items.value[0] && !!_items.value[0].ID">
-            <i class="iconfont" @click="routerNext" data-target-tag="fkIcon" style="color: #0f8ee9; cursor: pointer; font-size: 12px"></i>
-          </template>
-       </template>
       <span
         v-if="_items.required"
         class="label-tip"
       >*</span>
-      <span  :title="_items.title">{{ _items.title }}:</span>
+      <template v-if=" _items.props.fkdisplay === 'pop' && type==='PanelForm'">
+        <!-- 路由跳转 -->
+        <template v-if="!!_items.value">
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.Selected)"
+          />
+        </template>
+
+      </template>
+      <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
+        <!-- 路由跳转 -->
+        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID">
+          <i
+            class="iconfont iconbj_link"
+            data-target-tag="fkIcon"
+            style="color: #0f8ee9; cursor: pointer; font-size: 12px"
+            @click="routerNext(_items.props.defaultSelected)"
+          />
+        </template>
+
+      </template>
+
+      <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div class="itemComponent">
+    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
       <Input
         v-if="_items.type === 'input'"
+        :ref="_items.field"
         v-model="_items.value"
         :type="_items.props.type"
         :clearable="_items.props.clearable"
@@ -51,7 +77,7 @@
         :icon="_items.props.icon"
         :regx="_items.props.regx"
         on-click="inputClick"
-        on-blur="inputBlur"
+        @on-blur="inputBlur"
         @on-change="inputChange"
         @on-enert="inputEnter"
         @on-focus="inputFocus"
@@ -63,6 +89,7 @@
 
       <Checkbox
         v-if="_items.type === 'checkbox'"
+        :ref="_items.field"
         v-model="_items.value"
         :disabled="_items.props.disabled"
         :true-value="_items.props.trueValue"
@@ -74,6 +101,7 @@
 
       <Select
         v-if="_items.type === 'select'"
+        :ref="_items.field"
         v-model="_items.value"
         :clearable="_items.props.clearable"
         :multiple="_items.props.multiple"
@@ -82,7 +110,7 @@
         :placeholder="_items.props.placeholder"
         :not-found-text="_items.props['not-found-text']"
         :label-in-value="_items.props['label-in-value']"
-        :chooseAll="items.props.chooseAll"
+        :choose-all="items.props.chooseAll"
         :placement="_items.props.placement"
         :transfer="_items.props.transfer"
         :options-visible="_items.props.optionsVisible"
@@ -102,6 +130,7 @@
 
       <DatePicker
         v-if="_items.type === 'DatePicker'"
+        :ref="_items.field"
         :value="_items.value"
         :type="_items.props.type"
         :transfer="_items.props.transfer"
@@ -121,6 +150,7 @@
       />
       <TimePicker
         v-if="_items.type === 'TimePicker'"
+        :ref="_items.field"
         v-model="_items.value"
         :type="_items.props.type"
         :transfer="_items.props.transfer"
@@ -138,40 +168,81 @@
         @on-change="timePickerChange"
         @on-clear="timePickerClear"
       />
-
-      <DropDownSelectFilter
-        v-if="_items.type === 'DropDownSelectFilter'"
-        :data="_items.props.data"
-        :single="_items.props.single"
-        :total-row-count="_items.props.totalRowCount"
-        :page-size="_items.props.pageSize"
-        :auto-data="_items.props.AutoData"
-        :disabled="_items.props.disabled"
-        :hidecolumns="_items.props.hidecolumns"
-        :data-empty-message="_items.props.dataEmptyMessage"
-        :default-selected="_items.props.defaultSelected"
-        :transfer="_items.props.transfer"
-        @on-fkrp-selected="fkrpSelected"
-        @on-page-change="pageChange"
-        @on-input-value-change="inputValueChange"
-        @on-focus="fkrpSelectedInputFocus"
-        @on-blur="fkrpSelectedInputBlur"
-        @on-keyup="fkrpSelectedInputKeyup"
-        @on-keydown="fkrpSelectedInputKeydown"
-        @on-popper-show="fkrpSelectedPopperShow"
-        @on-popper-hide ="fkrPopperHide"
-        @on-clear="fkrpSelectedClear"
+      <template v-if="_items.type === 'DropDownSelectFilter'">
+        <DropDownSelectFilter
+          v-if="_items.props.fk_type === 'drp'"
+          :ref="_items.field"
+          :data="_items.props.data"
+          :single="_items.props.single"
+          :total-row-count="_items.props.totalRowCount"
+          :page-size="_items.props.pageSize"
+          :auto-data="_items.props.AutoData"
+          :disabled="_items.props.disabled"
+          :is-show-pop-tip="_items.props.isShowPopTip"
+          :enter-type="_items.props.enterType"
+          :hidecolumns="_items.props.hidecolumns"
+          :data-empty-message="_items.props.dataEmptyMessage"
+          :default-selected="_items.props.defaultSelected"
+          :transfer="_items.props.transfer"
+          @on-fkrp-selected="fkrpSelected"
+          @on-page-change="pageChange"
+          @on-input-value-change="inputValueChange"
+          @on-focus="fkrpSelectedInputFocus"
+          @on-blur="fkrpSelectedInputBlur"
+          @on-keyup="fkrpSelectedInputKeyup"
+          @on-keydown="fkrpSelectedInputKeydown"
+          @on-popper-show="fkrpSelectedPopperShow"
+          @on-popper-hide="fkrPopperHide"
+          @on-clear="fkrpSelectedClear"
+        />
+        <DropMultiSelectFilter
+          v-if="_items.props.fk_type === 'mrp'"
+          :ref="_items.field"
+          :data="_items.props.data"
+          :single="_items.props.single"
+          :total-row-count="_items.props.totalRowCount"
+          :page-size="_items.props.pageSize"
+          :auto-data="_items.props.AutoData"
+          :disabled="_items.props.disabled"
+          :is-show-pop-tip="_items.props.isShowPopTip"
+          :enter-type="_items.props.enterType"
+          :hidecolumns="_items.props.hidecolumns"
+          :data-empty-message="_items.props.dataEmptyMessage"
+          :default-selected="_items.props.defaultSelected"
+          :transfer="_items.props.transfer"
+          @on-fkrp-selected="fkrpSelected"
+          @on-page-change="pageChange"
+          @on-input-value-change="inputValueChange"
+          @on-focus="fkrpSelectedInputFocus"
+          @on-blur="fkrpSelectedInputBlur"
+          @on-keyup="fkrpSelectedInputKeyup"
+          @on-popper-show="fkrpSelectedPopperShow"
+          @on-popper-hide="fkrPopperHide"
+          @on-clear="fkrpSelectedClear"
+        />
+      </template>
+      <ComAttachFilter
+        v-if="_items.type === 'AttachFilter'"
+        :ref="_items.field"
+        :default-value="_items.value"
+        :default-selected="_items.props.Selected"
+        :propstype="_items.props"
+        @keydown="attachFilterInputKeydown"
+        @valuechange="attachFilterInput"
       />
-      <AttachFilter
+      <!-- <AttachFilter
         v-if="_items.type === 'AttachFilter'"
         v-model="_items.value"
         :option-tip="_items.props.optionTip"
         :filter-tip="_items.props.filterTip"
+        :enter-type="_items.props.enterType"
         :disabled="_items.props.disabled"
         :placeholder="_items.props.placeholder"
         :auot-data="_items.props.AutoData"
         :columns="_items.props.columns"
         :dialog="_items.props.dialog"
+        :show="_items.props.show"
+        :default-selected="_items.props.Selected"
         :datalist="_items.props.datalist"
         @on-show="attachFilterPopperShow"
         @input="attachFilterInput"
@@ -199,74 +270,91 @@
           />
         </div>
       </AttachFilter>
-
+ -->
       <ImageUpload
         v-if="_items.type === 'ImageUpload'"
+        :ref="_items.field"
         :dataitem="_items.props.itemdata"
         @upload-file-change="uploadFileChange"
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
       />
+      <!--读写规则  -->
       <EnumerableInput
         v-if="_items.type === 'EnumerableInput'"
+        :ref="_items.field"
         :default-value="_items.value"
+        :disabled="_items.props.disabled"
+        @keydown="enumerKeydown"
         @valueChange="enumerableValueChange"
       />
+      <!--扩展属性  -->
       <ExtentionInput
         v-if="_items.type === 'ExtentionInput'"
-          :default-data="_items.value"
-          @valueChange="extentionValueChange"
-        />
-      <template v-if="_items.type === 'Wangeditor' && !_items.props.disabled">
-        <component
-      
-        :is="_items.componentType"
-        v-if="_items.type === 'Wangeditor'"
-        :key="index"
-        :valuedata="_items.value"
-        :item="_items.props"
-        @getChangeItem="getWangeditorChangeItem"
+        :ref="_items.field"
+        :default-data="_items.value"
+        :web-config="_items.props"
+        @keydown="enumerKeydown"
+        @valueChange="extentionValueChange"
       />
-
+      <template v-if="_items.type === 'Wangeditor'">
+        <component
+          :is="_items.componentType"
+          v-if="_items.type === 'Wangeditor'"
+          :key="index"
+          :ref="_items.field"
+          :is-actives="_items.props.readonly"
+          :valuedata="_items.value"
+          :item="_items.props"
+          @getChangeItem="getWangeditorChangeItem"
+        />
       </template>
-      <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
-        <div v-html="_items.value" class="Wangeditor-disabled"></div>
+      <!-- <template v-if="_items.type === 'Wangeditor' && _items.props.disabled">
+        <div
+          class="Wangeditor-disabled"
+          v-html="_items.value"
+        />
+      </template> -->
+      <!-- 上传文件 -->
 
-      </template>
-      
+      <Docfile
+        v-if="_items.type === 'docfile'"
+        :ref="_items.field"
+        :dataitem="_items.props.itemdata"
+        @filechange="filechange"
+      />
     </div>
   </div>
 </template>
 
 <script>
+  import { mapMutations } from 'vuex';
   import dataProp from '../__config__/props.config';
   // 弹窗多选面板
-  import Dialog from './ComplexsDialog';
+  // import Dialog from './ComplexsDialog';
   // 弹窗单选
-  import myPopDialog from './PopDialog';
+  // import myPopDialog from './PopDialog';
   // 富文本编辑
   import WangeditorVue from './Wangeditor';
+  //   弹窗单选 弹窗多选
+  import ComAttachFilter from './ComAttachFilter';
+  //   上传文件
+  import Docfile from './docfile/DocFileComponent';
 
-  import { Version } from '../constants/global';
+
+  import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
-  import enumerableForColumn from '../constants/enumerateInputForColumn';
-  import enumerableForTable from '../constants/enumerateInputForTable';
-  import extentionForColumn from '../constants/extentionPropertyForColumn';
-  import extentionForTable from '../constants/extentionPropertyForTable';
-  import { mapActions, mapState, mapMutations } from 'vuex';
 
-  const {
-    fkQueuploadProgressry,
-    fkObjectSave,
-    deleteImg
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
     name: 'ItemComponent',
-    components: { EnumerableInput, ExtentionInput },
+    components: {
+      EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
+    },
     props: {
       labelWidth: {
         type: Number,
@@ -306,10 +394,6 @@
     data() {
       return {
         filterDate: {},
-        enumerableForColumn,
-        enumerableForTable,
-        extentionForColumn,
-        extentionForTable,
         resultData: {} // 结果传值
       };
     },
@@ -325,29 +409,32 @@
         // const item = this.items;
         item.props = Object.assign(
           {},
-          item.type ? dataProp[item.type].props : {},
+          item.type ? dataProp[item.type] && dataProp[item.type].props : {},
           this.items.props
         );
         if (item.type === 'AttachFilter') {
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
-            item.componentType = myPopDialog;
+            // item.componentType = myPopDialog;
             item.props.fkobj.show = false;
           } else {
-            item.componentType = Dialog;
+            // item.componentType = Dialog;
             item.props.fkobj.show = true;
-            item.props.datalist = dataProp[item.type].props.datalist.concat(
-              item.props.datalist
-            );
+            if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+              item.props.datalist = dataProp[item.type].props.datalist.concat(
+                item.props.datalist
+              );
+            }
+
             item.props.dialog.model['footer-hide'] = false;
-            item.props.datalist.forEach((option, i) => {
-              if (option.value === '导入') {
-                item.props.datalist[i].url = item.props.fkobj.url;
-                item.props.datalist[i].sendData = {
-                  table: item.props.fkobj.reftable
-                };
-              }
-            });
+            // item.props.datalist.forEach((option, i) => {
+            //   if (option.value === '导入') {
+            //     item.props.datalist[i].url = item.props.fkobj.url;
+            //     item.props.datalist[i].sendData = {
+            //       table: item.props.fkobj.reftable
+            //     };
+            //   }
+            // });
           }
         }
         // eslint-disable-next-line no-empty
@@ -365,21 +452,39 @@
     },
     methods: {
       ...mapMutations('global', ['tabHref', 'tabOpen']),
-      routerNext() {
+      routerNext(value) {
         // 路由跳转
         const props = this._items.props;
-        const type = 'tableDetailAction';
+        const type = 'tableDetailVertical';
         // console.log(this._items.props);
-        let customizedModuleName = props.reftable;
-        let tableName = props.reftable;
-        let customizedModuleId = props.reftableid;
-        let label = this._items.title;
-        let id = props.refobjid;
-        console.log(type,customizedModuleName,id);
+        const tableName = props.reftable;
+        const tableId = props.reftableid;
+        const label = this._items.title;
+        // const serviceIdMap = this.$store.state.global.serviceIdMap;
+        // if (!serviceIdMap[tableName] && props.serviceId) {
+        //   const data = {
+        //     tableName,
+        //     gateWay: props.serviceId
+        //   }; 
+        //   const labels = {
+        //     name: tableName,
+        //     label
+        //   };
+        //   this.$store.commit('global/addKeepAliveLabelMaps', labels);
+        //   this.$store.commit('global/addServiceIdMap', data);
+
+        // }
+
+        let id = 0;
+        if (!props.readonly) {
+          id = value[0].ID;
+        } else {
+          id = props.refobjid;
+        }
         this.tabOpen({
           type,
-          customizedModuleName,
-          customizedModuleId,
+          tableName,
+          tableId,
           id,
           label
 
@@ -546,6 +651,9 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
+        if (!value[0].ID || value[0].ID === '-1') {
+          value.splice(0, 1);
+        }
         this._items.value = value;
         this.valueChange();
         if (
@@ -587,7 +695,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          //this._items.event.inputValueChange('', $this);
+          this._items.event.inputValueChange('', $this);
         }
       },
       pageChange(value, $this) {
@@ -649,31 +757,65 @@
           this._items.event['on-show']($this);
         }
       },
-      attachFilterInput(value, $this) {
-        this._items.value = value;
+      ComAttachFilterkeydown() {
+
+      },
+      attachFilterInput(item) {
+        this._items.value = item.value;
+        this._items.props.Selected = item.selected;
+        if (item.value === '') {
+          if (
+            Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+            && typeof this._items.event.clear === 'function'
+          ) {
+            this._items.event.clear();
+          }
+        }
         this.valueChange();
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'popper-value'
-          )
-          && typeof this._items.event['popper-value'] === 'function'
-        ) {
-          this._items.event['popper-value']($this, value, 'change', this.index);
-        }
-        if (
-          Object.prototype.hasOwnProperty.call(
-            this._items.event,
-            'inputValueChange'
-          )
-          && typeof this._items.event.inputValueChange === 'function'
-        ) {
-          this._items.event.inputValueChange(value, $this);
-        }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        // console.log(item);
+        //   this._items.event['popper-value'](
+        //     $this,
+        //     item.value,
+        //     item.selected
+        //   );
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+        //   && typeof this._items.event.clear === 'function'
+        // ) {
+        //   if (!item.value && !item.selected[0] && !item.selected[0].ID) {
+        //     this._items.event.clear($this);
+        //   }
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'popper-value'
+        //   )
+        //   && typeof this._items.event['popper-value'] === 'function'
+        // ) {
+        //   this._items.event['popper-value']($this, value, 'change', this.index);
+        // }
+        // if (
+        //   Object.prototype.hasOwnProperty.call(
+        //     this._items.event,
+        //     'inputValueChange'
+        //   )
+        //   && typeof this._items.event.inputValueChange === 'function'
+        // ) {
+        //   this._items.event.inputValueChange(item.value, $this);
+        // }
       },
 
       // AttachFilter event
-      attachFilterChange(value, $this) {
+      attachFilterChange(value) {
         this._items.value = value;
         this.valueChange();
       },
@@ -758,7 +900,7 @@
           this._items.event['on-delete']($this, this._items, row.key, this.index);
         }
       },
-      attachFilterClear(event, $this) {
+      attachFilterClear() {
         this._items.value = '';
         this.resultData = {};
         this._items.props.Selected = [
@@ -775,7 +917,7 @@
           )
           && typeof this._items.event.inputValueChange === 'function'
         ) {
-          //this._items.event.inputValueChange('', $this);
+        // this._items.event.inputValueChange('', $this);
         }
       },
       attachFilterPopperShow($this) {
@@ -827,7 +969,7 @@
           if (/选中/.test(this._items.value)) {
             this.filterDate = this.resultData;
           // this.$refs.complex = Object.assign(this.$refs.complex.$data,this.resultData);
-          } 
+          }
           $this.complexs = false;
         }
       },
@@ -841,7 +983,8 @@
           && typeof this._items.event['popper-value'] === 'function'
         ) {
           if ($this._data.params) {
-            const value = $this._data.parms.NAME.val;
+            const value = $this._data.parms[this._items.inputname.split(':')[1]].val;
+
             const Selected = [
               {
                 Label: value,
@@ -898,13 +1041,15 @@
             );
           }
         }
+        return true;
       },
       uploadFileChange() {
       // console.log(e);
       },
       deleteImg(item, index) {
+        // 删除图片
         const that = this;
-        this.$Modal.info({
+        this.$Modal.fcWarning({
           mask: true,
           showCancel: true,
           title: '提示',
@@ -927,18 +1072,13 @@
             // const parms = this.pathsCheckout(data, HEADIMG === '' ? '' : [item]);
             // 判断是否有path
             const parms = this.pathsCheckout(data, HEADIMG);
-            console.log(
-              parms,
-              this.$parent.pathcheck,
-              this.$parent.childTableName
-            );
+
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  不是新增  和不是主子表中的子表
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
-
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
               if (childTableName !== false && this.$parent.isreftabs) {
                 this._items.props.itemdata.valuedata.splice(index - 1, 1);
                 if (this._items.props.itemdata.valuedata.length > 0) {
@@ -948,7 +1088,12 @@
                 } else {
                   this._items.value = '';
                 }
+
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else if (this.$parent.pathcheck === '') {
                 parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
@@ -959,6 +1104,7 @@
             } else {
               // new
               this._items.props.itemdata.valuedata.splice(index - 1, 1);
+
               this.valueImgChange();
             }
           }
@@ -974,8 +1120,89 @@
         }
         this.valueChange();
       },
+      filechange(value) {
+        // 上传文件
+        const _value = value.length > 0 ? value : '';
+        
+        const fixedData = Array.isArray(_value) ? [..._value] : '';
+        let parms = {
+          objId: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName
+        };
+        //  判断parms 是否 需要保存
+        parms = this.pathsCheckout(parms, fixedData);
+        if (
+          this.$route.params
+          && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
+        ) {
+          //  判断是否需要调用保存
+          const path = this.$parent.pathcheck !== '';
+          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
+
+          if (this.$parent.isreftabs && childTableName !== false) {
+            //  主子表 子表
+            const _fixedData = fixedData || '';
+            this._items.props.itemdata.valuedata = [];
+            this._items.props.itemdata.valuedata = _fixedData;
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+            this.valueChange();
+            if (childTableName && this.$parent.type === 'PanelForm') {
+              // 主子表的子表修改（1:1）的情况下
+              const dom = document.getElementById('actionMODIFY');
+              dom.click();
+            }
+          } else {
+            this._items.props.itemdata.valuedata = [];
+            this._items.props.itemdata.valuedata = fixedData;
+            if (this._items.props.itemdata.valuedata.length > 0) {
+              this._items.value = JSON.stringify([
+                ...this._items.props.itemdata.valuedata
+              ]);
+            } else {
+              this._items.value = '';
+            }
+           
+            this.upSavefile(parms, fixedData, path, value);
+            this.valueChange();
+          }
+        } else {
+          const _fixedData = fixedData || '';
+          this._items.props.itemdata.valuedata = [];
+          this._items.props.itemdata.valuedata = _fixedData;
+          if (this._items.props.itemdata.valuedata.length > 0) {
+            this._items.value = JSON.stringify([
+              ...this._items.props.itemdata.valuedata
+            ]);
+          } else {
+            this._items.value = '';
+          }
+          this.valueImgChange();
+        }
+      },
+      upSavefile(obj, fixedData, path) {
+        // 保存文件
+
+        fkHttpRequest().fkObjectSave({
+          searchObject: {
+            ...obj
+          },
+          url: path ? this.$parent.pathcheck : undefined,
+          // eslint-disable-next-line consistent-return
+          success: (res) => {
+            if (res.data.code !== 0) {
+              return false;
+            }
+            // this._items.props.itemdata.valuedata.push(...value);
+          // this.valueChange();
+            // this.valueChange();
+          }
+        });
+      },
       deleteImgData(obj, index) {
-        deleteImg({
+        // 删除图片
+        fkHttpRequest().deleteImg({
           params: {
             ...obj
           },
@@ -988,12 +1215,22 @@
           }
         });
       },
+      readonlyImage() {
+        // 判断是否能上传图片
+        if (!isNaN(this._items.props.itemdata.ImageSize)) {
+          return !(this._items.props.itemdata.ImageSize > this._items.props.itemdata.valuedata.length);
+        }
+        return false;
+      },
       uploadFileChangeSuccess(result) {
+        // 图片进度接口
         const self = this;
-
         const resultData = result;
-
-        fkQueuploadProgressry({
+        if (this.readonlyImage()) {
+          this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
+          return false;
+        }
+        fkHttpRequest().fkQueuploadProgressry({
           searchObject: {
             uploadId: resultData.data.UploadId
           },
@@ -1002,6 +1239,7 @@
             if (res.data.code !== 0) {
               return false;
             }
+
             const valuedata = this._items.props.itemdata.valuedata;
             const fixedData = Array.isArray(valuedata) ? [...valuedata] : [];
             fixedData.push({
@@ -1021,7 +1259,7 @@
             ) {
               //  判断是否需要调用保存
               const path = this.$parent.pathcheck !== '';
-              const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
 
               if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
@@ -1032,6 +1270,10 @@
                   ...this._items.props.itemdata.valuedata
                 ]);
                 this.valueChange();
+                if (childTableName && this.$parent.type === 'PanelForm') {
+                  const dom = document.getElementById('actionMODIFY');
+                  dom.click();
+                }
               } else {
                 self.upSaveImg(parms, fixedData, path);
               }
@@ -1042,14 +1284,20 @@
               this.valueImgChange();
             }
           }
+
         });
+        return true;
       },
       pathsCheckout(parms, data) {
         //  校验 是否 有 path
+        if (Version() !== '1.4') {
+          this.pathsCheckoutolder(parms, data);
+          return false;
+        }
         const pathcheck = this.$parent.pathcheck;
         const isreftabs = this.$parent.isreftabs;
         // 子表表明
-        const childTableName = this.$parent.type === '' ? this.$parent.childTableName : false;
+        const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
         if (isreftabs && pathcheck !== '') {
           // 主子表 有path  主表明+子表明 // parms.table 主表
           if (childTableName) {
@@ -1063,11 +1311,10 @@
             };
             return Object.assign({}, parmsdata);
           }
-          console.log('主子表 path');
 
           const parmsdata = {
             [parms.table]: {
-              [this._items.field]: data == '' ? '' : JSON.stringify(data),
+              [this._items.field]: data === '' ? '' : JSON.stringify(data),
               ID: parms.objId || parms.ID
             }
           };
@@ -1104,8 +1351,6 @@
         }
         if (!isreftabs && pathcheck === '') {
           // 单主表  无path
-          console.log('单主表 有sspath');
-
           const fixedData = {
             fixedData: {
               [this._items.props.itemdata.masterName]: {
@@ -1126,9 +1371,23 @@
           };
           return Object.assign({ ID: parms.objId }, parmsdata);
         }
+        return true;
+      },
+      pathsCheckoutolder(parms, data) {
+        //   1.3 后台拼数据
+        const fixedData = {
+          objid: this._items.props.itemdata.objId,
+          table: this._items.props.itemdata.masterName,
+          data: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          after: { [this._items.field]: data === '' ? '' : JSON.stringify(data) },
+          before: { [this._items.field]: this._items.props.valuedata ? this._items.props.valuedata : '' }
+        };
+
+        return Object.assign({}, fixedData);
       },
       upSaveImg(obj, fixedData, path, index) {
-        fkObjectSave({
+        // 图片保存接口
+        fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
           },
@@ -1152,13 +1411,14 @@
                 NAME: data.NAME,
                 URL: data.URL
               });
+              this._items.value = this._items.props.itemdata.valuedata;
             }
-          // this.valueChange();
+            this.valueChange();
           }
         });
       },
-      uploadFileChangeOnerror() {
-      // console.log('err', result);
+      uploadFileChangeOnerror(e) {
+        this.$Message.info(e);
       },
       getWangeditorChangeItem(value) {
         // 富文本change
@@ -1169,16 +1429,91 @@
         // 读写
         this._items.value = value;
         this.valueChange();
-        console.log(value, '读写');
       },
       extentionValueChange(value) {
         // 扩展属性
         this._items.value = value;
         this.valueChange();
+      },
+      enumerKeydown(event) {
+        // 扩展属性
+        if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'keydown')
+          && typeof this._items.event.keydown === 'function'
+        ) {
+          this._items.event.keydown(event);
+        }
       }
     },
     created() {
     // console.log(this.type,this.formIndex);
+    },
+    mounted() {
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        if (e.value.type === 'equal') {
+          // 表单赋值
+          e.value.list.forEach((item) => {
+            if (this._items.field === item.COLUMN_NAME || this._items.inputname === item.COLUMN_NAME) {
+              if (!this._items.props.showCol) {
+                return false;
+              }
+              if (item.COLUMN_TYPE === 0) {
+                // 数组形式
+                if (this._items.props.defaultSelected) {
+                  this._items.props.defaultSelected = [{
+                    ID: item.LABLE_VALUES[0].VALUE || '',
+                    Label: item.LABLE_VALUES[0].LABLE || ''
+                  }];
+                  this._items.value = this._items.props.defaultSelected;
+                } else if (this._items.props.selected) {
+                  this._items.props.selected = [{
+                    ID: item.LABLE_VALUES[0].VALUE || '',
+                    Label: item.LABLE_VALUES[0].LABLE || ''
+                  }];
+                  this._items.value = item.LABLE_VALUES[0].LABLE;
+                } else if (this._items.type === 'select') {
+                  this._items.value = item.LABLE_VALUES[0].VALUE || '';
+                }
+              } else if (item.COLUMN_TYPE === 1) {
+                // INPUT 
+                if (this._items.type === 'checkbox') {
+                  this._items.value = item.LABLE_VALUES[0].VALUE || this._items.props.falseValue;
+                } else {
+                  this._items.value = item.LABLE_VALUES[0].VALUE || '';
+                }
+              } else if (item.COLUMN_TYPE === 2) {
+                this._items.props.defaultSelected = item.LABLE_VALUES.reduce((arr, options) => {
+                  if (options.VALUE) {
+                    arr.push({
+                      ID: options.VALUE || '',
+                      Label: options.LABLE || ''
+                    });
+                  }
+                 
+                  return arr;
+                }, []);
+                this._items.value = this._items.props.defaultSelected;
+              }
+              this.valueChange();
+            }
+          });
+        } else if (this._items.field === e.value.field) {
+          // 表单修改属性
+          if (e.value.value === '') {
+            if (this.$refs[e.value.field]) {
+              this.$refs[e.value.field].handleClear();
+            }
+          } else if (Array.isArray(e.value.value)) {
+            this._items.props.selected = e.value.value;
+            this._items.props.defaultSelected = e.value.value;
+            this._items.value = e.value.value;
+            this.valueChange();
+          } else {
+            this._items.value = e.value.value || '';
+            this.valueChange();
+          }
+        }
+      });
     }
   };
 </script>
@@ -1222,6 +1557,15 @@
     right: 3px;
   }
 }
+textarea.burgeon-input{
+    height: 100%!important;
+}
+.height100{
+    height: 100%!important;
+    .burgeon-input-wrapper{
+    height: 100%!important;
+    }
+}
 .AttachFilter-pop {
   .icon-bj_tcduo:before {
     content: "\e6b1";
@@ -1230,11 +1574,41 @@
     padding-top: 2px;
   }
 }
-.Wangeditor-disabled{
-  border:1px solid #d8d8d8;
+.Wangeditor-disabled {
+  border: 1px solid #d8d8d8;
   background-color: #f4f4f4;
   overflow: auto;
   padding: 2px 5px;
   height: 100%;
+}
+.auto-com-table tr td{
+  max-width:500px!important;
+}
+.attachfiter-pop{
+    .burgeon-select-item{
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        .iconbj_delete2{
+            display: none;
+            width: 12px;
+            height: 12px;
+            font-size: 12px;
+            line-height: 12px;
+        }
+        &:hover{
+          .iconbj_delete2{
+           border-radius: 100%;
+           overflow: hidden;
+           display: block;
+           background-color: #e6502f;
+           color: #fff
+        }
+
+        }
+
+
+    }
 }
 </style>

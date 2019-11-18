@@ -15,13 +15,13 @@
       />
     </Spin>
     <component
-      :is="'CompositeForm'"
+      :is="'CompositeFormpop'"
       v-if="formList.show"
       ref="CompositeForm"
       :default-data="formList"
       :default-column-col="formList.objviewcol"
       class="formPanel"
-      :condition = "Condition"
+      :condition="Condition"
       @InitializationForm="InitializationForm"
       @formChange="formChange"
       @on-formEnter="searchForm"
@@ -63,9 +63,9 @@
         :highlight-row="true"
         :height="200"
         border
-         @on-row-dblclick="rowdblclick"
         :columns="SelectionData.thead"
         :data="SelectionData.row"
+        @on-row-dblclick="rowdblclick"
       />
     </div>
   </div>
@@ -73,13 +73,8 @@
 <script>
   import { Version } from '../constants/global';
 
-  // eslint-disable-next-line import/no-dynamic-require
-  const {
-    getTableQuery,
-    fkQueryListPop
-  // eslint-disable-next-line import/no-dynamic-require
-  } = require(`../__config__/actions/version_${Version}/formHttpRequest/fkHttpRequest.js`);
-
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  
   export default {
     name: 'PopDialog',
     components: {},
@@ -129,11 +124,10 @@
     },
     created() {
       this.loading = true;
-      const router = this.$route.params;
       const params = {
         tableid: this.fkobj.reftableid,
         getcmd: 'n',
-        table: router.tableName
+        table: this.fkobj.reftable
       };
       this.params = params;
       this.getData(params);
@@ -156,8 +150,9 @@
       },
       getData(searchObject) {
         //  form 请求
-        getTableQuery({
+        fkHttpRequest().getTableQuery({
           searchObject,
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               this.loading = false;
@@ -190,7 +185,6 @@
         };
         const fixedcolumns = Object.keys(this.formChangeData).reduce(
           (arr, item) => {
-            console.log(this.formChangeData[item][0]);
             if (Array.isArray(this.formChangeData[item])) {
               if (this.formChangeData[item][0] !== undefined) {
                 arr[item] = this.formChangeData[item];
@@ -203,8 +197,9 @@
           {}
         );
         searchObject.fixedcolumns = { ...fixedcolumns };
-        fkQueryListPop({
+        fkHttpRequest().fkQueryListPop({
           searchObject,
+          serviceId: this.fkobj.serviceId,
           success: (res) => {
             if (res.data.code === 0) {
               const data = res.data.data;
@@ -213,7 +208,7 @@
               this.selectOperation.totalRowCount = data.totalRowCount;
               this.selectOperation.selectrange = data.selectrange;
               this.selectOperation.defaultrange = data.defaultrange;
-              // this.selectOperation.startindex = data.start;
+              this.selectOperation.startindex = data.start;
               this.SelectionData.thead = data.tabth.reduce((arr, item) => {
                 const title = data.tabth.find(x => x.colname === item.colname)
                   .name;
@@ -249,17 +244,23 @@
         });
       },
       searchForm() {
+        this.selectOperation.startindex = 0;
         this.getList();
       },
       saveData() {},
       pageChange(index) {
+        if (index === this.selectOperation.currentPageIndex) {
+          return false;
+        }
+        this.selectOperation.currentPageIndex = index;
         this.selectOperation.startindex = (index - 1) * this.selectOperation.pageSize;
 
         this.getList();
       },
       pageSizeChange(index) {
-        this.selectOperation.startindex = index * this.selectOperation.pageSize;
         this.selectOperation.defaultrange = index;
+        this.selectOperation.pageSize = index;
+        this.selectOperation.startindex = (this.selectOperation.currentPageIndex - 1) * this.selectOperation.pageSize;
         this.getList();
       },
       InitializationForm(data) {
@@ -274,7 +275,7 @@
             }
           });
         }
-        //this.getList();
+        // this.getList();
       },
       checkForm(data, item) {
         // 校验select
@@ -288,15 +289,28 @@
             this.formList.inpubobj[index].display === 'OBJ_SELECT'
             || this.formList.inpubobj[index].display === 'select'
           ) {
-            console.log(data[item]);
-            if (/=/.test(data[item][0]) !== true) {
-              // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
-              if (data[item][0]) {
-                data[item] = [`=${data[item]}`.toString()];
-              } else {
-                delete data[item];
-              }
+            if (Array.isArray(data[item])) {
+              const arr = data[item].reduce((cuurent, item) => {
+                const string = `${item}`.toString().replace(/=/g, '');
+                cuurent.push(`=${string}`.toString());
+                return cuurent;
+              }, []);
+              data[item] = [...arr];
+            } else {
+              data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
             }
+            // console.log(data[item]);
+            // data[item].forEach((item) =>{
+            //   if (/=/.test(data[item][0]) !== true) {
+            //   // data[item] = [`=${data[item]}`.toString().replace(/=/g, '=')];
+            //   if (data[item][0]) {
+            //     data[item] = [`=${data[item]}`.toString()];
+            //   } else {
+            //     delete data[item];
+            //   }
+            // }
+
+            // },)
           }
         }
         return data;
@@ -306,8 +320,8 @@
         if (Object.keys(data).length > 0) {
           Object.keys(data).forEach((item) => {
             if (data[item] !== undefined) {
+              // eslint-disable-next-line no-unused-vars
               const dataSelect = this.checkForm(data, item);
-              console.log(dataSelect);
               this.formChangeData = data;
             }
           });
@@ -320,7 +334,7 @@
     }
   };
 </script>
-<style lang="less" scope>
+<style lang="less" scoped>
 .modify-tip {
   display: inline-block;
   margin-left: 20px;

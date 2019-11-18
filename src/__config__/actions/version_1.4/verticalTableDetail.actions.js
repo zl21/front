@@ -3,6 +3,8 @@ import network, {
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 
+let childTableFixedcolumns = {};
+
 export default {
   getObjectForMainTableForm({
     dispatch,
@@ -58,14 +60,18 @@ export default {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
-            if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
-              const param = {
-                table: firstReftab.tablename,
-                objid,
-                tabIndex
-              };
-              this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
-            }
+            const getObjectTabPromise = new Promise((rec, rej) => {
+              if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                const param = {
+                  table: firstReftab.tablename,
+                  objid,
+                  tabIndex,
+                  rec,
+                  rej
+                };
+                this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+              }
+            });
             if (resData.reftabs[0].refcolid !== -1) {
               // commit('updateActiveRefFormInfo', resData.reftabs[0]);
               // 获取第一个tab的子表表单
@@ -78,20 +84,26 @@ export default {
                 this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
               }
               // 获取第一个tab的子表列表数据
-              if (resData.reftabs[0].tabrelation === '1:m') {
-                if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
-                  const tableParam = {
-                    table: firstReftab.tablename,
-                    objid,
-                    refcolid: firstReftab.refcolid,
-                    searchdata: {
-                      column_include_uicontroller: true
-                    },
-                    tabIndex
-                  };
-                  this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
-                }
-              } else if (resData.reftabs[0].tabrelation === '1:1') {
+              if (resData.reftabs[tabIndex].tabrelation === '1:m') {
+                getObjectTabPromise.then(() => {
+                  if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    const tableParam = {
+                      table: firstReftab.tablename,
+                      objid,
+                      refcolid: firstReftab.refcolid,
+                      searchdata: {
+                        column_include_uicontroller: true,
+                        startindex: 0,
+                        range: 10,
+                        fixedcolumns: childTableFixedcolumns
+                      },
+                      tabIndex
+                    };
+                    this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                    childTableFixedcolumns = {};
+                  }
+                });
+              } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                 // 获取子表面板数据
                 if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                   const tableParam = {
@@ -114,7 +126,9 @@ export default {
   }, { // 获取子表按钮
     table,
     objid,
-    tabIndex
+    tabIndex,
+    rec,
+    rej
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -124,8 +138,40 @@ export default {
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
+        childTableFixedcolumns = {};
+        if (resData.tabfilter && resData.tabfilter.length > 0) { // 只有1.4版本支持
+          resData.tabfilter.forEach((item) => {
+            if (item.display === 'OBJ_DATENUMBER') {
+              // 日期控件
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else if (item.default !== '-1' && item.default) {
+                // childTableFixedcolumns[item.colname] = new Date().setNewFormt(new Date().minusDays(item.default).toIsoDateString(), '-', '');
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+              } else {
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '')}~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '')}`;
+              }
+            } else if (item.display === 'OBJ_DATE') {
+              if (item.default === '-1') {
+                childTableFixedcolumns[item.colname] = '';
+              } else {
+                childTableFixedcolumns[item.colname] = `${new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', '/')} 00:00:00~${new Date().setNewFormt(new Date().toIsoDateString(), '-', '/')} 23:59:59`;
+              }
+            } else if (item.display === 'OBJ_SELECT' && item.default) {
+              childTableFixedcolumns[item.colname] = [`=${item.default}`];
+            } else if (item.display === 'OBJ_FK' && item.refobjid) {
+              childTableFixedcolumns[item.colname] = [`${item.refobjid}`];
+            } else if (item.default) {
+              childTableFixedcolumns[item.colname] = item.default;
+            }
+          });
+          commit('updateTableFixedcolumns', JSON.parse(JSON.stringify(childTableFixedcolumns)));
+        }
         resData.tabIndex = tabIndex;
+        rec();
         commit('updateRefButtonsData', resData);
+      } else {
+        rej();
       }
     });
   },
@@ -226,6 +272,8 @@ export default {
       itemNameGroup
     } = parame;
     let parames = {};
+    
+
     if (type === 'add') { // 新增保存参数
       const {
         add
@@ -375,9 +423,7 @@ export default {
           }
         } else if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            // if (enter) {
             modify[tableName].ID = objId;
-            // }
             parames = {
               ...modify,
               ...itemModify
@@ -387,6 +433,7 @@ export default {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
                 ...itemModify
               }
             };
@@ -394,19 +441,27 @@ export default {
         } else if (sataTypeName === 'add') { // 子表新增保存
           const add = Object.assign({}, itemAdd[itemName], itemDefault[itemName]); // 整合子表新增和默认值数据
           const addItem = Object.assign({}, add, itemAdd[itemName]);
-
-
           addItem.ID = -1;
           const addItemName = {};
           addItemName[itemName] = itemName;
           addItemName[itemName] = [
             addItem
           ];
-          modify[tableName].ID = objId;
           if (path) {
+            modify[tableName].ID = objId;
             parames = {
               ...modify,
               ...addItemName
+            };
+          } else if (Object.values(modify[tableName]).length > 0) {
+            // modify[tableName].ID = objId;
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
+                ...addItemName
+              }
             };
           } else {
             parames = {
@@ -418,15 +473,16 @@ export default {
             };
           }
         } else if (path) { // 主表保存有path的参数
-          modify[tableName].ID = objId; // 主表id
+          if (!modify[tableName]) {
+            modify[tableName] = {};
+            modify[tableName].ID = objId; // 主表id
+          } else {
+            modify[tableName].ID = objId; // 主表id
+          }
           parames = {
             ...modify
           };
         } else { // 带子表的没有path的主表保存
-          // const itmValues = modify[itemName];
-          // modify[itemName] = [
-          //   itmValues
-          // ];
           parames = {
             table: tableName, // 主表表名
             objId, // 明细id
@@ -472,7 +528,8 @@ export default {
     objId,
     currentParameter,
     itemName,
-    isreftabs
+    isreftabs,
+    resolve, reject
   }) { // 主表删除
     let parames = {};
 
@@ -507,8 +564,11 @@ export default {
 
     network.post(path || '/p/cs/objectDelete', parames).then((res) => {
       if (res.data.code === 0) {
+        resolve();
         const data = res.data;
         commit('updateNewMainTableDeleteData', data);
+      } else {
+        reject();
       }
     });
   },
@@ -520,14 +580,29 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -545,14 +620,29 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -570,14 +660,29 @@ export default {
     objId,
     table,
     path,
+    isreftabs,
     resolve,
     reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', {
-      objId,
-      table
-    }).then((res) => {
+    let param = {};
+    if (path) {
+      if (isreftabs) {
+        param[table] = {
+          ID: objId,
+        };
+      } else {
+        param = {
+          ID: objId,
+        };
+      }
+    } else {
+      param = {
+        objId,
+        table
+      };
+    }
+    network.post(path || '/p/cs/objectVoid', param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -613,12 +718,17 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
-    params,
+    obj,
     path,
-    resolve,
-    reject
-  }) { // 获取作废数据
-    network.post(path || '/p/cs/exeAction', params).then((res) => {
+    resolve, reject
+  }) {
+    let actionName = '';
+    if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
+      actionName = path;
+    } else {
+      actionName = '';
+    }
+    network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
@@ -627,6 +737,8 @@ export default {
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
 };

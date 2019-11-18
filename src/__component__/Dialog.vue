@@ -2,7 +2,7 @@
 <template>
   <Modal
     v-model="showModal"
-    :title="title"
+    :title="titleName"
     :title-align="titleAlign"
     :scrollable="scrollable"
     :closable="closable"
@@ -25,8 +25,12 @@
         :is="dialogComponentName"
         v-if="showModal"
         ref="modalComponent"
+        :id-array="idArray"
         :obj-list="objList"
+        :item-id="itemId"
+        @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
+        @clearSelectIdArray="clearSelectIdArray"
       />
     </div>
   </Modal>
@@ -37,6 +41,14 @@
   export default {
     // name: 'DialogComponent',
     props: {
+      idArray: {// 获取ID用于多选
+        type: [Array, Object],
+        default: () => {}
+      },
+      itemId: {// 获取当前子表表名
+        type: String,
+        default: () => ''
+      },
       // showModal: {
       //   type: Boolean,
       //   default: () => false
@@ -45,7 +57,7 @@
       //   type: String,
       //   default: () => 'auto'
       // },
-      objList: {
+      objList: {// 需要从外部获取的信息
         type: Array,
         default: () => []
       },
@@ -67,7 +79,7 @@
       }, // 是否可以滚动
       closable: {
         type: Boolean,
-        default: () => true
+        default: () => false
       }, // 是否可以按esc关闭
       draggable: {
         type: Boolean,
@@ -110,23 +122,43 @@
         type: String,
         default: () => ''
       },
+      isrefrsh: {
+        type: Boolean,
+        default: () => false
+      },
+      
     },
     data() {
       return {
         showModal: false,
         modalWidth: 520,
+        setTitleName: ''
       };
     },
+    computed: {
+      titleName() {
+        if (this.setTitleName) {
+          return this.setTitleName;
+        }
+        return this.title;
+      }
+    },
     watch: {
-      dialogComponentName(val) {
+      dialogComponentName(val, oldval) {
         if (val) {
           this.getModalWidth();
         }
-      }
+      },
     },
     mounted() {
     },
     methods: {
+      clearSelectIdArray() { // 清空列表选中项
+        this.$emit('clearSelectIdArray');
+      },
+      setTitle(value) {
+        this.setTitleName = value;
+      },
       getModalWidth() {
         const self = this;
         if (this.$refs.modalComponent) {
@@ -140,13 +172,11 @@
       open() {
         this.showModal = true;
       },
-
       // 确定
       onOk() {
         if (typeof this.confirm === 'function') {
           this.confirm();
         }
-        // this.$emit('confirm');
       },
       // 取消
       onCancel() {
@@ -154,15 +184,20 @@
           this.cancelFun();
         }
       },
-      closeActionDialog() {
+      closeActionDialog(value) {
+        this.$emit('clearDialogComponentName');
         this.showModal = false;
+        if (value === true || this.isrefrsh) {
+          this.$emit('dialogComponentSaveSuccess');
+        }
       },
+      
    
     }
   };
 </script>
 
-<style lang="less" scope>
+<style lang="less" scoped>
   .burgeon-modal-footer {
     border: none;
   }

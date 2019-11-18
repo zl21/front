@@ -5,15 +5,25 @@
     @dblclick="popUp"
   >
     <Input
+      ref="textarea"
       type="textarea"
       :rows="rows"
       :placeholder="''"
       readonly
+      :disabled="webConfig.disabled"
+      @on-keydown="onKeydown"
     />
     <Icon
       type="md-hammer"
       @click="popUp"
     />
+    <Icon
+      v-if="!webConfig.disabled"
+      type="iconbj_delete"
+      class="R3iconbj_delete"
+      @click="deleteValue"
+    />
+
     <div v-if="showModal">
       <Modal
         ref="extentionInputModal"
@@ -27,6 +37,7 @@
         @on-cancel="onCancel"
       >
         <ExtentionProperty
+          v-if="showModal"
           :options="options"
           :default-data="transformedData"
           @valueChange="valueChange"
@@ -37,8 +48,8 @@
 </template>
 
 <script>
-  import extentionForColumn from '../constants/extentionPropertyForColumn';
-  import extentionForTable from '../constants/extentionPropertyForTable';
+  import { parse } from 'path';
+  import { extentionForColumn, extentionForTable } from '../constants/global';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
   export default {
@@ -47,6 +58,10 @@
       ExtentionProperty
     },
     props: {
+      webConfig: { // 用于控制字段表，赋值方式字段的取值，决定了扩展属性的可配置列表。
+        type: Object,
+        default: () => ({})
+      },
       extentionConfig: {
         type: Array,
         default: () => ([])
@@ -60,6 +75,10 @@
         default: () => ({
           rows: 8
         })
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -68,28 +87,52 @@
         showModal: false,
         transformedData: {},
         rows: 8,
-        options: {}
       };
     },
+    computed: {
+      options() {
+        let configOptions = [];
+        // 这里逻辑是写死的，专门针对“表”、“字段”的扩展属性
+        if (this.$route.params.tableName === 'AD_COLUMN') {
+          configOptions = extentionForColumn();
+          if (this.webConfig.supportType && this.webConfig.supportType !== 'ALL') {
+            configOptions = configOptions.filter(d => !d.supportType || (d.supportType && d.supportType.indexOf(this.webConfig.supportType) !== -1));
+          }
+        } else if (this.$route.params.tableName === 'AD_TABLE') {
+          configOptions = extentionForTable();
+        } else {
+          configOptions = this.extentionConfig;
+        }
+        return configOptions;
+      }
+    },
     methods: {
+      onKeydown(e) {
+        this.$emit('keydown', e);
+      },
       setFormatedValue() {
         this.$refs.extentionInput.querySelector('textarea').value = this.currentValue === '""' ? '' : this.currentValue;
       },
       valueChange(val) {
         this.currentValue = val;
-        if (val !== '') {
-          this.transformedData = JSON.parse(val);
-        }
       },
       popUp() {
+        if (this.webConfig.disabled) { return; }
         this.showModal = true;
+      },
+      deleteValue() {
+        // 清空功能
+        this.transformedData = '';
+        this.$emit('valueChange', '');
       },
       onOk() {
         this.setFormatedValue();
         if (this.currentValue === '') {
           this.$emit('valueChange', this.currentValue);
+          this.transformedData = {};
         } else {
           this.$emit('valueChange', JSON.stringify(JSON.parse(this.currentValue)));
+          this.transformedData = JSON.parse(this.currentValue);
         }
         this.showModal = false;
       },
@@ -97,14 +140,30 @@
         this.showModal = false;
       },
     },
-    created() {
-      if (this.$route.params.tableName === 'AD_COLUMN') {
-        this.options = extentionForColumn;
-      } else if (this.$route.params.tableName === 'AD_TABLE') {
-        this.options = extentionForTable;
-      } else {
-        this.options = this.extentionConfig;
-      }
+    watch: {
+      defaultData: {
+        handler(val) {
+          this.rows = this.ctrlOptions.rows || this.rows;
+          if (Object.prototype.toString.call(val) === '[object String]' && val !== '') {
+            try {
+              this.transformedData = JSON.parse(val);
+            } catch (e) {
+              throw e;
+            }
+          } else {
+            this.transformedData = val || {};
+          }
+          if (val === '') {
+            this.currentValue = '';
+          } else {
+            this.currentValue = JSON.stringify(this.transformedData, null, 2);
+          }
+          setTimeout(() => {
+            this.setFormatedValue();
+          }, 10);
+        },
+        deep: true
+      },
     },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
@@ -125,6 +184,26 @@
       setTimeout(() => {
         this.setFormatedValue();
       }, 10);
+      // 添加黏贴功能
+      window.addEventListener('paste', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
+
+        if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
+          try {
+            this.transformedData = JSON.parse(paste) ? JSON.parse(paste) : '';
+            this.$emit('valueChange', JSON.stringify(JSON.parse(paste)));
+          } catch (err) {
+            this.$Modal.fcWarning({
+              mask: false,
+              showCancel: false,
+              title: '提示',
+              content: `${err}请输入json 形式的字符串`,
+            });
+          }
+        }
+      });
     }
   };
 </script>
@@ -138,8 +217,12 @@
     i {
       font-size: 16px;
       position: absolute;
-      right: 2px;
-      bottom: 2px;
+      right: 12px;
+      bottom: 12px;
+      color:#fd6442;
+    }
+    .R3iconbj_delete{
+      right: 42px;
     }
     i:hover {
       cursor: pointer;

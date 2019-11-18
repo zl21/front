@@ -6,50 +6,59 @@
           v-for="(item, index) in options"
           :key="index"
           :class="{ active: index === currentIndex }"
-          @click="scrollIntoView(item, index)"
+          @click="scrollIntoVie
+          (item, index)"
         >
           {{ item.name }}
           <br>
           {{ item.key === '__root__' ? '' : item.key }}
         </li>
+        <li v-if="options.length === 0">
+          暂无可配置项
+        </li>
       </ul>
     </div>
     <div class="middle">
-      <div
-        v-for="(item, index) in options"
-        v-show="index === currentIndex"
-        :key="index"
-        class="item-render-area"
-      >
-        <ExtentionInput
-          v-if="item.type === 'input'"
-          :id="`${item.key}-${index}-${guid}`"
-          :option="item"
-          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @dataChange="rootDataChange"
-        />
-        <ExtentionRadio
-          v-if="item.type === 'radio'"
-          :id="`${item.key}-${index}-${guid}`"
-          :option="item"
-          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          @dataChange="rootDataChange"
-        />
-        <ExtentionInputGroup
-          v-if="item.type === 'input-group'"
-          :id="`${item.key}-${index}-${guid}`"
-          :default-data="JSON.parse(JSON.stringify(rootData))"
-          :option="item"
-          @dataChange="rootDataChange"
-        />
-        <ExtentionObjectGroup
-          v-if="item.type === 'object-group'"
-          :id="`${item.key}-${index}-${guid}`"
-          :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
-          :option="item"
-          @dataChange="rootDataChange"
-        />
-      </div>
+      <template v-for="(item, index) in options">
+        <div
+          v-if="index === currentIndex"
+          :key="index"
+          class="item-render-area"
+        >
+          <ExtentionInput
+            v-if="item.type === 'input'"
+            :id="`${item.key}-${index}-${guid}`"
+            :option="item"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
+          <ExtentionRadio
+            v-if="item.type === 'radio'"
+            :id="`${item.key}-${index}-${guid}`"
+            :option="item"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
+          <ExtentionInputGroup
+            v-if="item.type === 'input-group'"
+            :id="`${item.key}-${index}-${guid}`"
+            :default-data="JSON.parse(JSON.stringify(rootData))"
+            :option="item"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
+          <ExtentionObjectGroup
+            v-if="item.type === 'object-group'"
+            :id="`${item.key}-${index}-${guid}`"
+            :default-data="JSON.parse(JSON.stringify(rootData))[item.key]"
+            :option="item"
+            @dataChange="rootDataChange"
+            @removeOption="removeOption"
+          />
+        </div>
+      </template>
     </div>
     <div class="right">
       <textarea
@@ -121,6 +130,15 @@
       rootDataChange({ key, value }) {
         this.updateRootData(key, value);
       },
+      removeOption(keyArray) {
+        const rootDataAfterRemoved = {};
+        Object.keys(this.rootData).forEach((key) => {
+          if (keyArray.indexOf(key) === -1) {
+            rootDataAfterRemoved[key] = this.rootData[key];
+          }
+        });
+        this.rootData = rootDataAfterRemoved;
+      },
     },
     created() {
       this.rootData = JSON.parse(JSON.stringify(this.defaultData));
@@ -153,6 +171,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: scroll;
         li.active {
           border-left: 2px solid orangered;
         }
@@ -161,11 +180,13 @@
           display: flex;
           align-items: center;
           padding: 2px 10px;
+          min-height: 35px;
         }
         li:hover {
           opacity: 0.8;
           cursor: pointer;
-          border-left: 2px solid orangered;
+          color: orangered;
+         // text-shadow: 1px 1px 1px #b29f1c;
         }
       }
     }
@@ -182,6 +203,7 @@
         width: 100%;
         padding: 7px 0 7px 7px;
         .description {
+          display: flex;
           margin: 5px;
           padding: 5px;
           background:rgba(244,246,249,1);
@@ -219,6 +241,12 @@
             margin: 5px 7px;
             display: flex;
             flex-direction: column;
+            .logInfo {
+              color: orangered;
+              font-style: italic;
+              text-align: right;
+              padding: 5px 5px 5px;
+            }
             .cell {
               text-align: right;
               line-height: 24px;

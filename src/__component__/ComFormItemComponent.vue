@@ -9,6 +9,7 @@
       <div
         v-for="(item,index) in dataColRol"
         v-show="item.show !== false"
+        :id="item.item.field"
         :key="index"
         class="FormItemComponent-item"
         :style="setDiv(item)"
@@ -27,8 +28,12 @@
 </template>
 
 <script>
+  // import { setTimeout } from 'timers';
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
-  import { Version, interlocks } from '../constants/global';
+  import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
+
+  const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+
 
   export default {
     name: 'FormItemComponent',
@@ -37,7 +42,9 @@
       dataColRol() {
         const list = layoutAlgorithm(this.defaultColumn, this.newFormItemLists);
         return Object.keys(list).reduce((temp, current) => {
-          // console.log(list[current].item.value, 'item');
+          if (list[current].item.type === 'Wangeditor') {
+            list[current].col = this.defaultColumn;
+          }
           temp.push(list[current]);
           return temp;
         }, []);
@@ -64,25 +71,35 @@
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                if (items.item.value[0].ID) {
-                  option[items.item.field] = items.item.value[0].ID;
-                }
+                option[items.item.field] = items.item.value[0].ID;
               } else if (items.item.value[0]) {
-                option[items.item.field] = items.item.value[0];
+                if (items.item.type === 'ImageUpload') {
+                  option[items.item.field] = JSON.stringify(items.item.value);
+                } else if (items.item.type === 'docfile') {
+                  option[items.item.field] = JSON.stringify(items.item.value);
+                } else {
+                  option[items.item.field] = items.item.value[0];
+                }
               }
             } else if (items.item.value) {
-              option[items.item.field] = items.item.props.defval
-                || items.item.value
-                || items.item.props.valuedata;
+              if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
+                option[items.item.field] = items.item.props.Selected[0].ID;
+              } else {
+                option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
+              }
             }
 
             if (items.item.props.number) {
               if (option[items.item.field]) {
-                option[items.item.field] = Number(
-                  option[items.item.field]
-                    .replace(/^\s+|\s+$/g, '')
-                    .replace(/-/g, '')
-                );
+                if (/-/.test(option[items.item.field])) {
+                  option[items.item.field] = Number(
+                    option[items.item.field]
+                      .replace(/^\s+|\s+$/g, '')
+                      .replace(/-/g, '')
+                  );
+                } else {
+                  option[items.item.field] = Number(option[items.item.field]);
+                }
               }
             } else if (typeof option[items.item.field] === 'string') {
               option[items.item.field] = option[items.item.field].replace(
@@ -91,6 +108,13 @@
               );
             }
           }
+          // 初始化隐藏字段clearWhenHidden 清除功能 
+          if (items.item.props.webconf && items.item.props.webconf.clearWhenHidden) {
+            if (items.show === false) {
+              option[items.item.field] = '';
+            }
+          }
+
           return option;
         }, {});
 
@@ -159,6 +183,19 @@
           return function () {};
         }
       },
+      getStateData: {
+        type: Function,
+        default() {
+          return function () {};
+        }
+      },
+      isMainTable: {
+        // 是否 主表
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       path: {
         type: String,
         default() {
@@ -194,8 +231,15 @@
         default() {
           return {};
         }
+      },
+      moduleFormType: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
+    inject: [MODULE_COMPONENT_NAME],
     data() {
       return {
         indexItem: -1,
@@ -208,22 +252,30 @@
         checkMounted: false, // 是否初始化
         VerificationForm: [], // 需要校验的
         mountedTypeName: '',
+        LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
-        setHeight: 34
+        setHeight: 34,
+        actived: false
       };
     },
     mounted() {
-      this.newFormItemLists.map((item) => {
-        if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
-          this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
-        }
+      //   this.newFormItemLists.map((item) => {
+      //     if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
+      //       this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
+      //     }
+      //   });
+      //   this.formValueItem = {};
+
+      //   this.mapData = this.setMapping(this.Mapping);
+      window.addEventListener('setValue', (value) => {
+        console.log(value);
       });
-      this.mapData = this.setMapping(this.Mapping);
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
-        // this.VerificationForm = this.VerificationMap();
+        // 获取校验
         this.VerificationFormInt();
+        // 获取 默认值
         this.mountdataFormInt();
       }, 500);
 
@@ -234,7 +286,7 @@
     },
     watch: {
       mountedType() {
-        console.log('mountedType');
+        // 监听刷新、切换
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -242,52 +294,23 @@
       },
       formDataObject: {
         handler(val, old) {
+          // 页面的联动关系及计算逻辑的处理
           if (this.indexItem === -1) {
             return;
           }
-          // console.log(val,'this.indexItem',this.indexItem);
-          //val = Object.assign(val, this.formValueItem);
-          val = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-
-          // this.formDatadefObject = val;
-          this.newFormItemLists.map((items, i) => {
-            const item = items.item;
-            if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
-              if (
-                val[item.validate.dynamicforcompute.computecolumn]
-                === old[item.validate.dynamicforcompute.computecolumn]
-              ) {
-                this.dynamicforcompute(item, val, i);
-              } else {
-              // this.formDataChange();
-              }
-            } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
-              const _refcolumn = item.validate.hidecolumn.refcolumn;
-              const _refval = item.validate.hidecolumn.refval.toString().trim();
-              if (val[_refcolumn] === undefined) {
-                return false;
-              }
-              // console.log(val[_refcolumn] ===_refval,val[_refcolumn],_refval );
-
-              const checkVal = _refval === val[_refcolumn].toString().trim() ? 1 : 0;
-              const checkShow = items.show ? 1 : 0;
-              // console.log(_refval , val[_refcolumn]);
-              // console.log(_refcolumn,',old[_refcolumn]',checkVal,checkShow);
-              //console.log(checkVal,checkShow,_refval ,val,_refcolumn,val[_refcolumn].toString().trim(),);
-              if (checkVal !== checkShow) {
-                this.hidecolumn(item, i);
-              }
-            } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
-              this.refcolval(item, val, i);
-            // this.formDataChange();
-            }
-            return items;
-          });
+          //   拦截默认值
+          if (!this.actived || Object.keys(this.refcolvalData).length < 1) {
+            return;
+          }
+          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          val = Object.assign(allValue, this.formValueItem);
+          this.computFormLinkage(val, old);
         },
         deep: true
       },
       formItemLists: {
         handler() {
+          // 监听页面配置的处理
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
           this.newFormItemLists = this.formItemLists;
@@ -295,6 +318,7 @@
         deep: true
       },
       VerificationForm() {
+        // 监听校验的处理
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
@@ -304,22 +328,58 @@
       }
     },
     methods: {
-      mountdataFormInt() {
-        setTimeout(() => {
-          //  传form 默认值
-          this.mountdataForm(this.formDataObject);
-        }, 200);
-      },
-      VerificationFormInt() {
-        //  form 计算 校验
-        this.VerificationForm = [];
-        this.newFormItemLists.forEach((item, index) => {
-          if (item.item.required && item.show) {
-            this.verificationMap(this.formIndex, index, item);
+      computFormLinkage(val, old) {
+        // 页面计算关系
+        this.newFormItemLists.map((items, i) => {
+          const item = items.item;
+          // 筛选字段
+          if (item.props.webconf && item.props.webconf.filtercolval) {
+            this.filtercolumn(item, i, val);
           }
+          // 设置属性
+          if (item.props.webconf && item.props.webconf.setAttributes) {
+            this.setAttributes(item, i, val);
+          }
+
+          //  扩展属性 来源字段
+          if (item.props.webconf && item.props.webconf.targetField) {
+            item.props.supportType = val[item.props.webconf.targetField];
+          }
+           
+          if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
+            // 计算
+            if (
+              val[item.validate.dynamicforcompute.computecolumn]
+              === old[item.validate.dynamicforcompute.computecolumn]
+            ) {
+              this.dynamicforcompute(item, val, i);
+            } else {
+              // this.formDataChange();
+            }
+          } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
+            //  联动隐藏
+            
+            const _refcolumn = item.validate.hidecolumn.refcolumn;
+
+            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
+            if (val[_refcolumn] === undefined) {
+              return false;
+            }
+            const refvalArr = _refval.split(',');
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+            const checkVal = arrIndex !== -1 ? 1 : 0;
+            const checkShow = items.show ? 1 : 0;
+            if (checkVal !== checkShow) {
+              this.hidecolumn(item, i, val);
+            }
+          } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
+            // 来源字段
+            this.refcolval(item, val, i);
+          }
+          return items;
         });
       },
-      verificationMap(formIndex, index, items) {
+      inputget(formIndex, index, items) {
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
         if (!elDiv) {
@@ -331,7 +391,46 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        const valueData = this.formDataObject[items.item.field] || '';
+        return onfousInput;
+      },  
+      formInit() {
+        const val = this.getStateData();
+        this.computFormLinkage(val);
+      },  
+      mountdataFormInt() {
+        this.actived = false;
+        setTimeout(() => {
+          //  传form 默认值
+          this.mountdataForm(this.formDataObject);
+          this.formInit();
+          setTimeout(() => {
+            this.actived = true;
+          }, 300);
+        }, 100);
+      },
+      VerificationFormInt() {
+        //  form 计算 校验
+        this.VerificationForm = [];
+        this.newFormItemLists.forEach((item, index) => {
+          if (item.item.required && item.show) {
+            this.verificationMap(this.formIndex, index, item);
+          }
+        });
+      },
+      verificationMap(formIndex, index, items) {
+        // 获取校验的配置及节点
+        const elDiv = this.$refs[`component_${index}`][0]
+          && this.$refs[`component_${index}`][0].$el;
+        if (!elDiv) {
+          return false;
+        }
+        let onfousInput = {};
+        if (items.item.type === 'textarea') {
+          onfousInput = elDiv.querySelector('textarea');
+        } else {
+          onfousInput = elDiv.querySelector('input');
+        }
+        const valueData = this.formDataObject[items.item.field];
         this.VerificationForm.push({
           index,
           eq: formIndex,
@@ -339,8 +438,10 @@
           value: valueData,
           key: items.item.field,
           label: items.item.title,
+          fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
+        return true;
       },
       setMapping(data) {
         //  获取映射关系
@@ -367,7 +468,6 @@
           // 当存在field时直接生成对象
           if (current.item.type === 'DropDownSelectFilter') {
             // 若为外键则要处理输入还是选中
-            console.log(current);
             if (current.item.value instanceof Array) {
               // 结果为数组则为选中项
               delete obj[current.item.inputname];
@@ -378,9 +478,11 @@
                   return sum;
                 }, [])
                 .join(',');
-              if (Version === '1.3') {
+              if (Version() === '1.3') {
                 //  id 转number
-                obj[current.item.field] = Number(obj[current.item.field]);
+                if (current.item.value.length < 2) {
+                  obj[current.item.field] = Number(obj[current.item.field]);
+                } 
               }
             } else if (this.condition !== '') {
               // 模糊查询
@@ -404,7 +506,7 @@
             // 若为外键则要处理输入还是选中
             if (current.item.props.Selected[0] && this.condition === '') {
               obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
-              if (Version === '1.3') {
+              if (Version() === '1.3') {
                 //  id 转number
                 obj[current.item.field] = Number(obj[current.item.field]);
               }
@@ -425,14 +527,14 @@
               if (current.item.type === 'input') {
                 obj[current.item.field] = current.item.value;
               } else if (typeof current.item.value === 'number' || typeof current.item.value === 'object') {
-                  obj[current.item.field] = current.item.value;
-                } else {
-                  const value = current.item.value
-                    ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
-                    : '';
+                obj[current.item.field] = current.item.value;
+              } else {
+                const value = current.item.value
+                  ? current.item.value.replace(/^\s+|\s+$/g, '').replace(/-/g, '')
+                  : '';
 
-                  obj[current.item.field] = Number(value);
-                }
+                obj[current.item.field] = Number(value);
+              }
             } else if (typeof current.item.value === 'string') {
               obj[current.item.field] = current.item.value
                 ? current.item.value.replace(/^\s+|\s+$/g, '')
@@ -470,12 +572,62 @@
         if (Object.keys(obj)[0]) {
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
+          } else if (current.item.type === 'DropDownSelectFilter' && !current.item.value) {
+            valueItem[Object.keys(obj)[0]] = [{
+              Label: '',
+              ID: ''
+            }];
+          } else if (current.item.props.isuppercase) {
+            if (valueItem[Object.keys(obj)[0]]) {
+              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+            }
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
           }
         }
+        // data
+        if (current.item.type === 'DatePicker' && current.item.props.rangecolumn) {
+          const start = current.item.props.rangecolumn.upperlimit;
+          const end = current.item.props.rangecolumn.lowerlimit;
+          delete obj[current.item.field];
+          obj[start.colname] = current.item.value[0];
+          obj[end.colname] = current.item.value[1];
+        }
+        // checkbox
+        this.formValueItem = Object.assign(this.formValueItem, obj);
+
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
+        //  change 值 走后台接口赋值
+        if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          if (obj[current.item.field] || obj[current.item.field] === '') {
+            this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+          }
+        }
+      },
+      formRequest(obj, current, conf) {
+        // 走后台接口
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const refcolumn = conf.refcolumn.split(',');
+        const ASSIGN = refcolumn.reduce((arr, item) => {
+          arr[item] = jsonArr[item] || '';
+          return arr;
+        }, {});
+        //          ID: obj[current.field] || obj[current.inputname],
+        const data = {
+          ASSIGN
+        };
+        if (!conf.url) {
+          return false;
+        }
+        fkHttpRequest().equalformRequest({
+          url: conf.url,
+          searchObject: data,
+          success: (res) => {
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+          }
+        });
+        return true;
       },
       resetForm() {
         // 重置表单
@@ -493,18 +645,18 @@
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
       },
-      refcolval(items, json, index) {
-        if (interlocks === true) {
+      refcolval(items, json) {
+        if (interlocks() === true) {
           const srccol = items.validate.refcolval.srccol;
-          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.refcolvalData)));
-
+          
+          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
           if (!jsonArr[srccol]) {
             if (items.type === 'DropDownSelectFilter') {
               // console.log(items.props.defaultSelected, index, items);
-              this.newFormItemLists[index].item.value = '';
-              this.newFormItemLists[index].item.props.defaultSelected = [];
+              // this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.props.defaultSelected = [];
             } else {
-              this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.value = '';
             }
           }
         }
@@ -525,8 +677,101 @@
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
-      hidecolumn(items, index) {
+      setAttributes(item, formindex, val) {
+        //  设置属性
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+        const field = item.props.webconf.setAttributes.field;
+        if (!Array.isArray(field)) {
+          return false;
+        }
+
+        const checkout = field.every((option) => {
+          let optionValue = jsonArr[option.refcolumn];
+          if (!optionValue) {
+            optionValue = '';
+          }
+          if (typeof optionValue !== 'string') {
+            optionValue = optionValue.toString();
+            optionValue = optionValue.replace(/^\s+|\s+$/g, '');
+          }
+          if (typeof option.refval === 'string') {
+            option.refval = option.refval.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+          }
+          const refval = option.refval.split(',');
+          const refIndex = refval.findIndex(x => x.toString() === optionValue);
+
+          return refIndex !== -1;
+        });
+        if (!item.oldProps) {
+          item.oldProps = JSON.parse(JSON.stringify(item.props));
+        }
+        const props = JSON.parse(JSON.stringify(item.props));
+
+        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
+        if (checkout && !checkoutProps) {
+          if (item.props.webconf.setAttributes.props.value === '') {
+            item.value = '';
+          }
+          if (item.props.webconf.setAttributes.props.required) {
+            item.required = true;
+          } else {
+            item.required = false;
+          }
+          this.VerificationFormInt();
+
+          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+          this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+        } else if (checkout !== true && checkoutProps) {
+          this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
+          if (item.oldProps.required) {
+            item.required = true;
+          } else {
+            item.required = false;
+          }
+        }
+        return true;
+      },
+      filtercolumn(item, formindex, val) {
+        // 过滤筛选
+        const filterValue = val[item.props.webconf.filtercolval.col];
+        if (!filterValue) {
+          return false;
+        }
+        let itemValue = item.value;
+        if (Array.isArray(itemValue)) {
+          itemValue = itemValue.join('');
+        }
+        if (item.type === 'select') {
+          if (!item.olderOptions) {
+            item.olderOptions = item.options;
+          }
+          if (!Array.isArray(item.props.webconf.filtercolval.map[filterValue])) {
+            return false;
+          }
+          const checkout = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === itemValue);
+          const optionsArr = item.olderOptions.reduce((arr, option) => {
+            const index = item.props.webconf.filtercolval.map[filterValue].findIndex(x => x === option.value);
+            if (index !== -1) {
+              arr.push(option);
+            }
+            return arr;
+          }, []);
+          item.options = optionsArr.concat([]);
+          // this.dataProcessing(this.newFormItemLists[formindex], formindex);
+          if (checkout !== -1) { 
+            return false;
+          }
+          if (this.newFormItemLists[formindex] && checkout === -1) {
+            this.newFormItemLists[formindex].item.value = -1;
+          }
+          // input.innerText = '';
+        }
+        return true;
+      },
+      hidecolumn(items, index, json) {
         // 隐藏
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
@@ -534,14 +779,42 @@
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item) {
-              const value = Array.isArray(option.item.value)
-                ? option.item.value.toString()
-                : option.item.value;
-              if (JSON.stringify(refval) === JSON.stringify(value)) {
+              const value = jsonArr[refcolumn];
+              const refvalArr = refval.split(',');
+              const refIndex = refvalArr.findIndex(x => x.toString() === value.toString());
+
+              if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;
+                // 添加小组件的字段配置
+                this.newFormItemLists[index].item.props.showCol = true;
               } else {
                 this.newFormItemLists[index].show = false;
+                this.newFormItemLists[index].item.props.showCol = false;
               }
+              if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+                  const data = {
+                    formList: [
+                      { 
+                        key: items.field,
+                        name: items.title,
+                        show: this.newFormItemLists[index].show,
+                        srccol: items.validate.refcolval && items.validate.refcolval.srccol,
+                        tableName: this.isMainTable ? '' : this.childTableName
+                      }
+                    ],
+                    formIndex: ''
+                  };
+                  this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+                }  
+              }
+              if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+                //   清除页面 联动的值
+                this.newFormItemLists[index].item.value = '';
+                this.newFormItemLists[index].item.props.defaultSelected = [];
+                this.dataProcessing(this.newFormItemLists[index], index);
+              }
+
               this.VerificationFormInt();
               // this.VerificationForm = this.VerificationMap();
               // this.VerificationFormInt();

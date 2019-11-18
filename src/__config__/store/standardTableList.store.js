@@ -1,9 +1,13 @@
+/* eslint-disable import/no-dynamic-require */
 // import actions from '../actions/standardTableList.actions';
-import mutations from '../mutations/standardTableList.mutations';
+// import mutations from '../mutations/standardTableList.mutations';
 import { Version } from '../../constants/global';
 
+
 // eslint-disable-next-line import/no-dynamic-require
-const actions = require(`../actions/version_${Version}/standardTableList.actions`).default;
+
+const mutations = () => require(`../mutations/version_${Version()}/standardTableList.mutations`).default;
+const actions = () => require(`../actions/version_${Version()}/standardTableList.actions`).default;
 export default () => ({
   namespaced: true,
   state: {
@@ -37,7 +41,8 @@ export default () => ({
           return self.buttonClick(type, item);
         }
       },
-
+      ishide: '', // 控制自定义类型按钮是否显示
+      isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
       tabcmd: {},
       // waListButtons: [],
       query: {// 页面跳转参数
@@ -100,8 +105,12 @@ export default () => ({
       hideColumn: '',
       colPosition: '',
       fixedColumn: ''
+    },
+    webconf: {
+      commonTable: false, // 普通表格开关
+      dynamicRouting: false, // 表格时候开启动态路由
     }
   },
-  actions,
-  mutations
+  actions: actions(),
+  mutations: mutations()
 });

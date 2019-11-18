@@ -184,7 +184,7 @@
             return items;
           });
 
-          if (JSON.stringify(this.formItemsData) !== this.dataProcessing()) {
+          if (JSON.stringify(this.formItemsData) !== this.dataProcessing(this.newFormItemLists)) {
             this.formDataChange();
           }
         },
@@ -193,11 +193,12 @@
     },
     methods: {
       formDataChange() { // 向父组件抛出整个数据对象以及当前修改的字段
-        console.log(this.dataProcessing());
-        this.$emit('formDataChange', this.dataProcessing(), this.newFormItemLists[this.indexItem], this.indexItem);
+        // console.log(this.dataProcessing());
+        this.$emit('formDataChange', this.dataProcessing(this.newFormItemLists), this.newFormItemLists[this.indexItem], this.indexItem);
       },
-      dataProcessing() {
-        return this.newFormItemLists.reduce((obj, current) => {
+      dataProcessing(arr) {
+        const Arr = arr.concat([]);
+        return Arr.reduce((obj, current) => {
           if (current.item.field) { // 当存在field时直接生成对象
             if (current.item.type === 'DropDownSelectFilter') { // 若为外键则要处理输入还是选中
               if (current.item.value instanceof Array) { // 结果为数组则为选中项
@@ -253,7 +254,21 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;
+        if (this.newFormItemLists[index].item.props.display === 'OBJ_DATENUMBER') {
+          // 列表界面 配置 显示字符串
+          if (Array.isArray(value)) {
+            const _value = value.reduce((arry, item) => {
+              arry.push(new Date().setNewFormt(item, '/', ''));
+              return arry;
+            }, []);
+            this.newFormItemLists[index].item.value = _value;
+          } else {
+            this.newFormItemLists[index].item.value = new Date().setNewFormt(value, '/', '');
+          }
+          
+        } else {
+          this.newFormItemLists[index].item.value = value;
+        }
         this.newFormItemLists = this.newFormItemLists.concat([]);
       },
       dynamicforcompute(items, json, index) {
