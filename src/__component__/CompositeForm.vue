@@ -275,6 +275,26 @@
         this.formData = {};
         this.formDataDef = {};
       },
+      isReadonly(current) {
+        // 设置界面的 是否 disable
+
+        if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
+          if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.objreadonly) {
+            return false;
+          }
+          return current.disabled;
+        }
+        if (this.conditiontype === 'list') {
+          return current.disabled;
+        }
+        if (this.objreadonly) {
+          return true;
+        }
+        if (current.disabled || current.readonly) {
+          return true;
+        }
+        return current.disabled;
+      },
       childForm(option) {
         return this.childFormData.push(option);
       },
@@ -377,7 +397,12 @@
         // 修改联动值
         this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
+        // const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+
         const key = mappStatus[Object.keys(data)[0]];
+        // const LinkageFormItem = LinkageForm[key];
+
+        // console.log(key, mappStatus, LinkageFormItem, 'key');
         if (!document.querySelector(`#${key}`)) {
           return false;
         }
@@ -715,7 +740,6 @@
                       }];
                       this.formData[Fitem[index].item.field] = '';
                     }
-                    
                   } else {
                     Fitem[index].item.props.defaultSelected = [
                       {
@@ -777,22 +801,22 @@
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
        
-        if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
-          if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.readonly) {
-            obj.item.props.disabled = false;
-            obj.item.props.readonly = false;
-          }
-        }
+       
         // 获取全部
         this.LinkageForm.push({
           key: obj.item.field,
           name: obj.item.title,
           show: obj.show,
           srccol: obj.item.validate.refcolval && obj.item.validate.refcolval.srccol,
+          tableName: this.tableGetName()
         });
          
 
         return obj;
+      },
+      tableGetName() {
+        // 获取表名称
+        return this.isMainTable ? '' : this.childTableName;
       },
       hidecolumn(current, array) {
         //  隐藏判断
@@ -809,7 +833,10 @@
               }
             }
             const refvalArr = refval.split(',');
-            const arrIndex = refvalArr.findIndex(x => x.toString() === val.toString());
+            if (val) {
+              val = val.toString();
+            }
+            const arrIndex = refvalArr.findIndex(x => x.toString() === val);
             return option.item.field === refcolumn && arrIndex !== -1;
           });
           return check;
@@ -843,7 +870,6 @@
              
               const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
               if (LinkageFormfocus) {
-                
                 setTimeout(() => {
                   LinkageFormfocus.focus();
                 }, 100);
@@ -976,6 +1002,8 @@
       },
       defaultValue(item) {
         // 组件的默认值  
+        // const checkIsReadonly = this.isReadonly(item);
+
         if (item.readonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
 
@@ -1099,7 +1127,7 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
-        if (this.objreadonly === true) {
+        if (this.readonly) {
           if (item.valuedata && /total/.test(item.valuedata) && item.fkdisplay === 'mop') {
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
@@ -1168,7 +1196,6 @@
               arr.push((fkdisplayValue && fkdisplayValue.Label) || '');
             }
           }
-
           return arr;
         }
 
@@ -1179,15 +1206,15 @@
       propsType(current, item) {
         // 表单 props
         const obj = item;
-
+        // 判断是显示隐藏 是否 需要webcon
+        const checkIsReadonly = this.isReadonly(current);
 
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
         item.props.comment = item.props.comment;
 
 
-        if (this.objreadonly) {
-          // 页面只读标记
+        if (checkIsReadonly) {
           item.props.placeholder = '';
         }
         // 去除请输入 字段
@@ -1214,7 +1241,7 @@
           const valuedata = this.defaultValue(current) || [];
           const filesLength = Number(current.webconf && current.webconf.filesLength);
           let readonly = current.readonly;
-          readonly = this.objreadonly ? true : readonly;
+          readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
             readonly,
@@ -1246,9 +1273,7 @@
             const index = checkName.findIndex(x => x === item.props.trueValue);
             item.props.falseValue = falseName[index] || falseName[0];
           }
-          item.props.disabled = this.objreadonly
-            ? this.objreadonly
-            : item.props.readonly;
+          item.props.disabled = checkIsReadonly;
           return current.valuedata || current.defval || '';
         }
 
@@ -1285,9 +1310,7 @@
           if (current.ispassword) {
             item.props.type = 'password';
           }
-          item.props.disabled = this.objreadonly
-            ? this.objreadonly
-            : item.props.readonly;
+          item.props.disabled = checkIsReadonly;
         }
         // 外键的单选多选判断
 
@@ -1300,9 +1323,7 @@
             return sum;
           }, []);
           item.options = arr;
-          item.props.disabled = this.objreadonly
-            ? this.objreadonly
-            : item.props.readonly;
+          item.props.disabled = checkIsReadonly;
           return item;
         }
         // 多状态合并的select
@@ -1318,9 +1339,7 @@
                 return sum;
               }, [])
             );
-            item.props.disabled = this.objreadonly
-              ? this.objreadonly
-              : item.props.readonly;
+            item.props.disabled = checkIsReadonly;
 
             return item;
           });
@@ -1472,8 +1491,10 @@
               };
               item.props.datalist = [];
               item.props.Selected = [];
-              if (!item.props.readonly && !this.objreadonly) {
+              if (checkIsReadonly) {
                 item.props.Selected.push(this.defaultValue(current)[0]);
+                item.value = this.defaultValue(current)[0].Label;
+              } else {
                 item.value = this.defaultValue(current)[0].Label;
               }
             }
@@ -1516,7 +1537,7 @@
             item.props.Selected = [];
             // 过滤值
             item.props.filterDate = {};
-            if (!item.props.readonly && !this.objreadonly) {
+            if (checkIsReadonly) {
               item.value = this.defaultValue(current)[1];
               item.props.Selected.push(this.defaultValue(current)[0]);
             }
@@ -1533,7 +1554,7 @@
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
           let readonly = current.readonly;
-          readonly = this.objreadonly ? true : readonly;
+          readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
             width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 160,
@@ -1553,11 +1574,9 @@
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
         }
-        if ((item.props.readonly === true && item.props.fkdisplay) || (this.objreadonly && item.props.fkdisplay)) {
+        if ((checkIsReadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
-          if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
-            return false;
-          }
+          
           if (
             item.props.fkdisplay === 'drp'
             || item.props.fkdisplay === 'mop'
@@ -1574,11 +1593,10 @@
               ID: current.refobjid,
               Label: current.valuedata
             }];
+            item.value = current.valuedata;
           }
         }
-        item.props.disabled = this.objreadonly
-          ? this.objreadonly
-          : item.props.readonly;
+        item.props.disabled = checkIsReadonly;
         return item;
       },
       getTableQuery() {
