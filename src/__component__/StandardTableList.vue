@@ -283,45 +283,32 @@
                 }
               });
             }
-          } else {
-            if (row._OBJTYPE.val === 'tabpanle') {
-              // 单对象左右结构
-              const type = 'tableDetailHorizontal';
-              const tab = {
-                type,
-                tableName: row._TABLENAME.val,
-                tableId: row._TABLEID.val,
-                id: row._OBJID.val
-              };
-              this.tabHref(tab);
-            } else if (row._OBJTYPE.val === 'object') {
-              // 单对象上下结构
-              const type = 'tableDetailVertical';
-              const tab = {
-                type,
-                tableName: row._TABLENAME.val,
-                tableId: row._TABLEID.val,
-                id: row._OBJID.val
-              };
-              this.tabHref(tab);
-            }
+          } else if (row._OBJTYPE.val === 'tabpanle') {
+            // 单对象左右结构
+            const type = 'tableDetailHorizontal';
+            const tab = {
+              type,
+              tableName: row._TABLENAME.val,
+              tableId: row._TABLEID.val,
+              id: row._OBJID.val
+            };
+            this.tabHref(tab);
+          } else if (row._OBJTYPE.val === 'object') {
+            // 单对象上下结构
+            const type = 'tableDetailVertical';
+            const tab = {
+              type,
+              tableName: row._TABLENAME.val,
+              tableId: row._TABLEID.val,
+              id: row._OBJID.val
+            };
+            this.tabHref(tab);
           }
         } else {
           const { tableName, tableId } = this.$route.params;
           const id = row.ID.val;
           const label = `${this.activeTab.label}编辑`;
-          if (this.ag.datas.objdistype === 'tabpanle') {
-            // 单对象左右结构
-            const type = 'tableDetailHorizontal';
-            const tab = {
-              type,
-              tableName,
-              tableId,
-              label,
-              id
-            };
-            this.tabHref(tab);
-          } else if (this.ag.tableurl) {
+          if (this.ag.tableurl) {
             const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
             const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
             if (actionType === 'SYSTEM') {
@@ -371,6 +358,17 @@
                 }
               });
             }
+          } else  if (this.ag.datas.objdistype === 'tabpanle') {
+            // 单对象左右结构
+            const type = 'tableDetailHorizontal';
+            const tab = {
+              type,
+              tableName,
+              tableId,
+              label,
+              id
+            };
+            this.tabHref(tab);
           } else {
             // 单对象上下结构
             const type = 'tableDetailVertical';
