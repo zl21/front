@@ -6,7 +6,7 @@
           v-for="(item, index) in options"
           :key="index"
           :class="{ active: index === currentIndex }"
-          @click="scrollIntoVie
+          @click="scrollIntoView
           (item, index)"
         >
           {{ item.name }}
