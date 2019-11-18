@@ -177,59 +177,63 @@ export default {
     // const hidecolunmArray = [];
     state.copyDataForReadOnly.addcolums.forEach((d) => { // 复制按钮操作时江接口请求回来的配置信息赋值给form
       copyDatas.data.addcolums.forEach((item) => {
-        d.childs.forEach((c) => {
-          item.childs.forEach((b) => {
-            // if (c.hidecolumn) {
-            //   if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
-            //     if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
-            //       c.valuedata = '';
-            //       hidecolunmArray.push(c);
-            //     }
-            //   }
-            // }
-            if (b.name === c.name) {
-              b.readonly = c.readonly;
-              // if (hidecolunmArray.length > 0) {
-              //   hidecolunmArray.forEach((hidecolumnItem) => {
-              //     if (b.colname !== hidecolumnItem.colname) {
-              //       if (c.readonly === true) {
-              //         if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
-              //           copySaveDataForParam[b.colname] = c.defval;
-              //         } else {
-              //           b.valuedata = '';// 将配置为不可编辑的值置空
-              //         }
-              //       } else if (b.valuedata) {
-              //         if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
-              //           copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-              //         } else if (b.fkdisplay === 'mop') {
-              //           const number = JSON.parse(b.valuedata).lists.result.length;
-              //           copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-              //         } else {
-              //           copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
-              //         }
-              //       }
+        if (d.childs) {
+          d.childs.forEach((c) => {
+            if (item.childs) {
+              item.childs.forEach((b) => {
+              // if (c.hidecolumn) {
+              //   if (c.hidecolumn && c.hidecolumn.refcolumn === b.colname) {
+              //     if (c.hidecolumn && c.hidecolumn.refval !== b.valuedata) {
+              //       c.valuedata = '';
+              //       hidecolunmArray.push(c);
               //     }
-              //   });
-              // } else 
-              if (c.readonly === true) {
-                if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
-                  copySaveDataForParam[b.colname] = c.defval;
-                } else {
-                  b.valuedata = '';// 将配置为不可编辑的值置空
+              //   }
+              // }
+                if (b.name === c.name) {
+                  b.readonly = c.readonly;
+                  // if (hidecolunmArray.length > 0) {
+                  //   hidecolunmArray.forEach((hidecolumnItem) => {
+                  //     if (b.colname !== hidecolumnItem.colname) {
+                  //       if (c.readonly === true) {
+                  //         if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                  //           copySaveDataForParam[b.colname] = c.defval;
+                  //         } else {
+                  //           b.valuedata = '';// 将配置为不可编辑的值置空
+                  //         }
+                  //       } else if (b.valuedata) {
+                  //         if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                  //           copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                  //         } else if (b.fkdisplay === 'mop') {
+                  //           const number = JSON.parse(b.valuedata).lists.result.length;
+                  //           copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                  //         } else {
+                  //           copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                  //         }
+                  //       }
+                  //     }
+                  //   });
+                  // } else 
+                  if (c.readonly === true) {
+                    if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                      copySaveDataForParam[b.colname] = c.defval;
+                    } else {
+                      b.valuedata = '';// 将配置为不可编辑的值置空
+                    }
+                  } else if (b.valuedata) {
+                    if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
+                      copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
+                    } else if (b.fkdisplay === 'mop') {
+                      const number = JSON.parse(b.valuedata).lists.result.length;
+                      copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                    } else {
+                      copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
+                    }
+                  }
                 }
-              } else if (b.valuedata) {
-                if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
-                  copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
-                } else if (b.fkdisplay === 'mop') {
-                  const number = JSON.parse(b.valuedata).lists.result.length;
-                  copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
-                } else {
-                  copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
-                }
-              }
+              });
             }
           });
-        });
+        }
       });
     });
     // Object.keys(modifyData).map((modify) => {//将修改过的值重新赋值给form所需数据
