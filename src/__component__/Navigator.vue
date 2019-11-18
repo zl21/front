@@ -198,10 +198,10 @@
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
       },
-      searchBtn(val){
-        if(val===false){
+      searchBtn(val) {
+        if (val === false) {
           setTimeout(() => {
-           this.$refs.AutoComplete.$el.querySelector('input').focus();
+            this.$refs.AutoComplete.$el.querySelector('input').focus();
           }, 300);
         }
       }
