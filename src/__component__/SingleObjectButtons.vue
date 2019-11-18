@@ -96,6 +96,7 @@
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import ChineseDictionary from '../assets/js/ChineseDictionary';
 
 
   export default {
@@ -678,20 +679,19 @@
       webactionClick(obj) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
+          let selete = [];
+          if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
+            selete = this.updateData[this.itemName].delete[this.itemName];
+          }
           if (obj.confirm.indexOf('{') >= 0) {
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (this.tableRowSelectedIds && this.tableRowSelectedIds.length === 0) {
+              if (selete && selete.length === 0) {
                 const title = this.ChineseDictionary.WARNING;
-                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                const data = {
-                  mask: true,
-                  title,
-                  content: contentText
-                };
-                this.$Modal.fcWarning(data);
+                const contentText = `${JSON.parse(obj.confirm).desc}`;
+                this.dialogMessage(title, contentText, obj);
               } else if (
                 JSON.parse(obj.confirm).isradio
-                && this.tableRowSelectedIds.length !== 1
+                && selete.length !== 1
               ) {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).radiodesc}`;
@@ -707,7 +707,7 @@
                 let contentText = '';
                 const confirm = JSON.parse(obj.confirm);
                 if (content.indexOf('{isselect}') !== '-1') {
-                  contentText = `${confirm.desc.replace('{isselect}', this.tableRowSelectedIds.length)}`;
+                  contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
                 }
@@ -977,31 +977,58 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
+        let obj = {};
+        let ids = [];
+        if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+        }
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
           if (this.subtables()) { // 有子表
-            if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-              childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-              params[this.itemName] = {
-                ...childTableParams[this.itemName]
+            if (this.itemName === this.tableName) { // 主表静默逻辑
+              if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+                childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+                obj[this.itemName] = {
+                  ...childTableParams[this.itemName]
+                };
+              }
+            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
+              obj = {
+                tableName: this.itemName, // 子表表名
+                ids
+              };
+            } else { // 有表格
+              obj = {
+                tableName: this.itemName, // 子表表名
+                ids
               };
             }
-            params[this.tableName] = {
+          } else { // 没有子表
+            obj[this.tableName] = {
               ID: this.itemId
             };
-          } else { // 没有子表
-            params.ID = this.itemId;
           }
-        } else { // 左右结构
-          params[this.tableName] = {
-            ID: this.itemId
-          };
+        } else if (this.subtables()) { // 有子表   左右结构
+          if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
+            obj[this.tableName] = {
+              ID: this.itemId
+            };
+          } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
+            obj = {
+              tableName: this.itemName, // 子表表名
+              ids
+            };
+          } else { // 有表格
+            obj = {
+              tableName: this.itemName, // 子表表名
+              ids
+            };
+          }
         }
-
+        
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            params, path: tab.action, resolve, reject
+            obj, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
@@ -2286,6 +2313,7 @@
     beforeCreate() {
     },
     created() {
+      this.ChineseDictionary = ChineseDictionary;
       window.addEventListener('network', this.networkEventListener);// 监听接口
       const { tableName, tableId, itemId } = router.currentRoute.params;
       this.tableName = tableName;

@@ -705,10 +705,26 @@
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
                     if (item.value[0].ID === '' || item.value[0].ID === undefined) {
-                      Fitem[index].item.props.defaultSelected = [];
+                      Fitem[index].item.props.defaultSelected = [{
+                        label: '',
+                        ID: ''
+                      }];
+                      Fitem[index].item.value = [{
+                        label: '',
+                        ID: ''
+                      }];
+                      this.formData[Fitem[index].item.field] = '';
                     }
+                    
                   } else {
-                    Fitem[index].item.props.defaultSelected = [];
+                    Fitem[index].item.props.defaultSelected = [
+                      {
+                        label: '',
+                        ID: ''
+                      }
+                    ];
+                    Fitem[index].item.value = [];
+                    this.formData[Fitem[index].item.field] = '';
                   }
                 }
               }
@@ -806,12 +822,15 @@
           return false;
         }
         let sendData = {};
+        this.getStateData();
+
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
         let LinkageFormInput = '';
+
         if (current.refcolval && current.refcolval.srccol) {
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
-        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput) {
+        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
             : '';
@@ -819,8 +838,20 @@
             refcolval = this.defaultFormData[current.refcolval.srccol];
           }
           if (!refcolval) {
-            this.$Message.info('请选择关联表字段');
-            return false;
+            if (LinkageFormInput && LinkageFormInput.item.show) {
+              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+             
+              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+              if (LinkageFormfocus) {
+                
+                setTimeout(() => {
+                  LinkageFormfocus.focus();
+                }, 100);
+                return false;
+              }
+
+              return false;
+            } 
           }
           const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
           sendData = {

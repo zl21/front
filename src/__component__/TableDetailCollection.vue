@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -721,10 +721,7 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        // const itemName = this.itemInfo.tablename;
-        // const { tableName, itemId } = router.currentRoute.params;
         const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
-        // const ids = itemId.map(d => parseInt(d));
         const obj = {
           tableName: this.tableName,
           ids
