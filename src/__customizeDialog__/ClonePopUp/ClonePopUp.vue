@@ -119,7 +119,7 @@
       fuzzyquerybyak(value) {
         const searchdata = {
           ak: value,
-          colid: ' 165884',
+          colid: '99467',
           fixedcolumns: {}
         };
         network
