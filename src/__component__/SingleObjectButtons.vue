@@ -688,8 +688,8 @@
           }
 
           if (obj.confirm.indexOf('{') >= 0) {
-            if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (selete && selete.length === 0) {
+            if ( JSON.parse(obj.confirm).isselect) {
+              if (selete.length === 0) {
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
                 const title = this.ChineseDictionary.WARNING;
                 const data = {
@@ -718,12 +718,18 @@
                 if (content.indexOf('{isselect}') !== '-1') {
                   contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
+
                   contentText = `${JSON.parse(obj.confirm).desc}`;
+                  console.log(contentText)
                 }
                 this.dialogMessage(title, contentText, obj);
               } else {
                 this.buttonEvent(obj);
               }
+            } else if (JSON.parse(obj.confirm).desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText, obj);
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
