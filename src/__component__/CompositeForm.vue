@@ -646,10 +646,7 @@
               Fitem[index].item.props.data = {};
               let searchObject = {};
               const check = this.getLinkData(current);
-              console.log(check, 'dddddd');
-
-              if (check[0]) {
-                if (Object.hasOwnProperty.call(current, 'refcolval')) {
+              if (check[1]) {
                   const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
                   searchObject = {
                     isdroplistsearch: true,
@@ -660,14 +657,15 @@
                     startindex: 0,
                     range: $this.pageSize
                   };
-                } else {
+                
+                
+              }else {
                   searchObject = {
                     isdroplistsearch: true,
                     refcolid: current.colid,
                     startindex: 0,
                     range: $this.pageSize
                   };
-                }
               }
               fkHttpRequest().fkQueryList({
                 searchObject,
@@ -767,7 +765,8 @@
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
-                    if (item.value[0].ID === '' || item.value[0].ID === undefined) {
+
+                    if (item.value && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
                       Fitem[index].item.props.defaultSelected = [{
                         label: '',
                         ID: ''
@@ -849,7 +848,6 @@
           srccol: `${this.tableGetName}${srccol}`,
           tableName: this.tableGetName
         });         
-
         return obj;
       },
       getLinkData(current) {
@@ -867,8 +865,13 @@
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
-          const LinkageFormInput = LinkageForm[this.tableGetName + current.colname];
-          console.log(refcolval, this.tableGetName);
+          let LinkageFormInput = {};
+          if(this.tableGetName){
+            LinkageFormInput = LinkageForm[this.tableGetName+current.refcolval.srccol];
+          }else{
+            LinkageFormInput = LinkageForm[current.refcolval.srccol];
+          }
+
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
               this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
@@ -876,19 +879,25 @@
               if (this.tableGetName) {
                 const tableName = document.querySelector(`.${LinkageFormInput.item.tableName}`);
                 if (tableName.querySelector(`#${current.refcolval.srccol}`)) {
-                  tableName.focus();
+                  setTimeout(()=>{
+                    tableName.querySelector(`#${current.refcolval.srccol}`).querySelector('input').focus();
+                  },100)
                   return [false];
                 }
               } else {
                 const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
                 if (LinkageFormfocus) {
+                  setTimeout(()=>{
                   LinkageFormfocus.focus();
+                  },100)
                   return [false];
                 }
               }
-            }  
-          }
-          return [true, refcolval];
+            }
+          }else{
+            return [true, refcolval];  
+            }
+            return [true]
         }
         return [true];
       },
@@ -923,7 +932,6 @@
           return false;
         }
         let sendData = {};
-        this.getStateData();
 
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
         let LinkageFormInput = '';
@@ -931,6 +939,35 @@
         if (current.refcolval && current.refcolval.srccol) {
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
+        const check = this.getLinkData(current);
+              if (check[1]) {
+                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+          sendData = {
+            ak: value,
+            colid: current.colid,
+            fixedcolumns: {
+              whereKeys: {
+                [current.refcolval.fixcolumn]: query
+              }
+            }
+          };
+                
+              }else {
+                 sendData = {
+            ak: value,
+            colid: current.colid,
+            fixedcolumns: {}
+          };              }
+          fkHttpRequest().fkFuzzyquerybyak({
+          searchObject: sendData,
+          serviceId: current.serviceId,
+          success: (res) => {
+            this.freshDropDownSelectFilterAutoData(res, index, current);
+          }
+        });
+        return true;
+
+          return false;
         if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
@@ -971,14 +1008,7 @@
           };
         }
 
-        fkHttpRequest().fkFuzzyquerybyak({
-          searchObject: sendData,
-          serviceId: current.serviceId,
-          success: (res) => {
-            this.freshDropDownSelectFilterAutoData(res, index, current);
-          }
-        });
-        return true;
+        
       },
       validateList(current) {
         // 联动校验
