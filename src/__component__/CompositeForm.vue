@@ -1491,7 +1491,7 @@
               };
               item.props.datalist = [];
               item.props.Selected = [];
-              if (checkIsReadonly) {
+              if (!item.props.readonly && !this.objreadonly) {
                 item.props.Selected.push(this.defaultValue(current)[0]);
                 item.value = this.defaultValue(current)[0].Label;
               } else {
@@ -1537,7 +1537,7 @@
             item.props.Selected = [];
             // 过滤值
             item.props.filterDate = {};
-            if (checkIsReadonly) {
+            if (!item.props.readonly && !this.objreadonly) {
               item.value = this.defaultValue(current)[1];
               item.props.Selected.push(this.defaultValue(current)[0]);
             }
