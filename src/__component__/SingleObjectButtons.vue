@@ -682,8 +682,8 @@
           let selete = [];
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
-            if(Object.keys(selete).length===0){
-                selete=[]
+            if (Object.keys(selete).length === 0) {
+              selete = [];
             }
           }
 
@@ -691,7 +691,7 @@
             if (obj.confirm || JSON.parse(obj.confirm).isselect) {
               if (selete && selete.length === 0) {
                 const contentText = `${JSON.parse(obj.confirm).nodesc}`;
-                 const title = this.ChineseDictionary.WARNING;
+                const title = this.ChineseDictionary.WARNING;
                 const data = {
                   mask: true,
                   title,
@@ -794,9 +794,22 @@
         });
       },
       objTabActiondDownload(tab) {
-        // const filename = tab.webname;
-        const downloadId = this.itemId;
-        const paths = tab.action.replace('$objid$', downloadId);
+        if (this.objectType === 'horizontal') { // 左右结构
+          if (this.itemName === this.tableName) { // 主表
+            this.downLoad(tab.action, this.itemId);
+          } else { // 子表
+            let id = '';
+            if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+              id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            }
+            this.downLoad(tab.action, id);
+          }
+        } else { // 左右结构主表
+          this.downLoad(tab.action, this.itemId);
+        }
+      },
+      downLoad(action, downloadId) {
+        const paths = action.replace('$objid$', downloadId);
         const eleLink = document.createElement('a');
         const path = getGateway(`${paths}`);
         eleLink.setAttribute('href', path);
@@ -804,23 +817,7 @@
         document.body.appendChild(eleLink);
         eleLink.click();
         document.body.removeChild(eleLink);
-        // this.downFile(path, filename);
       },
-      // downFile(path, filename) {
-      //   // 创建隐藏的可下载链接
-      //   const eleLink = document.createElement('a');
-      //   eleLink.download = filename;
-      //   eleLink.style.display = 'none';
-      //   // 字符内容转变成blob地址
-      //   const blob = new Blob([path]);
-      //   eleLink.href = URL.createObjectURL(blob);
-      //   // 触发点击
-      //   document.body.appendChild(eleLink);
-      //   eleLink.click();
-      //   // 然后移除
-      //   document.body.removeChild(eleLink);
-      // },
-
       objTabActionNavbar(tab) {
         if (tab.action) {
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
