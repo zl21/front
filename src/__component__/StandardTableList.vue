@@ -336,10 +336,13 @@
               // router.push(
               //   path
               // );
-
-              const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
-              const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
-              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
+              const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
+              let path = '';
+              if (singleEditType === ':itemId') {
+                path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
+              } else{
+                 path = `/${this.ag.tableurl}`;
+              }
               router.push({
                 path
               });
@@ -358,7 +361,7 @@
                 }
               });
             }
-          } else  if (this.ag.datas.objdistype === 'tabpanle') {
+          } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
             const type = 'tableDetailHorizontal';
             const tab = {
