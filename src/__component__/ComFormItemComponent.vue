@@ -600,7 +600,7 @@
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          if(obj[current.item.field] || obj[current.item.field] === ''){
+          if (obj[current.item.field] || obj[current.item.field] === '') {
             this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -800,7 +800,7 @@
                         name: items.title,
                         show: this.newFormItemLists[index].show,
                         srccol: items.validate.refcolval && items.validate.refcolval.srccol,
-
+                        tableName: this.isMainTable ? '' : this.childTableName
                       }
                     ],
                     formIndex: ''
