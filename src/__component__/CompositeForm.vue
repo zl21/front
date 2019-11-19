@@ -212,6 +212,7 @@
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
         childFormData: [],    
+        r3Form: {},
         computdefaultData: [], // form
         pathArry: [], // path 数组
         show: true,
@@ -222,6 +223,13 @@
       };
     },
     watch: {
+      mountNumber: {
+        handler() {
+          // 组件重组
+          this.computdefaultData = this.reorganizeForm();
+        }
+
+      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -557,7 +565,8 @@
         this.getStateData();
         this.defaultFormData = defaultFormData;
         if (Version() === '1.3') {
-          this.$emit('InitializationForm', formItem, this.defaultSetValue, defaultFormData);
+          this.r3Form = Object.assign(this.r3Form, formItem);
+          this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
         } else {
           this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         }
@@ -1802,6 +1811,11 @@
     },
     mounted() {
       this.Comparison();
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        console.log(e);
+        // this.mountNumber = (Math.random() * 1000).toFixed(0);
+      });
+
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
