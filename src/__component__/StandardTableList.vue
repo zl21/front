@@ -340,8 +340,8 @@
               let path = '';
               if (singleEditType === ':itemId') {
                 path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-              } else{
-                 path = `/${this.ag.tableurl}`;
+              } else {
+                path = `/${this.ag.tableurl}`;
               }
               router.push({
                 path
@@ -783,13 +783,12 @@
           if (item.default === '-1') {
             return '';
           } if (item.default !== '-1' && item.default) {
-            return new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+            const timeRange = [
+              new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', ''),
+              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+            ];
+            return timeRange;
           }
-          const timeRange = [
-            new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
-            new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-          ];
-          return timeRange;
         }
         if (item.display === 'OBJ_DATE') {
           if (item.default === '-1') {

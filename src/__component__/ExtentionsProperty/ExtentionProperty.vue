@@ -6,13 +6,16 @@
           v-for="(item, index) in options"
           :key="index"
           :class="{ active: index === currentIndex }"
-          @click="scrollIntoView(item, index)"
+          @click="scrollIntoView
+          (item, index)"
         >
           {{ item.name }}
           <br>
           {{ item.key === '__root__' ? '' : item.key }}
         </li>
-        <li v-if="options.length === 0">暂无可配置项</li>
+        <li v-if="options.length === 0">
+          暂无可配置项
+        </li>
       </ul>
     </div>
     <div class="middle">
@@ -183,7 +186,7 @@
           opacity: 0.8;
           cursor: pointer;
           color: orangered;
-          text-shadow: 1px 1px 1px #b29f1c;
+         // text-shadow: 1px 1px 1px #b29f1c;
         }
       }
     }
