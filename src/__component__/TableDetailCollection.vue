@@ -1315,8 +1315,8 @@
           if (modifyValue[tableName] && modifyValue[tableName][cellData.refcolval.srccol]) {
             return true;
           }
-          if (modifyValue[tableName] && Object.keys(modifyValue[tableName]).length > 0) {
-            if (modifyValue[tableName][cellData.refcolval.srccol] !== '' || modifyValue[tableName][cellData.refcolval.srccol] !== 0 ) {
+          if (modifyValue[tableName] && Object.keys(modifyValue[tableName]).length > 0 && modifyValue[tableName][cellData.refcolval.srccol] !== undefined) {
+            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0 ) {
               return false;
             }
           } else {

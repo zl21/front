@@ -100,7 +100,7 @@
       :type="type"
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
-      :objreadonly="objreadonly || getActionModify"
+      :objreadonly="objreadonly || !getActionModify"
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
