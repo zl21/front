@@ -2372,7 +2372,7 @@
   }
     .submit-img { //no-active
     position: absolute;
-    top: 97px;
+    top: 30px;
     right: 60px;
     width: 104px;
     z-index: 1000;

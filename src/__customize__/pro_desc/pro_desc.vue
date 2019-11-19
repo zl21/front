@@ -237,7 +237,7 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      window.addEventListener('customizeClick');
+      window.addEventListener('customizeClick', this.customizeClick);
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -280,8 +280,10 @@
     },
     methods: {
       customizeClick(event) {
-        this.saveParams = event.detail;
-        this.objectSave(event.detail);
+        if (event.type === 'save') {
+          this.saveParams = event.detail;
+          this.objectSave(event.detail);
+        }
       },
       getData() {
         // 获取数据
