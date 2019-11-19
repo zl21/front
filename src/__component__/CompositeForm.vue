@@ -535,7 +535,7 @@
           console.log(this.defaultFormData, formItemArry, '66');
         }
         // 外部change的值(复制修改过后的值 去修改 页面)
-        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
+        const defaultSetValue = Object.keys(this.1.3).reduce((arr, option) => {
           if (defaultFormData[option]) {
             arr[option] = defaultFormData[option];
           }
@@ -547,7 +547,7 @@
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        this.$emit('InitializationForm', defaultFormData);
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
