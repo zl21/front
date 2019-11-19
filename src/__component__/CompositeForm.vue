@@ -488,7 +488,12 @@
           }
         }
         // 获取需要校验的表单
-        this.$emit('formChange', this.formData, this.formDataDef);
+        if (Version() === '1.3') {
+          this.$emit('formChange', this.formDataDef, this.formDataDef);
+        } else {
+          this.$emit('formChange', this.formData, this.formDataDef);
+        }
+
         this.getStateData();
       },
       VerifyMessageForm(value, type) {
@@ -543,11 +548,19 @@
         }, {});
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          if (Version() === '1.3') {
+            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue);
+          } else {
+            this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          }
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        if (Version() === '1.3') {
+          this.$emit('InitializationForm', this.defaultSetValue, this.defaultSetValue);
+        } else {
+          this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        }
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性

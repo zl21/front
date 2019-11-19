@@ -164,7 +164,7 @@
             if (Array.isArray(this.defaultData[item])) {
               if (Object.hasOwnProperty.call(this.defaultData[item].item.value[0], 'ID')) {
                 arr[item] = this.defaultData[item].reduce((arrII, itemII) => {
-                  arrII.push(this.defaultData[itemII].label);
+                  arrII.push(this.defaultData[itemII].Label);
                   return arrII;
                 }, []);
               } else {
@@ -176,7 +176,7 @@
           }
           return arr;
         }, {});
-        console.log(keyValue);
+        console.log(121212, keyValue);
         const searchObject = {
           data: {
             [this.router.tableName]: this.formChangeData
