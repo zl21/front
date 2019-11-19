@@ -299,7 +299,7 @@
             return;
           }
           //   拦截默认值
-          if (!this.actived || Object.keys(this.refcolvalData).length < 1) {
+          if (!this.actived) {
             return;
           }
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
@@ -346,8 +346,10 @@
             item.props.supportType = val[item.props.webconf.targetField];
           }
            
+
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
+
             if (
               val[item.validate.dynamicforcompute.computecolumn]
               === old[item.validate.dynamicforcompute.computecolumn]
@@ -401,7 +403,7 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          this.mountdataForm(this.formDataObject);
+          this.mountdataForm(this.formDataObject, this.newFormItemLists);
           this.formInit();
           setTimeout(() => {
             this.actived = true;
