@@ -2252,9 +2252,10 @@
     mounted() {
       // this.dataArray.refresh = this.refreshButtons;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
+
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
-          if (item.tablename === this.tableName) {
+          if (item.itemName === this.tableName) {
             const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
             if (objreadonly) {
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
