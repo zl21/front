@@ -96,16 +96,19 @@
         handler(val) {
           if (Object.hasOwnProperty.call(val, 'addcolums')) {
             let childs = val.addcolums.reduce((arr, item) => {
+              console.log(item.childs || item.child);
               const itemChilds = item.childs || item.child;
               if (Array.isArray(itemChilds)) {
-                itemChilds.forEach((item) => {
-                  item.isnotnull = false;
+                itemChilds.forEach((option) => {
+                  option.isnotnull = false;
                 });
-                arr.push(itemChilds);
-              }    
-             
+              }   
+              arr.push(itemChilds);
+
               return arr;
             }, []);
+            console.log(childs);
+
             childs = childs.flat();
             this.newformList = {
               inpubobj: childs,
