@@ -313,6 +313,7 @@
           // 监听页面配置的处理
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
+          console.log('666');
           this.newFormItemLists = this.formItemLists;
         },
         deep: true
@@ -603,7 +604,15 @@
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
-            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            console.log(current.item.props.fkdisplay);
+            if (current.item.props.fkdisplay) {
+              if (!valueItem[0]) {
+                return false;
+              }
+              this.formRequest(valueItem[0].ID, obj, current.item, current.item.props.webconf.formRequest);
+            } else {
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            }
           }
         }
       },
@@ -711,12 +720,13 @@
 
           return refIndex !== -1;
         });
+        console.log(checkout);
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
         const props = JSON.parse(JSON.stringify(item.props));
-
+        
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           if (item.props.webconf.setAttributes.props.value === '') {
@@ -730,6 +740,7 @@
           this.VerificationFormInt();
 
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
