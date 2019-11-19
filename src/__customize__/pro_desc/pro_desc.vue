@@ -237,7 +237,7 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      window.addEventListener('customizeClick');
+      window.addEventListener('customizeClick', this.customizeClick);
     },
     props: {
       itemInfo: {// 当前子表信息
