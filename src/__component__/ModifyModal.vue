@@ -56,6 +56,7 @@
         newformList: {},
         formChangeData: {},
         fixedcolumns: {},
+        defaultData: {},
         Condition: 'list',
         objids: [],
         poptitle: '批量修改',
@@ -157,7 +158,25 @@
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
         }
-        console.log(this);
+        console.log(this.defaultData);
+        const keyValue = Object.keys(this.defaultData).reduce((arr, item) => {
+          if (item === this.formChangeData[item]) {
+            if (Array.isArray(this.defaultData[item])) {
+              if (Object.hasOwnProperty.call(this.defaultData[item].item.value[0], 'ID')) {
+                arr[item] = this.defaultData[item].reduce((arrII, itemII) => {
+                  arrII.push(this.defaultData[itemII].label);
+                  return arrII;
+                }, []);
+              } else {
+                arr[item] = this.defaultData[item][0];
+              }
+            } else {
+              arr[item] = this.defaultData[item];
+            }
+          }
+          return arr;
+        }, {});
+        console.log(keyValue);
         const searchObject = {
           data: {
             [this.router.tableName]: this.formChangeData
@@ -201,7 +220,6 @@
       },
       open(router, ids, fixedcolumns, id) {
         //  打开弹窗
-        console.log(id, fixedcolumns);
         this.ids = ids;
         this.router = router;
         if (id === 'all') {
@@ -218,10 +236,11 @@
         };
         this.getData(searchObject);
       },
-      formChange(data) {
+      formChange(data, defaultData) {
         // form 修改的数据
 
         this.formChangeData = Object.assign(this.formChangeData, data);
+        this.defaultData = Object.assign(this.defaultData, defaultData);
       },
       confirm() {
         // b保存提交

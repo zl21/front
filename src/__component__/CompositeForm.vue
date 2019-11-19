@@ -527,15 +527,15 @@
           return arr;
         }, {});
         // 1.3 外键传参 label
-        if (Version() === '1.3') {
-          const formItemArry = formItem.reduce((arr, item) => {
-            console.log(item.item.value);
-            return arr;
-          }, {});
-          console.log(this.defaultFormData, formItemArry, '66');
-        }
+        // if (Version() === '1.3') {
+        //   const formItemArry = formItem.reduce((arr, item) => {
+        //     console.log(item.item.value);
+        //     return arr;
+        //   }, {});
+        //   console.log(this.defaultFormData, formItemArry, '66');
+        // }
         // 外部change的值(复制修改过后的值 去修改 页面)
-        const defaultSetValue = Object.keys(this.1.3).reduce((arr, option) => {
+        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
             arr[option] = defaultFormData[option];
           }
