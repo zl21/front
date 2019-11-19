@@ -848,6 +848,5 @@
 .FormItemComponent {
   display: grid;
   grid-template-columns: repeat(4, 25%);
-  grid-auto-rows: minmax(auto);
 }
 </style>
