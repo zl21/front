@@ -202,9 +202,12 @@
         if (val === false) {
           setTimeout(() => {
             this.$refs.AutoComplete.$el.querySelector('input').focus();
-            this.$refs.AutoComplete.$el.querySelector('input').click();
+            // this.$refs.AutoComplete.$el.querySelector('input').click();
           }, 300);
         }
+      },
+      searchList(val) {
+        this.$refs.AutoComplete.$el.querySelector('input').click();
       }
     },
     methods: {
@@ -259,8 +262,11 @@
       },
       searchData(value) {
         this.searchList = [];
-
         if (value === undefined || value.length < 1) {
+          return;
+        }
+        const values = this.$refs.AutoComplete.$el.querySelector('input').value;
+        if (values !== value) {
           return;
         }
         network

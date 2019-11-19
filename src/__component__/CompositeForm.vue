@@ -28,7 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :class="tableGetName"
+                :class="`${tableGetName}=== '' ? 'R3masterForm' :${tableGetName}`"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -350,7 +350,9 @@
             }
             return array;
           }, []);
+
           data.push(...hrdata);
+
           if (childs.list.length > 0) {
             data.push({
               childs: childs.list,
@@ -358,8 +360,8 @@
               isTitleShow: childs.isTitleShow,
               hrdisplay: 'expand'
             });
-            defaultData.addcolums = [...data];
           }
+          defaultData.addcolums = [...data];
         }
         if (
           this.type
@@ -401,27 +403,32 @@
       },
       setChangeValue(data) {
         // 修改联动值
-        this.getStateData();
+        // this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
         const key = mappStatus[Object.keys(data)[0]];
         const LinkageFormItem = LinkageForm[key];
-        let documentkey = '';
-        if (LinkageFormItem && LinkageFormItem.item.tableName) {
-          documentkey = document.querySelector(`.${LinkageFormItem.item.tableName}`).querySelector(`#${key}`);
-        } else {
-          documentkey = document.querySelector(`#${key}`);
+        if (LinkageFormItem) {
+          // 通知清空
+          window.eventType(`${MODULE_COMPONENT_NAME}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
         }
-        // console.log(key, mappStatus, LinkageFormItem, 'key');
-        if (!document.querySelector(`#${key}`)) {
-          return false;
-        }
-        const LinkageFormInput = documentkey.querySelector('.burgeon-icon-ios-close-circle');
-        if (LinkageFormInput) {
-          LinkageFormInput.click();
-        }
-        return true;
+        // let documentkey = '';
+
+        // if (LinkageFormItem && this.tableGetName && !LinkageFormItem.item.maintable) {
+        //   documentkey = document.querySelector(`.${this.tableGetName}`).querySelector(`#${key}`);
+        // } else {
+        //   documentkey = document.querySelector(`#${key}`);
+        // }
+        // // console.log(key, mappStatus, LinkageFormItem, 'key');
+        // if (!document.querySelector(`#${key}`)) {
+        //   return false;
+        // }
+        // const LinkageFormInput = documentkey.querySelector('.burgeon-icon-ios-close-circle');
+        // if (LinkageFormInput) {
+        //   LinkageFormInput.click();
+        // }
+        // return true;
       },
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current) {
@@ -497,7 +504,7 @@
         }
         this.$emit('VerifyMessage', data);
       },
-      mountdataForm(value) {
+      mountdataForm(value, formItem) {
         // 获取表单默认值
         setTimeout(() => {
           this.mountChecked = true;
@@ -519,6 +526,14 @@
           }
           return arr;
         }, {});
+        // 1.3 外键传参 label
+        if (Version() === '1.3') {
+          const formItemArry = formItem.reduce((arr, item) => {
+            console.log(item.item.value);
+            return arr;
+          }, {});
+          console.log(this.defaultFormData, formItemArry, '66');
+        }
         // 外部change的值(复制修改过后的值 去修改 页面)
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
@@ -647,81 +662,16 @@
               let searchObject = {};
               const check = this.getLinkData(current);
               if (check[1]) {
-                  const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
-                  searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    fixedcolumns: {
-                      [current.refcolval.fixcolumn]: query
-                    },
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
-                
-                
-              }else {
-                  searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
-              }
-              fkHttpRequest().fkQueryList({
-                searchObject,
-                serviceId: current.serviceId,
-                success: (res) => {
-                  this.freshDropDownSelectFilterData(res, index, current);
-                }
-              });
-              
-
-              return false;
-
-              if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                if (!refcolval) {
-                  if (LinkageFormInput && LinkageFormInput.item.show) {
-                    this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
-
-                    const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-                    if (LinkageFormfocus) {
-                      LinkageFormfocus.focus();
-                      return false;
-                    }
-                    const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
-
-                    searchObject = {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      fixedcolumns: {
-                        [current.refcolval.fixcolumn]: query
-                      },
-                      startindex: 0,
-                      range: $this.pageSize
-                    };
-                  } else {
-                    // this.$Message.info('请先选择关联的表');
-                    // return true;
-                    searchObject = {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      startindex: 0,
-                      range: $this.pageSize
-                    };
-                  }
-                } else {
-                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
-
-                  searchObject = {
-                    isdroplistsearch: true,
-                    refcolid: current.colid,
-                    fixedcolumns: {
-                      [current.refcolval.fixcolumn]: query
-                    },
-                    startindex: 0,
-                    range: $this.pageSize
-                  };
-                }
+                const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+                searchObject = {
+                  isdroplistsearch: true,
+                  refcolid: current.colid,
+                  fixedcolumns: {
+                    [current.refcolval.fixcolumn]: query
+                  },
+                  startindex: 0,
+                  range: $this.pageSize
+                };
               } else {
                 searchObject = {
                   isdroplistsearch: true,
@@ -737,6 +687,9 @@
                   this.freshDropDownSelectFilterData(res, index, current);
                 }
               });
+              
+
+              return false;
             },
             blur: (event, $this, item) => {
               // 失去光标 单对象 外键 value 清除
@@ -765,7 +718,6 @@
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
-
                     if (item.value && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
                       Fitem[index].item.props.defaultSelected = [{
                         label: '',
@@ -846,58 +798,77 @@
           name: obj.item.title,
           show: obj.show,
           srccol: `${this.tableGetName}${srccol}`,
+          maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
         });         
         return obj;
       },
       getLinkData(current) {
         // 获取表信息
+       
 
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
+          let refcolval = {};
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
-          }
-          let refcolval = this.refcolvalAll[current.refcolval.srccol]
-            ? this.refcolvalAll[current.refcolval.srccol]
-            : '';
-          if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
-            refcolval = this.defaultFormData[current.refcolval.srccol];
+            refcolval = this.refcolvalAll[current.refcolval.srccol]
+              ? this.refcolvalAll[current.refcolval.srccol]
+              : '';
+            if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
+              const data = Object.assign(this.defaultFormData, this.formData);
+              refcolval = data[current.refcolval.srccol]; 
+            }
+          } else {
+            const data = Object.assign(this.defaultFormData, this.formData);
+            refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-
           let LinkageFormInput = {};
-          if(this.tableGetName){
-            LinkageFormInput = LinkageForm[this.tableGetName+current.refcolval.srccol];
-          }else{
+          if (this.tableGetName) {
+            LinkageFormInput = LinkageForm[this.tableGetName + current.refcolval.srccol];
+          } else {
             LinkageFormInput = LinkageForm[current.refcolval.srccol];
           }
 
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
-              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+              if (current.refcolval.maintable) {
+                this.$Message.info(`请先选择主表${LinkageFormInput.item.name}`);
+              } else {
+                this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+              }
 
               if (this.tableGetName) {
+                if (current.refcolval.maintable) {
+                  let LinkageFormfocus = document.querySelector('.R3masterForm');
+                  if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
+                    LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
+                    setTimeout(() => {
+                      LinkageFormfocus.focus();
+                    }, 100);
+                  }
+                  return [false];
+                }
                 const tableName = document.querySelector(`.${LinkageFormInput.item.tableName}`);
                 if (tableName.querySelector(`#${current.refcolval.srccol}`)) {
-                  setTimeout(()=>{
+                  setTimeout(() => {
                     tableName.querySelector(`#${current.refcolval.srccol}`).querySelector('input').focus();
-                  },100)
-                  return [false];
+                  }, 100);
                 }
-              } else {
-                const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-                if (LinkageFormfocus) {
-                  setTimeout(()=>{
+                return [false];
+              } 
+              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+              if (LinkageFormfocus) {
+                setTimeout(() => {
                   LinkageFormfocus.focus();
-                  },100)
-                  return [false];
-                }
+                }, 100);
+                return [false];
               }
             }
-          }else{
+          } else {
             return [true, refcolval];  
-            }
-            return [true]
+          }
+          return [true];
         }
         return [true];
       },
@@ -940,8 +911,12 @@
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
         const check = this.getLinkData(current);
-              if (check[1]) {
-                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+        if (!check[0] && !check[1]) {
+          document.activeElement.value = '';
+        }
+        console.log(check, 'check');
+        if (check[1]) {
+          const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
           sendData = {
             ak: value,
             colid: current.colid,
@@ -951,14 +926,17 @@
               }
             }
           };
-                
-              }else {
-                 sendData = {
+        } else if (check[0]) {
+          sendData = {
             ak: value,
             colid: current.colid,
             fixedcolumns: {}
-          };              }
-          fkHttpRequest().fkFuzzyquerybyak({
+          }; 
+        }
+        if (!check[0]) {
+          return false;
+        }
+        fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
           serviceId: current.serviceId,
           success: (res) => {
@@ -966,49 +944,6 @@
           }
         });
         return true;
-
-          return false;
-        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
-          let refcolval = this.formData[current.refcolval.srccol]
-            ? this.formData[current.refcolval.srccol]
-            : '';
-          if (this.formData[current.refcolval.srccol] === undefined) {
-            refcolval = this.defaultFormData[current.refcolval.srccol];
-          }
-          if (!refcolval) {
-            if (LinkageFormInput && LinkageFormInput.item.show) {
-              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
-             
-              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-              if (LinkageFormfocus) {
-                setTimeout(() => {
-                  LinkageFormfocus.focus();
-                }, 100);
-                return false;
-              }
-
-              return false;
-            } 
-          }
-          const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
-          sendData = {
-            ak: value,
-            colid: current.colid,
-            fixedcolumns: {
-              whereKeys: {
-                [current.refcolval.fixcolumn]: query
-              }
-            }
-          };
-        } else {
-          sendData = {
-            ak: value,
-            colid: current.colid,
-            fixedcolumns: {}
-          };
-        }
-
-        
       },
       validateList(current) {
         // 联动校验
@@ -1316,6 +1251,7 @@
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
         item.props.comment = item.props.comment;
+        item.props.tableGetName = this.tableGetName;
 
 
         if (checkIsReadonly) {
@@ -1835,7 +1771,7 @@
           if (this.isreftabsForm) {
             const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
             const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
-            this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
+            this.refcolvalAll = Object.assign(defaultMain, modifyMain);
 
             return this.refcolvalAll;
           }
@@ -1846,7 +1782,7 @@
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData, modifyMain);
+          this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain);
         }
         return this.refcolvalAll;
       },
