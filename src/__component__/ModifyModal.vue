@@ -145,6 +145,36 @@
       oncancle() {
         this.$emit('on-oncancle-success', this);
       },
+      saveDataOld() {
+        this.loading = true;
+        const localdata = {
+          table: this.router.tableName, // 表名
+          column_include_uicontroller: true, //
+          reffixedcolumns: {}, // 左边树
+        };
+        if (!this.type) {
+          localdata.objids = this.objids;
+        } else {
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
+        }
+        console.log(this);
+        const searchObject = {
+          data: {
+            [this.router.tableName]: this.formChangeData
+          },
+          after: {
+            [this.router.tableName]: this.formChangeData
+          },
+          searchdata: localdata
+        };
+        fkHttpRequest().fksaveModify({
+          searchObject,
+          success: (res) => {
+            this.loading = false;
+            this.$emit('on-save-success', res);
+          }
+        });
+      },
       saveData() {
         this.loading = true;
         const localdata = {
@@ -195,7 +225,11 @@
       },
       confirm() {
         // b保存提交
-        this.saveData();
+        if (Version() === '1.3') {
+          this.saveDataOld();
+        } else {
+          this.saveData();
+        }
       }
     },
     mounted() {
