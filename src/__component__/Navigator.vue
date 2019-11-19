@@ -197,6 +197,13 @@
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
+      },
+      searchBtn(val) {
+        if (val === false) {
+          setTimeout(() => {
+            this.$refs.AutoComplete.$el.querySelector('input').focus();
+          }, 300);
+        }
       }
     },
     methods: {

@@ -337,6 +337,7 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
+          console.log(item.props.webconf);
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
@@ -600,7 +601,7 @@
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          if(obj[current.item.field] || obj[current.item.field] === ''){
+          if (obj[current.item.field] || obj[current.item.field] === '') {
             this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -681,6 +682,8 @@
         //  设置属性
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
+        console.log(field);
+
         if (!Array.isArray(field)) {
           return false;
         }
@@ -696,12 +699,16 @@
           }
           if (typeof option.refval === 'string') {
             option.refval = option.refval.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+          } else {
+            option.refval = option.refval.toString();
           }
+
           const refval = option.refval.split(',');
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
 
           return refIndex !== -1;
         });
+
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
@@ -800,7 +807,7 @@
                         name: items.title,
                         show: this.newFormItemLists[index].show,
                         srccol: items.validate.refcolval && items.validate.refcolval.srccol,
-
+                        tableName: this.isMainTable ? '' : this.childTableName
                       }
                     ],
                     formIndex: ''

@@ -682,13 +682,22 @@
           let selete = [];
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName]) {
             selete = this.updateData[this.itemName].delete[this.itemName];
+            if (Object.keys(selete).length === 0) {
+              selete = [];
+            }
           }
+
           if (obj.confirm.indexOf('{') >= 0) {
-            if (obj.confirm || JSON.parse(obj.confirm).isselect) {
-              if (selete && selete.length === 0) {
+            if (JSON.parse(obj.confirm).isselect) {
+              if (selete.length === 0) {
+                const contentText = `${JSON.parse(obj.confirm).nodesc}`;
                 const title = this.ChineseDictionary.WARNING;
-                const contentText = `${JSON.parse(obj.confirm).desc}`;
-                this.dialogMessage(title, contentText, obj);
+                const data = {
+                  mask: true,
+                  title,
+                  content: contentText
+                };
+                this.$Modal.fcWarning(data);
               } else if (
                 JSON.parse(obj.confirm).isradio
                 && selete.length !== 1
@@ -710,11 +719,16 @@
                   contentText = `${confirm.desc.replace('{isselect}', selete.length)}`;
                 } else {
                   contentText = `${JSON.parse(obj.confirm).desc}`;
+                  console.log(contentText);
                 }
                 this.dialogMessage(title, contentText, obj);
               } else {
                 this.buttonEvent(obj);
               }
+            } else if (JSON.parse(obj.confirm).desc) {
+              const title = this.ChineseDictionary.WARNING;
+              const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText, obj);
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -785,9 +799,22 @@
         });
       },
       objTabActiondDownload(tab) {
-        // const filename = tab.webname;
-        const downloadId = this.itemId;
-        const paths = tab.action.replace('$objid$', downloadId);
+        if (this.objectType === 'horizontal') { // 左右结构
+          if (this.itemName === this.tableName) { // 主表
+            this.downLoad(tab.action, this.itemId);
+          } else { // 子表
+            let id = '';
+            if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+              id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            }
+            this.downLoad(tab.action, id);
+          }
+        } else { // 左右结构主表
+          this.downLoad(tab.action, this.itemId);
+        }
+      },
+      downLoad(action, downloadId) {
+        const paths = action.replace('$objid$', downloadId);
         const eleLink = document.createElement('a');
         const path = getGateway(`${paths}`);
         eleLink.setAttribute('href', path);
@@ -795,102 +822,107 @@
         document.body.appendChild(eleLink);
         eleLink.click();
         document.body.removeChild(eleLink);
-        // this.downFile(path, filename);
       },
-      // downFile(path, filename) {
-      //   // 创建隐藏的可下载链接
-      //   const eleLink = document.createElement('a');
-      //   eleLink.download = filename;
-      //   eleLink.style.display = 'none';
-      //   // 字符内容转变成blob地址
-      //   const blob = new Blob([path]);
-      //   eleLink.href = URL.createObjectURL(blob);
-      //   // 触发点击
-      //   document.body.appendChild(eleLink);
-      //   eleLink.click();
-      //   // 然后移除
-      //   document.body.removeChild(eleLink);
-      // },
-
       objTabActionNavbar(tab) {
         if (tab.action) {
-          const actionType = tab.action.substring(0, tab.action.indexOf('/'));
-          const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-          if (actionType === 'SYSTEM') {
-            if (singleEditType === ':itemId') {
-              const path = `/${tab.action.replace(/:itemId/, this.itemId)}`;
-              router.push(
-                path
-              );
-            } else {
-              const path = `/${tab.action}`;
-              router.push(
-                path
-              );
+          if (this.objectType === 'horizontal') { // 左右结构
+            if (this.itemName === this.tableName) { // 主表
+              this.routingHop(tab, this.itemId);// 主表使用明细ID
+            } else { // 子表   
+              let id = [];
+              if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+              }
+              if (id.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (id.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              this.routingHop(tab, id);// 主表使用明细ID
             }
-          } else if (actionType === 'https:' || actionType === 'http:') {
-            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const linkUrl = tab.action;
-            const linkId = tab.webid;
-            if (!this.LinkUrl[linkId]) {
-              this.increaseLinkUrl({ linkId, linkUrl });
-            }
-            const obj = {
-              linkName: tab.webname,
-              linkId: tab.webid,
-              linkUrl,
-              linkLabel: tab.webdesc
-            };
-            window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
-            const type = 'tableDetailUrl';
-            this.tabOpen({
-              type,
-              linkName: tab.webname,
-              linkId: tab.webid
-            });
-          } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
-            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            const obj = {
-              customizedName: name,
-              customizedLabel: tab.webdesc
-            };
-            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+          } else { // 上下结构主表
+            this.routingHop(tab, this.itemId);
+          }
+        }
+      },
+      routingHop(tab, id) {
+        const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+        const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+        if (actionType === 'SYSTEM') {
+          if (singleEditType === ':itemId') {
+            const path = `/${tab.action.replace(/:itemId/, id)}`;
             router.push(
               path
             );
-          } 
-        }
-
-
-        // // 判断跳转到哪个页面
-        // const url = tab.action;
-        // const index = url.lastIndexOf('/');
-        // const customizedModuleName = url.substring(index + 1, url.length);
-        // const label = tab.webdesc;
-        // const type = 'tableDetailAction';
-        // const name = Object.keys(this.keepAliveLabelMaps);
-        // let customizedModuleId = '';
-        // name.forEach((item) => {
-        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-        //     customizedModuleId = item.split(/\./)[2];
-        //   }
-        // });
-        // // if (tab.actiontype === 'url') {
-        // //   this.objTabActionUrl(tab);
-        // // } else
-        // if (tab.action) {
-        //   this.tabOpen({
-        //     type,
-        //     customizedModuleName,
-        //     customizedModuleId,
-        //     label
-        //   });
-        // }
+          } else {
+            const path = `/${tab.action}`;
+            router.push(
+              path
+            );
+          }
+        } else if (actionType === 'https:' || actionType === 'http:') {
+          const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          const linkUrl = tab.action;
+          const linkId = tab.webid;
+          if (!this.LinkUrl[linkId]) {
+            this.increaseLinkUrl({ linkId, linkUrl });
+          }
+          const obj = {
+            linkName: tab.webname,
+            linkId: tab.webid,
+            linkUrl,
+            linkLabel: tab.webdesc
+          };
+          window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
+          const type = 'tableDetailUrl';
+          this.tabOpen({
+            type,
+            linkName: tab.webname,
+            linkId: tab.webid
+          });
+        } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+          const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+          const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+          const obj = {
+            customizedName: name,
+            customizedLabel: tab.webdesc
+          };
+          window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+          router.push(
+            path
+          );
+        } 
       },
+
+      // // 判断跳转到哪个页面
+      // const url = tab.action;
+      // const index = url.lastIndexOf('/');
+      // const customizedModuleName = url.substring(index + 1, url.length);
+      // const label = tab.webdesc;
+      // const type = 'tableDetailAction';
+      // const name = Object.keys(this.keepAliveLabelMaps);
+      // let customizedModuleId = '';
+      // name.forEach((item) => {
+      //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
+      //     customizedModuleId = item.split(/\./)[2];
+      //   }
+      // });
+      // // if (tab.actiontype === 'url') {
+      // //   this.objTabActionUrl(tab);
+      // // } else
+      // if (tab.action) {
+      //   this.tabOpen({
+      //     type,
+      //     customizedModuleName,
+      //     customizedModuleId,
+      //     label
+      //   });
+      // }
       // objTabActionUrl(tab) { // 外链类型
       //   // const linkUrl = tab.action;
       //   // const linkId = tab.webid;
@@ -979,32 +1011,40 @@
       objTabActionSlientConfirm(tab) {
         let obj = {};
         let ids = [];
+        let deleteData = [];
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          deleteData = this.updateData[this.itemName].delete[this.itemName];
           ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
         }
         if (this.objectType === 'vertical') { // 上下结构
           const childTableParams = [];
           if (this.subtables()) { // 有子表
-            if (this.itemName === this.tableName) { // 主表静默逻辑
-              if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-                obj[this.itemName] = {
-                  ...childTableParams[this.itemName]
-                };
-              }
-            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
-              obj = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
-            } else { // 有表格
-              obj = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
-            }
-          } else { // 没有子表
+            // this.itemName当前子表表名
+            // if (!this.itemName) { // 主表静默逻辑
+            //   if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
+            //     childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
+            //     obj[this.itemName] = {
+            //       ...childTableParams[this.itemName]
+            //     };
+            //   }
+            // } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑// 没有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // } else { // 有表格
+            //   obj = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // }
+            // childTableParams[this.itemName] = deleteData.map(d => (d));// 子表选中项
+
             obj[this.tableName] = {
+              ID: this.itemId
+            };
+          } else { // 没有子表
+            obj = {
               ID: this.itemId
             };
           }

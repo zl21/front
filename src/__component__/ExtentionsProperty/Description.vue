@@ -10,11 +10,11 @@
     </div>
     <div
       style="display: flex; align-items: center;"
-      @dblclick="removeOption"
+      @click="removeOption"
     >
       <Button
         title="双击移除此配置项"
-        icon="ios-cut"
+        icon="iconbj_delete"
         type="primary"
         shape="circle"
       />
