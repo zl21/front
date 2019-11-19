@@ -608,15 +608,16 @@
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
-            console.log(current.item.props.fkdisplay);
-            if (current.item.props.fkdisplay) {
-              if (!valueItem[0]) {
+            if (current.item.props.fkdisplay && current.item.value[0]) {
+              if (current.item.value[0].ID !== obj[current.item.field] && current.item.value[0].ID !== '') {
                 return false;
               }
-              this.formRequest(valueItem[0].ID, obj, current.item, current.item.props.webconf.formRequest);
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
             } else {
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
             }
+          } else {
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
       },
@@ -624,9 +625,9 @@
         // 走后台接口
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
         // 拦截是否相同
-        if (this.formDataObject[key] === obj[key]) {
-          return false;
-        }
+        // if (this.formDataObject[key] === obj[key]) {
+        //   return false;
+        // }
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';

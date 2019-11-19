@@ -103,6 +103,8 @@
                 itemChilds.forEach((option) => {
                   option.isnotnull = false;
                 });
+              } else {
+                itemChilds.isnotnull = false;
               }   
               arr.push(itemChilds);
 
