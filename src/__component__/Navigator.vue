@@ -205,6 +205,9 @@
             this.$refs.AutoComplete.$el.querySelector('input').click();
           }, 300);
         }
+      },
+      searchList(val) {
+        this.$refs.AutoComplete.$el.querySelector('input').click();
       }
     },
     methods: {

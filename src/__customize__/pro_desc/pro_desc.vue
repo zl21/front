@@ -280,8 +280,10 @@
     },
     methods: {
       customizeClick(event) {
-        this.saveParams = event.detail;
-        this.objectSave(event.detail);
+        if (event.type === 'save') {
+          this.saveParams = event.detail;
+          this.objectSave(event.detail);
+        }
       },
       getData() {
         // 获取数据
