@@ -27,6 +27,7 @@ export default () => ({
     objTabActionSlientConfirmData: {},
     LinkageForm: {}, // form 校验
     mappStatus: {}, // 校验联动图
+    defaultButtonData: [], // 业务系统按钮默认数据         
     CompositeForm: {}, // 表单实例
     anotherData: [], // 按钮显示的备份数据
     jflowPluginDataArray: [],

@@ -183,55 +183,54 @@
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
-              this.tabPanel.forEach((item) => {
-                const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
-                if (objreadonly) {
-                  val.cmds.forEach((item, index) => {
-                    if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
-                      val.prem[index] = false;
+              if (this.itemName !== this.tableName) { // 以下配置仅控制子表
+                this.tabPanel.forEach((item) => {
+                  const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
+                  if (objreadonly) {
+                    val.cmds.forEach((item, index) => {
+                      if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT' || item === 'actionCANCOPY') {
+                        val.prem[index] = false;
+                      }
+                    });
+                  }
+                  if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                    if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                      this.tabcmd.cmds.forEach((item, index) => {
+                        if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
+                          this.tabcmd.prem[index] = false;
+                        }
+                      });
                     }
-                  });
+                  }
+                });
+                if (this.itemName !== this.tableName) { // 子表
+                  const { tabrelation } = this.itemInfo;
+                  if (tabrelation === '1:m') { // 子表
+                    val.cmds.forEach((item, index) => {
+                      if (item === 'actionEXPORT') {
+                        val.prem[index] = true;
+                      }
+                    });
+                  }
                 }
-
-                if (Version() === '1.4' && this.itemInfo && this.itemInfo.tabrelation === '1:1') { // 1对1的只有modify和export根据prem来，其他几个按钮就默认不显示
+                if (this.disableExport) {
                   if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
                     this.tabcmd.cmds.forEach((item, index) => {
-                      if (item !== 'actionMODIFY' && item !== 'actionEXPORT') {
+                      if (item === 'actionEXPORT') {
                         this.tabcmd.prem[index] = false;
                       }
                     });
                   }
                 }
-              });
-              if (this.itemName !== this.tableName) { // 子表
-                const { tabrelation } = this.itemInfo;
-                if (tabrelation === '1:m') { // 子表
-                  val.cmds.forEach((item, index) => {
-                    if (item === 'actionEXPORT') {
-                      val.prem[index] = true;
-                    }
-                  });
-                }
-              }
-
-
-              if (this.disableExport) {
-                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                  this.tabcmd.cmds.forEach((item, index) => {
-                    if (item === 'actionEXPORT') {
-                      this.tabcmd.prem[index] = false;
-                    }
-                  });
-                }
-              }
-              const { tabinlinemode } = this.itemInfo;
-              if (tabinlinemode === 'N') {
-                if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-                  this.tabcmd.cmds.forEach((item, index) => {
-                    if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
-                      this.tabcmd.prem[index] = false;
-                    }
-                  });
+                const { tabinlinemode } = this.itemInfo;
+                if (tabinlinemode === 'N') {
+                  if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+                    this.tabcmd.cmds.forEach((item, index) => {
+                      if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
+                        this.tabcmd.prem[index] = false;
+                      }
+                    });
+                  }
                 }
               }
             } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
@@ -503,11 +502,11 @@
       },
       upData(message) { // 页面刷新判断逻辑
         DispatchEvent('tabRefreshClick');
-        DispatchEvent('jflowPlugin', {
-          detail: {
-            type: 'fresh'
-          }
-        });
+        // DispatchEvent('jflowPlugin', {
+        //   detail: {
+        //     type: 'fresh'
+        //   }
+        // });
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
@@ -2065,7 +2064,9 @@
           if (enableJflow()) { // jflow开启时，保存成功需通知
             DispatchEvent('jflowPlugin', {
               detail: {
-                type: 'save'
+                obj: {
+                  button: 'save'
+                }
               }
             });
           }
@@ -2176,6 +2177,7 @@
                            } else {
                              this.upData();
                            }
+                           this.saveEventAfter = '';
                          },
                          () => { // 状态为rejected时执行
                            this.upData();
@@ -2195,6 +2197,7 @@
               } else {
                 this.upData();
               }
+              this.saveEventAfter = '';
             }, () => { // 状态为rejected时执行
               this.upData();
               this.saveEventAfter = '';
@@ -2229,6 +2232,36 @@
           }
         }
       },
+      jflowClick(event) {
+        if (event.detail.type === 'submit') {
+          const promise = new Promise((resolve, reject) => {
+            this.getObjectTrySubmit({
+              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            });
+          });
+          promise.then(() => {
+                         const message = this.buttonsData.submitData.message;
+                         if (message) {
+                           this.upData(`${message}`);
+                         } else {
+                           this.upData();
+                         }
+                         this.saveEventAfter = '';
+                       },
+                       () => { // 状态为rejected时执行
+                         this.upData();
+                         this.saveEventAfter = '';
+                       });
+        }
+
+        if (event.detail.type === 'refresh') {
+          this.clickButtonsRefresh();
+        }
+
+        if (event.detail.type === 'clearSubmit') {
+          this.saveEventAfter = '';
+        }
+      }
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
       //     if (button.vuedisplay === 'edit') {
@@ -2249,12 +2282,21 @@
       //   });
       // }
     },  
+    beforeDestroy() {
+      window.removeEventListener('jflowClick', this.jflowClick);
+      window.removeEventListener('network', this.networkEventListener);
+    },
     mounted() {
+      if (!this._inactive) {
+        window.addEventListener('jflowClick', this.jflowClick);
+      }
+       
       // this.dataArray.refresh = this.refreshButtons;
       // this.clickKeepAliveLabelMaps(this.tabwebact);
+
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
-          if (item.tablename === this.tableName) {
+          if (this.itemName !== this.tableName) {
             const objreadonly = item.componentAttribute.buttonsData.data.objreadonly;
             if (objreadonly) {
               if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {

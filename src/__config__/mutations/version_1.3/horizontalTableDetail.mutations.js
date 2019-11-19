@@ -10,7 +10,7 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          data
+          data: state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
         },
         formData: {
           isShow: false,
@@ -67,7 +67,11 @@ export default {
     });
     state.tabPanels = arr;
   }, // 更新按钮数据
+  updateDefaultButton(state, data) {
+    state.defaultButtonData = data;
+  },
   updateButtonsData(state, data) {
+    state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {
       const { componentAttribute } = state.tabPanels[data.tabIndex];
       componentAttribute.buttonsData.isShow = true;
@@ -342,21 +346,21 @@ export default {
   }, // 修改单对象表格搜索的值
 
   jflowPlugin(state, {
-    buttonsData, newButtons, buttonAnother, instanceId 
+    buttonsData, newButtons, instanceId 
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
-    state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-    if (buttonAnother) { 
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
-      state.anotherData = buttonAnother;
-    } else if (state.anotherData.length > 0) {
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = state.anotherData;
+    if (instanceId) {
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = [];
     } else {
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
     }
+    state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
+  },
+  updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
+    state.childTableReadonly = value;
   }
 };

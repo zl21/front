@@ -1,8 +1,11 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-return-await */
 import Vue from 'vue';
+import { DispatchEvent } from '../__utils__/dispatchEvent';
+import { Version } from '../constants/global';
 import CreateButton from './button';
 import todoList from './todoList';
 import '../__plugin__/InstanceManagementList/utils/dateApi';
@@ -22,9 +25,85 @@ let instanceId = null; // 流程id
 let showTab = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
 
+function getQueryButtons(data) {
+  const tabcmd = data.tabcmd;
+  const waListButtons = data.waListButtons;
+  const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
+  if (Version() === '1.3') {
+    let businessTypes = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
+    
+    businessTypes = businessTypes.map((temp) => {
+      if (temp.businessType === router.currentRoute.params.tableId) {
+        const arr = temp.checkUrls;
+        // 处理静默程序的动作定义按钮
+        if (waListButtons) {
+          waListButtons.map((item) => {
+            if (item.vuedisplay === 'slient' && arr.indexOf(item.action) < 0) {
+              arr.push(item.action);
+            }
+            return item;
+          });
+        }
+        temp.checkUrls = arr;
+      }
+      return temp;
+    });
+    if (businessTypes.length === 0) {
+      businessTypes = [{
+        checkUrls: defaultUrls,
+        businessType: router.currentRoute.params.tableId,
+      }];
+    }
+    window.localStorage.setItem('checkUrls', JSON.stringify(businessTypes));
+  } else {
+    let businessTypes = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
+    let arr = [];
+    businessTypes.map((item) => {
+      if (item.businessType === router.currentRoute.params.tableId) {
+        arr = item.checkUrls ? item.checkUrls : [];
+      }
+      return item;
+    });
+
+    // 处理静默程序的动作定义按钮
+    if (waListButtons) {
+      waListButtons.map((item) => {
+        if (item.vuedisplay === 'slient' && arr.indexOf(item.action) < 0) {
+          arr.push(item.action);
+        }
+        return item;
+      });
+    }
+
+    const defaultCmd = ['actionDELETE', 'actionUNSUBMIT', 'actionVOID'];
+    tabcmd.cmds.map((item, index) => {
+      if (defaultCmd.indexOf(item) >= 0 && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
+        arr.push(tabcmd.paths[index]);
+      }
+      return item;
+    });
+
+    if (businessTypes.length > 0) {
+      businessTypes.map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          item.checkUrls = arr;
+        }
+        return item;
+      });
+    } else {
+      businessTypes = [{
+        checkUrls: arr,
+        businessType: router.currentRoute.params.tableId,
+      }];
+    }
+    
+
+    window.localStorage.setItem('checkUrls', JSON.stringify(businessTypes));
+  }
+}
 
 function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
-  if (tabcmd) {
+  if (tabcmd && Version() === '1.4') {
     let businessTypes = JSON.parse(window.localStorage.getItem('businessTypes'));
     let arr = [];
     businessTypes.map((item) => {
@@ -49,6 +128,7 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
     } else {
       businessTypes = [{
         action: arr,
+        checkUrls: [],
         businessType: router.currentRoute.params.tableId,
         moduleId: null
       }];
@@ -72,6 +152,28 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
           return item;
         });
         window.localStorage.setItem('businessTypes', JSON.stringify(res.data.data.businessTypes));
+
+        const checkUrls = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
+        const arr = [].concat(res.data.data.businessTypes);
+        const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
+        arr.map((item) => {
+          if (checkUrls.length > 0) {
+            checkUrls.map((temp) => {
+              if (temp.businessType === item.businessType) {
+                if (!temp.checkUrls) {
+                  item.checkUrls = defaultUrls;
+                } else {
+                  item.checkUrls = temp.checkUrls;
+                }
+              }
+              return temp;
+            });
+          } else {
+            item.checkUrls = defaultUrls; 
+          }
+          return item;
+        });
+        window.localStorage.setItem('checkUrls', JSON.stringify(arr));
       }
     });
   }
@@ -95,11 +197,6 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
-          if (res.data.data.instanceId) {
-            window.vm.$Message.info({
-              content: '单据正在流程中....'
-            });
-          }
           if (res.data.data.submitErrorMsg) {
             window.vm.$Modal.fcError({
               title: '错误',
@@ -137,7 +234,7 @@ function RoutingGuard(router) { // 路由守卫
           next();
           setTimeout(() => {
             if (res.data.resultCode === 0) {
-              CreateButton(res.data.data, jflowButtons, to.query.id);
+              CreateButton(res.data.data, jflowButtons, to.params.itemId);
             }
           }, 300);
         });
@@ -154,103 +251,187 @@ function RoutingGuard(router) { // 路由守卫
 
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    if (flag) {
-      const params = new URLSearchParams(request.data);
-      const changeDetail = {};
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
+    const params = new URLSearchParams(request.data);
+    const changeDetail = {};
+    for (const pair of params.entries()) {
+      changeDetail[pair[0]] = pair[1];
+    }
+    const response = changeDetail;
+    axios.post('/jflow/p/cs/process/launch',
+      {
+        // eslint-disable-next-line no-nested-ternary
+        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,
+        businessType: router.currentRoute.params.tableId,
+        businessTypeName: router.currentRoute.params.tableName,
+        initiator: userInfo.id,
+        userName: userInfo.name,
+        instanceId,
+        initiatorName: userInfo.name,
+        changeUser: userInfo.id,
+        businessUrl: request.url,
+        ruleField: 'V'
+      }).then((res) => {
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'clearSubmit'
+        }
+      });
+      if (res.data.data.records && res.data.data.records[0].notice) {
+        window.vm.$Modal.fcError({
+          title: '错误',
+          content: res.data.data.records[0].notice,
+          mask: true
+        });
+        reject(response);
+        return;
       }
-      const response = changeDetail;
-      axios.post('/jflow/p/cs/process/launch',
-        {
-          businessCodes: response.ids ? response.ids : response.objId,
-          businessType: router.currentRoute.params.tableId,
-          businessTypeName: router.currentRoute.params.tableName,
-          initiator: userInfo.id,
-          userName: userInfo.name,
-          instanceId,
-          initiatorName: userInfo.name,
-          changeUser: userInfo.id,
-          businessUrl: request.url,
-          ruleField: 'V'
-        }).then((res) => {
-        if (res.data.data.records && res.data.data.records[0].notice) {
-          window.vm.$Modal.fcError({
-            title: '错误',
-            content: res.data.data.records[0].notice,
+      if (res.data.resultCode === 0) {
+        if (res.objids) {
+          window.vm.$Modal.fcWarning({
+            title: '提示',
+            content: '请稍等,正在审批······',
             mask: true
           });
-          reject(response);
-          return;
         }
+        instanceId = res.data.data.instanceId;
+
+        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
+        if (type === 'H' || type === 'V') {
+          jflowButtons(router.currentRoute.params.itemId);
+          // 流程发起成功刷新界面
+          DispatchEvent('jflowClick', {
+            detail: {
+              type: 'refresh'
+            }
+          });
+        }
+
+        DispatchEvent('jflowEvent', {
+          detail: {
+            type: 'search'
+          }
+        });
+        reject(response);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+async function checkProcess(request) { // check校验
+  await new Promise((resolve, reject) => {
+    const params = new URLSearchParams(request.data);
+    const changeDetail = {};
+    for (const pair of params.entries()) {
+      changeDetail[pair[0]] = pair[1];
+    }
+    const response = changeDetail;
+    let bodyObj = {};
+    if (Version() === '1.4') {
+      // 判断是否为动作定义
+      if (response.actionid) {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: JSON.parse(response.param).ids
+        };
+      } else {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: response.ids.split(',')
+        };
+      }
+    } 
+    
+    if (Version() === '1.3') { // 1.3版本
+      // 判断是否为动作定义
+      if (response.actionid) {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: JSON.parse(response.param).ids
+        };
+      } else {
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: response.objids ? response.objids.split(',') : response.ids.split(',')
+        };
+      }
+    }
+    axios.post('/jflow/p/cs/process/check',
+      bodyObj)
+      .then((res) => {
         if (res.data.resultCode === 0) {
-          if (response.objids) {
-            window.vm.$Modal.fcWarning({
-              title: '提示',
-              content: '请稍等,正在审批······',
+          if (res.data.data.businessCheckData.length === 0) {
+            window.vm.$Modal.fcError({
+              title: '错误',
+              content: '当前选中单据都在流程中,不允许操作!',
               mask: true
             });
+            reject();
+            return;
           }
-          instanceId = res.data.data.instanceId;
-
-          
-          if (document.getElementsByClassName('R3-button-group')[0]) {
-            jflowButtons(router.currentRoute.params.itemId);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.innerText === '刷新') {
-                const style = document.createElement('style');
-                const styleStr = `
-                    .burgeon-message {
-                      display: none!important;
-                    }`;
-                style.type = 'text/css';
-                style.innerHTML = styleStr;
-                document.getElementsByTagName('head').item(0).appendChild(style);
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
-
-                setTimeout(() => {
-                  const parent = document.getElementsByTagName('head').item(0);
-                  const thisNode = parent.children[parent.children.length - 1];
-                  parent.removeChild(thisNode);
-                }, 5000);
-              }
+          if (Version() === '1.3') {
+            if (response.actionid) {
+              const responseCopy = JSON.parse(response.param);
+              responseCopy.ids = res.data.data.businessCheckData;
+              const obj = {
+                actionid: response.actionid,
+                webaction: response.webaction,
+                param: responseCopy
+              };
+              const requestBody = new URLSearchParams();
+              Object.keys(obj).forEach((key) => {
+                const dataType = Object.prototype.toString.call(obj[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  obj[key] = JSON.stringify(obj[key]);
+                }
+                requestBody.append(key, obj[key]);
+              });
+              request.data = requestBody;
+            } else if (response.objids) {
+              response.objids = res.data.data.businessCheckData.join(',');
+              const requestBody = new URLSearchParams();
+              Object.keys(response).forEach((key) => {
+                const dataType = Object.prototype.toString.call(response[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  response[key] = JSON.stringify(response[key]);
+                }
+                requestBody.append(key, response[key]);
+              });
+              request.data = requestBody;
+            } else {
+              response.ids = res.data.data.businessCheckData;
+              request.data = response;
             }
           }
-          reject(response);
-        } else {
+
+          if (Version() === '1.4') {
+            if (response.actionid) {
+              const responseCopy = JSON.parse(response.param);
+              responseCopy.ids = res.data.data.businessCheckData;
+              const obj = {
+                actionid: response.actionid,
+                webaction: response.webaction,
+                param: responseCopy
+              };
+              const requestBody = new URLSearchParams();
+              Object.keys(obj).forEach((key) => {
+                const dataType = Object.prototype.toString.call(obj[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  obj[key] = JSON.stringify(obj[key]);
+                }
+                requestBody.append(key, obj[key]);
+              });
+              request.data = requestBody;
+            } else {
+              response.ids = res.data.data.businessCheckData;
+              request.data = response;
+            }
+          }
+          
           resolve();
         }
       });
-    } else {
-      const params = new URLSearchParams(request.config.data);
-      const changeDetail = {};
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-      delete changeDetail.table;
-      delete changeDetail.objId;
-      axios.post('/jflow/p/cs/process/business/save',
-        {
-          businessCodes: request.data.data.objId,
-          businessType: router.currentRoute.params.tableId,
-          businessTypeName: router.currentRoute.params.tableName,
-          changeDetail,
-          instanceId,
-          changeUser: userInfo.id,
-          userName: userInfo.name
-        }).then((res) => {
-        if (res.data.resultCode === -1) {
-          window.vm.$Modal.fcWarning({
-            title: '警告',
-            content: res.data.resultMsg,
-            mask: true
-          });
-        }
-        resolve();
-      });
-    }
   });
 }
 
@@ -259,9 +440,8 @@ function AxiosGuard(axios) { // axios拦截
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
     }
-    const type = router.currentRoute.path.split('/')[3];// 获取组件类型
-
-    if (configurationFlag) { // 配置了流程图并判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
+    if (configurationFlag) { // 配置了流程图并
+      // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
       let launchConfig = [];
       JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
         if (item.businessType === router.currentRoute.params.tableId) {
@@ -272,8 +452,23 @@ function AxiosGuard(axios) { // axios拦截
       // jflow流程发起
       const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
       for (let i = 0; i < launchConfig.length; i++) {
-        if (`/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0) {
+        if (serviceId ? `/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0 : launchConfig[i].indexOf(config.url) >= 0) {
           await jflowsave(true, config);
+        }
+      }
+
+
+      // 判断是否点击了列表配置按钮，是的话在执行前先调用check接口
+      let checkUrls = [];
+      JSON.parse(window.localStorage.getItem('checkUrls')).map((item) => {
+        if (item.businessType === router.currentRoute.params.tableId) {
+          checkUrls = item.checkUrls;
+        }
+        return item;
+      });
+      for (let i = 0; i < checkUrls.length; i++) {
+        if (serviceId ? `/${serviceId}${checkUrls[i]}`.indexOf(config.url) >= 0 : checkUrls[i].indexOf(config.url) >= 0) {
+          await checkProcess(config);
         }
       }
     }
@@ -294,6 +489,15 @@ function AxiosGuard(axios) { // axios拦截
         if (response.config.data.indexOf('ismaintable=y') >= 0) {
           const tabcmd = response.data.data.tabcmd;
           getConfigMap(tabcmd);
+        }
+      }
+
+      // 列表界面获取按钮接口
+      if (response.config.url.endsWith('/p/cs/getTableQuery')) {
+        if (Version() === '1.4') {
+          getQueryButtons(response.data.data);
+        } else {
+          getQueryButtons(response.data);
         }
       }
 

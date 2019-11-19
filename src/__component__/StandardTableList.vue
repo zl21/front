@@ -1887,10 +1887,17 @@
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           this.searchClickData();
         }
+      },
+      // 监听jflow事件
+      jflowEvent(event) {
+        if (event.detail.type === 'search') {
+          this.searchClickData({ value: 'true' });
+        }
       }
     },
     mounted() {
       window.addEventListener('network', this.networkEventListener);
+      window.addEventListener('jflowEvent', this.jflowEvent);
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -1913,6 +1920,7 @@
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
+      window.removeEventListener('jflowEvent', this.jflowEvent);
     }
   };
 </script>

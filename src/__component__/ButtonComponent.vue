@@ -11,7 +11,7 @@
       <Button
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :id="item.eName"
-        :key="index"
+        :key="item.eName"
         :ref="item.ref"
         type="fcdefault"
         @click="btnclick('fix', item,index)"
@@ -27,8 +27,8 @@
         v-text="item.webdesc" 
       />
       <Button
-        v-for="(item,index) in dataArray.jflowPluginDataArray"
-        :key="index"
+        v-for="(item) in dataArray.jflowPluginDataArray"
+        :key="item.button"
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
