@@ -96,16 +96,19 @@
         handler(val) {
           if (Object.hasOwnProperty.call(val, 'addcolums')) {
             let childs = val.addcolums.reduce((arr, item) => {
+              console.log(item.childs || item.child);
               const itemChilds = item.childs || item.child;
               if (Array.isArray(itemChilds)) {
-                itemChilds.forEach((item) => {
-                  item.isnotnull = false;
+                itemChilds.forEach((option) => {
+                  option.isnotnull = false;
                 });
-                arr.push(itemChilds);
-              }    
-             
+              }   
+              arr.push(itemChilds);
+
               return arr;
             }, []);
+            console.log(childs);
+
             childs = childs.flat();
             this.newformList = {
               inpubobj: childs,
@@ -141,6 +144,36 @@
       },
       oncancle() {
         this.$emit('on-oncancle-success', this);
+      },
+      saveDataOld() {
+        this.loading = true;
+        const localdata = {
+          table: this.router.tableName, // 表名
+          column_include_uicontroller: true, //
+          reffixedcolumns: {}, // 左边树
+        };
+        if (!this.type) {
+          localdata.objids = this.objids;
+        } else {
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
+        }
+        console.log(this);
+        const searchObject = {
+          data: {
+            [this.router.tableName]: this.formChangeData
+          },
+          after: {
+            [this.router.tableName]: this.formChangeData
+          },
+          searchdata: localdata
+        };
+        fkHttpRequest().fksaveModify({
+          searchObject,
+          success: (res) => {
+            this.loading = false;
+            this.$emit('on-save-success', res);
+          }
+        });
       },
       saveData() {
         this.loading = true;
@@ -192,7 +225,11 @@
       },
       confirm() {
         // b保存提交
-        this.saveData();
+        if (Version() === '1.3') {
+          this.saveDataOld();
+        } else {
+          this.saveData();
+        }
       }
     },
     mounted() {

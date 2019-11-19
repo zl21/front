@@ -504,7 +504,7 @@
         }
         this.$emit('VerifyMessage', data);
       },
-      mountdataForm(value) {
+      mountdataForm(value, formItem) {
         // 获取表单默认值
         setTimeout(() => {
           this.mountChecked = true;
@@ -526,8 +526,16 @@
           }
           return arr;
         }, {});
+        // 1.3 外键传参 label
+        if (Version() === '1.3') {
+          const formItemArry = formItem.reduce((arr, item) => {
+            console.log(item.item.value);
+            return arr;
+          }, {});
+          console.log(this.defaultFormData, formItemArry, '66');
+        }
         // 外部change的值(复制修改过后的值 去修改 页面)
-        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
+        const defaultSetValue = Object.keys(this.1.3).reduce((arr, option) => {
           if (defaultFormData[option]) {
             arr[option] = defaultFormData[option];
           }
@@ -539,7 +547,7 @@
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        this.$emit('InitializationForm', defaultFormData);
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
@@ -903,6 +911,10 @@
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
         const check = this.getLinkData(current);
+        if (!check[0] && !check[1]) {
+          document.activeElement.value = '';
+        }
+        console.log(check, 'check');
         if (check[1]) {
           const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
           sendData = {
@@ -921,7 +933,6 @@
             fixedcolumns: {}
           }; 
         }
-        console.log(check[0], 'check[0]check[0]');
         if (!check[0]) {
           return false;
         }
@@ -933,47 +944,6 @@
           }
         });
         return true;
-
-        return false;
-        if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
-          let refcolval = this.formData[current.refcolval.srccol]
-            ? this.formData[current.refcolval.srccol]
-            : '';
-          if (this.formData[current.refcolval.srccol] === undefined) {
-            refcolval = this.defaultFormData[current.refcolval.srccol];
-          }
-          if (!refcolval) {
-            if (LinkageFormInput && LinkageFormInput.item.show) {
-              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
-             
-              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-              if (LinkageFormfocus) {
-                setTimeout(() => {
-                  LinkageFormfocus.focus();
-                }, 100);
-                return false;
-              }
-
-              return false;
-            } 
-          }
-          const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
-          sendData = {
-            ak: value,
-            colid: current.colid,
-            fixedcolumns: {
-              whereKeys: {
-                [current.refcolval.fixcolumn]: query
-              }
-            }
-          };
-        } else {
-          sendData = {
-            ak: value,
-            colid: current.colid,
-            fixedcolumns: {}
-          };
-        }
       },
       validateList(current) {
         // 联动校验

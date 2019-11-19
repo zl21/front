@@ -100,7 +100,7 @@
       :type="type"
       :item-info="itemInfo"
       :readonly="buttonsData.data.objreadonly"
-      :objreadonly="objreadonly"
+      :objreadonly="objreadonly || !getActionModify"
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
@@ -228,6 +228,17 @@
     inject: [MODULE_COMPONENT_NAME],
     watch: {},
     computed: {
+      getActionModify() {
+        if (this.itemInfo.componentAttribute.buttonsData.data.tabcmd) {
+          this.itemInfo.componentAttribute.buttonsData.data.tabcmd.cmds.every((cur, idx) => {
+            if (cur === 'actionMODIFY') {
+              return this.itemInfo.componentAttribute.buttonsData.data.tabcmd.prem[idx];
+            }
+            return true;
+          });
+        }
+        return true;
+      }, // 判断子表的按钮actionModify是否可用
       formPaths() {
         if (this.type === 'vertical') {
           return this.mainFormPaths;
