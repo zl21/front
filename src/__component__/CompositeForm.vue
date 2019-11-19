@@ -489,7 +489,7 @@
         }
         // 获取需要校验的表单
         if (Version() === '1.3') {
-          this.$emit('formChange', this.formDataDef, this.formDataDef);
+          this.$emit('formChange', this.formDataDef, this.formDataDef, this.formData);
         } else {
           this.$emit('formChange', this.formData, this.formDataDef);
         }
@@ -549,7 +549,7 @@
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
           if (Version() === '1.3') {
-            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue);
+            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
           } else {
             this.$emit('formChange', defaultSetValue, this.defaultSetValue);
           }
@@ -557,7 +557,7 @@
         this.getStateData();
         this.defaultFormData = defaultFormData;
         if (Version() === '1.3') {
-          this.$emit('InitializationForm', this.defaultSetValue, this.defaultSetValue);
+          this.$emit('InitializationForm', this.defaultSetValue, this.defaultSetValue, defaultFormData);
         } else {
           this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         }
