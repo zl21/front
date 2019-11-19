@@ -350,7 +350,9 @@
             }
             return array;
           }, []);
+
           data.push(...hrdata);
+
           if (childs.list.length > 0) {
             data.push({
               childs: childs.list,
@@ -358,8 +360,8 @@
               isTitleShow: childs.isTitleShow,
               hrdisplay: 'expand'
             });
-            defaultData.addcolums = [...data];
           }
+          defaultData.addcolums = [...data];
         }
         if (
           this.type
