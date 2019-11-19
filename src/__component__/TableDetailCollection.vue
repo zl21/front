@@ -1364,7 +1364,7 @@
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
+                        this.$Message.info(`请选择主表${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
@@ -1376,7 +1376,7 @@
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
@@ -1425,7 +1425,7 @@
                           }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
+                        this.$Message.info(`请选择主表${obj.name}`);
                       } else {
                         if (this.fkSelectedChangeData[params.index]) {
                           this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
@@ -1476,7 +1476,7 @@
                           return acc;
                         }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     } else {
                       if (this.fkSelectedChangeData[params.index]) {
                         this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
@@ -1705,7 +1705,7 @@
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
+                        this.$Message.info(`请选择主表${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
@@ -1715,7 +1715,7 @@
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
