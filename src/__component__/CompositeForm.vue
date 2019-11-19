@@ -28,7 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :class="tableGetName"
+                :class="`${tableGetName}=== '' ? 'R3masterForm' :${tableGetName}`"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -824,24 +824,37 @@
 
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
-              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+              if (current.refcolval.maintable) {
+                this.$Message.info(`请先选择主表${LinkageFormInput.item.name}`);
+              } else {
+                this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+              }
 
               if (this.tableGetName) {
+                if (current.refcolval.maintable) {
+                  let LinkageFormfocus = document.querySelector('.R3masterForm');
+                  if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
+                    LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
+                    setTimeout(() => {
+                      LinkageFormfocus.focus();
+                    }, 100);
+                  }
+                  return [false];
+                }
                 const tableName = document.querySelector(`.${LinkageFormInput.item.tableName}`);
                 if (tableName.querySelector(`#${current.refcolval.srccol}`)) {
                   setTimeout(() => {
                     tableName.querySelector(`#${current.refcolval.srccol}`).querySelector('input').focus();
                   }, 100);
-                  return [false];
                 }
-              } else {
-                const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-                if (LinkageFormfocus) {
-                  setTimeout(() => {
-                    LinkageFormfocus.focus();
-                  }, 100);
-                  return [false];
-                }
+                return [false];
+              } 
+              const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+              if (LinkageFormfocus) {
+                setTimeout(() => {
+                  LinkageFormfocus.focus();
+                }, 100);
+                return [false];
               }
             }
           } else {
@@ -901,12 +914,16 @@
               }
             }
           };
-        } else {
+        } else if (check[0]) {
           sendData = {
             ak: value,
             colid: current.colid,
             fixedcolumns: {}
           }; 
+        }
+        console.log(check[0], 'check[0]check[0]');
+        if (!check[0]) {
+          return false;
         }
         fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
@@ -1784,7 +1801,7 @@
           if (this.isreftabsForm) {
             const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
             const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
-            this.refcolvalAll = Object.assign(defaultMain, modifyMain, this.formData);
+            this.refcolvalAll = Object.assign(defaultMain, modifyMain);
 
             return this.refcolvalAll;
           }
@@ -1795,7 +1812,7 @@
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain, this.formData, modifyMain);
+          this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain);
         }
         return this.refcolvalAll;
       },
