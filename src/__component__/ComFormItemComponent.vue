@@ -404,7 +404,11 @@
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
-            arr[item.item.field] = item.item.value;
+            if (item.item.value) {
+              arr[item.item.field] = item.item.value;
+            }
+           
+
             return arr;
           }, {});          
           this.mountdataForm(this.formDataObject, Item);

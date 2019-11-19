@@ -1,3 +1,4 @@
+import { isArray } from 'util';
 import network, {
   urlSearchParams
 } from '../../../__utils__/network';
@@ -239,7 +240,77 @@ export default {
       itemNameGroup
     } = parame;
     const { sataType } = parame;
+    const { modify } = parame;
     let parames = {};
+    let labelName = {};
+    let fkId = {};
+    let labelData = {};
+    let fkIdData = {};
+    const modifyDataForSaveAfter = {};
+   
+    const modifyDataForSave = {};
+
+    if (type === 'add') {
+      if (Object.keys(add).length > 0) {
+        labelData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {})); 
+        fkIdData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
+      }
+    } else if (type === 'modify') {
+      if (Object.keys(modify)) {
+        labelData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {})); 
+        fkIdData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
+      }
+    }
+    
+    if (type === 'modify') {
+      labelName = Object.keys(labelData).reduce((obj, value) => {
+        if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length === 1) { // 是外键类型(外键单选)
+          const label = labelData[value].map(item => item.Label);
+          if (label[0] !== '') {
+            labelData[value] = label[0];
+          }
+        } 
+        if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length > 1) { // 外键多选
+          const label = labelData[value].map(item => item.Label).join(',');
+          labelData[value] = label[0];
+        }
+        obj[value] = labelData[value];
+        return obj;
+      }, {});
+      const modifyChangeDataAfter = Object.assign({}, labelData, labelName);
+
+      modifyDataForSaveAfter[tableName] = modifyChangeDataAfter;
+    }
+
+    console.log(7777, Object.keys(fkIdData).length > 0);
+    if (Object.keys(fkIdData).length > 0) {
+      fkId = Object.keys(fkIdData).reduce((obj, value) => {
+        if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length === 1) { // 是外键类型(外键单选)
+          const ID = fkIdData[value].map(item => item.ID);
+          if (ID[0] !== '' && ID[0] !== 'undefined') {
+            fkIdData[value] = ID[0];
+          }
+        }
+        
+        // if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length > 1) { // 外键多选
+        //   const ID = fkIdData[value].map(item => item.ID).join(',');
+        //   fkIdData[value] = ID[0];
+        // }
+
+        obj[value] = fkIdData[value];
+        return obj;
+      }, {});
+
+      console.log(8888, fkId);
+      const modifyChangeData = Object.assign({}, fkIdData, fkId);
+      modifyDataForSave[tableName] = modifyChangeData;
+    }
+
+   
+    console.log('modifyDataForSave', modifyDataForSave);
+    console.log('modifyDataForSaveAfter', modifyDataForSaveAfter);
+
+    debugger;
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
@@ -281,7 +352,7 @@ export default {
               table: tableName, // 主表表名
               objid: objId, // 固定传值-1 表示新增
               data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
+                ...modifyDataForSave,
               }
             };
           }
@@ -290,7 +361,7 @@ export default {
             table: tableName, // 主表表名
             objid: objId,
             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...add,
+              ...modifyDataForSave,
             }
           };
         }
@@ -299,7 +370,7 @@ export default {
           table: tableName, // 主表表名
           objid: objId, // 固定传值-1 表示新增
           data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...add
+            ...modifyDataForSave
           }
         };
       }
@@ -316,7 +387,6 @@ export default {
         }
       });
     } else if (type === 'modify') { // 编辑保存参数
-      const { modify } = parame;
       const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
 
       const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
@@ -477,8 +547,8 @@ export default {
         parames = {
           table: tableName,
           objid: objId,
-          data: { ...modify },
-          after: { ...modify },
+          data: modifyDataForSave,
+          after: modifyDataForSaveAfter,
           before: dufaultDataForSave
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {

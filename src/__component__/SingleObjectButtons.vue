@@ -1009,7 +1009,7 @@
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
         let params = {};
-        if (tab.action.search('/') === -1) {//1.3类型
+        if (tab.action.search('/') === -1) { // 1.3类型
           let ids = [];
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
             ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
