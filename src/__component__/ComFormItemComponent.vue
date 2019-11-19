@@ -313,7 +313,6 @@
           // 监听页面配置的处理
           this.changeNumber = 0;
           // this.newFormItemLists = JSON.parse(JSON.stringify(this.formItemLists));
-          console.log('666');
           this.newFormItemLists = this.formItemLists;
         },
         deep: true
@@ -725,7 +724,6 @@
 
           return refIndex !== -1;
         });
-        console.log(checkout);
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
