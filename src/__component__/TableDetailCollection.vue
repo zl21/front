@@ -133,7 +133,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -699,7 +699,7 @@
         //       const data = {
         //         title: '警告',
         //         mask: true,
-        //         showCancel: true, 
+        //         showCancel: true,
         //         content: JSON.parse(tab.confirm).desc,
         //         onOk: () => {
         //           this.objTabActionSlientConfirm(tab);
@@ -810,7 +810,7 @@
               );
             }
           } else if (actionType === 'https:' || actionType === 'http:') {
-            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const linkUrl = tab.action;
             const linkId = tab.webid;
@@ -832,7 +832,7 @@
             });
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
             const obj = {
@@ -843,7 +843,7 @@
             router.push(
               path
             );
-          } 
+          }
         }
 
 
@@ -871,7 +871,7 @@
         //     label
         //   });
         // }
-      }, 
+      },
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
@@ -1364,9 +1364,11 @@
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
@@ -1539,9 +1541,11 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
+                            if (cur.childs) {
+                              cur.childs.forEach((item) => {
+                                acc.push(item);
+                              });
+                            }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
