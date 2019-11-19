@@ -20,7 +20,6 @@ export default {
   },
   pro_desc: {
     component: proDesc,
-
   },
   standard: {
     component: standard
