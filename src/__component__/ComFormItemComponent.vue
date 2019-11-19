@@ -404,7 +404,11 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          this.mountdataForm(this.formDataObject, this.newFormItemLists);
+          const Item = this.newFormItemLists.reduce((arr, item) => {
+            arr.push(item.item.value);
+            return arr;
+          }, {});          
+          this.mountdataForm(this.formDataObject, Item);
           this.formInit();
           setTimeout(() => {
             this.actived = true;

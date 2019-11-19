@@ -557,7 +557,7 @@
         this.getStateData();
         this.defaultFormData = defaultFormData;
         if (Version() === '1.3') {
-          this.$emit('InitializationForm', this.defaultSetValue, this.defaultSetValue, defaultFormData);
+          this.$emit('InitializationForm', formItem, this.defaultSetValue, defaultFormData);
         } else {
           this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         }
