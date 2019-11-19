@@ -267,9 +267,9 @@
       //   this.formValueItem = {};
 
       //   this.mapData = this.setMapping(this.Mapping);
-      window.addEventListener('setValue', (value) => {
-        console.log(value);
-      });
+      // window.addEventListener('setValue', (value) => {
+      //   console.log(value);
+      // });
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -337,7 +337,6 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
-          console.log(item.props.webconf);
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
@@ -682,8 +681,6 @@
         //  设置属性
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
-        console.log(field);
-
         if (!Array.isArray(field)) {
           return false;
         }
