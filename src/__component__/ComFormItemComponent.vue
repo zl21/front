@@ -601,13 +601,17 @@
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
-            this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
       },
-      formRequest(obj, current, conf) {
+      formRequest(key, obj, current, conf) {
         // 走后台接口
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        // 拦截是否相同
+        if (this.formDataObject[key] === obj[key]) {
+          return false;
+        }
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
