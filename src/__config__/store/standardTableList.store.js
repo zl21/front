@@ -106,8 +106,9 @@ export default () => ({
       colPosition: '',
       fixedColumn: ''
     },
-    webconf: {// 普通表格开关
-      commonTable: false
+    webconf: {
+      commonTable: false, // 普通表格开关
+      dynamicRouting: false, // 表格时候开启动态路由
     }
   },
   actions: actions(),

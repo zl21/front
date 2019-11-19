@@ -345,7 +345,6 @@
   .R3-button-group {
     display: flex;
     justify-content: flex-start;
-    text-align: right;
     overflow: hidden;
     flex-wrap: wrap;
     .hide{

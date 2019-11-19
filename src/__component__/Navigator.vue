@@ -197,6 +197,17 @@
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
           this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
         }
+      },
+      searchBtn(val) {
+        if (val === false) {
+          setTimeout(() => {
+            this.$refs.AutoComplete.$el.querySelector('input').focus();
+            // this.$refs.AutoComplete.$el.querySelector('input').click();
+          }, 300);
+        }
+      },
+      searchList(val) {
+        this.$refs.AutoComplete.$el.querySelector('input').click();
       }
     },
     methods: {
@@ -251,8 +262,11 @@
       },
       searchData(value) {
         this.searchList = [];
-
         if (value === undefined || value.length < 1) {
+          return;
+        }
+        const values = this.$refs.AutoComplete.$el.querySelector('input').value;
+        if (values !== value) {
           return;
         }
         network

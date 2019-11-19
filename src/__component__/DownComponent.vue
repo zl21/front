@@ -1,29 +1,33 @@
 <template>
+  <div
+    ref="downComponent"
+    class="downComponent-context"
+  >
     <div
-            ref="downComponent"
-            class="downComponent"
-            :style="downComponent"
+      v-if="rowAll > searchFoldnum"
+      class="tag-close"
     >
-        <div
-                v-if="rowAll > searchFoldnum"
-                class="tag-close"
-        >
-            <Icon
-                    :class="className"
-                    @click="toggle"
-            />
-        </div>
-        <div
-                v-if="title"
-                class="downComponent-h5"
-                @click="toggle"
-        >
-            {{ title }}<Icon :class="icon" />
-        </div>
-        <div :class="downContent">
-            <slot name="dwonContent" />
-        </div>
+      <Icon
+        :class="className"
+        @click="toggle"
+      />
     </div>
+    <div
+      class="downComponent"
+      :style="downComponent"
+    >
+      <div
+        v-if="title"
+        class="downComponent-h5"
+        @click="toggle"
+      >
+        {{ title }}<Icon :class="icon" />
+      </div>
+      <div :class="downContent">
+        <slot name="dwonContent" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,7 +47,7 @@
           return 0;
         }
       },
-      rowAll:{
+      rowAll: {
         type: [Number, String],
         default() {
           return 0;
@@ -98,8 +102,10 @@
 </script>
 
 <style lang="less">
-    .downComponent{
+    .downComponent-context{
         position: relative;
+    }
+    .downComponent{
         border: 1px solid #d8d8d8;
         transition: height .5s;
         box-sizing: border-box;

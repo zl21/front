@@ -267,9 +267,9 @@
       //   this.formValueItem = {};
 
       //   this.mapData = this.setMapping(this.Mapping);
-      window.addEventListener('setValue', (value) => {
-        console.log(value);
-      });
+      // window.addEventListener('setValue', (value) => {
+      //   console.log(value);
+      // });
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -299,7 +299,7 @@
             return;
           }
           //   拦截默认值
-          if (!this.actived || Object.keys(this.refcolvalData).length < 1) {
+          if (!this.actived) {
             return;
           }
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
@@ -346,8 +346,10 @@
             item.props.supportType = val[item.props.webconf.targetField];
           }
            
+
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
+
             if (
               val[item.validate.dynamicforcompute.computecolumn]
               === old[item.validate.dynamicforcompute.computecolumn]
@@ -401,7 +403,7 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          this.mountdataForm(this.formDataObject);
+          this.mountdataForm(this.formDataObject, this.newFormItemLists);
           this.formInit();
           setTimeout(() => {
             this.actived = true;
@@ -600,14 +602,18 @@
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          if(obj[current.item.field] || obj[current.item.field] === ''){
-            this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+          if (obj[current.item.field] || obj[current.item.field] === '') {
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
       },
-      formRequest(obj, current, conf) {
+      formRequest(key, obj, current, conf) {
         // 走后台接口
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        // 拦截是否相同
+        if (this.formDataObject[key] === obj[key]) {
+          return false;
+        }
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
@@ -696,12 +702,16 @@
           }
           if (typeof option.refval === 'string') {
             option.refval = option.refval.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+          } else {
+            option.refval = option.refval.toString();
           }
+
           const refval = option.refval.split(',');
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
 
           return refIndex !== -1;
         });
+
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
@@ -800,7 +810,7 @@
                         name: items.title,
                         show: this.newFormItemLists[index].show,
                         srccol: items.validate.refcolval && items.validate.refcolval.srccol,
-
+                        tableName: this.isMainTable ? '' : this.childTableName
                       }
                     ],
                     formIndex: ''

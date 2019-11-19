@@ -5,10 +5,11 @@
     @dblclick="popUp"
   >
     <Input
+      ref="textarea"
       type="textarea"
       :rows="rows"
       :placeholder="''"
-      :readonly="webConfig.readonly"
+      readonly
       :disabled="webConfig.disabled"
       @on-keydown="onKeydown"
     />
@@ -16,6 +17,13 @@
       type="md-hammer"
       @click="popUp"
     />
+    <Icon
+      v-if="!webConfig.disabled"
+      type="iconbj_delete"
+      class="R3iconbj_delete"
+      @click="deleteValue"
+    />
+
     <div v-if="showModal">
       <Modal
         ref="extentionInputModal"
@@ -40,6 +48,7 @@
 </template>
 
 <script>
+  import { parse } from 'path';
   import { extentionForColumn, extentionForTable } from '../constants/global';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
@@ -111,6 +120,11 @@
         if (this.webConfig.disabled) { return; }
         this.showModal = true;
       },
+      deleteValue() {
+        // 清空功能
+        this.transformedData = '';
+        this.$emit('valueChange', '');
+      },
       onOk() {
         this.setFormatedValue();
         if (this.currentValue === '') {
@@ -170,6 +184,28 @@
       setTimeout(() => {
         this.setFormatedValue();
       }, 10);
+      // 添加黏贴功能
+      if (!this.$refs.textarea && !this.$refs.textarea.$el) {
+        return false;
+      }
+      this.$refs.textarea.$el.querySelector('textarea').addEventListener('paste', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
+        if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
+          try {
+            this.transformedData = JSON.parse(paste) ? JSON.parse(paste) : '';
+            this.$emit('valueChange', JSON.stringify(JSON.parse(paste)));
+          } catch (err) {
+            this.$Modal.fcWarning({
+              mask: true,
+              showCancel: false,
+              title: '提示',
+              content: '请输入json 形式的字符串',
+            });
+          }
+        }
+      });
     }
   };
 </script>
@@ -183,8 +219,12 @@
     i {
       font-size: 16px;
       position: absolute;
-      right: 2px;
-      bottom: 2px;
+      right: 12px;
+      bottom: 12px;
+      color:#fd6442;
+    }
+    .R3iconbj_delete{
+      right: 42px;
     }
     i:hover {
       cursor: pointer;

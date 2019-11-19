@@ -199,6 +199,7 @@
     mounted() {
       this.$refs.enumerableInput.instance = this;
       this.computeValue();
+
       if (this.defaultValue !== undefined) {
         this.value = this.defaultValue;
         if (this.strictMode) {
@@ -217,6 +218,19 @@
       }
       document.body.addEventListener('click', this.clickEventListener);
       window.addEventListener('scroll', this.scrollEventListener, true);
+      // 添加黏贴功能
+      // window.addEventListener('paste', (e) => {
+      //   e.preventDefault();
+      //   e.stopPropagation();
+      //   const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
+      //   if (this.$refs.input && this.$refs.input.$el.querySelector('input') === document.activeElement) {
+      //     try {
+      //       this.value = paste;
+      //     } catch (err) {
+      //       console.log(err);
+      //     }
+      //   }
+      // });
     },
     beforeDestroy() {
       document.body.removeEventListener('click', this.clickEventListener);

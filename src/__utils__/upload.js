@@ -48,10 +48,11 @@ class Upload {
         this.checkimgSize = false;
         this.event.onerror('图片类型必须是.gif,jpeg,jpg,png中的一种', index);
       }
-    } else if (/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
-      this.checkimgSize = false;
-      this.event.onerror('允许上传的类型是文件类型', index);
     }
+    //  else if (/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)) {
+    //   this.checkimgSize = false;
+    //   this.event.onerror('允许上传的类型是文件类型', index);
+    // }
   }
 
   init() {

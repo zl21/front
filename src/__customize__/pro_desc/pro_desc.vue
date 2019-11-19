@@ -205,15 +205,6 @@
         </Panel>
       </Collapse>
     </div>
-    <!-- <Dialog
-      ref="dialogRef"
-      :title="dialogConfig.title"
-      :mask="dialogConfig.mask"
-      :content-text="dialogConfig.contentText"
-      :footer-hide="dialogConfig.footerHide"
-      :confirm="dialogConfig.confirm"
-      :title-align="dialogConfig.titleAlign"
-    /> -->
     <Modal
       v-model="dialogShow"
       title="视频上传教程"
@@ -234,12 +225,11 @@
 
 <script>
   import network, { urlSearchParams } from '../../__utils__/network';
-  import Dialog from '../../__component__/Dialog';
 
   export default {
     name: 'ProDesc',
     created() {
-      const { tableName, tableId, itemId } = this.$route.params;
+      const { itemId } = this.$route.params;
       if (itemId !== 'New') {
         this.getData();
       }
@@ -247,10 +237,7 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      window.addEventListener('customizeClick', (event) => {
-        this.saveParams = event.detail;
-        this.objectSave(event.detail);
-      }, false);
+      window.addEventListener('customizeClick', this.customizeClick);
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -292,6 +279,12 @@
     components: {
     },
     methods: {
+      customizeClick(event) {
+        if (event.type === 'save') {
+          this.saveParams = event.detail;
+          this.objectSave(event.detail);
+        }
+      },
       getData() {
         // 获取数据
        
@@ -624,7 +617,10 @@
         // };
       },
      
-    }
+    },
+    beforeDestroy() {
+      window.removeEventListener('customizeClick', this.customizeClick);
+    },
   };
 </script>
 
