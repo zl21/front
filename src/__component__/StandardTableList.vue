@@ -340,8 +340,8 @@
               let path = '';
               if (singleEditType === ':itemId') {
                 path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-              } else{
-                 path = `/${this.ag.tableurl}`;
+              } else {
+                path = `/${this.ag.tableurl}`;
               }
               router.push({
                 path
@@ -783,13 +783,12 @@
           if (item.default === '-1') {
             return '';
           } if (item.default !== '-1' && item.default) {
-            return new Date().setNewFormt(Date().minusDays(item.default).toIsoDateString(), '-', '');
+            const timeRange = [
+              new Date().setNewFormt(new Date().minusDays(Number(item.default)).toIsoDateString(), '-', ''),
+              new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
+            ];
+            return timeRange;
           }
-          const timeRange = [
-            new Date().setNewFormt(new Date().minusDays(Number(item.daterange)).toIsoDateString(), '-', ''),
-            new Date().setNewFormt(new Date().toIsoDateString(), '-', '')
-          ];
-          return timeRange;
         }
         if (item.display === 'OBJ_DATE') {
           if (item.default === '-1') {
@@ -1888,10 +1887,17 @@
           this.updateFormData(this.$refs.FormItemComponent.dataProcessing(this.$refs.FormItemComponent.FormItemLists));
           this.searchClickData();
         }
+      },
+      // 监听jflow事件
+      jflowEvent(event) {
+        if (event.detail.type === 'search') {
+          this.searchClickData({ value: 'true' });
+        }
       }
     },
     mounted() {
       window.addEventListener('network', this.networkEventListener);
+      window.addEventListener('jflowEvent', this.jflowEvent);
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -1914,6 +1920,7 @@
     beforeDestroy() {
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
+      window.removeEventListener('jflowEvent', this.jflowEvent);
     }
   };
 </script>

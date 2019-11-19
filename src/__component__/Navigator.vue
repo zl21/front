@@ -398,6 +398,10 @@
       i {
         font-size: 22px;
       }
+      
+      .burgeon-badge-count{
+        top: 2px;
+      }
     }
     
     .tag-search {

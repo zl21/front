@@ -196,10 +196,10 @@
             this.$emit('valueChange', JSON.stringify(JSON.parse(paste)));
           } catch (err) {
             this.$Modal.fcWarning({
-              mask: false,
+              mask: true,
               showCancel: false,
               title: '提示',
-              content: `${err}请输入json 形式的字符串`,
+              content: '请输入json 形式的字符串',
             });
           }
         }

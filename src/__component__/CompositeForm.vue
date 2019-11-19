@@ -28,6 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
+                :class="tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -58,6 +59,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
+          :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
@@ -249,6 +251,10 @@
       path() {
         return this.paths[1] || '';
       },
+      tableGetName() {
+        // 获取表名称
+        return this.isMainTable ? '' : this.childTableName;
+      },
       isreftabsForm() {
         // 
         if (this.masterName.length > 0 && this.childTableName.length > 0 && Version() === '1.3') {
@@ -397,16 +403,21 @@
         // 修改联动值
         this.getStateData();
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
-        // const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
         const key = mappStatus[Object.keys(data)[0]];
-        // const LinkageFormItem = LinkageForm[key];
-
+        const LinkageFormItem = LinkageForm[key];
+        let documentkey = '';
+        if (LinkageFormItem && LinkageFormItem.item.tableName) {
+          documentkey = document.querySelector(`.${LinkageFormItem.item.tableName}`).querySelector(`#${key}`);
+        } else {
+          documentkey = document.querySelector(`#${key}`);
+        }
         // console.log(key, mappStatus, LinkageFormItem, 'key');
         if (!document.querySelector(`#${key}`)) {
           return false;
         }
-        const LinkageFormInput = document.querySelector(`#${key}`).querySelector('.burgeon-icon-ios-close-circle');
+        const LinkageFormInput = documentkey.querySelector('.burgeon-icon-ios-close-circle');
         if (LinkageFormInput) {
           LinkageFormInput.click();
         }
@@ -634,15 +645,40 @@
               // 先清除一下
               Fitem[index].item.props.data = {};
               let searchObject = {};
-              if (Object.hasOwnProperty.call(current, 'refcolval')) {
-                let refcolval = this.refcolvalAll[current.refcolval.srccol]
-                  ? this.refcolvalAll[current.refcolval.srccol]
-                  : '';
-                if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
-                  refcolval = this.defaultFormData[current.refcolval.srccol];
+              const check = this.getLinkData(current);
+              if (check[1]) {
+                  const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
+                  searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    fixedcolumns: {
+                      [current.refcolval.fixcolumn]: query
+                    },
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
+                
+                
+              }else {
+                  searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
+              }
+              fkHttpRequest().fkQueryList({
+                searchObject,
+                serviceId: current.serviceId,
+                success: (res) => {
+                  this.freshDropDownSelectFilterData(res, index, current);
                 }
-                const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-                const LinkageFormInput = LinkageForm[current.refcolval.srccol];
+              });
+              
+
+              return false;
+
+              if (Object.hasOwnProperty.call(current, 'refcolval')) {
                 if (!refcolval) {
                   if (LinkageFormInput && LinkageFormInput.item.show) {
                     this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
@@ -729,7 +765,8 @@
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
-                    if (item.value[0].ID === '' || item.value[0].ID === undefined) {
+
+                    if (item.value && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
                       Fitem[index].item.props.defaultSelected = [{
                         label: '',
                         ID: ''
@@ -803,20 +840,66 @@
        
        
         // 获取全部
+        const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
         this.LinkageForm.push({
-          key: obj.item.field,
+          key: `${this.tableGetName}${obj.item.field}`,
           name: obj.item.title,
           show: obj.show,
-          srccol: obj.item.validate.refcolval && obj.item.validate.refcolval.srccol,
-          tableName: this.tableGetName()
-        });
-         
-
+          srccol: `${this.tableGetName}${srccol}`,
+          tableName: this.tableGetName
+        });         
         return obj;
       },
-      tableGetName() {
-        // 获取表名称
-        return this.isMainTable ? '' : this.childTableName;
+      getLinkData(current) {
+        // 获取表信息
+
+        if (Object.hasOwnProperty.call(current, 'refcolval')) {
+          if (current.refcolval.maintable) {
+            this.getStateData(); // 获取主表信息
+          }
+          let refcolval = this.refcolvalAll[current.refcolval.srccol]
+            ? this.refcolvalAll[current.refcolval.srccol]
+            : '';
+          if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
+            refcolval = this.defaultFormData[current.refcolval.srccol];
+          }
+          const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+
+          let LinkageFormInput = {};
+          if(this.tableGetName){
+            LinkageFormInput = LinkageForm[this.tableGetName+current.refcolval.srccol];
+          }else{
+            LinkageFormInput = LinkageForm[current.refcolval.srccol];
+          }
+
+          if (!refcolval) {
+            if (LinkageFormInput && LinkageFormInput.item.show) {
+              this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
+
+              if (this.tableGetName) {
+                const tableName = document.querySelector(`.${LinkageFormInput.item.tableName}`);
+                if (tableName.querySelector(`#${current.refcolval.srccol}`)) {
+                  setTimeout(()=>{
+                    tableName.querySelector(`#${current.refcolval.srccol}`).querySelector('input').focus();
+                  },100)
+                  return [false];
+                }
+              } else {
+                const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
+                if (LinkageFormfocus) {
+                  setTimeout(()=>{
+                  LinkageFormfocus.focus();
+                  },100)
+                  return [false];
+                }
+              }
+            }
+          }else{
+            return [true, refcolval];  
+            }
+            return [true]
+        }
+        return [true];
       },
       hidecolumn(current, array) {
         //  隐藏判断
@@ -849,7 +932,6 @@
           return false;
         }
         let sendData = {};
-        this.getStateData();
 
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
         let LinkageFormInput = '';
@@ -857,6 +939,35 @@
         if (current.refcolval && current.refcolval.srccol) {
           LinkageFormInput = LinkageForm[current.refcolval.srccol];
         }
+        const check = this.getLinkData(current);
+              if (check[1]) {
+                  const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+          sendData = {
+            ak: value,
+            colid: current.colid,
+            fixedcolumns: {
+              whereKeys: {
+                [current.refcolval.fixcolumn]: query
+              }
+            }
+          };
+                
+              }else {
+                 sendData = {
+            ak: value,
+            colid: current.colid,
+            fixedcolumns: {}
+          };              }
+          fkHttpRequest().fkFuzzyquerybyak({
+          searchObject: sendData,
+          serviceId: current.serviceId,
+          success: (res) => {
+            this.freshDropDownSelectFilterAutoData(res, index, current);
+          }
+        });
+        return true;
+
+          return false;
         if (Object.hasOwnProperty.call(current, 'refcolval') && LinkageFormInput && LinkageFormInput.item.show) {
           let refcolval = this.formData[current.refcolval.srccol]
             ? this.formData[current.refcolval.srccol]
@@ -897,14 +1008,7 @@
           };
         }
 
-        fkHttpRequest().fkFuzzyquerybyak({
-          searchObject: sendData,
-          serviceId: current.serviceId,
-          success: (res) => {
-            this.freshDropDownSelectFilterAutoData(res, index, current);
-          }
-        });
-        return true;
+        
       },
       validateList(current) {
         // 联动校验
@@ -1419,36 +1523,7 @@
             const that = this;
             // eslint-disable-next-line no-case-declarations
             const currentThat = current;
-            item.props.isShowPopTip = () => {
-              that.getStateData(); // 获取主表信息
-              if (Object.hasOwnProperty.call(currentThat, 'refcolval')) {
-                let refcolval = that.refcolvalAll[currentThat.refcolval.srccol]
-                  ? that.refcolvalAll[currentThat.refcolval.srccol]
-                  : '';
-                if (that.refcolvalAll[currentThat.refcolval.srccol] === undefined) {
-                  refcolval = that.defaultFormData[currentThat.refcolval.srccol];
-                }
-                const LinkageForm = that.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-                const LinkageFormInput = LinkageForm[currentThat.refcolval.srccol];
-
-                if (!refcolval) {
-                  if (LinkageFormInput && LinkageFormInput.item.show) {
-                    this.$Message.info(`请先选择${LinkageFormInput.item.name}`);
-                    const LinkageFormfocus = document.querySelector(`#${LinkageFormInput.item.key}`).querySelector('input');
-                    if (LinkageFormfocus) {
-                      LinkageFormfocus.focus();
-                      return false;
-                    }
-                  } else {
-                    // this.$Message.info('请先选择关联的表');
-                    return true;
-                  }
-                  return false;
-                }
-                return true;
-              }
-              return true;
-            };
+            item.props.isShowPopTip = () => that.getLinkData(currentThat)[0];
             break;
           case 'mrp':
             item.props.single = false;

@@ -337,6 +337,7 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
+          console.log(item.props.webconf);
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
@@ -681,6 +682,8 @@
         //  设置属性
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
+        console.log(field);
+
         if (!Array.isArray(field)) {
           return false;
         }
@@ -696,12 +699,16 @@
           }
           if (typeof option.refval === 'string') {
             option.refval = option.refval.replace(/^\s+|\s+$/g, '').replace(/-/g, '');
+          } else {
+            option.refval = option.refval.toString();
           }
+
           const refval = option.refval.split(',');
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
 
           return refIndex !== -1;
         });
+
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
