@@ -728,21 +728,22 @@
         if (Version() === '1.3') {
           const label = `${this.activeTab.label.replace('编辑', '')}`;
           const ids = this.tableRowSelectedIds.map(item => item.ID);
-          const { tableName, itemId } = router.currentRoute.params;
+          const { tableName } = router.currentRoute.params;
           if (tab.action.search('/') === -1) {
             const param = {// param层动态参数
-              objid: itemId,
+              // objid: itemId,
               table: tableName,
               menu: label,
+              ids, // 子表勾选ID
             };
-            if (this.type === 'vertical') { // 上下结构
-              if (ids.length > 0) { // 勾选了明细传subparam
-                param.subparam = {// 上下结构主表参数结构
-                  idArr: ids, // 子表勾选ID
-                  table: this.tableName // 子表表名
-                };
-              }
-            } 
+            // if (this.type === 'vertical') { // 上下结构
+            //   if (ids.length > 0) { // 勾选了明细传subparam
+            //     param.subparam = {// 上下结构主表参数结构
+            //       idArr: ids, // 子表勾选ID
+            //       table: this.tableName // 子表表名
+            //     };
+            //   }
+            // } 
             params = param;
           }else {
             // console.log('请检查子表静默类型按钮action配置，例如:action: com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi');
