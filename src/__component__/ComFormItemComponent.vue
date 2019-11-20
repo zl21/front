@@ -171,6 +171,12 @@
           return '';
         }
       },
+      getsetAttsetProps: {
+        type: Function,
+        default() {
+          return function () {};
+        }
+      },
       verifymessageform: {
         type: Function,
         default() {
@@ -252,6 +258,7 @@
         checkMounted: false, // 是否初始化
         VerificationForm: [], // 需要校验的
         mountedTypeName: '',
+        setAttsetProps: {},
         LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
         oldformData: {}, // 老的change
@@ -260,18 +267,16 @@
       };
     },
     mounted() {
-      //   this.newFormItemLists.map((item) => {
-      //     if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
-      //       this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
-      //     }
-      //   });
-      //   this.formValueItem = {};
-
-      //   this.mapData = this.setMapping(this.Mapping);
-      // window.addEventListener('setValue', (value) => {
-      //   console.log(value);
-      // });
+      this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        if (e.value.type === 'change') {
+          const checkItem = this.newFormItemLists.some(item => e.value.current.findIndex(x => x === item.item.field));
+          if (checkItem) {
+            this.formInit();
+          }
+        }
+      });
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
         // 获取校验
@@ -306,6 +311,7 @@
           }
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
+         
           this.computFormLinkage(val, old);
         },
         deep: true
@@ -342,6 +348,7 @@
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
+
 
           //  扩展属性 来源字段
           if (item.props.webconf && item.props.webconf.targetField) {
@@ -406,7 +413,41 @@
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
-            arr[item.item.field] = item.item.value;
+            if (Array.isArray(item.item.value)) {
+              if (item.item.value[0] && Object.hasOwnProperty.call(item.item.value[0], 'ID')) {
+                if (item.item.value.length < 2 && item.item.value[0].ID) {
+                  arr[item.item.field] = [{
+                    ID: item.item.value[0].ID,
+                    Label: item.item.value[0].Label
+                  }];
+                } else {
+                  arr[item.item.field] = item.item.value.reduce((option, itemII) => {
+                    if (itemII.ID) {
+                      option.push({
+                        ID: itemII.ID,
+                        Label: itemII.Label
+                      });
+                    }
+                    return option;
+                  }, []);
+                }
+              } 
+            } else if (item.item.type === 'checkbox') {
+              arr[item.item.field] = [{
+                ID: item.item.value,
+                Label: item.item.value === item.item.props.trueValue ? item.item.props.trueValue : item.item.props.falseValue
+              }];
+            } else if (item.item.type === 'select') {
+              if (item.item.value) {
+                const optionIndex = item.item.options.findIndex(x => x.value === item.item.value);
+                arr[item.item.field] = [{
+                  ID: item.item.value,
+                  Label: item.item.options[optionIndex].label
+                }];
+              }
+            } else if (item.item.value) {
+              arr[item.item.field] = item.item.value;
+            }
             return arr;
           }, {});          
           this.mountdataForm(this.formDataObject, Item);
@@ -420,7 +461,7 @@
         //  form 计算 校验
         this.VerificationForm = [];
         this.newFormItemLists.forEach((item, index) => {
-          if (item.item.required && item.show) {
+          if (item.item.required && item.show && !item.item.props.disabled) {
             this.verificationMap(this.formIndex, index, item);
           }
         });
@@ -606,16 +647,23 @@
         this.formValueItem = Object.assign(this.formValueItem, obj);
 
         // 向父组件抛出整个数据对象以及当前修改的字段
+        
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
+        if (current.item.field) {
+          if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
+          }
+        }
+
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          if (this.oldformData[current.item.field] === obj[current.item.field]) {
-            return false;
-          }
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
               if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
+                return false;
+              }
+              if (this.oldformData[current.item.field] === obj[current.item.field]) {
                 return false;
               }
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
@@ -645,6 +693,10 @@
         };
         if (!conf.url) {
           return false;
+        }
+         //   拦截默认值
+        if (!this.actived) {
+          return;
         }
         fkHttpRequest().equalformRequest({
           url: conf.url,
@@ -711,7 +763,6 @@
         if (!Array.isArray(field)) {
           return false;
         }
-
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
           if (!optionValue) {
@@ -729,15 +780,14 @@
 
           const refval = option.refval.split(',');
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
-
           return refIndex !== -1;
         });
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
+          item.oldProps.required = item.required;
         }
         const props = JSON.parse(JSON.stringify(item.props));
-        
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           if (item.props.webconf.setAttributes.props.value === '') {
@@ -748,19 +798,13 @@
           } else {
             item.required = false;
           }
-          this.VerificationFormInt();
-
+          item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
-
-          this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
-          if (item.oldProps.required) {
-            item.required = true;
-          } else {
-            item.required = false;
-          }
-        }
+          item.required = item.oldProps.required;
+        }        
+        this.VerificationFormInt();
         return true;
       },
       filtercolumn(item, formindex, val) {

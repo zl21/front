@@ -592,7 +592,7 @@
         }
       },
       selectClear($this) {
-        this._items.value = [];
+        this._items.value = '';
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
@@ -1521,10 +1521,11 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
+
+          this._items.props = e.value.props;
           if (e.value.value === '') {
-            if (this.$refs[e.value.field]) {
-              this.$refs[e.value.field].handleClear();
-            }
+            this.clearItem();
+            this.valueChange();
           } else if (Array.isArray(e.value.value)) {
             this._items.props.selected = e.value.value;
             this._items.props.defaultSelected = e.value.value;
