@@ -495,12 +495,15 @@
             this.formData[current.item.field] = '';
           }
         }
+
         // 获取需要校验的表单
         if (Version() === '1.3') {
-          this.$emit('formChange', this.formDataDef, this.formDataDef, this.formData);
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         } else {
-          this.$emit('formChange', this.formData, this.formDataDef);
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         }
+        // this.$emit('formChange', this.formData, this.formDataDef);
+
 
         this.getStateData();
       },
@@ -561,6 +564,7 @@
           } else {
             this.$emit('formChange', defaultSetValue, this.defaultSetValue);
           }
+          // this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
@@ -570,6 +574,7 @@
         } else {
           this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         }
+        // this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
@@ -936,7 +941,6 @@
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
         }
-        console.log(check, 'check');
         if (check[1]) {
           const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
           sendData = {

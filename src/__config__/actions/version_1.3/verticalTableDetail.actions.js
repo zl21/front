@@ -703,7 +703,6 @@ export default {
     let actionName = '';
     if (path.search('/') === -1) {
       actionName = '';
-
       network.post(actionName || '/p/cs/exeAction', urlSearchParams({
         actionid: tab.webid,
         webaction: null,

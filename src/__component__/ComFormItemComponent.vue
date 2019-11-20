@@ -254,6 +254,7 @@
         mountedTypeName: '',
         LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
+        oldformData: {}, // 老的change
         setHeight: 34,
         actived: false
       };
@@ -295,6 +296,7 @@
       formDataObject: {
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理
+          this.oldformData = old;
           if (this.indexItem === -1) {
             return;
           }
@@ -404,11 +406,49 @@
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
+<<<<<<< HEAD
             if (item.item.value) {
               arr[item.item.field] = item.item.value;
             }
            
 
+=======
+            if (Array.isArray(item.item.value)) {
+              if (item.item.value[0] && Object.hasOwnProperty.call(item.item.value[0], 'ID')) {
+                if (item.item.value.length < 2 && item.item.value[0].ID) {
+                  arr[item.item.field] = [{
+                    ID: item.item.value[0].ID,
+                    Label: item.item.value[0].Label
+                  }];
+                } else {
+                  arr[item.item.field] = item.item.value.reduce((option, itemII) => {
+                    if (itemII.ID) {
+                      option.push({
+                        ID: itemII.ID,
+                        Label: itemII.Label
+                      });
+                    }
+                    return option;
+                  }, []);
+                }
+              } 
+            } else if (item.item.type === 'checkbox') {
+              arr[item.item.field] = [{
+                ID: item.item.value,
+                Label: item.item.value === item.item.props.trueValue ? item.item.props.trueValue : item.item.props.falseValue
+              }];
+            } else if (item.item.type === 'select') {
+              if (item.item.value) {
+                const optionIndex = item.item.options.findIndex(x => x.value === item.item.value);
+                arr[item.item.field] = [{
+                  ID: item.item.value,
+                  Label: item.item.options[optionIndex].label
+                }];
+              }
+            } else if (item.item.value) {
+              arr[item.item.field] = item.item.value;
+            }
+>>>>>>> 8f2b643b28adb5f9c994de017e142796090cee56
             return arr;
           }, {});          
           this.mountdataForm(this.formDataObject, Item);
@@ -604,15 +644,21 @@
           obj[end.colname] = current.item.value[1];
         }
         // checkbox
+        
         this.formValueItem = Object.assign(this.formValueItem, obj);
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
+      
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          console.log(this.oldformData[current.item.field], obj[current.item.field]);
+          if (this.oldformData[current.item.field] === obj[current.item.field]) {
+            return false;
+          }
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (current.item.value[0].ID !== obj[current.item.field] && current.item.value[0].ID !== '') {
+              if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
                 return false;
               }
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
@@ -647,7 +693,7 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', key, list: res });
           }
         });
         return true;
@@ -667,6 +713,7 @@
         this.newFormItemLists[index].item.value = value;
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
+        return true;
       },
       refcolval(items, json) {
         if (interlocks() === true) {

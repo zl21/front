@@ -1008,48 +1008,40 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const params = {};
-        
+        let params = {};
+        const label = `${this.activeTab.label.replace('编辑', '')}`;
         if (Version() === '1.3' && tab.action.search('/') === -1) { // 1.3类型
-        let params={}
+          const value = {};// 动态参数
+          let ids = [];// 子表勾选ID
+          let obj = {};// param层动态参数
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-            ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            // ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+            ids = this.updateData[this.itemName].delete[this.itemName];
           }
           if (this.objectType === 'vertical') { // 上下结构
             if (this.itemName === this.tableName) { // 主表(只处理主表逻辑)
-                 
+              obj = {
+                objid: this.tableId,
+                table: this.tableName,
+                menu: label,
+                subparam: {// 上下结构主表参数结构
+                  idArr: ids, // 子表勾选ID
+                  table: this.itemNamw // 子表表名
+                }
+              };
             }
-            // if (this.subtables()) { // 有子表
-            //   params[this.tableName] = {
-            //     ID: this.itemId
-            //   };
-            // } else { // 没有子表
-            //   params = {
-            //     ID: this.itemId
-            //   };
-            // }
           } else if (this.subtables()) { // 有子表   左右结构
             if (this.itemName === this.tableName) { // 主表
-
+              obj = {
+                objid: this.tableId,
+                table: this.tableName,
+                menu: label,
+              };
             } else { // 子表
 
             }
-            // if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
-            //   params[this.tableName] = {
-            //     ID: this.itemId
-            //   };
-            // } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
-            //   params = {
-            //     tableName: this.itemName, // 子表表名
-            //     ids
-            //   };
-            // } else { // 有表格
-            //   params = {
-            //     tableName: this.itemName, // 子表表名
-            //     ids
-            //   };
-            // }
           }
+          params = obj;
         } else if (Version() === '1.4' && this.objectType === 'vertical') { // 1.4上下结构
           const childTableParams = [];
           if (this.isreftabs) { // 有子表
