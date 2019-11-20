@@ -1030,13 +1030,14 @@
                   idArr: idsOld, // 子表勾选ID
                   table: this.itemName // 子表表名
                 };
-              }
+              // }
             } else if (this.subtables()) { // 有子表   左右结构
-              if (this.itemName === this.tableName) { // 主表
-                // 无
-              } else if (idsOld.length > 0) { // 子表勾选了明细传subparam
+              // if (this.itemName === this.tableName) { // 主表
+              //   // 无
+              // } else if (idsOld.length > 0) { // 子表勾选了明细传subparam
+              // }
                 obj.data[this.itemName] = idsOld;       
-              }
+
             }
             params = obj;
           }else {
