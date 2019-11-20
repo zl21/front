@@ -315,14 +315,14 @@
         }
         return data;
       },
-      formChange(data) {
+      formChange(data, defaultData, changeData) {
         // form 修改的数据
-        if (Object.keys(data).length > 0) {
-          Object.keys(data).forEach((item) => {
-            if (data[item] !== undefined) {
+        if (Object.keys(changeData).length > 0) {
+          Object.keys(changeData).forEach((item) => {
+            if (changeData[item] !== undefined) {
               // eslint-disable-next-line no-unused-vars
-              const dataSelect = this.checkForm(data, item);
-              this.formChangeData = data;
+              const dataSelect = this.checkForm(changeData, item);
+              this.formChangeData = changeData;
             }
           });
         }

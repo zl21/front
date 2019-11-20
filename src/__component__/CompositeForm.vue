@@ -559,22 +559,22 @@
         }, {});
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
-          // if (Version() === '1.3') {
-          //   this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
-          // } else {
-          //   this.$emit('formChange', defaultSetValue, this.defaultSetValue);
-          // }
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          if (Version() === '1.3') {
+            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
+          } else {
+            this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          }
+          // this.$emit('formChange', defaultSetValue, this.defaultSetValue);
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        // if (Version() === '1.3') {
-        //   this.r3Form = Object.assign(this.r3Form, formItem);
-        //   this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
-        // } else {
-        //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
-        // }
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        if (Version() === '1.3') {
+          this.r3Form = Object.assign(this.r3Form, formItem);
+          this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
+        } else {
+          this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        }
+        // this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
