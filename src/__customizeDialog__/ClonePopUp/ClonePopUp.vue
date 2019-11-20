@@ -162,7 +162,7 @@
           this.$Modal.fcWarning(data);
           return;
         }
-
+        this.$loading.show();
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
           destable: this.t_table_name.trim(), // 目标表名
@@ -171,6 +171,7 @@
         };
         network.post('/p/cs/clone', searchdata)
           .then((res) => {
+            // this.$loading.hide();
             if (res.data.code !== 0) {
               return;
             }
