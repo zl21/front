@@ -962,7 +962,7 @@
           if (obj.confirm) {
             // 有提示
             if (obj.confirm.indexOf('{') >= 0) {
-              if (obj.confirm || JSON.parse(obj.confirm).isselect) {
+              if (JSON.parse(obj.confirm).isselect) {
                 if (this.buttons.selectIdArr && this.buttons.selectIdArr.length === 0) {
                   const title = this.ChineseDictionary.WARNING;
                   const contentText = `${JSON.parse(obj.confirm).nodesc}`;
@@ -988,6 +988,10 @@
                   // 参数都不存在,直接执行
                   this.webActionSlient(obj);
                 }
+              } else {
+                const title = this.ChineseDictionary.WARNING;
+                const contentText = `${JSON.parse(obj.confirm).desc}`;
+              this.dialogMessage(title, contentText);
               }
             } else {
               const title = this.ChineseDictionary.WARNING;

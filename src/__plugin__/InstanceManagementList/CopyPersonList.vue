@@ -240,7 +240,7 @@
                     on: {
                       click: () => {
                         window.open(
-                          `http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
+                          `${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${params.row.instanceId}`,
                           '_blank',
                           'width=861,height=612'
                         );
@@ -271,7 +271,7 @@
     },
     watch: {
       tabalive(newVal, oldVal) {
-        if (newVal === '抄送人') {
+        if (newVal === '抄送我的') {
           this.getselectOption();
           this.queryLists();
         }

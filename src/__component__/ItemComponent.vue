@@ -1596,7 +1596,8 @@
   }
 }
 textarea.burgeon-input{
-    height: 100%!important;
+    // height: 100%!important;
+    resize:auto;
 }
 .height100{
     height: 100%!important;

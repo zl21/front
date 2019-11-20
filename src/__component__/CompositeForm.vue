@@ -450,6 +450,16 @@
             data[current.item.field] = data[current.item.field].toUpperCase();
           }
         }
+        // 针对明细列表外键回车查询功能
+        if (this.conditiontype !== 'list') {
+          if (current) {
+            if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
+              if (!Array.isArray(setdefval[current.item.field])) {
+                data[current.item.field] = '';
+              }
+            }
+          }
+        }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截
@@ -500,13 +510,16 @@
         }
 
         // 获取需要校验的表单
+        // 开启
         // if (Version() === '1.3') {
         //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         // } else {
         //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         // }
+        // 开启
+        // 注释
         this.$emit('formChange', this.formData, this.formDataDef);
-
+        // 注释
 
         this.getStateData();
       },
@@ -562,22 +575,32 @@
         }, {});
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
+          // 开启
           // if (Version() === '1.3') {
           //   this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
           // } else {
           //   this.$emit('formChange', defaultSetValue, this.defaultSetValue);
           // }
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          // 开启
+          // 注释
+
+
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue);  
+          // 注释
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
+        // 开启
         // if (Version() === '1.3') {
         //   this.r3Form = Object.assign(this.r3Form, formItem);
         //   this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
         // } else {
         //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         // }
+        // 开启
+        // 注释
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        // 注释
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
@@ -748,7 +771,7 @@
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
-                    if (item.value && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
+                    if (item.value && item.value[0] && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
                       Fitem[index].item.props.defaultSelected = [{
                         label: '',
                         ID: ''
@@ -851,7 +874,6 @@
       getLinkData(current) {
         // 获取表信息
        
-
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = {};
           if (current.refcolval.maintable) {
@@ -868,8 +890,9 @@
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+
           let LinkageFormInput = {};
-          if (this.tableGetName) {
+          if (this.tableGetName && !current.refcolval.maintable) {
             LinkageFormInput = LinkageForm[this.tableGetName + current.refcolval.srccol];
           } else {
             LinkageFormInput = LinkageForm[current.refcolval.srccol];

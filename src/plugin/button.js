@@ -76,7 +76,7 @@ function clickFunction(e) {
         control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
       });
         break;
-      case '5': window.open(`http://${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
+      case '5': window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
         break;
       case '6': // 重启流程
         restartProcess();
@@ -110,6 +110,11 @@ function CreateButton(obj, buttons, id) {
   // 流程进度正在发起中 obj.businessStatus === -2
   if (obj.businessStatus === -2) {
     const stateTimeout = setInterval(() => {
+      // 定时器的处理，排除列表界面
+      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
+        clearInterval(stateTimeout);
+        return; 
+      }
       // 判断state状态是否已经生成
       const store = window.jflowPlugin.store;
       const stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
@@ -130,6 +135,11 @@ function CreateButton(obj, buttons, id) {
   // 存在jflow流程时
   if (obj.instanceId !== null && obj.buttons && obj.buttons !== null && obj.buttons.length > 0) {
     const stateTimeout = setInterval(() => {
+      // 定时器的处理，排除列表界面
+      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
+        clearInterval(stateTimeout);
+        return; 
+      }
       // 判断state状态是否已经生成
       const store = window.jflowPlugin.store;
       const stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
@@ -162,9 +172,14 @@ function CreateButton(obj, buttons, id) {
     }, 100);
   } else {
     const stateTimeout = setInterval(() => {
+      // 定时器的处理，排除列表界面
+      if (window.jflowPlugin.router.currentRoute.fullPath.split('/')[2] === 'TABLE') {
+        clearInterval(stateTimeout);
+        return; 
+      }
       // 判断state状态是否已经生成
       const store = window.jflowPlugin.store;
-      const stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (store.state[MODULE_COMPONENT_NAME].tabPanels && store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
+      const stateFlag = (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME] && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.tabcmd) || (window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].tabPanels && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].tabPanels.length > 0 && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem);
       if (stateFlag) {
         clearInterval(stateTimeout);
         const newButtons = [];
