@@ -1008,40 +1008,49 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        let params = {};
-        if (tab.action.search('/') === -1) { // 1.3类型
-          let ids = [];
+        const params = {};
+        
+        if (Version() === '1.3' && tab.action.search('/') === -1) { // 1.3类型
+        let params={}
           if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
             ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
           }
           if (this.objectType === 'vertical') { // 上下结构
-            if (this.subtables()) { // 有子表
-              params[this.tableName] = {
-                ID: this.itemId
-              };
-            } else { // 没有子表
-              params = {
-                ID: this.itemId
-              };
+            if (this.itemName === this.tableName) { // 主表(只处理主表逻辑)
+                 
             }
+            // if (this.subtables()) { // 有子表
+            //   params[this.tableName] = {
+            //     ID: this.itemId
+            //   };
+            // } else { // 没有子表
+            //   params = {
+            //     ID: this.itemId
+            //   };
+            // }
           } else if (this.subtables()) { // 有子表   左右结构
-            if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
-              params[this.tableName] = {
-                ID: this.itemId
-              };
-            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
-              params = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
-            } else { // 有表格
-              params = {
-                tableName: this.itemName, // 子表表名
-                ids
-              };
+            if (this.itemName === this.tableName) { // 主表
+
+            } else { // 子表
+
             }
+            // if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
+            //   params[this.tableName] = {
+            //     ID: this.itemId
+            //   };
+            // } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
+            //   params = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // } else { // 有表格
+            //   params = {
+            //     tableName: this.itemName, // 子表表名
+            //     ids
+            //   };
+            // }
           }
-        } else if (this.objectType === 'vertical') { // 1.4上下结构
+        } else if (Version() === '1.4' && this.objectType === 'vertical') { // 1.4上下结构
           const childTableParams = [];
           if (this.isreftabs) { // 有子表
             if (this.updateData[this.itemName].delete[this.itemName].length > 0) {

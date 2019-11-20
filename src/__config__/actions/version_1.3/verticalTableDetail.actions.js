@@ -282,26 +282,24 @@ export default {
       modifyDataForSaveAfter[tableName] = modifyChangeDataAfter;
     }
 
-    console.log(7777, Object.keys(fkIdData).length > 0);
     if (Object.keys(fkIdData).length > 0) {
       fkId = Object.keys(fkIdData).reduce((obj, value) => {
         if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length === 1) { // 是外键类型(外键单选)
           const ID = fkIdData[value].map(item => item.ID);
           if (ID[0] !== '' && ID[0] !== 'undefined') {
-            fkIdData[value] = ID[0];
+            fkIdData[value] = Number(ID[0]);
           }
         }
         
-        // if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length > 1) { // 外键多选
-        //   const ID = fkIdData[value].map(item => item.ID).join(',');
-        //   fkIdData[value] = ID[0];
-        // }
+        if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length > 1) { // 外键多选
+          const ID = fkIdData[value].map(item => item.ID).join(',');
+          fkIdData[value] = ID[0];
+        }
 
         obj[value] = fkIdData[value];
         return obj;
       }, {});
 
-      console.log(8888, fkId);
       const modifyChangeData = Object.assign({}, fkIdData, fkId);
       modifyDataForSave[tableName] = modifyChangeData;
     }
@@ -309,8 +307,6 @@ export default {
    
     console.log('modifyDataForSave', modifyDataForSave);
     console.log('modifyDataForSaveAfter', modifyDataForSaveAfter);
-
-    debugger;
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
