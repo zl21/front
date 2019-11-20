@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -297,6 +297,8 @@
         // collapseHistoryAndFavorite: ({ collapseHistoryAndFavorite }) => collapseHistoryAndFavorite,
         // menuLists: ({ menuLists }) => menuLists
         LinkUrl: ({ LinkUrl }) => LinkUrl,
+        activeTab: ({ activeTab }) => activeTab,
+
       }),
       objList() { // 返回克隆表定制弹框所需数据
         if (this.type === 'horizontal') { // 横向布局
@@ -721,14 +723,43 @@
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
-        const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
-        const obj = {
-          tableName: this.tableName,
-          ids
-        };
+        let obj = {};
+        let params = {};
+        if (Version() === '1.3') {
+          const label = `${this.activeTab.label.replace('编辑', '')}`;
+          const ids = this.tableRowSelectedIds.map(item => item.ID);
+          const { tableName } = router.currentRoute.params;
+          if (tab.action.search('/') === -1) {
+            const param = {// param层动态参数
+              // objid: itemId,
+              table: this.tableName,
+              menu: label,
+              ids, // 子表勾选ID
+            };
+            // if (this.type === 'vertical') { // 上下结构
+            //   if (ids.length > 0) { // 勾选了明细传subparam
+            //     param.subparam = {// 上下结构主表参数结构
+            //       idArr: ids, // 子表勾选ID
+            //       table: this.tableName // 子表表名
+            //     };
+            //   }
+            // } 
+            params = param;
+          }else {
+            // console.log('请检查子表静默类型按钮action配置，例如:action: com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi');
+          }
+        } else if (Version() === '1.4') {
+          const ids = this.tableRowSelectedIds.map(item => parseInt(item.ID));
+          obj = {
+            tableName: this.tableName,
+            ids
+          };
+          params = obj;
+        }
+       
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            obj, path: tab.action, resolve, reject
+            tab, params, path: tab.action, resolve, reject
           });
           this.$loading.show();
         });
@@ -1316,7 +1347,7 @@
             return true;
           }
           if (modifyValue[tableName] && Object.keys(modifyValue[tableName]).length > 0 && modifyValue[tableName][cellData.refcolval.srccol] !== undefined) {
-            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0 ) {
+            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0) {
               return false;
             }
           } else {
@@ -1422,7 +1453,7 @@
                             });
                           }
                           return acc;
-                          }, [])
+                        }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择主表${obj.name}`);
@@ -1468,13 +1499,13 @@
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                          if (cur.childs) {
-                            cur.childs.forEach((item) => {
-                              acc.push(item);
-                            });
-                          }
-                          return acc;
-                        }, [])
+                        if (cur.childs) {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                        }
+                        return acc;
+                      }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
                       this.$Message.info(`请选择主表${obj.name}`);
                     } else {
@@ -1696,11 +1727,11 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                            if (cur.childs) {
-                              cur.childs.forEach((item) => {
-                                acc.push(item);
-                              });
-                            }
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
@@ -1770,13 +1801,13 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                            if (cur.childs) {
-                              cur.childs.forEach((item) => {
-                                acc.push(item);
-                              });
-                            }
-                            return acc;
-                          }, [])
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
+                          return acc;
+                        }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
                         this.$Message.info(`请选择${obj.name}`);
@@ -1807,11 +1838,11 @@
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
-                          return acc;
-                        }, [])
+                        cur.childs.forEach((item) => {
+                          acc.push(item);
+                        });
+                        return acc;
+                      }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
                       this.$Message.info(`请选择${obj.name}`);
                     } else {

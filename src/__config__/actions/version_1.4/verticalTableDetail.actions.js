@@ -718,7 +718,8 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
-    obj,
+    tab,
+    params,
     path,
     resolve, reject
   }) {
@@ -728,7 +729,7 @@ export default {
     } else {
       actionName = '';
     }
-    network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
+    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();

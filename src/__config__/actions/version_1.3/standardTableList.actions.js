@@ -49,6 +49,9 @@ export default {
         if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
           commit('updateWebconfCommonTable', queryData.datas.webconf);
         }
+        if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
+          commit('updateWebconfDynamicRouting', queryData.datas.webconf);
+        }
       }
     });
   },
@@ -112,7 +115,7 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonExeActionData', res.data.message);
-      } else if (res.data.code === -1) {
+      } else {
         commit('updateButtonExeActionData', res.data.message);
         reject();
       }
