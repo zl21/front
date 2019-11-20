@@ -261,7 +261,7 @@ export default {
   //       fkIdData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
   //     }
   //   }
-    
+  //   debugger
   //   if (type === 'modify') {
   //     labelName = Object.keys(labelData).reduce((obj, value) => {
   //       if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length === 1) { // 是外键类型(外键单选)
@@ -563,6 +563,43 @@ export default {
   
   
   
+ 
+  performMainTableDeleteAction({
+    commit
+  }, {
+    path,
+    table,
+    objId,
+    currentParameter,
+    itemName,
+    isreftabs,
+    resolve, reject
+  }) { // 主表删除
+    let parames = {};
+    if (isreftabs) {
+      parames = {
+        table, // 主表表名
+        objid: objId,
+        delMTable: true
+      };
+    } else {
+      parames = {
+        table, // 主表表名
+        objid: objId,
+        delMTable: true
+      };
+    }
+    network.post(path || '/p/cs/objectDelete', urlSearchParams(parames)).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        const data = res.data;
+        commit('updateNewMainTableDeleteData', data);
+      } else {
+        reject();
+      }
+    });
+  },
+
   performMainTableSaveAction({
     commit
   }, {
@@ -849,43 +886,7 @@ export default {
       }
     }
   },
-  performMainTableDeleteAction({
-    commit
-  }, {
-    path,
-    table,
-    objId,
-    currentParameter,
-    itemName,
-    isreftabs,
-    resolve, reject
-  }) { // 主表删除
-    let parames = {};
-    if (isreftabs) {
-      parames = {
-        table, // 主表表名
-        objid: objId,
-        delMTable: true
-      };
-    } else {
-      parames = {
-        table, // 主表表名
-        objid: objId,
-        delMTable: true
-      };
-    }
-    network.post(path || '/p/cs/objectDelete', urlSearchParams(parames)).then((res) => {
-      if (res.data.code === 0) {
-        resolve();
-        const data = res.data;
-        commit('updateNewMainTableDeleteData', data);
-      } else {
-        reject();
-      }
-    });
-  },
-
-
+  
   getObjectTrySubmit({
     commit
   }, {

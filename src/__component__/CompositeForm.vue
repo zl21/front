@@ -511,14 +511,14 @@
 
         // 获取需要校验的表单
         // 开启
-        // if (Version() === '1.3') {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // } else {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // }
+        if (Version() === '1.3') {
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        } else {
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        }
         // 开启
         // 注释
-        this.$emit('formChange', this.formData, this.formDataDef);
+        // this.$emit('formChange', this.formData, this.formDataDef);
         // 注释
 
         this.getStateData();
@@ -576,30 +576,30 @@
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
           // 开启
-          // if (Version() === '1.3') {
-          //   this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
-          // } else {
-          //   this.$emit('formChange', defaultSetValue, this.defaultSetValue);
-          // }
+          if (Version() === '1.3') {
+            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
+          } else {
+            this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          }
           // 开启
           // 注释
 
 
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);  
+          // this.$emit('formChange', defaultSetValue, this.defaultSetValue);  
           // 注释
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
         // 开启
-        // if (Version() === '1.3') {
-        //   this.r3Form = Object.assign(this.r3Form, formItem);
-        //   this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
-        // } else {
-        //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
-        // }
+        if (Version() === '1.3') {
+          this.r3Form = Object.assign(this.r3Form, formItem);
+          this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
+        } else {
+          this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        }
         // 开启
         // 注释
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        // this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         // 注释
       },
       reduceForm(array, current, index) {
