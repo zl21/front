@@ -254,6 +254,7 @@
         mountedTypeName: '',
         LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
+        oldformData: {}, // 老的change
         setHeight: 34,
         actived: false
       };
@@ -267,9 +268,9 @@
       //   this.formValueItem = {};
 
       //   this.mapData = this.setMapping(this.Mapping);
-      window.addEventListener('setValue', (value) => {
-        console.log(value);
-      });
+      // window.addEventListener('setValue', (value) => {
+      //   console.log(value);
+      // });
       // 映射回调
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -295,11 +296,12 @@
       formDataObject: {
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理
+          this.oldformData = old;
           if (this.indexItem === -1) {
             return;
           }
           //   拦截默认值
-          if (!this.actived || Object.keys(this.refcolvalData).length < 1) {
+          if (!this.actived) {
             return;
           }
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
@@ -337,7 +339,6 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
-          console.log(item.props.webconf);
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
@@ -347,8 +348,10 @@
             item.props.supportType = val[item.props.webconf.targetField];
           }
            
+
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
+
             if (
               val[item.validate.dynamicforcompute.computecolumn]
               === old[item.validate.dynamicforcompute.computecolumn]
@@ -402,7 +405,11 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          this.mountdataForm(this.formDataObject);
+          const Item = this.newFormItemLists.reduce((arr, item) => {
+            arr[item.item.field] = item.item.value;
+            return arr;
+          }, {});          
+          this.mountdataForm(this.formDataObject, Item);
           this.formInit();
           setTimeout(() => {
             this.actived = true;
@@ -595,20 +602,38 @@
           obj[end.colname] = current.item.value[1];
         }
         // checkbox
+        
         this.formValueItem = Object.assign(this.formValueItem, obj);
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
+      
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          if (this.oldformData[current.item.field] === obj[current.item.field]) {
+            return false;
+          }
           if (obj[current.item.field] || obj[current.item.field] === '') {
-            this.formRequest(obj, current.item, current.item.props.webconf.formRequest);
+            if (current.item.props.fkdisplay && current.item.value[0]) {
+              if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
+                return false;
+              }
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            } else {
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            }
+          } else {
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
       },
-      formRequest(obj, current, conf) {
+      formRequest(key, obj, current, conf) {
         // 走后台接口
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        // 拦截是否相同
+        // if (this.formDataObject[key] === obj[key]) {
+        //   return false;
+        // }
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
@@ -625,7 +650,7 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', key, list: res });
           }
         });
         return true;
@@ -645,6 +670,7 @@
         this.newFormItemLists[index].item.value = value;
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
+        return true;
       },
       refcolval(items, json) {
         if (interlocks() === true) {
@@ -682,8 +708,6 @@
         //  设置属性
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
-        console.log(field);
-
         if (!Array.isArray(field)) {
           return false;
         }
@@ -713,7 +737,7 @@
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
         const props = JSON.parse(JSON.stringify(item.props));
-
+        
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           if (item.props.webconf.setAttributes.props.value === '') {
@@ -727,6 +751,7 @@
           this.VerificationFormInt();
 
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
@@ -845,6 +870,5 @@
 .FormItemComponent {
   display: grid;
   grid-template-columns: repeat(4, 25%);
-  grid-auto-rows: minmax(auto);
 }
 </style>

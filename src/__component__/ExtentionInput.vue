@@ -185,11 +185,13 @@
         this.setFormatedValue();
       }, 10);
       // 添加黏贴功能
-      window.addEventListener('paste', (e) => {
+      if (!this.$refs.textarea && !this.$refs.textarea.$el) {
+        return false;
+      }
+      this.$refs.textarea.$el.querySelector('textarea').addEventListener('paste', (e) => {
         e.preventDefault();
         e.stopPropagation();
         const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
-
         if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
           try {
             this.transformedData = JSON.parse(paste) ? JSON.parse(paste) : '';

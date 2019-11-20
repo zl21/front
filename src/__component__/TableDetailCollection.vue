@@ -133,7 +133,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, 
+    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -699,7 +699,7 @@
         //       const data = {
         //         title: '警告',
         //         mask: true,
-        //         showCancel: true, 
+        //         showCancel: true,
         //         content: JSON.parse(tab.confirm).desc,
         //         onOk: () => {
         //           this.objTabActionSlientConfirm(tab);
@@ -810,7 +810,7 @@
               );
             }
           } else if (actionType === 'https:' || actionType === 'http:') {
-            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;     
+            const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const linkUrl = tab.action;
             const linkId = tab.webid;
@@ -832,7 +832,7 @@
             });
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.name });
             const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
             const obj = {
@@ -843,7 +843,7 @@
             router.push(
               path
             );
-          } 
+          }
         }
 
 
@@ -871,7 +871,7 @@
         //     label
         //   });
         // }
-      }, 
+      },
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
@@ -1315,8 +1315,8 @@
           if (modifyValue[tableName] && modifyValue[tableName][cellData.refcolval.srccol]) {
             return true;
           }
-          if (modifyValue[tableName]) {
-            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0) {
+          if (modifyValue[tableName] && Object.keys(modifyValue[tableName]).length > 0 && modifyValue[tableName][cellData.refcolval.srccol] !== undefined) {
+            if (modifyValue[tableName][cellData.refcolval.srccol] === '' || modifyValue[tableName][cellData.refcolval.srccol] === 0 ) {
               return false;
             }
           } else {
@@ -1324,6 +1324,8 @@
             const colname = defaultValue[tableName][cellData.refcolval.srccol];
             if (colname) {
               return true;
+            } else {
+              return false;
             }
           }
         } else if (cellData.refcolval && this.copyDataSource.row[params.index][cellData.refcolval.srccol].val === '') {
@@ -1353,24 +1355,28 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
+                        this.$Message.info(`请选择主表${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
+                        if (cur.childs) {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                        }
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
@@ -1405,44 +1411,195 @@
                 this.getFKList(params, cellData);
               },
               'on-input-value-change': (data, value) => {
-                if (this.fkSelectedChangeData[params.index]) {
-                  this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
-                    [cellData.key]: [{
-                      Label: data,
-                      ID: ''
-                    }]
-                  });
-                } else {
-                  this.fkSelectedChangeData[params.index] = Object.assign({}, {
-                    [cellData.key]: [{
-                      Label: data,
-                      ID: ''
-                    }]
-                  });
-                }
-                if (!value.inputValue) {
-                  value.transferDefaultSelected = [];
-                }
-                this.fkAutoData = [];
-                fkHttpRequest().fkFuzzyquerybyak({
-                  searchObject: {
-                    ak: data,
-                    colid: this.dataSource.row[params.index][cellData.colname].colid,
-                    fixedcolumns: {
-                      whereKeys: this.getMainRefobjid(params, cellData)
-                    }
-                  },
-                  success: (res) => {
-                    this.fkAutoData = res.data.data;
-                    const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-                    if (autoData.length === 0) {
-                      // autodata中没有 清空输入框
-                      value.notAutoData = true;
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
+                          return acc;
+                          }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择主表${obj.name}`);
+                      } else {
+                        if (this.fkSelectedChangeData[params.index]) {
+                          this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                            [cellData.key]: [{
+                              Label: data,
+                              ID: ''
+                            }]
+                          });
+                        } else {
+                          this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                            [cellData.key]: [{
+                              Label: data,
+                              ID: ''
+                            }]
+                          });
+                        }
+                        if (!value.inputValue) {
+                          value.transferDefaultSelected = [];
+                        }
+                        this.fkAutoData = [];
+                        fkHttpRequest().fkFuzzyquerybyak({
+                          searchObject: {
+                            ak: data,
+                            colid: this.dataSource.row[params.index][cellData.colname].colid,
+                            fixedcolumns: {
+                              whereKeys: this.getMainRefobjid(params, cellData)
+                            }
+                          },
+                          success: (res) => {
+                            this.fkAutoData = res.data.data;
+                            const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                            if (autoData.length === 0) {
+                              // autodata中没有 清空输入框
+                              value.notAutoData = true;
+                            } else {
+                              delete value.notAutoData;
+                            }
+                          }
+                        });
+                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                          if (cur.childs) {
+                            cur.childs.forEach((item) => {
+                              acc.push(item);
+                            });
+                          }
+                          return acc;
+                        }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     } else {
-                      delete value.notAutoData;
+                      if (this.fkSelectedChangeData[params.index]) {
+                        this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                          [cellData.key]: [{
+                            Label: data,
+                            ID: ''
+                          }]
+                        });
+                      } else {
+                        this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                          [cellData.key]: [{
+                            Label: data,
+                            ID: ''
+                          }]
+                        });
+                      }
+                      if (!value.inputValue) {
+                        value.transferDefaultSelected = [];
+                      }
+                      this.fkAutoData = [];
+                      fkHttpRequest().fkFuzzyquerybyak({
+                        searchObject: {
+                          ak: data,
+                          colid: this.dataSource.row[params.index][cellData.colname].colid,
+                          fixedcolumns: {
+                            whereKeys: this.getMainRefobjid(params, cellData)
+                          }
+                        },
+                        success: (res) => {
+                          this.fkAutoData = res.data.data;
+                          const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                          if (autoData.length === 0) {
+                            // autodata中没有 清空输入框
+                            value.notAutoData = true;
+                          } else {
+                            delete value.notAutoData;
+                          }
+                        }
+                      });
                     }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
+                  } else {
+                    if (this.fkSelectedChangeData[params.index]) {
+                      this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                        [cellData.key]: [{
+                          Label: data,
+                          ID: ''
+                        }]
+                      });
+                    } else {
+                      this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                        [cellData.key]: [{
+                          Label: data,
+                          ID: ''
+                        }]
+                      });
+                    }
+                    if (!value.inputValue) {
+                      value.transferDefaultSelected = [];
+                    }
+                    this.fkAutoData = [];
+                    fkHttpRequest().fkFuzzyquerybyak({
+                      searchObject: {
+                        ak: data,
+                        colid: this.dataSource.row[params.index][cellData.colname].colid,
+                        fixedcolumns: {
+                          whereKeys: this.getMainRefobjid(params, cellData)
+                        }
+                      },
+                      success: (res) => {
+                        this.fkAutoData = res.data.data;
+                        const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                        if (autoData.length === 0) {
+                          // autodata中没有 清空输入框
+                          value.notAutoData = true;
+                        } else {
+                          delete value.notAutoData;
+                        }
+                      }
+                    });
                   }
-                });
+                } else {
+                  if (this.fkSelectedChangeData[params.index]) {
+                    this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], {
+                      [cellData.key]: [{
+                        Label: data,
+                        ID: ''
+                      }]
+                    });
+                  } else {
+                    this.fkSelectedChangeData[params.index] = Object.assign({}, {
+                      [cellData.key]: [{
+                        Label: data,
+                        ID: ''
+                      }]
+                    });
+                  }
+                  if (!value.inputValue) {
+                    value.transferDefaultSelected = [];
+                  }
+                  this.fkAutoData = [];
+                  fkHttpRequest().fkFuzzyquerybyak({
+                    searchObject: {
+                      ak: data,
+                      colid: this.dataSource.row[params.index][cellData.colname].colid,
+                      fixedcolumns: {
+                        whereKeys: this.getMainRefobjid(params, cellData)
+                      }
+                    },
+                    success: (res) => {
+                      this.fkAutoData = res.data.data;
+                      const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                      if (autoData.length === 0) {
+                        // autodata中没有 清空输入框
+                        value.notAutoData = true;
+                      } else {
+                        delete value.notAutoData;
+                      }
+                    }
+                  });
+                }
               },
               'on-keydown': (e, i) => {
                 if (e.keyCode === 13) {
@@ -1539,14 +1696,16 @@
                     if (this.type === pageType.Vertical) {
                       if (!this.dropDownIsShowPopTip(cellData, params)) {
                         const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
-                          cur.childs.forEach((item) => {
-                            acc.push(item);
-                          });
+                            if (cur.childs) {
+                              cur.childs.forEach((item) => {
+                                acc.push(item);
+                              });
+                            }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
                         // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
-                        this.$Message.info(`请选择${obj.name}`);
+                        this.$Message.info(`请选择主表${obj.name}`);
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
@@ -1556,7 +1715,7 @@
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
-                      this.$Message.info(`请选择${obj.name}`);
+                      this.$Message.info(`请选择主表${obj.name}`);
                     }
                   } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                     const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
@@ -1606,29 +1765,133 @@
                 //     }]
                 //   });
                 // }
-                if (!value.inputValue) {
-                  value.transferDefaultSelected = [];
-                }
-                this.fkAutoData = [];
-                fkHttpRequest().fkFuzzyquerybyak({
-                  searchObject: {
-                    ak: data,
-                    colid: this.dataSource.row[params.index][cellData.colname].colid,
-                    fixedcolumns: {
-                      whereKeys: this.getMainRefobjid(params, cellData)
-                    }
-                  },
-                  success: (res) => {
-                    this.fkAutoData = res.data.data;
-                    const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
-                    if (autoData.length === 0) {
-                      // autodata中没有 清空输入框
-                      value.notAutoData = true;
+                if (cellData.refcolval) {
+                  if (cellData.refcolval.maintable) {
+                    if (this.type === pageType.Vertical) {
+                      if (!this.dropDownIsShowPopTip(cellData, params)) {
+                        const obj = this.mainFormInfo.formData.data.addcolums.reduce((acc, cur) => {
+                            if (cur.childs) {
+                              cur.childs.forEach((item) => {
+                                acc.push(item);
+                              });
+                            }
+                            return acc;
+                          }, [])
+                          .find(item => item.colname === cellData.refcolval.srccol);
+                        // const obj = this.$store.state[this.moduleComponentName].LinkageForm.find(item => item.key === cellData.refcolval.srccol);
+                        this.$Message.info(`请选择${obj.name}`);
+                      } else {
+                        if (!value.inputValue) {
+                          value.transferDefaultSelected = [];
+                        }
+                        this.fkAutoData = [];
+                        fkHttpRequest().fkFuzzyquerybyak({
+                          searchObject: {
+                            ak: data,
+                            colid: this.dataSource.row[params.index][cellData.colname].colid,
+                            fixedcolumns: {
+                              whereKeys: this.getMainRefobjid(params, cellData)
+                            }
+                          },
+                          success: (res) => {
+                            this.fkAutoData = res.data.data;
+                            const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                            if (autoData.length === 0) {
+                              // autodata中没有 清空输入框
+                              value.notAutoData = true;
+                            } else {
+                              delete value.notAutoData;
+                            }
+                          }
+                        });
+                      }
+                    } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                      const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                          return acc;
+                        }, [])
+                        .find(item => item.colname === cellData.refcolval.srccol);
+                      this.$Message.info(`请选择${obj.name}`);
                     } else {
-                      delete value.notAutoData;
+                      if (!value.inputValue) {
+                        value.transferDefaultSelected = [];
+                      }
+                      this.fkAutoData = [];
+                      fkHttpRequest().fkFuzzyquerybyak({
+                        searchObject: {
+                          ak: data,
+                          colid: this.dataSource.row[params.index][cellData.colname].colid,
+                          fixedcolumns: {
+                            whereKeys: this.getMainRefobjid(params, cellData)
+                          }
+                        },
+                        success: (res) => {
+                          this.fkAutoData = res.data.data;
+                          const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                          if (autoData.length === 0) {
+                            // autodata中没有 清空输入框
+                            value.notAutoData = true;
+                          } else {
+                            delete value.notAutoData;
+                          }
+                        }
+                      });
                     }
+                  } else if (!this.dropDownIsShowPopTip(cellData, params)) {
+                    const obj = this.copyDataSource.tabth.find(item => item.key === cellData.refcolval.srccol);
+                    this.$Message.info(`请选择${obj.name}`);
+                  } else {
+                    if (!value.inputValue) {
+                      value.transferDefaultSelected = [];
+                    }
+                    this.fkAutoData = [];
+                    fkHttpRequest().fkFuzzyquerybyak({
+                      searchObject: {
+                        ak: data,
+                        colid: this.dataSource.row[params.index][cellData.colname].colid,
+                        fixedcolumns: {
+                          whereKeys: this.getMainRefobjid(params, cellData)
+                        }
+                      },
+                      success: (res) => {
+                        this.fkAutoData = res.data.data;
+                        const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                        if (autoData.length === 0) {
+                          // autodata中没有 清空输入框
+                          value.notAutoData = true;
+                        } else {
+                          delete value.notAutoData;
+                        }
+                      }
+                    });
                   }
-                });
+                } else {
+                  if (!value.inputValue) {
+                    value.transferDefaultSelected = [];
+                  }
+                  this.fkAutoData = [];
+                  fkHttpRequest().fkFuzzyquerybyak({
+                    searchObject: {
+                      ak: data,
+                      colid: this.dataSource.row[params.index][cellData.colname].colid,
+                      fixedcolumns: {
+                        whereKeys: this.getMainRefobjid(params, cellData)
+                      }
+                    },
+                    success: (res) => {
+                      this.fkAutoData = res.data.data;
+                      const autoData = this.fkAutoData.filter(ele => (value.inputValue && ele.value.toUpperCase().indexOf(value.inputValue.toUpperCase()) > -1));
+                      if (autoData.length === 0) {
+                        // autodata中没有 清空输入框
+                        value.notAutoData = true;
+                      } else {
+                        delete value.notAutoData;
+                      }
+                    }
+                  });
+                }
               },
               'on-keydown': (e, i) => {
                 // if (e.keyCode === 13) {

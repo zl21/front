@@ -1443,7 +1443,26 @@
         ) {
           this._items.event.keydown(event);
         }
+      },
+      clearItem() {
+        if (this._items.props.defaultSelected) {
+          this._items.props.defaultSelected = [{
+            ID: '',
+            Label: ''
+          }];
+          this._items.value = this._items.props.defaultSelected;
+        } else if (this._items.props.selected) {
+          this._items.props.selected = [{
+            ID: '',
+            Label: ''
+          }];
+          this._items.value = '';
+        } else if (this._items.type === 'select') {
+          this._items.value = '';
+        }
+        this.valueChange();
       }
+      
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1454,6 +1473,9 @@
           // 表单赋值
           e.value.list.forEach((item) => {
             if (this._items.field === item.COLUMN_NAME || this._items.inputname === item.COLUMN_NAME) {
+              if (e.value.key === this._items.field) {
+                return false;
+              }
               if (!this._items.props.showCol) {
                 return false;
               }
@@ -1511,6 +1533,21 @@
           } else {
             this._items.value = e.value.value || '';
             this.valueChange();
+          }
+        }
+      });
+
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setLinkForm`, (e) => {
+        // 设置表单联动清空
+        if (Object.hasOwnProperty.call(this._items.validate, 'refcolval')) {
+          if (this._items.validate.refcolval.srccol === e.value.key) {
+            if (e.value.tableName) {
+              if (!this._items.validate.refcolval.maintable && this._items.props.tableGetName === e.value.tableName) {
+                this.clearItem();
+              }
+            } else if (this._items.props.tableGetName === '' || this._items.validate.refcolval.maintable) {
+              this.clearItem();
+            }
           }
         }
       });

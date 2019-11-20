@@ -8,7 +8,7 @@
             {{ o_table_name }}
           </li>
           <li class="resTop">
-            <span>版本号：</span>
+            <span><sub> *</sub>版本号：</span>
             <span class="version">
               <DropDownSelectFilter
                 :single="true"
@@ -19,18 +19,19 @@
                 @on-popper-show="getVersion"
                 @on-fkrp-selected="getVersionID"
                 @on-input-value-change="fuzzyquerybyak"
+                @on-clear="clear"
               />
             </span>
           </li>
           <li>
-            <span>{{ chineseName.TARGETTABLENVARCHAR }}：</span>
+            <span><sub> *</sub>{{ chineseName.TARGETTABLENVARCHAR }}：</span>
             <input
               v-model="t_table_name"
               type="text"
             >
           </li>
           <li>
-            <span>{{ chineseName.TARGETDESCRIPTION }}：</span>
+            <span><sub> *</sub>{{ chineseName.TARGETDESCRIPTION }}：</span>
             <input
               v-model="s_table_name"
               type="text"
@@ -92,6 +93,9 @@
     },
     components: {},
     methods: {
+      clear() {
+        this.version.ID = '';
+      },
       getVersionID(value) {
         this.version.ID = value[0].ID;
       },
@@ -131,15 +135,34 @@
           });
       },
       save() {
-        if (!this.t_table_name.trim() || !this.s_table_name.trim()) {
+        if (!this.t_table_name.trim()) {
           const data = {
             mask: true,
             title: '警告',
-            content: '请输入目标表名或目标描述'
+            content: '请输入目标表名'
           };
           this.$Modal.fcWarning(data);
           return;
         }
+        if (!this.s_table_name.trim()) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '请输入目标描述'
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+        if (!this.version.ID) {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '请输入版本号'
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
+
         const searchdata = {
           srctable: this.o_table_name, // 源表表名
           destable: this.t_table_name.trim(), // 目标表名
@@ -194,6 +217,12 @@
 .clonePopUp {
   font-size: 12px;
   height: 174px;
+  sub{
+    color: red;
+    font-size: 16px;
+    margin-right: 5px;
+
+  }
   .pop-title {
     // width: 400px;
     height: 152px;
