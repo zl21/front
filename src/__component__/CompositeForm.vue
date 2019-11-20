@@ -294,15 +294,14 @@
       },
       isReadonly(current) {
         // 设置界面的 是否 disable
-
         if (current.webconf && current.webconf.ignoreDisableWhenEdit && this.conditiontype !== 'list') {
           if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.objreadonly) {
             return false;
           }
-          return current.disabled;
+          return current.disabled || false ;
         }
         if (this.conditiontype === 'list') {
-          return current.disabled;
+          return current.disabled  || false;
         }
         if (this.objreadonly) {
           return true;
@@ -310,7 +309,7 @@
         if (current.disabled || current.readonly) {
           return true;
         }
-        return current.disabled;
+        return current.disabled || false;
       },
       childForm(option) {
         return this.childFormData.push(option);
@@ -1040,7 +1039,10 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
-        if (item.readonly === true && item.fkdisplay) {
+        const checkIsReadonly = this.isReadonly(item);
+        
+
+        if (checkIsReadonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
           if (
             item.fkdisplay === 'drp'
@@ -1314,7 +1316,6 @@
         const obj = item;
         // 判断是显示隐藏 是否 需要webcon
         const checkIsReadonly = this.isReadonly(current);
-
         item.props.maxlength = item.props.length;
         // item.props.disabled = item.props.readonly;
         item.props.comment = item.props.comment;
