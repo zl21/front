@@ -27,6 +27,11 @@
         v-text="item.webdesc" 
       />
       <Button
+        type="fcdefault"
+        @click="btnclick('custom', a)"
+        v-text="a.webdesc" 
+      />
+      <Button
         v-for="(item) in dataArray.jflowPluginDataArray"
         :key="item.button"
         :ref="item"
@@ -149,6 +154,16 @@
     },
     data() {
       return {
+        a: {
+          action: 'com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi',
+          actiontype: 'rpc',
+          ishide: false,
+          isrefrsh: false,
+          vuedisplay: 'slient',
+          webdesc: '财务审核',
+          webid: 3146003333,
+          webname: 'V_CUST_OPEN_FINANCE_EXAMINE',
+        },
         dialogComponentName: null,
         dialogConfig: {
           title: '提示',

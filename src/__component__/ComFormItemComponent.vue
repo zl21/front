@@ -406,13 +406,6 @@
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
-<<<<<<< HEAD
-            if (item.item.value) {
-              arr[item.item.field] = item.item.value;
-            }
-           
-
-=======
             if (Array.isArray(item.item.value)) {
               if (item.item.value[0] && Object.hasOwnProperty.call(item.item.value[0], 'ID')) {
                 if (item.item.value.length < 2 && item.item.value[0].ID) {
@@ -448,7 +441,6 @@
             } else if (item.item.value) {
               arr[item.item.field] = item.item.value;
             }
->>>>>>> 8f2b643b28adb5f9c994de017e142796090cee56
             return arr;
           }, {});          
           this.mountdataForm(this.formDataObject, Item);

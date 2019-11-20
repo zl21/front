@@ -1010,57 +1010,68 @@
       objTabActionSlientConfirm(tab) {
         let params = {};
         const label = `${this.activeTab.label.replace('编辑', '')}`;
-        if (Version() === '1.3' && tab.action.search('/') === -1) { // 1.3类型
-          const value = {};// 动态参数
-          let ids = [];// 子表勾选ID
-          let obj = {};// param层动态参数
-          if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-            // ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
-            ids = this.updateData[this.itemName].delete[this.itemName];
-          }
-          if (this.objectType === 'vertical') { // 上下结构
-            if (this.itemName === this.tableName) { // 主表(只处理主表逻辑)
-              obj = {
-                objid: this.tableId,
+        let ids = [];// 子表勾选1.4ID格式
+        let idsOld = [];// 1.3ID格式
+        if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+          ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
+          // ids = this.updateData[this.itemName].delete[this.itemName];
+        }
+        if (Version() === '1.3') { // 1.3类型
+            if( tab.action.search('/') === -1){
+              const obj = {// param层动态参数
+                objid: this.itemId,
                 table: this.tableName,
                 menu: label,
-                subparam: {// 上下结构主表参数结构
-                  idArr: ids, // 子表勾选ID
-                  table: this.itemNamw // 子表表名
+              };
+              if (this.objectType === 'vertical') { // 上下结构
+                if (idsOld.length > 0) { // 勾选了明细传subparam
+                  obj.subparam = {// 上下结构主表参数结构
+                    idArr: idsOld, // 子表勾选ID
+                    table: this.itemName // 子表表名
+                  };
                 }
+              } else if (this.subtables()) { // 有子表   左右结构
+                if (this.itemName === this.tableName) { // 主表
+                  // 无
+                } else if (idsOld.length > 0) { // 子表勾选了明细传subparam
+                  obj.data[this.itemName] = idsOld;       
+                }
+              }
+              params = obj;
+            }else{
+              //  console.log('请检查静默类型按钮action配置，例如:action:com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi);
+            }
+        } else if (Version() === '1.4') { // 1.4上下结构
+          let obj = {};
+          if (this.objectType === 'vertical') { // 上下结构
+            if (this.subtables()) { // 有子表
+              obj[this.tableName] = {
+                ID: this.itemId
+              };
+            } else { // 没有子表
+              obj = {
+                ID: this.itemId
               };
             }
           } else if (this.subtables()) { // 有子表   左右结构
-            if (this.itemName === this.tableName) { // 主表
-              obj = {
-                objid: this.tableId,
-                table: this.tableName,
-                menu: label,
+            if (this.itemName === this.tableName) { // 主表静默逻辑  走保存的逻辑
+              obj[this.tableName] = {
+                ID: this.itemId
               };
-            } else { // 子表
-
+            } else if (this.itemInfo.tabrelation === '1:1') { // 子表静默逻辑    // 没有表格
+              obj = {
+                tableName: this.itemName, // 子表表名
+                ids
+              };
+            } else { // 有表格
+              obj = {
+                tableName: this.itemName, // 子表表名
+                ids
+              };
             }
           }
           params = obj;
-        } else if (Version() === '1.4' && this.objectType === 'vertical') { // 1.4上下结构
-          const childTableParams = [];
-          if (this.isreftabs) { // 有子表
-            if (this.updateData[this.itemName].delete[this.itemName].length > 0) {
-              childTableParams[this.itemName] = this.updateData[this.itemName].delete[this.itemName].map(d => (d));// 子表选中项
-              params[this.itemName] = {
-                ...childTableParams[this.itemName]
-              };
-            }
-            params[this.tableName] = {
-              ID: this.itemId
-            };
-          } else { // 没有子表
-            params.ID = this.itemId;
-          }
-        } else { // 1.4左右结构
-          params[this.tableName] = {
-            ID: this.itemId
-          };
         }
        
 

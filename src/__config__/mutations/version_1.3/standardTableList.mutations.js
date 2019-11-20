@@ -175,6 +175,9 @@ export default {
   updateWebconfCommonTable({ webconf }, data) {
     webconf.commonTable = data.commonTable;
   }, // 修改state中commonTable的值
-  
  
+  updateWebconfDynamicRouting({ webconf }, data) {
+    webconf.dynamicRouting = data.dynamicRouting;
+  }, // 修改state中dynamicRouting的值
+  
 };

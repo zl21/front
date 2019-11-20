@@ -449,27 +449,46 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
+    tab,
     params,
     path,
     resolve, reject
   }) {
     let actionName = '';
-    if (path.search('/') !== -1) {
-      actionName = path;
-    } else {
+    if (path.search('/') === -1) {
       actionName = '';
-    }
-    network.post(actionName || '/p/cs/exeAction', params).then((res) => {
-      if (res.data.code === 0) {
-        const invalidData = res.data;
-        resolve();
-        commit('updateObjTabActionSlientConfirm', invalidData);
-      } else {
+      network.post(actionName || '/p/cs/exeAction', urlSearchParams({
+        actionid: tab.webid,
+        webaction: null,
+        param: JSON.stringify(params),
+      })).then((res) => {
+        if (res.data.code === 0) {
+          const invalidData = res.data;
+          resolve();
+  
+          commit('updateObjTabActionSlientConfirm', invalidData);
+        } else {
+          reject();
+        }
+      }).catch(() => {
         reject();
-      }
-    }).catch(() => {
-      reject();
-    });
+      });
+    } else {
+      actionName = path;
+
+      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+        if (res.data.code === 0) {
+          const invalidData = res.data;
+          resolve();
+  
+          commit('updateObjTabActionSlientConfirm', invalidData);
+        } else {
+          reject();
+        }
+      }).catch(() => {
+        reject();
+      });
+    }
   },
  
 };
