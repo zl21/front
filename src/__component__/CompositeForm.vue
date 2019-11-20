@@ -212,6 +212,7 @@
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
         childFormData: [],    
+        r3Form: {},
         computdefaultData: [], // form
         pathArry: [], // path 数组
         show: true,
@@ -222,6 +223,13 @@
       };
     },
     watch: {
+      mountNumber: {
+        handler() {
+          // 组件重组
+          this.computdefaultData = this.reorganizeForm();
+        }
+
+      },
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
@@ -488,7 +496,12 @@
           }
         }
         // 获取需要校验的表单
-        this.$emit('formChange', this.formData, this.formDataDef);
+        if (Version() === '1.3') {
+          this.$emit('formChange', this.formDataDef, this.formDataDef, this.formData);
+        } else {
+          this.$emit('formChange', this.formData, this.formDataDef);
+        }
+
         this.getStateData();
       },
       VerifyMessageForm(value, type) {
@@ -527,13 +540,13 @@
           return arr;
         }, {});
         // 1.3 外键传参 label
-        if (Version() === '1.3') {
-          const formItemArry = formItem.reduce((arr, item) => {
-            console.log(item.item.value);
-            return arr;
-          }, {});
-          console.log(this.defaultFormData, formItemArry, '66');
-        }
+        // if (Version() === '1.3') {
+        //   const formItemArry = formItem.reduce((arr, item) => {
+        //     console.log(item.item.value);
+        //     return arr;
+        //   }, {});
+        //   console.log(this.defaultFormData, formItemArry, '66');
+        // }
         // 外部change的值(复制修改过后的值 去修改 页面)
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
@@ -543,11 +556,20 @@
         }, {});
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          if (Version() === '1.3') {
+            this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
+          } else {
+            this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          }
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        this.$emit('InitializationForm', defaultFormData);
+        if (Version() === '1.3') {
+          this.r3Form = Object.assign(this.r3Form, formItem);
+          this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
+        } else {
+          this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        }
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
@@ -1789,6 +1811,11 @@
     },
     mounted() {
       this.Comparison();
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        console.log(e);
+        // this.mountNumber = (Math.random() * 1000).toFixed(0);
+      });
+
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {

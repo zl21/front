@@ -403,7 +403,11 @@
         this.actived = false;
         setTimeout(() => {
           //  传form 默认值
-          this.mountdataForm(this.formDataObject, this.newFormItemLists);
+          const Item = this.newFormItemLists.reduce((arr, item) => {
+            arr[item.item.field] = item.item.value;
+            return arr;
+          }, {});          
+          this.mountdataForm(this.formDataObject, Item);
           this.formInit();
           setTimeout(() => {
             this.actived = true;
@@ -603,6 +607,15 @@
         //  change 值 走后台接口赋值
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
+            if (current.item.props.fkdisplay && current.item.value[0]) {
+              if (current.item.value[0].ID !== obj[current.item.field] && current.item.value[0].ID !== '') {
+                return false;
+              }
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            } else {
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+            }
+          } else {
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -611,9 +624,9 @@
         // 走后台接口
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
         // 拦截是否相同
-        if (this.formDataObject[key] === obj[key]) {
-          return false;
-        }
+        // if (this.formDataObject[key] === obj[key]) {
+        //   return false;
+        // }
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
@@ -716,7 +729,7 @@
           item.oldProps = JSON.parse(JSON.stringify(item.props));
         }
         const props = JSON.parse(JSON.stringify(item.props));
-
+        
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           if (item.props.webconf.setAttributes.props.value === '') {
@@ -730,6 +743,7 @@
           this.VerificationFormInt();
 
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
@@ -848,6 +862,5 @@
 .FormItemComponent {
   display: grid;
   grid-template-columns: repeat(4, 25%);
-  grid-auto-rows: minmax(auto);
 }
 </style>

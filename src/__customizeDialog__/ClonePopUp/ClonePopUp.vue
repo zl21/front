@@ -19,6 +19,7 @@
                 @on-popper-show="getVersion"
                 @on-fkrp-selected="getVersionID"
                 @on-input-value-change="fuzzyquerybyak"
+                @on-clear="clear"
               />
             </span>
           </li>
@@ -92,6 +93,9 @@
     },
     components: {},
     methods: {
+      clear() {
+        this.version.ID = '';
+      },
       getVersionID(value) {
         this.version.ID = value[0].ID;
       },
