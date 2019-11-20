@@ -650,7 +650,7 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', list: res });
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', key, list: res });
           }
         });
         return true;

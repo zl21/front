@@ -1473,6 +1473,9 @@
           // 表单赋值
           e.value.list.forEach((item) => {
             if (this._items.field === item.COLUMN_NAME || this._items.inputname === item.COLUMN_NAME) {
+              if (e.value.key === this._items.field) {
+                return false;
+              }
               if (!this._items.props.showCol) {
                 return false;
               }
