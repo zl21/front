@@ -497,12 +497,12 @@
         }
 
         // 获取需要校验的表单
-        if (Version() === '1.3') {
-          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        } else {
-          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        }
-        // this.$emit('formChange', this.formData, this.formDataDef);
+        // if (Version() === '1.3') {
+        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        // } else {
+        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        // }
+        this.$emit('formChange', this.formData, this.formDataDef);
 
 
         this.getStateData();
@@ -1815,10 +1815,7 @@
     },
     mounted() {
       this.Comparison();
-      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
-        console.log(e);
-        // this.mountNumber = (Math.random() * 1000).toFixed(0);
-      });
+     
 
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
