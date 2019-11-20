@@ -171,6 +171,12 @@
           return '';
         }
       },
+      getsetAttsetProps: {
+        type: Function,
+        default() {
+          return function () {};
+        }
+      },
       verifymessageform: {
         type: Function,
         default() {
@@ -252,6 +258,7 @@
         checkMounted: false, // 是否初始化
         VerificationForm: [], // 需要校验的
         mountedTypeName: '',
+        setAttsetProps: {},
         LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
         oldformData: {}, // 老的change
@@ -260,41 +267,15 @@
       };
     },
     mounted() {
-      //   this.newFormItemLists.map((item) => {
-      //     if (Object.hasOwnProperty.call(item.item.validate, 'refcolval')) {
-      //       this.Mapping[item.item.validate.refcolval.srccol] = item.item.field;
-      //     }
-      //   });
-      //   this.formValueItem = {};
-
-      //   this.mapData = this.setMapping(this.Mapping);
-      // window.addEventListener('setValue', (value) => {
-      //   console.log(value);
-      // });
+      this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
       window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
-        if (e.value.type !== 'equal') {
-          // console.log(e.value);
-
-          const checkItem = this.newFormItemLists.some((item, i) => {
-            // console.log(i, item.item.field, e.value.field);
-            // 设置属性
-            let field = [];
-            field = e.value.props.webconf.setAttributes.field.reduce((arr, option) => {
-              arr.push(option.refcolumn);
-              return arr;
-            }, []);
-            const index = field.findIndex(x => x === item.item.field);
-            if (index !== -1) {
-              return true;
-            }
-            return item.item.field === e.value.field;
-          });
-          if (!checkItem) {
+        if (e.value.type === 'change') {
+          const checkItem = this.newFormItemLists.some(item => e.value.current.findIndex(x => x === item.item.field));
+          if (checkItem) {
             this.formInit();
           }
         }
-        // this.mountNumber = (Math.random() * 1000).toFixed(0);
       });
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
@@ -330,6 +311,7 @@
           }
           const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
           val = Object.assign(allValue, this.formValueItem);
+         
           this.computFormLinkage(val, old);
         },
         deep: true
@@ -363,11 +345,10 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
-          console.log(666);
-
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
+
 
           //  扩展属性 来源字段
           if (item.props.webconf && item.props.webconf.targetField) {
@@ -480,7 +461,7 @@
         //  form 计算 校验
         this.VerificationForm = [];
         this.newFormItemLists.forEach((item, index) => {
-          if (item.item.required && item.show) {
+          if (item.item.required && item.show && !item.item.props.disabled) {
             this.verificationMap(this.formIndex, index, item);
           }
         });
@@ -666,8 +647,15 @@
         this.formValueItem = Object.assign(this.formValueItem, obj);
 
         // 向父组件抛出整个数据对象以及当前修改的字段
+        
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
+        if (current.item.field) {
+          if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
+          }
+        }
+
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
@@ -705,6 +693,10 @@
         };
         if (!conf.url) {
           return false;
+        }
+         //   拦截默认值
+        if (!this.actived) {
+          return;
         }
         fkHttpRequest().equalformRequest({
           url: conf.url,
@@ -788,39 +780,31 @@
 
           const refval = option.refval.split(',');
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
-
           return refIndex !== -1;
         });
-        console.log(checkout, 'checkout');
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
           item.oldProps.required = item.required;
         }
         const props = JSON.parse(JSON.stringify(item.props));
-        
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           if (item.props.webconf.setAttributes.props.value === '') {
             item.value = '';
           }
-          console.log();
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else {
             item.required = false;
           }
-          this.VerificationFormInt();
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
-          console.log(item.title);
-
-          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item, field);
+          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
           item.required = item.oldProps.required;
-
-          this.VerificationFormInt();
-        }
+        }        
+        this.VerificationFormInt();
         return true;
       },
       filtercolumn(item, formindex, val) {

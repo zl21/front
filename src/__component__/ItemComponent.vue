@@ -1521,7 +1521,7 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
-          console.log(this._items);
+
           this._items.props = e.value.props;
           if (e.value.value === '') {
             this.clearItem();
