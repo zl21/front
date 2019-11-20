@@ -254,6 +254,7 @@
         mountedTypeName: '',
         LinkageForm: [], // 所有form
         formDatadefObject: {}, // 获取form默认值
+        oldformData: {}, // 老的change
         setHeight: 34,
         actived: false
       };
@@ -295,6 +296,7 @@
       formDataObject: {
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理
+          this.oldformData = old;
           if (this.indexItem === -1) {
             return;
           }
@@ -600,15 +602,20 @@
           obj[end.colname] = current.item.value[1];
         }
         // checkbox
+        
         this.formValueItem = Object.assign(this.formValueItem, obj);
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
+      
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          if (this.oldformData[current.item.field] === obj[current.item.field]) {
+            return false;
+          }
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (current.item.value[0].ID !== obj[current.item.field] && current.item.value[0].ID !== '') {
+              if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
                 return false;
               }
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
@@ -663,6 +670,7 @@
         this.newFormItemLists[index].item.value = value;
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
+        return true;
       },
       refcolval(items, json) {
         if (interlocks() === true) {
