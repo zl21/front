@@ -450,6 +450,16 @@
             data[current.item.field] = data[current.item.field].toUpperCase();
           }
         }
+        // 针对明细列表外键回车查询功能
+        if (this.conditiontype !== 'list') {
+          if (current) {
+            if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
+              // if (!Array.isArray(setdefval)) {
+              //   data[current.item.field] = '';
+              // }
+            }
+          }
+        }
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截
@@ -505,7 +515,7 @@
         // } else {
         //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         // }
-        this.$emit('formChange', this.formData, this.formDataDef);
+        this.$emit('formChange', this.formData, this.formDataDef, this.formData);
 
 
         this.getStateData();
@@ -567,7 +577,7 @@
           // } else {
           //   this.$emit('formChange', defaultSetValue, this.defaultSetValue);
           // }
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue, defaultSetValue);
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
@@ -577,7 +587,7 @@
         // } else {
         //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         // }
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, defaultFormData);
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
@@ -748,7 +758,7 @@
                   }
                 } else if (item.type === 'DropDownSelectFilter') {
                   if (Array.isArray(item.value)) {
-                    if (item.value && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
+                    if (item.value && item.value[0] && (item.value[0].ID === '' || item.value[0].ID === undefined)) {
                       Fitem[index].item.props.defaultSelected = [{
                         label: '',
                         ID: ''
@@ -851,7 +861,7 @@
       getLinkData(current) {
         // 获取表信息
        
-
+        console.log(current, 'current');
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = {};
           if (current.refcolval.maintable) {
