@@ -497,12 +497,12 @@
         }
 
         // 获取需要校验的表单
-        // if (Version() === '1.3') {
-        //   this.$emit('formChange', this.formDataDef, this.formDataDef, this.formData);
-        // } else {
-        //   this.$emit('formChange', this.formData, this.formDataDef);
-        // }
-        this.$emit('formChange', this.formData, this.formDataDef);
+        if (Version() === '1.3') {
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        } else {
+          this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        }
+        // this.$emit('formChange', this.formData, this.formDataDef);
 
 
         this.getStateData();
