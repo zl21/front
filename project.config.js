@@ -10,6 +10,7 @@ module.exports = {
   // target: 'http://dev.burgeononline.com:8120', // 掌云测试环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
   // target: 'http://r3.burgeon.cn:28888', // 李宁
+  // target: 'http://106.15.24.156:19093', // 李宁AD
   // target: 'http://139.224.169.76:28888', // 沁园
   
   Version: '1.4', // 版本号

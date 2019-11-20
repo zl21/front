@@ -518,7 +518,7 @@
         // }
         // 开启
         // 注释
-        this.$emit('formChange', this.formData, this.formDataDef);
+        this.$emit('formChange', this.formData, this.formDataDef, this.formData);
         // 注释
 
         this.getStateData();
@@ -585,7 +585,7 @@
           // 注释
 
 
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue);  
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue,defaultSetValue);  
           // 注释
         }
         this.getStateData();
@@ -599,7 +599,7 @@
         // }
         // 开启
         // 注释
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue,defaultFormData);
         // 注释
       },
       reduceForm(array, current, index) {
