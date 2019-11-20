@@ -272,6 +272,30 @@
       //   console.log(value);
       // });
       // 映射回调
+      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+        if (e.value.type !== 'equal') {
+          // console.log(e.value);
+
+          const checkItem = this.newFormItemLists.some((item, i) => {
+            // console.log(i, item.item.field, e.value.field);
+            // 设置属性
+            let field = [];
+            field = e.value.props.webconf.setAttributes.field.reduce((arr, option) => {
+              arr.push(option.refcolumn);
+              return arr;
+            }, []);
+            const index = field.findIndex(x => x === item.item.field);
+            if (index !== -1) {
+              return true;
+            }
+            return item.item.field === e.value.field;
+          });
+          if (!checkItem) {
+            this.formInit();
+          }
+        }
+        // this.mountNumber = (Math.random() * 1000).toFixed(0);
+      });
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
         // 获取校验
@@ -339,6 +363,8 @@
             this.filtercolumn(item, i, val);
           }
           // 设置属性
+          console.log(666);
+
           if (item.props.webconf && item.props.webconf.setAttributes) {
             this.setAttributes(item, i, val);
           }
@@ -644,13 +670,12 @@
         //  change 值 走后台接口赋值
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          console.log(this.oldformData[current.item.field], obj[current.item.field]);
-          if (this.oldformData[current.item.field] === obj[current.item.field]) {
-            return false;
-          }
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
               if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
+                return false;
+              }
+              if (this.oldformData[current.item.field] === obj[current.item.field]) {
                 return false;
               }
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
@@ -746,7 +771,6 @@
         if (!Array.isArray(field)) {
           return false;
         }
-
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
           if (!optionValue) {
@@ -767,9 +791,11 @@
 
           return refIndex !== -1;
         });
+        console.log(checkout, 'checkout');
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
+          item.oldProps.required = item.required;
         }
         const props = JSON.parse(JSON.stringify(item.props));
         
@@ -778,23 +804,22 @@
           if (item.props.webconf.setAttributes.props.value === '') {
             item.value = '';
           }
+          console.log();
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else {
             item.required = false;
           }
           this.VerificationFormInt();
+          item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+          console.log(item.title);
 
-          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
-
-          this.newFormItemLists[formindex].item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item, field);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
-          if (item.oldProps.required) {
-            item.required = true;
-          } else {
-            item.required = false;
-          }
+          item.required = item.oldProps.required;
+
+          this.VerificationFormInt();
         }
         return true;
       },
