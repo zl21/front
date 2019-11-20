@@ -56,6 +56,7 @@
         newformList: {},
         formChangeData: {},
         fixedcolumns: {},
+        defaultData: {},
         Condition: 'list',
         objids: [],
         poptitle: '批量修改',
@@ -102,6 +103,8 @@
                 itemChilds.forEach((option) => {
                   option.isnotnull = false;
                 });
+              } else {
+                itemChilds.isnotnull = false;
               }   
               arr.push(itemChilds);
 
@@ -145,6 +148,53 @@
       oncancle() {
         this.$emit('on-oncancle-success', this);
       },
+      saveDataOld() {
+        this.loading = true;
+        const localdata = {
+          table: this.router.tableName, // 表名
+          column_include_uicontroller: true, //
+          reffixedcolumns: {}, // 左边树
+        };
+        if (!this.type) {
+          localdata.objids = this.objids;
+        } else {
+          localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
+        }
+        const keyValue = Object.keys(this.defaultData).reduce((arr, item) => {
+          if (this.formChangeData[item]) {
+            if (Array.isArray(this.defaultData[item])) {
+              if (this.defaultData[item][0] && Object.hasOwnProperty.call(this.defaultData[item][0], 'ID')) {
+                arr[item] = this.defaultData[item].reduce((arrII, itemII) => {
+                  arrII.push(itemII.Label);
+                  return arrII;
+                }, []);
+                arr[item] = arr[item].join('');
+                return arr;
+              } 
+              arr[item] = this.defaultData[item][0];
+            } else {
+              arr[item] = this.defaultData[item];
+            }
+            return arr;
+          }
+        }, {});
+        const searchObject = {
+          data: {
+            [this.router.tableName]: this.formChangeData
+          },
+          after: {
+            [this.router.tableName]: keyValue
+          },
+          searchdata: localdata
+        };
+        fkHttpRequest().fksaveModify({
+          searchObject,
+          success: (res) => {
+            this.loading = false;
+            this.$emit('on-save-success', res);
+          }
+        });
+      },
       saveData() {
         this.loading = true;
         const localdata = {
@@ -171,7 +221,6 @@
       },
       open(router, ids, fixedcolumns, id) {
         //  打开弹窗
-        console.log(id, fixedcolumns);
         this.ids = ids;
         this.router = router;
         if (id === 'all') {
@@ -188,14 +237,19 @@
         };
         this.getData(searchObject);
       },
-      formChange(data) {
+      formChange(data, defaultData, changeData) {
         // form 修改的数据
 
-        this.formChangeData = Object.assign(this.formChangeData, data);
+        this.formChangeData = Object.assign(this.formChangeData, changeData);
+        this.defaultData = Object.assign(this.defaultData, defaultData);
       },
       confirm() {
         // b保存提交
-        this.saveData();
+        if (Version() === '1.3') {
+          this.saveDataOld();
+        } else {
+          this.saveData();
+        }
       }
     },
     mounted() {
