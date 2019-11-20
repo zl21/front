@@ -39,6 +39,7 @@
                 :condition="conditiontype"
                 :module-form-type="moduleFormType"
                 :get-state-data="getStateData"
+                :getset-attset-props="getsetAttsetProps"
                 :verifymessageform="VerifyMessageForm"
                 :mountdata-form="mountdataForm"
                 :mounted-type="mountNumber"
@@ -68,6 +69,7 @@
           :default-column="defaultColumnCol"
           :condition="conditiontype"
           :mounted-type="mountNumber"
+          :getset-attset-props="getsetAttsetProps"
           :is-main-table="isMainTableForm"
           :get-state-data="getStateData"
           :mountdata-form="mountdataForm"
@@ -214,6 +216,7 @@
         childFormData: [],    
         r3Form: {},
         computdefaultData: [], // form
+        setAttsetProps: {}, // 静态属性 映射
         pathArry: [], // path 数组
         show: true,
         defaultColumnCol: this.defaultData.objviewcol || 4,
@@ -828,7 +831,22 @@
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
         });         
+        // 静态属性
+        if (obj.item.props.webconf && obj.item.props.webconf.setAttributes) {
+          obj.item.props.webconf.setAttributes.field.forEach((option) => {
+            if (!this.setAttsetProps[option.refcolumn]) {
+              this.setAttsetProps[option.refcolumn] = [obj.item.field];
+            } else if (this.setAttsetProps[option.refcolumn].findIndex(x => x === obj.item.field) === -1) {
+              this.setAttsetProps[option.refcolumn].push(obj.item.field);
+            }
+          });
+        }
+
+        
         return obj;
+      },
+      getsetAttsetProps() {
+        return this.setAttsetProps;
       },
       getLinkData(current) {
         // 获取表信息
