@@ -1012,9 +1012,13 @@
         const label = `${this.activeTab.label.replace('编辑', '')}`;
         let ids = [];// 子表勾选1.4ID格式
         let idsOld = [];// 1.3ID格式
+        let idsOldTypeNumber = [];// 1.3ID格式,number类型
+
         if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
           ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+          idsOldTypeNumber = this.updateData[this.itemName].delete[this.itemName].map(item => Number(item.ID));
           idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
+
           // ids = this.updateData[this.itemName].delete[this.itemName];
         }
         if (Version() === '1.3') { // 1.3类型
@@ -1035,8 +1039,8 @@
               if (this.itemName === this.tableName) { // 主表
                 // 无
               } else { // 子表勾选了明细传subparam
-                obj.data =JSON.stringify( {
-                  [this.itemName]: idsOld
+                obj.data = JSON.stringify({
+                  [this.itemName]: idsOldTypeNumber
                 });      
               }
             }

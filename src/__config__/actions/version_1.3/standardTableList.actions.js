@@ -115,7 +115,7 @@ export default {
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonExeActionData', res.data.message);
-      } else if (res.data.code === -1) {
+      } else {
         commit('updateButtonExeActionData', res.data.message);
         reject();
       }

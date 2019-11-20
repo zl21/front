@@ -991,12 +991,7 @@
               } else {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).desc}`;
-                const data = {
-                  mask: true,
-                  title,
-                  content: contentText
-                };
-                this.$Modal.fcWarning(data);
+              this.dialogMessage(title, contentText);
               }
             } else {
               const title = this.ChineseDictionary.WARNING;
