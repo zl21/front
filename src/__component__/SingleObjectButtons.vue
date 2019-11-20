@@ -1025,8 +1025,8 @@
               menu: label,
             };
             if (this.objectType === 'vertical') { // 上下结构
-              if (idsOld.length > 0) { // 勾选了明细传subparam
-                obj.subparam = {// 上下结构主表参数结构
+              // if (idsOld.length > 0) { // 勾选了明细传subparam
+                obj.subParam = {// 上下结构主表参数结构
                   idArr: idsOld, // 子表勾选ID
                   table: this.itemName // 子表表名
                 };
