@@ -737,7 +737,7 @@
             };
             if (this.type === 'vertical') { // 上下结构
               if (ids.length > 0) { // 勾选了明细传subparam
-                obj.subparam = {// 上下结构主表参数结构
+                param.subparam = {// 上下结构主表参数结构
                   idArr: ids, // 子表勾选ID
                   table: this.tableName // 子表表名
                 };

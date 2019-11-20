@@ -1018,30 +1018,30 @@
           // ids = this.updateData[this.itemName].delete[this.itemName];
         }
         if (Version() === '1.3') { // 1.3类型
-            if( tab.action.search('/') === -1){
-              const obj = {// param层动态参数
-                objid: this.itemId,
-                table: this.tableName,
-                menu: label,
-              };
-              if (this.objectType === 'vertical') { // 上下结构
-                if (idsOld.length > 0) { // 勾选了明细传subparam
-                  obj.subparam = {// 上下结构主表参数结构
-                    idArr: idsOld, // 子表勾选ID
-                    table: this.itemName // 子表表名
-                  };
-                }
-              } else if (this.subtables()) { // 有子表   左右结构
-                if (this.itemName === this.tableName) { // 主表
-                  // 无
-                } else if (idsOld.length > 0) { // 子表勾选了明细传subparam
-                  obj.data[this.itemName] = idsOld;       
-                }
+          if (tab.action.search('/') === -1) {
+            const obj = {// param层动态参数
+              objid: this.itemId,
+              table: this.tableName,
+              menu: label,
+            };
+            if (this.objectType === 'vertical') { // 上下结构
+              if (idsOld.length > 0) { // 勾选了明细传subparam
+                obj.subparam = {// 上下结构主表参数结构
+                  idArr: idsOld, // 子表勾选ID
+                  table: this.itemName // 子表表名
+                };
               }
-              params = obj;
-            }else{
-              //  console.log('请检查静默类型按钮action配置，例如:action:com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi);
+            } else if (this.subtables()) { // 有子表   左右结构
+              if (this.itemName === this.tableName) { // 主表
+                // 无
+              } else if (idsOld.length > 0) { // 子表勾选了明细传subparam
+                obj.data[this.itemName] = idsOld;       
+              }
             }
+            params = obj;
+          }else {
+            //  console.log('请检查静默类型按钮action配置，例如:action:com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi);
+          }
         } else if (Version() === '1.4') { // 1.4上下结构
           let obj = {};
           if (this.objectType === 'vertical') { // 上下结构
