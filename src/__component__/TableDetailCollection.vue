@@ -732,7 +732,7 @@
           if (tab.action.search('/') === -1) {
             const param = {// param层动态参数
               // objid: itemId,
-              table: tableName,
+              table: this.tableName,
               menu: label,
               ids, // 子表勾选ID
             };
