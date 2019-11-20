@@ -1815,10 +1815,7 @@
     },
     mounted() {
       this.Comparison();
-      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
-        console.log(e);
-        // this.mountNumber = (Math.random() * 1000).toFixed(0);
-      });
+     
 
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
