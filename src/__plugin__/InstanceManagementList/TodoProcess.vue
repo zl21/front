@@ -711,6 +711,7 @@
       setAgent() {
         const needdata = {};
         needdata.USER_ID = window.jflowPlugin.userInfo.id;
+        needdata.AGENT_ENAME = window.jflowPlugin.userInfo.ename;
         if (this.resultData.list && this.resultData.list.length > 0) {
           needdata.AGENT_ID = Number(this.resultData.list[0].ID);
         }

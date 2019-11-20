@@ -271,7 +271,7 @@
     },
     watch: {
       tabalive(newVal, oldVal) {
-        if (newVal === '抄送人') {
+        if (newVal === '抄送我的') {
           this.getselectOption();
           this.queryLists();
         }
