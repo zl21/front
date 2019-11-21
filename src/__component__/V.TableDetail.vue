@@ -15,6 +15,7 @@
     />
     <composite-form
       v-if="mainFormInfo.formData.isShow"
+      class="compositeAllform"
       object-type="vertical"
       :is-main-table="true"
       :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
