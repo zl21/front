@@ -123,12 +123,12 @@ export default {
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const { tableName } = parame;
     const { objId } = parame;
-    const { path } = parame;
+    // const { path } = parame;
     const { type } = parame;
     const { itemName } = parame;
     const { itemCurrentParameter } = parame;
-    const { isreftabs } = parame;
-    const { itemNameGroup } = parame;
+    // const { isreftabs } = parame;
+    // const { itemNameGroup } = parame;
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -154,31 +154,33 @@ export default {
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
       const itemModify = itemCurrentParameter.modify;// 子表修改
-      const itemDefault = itemCurrentParameter.default;
+      // const itemDefault = itemCurrentParameter.default;
       const itemAdd = itemCurrentParameter.add;// 子表新增
+      const { modifyLabel } = parame;// 用于begore after字段翻译修改过后的中文label
+      const { defaultLabel } = parame;// 用于begore after字段翻译修改过后的中文默认label
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-      const dufault = parame.default;
+      // const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
-        const dufaultData = dufault[tableName];
-        const defaultForSave = {};
-        const dufaultDataForSave = {};
-        Object.keys(dufaultData).reduce((obj, item) => { 
-          const modifyData = modify[tableName];
-          Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
-            if (item === modifyDataItem) {
-              defaultForSave[modifyDataItem] = dufaultData[item];
-            }
-            return modifyDataObj;
-          }, {});
-          return obj;
-        }, {});
-        dufaultDataForSave[tableName] = defaultForSave;
+        // const dufaultData = dufault[tableName];
+        // const defaultForSave = {};
+        // const dufaultDataForSave = {};
+        // Object.keys(dufaultData).reduce((obj, item) => { 
+        //   const modifyData = modify[tableName];
+        //   Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
+        //     if (item === modifyDataItem) {
+        //       defaultForSave[modifyDataItem] = dufaultData[item];
+        //     }
+        //     return modifyDataObj;
+        //   }, {});
+        //   return obj;
+        // }, {});
+        // dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: { ...modify },
-          before: dufaultDataForSave
+          after: { ...modifyLabel },
+          before: { ...defaultLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -215,42 +217,42 @@ export default {
           }
         });
       } else if (sataTypeName === 'modify') {
-        const defaultData = [];
-        const defaultForSaveArray = [];
-        const defaultForSave = {};
-        const dufaultDataForSave = {};
-        if (typeof itemModify[itemName] === 'object') {
+        // const defaultData = [];
+        // const defaultForSaveArray = [];
+        // const defaultForSave = {};
+        // const dufaultDataForSave = {};
+        // if (typeof itemModify[itemName] === 'object') {
 
-        } else {
-          itemModify[itemName].forEach((modifyItem) => {
-            itemDefault[itemName].forEach((defaultItem) => {
-              if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-                Object.keys(defaultItem).reduce((obj, item) => { 
-                  Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-                    if (item === modifyDataItem) {
-                      let itemDefault = {};
-                      defaultForSave[modifyDataItem] = defaultItem[item];
-                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
-                      defaultForSaveArray.push(itemDefault);
-                    }
-                    return modifyDataObj;
-                  }, {});
-                  return obj;
-                }, {});
-                defaultData.push(defaultItem);
-              }
-            });
-          });
-        }
+        // } else {
+        //   itemModify[itemName].forEach((modifyItem) => {
+        //     itemDefault[itemName].forEach((defaultItem) => {
+        //       if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+        //         Object.keys(defaultItem).reduce((obj, item) => { 
+        //           Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+        //             if (item === modifyDataItem) {
+        //               let itemDefault = {};
+        //               defaultForSave[modifyDataItem] = defaultItem[item];
+        //               itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+        //               defaultForSaveArray.push(itemDefault);
+        //             }
+        //             return modifyDataObj;
+        //           }, {});
+        //           return obj;
+        //         }, {});
+        //         defaultData.push(defaultItem);
+        //       }
+        //     });
+        //   });
+        // }
         
        
-        dufaultDataForSave[tableName] = defaultForSave;
+        // dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: { ...itemModify },
-          before: { defaultForSaveArray }
+          after: { ...modifyLabel },
+          before: { ...defaultLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -289,36 +291,36 @@ export default {
           });
         } 
         if (Object.values(itemModify[itemName]).length > 0) {
-          const defaultData = [];
-          const defaultForSaveArray = [];
-          const defaultForSave = {};
-          const dufaultDataForSave = {};
-          itemModify[itemName].forEach((modifyItem) => {
-            itemDefault[itemName].forEach((defaultItem) => {
-              if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-                Object.keys(defaultItem).reduce((obj, item) => { 
-                  Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-                    if (item === modifyDataItem) {
-                      let itemDefault = {};
-                      defaultForSave[modifyDataItem] = defaultItem[item];
-                      itemDefault = Object.assign({}, modifyItem, defaultForSave);  
-                      defaultForSaveArray.push(itemDefault);
-                    }
-                    return modifyDataObj;
-                  }, {});
-                  return obj;
-                }, {});
-                defaultData.push(defaultItem);
-              }
-            });
-          });
-          dufaultDataForSave[tableName] = defaultForSave;
+          // const defaultData = [];
+          // const defaultForSaveArray = [];
+          // const defaultForSave = {};
+          // const dufaultDataForSave = {};
+          // itemModify[itemName].forEach((modifyItem) => {
+          //   itemDefault[itemName].forEach((defaultItem) => {
+          //     if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
+          //       Object.keys(defaultItem).reduce((obj, item) => { 
+          //         Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
+          //           if (item === modifyDataItem) {
+          //             let itemDefault = {};
+          //             defaultForSave[modifyDataItem] = defaultItem[item];
+          //             itemDefault = Object.assign({}, modifyItem, defaultForSave);  
+          //             defaultForSaveArray.push(itemDefault);
+          //           }
+          //           return modifyDataObj;
+          //         }, {});
+          //         return obj;
+          //       }, {});
+          //       defaultData.push(defaultItem);
+          //     }
+          //   });
+          // });
+          // dufaultDataForSave[tableName] = defaultForSave;
           parames = {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            after: { ...itemModify },
-            before: { defaultForSaveArray }
+            after: { ...modifyLabel },
+            before: { ...defaultLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {

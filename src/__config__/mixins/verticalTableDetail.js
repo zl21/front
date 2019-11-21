@@ -62,8 +62,10 @@ export default () => ({
       [
         'updateTabCurrentIndex',
         'updateDefaultData',
+        'updateDefaultLabelData',
         'updateAddData',
         'updateModifyData',
+        'updateModifyLabelData',
         'updateDeleteData',
         'updateChangeData',
         'updateCheckedInfoData',
