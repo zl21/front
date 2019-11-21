@@ -461,19 +461,20 @@
         const tableId = props.reftableid;
         const label = this._items.title;
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-        if (!serviceIdMap[tableName] && props.serviceId) {
+        if (props.serviceId) {
           const addname = `S.${tableName}.${props.reftableid}`;
           this.addKeepAliveLabelMaps({
             name: addname,
             label
           });
-          this.addServiceIdMap({
-            tableName,
-            gateWay: props.serviceId
-          });
-          serviceIdMap[tableName] = props.serviceId;
-
-          window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+          if (Version() === '1.4') {
+            serviceIdMap[tableName] = props.serviceId;
+            window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+            this.addServiceIdMap({
+              tableName,
+              gateWay: props.serviceId
+            });
+          }
         }
 
         let id = 0;
@@ -1473,6 +1474,9 @@
         if (e.value.type === 'equal') {
           // 表单赋值
           e.value.list.forEach((item) => {
+            if (this._items.props.tableGetName !== e.value.tableName) {
+              return false;
+            }
             if (this._items.field === item.COLUMN_NAME || this._items.inputname === item.COLUMN_NAME) {
               if (e.value.key === this._items.field) {
                 return false;

@@ -276,6 +276,7 @@
             const index = e.value.current.findIndex(x => x === item.item.field);
             return index != -1;
           });
+          console.log(checkItem, 'checkItem');
           if (checkItem) {
             this.formInit();
           }
@@ -722,7 +723,11 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', key, list: res });
+            const tableName = this.isMainTable ? '' : this.childTableName;
+
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, {
+            type: 'equal', key, list: res, tableName 
+            });
           }
         });
         return true;
@@ -806,6 +811,9 @@
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
           item.oldProps.required = item.required;
+          if (item.props.regx) {
+            item.oldProps.regx = item.props.regx;
+          }
         }
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
