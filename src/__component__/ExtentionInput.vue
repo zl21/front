@@ -8,7 +8,7 @@
       ref="textarea"
       type="textarea"
       :rows="rows"
-      :placeholder="''"
+      :placeholder="placeholder"
       readonly
       :disabled="webConfig.disabled"
       @on-keydown="onKeydown"
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-  import { parse } from 'path';
   import { extentionForColumn, extentionForTable } from '../constants/global';
   import ExtentionProperty from './ExtentionsProperty/ExtentionProperty';
   
@@ -83,6 +82,7 @@
     },
     data() {
       return {
+        placeholder: '',
         currentValue: '',
         showModal: false,
         transformedData: {},
@@ -123,6 +123,7 @@
       deleteValue() {
         // 清空功能
         this.transformedData = '';
+        this.placeholder = '';
         this.$emit('valueChange', '');
       },
       onOk() {
@@ -138,6 +139,39 @@
       },
       onCancel() {
         this.showModal = false;
+      },
+      pasteListener(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
+        if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
+          try {
+            const copyData = JSON.parse(paste) ? JSON.parse(paste) : '';
+            const supportTypeMap = extentionForColumn().reduce((a, c) => { a[c.key] = c.supportType || []; return a; }, {});
+            const unMappedKey = [];
+            if (copyData) {
+              Object.keys(copyData).forEach((key) => {
+                if (supportTypeMap[key].indexOf(this.webConfig.supportType) === -1) {
+                  unMappedKey.push(key);
+                  delete copyData[key];
+                }
+              });
+            }
+            this.placeholder = `如下扩展属性：[${unMappedKey.toString()}] 与当前赋值方式不匹配。`;
+            if (Object.keys(copyData).length === 0) {
+              return;
+            }
+            this.transformedData = copyData;
+            this.$emit('valueChange', JSON.stringify(copyData));
+          } catch (err) {
+            this.$Modal.fcWarning({
+              mask: true,
+              showCancel: false,
+              title: '提示',
+              content: '请输入json 形式的字符串',
+            });
+          }
+        }
       },
     },
     watch: {
@@ -185,27 +219,9 @@
         this.setFormatedValue();
       }, 10);
       // 添加黏贴功能
-      if (!this.$refs.textarea && !this.$refs.textarea.$el) {
-        return false;
+      if (this.$refs.textarea && this.$refs.textarea.$el) {
+        this.$refs.textarea.$el.querySelector('textarea').addEventListener('paste', this.pasteListener);
       }
-      this.$refs.textarea.$el.querySelector('textarea').addEventListener('paste', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
-        if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
-          try {
-            this.transformedData = JSON.parse(paste) ? JSON.parse(paste) : '';
-            this.$emit('valueChange', JSON.stringify(JSON.parse(paste)));
-          } catch (err) {
-            this.$Modal.fcWarning({
-              mask: true,
-              showCancel: false,
-              title: '提示',
-              content: '请输入json 形式的字符串',
-            });
-          }
-        }
-      });
     }
   };
 </script>
@@ -215,6 +231,9 @@
     position: relative;
     textarea {
       resize: none;
+    }
+    textarea::placeholder {
+      color: red;
     }
     i {
       font-size: 16px;
