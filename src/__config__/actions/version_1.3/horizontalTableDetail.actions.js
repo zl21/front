@@ -202,8 +202,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: { ...labelregroup },
-          before: { ...modifyLabel }
+          before: labelregroupTableName,
+          after: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -274,8 +274,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: itemModifyLabel,
-          before: itemDefaultLabel
+          before: itemModifyLabel,
+          after: itemDefaultLabel
          
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -343,8 +343,8 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            after: { ...labelregroup },
-            before: { ...modifyLabel }
+            before: labelregroupTableName,
+            after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {
