@@ -370,5 +370,8 @@ export default {
   },
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
+  },
+  updateWatermarkimg(state, value) { // 修改水印
+    state.tabPanels[0].componentAttribute.buttonsData.data.watermarkimg = value;
   }
 };
