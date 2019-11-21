@@ -1526,18 +1526,18 @@
           this._items.props = e.value.props;
           this._items.props.readonly = e.value.props.disabled;
           
-          if (e.value.value === '') {
-            this.clearItem();
-            this.valueChange();
-          } else if (Array.isArray(e.value.value)) {
-            this._items.props.selected = e.value.value;
-            this._items.props.defaultSelected = e.value.value;
-            this._items.value = e.value.value;
-            this.valueChange();
-          } else {
-            this._items.value = e.value.value || '';
-            this.valueChange();
-          }
+          // if (e.value.value === '') {
+          //   this.clearItem();
+          //   this.valueChange();
+          // } else if (Array.isArray(e.value.value)) {
+          //   this._items.props.selected = e.value.value;
+          //   this._items.props.defaultSelected = e.value.value;
+          //   this._items.value = e.value.value;
+          //   this.valueChange();
+          // } else {
+          //   this._items.value = e.value.value || '';
+          //   this.valueChange();
+          // }
         }
       });
 
