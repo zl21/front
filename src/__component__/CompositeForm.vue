@@ -298,10 +298,10 @@
           if (this.defaultData.isdefault && !current.disabled && !current.readonly && !this.objreadonly) {
             return false;
           }
-          return current.disabled || false ;
+          return current.disabled || false;
         }
         if (this.conditiontype === 'list') {
-          return current.disabled  || false;
+          return current.disabled || false;
         }
         if (this.objreadonly) {
           return true;
@@ -441,7 +441,7 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data, setdefval, current) {
+      formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -518,7 +518,7 @@
         // }
         // 开启
         // 注释
-        this.$emit('formChange', this.formData, this.formDataDef, this.formData);
+        this.$emit('formChange', this.formData, this.formDataDef, label);
         // 注释
 
         this.getStateData();
@@ -566,6 +566,11 @@
         //   }, {});
         //   console.log(this.defaultFormData, formItemArry, '66');
         // }
+
+        // 1.3 版本的 label 
+        this.r3Form = Object.assign(this.r3Form, formItem);
+
+
         // 外部change的值(复制修改过后的值 去修改 页面)
         const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
           if (defaultFormData[option]) {
@@ -584,22 +589,21 @@
           // 开启
           // 注释
 
-
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue,defaultSetValue);  
+          this.$emit('formChange', defaultSetValue, this.defaultSetValue, this.r3Form);  
           // 注释
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
         // 开启
         // if (Version() === '1.3') {
-        //   this.r3Form = Object.assign(this.r3Form, formItem);
+        //   
         //   this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
         // } else {
         //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
         // }
         // 开启
         // 注释
-        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue,defaultFormData);
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
       reduceForm(array, current, index) {
@@ -1237,7 +1241,7 @@
         //   return item.defval || item.valuedata || item.default || '';
         // }
         if (this.readonly && item.fkdisplay === 'mop') {
-          if (item.valuedata && /total/.test(item.valuedata) ) {
+          if (item.valuedata && /total/.test(item.valuedata)) {
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
           }

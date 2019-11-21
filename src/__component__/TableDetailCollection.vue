@@ -750,7 +750,7 @@
             //       table: this.tableName // 子表表名
             //     };
             //   }
-            // } 
+            // }
             params = param;
           } else {
             // console.log('请检查子表静默类型按钮action配置，例如:action: com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi');
@@ -763,7 +763,7 @@
           };
           params = obj;
         }
-       
+
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject
@@ -1398,6 +1398,9 @@
                               acc.push(item);
                             });
                           }
+                          if (cur.child) {
+                            acc.push(cur.child);
+                          }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
@@ -1410,6 +1413,9 @@
                           cur.childs.forEach((item) => {
                             acc.push(item);
                           });
+                        }
+                        if (cur.child) {
+                          acc.push(cur.child);
                         }
                         return acc;
                       }, [])
@@ -1458,6 +1464,9 @@
                             cur.childs.forEach((item) => {
                               acc.push(item);
                             });
+                          }
+                          if (cur.child) {
+                            acc.push(cur.child);
                           }
                           return acc;
                         }, [])
@@ -1510,6 +1519,9 @@
                           cur.childs.forEach((item) => {
                             acc.push(item);
                           });
+                        }
+                        if (cur.child) {
+                          acc.push(cur.child);
                         }
                         return acc;
                       }, [])
@@ -1739,6 +1751,9 @@
                               acc.push(item);
                             });
                           }
+                          if (cur.child) {
+                            acc.push(cur.child);
+                          }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
@@ -1747,9 +1762,14 @@
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
+                        if (cur.childs) {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                        }
+                        if (cur.child) {
+                          acc.push(cur.child);
+                        }
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);
@@ -1813,6 +1833,9 @@
                               acc.push(item);
                             });
                           }
+                          if (cur.child) {
+                            acc.push(cur.child);
+                          }
                           return acc;
                         }, [])
                           .find(item => item.colname === cellData.refcolval.srccol);
@@ -1845,9 +1868,14 @@
                       }
                     } else if (!this.dropDownIsShowPopTip(cellData, params)) {
                       const obj = this.tabPanel[0].componentAttribute.panelData.data.addcolums.reduce((acc, cur) => {
-                        cur.childs.forEach((item) => {
-                          acc.push(item);
-                        });
+                        if (cur.childs) {
+                          cur.childs.forEach((item) => {
+                            acc.push(item);
+                          });
+                        }
+                        if (cur.child) {
+                          acc.push(cur.child);
+                        }
                         return acc;
                       }, [])
                         .find(item => item.colname === cellData.refcolval.srccol);

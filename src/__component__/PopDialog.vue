@@ -315,7 +315,7 @@
         }
         return data;
       },
-      formChange(data, defaultData, changeData) {
+      formChange(changeData) {
         // form 修改的数据
         if (Object.keys(changeData).length > 0) {
           Object.keys(changeData).forEach((item) => {
