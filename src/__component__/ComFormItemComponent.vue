@@ -413,41 +413,8 @@
         setTimeout(() => {
           //  传form 默认值
           const Item = this.newFormItemLists.reduce((arr, item) => {
-            if (Array.isArray(item.item.value)) {
-              if (item.item.value[0] && Object.hasOwnProperty.call(item.item.value[0], 'ID')) {
-                if (item.item.value.length < 2 && item.item.value[0].ID) {
-                  arr[item.item.field] = [{
-                    ID: item.item.value[0].ID,
-                    Label: item.item.value[0].Label
-                  }];
-                } else {
-                  arr[item.item.field] = item.item.value.reduce((option, itemII) => {
-                    if (itemII.ID) {
-                      option.push({
-                        ID: itemII.ID,
-                        Label: itemII.Label
-                      });
-                    }
-                    return option;
-                  }, []);
-                }
-              } 
-            } else if (item.item.type === 'checkbox') {
-              arr[item.item.field] = [{
-                ID: item.item.value,
-                Label: item.item.value === item.item.props.trueValue ? item.item.props.trueValue : item.item.props.falseValue
-              }];
-            } else if (item.item.type === 'select') {
-              if (item.item.value) {
-                const optionIndex = item.item.options.findIndex(x => x.value === item.item.value);
-                arr[item.item.field] = [{
-                  ID: item.item.value,
-                  Label: item.item.options[optionIndex].label
-                }];
-              }
-            } else if (item.item.value) {
-              arr[item.item.field] = item.item.value;
-            }
+            const setLabel = this.getLable(item);
+            arr = Object.assign(arr, setLabel);
             return arr;
           }, {});          
           this.mountdataForm(this.formDataObject, Item);
@@ -650,30 +617,12 @@
         // checkbox
         
         this.formValueItem = Object.assign(this.formValueItem, obj);
-        // 兼容开启1.3 抛出事件
-        // if (Version() === '1.3') {
-        //   if (current.item.type === 'checkbox') {
-        //     let optionIndex = current.item.props.combobox.findIndex(x => x.limitval === current.item.value);
-
-        //     valueItem[current.item.field] = [{
-        //       ID: current.item.value,
-        //       Label: current.item.props.combobox === current.item.props.trueValue ? current.item.props.trueValue : current.item.props.falseValue
-        //     }];
-        //   } else if (current.item.type === 'select') {
-        //     if (current.item.value) {
-        //       const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
-        //       valueItem[current.item.field] = [{
-        //         ID: current.item.value,
-        //         Label: current.item.options[optionIndex].label
-        //       }];
-        //     }
-        //   }
-        // }
         // 兼容结束
 
         // 向父组件抛出整个数据对象以及当前修改的字段
-        console.log(valueItem, 'valueItem');
-        this.$emit('formDataChange', obj, valueItem, current);
+        const setLabel = this.getLable(current);
+
+        this.$emit('formDataChange', obj, valueItem, current, setLabel);
         //  change 值 走后台接口赋值
         if (current.item.field) {
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
@@ -699,6 +648,45 @@
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
+      },
+      getLable(current) {
+        // R3 label 属性
+        const valueLabel = {};
+        if (!this.formDataObject[current.item.field]) {
+          // 判断是否有值
+          return false;
+        }
+        if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
+          valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+        } else if (current.item.type === 'DropDownSelectFilter') {
+          if (current.item.value instanceof Array) {
+            // 结果为数组则为选中项
+            // console.log(current.item.value);
+            valueLabel[current.item.field] = current.item.value
+              .reduce((sum, temp) => {
+                sum.push(temp.Label);
+                return sum;
+              }, [])
+              .join(',');
+          } else {
+            valueLabel[current.item.field] = '';
+          }
+        } else if (current.item.type === 'checkbox') {
+          const optionIndex = current.item.props.combobox.findIndex(x => x.limitval === current.item.value);
+          if (optionIndex !== -1) {
+            valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+          }
+        } else if (current.item.type === 'select') {
+          if (current.item.value) {
+            const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
+            if (optionIndex !== -1) {
+              valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+            }
+          }
+        } else {
+          valueLabel[current.item.field] = current.item.value;
+        }
+        return valueLabel;
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口

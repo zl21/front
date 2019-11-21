@@ -160,30 +160,13 @@
         } else {
           localdata.fixedcolumns = this.fixedcolumns; // 参数 条件 
         }
-        const keyValue = Object.keys(this.defaultData).reduce((arr, item) => {
-          if (this.formChangeData[item]) {
-            if (Array.isArray(this.defaultData[item])) {
-              if (this.defaultData[item][0] && Object.hasOwnProperty.call(this.defaultData[item][0], 'ID')) {
-                arr[item] = this.defaultData[item].reduce((arrII, itemII) => {
-                  arrII.push(itemII.Label);
-                  return arrII;
-                }, []);
-                arr[item] = arr[item].join('');
-                return arr;
-              } 
-              arr[item] = this.defaultData[item][0];
-            } else {
-              arr[item] = this.defaultData[item];
-            }
-            return arr;
-          }
-        }, {});
+        
         const searchObject = {
           data: {
             [this.router.tableName]: this.formChangeData
           },
           after: {
-            [this.router.tableName]: keyValue
+            [this.router.tableName]: this.defaultData
           },
           searchdata: localdata
         };
@@ -239,9 +222,9 @@
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
-
-        this.formChangeData = Object.assign(this.formChangeData, changeData);
-        this.defaultData = Object.assign(this.defaultData, defaultData);
+        console.log(data, defaultData, changeData);
+        this.formChangeData = Object.assign(this.formChangeData, data);
+        this.defaultData = Object.assign(this.defaultData, changeData);
       },
       confirm() {
         // b保存提交
