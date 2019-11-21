@@ -154,7 +154,7 @@
             this.updateAddData({ tableName, value: obj });
           } else {
             this.updateModifyData({ tableName, value: obj });
-            this.updateDefaultLabelData({ tableName, value: objLabel });
+            this.updateModifyLabelData({ tableName, value: objLabel });
           }
         }
       },
