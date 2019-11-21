@@ -105,6 +105,7 @@
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
+      @tableBeforeLabelData="tableBeforeLabelData"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
@@ -686,6 +687,13 @@
         const { itemId } = this.$route.params;
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: data });
+        }
+      },
+      tableBeforeLabelData(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultLabelData`, { tableName, value: data });
         }
       },
       tableDataChange(data) {
