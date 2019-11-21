@@ -28,7 +28,7 @@ let businessStatus = 0; // 流程状态  -2时正在发起流程
 function getQueryButtons(data) {
   const tabcmd = data.tabcmd;
   const waListButtons = data.waListButtons;
-  const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
+  const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction', '/p/cs/batchSave'];
   if (Version() === '1.3') {
     let businessTypes = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
     
@@ -75,7 +75,7 @@ function getQueryButtons(data) {
       });
     }
 
-    const defaultCmd = ['actionDELETE', 'actionUNSUBMIT', 'actionVOID'];
+    const defaultCmd = ['actionDELETE', 'actionUNSUBMIT', 'actionVOID', 'actionBATCHMODIFY'];
     tabcmd.cmds.map((item, index) => {
       if (defaultCmd.indexOf(item) >= 0 && tabcmd.paths[index] && arr.indexOf(tabcmd.paths[index]) < 0) {
         arr.push(tabcmd.paths[index]);
@@ -155,7 +155,7 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
 
         const checkUrls = JSON.parse(window.localStorage.getItem('checkUrls')) ? JSON.parse(window.localStorage.getItem('checkUrls')) : [];
         const arr = [].concat(res.data.data.businessTypes);
-        const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction'];
+        const defaultUrls = ['/p/cs/batchVoid', '/p/cs/batchUnSubmit', '/p/cs/batchDelete', '/p/cs/exeAction', '/p/cs/batchSave'];
         arr.map((item) => {
           if (checkUrls.length > 0) {
             checkUrls.map((temp) => {
@@ -321,6 +321,7 @@ async function jflowsave(flag, request) {
 
 async function checkProcess(request) { // check校验
   await new Promise((resolve, reject) => {
+    console.log(request);
     const params = new URLSearchParams(request.data);
     const changeDetail = {};
     for (const pair of params.entries()) {
@@ -334,6 +335,11 @@ async function checkProcess(request) { // check校验
         bodyObj = {
           businessType: router.currentRoute.params.tableId,
           businessCheckData: JSON.parse(response.param).ids
+        };
+      } else if (response.searchdata) { // 批量修改
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: request.data.searchdata.objids
         };
       } else {
         bodyObj = {
@@ -349,6 +355,11 @@ async function checkProcess(request) { // check校验
         bodyObj = {
           businessType: router.currentRoute.params.tableId,
           businessCheckData: JSON.parse(response.param).ids
+        };
+      } else if (response.searchdata) { // 批量修改
+        bodyObj = {
+          businessType: router.currentRoute.params.tableId,
+          businessCheckData: JSON.parse(response.searchdata).objids
         };
       } else {
         bodyObj = {
@@ -371,7 +382,7 @@ async function checkProcess(request) { // check校验
             return;
           }
           if (Version() === '1.3') {
-            if (response.actionid) {
+            if (response.actionid) { // 动作定义
               const responseCopy = JSON.parse(response.param);
               responseCopy.ids = res.data.data.businessCheckData;
               const obj = {
@@ -386,6 +397,19 @@ async function checkProcess(request) { // check校验
                   obj[key] = JSON.stringify(obj[key]);
                 }
                 requestBody.append(key, obj[key]);
+              });
+              request.data = requestBody;
+            } else if (response.searchdata) { // 批量修改
+              const obj = JSON.parse(response.searchdata);
+              obj.objids = res.data.data.businessCheckData;
+              response.searchdata = JSON.stringify(obj);
+              const requestBody = new URLSearchParams();
+              Object.keys(response).forEach((key) => {
+                const dataType = Object.prototype.toString.call(response[key]);
+                if (dataType === '[object Object]' || dataType === '[object Array]') {
+                  response[key] = JSON.stringify(response[key]);
+                }
+                requestBody.append(key, response[key]);
               });
               request.data = requestBody;
             } else if (response.objids) {
@@ -423,12 +447,14 @@ async function checkProcess(request) { // check校验
                 requestBody.append(key, obj[key]);
               });
               request.data = requestBody;
+            } else if (response.searchdata) {
+              request.data.searchdata.objids = res.data.data.businessCheckData;
             } else {
               response.ids = res.data.data.businessCheckData;
               request.data = response;
             }
           }
-          
+
           resolve();
         }
       });

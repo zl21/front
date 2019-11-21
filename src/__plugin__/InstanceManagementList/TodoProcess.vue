@@ -638,7 +638,7 @@
                   item.CP_C_ORGUP_ID === null
                   || item.CP_C_ORGUP_ID === ''
                 ) {
-                  root = Object.assign(item.CP_C_ORGUP_ID);
+                  root = Object.assign(item);
                 }
               });
               if (Object.keys(root).length < 1) {
@@ -711,7 +711,7 @@
       setAgent() {
         const needdata = {};
         needdata.USER_ID = window.jflowPlugin.userInfo.id;
-        needdata.AGENT_ENAME = window.jflowPlugin.userInfo.ename;
+        needdata.AGENT_ENAME = this.resultData.list[0].ENAME;
         if (this.resultData.list && this.resultData.list.length > 0) {
           needdata.AGENT_ID = Number(this.resultData.list[0].ID);
         }
