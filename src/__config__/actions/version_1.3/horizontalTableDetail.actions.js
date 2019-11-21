@@ -206,14 +206,13 @@ export default {
 
         return {};
       }, {});
-         
+      console.log(4444, labelregroup);
       let labelregroupTableName = {};
       if (tableName) {
         labelregroupTableName = {
           [tableName]: labelregroup
         };
       }
-      
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       // const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
@@ -235,8 +234,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          before: labelregroupTableName,
-          after: { ...modifyLabel }
+          after: labelregroupTableName,
+          before: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -300,15 +299,14 @@ export default {
         //     });
         //   });
         // }
-        
-       
         // dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          before: itemModifyLabel,
-          after: itemDefaultLabel
+          before: defaultAssign,
+          after: { ...itemModifyLabel }
+
          
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
