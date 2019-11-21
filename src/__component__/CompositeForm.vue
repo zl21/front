@@ -28,7 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :class="`${tableGetName}=== '' ? 'R3masterForm' :${tableGetName}`"
+                :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -214,6 +214,7 @@
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
         childFormData: [],    
+        labelForm: {}, // label 值
         r3Form: {},
         computdefaultData: [], // form
         setAttsetProps: {}, // 静态属性 映射
@@ -453,7 +454,6 @@
         if (this.conditiontype !== 'list') {
           if (current) {
             if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
-              console.log(setdefval[current.item.field]);
               if (!Array.isArray(setdefval[current.item.field])) {
                 data[current.item.field] = '';
               }
@@ -518,7 +518,18 @@
         // }
         // 开启
         // 注释
-        this.$emit('formChange', this.formData, this.formDataDef, label);
+
+        this.labelForm = Object.assign(this.labelForm, label);
+        const labelForm = Object.keys(this.formData).reduce((arr, itemLabel) => {
+          if (!this.labelForm[itemLabel]) {
+            arr[itemLabel] = '';
+          }
+          return arr;
+        }, {});
+        console.log(labelForm,'labelForm');
+        this.labelForm = Object.assign(this.labelForm, labelForm);
+
+        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
         // 注释
 
         this.getStateData();
@@ -900,10 +911,10 @@
             refcolval = this.refcolvalAll[current.refcolval.srccol]
               ? this.refcolvalAll[current.refcolval.srccol]
               : '';
-            if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
-              const data = Object.assign(this.defaultFormData, this.formData);
-              refcolval = data[current.refcolval.srccol]; 
-            }
+            // if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
+            //   const data = Object.assign(this.defaultFormData, this.formData);
+            //   refcolval = data[current.refcolval.srccol]; 
+            // }
           } else {
             const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
@@ -927,9 +938,10 @@
 
               if (this.tableGetName) {
                 if (current.refcolval.maintable) {
-                  let LinkageFormfocus = document.querySelector('.R3masterForm');
+                  let LinkageFormfocus = document.querySelector('.compositeAllform');
                   if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
                     LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
+                    console.log(LinkageFormfocus);
                     setTimeout(() => {
                       LinkageFormfocus.focus();
                     }, 100);
@@ -1764,7 +1776,9 @@
         } else {
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
-        item[index].item.value = item[index].item.value.toUpperCase();
+        if (typeof item[index].item.value === 'string') {
+          item[index].item.value = item[index].item.value.toUpperCase();
+        }
       },
       changeItem(index, current, value) {
         // check

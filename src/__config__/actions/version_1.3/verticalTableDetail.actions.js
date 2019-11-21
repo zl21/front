@@ -645,7 +645,6 @@ export default {
     } = parame;
     const { sataType } = parame;
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
@@ -723,8 +722,28 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const { modifyLabel } = parame;// 用于begore after字段翻译修改过后的中文label
-      const { defaultLabel } = parame;// 用于begore after字段翻译修改过后的中文默认label
+      const { modifyLabel } = parame;// 主表修改的label
+      const { defaultLabel } = parame;// 主表修改前的label
+      const itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+      const itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
+      const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
+      const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
+      const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+
+      Object.keys(defaultLabelregroup).reduce((obj, item) => {
+        Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
+          if (item === modifyDataItem) {
+            labelregroup[item] = defaultLabelregroup[modifyDataItem];
+            return false;
+          }
+          return true;
+        });
+
+        return {};
+      }, {});
+      const labelregroupTableName = {
+        [tableName]: labelregroup
+      };
       const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
       // const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
       const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
@@ -780,12 +799,14 @@ export default {
         //   });
         // });
         // dufaultDataForSave[tableName] = defaultForSave;
+
         parames = {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: { ...modifyLabel },
-          before: { ...defaultLabel }
+          after: itemModifyLabel,
+          before: itemDefaultLabel
+         
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -810,7 +831,7 @@ export default {
             table: tableName, // 主表表名
             objid: objId, // 明细id
             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemTableAdd
+              ...labelregroup
             }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -852,8 +873,8 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            after: { ...modifyLabel },
-            before: { ...defaultLabel }
+            before: labelregroupTableName,
+            after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {
@@ -884,8 +905,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: { ...modifyLabel },
-          before: { ...defaultLabel }
+          before: labelregroupTableName,
+          after: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {

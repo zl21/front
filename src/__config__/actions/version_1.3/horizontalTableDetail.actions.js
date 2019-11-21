@@ -131,7 +131,9 @@ export default {
     // const { itemNameGroup } = parame;
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
+    
     let parames = {};
+
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
      
@@ -156,8 +158,29 @@ export default {
       const itemModify = itemCurrentParameter.modify;// 子表修改
       // const itemDefault = itemCurrentParameter.default;
       const itemAdd = itemCurrentParameter.add;// 子表新增
-      const { modifyLabel } = parame;// 用于begore after字段翻译修改过后的中文label
-      const { defaultLabel } = parame;// 用于begore after字段翻译修改过后的中文默认label
+      const { modifyLabel } = parame;
+      const { defaultLabel } = parame;
+      const itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+      const itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
+      const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
+      const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
+      const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+
+      Object.keys(defaultLabelregroup).reduce((obj, item) => {
+        Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
+          if (item === modifyDataItem) {
+            labelregroup[item] = defaultLabelregroup[modifyDataItem];
+            return false;
+          }
+          return true;
+        });
+
+        return {};
+      }, {});
+      const labelregroupTableName = {
+        [tableName]: labelregroup
+      };
+
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       // const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
@@ -179,8 +202,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: { ...modifyLabel },
-          before: { ...defaultLabel }
+          before: labelregroupTableName,
+          after: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -251,8 +274,9 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: { ...modifyLabel },
-          before: { ...defaultLabel }
+          before: itemModifyLabel,
+          after: itemDefaultLabel
+         
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -319,8 +343,8 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            after: { ...modifyLabel },
-            before: { ...defaultLabel }
+            before: labelregroupTableName,
+            after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {
