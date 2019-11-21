@@ -276,7 +276,6 @@
             const index = e.value.current.findIndex(x => x === item.item.field);
             return index != -1;
           });
-          console.log(checkItem, 'checkItem');
           if (checkItem) {
             this.formInit();
           }
@@ -411,7 +410,9 @@
       },  
       formInit() {
         const val = this.getStateData();
-        this.computFormLinkage(val);
+        setTimeout(() => {
+          this.computFormLinkage(val);
+        }, 100);
       }, 
       mountdataFormInt() {
         this.actived = false;
@@ -594,7 +595,6 @@
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
           } else if (current.item.type === 'DropDownSelectFilter' && !current.item.value) {
-            console.log(current.item.value);
             valueItem[Object.keys(obj)[0]] = [{
               Label: '',
               ID: ''
