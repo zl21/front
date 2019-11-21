@@ -1380,7 +1380,9 @@
         ]);
       },
       dropDownIsShowPopTip(cellData, params) {
-        if (cellData.refcolval.maintable) {
+        if (cellData.refcolval.srccol === '$OBJID$') {
+          return true;
+        } else if (cellData.refcolval.maintable) {
           const { tableName } = this.$router.currentRoute.params;
           const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[tableName];
           const defaultValue = mainTablePanelData.default;
@@ -3024,8 +3026,11 @@
         // 外键关联的情况下 取行colid
         const fixedcolumns = {};
         const row = this.dataSource.row[params.index][cellData.colname];
+        const { itemId } = this.$route.params;
         if (cellData.refcolval) {
-          if (this.type === pageType.Horizontal) {
+          if (cellData.refcolval.srccol === '$OBJID$') {
+            fixedcolumns[cellData.refcolval.fixcolumn] = itemId;
+          } else if (this.type === pageType.Horizontal) {
             const express = cellData.refcolval.expre === 'equal' ? '=' : '';
             if (cellData.refcolval.maintable) {
               // 需要从主表取
