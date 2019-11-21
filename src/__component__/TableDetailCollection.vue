@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -159,6 +159,7 @@
     Vertical: 'vertical'
   };
   const TABLE_BEFORE_DATA = 'tableBeforeData'; // emit beforedata
+  const TABLE_BEFORE_LABEL_DATA = 'tableBeforeLabelData'; // emit beforedata
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
   const TABLE_SELECTED_ROW = 'tableSelectedRow';
@@ -227,6 +228,13 @@
         },
         set beforeSendData(value) {
           this._beforeSendData = value;
+        },
+        _beforeSendLabelData: {}, // 之前的Label数据
+        get beforeSendLabelData() {
+          return this._beforeSendLabelData;
+        },
+        set beforeSendLabelData(value) {
+          this._beforeSendLabelData = value;
         },
         importData: {
           importDialog: '',
@@ -449,6 +457,9 @@
       },
       beforeSendData(val) {
         this.$emit(TABLE_BEFORE_DATA, val);
+      },
+      beforeSendLabelData(val) {
+        this.$emit(TABLE_BEFORE_LABEL_DATA, val);
       },
       tooltipForItemTable: {
         handler(val) {
@@ -1140,6 +1151,23 @@
         }, 200);
         return data;
       },
+      filterBeforeLabelData() {
+        const copyDataSoucre = JSON.parse(JSON.stringify(this.deepClone(this.dataSource)));
+        const beforeData = {};
+        beforeData[this.tableName] = [];
+        copyDataSoucre.row.forEach((ele) => {
+          const param = {
+            EXCEPT_COLUMN_NAME: ele[EXCEPT_COLUMN_NAME].val
+          };
+          const tabth = copyDataSoucre.tabth.filter(item => item.colname !== EXCEPT_COLUMN_NAME);
+          tabth.forEach((tab) => {
+            const val = ele[tab.colname].val;
+            param[tab.colname] = val;
+          });
+          beforeData[this.tableName].push(param);
+        });
+        this.beforeSendLabelData = beforeData;
+      }, // 获取默认的label数据
       filterBeforeData() {
         // 分页数据初始化
         this.updateTablePageInfo({
@@ -1150,6 +1178,7 @@
         if ((!this.dataSource.row || this.dataSource.row.length === 0) && !this.beforeSendData[this.tableName]) {
           return;
         }
+        this.filterBeforeLabelData();
         const copyDataSoucre = this.deepClone(this.dataSource);
         const beforeData = {};
         beforeData[this.tableName] = [];
