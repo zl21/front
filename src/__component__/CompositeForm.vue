@@ -454,7 +454,6 @@
         if (this.conditiontype !== 'list') {
           if (current) {
             if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
-              console.log(setdefval[current.item.field]);
               if (!Array.isArray(setdefval[current.item.field])) {
                 data[current.item.field] = '';
               }
@@ -520,7 +519,6 @@
         // 开启
         // 注释
         this.labelForm = Object.assign(this.labelForm, label);
-        console.log(this.labelForm);
         this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
         // 注释
 
@@ -907,7 +905,6 @@
             //   const data = Object.assign(this.defaultFormData, this.formData);
             //   refcolval = data[current.refcolval.srccol]; 
             // }
-            console.log(refcolval, this.refcolvalAll, 'refcolval');
           } else {
             const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
