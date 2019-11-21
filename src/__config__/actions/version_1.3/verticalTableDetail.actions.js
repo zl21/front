@@ -727,10 +727,11 @@ export default {
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
-        Object.keys(modifyLabelregroup).every((modifyDataItem) => {
+        Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
           if (item === modifyDataItem) {
-            labelregroup[modifyDataItem] = defaultLabelregroup[modifyDataItem];
+            labelregroup[item] = defaultLabelregroup[modifyDataItem];
             return false;
           }
           return true;
@@ -738,8 +739,9 @@ export default {
 
         return {};
       }, {});
-     
-
+      const labelregroupTableName = {
+        [tableName]: labelregroup
+      };
       const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
       // const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
       const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
@@ -799,7 +801,7 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: { ...labelregroup },
+          after: labelregroupTableName,
           before: { ...modifyLabel }
          
         };
@@ -868,8 +870,8 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            after: { ...modifyLabel },
-            before: { ...defaultLabel }
+            after: labelregroupTableName,
+            before: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {
@@ -900,7 +902,7 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: { ...labelregroup },
+          after: labelregroupTableName,
           before: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
