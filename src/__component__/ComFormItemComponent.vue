@@ -821,12 +821,15 @@
           if (item.props.webconf.setAttributes.props.value === '') {
             item.value = '';
           }
+          
+          item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else {
             item.required = false;
           }
-          item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+          console.log(item.oldProps._required,item.required,item.value);
+
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});

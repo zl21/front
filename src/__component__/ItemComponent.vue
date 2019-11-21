@@ -59,7 +59,8 @@
 
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'">
+    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
+      :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''">
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -275,7 +276,6 @@
         v-if="_items.type === 'ImageUpload'"
         :ref="_items.field"
         :dataitem="_items.props.itemdata"
-        @upload-file-change="uploadFileChange"
         @deleteImg="deleteImg"
         @uploadFileChangeSuccess="uploadFileChangeSuccess"
         @uploadFileChangeOnerror="uploadFileChangeOnerror"
@@ -1045,9 +1045,6 @@
         }
         return true;
       },
-      uploadFileChange() {
-      // console.log(e);
-      },
       deleteImg(item, index) {
         // 删除图片
         const that = this;
@@ -1235,7 +1232,7 @@
         // 图片进度接口
         const self = this;
         const resultData = result;
-        console.log(11)
+        console.log(this);
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
@@ -1268,7 +1265,7 @@
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
-                          console.log(6666);
+                          console.log(this);
 
               const path = this.$parent.pathcheck !== '';
           const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
@@ -1543,10 +1540,9 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
-
+          this._items.required = e.value.required;
           this._items.props = e.value.props;
           this._items.props.readonly = e.value.props.disabled;
-          
           // if (e.value.value === '') {
           //   this.clearItem();
           //   this.valueChange();
