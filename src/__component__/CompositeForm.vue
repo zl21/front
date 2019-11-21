@@ -28,7 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :class="`${tableGetName}=== '' ? 'R3masterForm' :${tableGetName}`"
+                :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -814,17 +814,16 @@
             pageChange: (currentPage, $this) => {
               // 外键的分页查询
               const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+              // eslint-disable-next-line no-unused-vars
               let LinkageFormInput = '';
               if (current.refcolval && current.refcolval.srccol) {
                 LinkageFormInput = LinkageForm[current.refcolval.srccol];
               }
-
+              const check = this.getLinkData(current);
               let searchObject = {};
-              if (current.refcolval && current.refcolval.srccol && LinkageFormInput && LinkageFormInput.item.show) {
-                const refcolval = this.refcolvalAll[current.refcolval.srccol]
-                  ? this.refcolvalAll[current.refcolval.srccol]
-                  : '';
-                const query = current.refcolval.expre === 'equal' ? `=${refcolval}` : '';
+
+              if (check[1]) {
+                const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
                 searchObject = {
                   isdroplistsearch: true,
                   refcolid: current.colid,
@@ -841,7 +840,8 @@
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
                 };
-              }
+              }              
+              
               fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
@@ -894,6 +894,7 @@
           if (checkGetObjId !== false) {
             return [true, checkGetObjId];  
           }
+
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
             refcolval = this.refcolvalAll[current.refcolval.srccol]
@@ -903,6 +904,8 @@
               const data = Object.assign(this.defaultFormData, this.formData);
               refcolval = data[current.refcolval.srccol]; 
             }
+            console.log(refcolval,this.refcolvalAll,'refcolval');
+
           } else {
             const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
@@ -929,6 +932,7 @@
                   let LinkageFormfocus = document.querySelector('.R3masterForm');
                   if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
                     LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
+                    console.log(LinkageFormfocus);
                     setTimeout(() => {
                       LinkageFormfocus.focus();
                     }, 100);
