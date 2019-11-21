@@ -16,7 +16,7 @@
             @on-page-size-change="pageSizeChangeEvent"
           />
           <ul
-            v-if="!isHorizontal"
+            v-if="!isHorizontal && !objreadonly"
             class="detail-buttons"
           >
             <a
@@ -478,6 +478,13 @@
         },
         deep: true,
         immediate: true
+      },
+      objreadonly: {
+        handler() {
+          const isTableRender = this.isTableRender;
+          this.columns = this.filterColumns(this.dataSource.tabth, isTableRender); // 每列的属性
+          this.getEditAbleId(JSON.parse(JSON.stringify(this.dataSource)));
+        }
       }
 
     },
@@ -493,7 +500,7 @@
           data.tabth.forEach((tabthItem, tabthIdx) => {
             if (tabthItem.display === 'text' || tabthItem.fkdisplay === 'drp' || tabthItem.fkdisplay === 'mrp'
               || tabthItem.fkdisplay === 'mop' || tabthItem.fkdisplay === 'pop') {
-              if (tabthItem.ismodify) {
+              if (tabthItem.ismodify && !this.objreadonly) {
                 this.editElementId.push(`${rowIdx}-${tabthIdx}`);
                 if (!this.columnEditElementId[tabthIdx]) {
                   this.columnEditElementId[tabthIdx] = [];
@@ -745,7 +752,7 @@
             //   }
             // } 
             params = param;
-          }else {
+          } else {
             // console.log('请检查子表静默类型按钮action配置，例如:action: com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi');
           }
         } else if (Version() === '1.4') {
