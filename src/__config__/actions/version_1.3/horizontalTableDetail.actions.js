@@ -215,7 +215,6 @@ export default {
         };
       }
       
-      debugger;
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       // const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
