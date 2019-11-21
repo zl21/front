@@ -59,8 +59,10 @@
 
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
-    <div :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
-      :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''">
+    <div
+:class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
+         :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
+>
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -1093,12 +1095,12 @@
                   dom.click();
                 }
               } else if (this.$parent.pathcheck === '') {
-                //parms.path = '/p/cs/objectSave';
+                // parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
               } else {
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
-                //that.upSaveImg(parms, '', path, index);
+                // that.upSaveImg(parms, '', path, index);
               }
             } else {
               // new
@@ -1118,7 +1120,7 @@
           this._items.value = '';
         }
         this.valueChange();
-          const dom = document.getElementById('actionMODIFY');
+        const dom = document.getElementById('actionMODIFY');
         dom.click();
       },
       filechange(value) {
@@ -1178,12 +1180,12 @@
           } else {
             this._items.value = '';
           }
-          this.valueImgChange();
+          this.valueChange();
         }
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
-         const dom = document.getElementById('actionMODIFY');
+        const dom = document.getElementById('actionMODIFY');
         dom.click();
 
         return false;
@@ -1205,16 +1207,17 @@
       },
       deleteImgData(obj, index) {
         // 删除图片
-         this._items.props.itemdata.valuedata.splice(index - 1, 1);
-         this._items.value = this._items.props.itemdata.valuedata;
-         this.valueImgChange();
-         return false;
+        this._items.props.itemdata.valuedata.splice(index - 1, 1);
+        this._items.value = this._items.props.itemdata.valuedata;
+        this.valueImgChange();
+        return false;
         fkHttpRequest().deleteImg({
           params: {
             ...obj
           },
           // eslint-disable-next-line consistent-return
           success: (res) => {
+            // eslint-disable-next-line no-empty
             if (res.data.code === 0) {
              
             }
@@ -1254,21 +1257,21 @@
               URL: resultData.data.Url
             });
             //
-            let parms = {
+            const parms = {
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
             };
             //  判断parms 是否 需要保存
-            //parms = this.pathsCheckout(parms, fixedData);
+            // parms = this.pathsCheckout(parms, fixedData);
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
-                          console.log(this);
+              console.log(this);
 
               const path = this.$parent.pathcheck !== '';
-          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
+              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
               if (this._items.props.tableGetName !== '') {
                 //  主子表 子表
                 this._items.props.itemdata.valuedata.push(
@@ -1283,17 +1286,17 @@
                   dom.click();
                 }
               } else {
-              this._items.props.itemdata.valuedata.push(
-                fixedData[fixedData.length - 1]
-              );
+                this._items.props.itemdata.valuedata.push(
+                  fixedData[fixedData.length - 1]
+                );
 
-              this.valueImgChange();
+                this.valueChange();
               }
             } else {
               this._items.props.itemdata.valuedata.push(
                 fixedData[fixedData.length - 1]
               );
-              this.valueImgChange();
+              this.valueChange();
             }
           }
 
