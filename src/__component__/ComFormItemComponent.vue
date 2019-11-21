@@ -263,6 +263,7 @@
         formDatadefObject: {}, // 获取form默认值
         oldformData: {}, // 老的change
         setHeight: 34,
+        timerSet: '',
         actived: false
       };
     },
@@ -271,7 +272,10 @@
       // 映射回调
       window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
         if (e.value.type === 'change') {
-          const checkItem = this.newFormItemLists.some(item => e.value.current.findIndex(x => x === item.item.field));
+          const checkItem = this.newFormItemLists.some((item) => {
+            const index = e.value.current.findIndex(x => x === item.item.field);
+            return index != -1;
+          });
           if (checkItem) {
             this.formInit();
           }
@@ -626,7 +630,10 @@
         //  change 值 走后台接口赋值
         if (current.item.field) {
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
+            clearTimeout(this.timerSet);
+            this.timerSet = setTimeout(() => {
+              window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
+            }, 100);
           }
         }
 
@@ -709,7 +716,7 @@
         }
         //   拦截默认值
         if (!this.actived) {
-          return;
+          return true;
         }
         fkHttpRequest().equalformRequest({
           url: conf.url,
