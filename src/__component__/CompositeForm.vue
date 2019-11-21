@@ -214,6 +214,7 @@
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
         childFormData: [],    
+        labelForm: {}, // label 值
         r3Form: {},
         computdefaultData: [], // form
         setAttsetProps: {}, // 静态属性 映射
@@ -453,7 +454,6 @@
         if (this.conditiontype !== 'list') {
           if (current) {
             if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
-              console.log(setdefval[current.item.field]);
               if (!Array.isArray(setdefval[current.item.field])) {
                 data[current.item.field] = '';
               }
@@ -518,7 +518,8 @@
         // }
         // 开启
         // 注释
-        this.$emit('formChange', this.formData, this.formDataDef, label);
+        this.labelForm = Object.assign(this.labelForm, label);
+        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
         // 注释
 
         this.getStateData();
@@ -904,8 +905,6 @@
             //   const data = Object.assign(this.defaultFormData, this.formData);
             //   refcolval = data[current.refcolval.srccol]; 
             // }
-            console.log(refcolval,this.refcolvalAll,'refcolval');
-
           } else {
             const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
@@ -1767,7 +1766,9 @@
         } else {
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
-        item[index].item.value = item[index].item.value.toUpperCase();
+        if (typeof item[index].item.value === 'string') {
+          item[index].item.value = item[index].item.value.toUpperCase();
+        }
       },
       changeItem(index, current, value) {
         // check

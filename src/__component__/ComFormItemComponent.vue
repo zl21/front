@@ -410,7 +410,9 @@
       },  
       formInit() {
         const val = this.getStateData();
-        this.computFormLinkage(val);
+        setTimeout(() => {
+          this.computFormLinkage(val);
+        }, 100);
       }, 
       mountdataFormInt() {
         this.actived = false;
@@ -593,7 +595,6 @@
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
           } else if (current.item.type === 'DropDownSelectFilter' && !current.item.value) {
-            console.log(current.item.value);
             valueItem[Object.keys(obj)[0]] = [{
               Label: '',
               ID: ''
@@ -722,7 +723,11 @@
           url: conf.url,
           searchObject: data,
           success: (res) => {
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { type: 'equal', key, list: res });
+            const tableName = this.isMainTable ? '' : this.childTableName;
+
+            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, {
+            type: 'equal', key, list: res, tableName 
+            });
           }
         });
         return true;
@@ -805,7 +810,10 @@
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
-          item.oldProps.required = item.required;
+          item.oldProps._required = item.required;
+          if (item.props.regx) {
+            item.oldProps.regx = item.props.regx;
+          }
         }
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
@@ -822,7 +830,7 @@
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
-          item.required = item.oldProps.required;
+          item.required = item.oldProps._required;
         }        
         this.VerificationFormInt();
         return true;
