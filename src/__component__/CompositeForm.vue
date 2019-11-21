@@ -28,7 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
-                :class="`${tableGetName}=== '' ? 'R3masterForm' :${tableGetName}`"
+                :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
@@ -904,6 +904,8 @@
               const data = Object.assign(this.defaultFormData, this.formData);
               refcolval = data[current.refcolval.srccol]; 
             }
+            console.log(refcolval,this.refcolvalAll,'refcolval');
+
           } else {
             const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
@@ -930,6 +932,7 @@
                   let LinkageFormfocus = document.querySelector('.R3masterForm');
                   if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
                     LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
+                    console.log(LinkageFormfocus);
                     setTimeout(() => {
                       LinkageFormfocus.focus();
                     }, 100);
