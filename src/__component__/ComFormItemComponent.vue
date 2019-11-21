@@ -672,7 +672,6 @@
         // 兼容结束
 
         // 向父组件抛出整个数据对象以及当前修改的字段
-        console.log(valueItem, 'valueItem');
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.field) {
