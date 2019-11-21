@@ -131,6 +131,7 @@ export default {
     // const { itemNameGroup } = parame;
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
+    
     let parames = {};
 
     if (type === 'add') { // 新增保存参数
@@ -159,6 +160,8 @@ export default {
       const itemAdd = itemCurrentParameter.add;// 子表新增
       const { modifyLabel } = parame;
       const { defaultLabel } = parame;
+      const itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+      const itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
@@ -271,8 +274,9 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: { ...labelregroup },
-          before: { ...modifyLabel }
+          after: itemModifyLabel,
+          before: itemDefaultLabel
+         
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {

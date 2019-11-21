@@ -722,8 +722,10 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const { modifyLabel } = parame;
-      const { defaultLabel } = parame;
+      const { modifyLabel } = parame;// 主表修改的label
+      const { defaultLabel } = parame;// 主表修改前的label
+      const itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+      const itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
@@ -797,12 +799,13 @@ export default {
         //   });
         // });
         // dufaultDataForSave[tableName] = defaultForSave;
+
         parames = {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          after: labelregroupTableName,
-          before: { ...modifyLabel }
+          after: itemModifyLabel,
+          before: itemDefaultLabel
          
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
