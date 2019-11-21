@@ -250,18 +250,18 @@ export default {
    
   //   const modifyDataForSave = {};
 
+
   //   if (type === 'add') {
   //     if (Object.keys(add).length > 0) {
   //       labelData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {})); 
   //       fkIdData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
   //     }
   //   } else if (type === 'modify') {
-  //     if (Object.keys(modify)) {
+  //     if (Object.keys(modify).length > 0) {
   //       labelData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {})); 
   //       fkIdData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
   //     }
   //   }
-  //   debugger
   //   if (type === 'modify') {
   //     labelName = Object.keys(labelData).reduce((obj, value) => {
   //       if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length === 1) { // 是外键类型(外键单选)
@@ -277,6 +277,7 @@ export default {
   //       obj[value] = labelData[value];
   //       return obj;
   //     }, {});
+  //     console.log('🍓', labelName);
   //     const modifyChangeDataAfter = Object.assign({}, labelData, labelName);
 
   //     modifyDataForSaveAfter[tableName] = modifyChangeDataAfter;
@@ -539,7 +540,21 @@ export default {
   //         }, {});
   //         return obj;
   //       }, {});
-  //       dufaultDataForSave[tableName] = defaultForSave;
+  //       const defaultChangeDataAfterlabelName = Object.keys(defaultForSave).reduce((obj, value) => {
+  //         if (defaultForSave[value] && Array.isArray(defaultForSave[value]) && defaultForSave[value].length === 1) { // 是外键类型(外键单选)
+  //           const label = defaultForSave[value].map(item => item.Label);
+  //           if (label[0] !== '') {
+  //             defaultForSave[value] = label[0];
+  //           }
+  //         } 
+  //         if (defaultForSave[value] && Array.isArray(defaultForSave[value]) && defaultForSave[value].length > 1) { // 外键多选
+  //           const label = defaultForSave[value].map(item => item.Label).join(',');
+  //           defaultForSave[value] = label[0];
+  //         }
+  //         obj[value] = defaultForSave[value];
+  //         return obj;
+  //       }, {});
+  //       dufaultDataForSave[tableName] = defaultChangeDataAfterlabelName;
   //       parames = {
   //         table: tableName,
   //         objid: objId,
@@ -559,9 +574,6 @@ export default {
   //     }
   //   }
   // },
-  
-  
-  
   
  
   performMainTableDeleteAction({
