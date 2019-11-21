@@ -1523,6 +1523,8 @@
           // 表单修改属性
 
           this._items.props = e.value.props;
+          this._items.props.readonly = e.value.props.disabled;
+          
           if (e.value.value === '') {
             this.clearItem();
             this.valueChange();
