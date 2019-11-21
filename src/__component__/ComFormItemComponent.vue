@@ -810,7 +810,7 @@
 
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
-          item.oldProps.required = item.required;
+          item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
@@ -830,7 +830,7 @@
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
-          item.required = item.oldProps.required;
+          item.required = item.oldProps._required;
         }        
         this.VerificationFormInt();
         return true;

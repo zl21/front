@@ -1090,18 +1090,18 @@
                 } else {
                   this._items.value = '';
                 }
-
                 this.valueChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
                   const dom = document.getElementById('actionMODIFY');
                   dom.click();
                 }
               } else if (this.$parent.pathcheck === '') {
-                parms.path = '/p/cs/objectSave';
+                //parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
               } else {
                 const path = this.$parent.pathcheck !== '';
-                that.upSaveImg(parms, '', path, index);
+                this.valueImgChange();
+                //that.upSaveImg(parms, '', path, index);
               }
             } else {
               // new
@@ -1121,6 +1121,8 @@
           this._items.value = '';
         }
         this.valueChange();
+          const dom = document.getElementById('actionMODIFY');
+        dom.click();
       },
       filechange(value) {
         // 上传文件
@@ -1165,9 +1167,8 @@
             } else {
               this._items.value = '';
             }
-           
-            this.upSavefile(parms, fixedData, path, value);
             this.valueChange();
+            this.upSavefile(parms, fixedData, path, value);
           }
         } else {
           const _fixedData = fixedData || '';
@@ -1185,7 +1186,10 @@
       },
       upSavefile(obj, fixedData, path) {
         // 保存文件
+         const dom = document.getElementById('actionMODIFY');
+        dom.click();
 
+        return false;
         fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
@@ -1204,6 +1208,10 @@
       },
       deleteImgData(obj, index) {
         // 删除图片
+         this._items.props.itemdata.valuedata.splice(index - 1, 1);
+         this._items.value = this._items.props.itemdata.valuedata;
+         this.valueImgChange();
+         return false;
         fkHttpRequest().deleteImg({
           params: {
             ...obj
@@ -1211,8 +1219,7 @@
           // eslint-disable-next-line consistent-return
           success: (res) => {
             if (res.data.code === 0) {
-              this._items.props.itemdata.valuedata.splice(index - 1, 1);
-              this._items.value = this._items.props.itemdata.valuedata;
+             
             }
           }
         });
@@ -1228,6 +1235,7 @@
         // 图片进度接口
         const self = this;
         const resultData = result;
+        console.log(11)
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
@@ -1254,16 +1262,17 @@
               table: this._items.props.itemdata.masterName
             };
             //  判断parms 是否 需要保存
-            parms = this.pathsCheckout(parms, fixedData);
+            //parms = this.pathsCheckout(parms, fixedData);
             if (
               this.$route.params
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
-              const path = this.$parent.pathcheck !== '';
-              const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
+                          console.log(6666);
 
-              if (this.$parent.isreftabs && childTableName !== false) {
+              const path = this.$parent.pathcheck !== '';
+          const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
+              if (this._items.props.tableGetName !== '') {
                 //  主子表 子表
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
@@ -1277,7 +1286,11 @@
                   dom.click();
                 }
               } else {
-                self.upSaveImg(parms, fixedData, path);
+              this._items.props.itemdata.valuedata.push(
+                fixedData[fixedData.length - 1]
+              );
+
+              this.valueImgChange();
               }
             } else {
               this._items.props.itemdata.valuedata.push(
@@ -1389,6 +1402,10 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
+        console.log('ddd');
+        const dom = document.getElementById('actionMODIFY');
+        dom.click();
+        return false;
         fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
