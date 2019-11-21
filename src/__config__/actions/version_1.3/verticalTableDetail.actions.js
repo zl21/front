@@ -734,23 +734,26 @@ export default {
         if (itemCurrentParameter && itemCurrentParameter.modify) {
           const modify = itemCurrentParameter.modify;
           let object = {};
+
           if (itemDefaultLabel[itemName] && modify[itemName]) {
-            itemDefaultLabel[itemName].map((a) => {
-              modify[itemName].map((b) => {
-                object = Object.assign({}, b);
-                if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-                  Object.keys(b).map((c) => {
-                    Object.keys(a).map((d) => {
-                      if (c === d) {
-                        object[c] = a[c];
-                        console.log(77, object);
-                      }
+            if (itemDefaultLabel[itemName].length > 0 && modify[itemName].length > 0) {
+              itemDefaultLabel[itemName].map((a) => {
+                modify[itemName].map((b) => {
+                  object = Object.assign({}, b);
+                  if (a.ID === b.ID) { // 找出相同的操作过的一条数据
+                    Object.keys(b).map((c) => {
+                      Object.keys(a).map((d) => {
+                        if (c === d) {
+                          object[c] = a[c];
+                          console.log(77, object);
+                        }
+                      });
                     });
-                  });
-                }
+                  }
+                });
               });
-            });
-            array.push(object);
+              array.push(object);
+            }
           }
           defaultAssign[itemName] = array;
         }

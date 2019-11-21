@@ -160,11 +160,39 @@ export default {
       const itemAdd = itemCurrentParameter.add;// 子表新增
       const { modifyLabel } = parame;
       const { defaultLabel } = parame;
-      const itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-      const itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+      let itemModifyLabel = {};// 子表修改的label
+      let itemDefaultLabel = {};
+      if (parame.itemCurrentParameter) {
+        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+        itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
+        if (itemCurrentParameter && itemCurrentParameter.modify) {
+          const modify = itemCurrentParameter.modify;
+          let object = {};
+          if (itemDefaultLabel[itemName] && modify[itemName]) {
+            itemDefaultLabel[itemName].map((a) => {
+              modify[itemName].map((b) => {
+                object = Object.assign({}, b);
+                if (a.ID === b.ID) { // 找出相同的操作过的一条数据
+                  Object.keys(b).map((c) => {
+                    Object.keys(a).map((d) => {
+                      if (c === d) {
+                        object[c] = a[c];
+                        console.log(77, object);
+                      }
+                    });
+                  });
+                }
+              });
+            });
+            array.push(object);
+          }
+          defaultAssign[itemName] = array;
+        }
+      }
+
 
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
