@@ -453,6 +453,7 @@
         if (this.conditiontype !== 'list') {
           if (current) {
             if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
+              console.log(setdefval[current.item.field]);
               if (!Array.isArray(setdefval[current.item.field])) {
                 data[current.item.field] = '';
               }
@@ -1235,8 +1236,8 @@
         //   }
         //   return item.defval || item.valuedata || item.default || '';
         // }
-        if (this.readonly) {
-          if (item.valuedata && /total/.test(item.valuedata) && item.fkdisplay === 'mop') {
+        if (this.readonly && item.fkdisplay === 'mop') {
+          if (item.valuedata && /total/.test(item.valuedata) ) {
             const valuedata = JSON.parse(item.valuedata);
             return `已经选中${valuedata.total}条` || '';
           }
@@ -1636,7 +1637,7 @@
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
-            width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 160,
+            width: (current.col / this.defaultColumnCol) > 0.4 ? 200 : 140,
             height: 120,
             readonly,
             ImageSize,

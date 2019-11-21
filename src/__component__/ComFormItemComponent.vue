@@ -407,7 +407,7 @@
       formInit() {
         const val = this.getStateData();
         this.computFormLinkage(val);
-      },  
+      }, 
       mountdataFormInt() {
         this.actived = false;
         setTimeout(() => {
@@ -622,13 +622,18 @@
           if (current.item.type === 'AttachFilter') {
             valueItem[Object.keys(obj)[0]] = current.item.props.Selected;
           } else if (current.item.type === 'DropDownSelectFilter' && !current.item.value) {
+            console.log(current.item.value);
             valueItem[Object.keys(obj)[0]] = [{
               Label: '',
               ID: ''
             }];
           } else if (current.item.props.isuppercase) {
-            if (valueItem[Object.keys(obj)[0]]) {
-              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+            if (typeof current.item.value === 'string') {
+              if (valueItem[Object.keys(obj)[0]]) {
+                valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+              }
+            } else {
+              valueItem[Object.keys(obj)[0]] = current.item.value;
             }
           } else {
             valueItem[Object.keys(obj)[0]] = current.item.value;
@@ -645,9 +650,29 @@
         // checkbox
         
         this.formValueItem = Object.assign(this.formValueItem, obj);
+        // 兼容开启1.3 抛出事件
+        // if (Version() === '1.3') {
+        //   if (current.item.type === 'checkbox') {
+        //     let optionIndex = current.item.props.combobox.findIndex(x => x.limitval === current.item.value);
+
+        //     valueItem[current.item.field] = [{
+        //       ID: current.item.value,
+        //       Label: current.item.props.combobox === current.item.props.trueValue ? current.item.props.trueValue : current.item.props.falseValue
+        //     }];
+        //   } else if (current.item.type === 'select') {
+        //     if (current.item.value) {
+        //       const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
+        //       valueItem[current.item.field] = [{
+        //         ID: current.item.value,
+        //         Label: current.item.options[optionIndex].label
+        //       }];
+        //     }
+        //   }
+        // }
+        // 兼容结束
 
         // 向父组件抛出整个数据对象以及当前修改的字段
-        
+        console.log(valueItem, 'valueItem');
         this.$emit('formDataChange', obj, valueItem, current);
         //  change 值 走后台接口赋值
         if (current.item.field) {
@@ -694,7 +719,7 @@
         if (!conf.url) {
           return false;
         }
-         //   拦截默认值
+        //   拦截默认值
         if (!this.actived) {
           return;
         }
