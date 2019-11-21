@@ -126,7 +126,10 @@ function CreateButton(obj, buttons, id) {
         buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
         const newButtons = [];
         // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        if (obj.waterMark) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
+        
         // 刷新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         // 更新按钮
@@ -173,7 +176,9 @@ function CreateButton(obj, buttons, id) {
         });
         buttonAddEventListener(buttons, obj, id);
         // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        if (obj.waterMark) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
       }
@@ -198,7 +203,9 @@ function CreateButton(obj, buttons, id) {
 
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
         // 修改水印
-        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        if (obj.waterMark) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       }
