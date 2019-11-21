@@ -126,7 +126,7 @@ function CreateButton(obj, buttons, id) {
         buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
         const newButtons = [];
         // 修改水印
-        if (obj.waterMark) {
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
           window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         }
         
@@ -176,7 +176,7 @@ function CreateButton(obj, buttons, id) {
         });
         buttonAddEventListener(buttons, obj, id);
         // 修改水印
-        if (obj.waterMark) {
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
           window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         }
         // 控制字表为只读
@@ -203,7 +203,7 @@ function CreateButton(obj, buttons, id) {
 
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
         // 修改水印
-        if (obj.waterMark) {
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
           window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         }
         // 控制字表为只读
