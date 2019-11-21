@@ -45,9 +45,11 @@ export default {
       state.updateData[item.tablename] = {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
+        modifyLabel: Object.assign({}, { [item.tablename]: {} }),
         delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: Object.assign({}, { [item.tablename]: {} }),
         default: {},
+        defaultLabel: {},
         checkedInfo: {},
         changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
@@ -206,7 +208,7 @@ export default {
                   //       }
                   //     }
                   //   });
-                  // } else 
+                  // } else
                   if (c.readonly === true) {
                     if (c.defval) {
                       copySaveDataForParam[b.colname] = c.defval;
@@ -333,7 +335,7 @@ export default {
         if (item.srccol) {
           // arry[item.key] = item.srccol;
           arry[item.srccol] = item.key;
-        }  
+        }
         return arry;
       }, {});
       state.LinkageForm = Object.assign(state.LinkageForm, LinkageForm);
@@ -357,7 +359,7 @@ export default {
   // }
 
   jflowPlugin(state, {
-    buttonsData, newButtons, instanceId 
+    buttonsData, newButtons, instanceId
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
