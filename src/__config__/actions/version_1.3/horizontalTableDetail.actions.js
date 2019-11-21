@@ -165,13 +165,16 @@ export default {
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
       let itemModifyLabel = {};// 子表修改的label
       let itemDefaultLabel = {};
+      const array = [];
+      const defaultAssign = {};
       if (parame.itemCurrentParameter) {
         itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
         itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
         if (itemCurrentParameter && itemCurrentParameter.modify) {
           const modify = itemCurrentParameter.modify;
           let object = {};
-          if (itemDefaultLabel[itemName] && modify[itemName]) {
+
+          if (itemDefaultLabel[itemName] && itemDefaultLabel[itemName].length > 0 && modify[itemName] && modify[itemName].length > 0) {
             itemDefaultLabel[itemName].map((a) => {
               modify[itemName].map((b) => {
                 object = Object.assign({}, b);
@@ -180,7 +183,6 @@ export default {
                     Object.keys(a).map((d) => {
                       if (c === d) {
                         object[c] = a[c];
-                        console.log(77, object);
                       }
                     });
                   });
@@ -189,11 +191,11 @@ export default {
             });
             array.push(object);
           }
+          debugger;
+
           defaultAssign[itemName] = array;
         }
       }
-
-
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
           if (item === modifyDataItem) {
@@ -205,10 +207,15 @@ export default {
 
         return {};
       }, {});
-      const labelregroupTableName = {
-        [tableName]: labelregroup
-      };
-
+         
+      let labelregroupTableName = {};
+      if (tableName) {
+        labelregroupTableName = {
+          [tableName]: labelregroup
+        };
+      }
+      
+      debugger;
       // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       // const dufault = parame.default;
       if (tableName === itemName) { // 主表修改
