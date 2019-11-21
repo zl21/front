@@ -150,14 +150,14 @@
             const supportTypeMap = extentionForColumn().reduce((a, c) => { a[c.key] = c.supportType || []; return a; }, {});
             const unMappedKey = [];
             if (copyData) {
-              Object.keys(copyData).forEach((key) => {
-                if (supportTypeMap[key].indexOf(this.webConfig.supportType) === -1) {
-                  unMappedKey.push(key);
-                  delete copyData[key];
-                }
-              });
+              // Object.keys(copyData).forEach((key) => {
+              //   if (supportTypeMap[key].indexOf(this.webConfig.supportType) === -1) {
+              //     unMappedKey.push(key);
+              //     delete copyData[key];
+              //   }
+              // });
             }
-            this.placeholder = `如下扩展属性：[${unMappedKey.toString()}] 与当前赋值方式不匹配。`;
+            //this.placeholder = `如下扩展属性：[${unMappedKey.toString()}] 与当前赋值方式不匹配。`;
             if (Object.keys(copyData).length === 0) {
               return;
             }
