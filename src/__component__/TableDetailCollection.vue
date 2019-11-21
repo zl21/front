@@ -63,7 +63,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+            >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -2950,7 +2950,7 @@
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           if (rowDatas.length > 0) {
-            // rowDatas[0][colname] = currentValue;
+            rowDatas[0][colname] = currentValue;
           } else {
             const param = {};
             param[EXCEPT_COLUMN_NAME] = IDValue;
