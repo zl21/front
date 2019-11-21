@@ -5,6 +5,7 @@ function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
   param.instanceId = instanceId;
   param.userId = window.jflowPlugin.userInfo.id;
+  param.nodeId = window.jflowPlugin.nodeId;
   window.jflowPlugin.axios.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
@@ -103,6 +104,7 @@ function CreateButton(obj, buttons, id) {
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
+  window.jflowPlugin.nodeId = obj.nodeId;
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;

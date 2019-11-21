@@ -416,6 +416,7 @@
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
+        param.nodeId = window.jflowPlugin.nodeId;
         param.description = this.agreecontent; // 审批意见
         this.$network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
@@ -450,6 +451,7 @@
         const param = {};
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
+        param.nodeId = window.jflowPlugin.nodeId;
         // if (this.returnOption === "") {
         //   this.$Message.warning("驳回节点不能为空");
         //   window.jflowPlugin.open({ control: false });
