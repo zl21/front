@@ -107,6 +107,9 @@ export default {
   updateDefaultData(state, data) {
     state.updateData[data.tableName].default = data.value;
   },
+  updateDefaultLabelData(state, data) {
+    state.updateData[data.tableName].defaultLabel = data.value;
+  },
   updateAddData(state, data) {
     if (state.updateData[data.tableName]) {
       if (Object.values(data.value).length === 0) {
@@ -120,6 +123,11 @@ export default {
   updateModifyData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].modify = data.value;
+    }
+  },
+  updateModifyLabelData(state, data) {
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modifyLabel = data.value;
     }
   },
   updateAddDefaultData(state, data) {

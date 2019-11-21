@@ -128,27 +128,33 @@
           return this.$refs.tabPanel.$children[3].itemTableCheckFunc();
         }
       }, // 按钮点击保存的回调
-      InitializationForm(val) {
+      InitializationForm(val, val2, valLabel) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
+        const objLabel = {};
         obj[tableName] = val;
+        objLabel[tableName] = valLabel;
         if (itemId) {
           if (itemId === 'New') {
             this.updateAddData({ tableName, value: obj });
           }
           this.updateDefaultData({ tableName, value: obj });
+          this.updateDefaultLabelData({ tableName, value: objLabel });
         }
       },
-      formChange(val, changeVal) {
+      formChange(val, changeVal, valLabel) {
         const { tableName, itemId } = this.$route.params;
         const obj = {};
+        const objLabel = {};
         obj[tableName] = val;
+        objLabel[tableName] = valLabel;
         if (itemId) {
           this.updateChangeData({ tableName, value: changeVal });
           if (itemId === 'New') {
             this.updateAddData({ tableName, value: obj });
           } else {
             this.updateModifyData({ tableName, value: obj });
+            this.updateModifyLabelData({ tableName, value: objLabel });
           }
         }
       },
