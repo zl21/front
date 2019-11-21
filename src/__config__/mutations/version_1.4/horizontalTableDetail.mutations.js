@@ -59,9 +59,11 @@ export default {
       state.updateData[item.tablename] = {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
+        modifyLabel: Object.assign({}, { [item.tablename]: {} }),
         delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: {},
         default: {},
+        defaultLabel: {},
         checkedInfo: {},
         changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
@@ -107,6 +109,9 @@ export default {
   updateDefaultData(state, data) {
     state.updateData[data.tableName].default = data.value;
   },
+  updateDefaultLabelData(state, data) {
+    state.updateData[data.tableName].defaultLabel = data.value;
+  },
   updateAddData(state, data) {
     if (state.updateData[data.tableName]) {
       if (Object.values(data.value).length === 0) {
@@ -120,6 +125,11 @@ export default {
   updateModifyData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].modify = data.value;
+    }
+  },
+  updateModifyLabelData(state, data) {
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].modifyLabel = data.value;
     }
   },
   updateAddDefaultData(state, data) {
@@ -216,7 +226,7 @@ export default {
                   //       }
                   //     }
                   //   });
-                  // } else 
+                  // } else
                   if (c.readonly === true) {
                     if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
                       copySaveDataForParam[b.colname] = c.defval;
@@ -306,7 +316,7 @@ export default {
         if (item.srccol) {
           // arry[item.key] = item.srccol;
           arry[item.srccol] = item.key;
-        }  
+        }
         return arry;
       }, {});
       state.LinkageForm = Object.assign(state.LinkageForm, LinkageForm);
@@ -352,7 +362,7 @@ export default {
     // tableDefaultFixedcolumns = data;
   }, // 修改单对象表格默认搜索条件
   jflowPlugin(state, {
-    buttonsData, newButtons, instanceId 
+    buttonsData, newButtons, instanceId
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;

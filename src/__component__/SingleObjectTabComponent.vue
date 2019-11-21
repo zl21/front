@@ -649,30 +649,36 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCheckedInfoData`, { tableName, value: data });
         }
       },
-      formPanelChange(val, changeVal) {
+      formPanelChange(val, changeVal, valLabel) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
         const obj = {};
+        const objLabel = {};
         obj[tableName] = val;
+        objLabel[tableName] = valLabel;
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateChangeData`, { tableName, value: changeVal });
           if (itemId === 'New') {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
           } else {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName, value: obj });
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyLabelData`, { tableName, value: objLabel });
           }
         }
       },
-      initFormPanel(val) {
+      initFormPanel(val, valChange, valLabel) {
         const { tableName } = this;
         const obj = {};
+        const objLabel = {};
         obj[tableName] = val;
+        objLabel[tableName] = valLabel;
         const { itemId } = this.$route.params;
         if (itemId) {
           if (itemId === 'New') {
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateAddData`, { tableName, value: obj });
           }
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: obj });
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultLabelData`, { tableName, value: objLabel });
         }
       },
       tableBeforeData(data) {
