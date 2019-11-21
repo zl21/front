@@ -50,43 +50,48 @@ export default {
   },
   updateMenuLists(state, menuLists) {
     state.menuLists = menuLists;
-    state.keepAliveLabelMaps = menuLists
-      .map(d => d.children)
-      .reduce((a, c) => a.concat(c))
-      .map(d => d.children)
-      .reduce((a, c) => a.concat(c))
-      .reduce((a, c) => {
-        if (c.type === 'action') {
+    if (menuLists.length > 0) {
+      state.keepAliveLabelMaps = menuLists
+        .map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .reduce((a, c) => {
+          if (c.type === 'action') {
           // 外部跳转链接URL的处理
-          if (c.url) {
-            const actionType = c.url.substring(0, c.url.indexOf('/'));
-            if (actionType === 'https:' || actionType === 'http:') {
-              const linkUrl = {};
-              linkUrl[c.id] = c.url;
-              state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
-              a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
-            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            if (c.url) {
+              const actionType = c.url.substring(0, c.url.indexOf('/'));
+              if (actionType === 'https:' || actionType === 'http:') {
+                const linkUrl = {};
+                linkUrl[c.id] = c.url;
+                state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
+                a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
+              } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
-              const index = c.url.lastIndexOf('/');
-              const customizedModuleName = c.url.substring(index + 1, c.url.length);
-              a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+                const index = c.url.lastIndexOf('/');
+                const customizedModuleName = c.url.substring(index + 1, c.url.length);
+                a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+              }
             }
-          }
-        } else if (c.type === 'table') {
+          } else if (c.type === 'table') {
           // 标准列表的处理
-          a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
-        }
-        return a;
-      }, {});
-    state.serviceIdMap = menuLists.map(d => d.children)
-      .reduce((a, c) => a.concat(c))
-      .map(d => d.children)
-      .reduce((a, c) => a.concat(c))
-      .filter(d => d.type === 'table' || d.type === 'action')
-      .reduce((a, c) => {
-        a[c.value.toUpperCase()] = c.serviceId;
-        return a;
-      }, {});
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          }
+          return a;
+        }, {});
+
+      state.serviceIdMap = menuLists.map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .map(d => d.children)
+        .reduce((a, c) => a.concat(c))
+        .filter(d => d.type === 'table' || d.type === 'action')
+        .reduce((a, c) => {
+          a[c.value.toUpperCase()] = c.serviceId;
+          return a;
+        }, {});
+    }
+
+    // 以下逻辑是为了解决菜单外路由跳转提供信息
     const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
     const tableDetailUrlMessage = JSON.parse(window.sessionStorage.getItem('tableDetailUrlMessage'));
     const customizedMessageForbutton = JSON.parse(window.sessionStorage.getItem('customizedMessageForbutton'));
@@ -249,7 +254,7 @@ export default {
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
-    type, tableName, tableId, id, customizedModuleName, customizedModuleId,linkName,
+    type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
     linkId, url, label
   }) {
     let path = '';

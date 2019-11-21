@@ -900,10 +900,10 @@
             refcolval = this.refcolvalAll[current.refcolval.srccol]
               ? this.refcolvalAll[current.refcolval.srccol]
               : '';
-            if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
-              const data = Object.assign(this.defaultFormData, this.formData);
-              refcolval = data[current.refcolval.srccol]; 
-            }
+            // if (this.refcolvalAll[current.refcolval.srccol] === undefined) {
+            //   const data = Object.assign(this.defaultFormData, this.formData);
+            //   refcolval = data[current.refcolval.srccol]; 
+            // }
             console.log(refcolval,this.refcolvalAll,'refcolval');
 
           } else {
@@ -929,7 +929,7 @@
 
               if (this.tableGetName) {
                 if (current.refcolval.maintable) {
-                  let LinkageFormfocus = document.querySelector('.R3masterForm');
+                  let LinkageFormfocus = document.querySelector('.compositeAllform');
                   if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
                     LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
                     console.log(LinkageFormfocus);
