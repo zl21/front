@@ -99,12 +99,14 @@
       :data-source="tableData.data"
       :type="type"
       :item-info="itemInfo"
-      :readonly="buttonsData.data.objreadonly"
-      :objreadonly="objreadonly || !getActionModify"
+      :readonly="buttonsData.data.objreadonly || !getActionModify"
+      :objreadonly="objreadonly"
       :status="status"
       :tabwebact="buttonsData.data.tabwebact"
       :tooltip-for-item-table="tooltipForItemTable"
       @tableBeforeData="tableBeforeData"
+      @tableBeforeLabelData="tableBeforeLabelData"
+      @tableDataChangeLabel="tableDataChangeLabel"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
@@ -688,6 +690,13 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultData`, { tableName, value: data });
         }
       },
+      tableBeforeLabelData(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultLabelData`, { tableName, value: data });
+        }
+      },
       tableDataChange(data) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
@@ -695,6 +704,13 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyData`, { tableName, value: data });
         }
       },
+      tableDataChangeLabel(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateModifyLabelData`, { tableName, value: data });
+        }
+      }, // 抛出label
       tableSelectedRow(data) {
         const { tableName } = this;
         const { itemId } = this.$route.params;
