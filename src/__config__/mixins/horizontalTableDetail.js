@@ -68,6 +68,7 @@ export default () => ({
         'updateTableData',
         'updateTablePageInfo',
         'updateModifyData',
+        'updateModifyLabelData',
         'updateAddDefaultData',
         'updateAddData',
         'updateDeleteData',

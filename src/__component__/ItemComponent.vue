@@ -451,7 +451,7 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'tabOpen']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;
@@ -460,20 +460,21 @@
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.title;
-        // const serviceIdMap = this.$store.state.global.serviceIdMap;
-        // if (!serviceIdMap[tableName] && props.serviceId) {
-        //   const data = {
-        //     tableName,
-        //     gateWay: props.serviceId
-        //   }; 
-        //   const labels = {
-        //     name: tableName,
-        //     label
-        //   };
-        //   this.$store.commit('global/addKeepAliveLabelMaps', labels);
-        //   this.$store.commit('global/addServiceIdMap', data);
+        const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        if (!serviceIdMap[tableName] && props.serviceId) {
+          const addname = `S.${tableName}.${props.reftableid}`;
+          this.addKeepAliveLabelMaps({
+            name: addname,
+            label
+          });
+          this.addServiceIdMap({
+            tableName,
+            gateWay: props.serviceId
+          });
+          serviceIdMap[tableName] = props.serviceId;
 
-        // }
+          window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+        }
 
         let id = 0;
         if (!props.readonly) {
@@ -1525,18 +1526,18 @@
           this._items.props = e.value.props;
           this._items.props.readonly = e.value.props.disabled;
           
-          if (e.value.value === '') {
-            this.clearItem();
-            this.valueChange();
-          } else if (Array.isArray(e.value.value)) {
-            this._items.props.selected = e.value.value;
-            this._items.props.defaultSelected = e.value.value;
-            this._items.value = e.value.value;
-            this.valueChange();
-          } else {
-            this._items.value = e.value.value || '';
-            this.valueChange();
-          }
+          // if (e.value.value === '') {
+          //   this.clearItem();
+          //   this.valueChange();
+          // } else if (Array.isArray(e.value.value)) {
+          //   this._items.props.selected = e.value.value;
+          //   this._items.props.defaultSelected = e.value.value;
+          //   this._items.value = e.value.value;
+          //   this.valueChange();
+          // } else {
+          //   this._items.value = e.value.value || '';
+          //   this.valueChange();
+          // }
         }
       });
 
