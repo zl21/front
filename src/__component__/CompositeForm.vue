@@ -606,6 +606,15 @@
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
+      getObjId(current) {
+        if (current.refcolval && current.refcolval.srccol === '$OBJID$') {
+          if (this.$route.params.itemId.toLocaleUpperCase() === 'NEW') {
+            return false;
+          }
+          return this.$route.params.itemId;
+        } 
+        return false;
+      },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
         const obj = {};
@@ -880,6 +889,11 @@
        
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = {};
+          const checkGetObjId = this.getObjId(current);
+          // 判断 来源值是否是 objid，新增不需要
+          if (checkGetObjId !== false) {
+            return [true, checkGetObjId];  
+          }
           if (current.refcolval.maintable) {
             this.getStateData(); // 获取主表信息
             refcolval = this.refcolvalAll[current.refcolval.srccol]

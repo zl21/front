@@ -12,8 +12,10 @@ export default {
     state.updateData[tableName] = {
       add: Object.assign({}, { [tableName]: {} }),
       modify: Object.assign({}, { [tableName]: {} }),
+      modifyLabel: Object.assign({}, { [tableName]: {} }),
       delete: Object.assign({}, { [tableName]: {} }),
       default: {},
+      defaultLabel: {},
       checkedInfo: {},
       changeData: Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
