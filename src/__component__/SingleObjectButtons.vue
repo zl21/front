@@ -302,7 +302,9 @@
           submit: '已提交',
           system: '系统',
           terminate: '已终止',
-          void: '已作废',
+          examine: '审批中',
+          agreement: '已同意',
+          reject: '已驳回',
         };
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
@@ -328,7 +330,10 @@
           submit: '#e80000',
           system: '#e80000',
           terminate: '#e80000',
-          void: '#979797'
+          void: '#979797',
+          examine: '#FF9900',
+          agreement: '#09A155',
+          reject: '#ED4014',
         };
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
