@@ -461,19 +461,20 @@
         const tableId = props.reftableid;
         const label = this._items.title;
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-        if (!serviceIdMap[tableName] && props.serviceId) {
+        if (props.serviceId) {
           const addname = `S.${tableName}.${props.reftableid}`;
           this.addKeepAliveLabelMaps({
             name: addname,
             label
           });
-          this.addServiceIdMap({
-            tableName,
-            gateWay: props.serviceId
-          });
-          serviceIdMap[tableName] = props.serviceId;
-
-          window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+          if (Version() === '1.4') {
+            serviceIdMap[tableName] = props.serviceId;
+            window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+            this.addServiceIdMap({
+              tableName,
+              gateWay: props.serviceId
+            });
+          }
         }
 
         let id = 0;

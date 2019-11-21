@@ -806,6 +806,9 @@
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
           item.oldProps.required = item.required;
+          if (item.props.regx) {
+            item.oldProps.regx = item.props.regx;
+          }
         }
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
