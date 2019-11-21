@@ -191,7 +191,6 @@ export default {
             });
             array.push(object);
           }
-          debugger;
 
           defaultAssign[itemName] = array;
         }
