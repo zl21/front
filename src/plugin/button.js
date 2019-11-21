@@ -128,6 +128,8 @@ function CreateButton(obj, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1
         });
+        // 控制字表为只读
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
       }
     });
   }
