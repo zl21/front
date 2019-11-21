@@ -453,6 +453,7 @@
         if (this.conditiontype !== 'list') {
           if (current) {
             if (current.item.props.fkdisplay === 'drp' || current.item.props.fkdisplay === 'mrp') {
+              console.log(setdefval[current.item.field]);
               if (!Array.isArray(setdefval[current.item.field])) {
                 data[current.item.field] = '';
               }
