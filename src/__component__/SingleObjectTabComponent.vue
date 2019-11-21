@@ -230,7 +230,7 @@
     computed: {
       getActionModify() {
         if (this.itemInfo.componentAttribute.buttonsData.data.tabcmd) {
-          this.itemInfo.componentAttribute.buttonsData.data.tabcmd.cmds.every((cur, idx) => {
+          return this.itemInfo.componentAttribute.buttonsData.data.tabcmd.cmds.every((cur, idx) => {
             if (cur === 'actionMODIFY') {
               return this.itemInfo.componentAttribute.buttonsData.data.tabcmd.prem[idx];
             }
