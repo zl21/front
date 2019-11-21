@@ -172,24 +172,31 @@ export default {
         itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
         if (itemCurrentParameter && itemCurrentParameter.modify) {
           const modify = itemCurrentParameter.modify;
-          let object = {};
+
 
           if (itemDefaultLabel[itemName] && itemDefaultLabel[itemName].length > 0 && modify[itemName] && modify[itemName].length > 0) {
             itemDefaultLabel[itemName].map((a) => {
+              let object = {};
               modify[itemName].map((b) => {
                 object = Object.assign({}, b);
                 if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-                  Object.keys(b).map((c) => {
-                    Object.keys(a).map((d) => {
-                      if (c === d) {
-                        object[c] = a[c];
-                      }
-                    });
-                  });
+                  // Object.keys(b).map((c) => {
+                  //   Object.keys(a).map((d) => {
+                  //     if (c === d) {
+                  //       console.log(22, c, a);
+                  //       console.log(2255, JSON.stringify(a));
+
+
+                  //       object[c] = a[c];
+                  //       console.log(JSON.stringify(object));
+                  //     }
+                  //   });
+                  // });
                 }
               });
+
+              array.push(object);
             });
-            array.push(object);
           }
 
           defaultAssign[itemName] = array;
@@ -206,7 +213,6 @@ export default {
 
         return {};
       }, {});
-      console.log(4444, labelregroup);
       let labelregroupTableName = {};
       if (tableName) {
         labelregroupTableName = {

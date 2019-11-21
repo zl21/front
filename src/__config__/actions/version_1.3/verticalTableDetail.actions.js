@@ -740,16 +740,16 @@ export default {
               itemDefaultLabel[itemName].map((a) => {
                 modify[itemName].map((b) => {
                   object = Object.assign({}, b);
-                  if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-                    Object.keys(b).map((c) => {
-                      Object.keys(a).map((d) => {
-                        if (c === d) {
-                          object[c] = a[c];
-                          console.log(77, object);
-                        }
-                      });
-                    });
-                  }
+                  // if (a.ID === b.ID) { // 找出相同的操作过的一条数据
+                  //   Object.keys(b).map((c) => {
+                  //     Object.keys(a).map((d) => {
+                  //       if (c === d) {
+                  //         object[c] = a[c];
+                  //         console.log(77, object);
+                  //       }
+                  //     });
+                  //   });
+                  // }
                 });
               });
               array.push(object);
@@ -814,7 +814,6 @@ export default {
           }
         });
       } else if (sataTypeName === 'modify') {
-        console.log(33333, defaultAssign);
         parames = {
           table: tableName,
           objid: objId,
