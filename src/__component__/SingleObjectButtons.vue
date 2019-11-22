@@ -1798,6 +1798,8 @@
         }
       },
       mainTableEditorSave(obj) { // 主表编辑保存
+        debugger;
+
         // console.log('主表编辑保存');
         this.saveParameters();// 调用获取参数方法
         // const itemName = this.itemName;// 子表表名

@@ -133,7 +133,6 @@ export default {
     const sataTypeName = sataType ? sataType.sataType : '';
     
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
      
@@ -155,9 +154,12 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const itemModify = itemCurrentParameter.modify;// 子表修改
-      // const itemDefault = itemCurrentParameter.default;
-      const itemAdd = itemCurrentParameter.add;// 子表新增
+      let itemModify = {};
+      let itemAdd = {};
+      if (itemCurrentParameter) {
+        itemModify = itemCurrentParameter.modify;// 子表修改
+        itemAdd = itemCurrentParameter.add;// 子表新增
+      }
       const { modifyLabel } = parame;
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
@@ -291,6 +293,24 @@ export default {
             }
           });
         }
+      } else { // 主表修改
+        const value = Object.assign({}, modify, labelregroupTableName);
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modifyLabel },
+          before: value
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
       }
     }
   },
