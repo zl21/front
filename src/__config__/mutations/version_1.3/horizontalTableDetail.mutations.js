@@ -52,6 +52,10 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tablePageInfo = {
+        currentPageIndex: 1,
+        pageSize: 10
+      }; // 表格的页码和每页多少条
       arr.push(obj);
     });
     arr.forEach((item) => {
@@ -181,9 +185,9 @@ export default {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = false;
   },
-  updateTablePageInfo(state, data) { //  更改列表分页数据
-    state.tablePageInfo = data;
-  },
+  // updateTablePageInfo(state, data) { //  更改列表分页数据
+  //   state.tablePageInfo = data;
+  // },
   changeCopy(state, data) {
     state.copy = data;
   },
@@ -352,7 +356,11 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
-
+  updateTablePageInfo(state, data) {
+    const { tablePageInfo } = state.tabPanels[state.tabCurrentIndex];
+    tablePageInfo.currentPageIndex = data.currentPageIndex;
+    tablePageInfo.pageSize = data.pageSize;
+  }, // 修改单对象表格页码
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId
   }) { // jflowPlugin按钮逻辑

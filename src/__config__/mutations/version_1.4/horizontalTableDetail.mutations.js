@@ -52,6 +52,10 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tablePageInfo = {
+        currentPageIndex: 1,
+        pageSize: 10
+      }; // 表格的页码和每页多少条
       obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
@@ -169,8 +173,13 @@ export default {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = false;
   },
+  // updateTablePageInfo(state, data) { //  更改列表分页数据
+  //   state.tablePageInfo = data;
+  // },
   updateTablePageInfo(state, data) { //  更改列表分页数据
-    state.tablePageInfo = data;
+    const { tablePageInfo } = state.tabPanels[state.tabCurrentIndex];
+    tablePageInfo.currentPageIndex = data.currentPageIndex;
+    tablePageInfo.pageSize = data.pageSize;
   },
   changeCopy(state, data) {
     state.copy = data;
