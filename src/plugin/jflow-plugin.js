@@ -519,7 +519,7 @@ function AxiosGuard(axios) { // axios拦截
       }
 
       // 列表界面获取按钮接口
-      if (response.config.url.endsWith('/p/cs/getTableQuery')) {
+      if (response.config.url.endsWith('/p/cs/getTableQuery') && window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE') {
         if (Version() === '1.4') {
           getQueryButtons(response.data.data);
         } else {
