@@ -108,20 +108,12 @@
         if (this.isDefault && !item.clickableWhenEdit) {
           return;
         }
-        if (!this.itemPicked[index]) {
-          this.itemPicked[index] = true;
-        } else {
-          this.itemPicked[index] = false;
-        }
+        this.itemPicked[index] = !this.itemPicked[index];
         this.computeValue();
         setTimeout(() => {
           this.$emit('valueChange', this.value);
         }, 0);
-        if (this.hasPickedAll()) {
-          this.pickedAll = true;
-        } else {
-          this.pickedAll = false;
-        }
+        this.pickedAll = !!this.hasPickedAll();
       },
       clickEventListener(event) {
         if (event.target !== this.$refs.enumerableInput.querySelector('input')) {
@@ -170,7 +162,47 @@
           return this.findDomByClass(dom.offsetParent, className);
         }
         return dom.offsetParent;
-      }
+      },
+      // 校验赋值是否合法
+      validateAssignment(table, value) {
+        switch (table) {
+        case 'AD_TABLE':
+          // 表的读写规则要求只能最多只能AMDQSVUB
+          return !(value.length > 8 || /[^AMDQSVUB]/.test(value));
+        case 'AD_COLUMN':
+          // 字段的读写规则要求只能0和1的组合，且只能是10位。
+          return !(value.length !== 10 || /[^0-1]/.test(value));
+        default:
+          break;
+        }
+        return false;
+      },
+      // 赋值逻辑
+      assignment(table, value) {
+        if (!this.validateAssignment(table, value)) { return; }
+        this.value = value;
+        this.$emit('valueChange', this.value);
+        if (this.strictMode) {
+          `${value}`.split('').forEach((d, i) => {
+            if (d === '1') {
+              this.itemPicked[i] = true;
+            } else if (d === '0') {
+              this.itemPicked[i] = false;
+            }
+          });
+        } else {
+          Object.keys(this.itemPicked).forEach((key) => { this.itemPicked[key] = false; });
+          `${value}`.split('').forEach((d) => {
+            this.itemPicked[this.enumerableLists.findIndex(sd => sd.value === d)] = true;
+          });
+        }
+        // 处理默认的全选控制状态pickedAll逻辑
+        this.pickedAll = this.hasPickedAll();
+      },
+      onPaste(event) {
+        const paste = (event.clipboardData || window.clipboardData).getData('text');
+        this.assignment(this.$route.params.tableName, paste);
+      },
     },
     computed: {
       isDefault() {
@@ -199,7 +231,6 @@
     mounted() {
       this.$refs.enumerableInput.instance = this;
       this.computeValue();
-
       if (this.defaultValue !== undefined) {
         this.value = this.defaultValue;
         if (this.strictMode) {
@@ -216,21 +247,9 @@
         // 处理默认的全选控制状态pickedAll逻辑
         this.pickedAll = this.hasPickedAll();
       }
+      this.$refs.input.$el.addEventListener('paste', this.onPaste);
       document.body.addEventListener('click', this.clickEventListener);
       window.addEventListener('scroll', this.scrollEventListener, true);
-      // 添加黏贴功能
-      // window.addEventListener('paste', (e) => {
-      //   e.preventDefault();
-      //   e.stopPropagation();
-      //   const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
-      //   if (this.$refs.input && this.$refs.input.$el.querySelector('input') === document.activeElement) {
-      //     try {
-      //       this.value = paste;
-      //     } catch (err) {
-      //       console.log(err);
-      //     }
-      //   }
-      // });
     },
     beforeDestroy() {
       document.body.removeEventListener('click', this.clickEventListener);
