@@ -395,6 +395,6 @@ export default {
     state.childTableReadonly = value;
   },
   updateWatermarkimg(state, value) { // 修改水印
-    state.tabPanels[0].componentAttribute.buttonsData.data.watermarkimg = value;
+    state.jflowWaterMark = value;
   }
 };

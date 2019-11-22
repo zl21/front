@@ -723,40 +723,11 @@ export default {
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
       const { modifyLabel } = parame;// 主表修改的label
-      const { defaultLabel } = parame;// 主表修改前的label
       let itemModifyLabel = {};// 子表修改的label
-      let itemDefaultLabel = {};
-      const array = [];
-      const defaultAssign = {};
-      if (parame.itemCurrentParameter) {
+      let itemBeforeLabel = {};
+      if (parame.itemCurrentParameter) { // 子表取值
         itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
-        if (itemCurrentParameter && itemCurrentParameter.modify) {
-          const modify = itemCurrentParameter.modify;
-          let object = {};
-
-          if (itemDefaultLabel[itemName] && modify[itemName]) {
-            if (itemDefaultLabel[itemName].length > 0 && modify[itemName].length > 0) {
-              itemDefaultLabel[itemName].map((a) => {
-                modify[itemName].map((b) => {
-                  object = Object.assign({}, b);
-                  // if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-                  //   Object.keys(b).map((c) => {
-                  //     Object.keys(a).map((d) => {
-                  //       if (c === d) {
-                  //         object[c] = a[c];
-                  //         console.log(77, object);
-                  //       }
-                  //     });
-                  //   });
-                  // }
-                });
-              });
-              array.push(object);
-            }
-          }
-          defaultAssign[itemName] = array;
-        }
+        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值     
       }
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
@@ -772,22 +743,12 @@ export default {
 
         return {};
       }, {});
-
-    
       const labelregroupTableName = {// label修改过后的值
         [tableName]: labelregroup
       };
-
-
       const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
-      // const a = Object.assign({}, itemModify, itemDefaultLabel);d
-
-
-      // const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
       const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
-      // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
       const sataTypeName = sataType ? sataType.sataType : '';
-      // const dufault = parame.default;
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
@@ -819,8 +780,7 @@ export default {
           objid: objId,
           data: { ...itemModify },
           after: itemModifyLabel,
-          before: defaultAssign
-         
+          before: itemBeforeLabel        
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -859,13 +819,11 @@ export default {
           });
         }
         if (Object.values(itemModify[itemName]).length > 0) {
-          const value = Object.assign({}, itemModify, labelregroupTableName);
-
           parames = {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            before: value,
+            before: itemBeforeLabel,
             after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -878,7 +836,7 @@ export default {
             }
           });
         }
-      } else {    
+      } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);
         parames = {
           table: tableName,

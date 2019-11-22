@@ -133,7 +133,6 @@ export default {
     const sataTypeName = sataType ? sataType.sataType : '';
     
     let parames = {};
-
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
      
@@ -155,52 +154,21 @@ export default {
       });
     } else if (type === 'modify') { // 编辑保存参数
       const { modify } = parame;
-      const itemModify = itemCurrentParameter.modify;// 子表修改
-      // const itemDefault = itemCurrentParameter.default;
-      const itemAdd = itemCurrentParameter.add;// 子表新增
+      let itemModify = {};
+      let itemAdd = {};
+      if (itemCurrentParameter) {
+        itemModify = itemCurrentParameter.modify;// 子表修改
+        itemAdd = itemCurrentParameter.add;// 子表新增
+      }
       const { modifyLabel } = parame;
-      const { defaultLabel } = parame;
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
-      const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+      const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的before值，未组装表名）
       let itemModifyLabel = {};// 子表修改的label
-      let itemDefaultLabel = {};
-      const array = [];
-      const defaultAssign = {};
+      let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) {
-        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
-        if (itemCurrentParameter && itemCurrentParameter.modify) {
-          const modify = itemCurrentParameter.modify;
-
-
-          if (itemDefaultLabel[itemName] && itemDefaultLabel[itemName].length > 0 && modify[itemName] && modify[itemName].length > 0) {
-            itemDefaultLabel[itemName].map((a) => {
-              let object = {};
-              modify[itemName].map((b) => {
-                object = Object.assign({}, b);
-                if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-                  // Object.keys(b).map((c) => {
-                  //   Object.keys(a).map((d) => {
-                  //     if (c === d) {
-                  //       console.log(22, c, a);
-                  //       console.log(2255, JSON.stringify(a));
-
-
-                  //       object[c] = a[c];
-                  //       console.log(JSON.stringify(object));
-                  //     }
-                  //   });
-                  // });
-                }
-              });
-
-              array.push(object);
-            });
-          }
-
-          defaultAssign[itemName] = array;
-        }
+        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// after值
+        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
       }
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
@@ -215,33 +183,19 @@ export default {
       }, {});
       let labelregroupTableName = {};
       if (tableName) {
-        labelregroupTableName = {
+        labelregroupTableName = {// before值
           [tableName]: labelregroup
         };
       }
-      // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-      // const dufault = parame.default;
+
+
       if (tableName === itemName) { // 主表修改
-        // const dufaultData = dufault[tableName];
-        // const defaultForSave = {};
-        // const dufaultDataForSave = {};
-        // Object.keys(dufaultData).reduce((obj, item) => { 
-        //   const modifyData = modify[tableName];
-        //   Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
-        //     if (item === modifyDataItem) {
-        //       defaultForSave[modifyDataItem] = dufaultData[item];
-        //     }
-        //     return modifyDataObj;
-        //   }, {});
-        //   return obj;
-        // }, {});
-        // dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
           objid: objId,
           data: { ...modify },
-          after: labelregroupTableName,
-          before: { ...modifyLabel }
+          before: labelregroupTableName,
+          after: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -278,42 +232,12 @@ export default {
           }
         });
       } else if (sataTypeName === 'modify') {
-        // const defaultData = [];
-        // const defaultForSaveArray = [];
-        // const defaultForSave = {};
-        // const dufaultDataForSave = {};
-        // if (typeof itemModify[itemName] === 'object') {
-
-        // } else {
-        //   itemModify[itemName].forEach((modifyItem) => {
-        //     itemDefault[itemName].forEach((defaultItem) => {
-        //       if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-        //         Object.keys(defaultItem).reduce((obj, item) => { 
-        //           Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-        //             if (item === modifyDataItem) {
-        //               let itemDefault = {};
-        //               defaultForSave[modifyDataItem] = defaultItem[item];
-        //               itemDefault = Object.assign({}, modifyItem, defaultForSave);  
-        //               defaultForSaveArray.push(itemDefault);
-        //             }
-        //             return modifyDataObj;
-        //           }, {});
-        //           return obj;
-        //         }, {});
-        //         defaultData.push(defaultItem);
-        //       }
-        //     });
-        //   });
-        // }
-        // dufaultDataForSave[tableName] = defaultForSave;
         parames = {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          before: defaultAssign,
+          before: itemBeforeLabel,
           after: { ...itemModifyLabel }
-
-         
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -352,35 +276,11 @@ export default {
           });
         } 
         if (Object.values(itemModify[itemName]).length > 0) {
-          // const defaultData = [];
-          // const defaultForSaveArray = [];
-          // const defaultForSave = {};
-          // const dufaultDataForSave = {};
-          // itemModify[itemName].forEach((modifyItem) => {
-          //   itemDefault[itemName].forEach((defaultItem) => {
-          //     if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-          //       Object.keys(defaultItem).reduce((obj, item) => { 
-          //         Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-          //           if (item === modifyDataItem) {
-          //             let itemDefault = {};
-          //             defaultForSave[modifyDataItem] = defaultItem[item];
-          //             itemDefault = Object.assign({}, modifyItem, defaultForSave);  
-          //             defaultForSaveArray.push(itemDefault);
-          //           }
-          //           return modifyDataObj;
-          //         }, {});
-          //         return obj;
-          //       }, {});
-          //       defaultData.push(defaultItem);
-          //     }
-          //   });
-          // });
-          // dufaultDataForSave[tableName] = defaultForSave;
           parames = {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            before: labelregroupTableName,
+            before: itemBeforeLabel,
             after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -393,6 +293,24 @@ export default {
             }
           });
         }
+      } else { // 主表修改
+        const value = Object.assign({}, modify, labelregroupTableName);
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: { ...modify },
+          after: { ...modifyLabel },
+          before: value
+        };
+        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+          if (res.data.code === 0) {
+            const data = res.data;
+            resolve();
+            commit('updateNewMainTableAddSaveData', { data, itemName });
+          } else {
+            reject();
+          }
+        });
       }
     }
   },
@@ -458,7 +376,7 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectSubmit', { objId, table }).then((res) => {
+    network.post(path || '/p/cs/objectSubmit', urlSearchParams({ objid: objId, table })).then((res) => {
       if (res.data.code === 0) {
         const submitData = res.data;
         resolve();
@@ -476,7 +394,7 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectUnSubmit', { objId, table }).then((res) => {
+    network.post(path || '/p/cs/objectUnSubmit', urlSearchParams({ objid: objId, table })).then((res) => {
       if (res.data.code === 0) {
         const unSubmitData = res.data;
         resolve();
@@ -494,7 +412,7 @@ export default {
     objId, table, path, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
-    network.post(path || '/p/cs/objectVoid', { objId, table }).then((res) => {
+    network.post(path || '/p/cs/objectVoid', urlSearchParams({ objid: objId, table })).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
