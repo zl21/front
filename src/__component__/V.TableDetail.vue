@@ -7,7 +7,7 @@
       :item-table-check-func="itemTableCheckFunc"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
-      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:''"
+      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:jflowWaterMark"
       :item-name-group="childTableNames"
       :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"

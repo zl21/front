@@ -34,6 +34,7 @@ export default () => ({
       tooltipForItem: ({ tooltipForItemTable }) => tooltipForItemTable,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
+      jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
