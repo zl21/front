@@ -11,6 +11,7 @@ import {
 } from '../../../constants/global';
 import router from '../../router.config';
 import customize from '../../customize.config';
+import { getSeesionObject } from '../../../__utils__/sessionStorage';
 
 
 export default {
@@ -121,6 +122,7 @@ export default {
         }
       });
     }
+    this.keepAliveLabelMaps = Object.assign({}, this.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
