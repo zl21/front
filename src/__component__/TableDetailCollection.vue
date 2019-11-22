@@ -162,6 +162,7 @@
   const TABLE_BEFORE_LABEL_DATA = 'tableBeforeLabelData'; // emit beforedatalabel
   const TABLE_DATA_CHANGE = 'tableDataChange'; // emit 修改数据
   const TABLE_DATA_CHANGE_LABEL = 'tableDataChangeLabel'; // emit 修改数据的label
+  const TABLE_DATA_CHANGE_LABEL_BEFORE = 'tableDataChangeLabelBefore'; // emit 修改数据的label
   const TABLE_VERIFY_MESSAGE = 'tableVerifyMessage'; // emit 修改数据
   const TABLE_SELECTED_ROW = 'tableSelectedRow';
 
@@ -243,6 +244,7 @@
         },
         afterSendData: {}, // 改后的数据
         afterSendDataLabel: {}, // 改后的数据Label
+        afterSendDataLabelBefore: {}, // 改后对应改前的Label
         dialogConfig: { // 弹框配置信息
           title: '提示',
           mask: true,
@@ -473,6 +475,8 @@
         handler(val) {
           if (this.isRefreshClick) {
             this.afterSendData = {};
+            this.afterSendDataLabel = {};
+            this.afterSendDataLabelBefore = {};
             this.verifyTipObj = {};
             this.fkSelectedChangeData = [];
           }
@@ -2965,7 +2969,31 @@
           this.afterSendDataLabel[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
+
+        this.putBeforeLabelDataFromCell(colname, IDValue);
       }, // 获取label
+      putBeforeLabelDataFromCell(colname, IDValue) {
+        const tableDataSource = JSON.parse(JSON.stringify(this.dataSource));
+        const currentValue = tableDataSource.row.find(item => item[EXCEPT_COLUMN_NAME].val === IDValue)[colname].val;
+        if (this.afterSendDataLabelBefore[this.tableName]) {
+          const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+          if (rowDatas.length > 0) {
+            rowDatas[0][colname] = currentValue;
+          } else {
+            const param = {};
+            param[EXCEPT_COLUMN_NAME] = IDValue;
+            param[colname] = currentValue;
+            this.afterSendDataLabelBefore[this.tableName].push(param);
+          }
+        } else {
+          this.afterSendDataLabelBefore[this.tableName] = [];
+          const param = {};
+          param[EXCEPT_COLUMN_NAME] = IDValue;
+          param[colname] = currentValue;
+          this.afterSendDataLabelBefore[this.tableName].push(param);
+        }
+        this.$emit(TABLE_DATA_CHANGE_LABEL_BEFORE, this.afterSendDataLabelBefore);
+      }, // 改后对应改前的label
       selectedChange(val) {
         this.updateTableSearchData({
           selectedValue: val,

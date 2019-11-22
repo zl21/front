@@ -49,6 +49,7 @@ export default {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
         modifyLabel: Object.assign({}, { [item.tablename]: {} }),
+        itemBeforeLabel: Object.assign({}, { [item.tablename]: {} }), // 子表表格改以前的label
         delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: Object.assign({}, { [item.tablename]: {} }),
         default: {},
@@ -122,6 +123,11 @@ export default {
   updateModifyLabelData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].modifyLabel = data.value;
+    }
+  },
+  updateItemBeforeLabelData(state, data) {
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].itemBeforeLabel = data.value;
     }
   },
   updateAddDefaultData(state, data) {
