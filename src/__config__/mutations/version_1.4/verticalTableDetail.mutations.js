@@ -49,6 +49,7 @@ export default {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
         modifyLabel: Object.assign({}, { [item.tablename]: {} }),
+        itemBeforeLabel: Object.assign({}, { [item.tablename]: {} }), // 子表表格改以前的label
         delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: Object.assign({}, { [item.tablename]: {} }),
         default: {},
@@ -60,6 +61,10 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tablePageInfo = {
+        currentPageIndex: 1,
+        pageSize: 10
+      }; // 表格的页码和每页多少条
       obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
@@ -118,6 +123,11 @@ export default {
   updateModifyLabelData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].modifyLabel = data.value;
+    }
+  },
+  updateItemBeforeLabelData(state, data) {
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].itemBeforeLabel = data.value;
     }
   },
   updateAddDefaultData(state, data) {
@@ -252,8 +262,13 @@ export default {
   changeFormDataForCopy(state, { defaultForCopyDatas, tableName }) {
     state.updateData[tableName].add = defaultForCopyDatas;
   },
+  // updateTablePageInfo(state, data) { //  更改列表分页数据
+  //   state.tablePageInfo = data;
+  // },
   updateTablePageInfo(state, data) { //  更改列表分页数据
-    state.tablePageInfo = data;
+    const { tablePageInfo } = state.tabPanels[state.tabCurrentIndex];
+    tablePageInfo.currentPageIndex = data.currentPageIndex;
+    tablePageInfo.pageSize = data.pageSize;
   },
   updateCopyDataForRealdOnly(state, data) { // 储存接口返回数据作为复制按钮操作的配置信息
     state.copyDataForReadOnly = data;
@@ -386,5 +401,8 @@ export default {
   },
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
+  },
+  updateWatermarkimg(state, value) { // 修改水印
+    state.mainFormInfo.buttonsData.data.watermarkimg = value;
   }
 };
