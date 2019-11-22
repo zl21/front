@@ -1869,7 +1869,7 @@
               }
               if (Version() === '1.3') {
                 let mainModify = [];
-                if (this.updateData[this.tableName].modify) {
+                if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
                   mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
                 }
                 if (mainModify.length > 0) {
@@ -1930,7 +1930,7 @@
 
             if (Version() === '1.3') {
               let mainModify = [];
-              if (this.updateData[this.tableName].modify) {
+              if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
                 mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
               }
               if (mainModify.length > 0) {

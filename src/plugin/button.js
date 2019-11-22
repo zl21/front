@@ -5,6 +5,7 @@ function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
   param.instanceId = instanceId;
   param.userId = window.jflowPlugin.userInfo.id;
+  param.nodeId = window.jflowPlugin.nodeId;
   window.jflowPlugin.axios.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
@@ -103,6 +104,7 @@ function CreateButton(obj, buttons, id) {
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
+  window.jflowPlugin.nodeId = obj.nodeId;
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
@@ -123,8 +125,14 @@ function CreateButton(obj, buttons, id) {
         const buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo ? JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData)) : JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData));
         buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
         const newButtons = [];
+        // 修改水印
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
         
+        // 刷新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
+        // 更新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1
         });
@@ -167,7 +175,10 @@ function CreateButton(obj, buttons, id) {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId 
         });
         buttonAddEventListener(buttons, obj, id);
-
+        // 修改水印
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
       }
@@ -191,6 +202,10 @@ function CreateButton(obj, buttons, id) {
         });
 
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
+        // 修改水印
+        if (!window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData.data.watermarkimg) {
+          window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
+        }
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       }
