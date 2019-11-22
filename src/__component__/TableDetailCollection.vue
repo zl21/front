@@ -1161,13 +1161,11 @@
           const param = {
             [EXCEPT_COLUMN_NAME]: ele[EXCEPT_COLUMN_NAME].val
           };
-          console.log(param);
           const tabth = copyDataSoucre.tabth.filter(item => item.colname !== EXCEPT_COLUMN_NAME);
           tabth.forEach((tab) => {
             const val = ele[tab.colname].val;
             param[tab.colname] = val;
           });
-          console.log(param);
           beforeData[this.tableName].push(param);
         });
         this.beforeSendLabelData = beforeData;
