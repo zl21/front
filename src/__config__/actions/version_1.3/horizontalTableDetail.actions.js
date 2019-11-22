@@ -159,45 +159,14 @@ export default {
       // const itemDefault = itemCurrentParameter.default;
       const itemAdd = itemCurrentParameter.add;// 子表新增
       const { modifyLabel } = parame;
-      const { defaultLabel } = parame;
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的before值，未组装表名）
       let itemModifyLabel = {};// 子表修改的label
-      let itemDefaultLabel = {};
-      const array = [];// 用于存整合过后before值
-      const defaultAssign = {};
+      let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) {
-        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemDefaultLabel = parame.itemCurrentParameter.defaultLabel;// 子表修改前label
-        // if (itemCurrentParameter && itemCurrentParameter.modify) {//此循环层级过多，逻辑已在表格抛出值时处理
-        //   const modify = itemCurrentParameter.modify;
-        //   if (itemDefaultLabel[itemName] && itemDefaultLabel[itemName].length > 0 && modify[itemName] && modify[itemName].length > 0) {
-        //     itemDefaultLabel[itemName].map((a) => {
-        //       let object = {};
-        //       modify[itemName].map((b) => {
-        //         object = Object.assign({}, b);
-        //         if (a.ID === b.ID) { // 找出相同的操作过的一条数据
-        //           // Object.keys(b).map((c) => {
-        //           //   Object.keys(a).map((d) => {
-        //           //     if (c === d) {
-        //           //       console.log(22, c, a);
-        //           //       console.log(2255, JSON.stringify(a));
-
-
-        //           //       object[c] = a[c];
-        //           //       console.log(JSON.stringify(object));
-        //           //     }
-        //           //   });
-        //           // });
-        //         }
-        //       });
-
-        //       array.push(object);
-        //     });
-        //   }
-        //   defaultAssign[itemName] = array;
-        // }
+        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// after值
+        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
       }
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
@@ -265,7 +234,7 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
-          before: defaultAssign,
+          before: itemBeforeLabel,
           after: { ...itemModifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -309,7 +278,7 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            before: labelregroupTableName,
+            before: itemBeforeLabel,
             after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {

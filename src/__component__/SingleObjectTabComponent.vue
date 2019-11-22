@@ -107,6 +107,7 @@
       @tableBeforeData="tableBeforeData"
       @tableBeforeLabelData="tableBeforeLabelData"
       @tableDataChangeLabel="tableDataChangeLabel"
+      @tableDataChangeLabelBefore="tableDataChangeLabelBefore"
       @tableDataChange="tableDataChange"
       @tableSelectedRow="tableSelectedRow"
       @tableVerifyMessage="tableVerifyMessage"
@@ -695,6 +696,13 @@
         const { itemId } = this.$route.params;
         if (itemId) {
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateDefaultLabelData`, { tableName, value: data });
+        }
+      },
+      tableDataChangeLabelBefore(data) {
+        const { tableName } = this;
+        const { itemId } = this.$route.params;
+        if (itemId) {
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateItemBeforeLabelData`, { tableName, value: data });
         }
       },
       tableDataChange(data) {
