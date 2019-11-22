@@ -30,6 +30,7 @@ export default () => ({
       instanceId: ({ instanceId }) => instanceId,
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
+      jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
