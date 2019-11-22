@@ -463,6 +463,7 @@
         this.refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
         if (!this.mountChecked && this.conditiontype !== 'list') {
           // 区分是否是默认值的change 拦截
+          this.labelForm = {};
           return false;
         }
         // 修改联动的值
@@ -526,7 +527,6 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-
         this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
         // 注释
 
@@ -597,8 +597,13 @@
           // }
           // 开启
           // 注释
-
-          this.$emit('formChange', defaultSetValue, this.defaultSetValue, this.r3Form);  
+          // let label = Object.keys(defaultSetValue).reduce((arr,item)=>{
+          //   //arr[item]
+          //     console.log(arr,item);
+          //     arr[item] = this.defaultSetValue[]
+          //     return arr;
+          // },{})
+          // this.$emit('formChange', defaultSetValue, this.defaultSetValue, this.r3Form);  
           // 注释
         }
         this.getStateData();

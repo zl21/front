@@ -60,9 +60,9 @@
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div
-:class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
-         :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
->
+      :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
+      :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
+    >
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -349,6 +349,7 @@
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
+  import { updateSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -463,12 +464,14 @@
         const tableId = props.reftableid;
         const label = this._items.props.fkdesc;
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        const addname = `S.${tableName}.${props.reftableid}`;
+        this.addKeepAliveLabelMaps({
+          name: addname,
+          label
+        });
+        console.log(addname,label);
+        updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
         if (props.serviceId) {
-          const addname = `S.${tableName}.${props.reftableid}`;
-          this.addKeepAliveLabelMaps({
-            name: addname,
-            label
-          });
           if (Version() === '1.4') {
             serviceIdMap[tableName] = props.serviceId;
             window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
@@ -1100,7 +1103,8 @@
               } else {
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
-                // that.upSaveImg(parms, '', path, index);
+
+                that.upSaveImg(parms, '', path, index);
               }
             } else {
               // new
@@ -1120,8 +1124,6 @@
           this._items.value = '';
         }
         this.valueChange();
-        const dom = document.getElementById('actionMODIFY');
-        dom.click();
       },
       filechange(value) {
         // 上传文件
@@ -1235,7 +1237,6 @@
         // 图片进度接口
         const self = this;
         const resultData = result;
-        console.log(this);
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
@@ -1257,6 +1258,7 @@
               URL: resultData.data.Url
             });
             //
+            // eslint-disable-next-line no-unused-vars
             const parms = {
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
@@ -1268,11 +1270,11 @@
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
-              console.log(this);
 
+              // eslint-disable-next-line no-unused-vars
               const path = this.$parent.pathcheck !== '';
               const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
-              if (this._items.props.tableGetName !== '') {
+              if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
@@ -1280,7 +1282,7 @@
                 this._items.value = JSON.stringify([
                   ...this._items.props.itemdata.valuedata
                 ]);
-                this.valueChange();
+                this.valueImgChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
                   const dom = document.getElementById('actionMODIFY');
                   dom.click();
@@ -1289,14 +1291,14 @@
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
                 );
-
-                this.valueChange();
+                this.valueImgChange();
+                this.upSaveImg();
               }
             } else {
               this._items.props.itemdata.valuedata.push(
                 fixedData[fixedData.length - 1]
               );
-              this.valueChange();
+              this.valueImgChange();
             }
           }
 
@@ -1402,7 +1404,6 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        console.log('ddd');
         const dom = document.getElementById('actionMODIFY');
         dom.click();
         return false;
