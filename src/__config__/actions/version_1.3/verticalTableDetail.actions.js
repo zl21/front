@@ -761,9 +761,15 @@ export default {
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
       const labelregroup = {};// 用于begore after字段翻译修改过后的中文默认label（修改过后的返回值）
+      debugger;
+
       Object.keys(defaultLabelregroup).reduce((obj, item) => {
         Object.keys(modifyLabelregroup).forEach((modifyDataItem) => {
+          console.log(333, modifyDataItem);
+
           if (item === modifyDataItem) {
+            debugger;
+
             labelregroup[item] = defaultLabelregroup[modifyDataItem];
             return false;
           }
@@ -772,7 +778,6 @@ export default {
 
         return {};
       }, {});
-
     
       const labelregroupTableName = {// label修改过后的值
         [tableName]: labelregroup
