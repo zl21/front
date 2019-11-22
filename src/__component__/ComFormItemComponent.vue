@@ -660,10 +660,11 @@
       getLable(current) {
         // R3 label 属性
         const valueLabel = {};
-        // if (!this.formDataObject[current.item.field]) {
-        //   // 判断是否有值
-        //   return false;
-        // }
+        if (!this.formDataObject[current.item.field]) {
+          // 判断是否有值
+          valueLabel[current.item.field] = '';
+          return valueLabel;
+        }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
           valueLabel[current.item.field] = current.item.props.Selected[0].Label;
         } else if (current.item.type === 'DropDownSelectFilter') {
@@ -683,12 +684,16 @@
           const optionIndex = current.item.props.combobox.findIndex(x => x.limitval === current.item.value);
           if (optionIndex !== -1) {
             valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+          } else {
+            valueLabel[current.item.field] = '';
           }
         } else if (current.item.type === 'select') {
           if (current.item.value) {
             const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
             if (optionIndex !== -1) {
               valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+            } else {
+              valueLabel[current.item.field] = '';
             }
           }
         } else {
@@ -726,7 +731,7 @@
             const tableName = this.isMainTable ? '' : this.childTableName;
 
             window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, {
-            type: 'equal', key, list: res, tableName 
+              type: 'equal', key, list: res, tableName 
             });
           }
         });
@@ -828,7 +833,6 @@
           } else {
             item.required = false;
           }
-          console.log(item.oldProps._required,item.required,item.value);
 
           window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
