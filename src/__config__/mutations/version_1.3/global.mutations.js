@@ -120,7 +120,7 @@ export default {
         }
       });
     }
-    state.keepAliveLabelMaps = Object.assign({}, this.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
+    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
