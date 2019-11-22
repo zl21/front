@@ -1101,7 +1101,8 @@
               } else {
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
-                // that.upSaveImg(parms, '', path, index);
+
+               that.upSaveImg(parms, '', path, index);
               }
             } else {
               // new
@@ -1121,8 +1122,7 @@
           this._items.value = '';
         }
         this.valueChange();
-        const dom = document.getElementById('actionMODIFY');
-        dom.click();
+       
       },
       filechange(value) {
         // 上传文件
@@ -1236,7 +1236,6 @@
         // 图片进度接口
         const self = this;
         const resultData = result;
-        console.log(this);
         if (this.readonlyImage()) {
           this.$Message.info(`只能上传${this._items.props.itemdata.ImageSize}张图片`);
           return false;
@@ -1258,6 +1257,7 @@
               URL: resultData.data.Url
             });
             //
+            // eslint-disable-next-line no-unused-vars
             const parms = {
               objId: this._items.props.itemdata.objId,
               table: this._items.props.itemdata.masterName
@@ -1269,11 +1269,11 @@
               && this.$route.params.itemId.toLocaleLowerCase() !== 'new'
             ) {
               //  判断是否需要调用保存
-              console.log(this);
 
+              // eslint-disable-next-line no-unused-vars
               const path = this.$parent.pathcheck !== '';
               const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
-              if (this._items.props.tableGetName !== '') {
+            if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
@@ -1281,7 +1281,7 @@
                 this._items.value = JSON.stringify([
                   ...this._items.props.itemdata.valuedata
                 ]);
-                this.valueChange();
+                this.valueImgChange();
                 if (childTableName && this.$parent.type === 'PanelForm') {
                   const dom = document.getElementById('actionMODIFY');
                   dom.click();
@@ -1290,14 +1290,14 @@
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
                 );
-
-                this.valueChange();
+               this.valueImgChange();
+               this.upSaveImg();
               }
             } else {
               this._items.props.itemdata.valuedata.push(
                 fixedData[fixedData.length - 1]
               );
-              this.valueChange();
+              this.valueImgChange();
             }
           }
 
@@ -1403,7 +1403,6 @@
       },
       upSaveImg(obj, fixedData, path, index) {
         // 图片保存接口
-        console.log('ddd');
         const dom = document.getElementById('actionMODIFY');
         dom.click();
         return false;
