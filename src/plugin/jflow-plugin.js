@@ -207,7 +207,7 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
           if (res.data.data.businessStatus === -2) {
             window.vm.$Modal.fcError({
               title: '错误',
-              content: res.data.resultMsg,
+              content: res.data.data.submitErrorMsg,
               mask: true
             });
           }
@@ -276,6 +276,15 @@ async function jflowsave(flag, request) {
           type: 'clearSubmit'
         }
       });
+      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] && res.data.resultCode === 0 && res.data.notice) {
+        window.vm.$Modal.fcError({
+          title: '错误',
+          content: res.data.notice,
+          mask: true
+        });
+        reject(response);
+        return; 
+      }
       if (res.data.data.records && res.data.data.records[0].notice) {
         window.vm.$Modal.fcError({
           title: '错误',
