@@ -52,6 +52,10 @@ export default {
         selectedValue: '',
         inputValue: ''
       }; // 表格搜索的数据
+      obj.tablePageInfo = {
+        currentPageIndex: 1,
+        pageSize: 10
+      }; // 表格的页码和每页多少条
       arr.push(obj);
     });
     arr.forEach((item) => {
@@ -59,6 +63,7 @@ export default {
         add: Object.assign({}, { [item.tablename]: {} }),
         modify: Object.assign({}, { [item.tablename]: {} }),
         modifyLabel: Object.assign({}, { [item.tablename]: {} }),
+        itemBeforeLabel: Object.assign({}, { [item.tablename]: {} }), // 子表表格改以前的label
         delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: {},
         default: {},
@@ -130,6 +135,11 @@ export default {
       state.updateData[data.tableName].modifyLabel = data.value;
     }
   },
+  updateItemBeforeLabelData(state, data) {
+    if (state.updateData[data.tableName]) {
+      state.updateData[data.tableName].itemBeforeLabel = data.value;
+    }
+  },
   updateAddDefaultData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].addDefault = data.value;
@@ -181,9 +191,9 @@ export default {
     const { componentAttribute } = state.tabPanels[state.tabCurrentIndex];
     componentAttribute.formData.isShow = false;
   },
-  updateTablePageInfo(state, data) { //  更改列表分页数据
-    state.tablePageInfo = data;
-  },
+  // updateTablePageInfo(state, data) { //  更改列表分页数据
+  //   state.tablePageInfo = data;
+  // },
   changeCopy(state, data) {
     state.copy = data;
   },
@@ -352,7 +362,11 @@ export default {
     tableSearchData.selectedValue = data.selectedValue;
     tableSearchData.inputValue = data.inputValue;
   }, // 修改单对象表格搜索的值
-
+  updateTablePageInfo(state, data) {
+    const { tablePageInfo } = state.tabPanels[state.tabCurrentIndex];
+    tablePageInfo.currentPageIndex = data.currentPageIndex;
+    tablePageInfo.pageSize = data.pageSize;
+  }, // 修改单对象表格页码
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId
   }) { // jflowPlugin按钮逻辑

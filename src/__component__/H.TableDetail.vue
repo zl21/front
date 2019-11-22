@@ -107,8 +107,8 @@
                   refcolid,
                   searchdata: {
                     column_include_uicontroller: true,
-                    startindex: (this.tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                    range: this.tablePageInfo.pageSize,
+                    startindex: (this.tabPanel[index].tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                    range: this.tabPanel[index].tablePageInfo.pageSize,
                     fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : tableDefaultFixedcolumns
                   },
                   tabIndex: index
