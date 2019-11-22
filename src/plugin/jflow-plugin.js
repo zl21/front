@@ -276,7 +276,7 @@ async function jflowsave(flag, request) {
           type: 'clearSubmit'
         }
       });
-      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] && res.data.resultCode === 0 && res.data.notice) {
+      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.vm.$Modal.fcError({
           title: '错误',
           content: res.data.notice,
