@@ -362,6 +362,9 @@
 
           if (Object.hasOwnProperty.call(item.validate, 'dynamicforcompute')) {
             // 计算
+            if (old === undefined) {
+              return false;
+            }
 
             if (
               val[item.validate.dynamicforcompute.computecolumn]
