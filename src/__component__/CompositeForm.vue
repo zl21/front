@@ -519,15 +519,13 @@
         // 开启
         // 注释
 
+        // const labelForm = Object.keys(this.formData).reduce((arr, itemLabel) => {
+        //   if (!this.labelForm[itemLabel]) {
+        //     arr[itemLabel] = '';
+        //   }
+        //   return arr;
+        // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        const labelForm = Object.keys(this.formData).reduce((arr, itemLabel) => {
-          if (!this.labelForm[itemLabel]) {
-            arr[itemLabel] = '';
-          }
-          return arr;
-        }, {});
-        console.log(labelForm,'labelForm');
-        this.labelForm = Object.assign(this.labelForm, labelForm);
 
         this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
         // 注释
