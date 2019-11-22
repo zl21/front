@@ -780,7 +780,7 @@ export default {
           objid: objId,
           data: { ...itemModify },
           after: itemModifyLabel,
-          before: itemBeforeLabel        
+          before: itemBeforeLabel,       
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -805,7 +805,7 @@ export default {
             table: tableName, // 主表表名
             objid: objId, // 明细id
             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...labelregroup
+              ...itemTableAdd
             }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
@@ -823,8 +823,9 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
-            before: itemBeforeLabel,
-            after: { ...modifyLabel }
+            after: { ...itemModifyLabel },
+            before: itemBeforeLabel
+
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {
@@ -843,7 +844,7 @@ export default {
           objid: objId,
           data: { ...modify },
           after: { ...modifyLabel },
-          before: value
+          before: value,
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
