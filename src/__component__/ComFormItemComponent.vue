@@ -702,6 +702,9 @@
         } else {
           valueLabel[current.item.field] = current.item.value;
         }
+        if (current.item.props.isuppercase && typeof valueLabel[current.item.field] === 'string') {
+          valueLabel[current.item.field] = valueLabel[current.item.field].toLocaleUpperCase();
+        }
         return valueLabel;
       },
       formRequest(key, obj, current, conf) {
