@@ -131,11 +131,9 @@ export default {
     // const { itemNameGroup } = parame;
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
-    
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-     
       parames = {
         table: tableName, // 主表表名
         objid: objId, // 固定传值-1 表示新增
@@ -187,8 +185,6 @@ export default {
           [tableName]: labelregroup
         };
       }
-
-
       if (tableName === itemName) { // 主表修改
         parames = {
           table: tableName,

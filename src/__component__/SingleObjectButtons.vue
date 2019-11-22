@@ -2101,6 +2101,8 @@
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
           this.clearEditData();// 清空store update数据
+        } else { // 保存失败不执行任何逻辑
+          return;
         }
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
