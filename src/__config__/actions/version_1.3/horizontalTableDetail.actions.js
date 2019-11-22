@@ -131,11 +131,9 @@ export default {
     // const { itemNameGroup } = parame;
     const { sataType } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
-    
     let parames = {};
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
-     
       parames = {
         table: tableName, // 主表表名
         objid: objId, // 固定传值-1 表示新增
@@ -187,15 +185,13 @@ export default {
           [tableName]: labelregroup
         };
       }
-
-
       if (tableName === itemName) { // 主表修改
         parames = {
           table: tableName,
           objid: objId,
           data: { ...modify },
+          after: { ...modifyLabel },
           before: labelregroupTableName,
-          after: { ...modifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -236,8 +232,8 @@ export default {
           table: tableName,
           objid: objId,
           data: { ...itemModify },
+          after: { ...itemModifyLabel },
           before: itemBeforeLabel,
-          after: { ...itemModifyLabel }
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
@@ -280,8 +276,8 @@ export default {
             table: tableName,
             objid: objId,
             data: { ...itemModify },
+            after: { ...itemModifyLabel },
             before: itemBeforeLabel,
-            after: { ...modifyLabel }
           };
           network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
             if (res.data.code === 0) {

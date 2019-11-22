@@ -111,6 +111,7 @@
     LINK_MODULE_COMPONENT_PREFIX,
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import { updateSessionObject } from '../__utils__/sessionStorage';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
 
@@ -429,8 +430,10 @@
       onCellSingleClick(colDef, rowData, target) {
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
-          const { reftableid, reftablename, refobjid } = rowData[colDef.colId];
-          // console.log(999, reftableid, reftablename, refobjid);
+          console.log(rowData[colDef.colId]);
+          const { reftableid, reftablename, refobjid, reftabdesc } = rowData[colDef.colId];
+          this.addKeepAliveLabelMaps({ name: `S.${reftablename}.${reftableid}`, label: reftabdesc });
+          updateSessionObject('keepAliveLabelMaps', { k: `S.${reftablename}.${reftableid}`, v: reftabdesc });
           this.tabHref({
             id: refobjid,
             tableName: reftablename,
