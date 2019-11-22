@@ -3085,7 +3085,7 @@
               }
             } else if (this.copyDataSource.row[params.index][cellData.refcolval.srccol].val !== '') {
               // 左右结构取行内的colid
-              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID) : undefined;
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
               if (obj) {
                 // 有修改过的，取修改过的。
                 fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
@@ -3122,11 +3122,10 @@
                 fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
               }
             } else {
-              // debugger;
               // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
               // 上下结构子表
               // 左右结构取行内的colid
-              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID) : undefined;
+              const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
               if (obj) {
                 // 有修改过的，取修改过的。
                 fixedcolumns[cellData.refcolval.fixcolumn] = express + obj[cellData.refcolval.srccol];
