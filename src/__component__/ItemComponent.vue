@@ -349,6 +349,7 @@
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
+  import { updateSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -468,7 +469,8 @@
           name: addname,
           label
         });
-        
+        console.log(addname,label);
+        updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
         if (props.serviceId) {
           if (Version() === '1.4') {
             serviceIdMap[tableName] = props.serviceId;
@@ -1102,7 +1104,7 @@
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
 
-               that.upSaveImg(parms, '', path, index);
+                that.upSaveImg(parms, '', path, index);
               }
             } else {
               // new
@@ -1122,7 +1124,6 @@
           this._items.value = '';
         }
         this.valueChange();
-       
       },
       filechange(value) {
         // 上传文件
@@ -1273,7 +1274,7 @@
               // eslint-disable-next-line no-unused-vars
               const path = this.$parent.pathcheck !== '';
               const childTableName = this.$parent.isMainTable === false ? this.$parent.childTableName : false;
-            if (this.$parent.isreftabs && childTableName !== false) {
+              if (this.$parent.isreftabs && childTableName !== false) {
                 //  主子表 子表
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
@@ -1290,8 +1291,8 @@
                 this._items.props.itemdata.valuedata.push(
                   fixedData[fixedData.length - 1]
                 );
-               this.valueImgChange();
-               this.upSaveImg();
+                this.valueImgChange();
+                this.upSaveImg();
               }
             } else {
               this._items.props.itemdata.valuedata.push(
