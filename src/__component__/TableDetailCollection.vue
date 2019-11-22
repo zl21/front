@@ -444,7 +444,7 @@
         return this.objreadonly;
       },
       pageInfo() {
-        return this.tablePageInfo;
+        return this.itemInfo.tablePageInfo;
       },
       pageItemId() {
         return router.currentRoute.params.itemId;

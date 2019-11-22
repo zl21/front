@@ -461,7 +461,7 @@
         // console.log(this._items.props);
         const tableName = props.reftable;
         const tableId = props.reftableid;
-        const label = this._items.title;
+        const label = this._items.props.fkdesc;
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
         if (props.serviceId) {
           const addname = `S.${tableName}.${props.reftableid}`;
