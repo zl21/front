@@ -60,9 +60,9 @@
       <span :title="_items.title">{{ _items.title }}:</span>
     </span>
     <div
-:class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
-         :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
->
+      :class=" _items.props.row >1 ? 'itemComponent height100':'itemComponent'"
+      :style="_items.props.type==='ImageUpload' ? 'overflow:visible' :''"
+    >
       <Input
         v-if="_items.type === 'input'"
         :ref="_items.field"
@@ -463,12 +463,13 @@
         const tableId = props.reftableid;
         const label = this._items.props.fkdesc;
         const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        const addname = `S.${tableName}.${props.reftableid}`;
+        this.addKeepAliveLabelMaps({
+          name: addname,
+          label
+        });
+        
         if (props.serviceId) {
-          const addname = `S.${tableName}.${props.reftableid}`;
-          this.addKeepAliveLabelMaps({
-            name: addname,
-            label
-          });
           if (Version() === '1.4') {
             serviceIdMap[tableName] = props.serviceId;
             window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
