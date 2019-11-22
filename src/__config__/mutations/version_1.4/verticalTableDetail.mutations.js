@@ -388,6 +388,6 @@ export default {
     state.childTableReadonly = value;
   },
   updateWatermarkimg(state, value) { // 修改水印
-    state.mainFormInfo.buttonsData.data.watermarkimg = value;
+    state.jflowWaterMark = value;
   }
 };
