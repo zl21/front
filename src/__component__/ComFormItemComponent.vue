@@ -660,10 +660,10 @@
       getLable(current) {
         // R3 label 属性
         const valueLabel = {};
-        if (!this.formDataObject[current.item.field]) {
-          // 判断是否有值
-          return false;
-        }
+        // if (!this.formDataObject[current.item.field]) {
+        //   // 判断是否有值
+        //   return false;
+        // }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
           valueLabel[current.item.field] = current.item.props.Selected[0].Label;
         } else if (current.item.type === 'DropDownSelectFilter') {
