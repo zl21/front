@@ -469,7 +469,7 @@
           name: addname,
           label
         });
-        console.log(addname,label);
+        console.log(addname, label);
         updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
         if (props.serviceId) {
           if (Version() === '1.4') {
@@ -1509,7 +1509,11 @@
                     ID: item.LABLE_VALUES[0].VALUE || '',
                     Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
-                  this._items.value = this._items.props.defaultSelected;
+                  if (this._items.props.disabled) {
+                    this._items.value = this._items.props.defaultSelected[0].Label;
+                  } else {
+                    this._items.value = this._items.props.defaultSelected;
+                  }
                 } else if (this._items.props.selected) {
                   this._items.props.selected = [{
                     ID: item.LABLE_VALUES[0].VALUE || '',
@@ -1527,17 +1531,27 @@
                   this._items.value = item.LABLE_VALUES[0].VALUE || '';
                 }
               } else if (item.COLUMN_TYPE === 2) {
+                const labelIput = [];
                 this._items.props.defaultSelected = item.LABLE_VALUES.reduce((arr, options) => {
                   if (options.VALUE) {
                     arr.push({
                       ID: options.VALUE || '',
                       Label: options.LABLE || ''
                     });
+                    labelIput.push(options.LABLE);
                   }
                  
                   return arr;
                 }, []);
-                this._items.value = this._items.props.defaultSelected;
+                if (this._items.props.disabled) {
+                  if (labelIput.length < 2) {
+                    this._items.value = labelIput.join('');
+                  } else {
+                    this._items.value = labelIput.join(',');
+                  }
+                } else {
+                  this._items.value = this._items.props.defaultSelected;
+                }
               }
               this.valueChange();
             }
@@ -1547,6 +1561,7 @@
           this._items.required = e.value.required;
           this._items.props = e.value.props;
           this._items.props.readonly = e.value.props.disabled;
+        
           // if (e.value.value === '') {
           //   this.clearItem();
           //   this.valueChange();

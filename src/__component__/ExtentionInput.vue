@@ -230,7 +230,7 @@
   .extentionInput {
     position: relative;
     textarea {
-      resize: none;
+      resize: vertical !important;
     }
     textarea::placeholder {
       color: red;
