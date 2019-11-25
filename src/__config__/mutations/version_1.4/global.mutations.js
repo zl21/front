@@ -259,35 +259,24 @@ export default {
     linkId, url
   }) {
     let path = '';
-    if (type === 'tableDetailHorizontal') {
+    if (type === STANDARD_TABLE_LIST_PREFIX) {
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+    } else if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      router.push({
-        path
-      });
-    }
-    if (type === 'tableDetailVertical') {
+    } else if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-      router.push({
-        path
-      });
-    }
-    if (type === 'tableDetailAction') {
+    } else if (type === 'tableDetailAction') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
-      router.push({
-        path
-      });
-    }
-  
-    if (type === 'tableDetailUrl') {
+    } else if (type === 'tableDetailUrl') {
       path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
-      router.push({
-        path
-      });
     }
+    router.push({
+      path
+    });
   },
   updataUserInfoMessage(state, { userInfo }) {
     state.userInfo = userInfo;

@@ -159,6 +159,7 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
+  import { STANDARD_TABLE_LIST_PREFIX } from '../constants/global';
 
   export default {
     name: 'Navigator',
@@ -241,7 +242,7 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
@@ -260,22 +261,29 @@
         // this.cascaderOpen = false;
         // this.setPanel.show = false;
       },
-      ignoreMsg() {
+      ignoreMsg() { // 我的任务忽略功能
         network.post('/p/cs/ignoreAllMsg').then((res) => {
           if (res.data.code === 0) {
             this.getMessages(0);
           }
         });
       },
-      jumpTask() {
-         
+      jumpTask() { // 跳转我的任务列表界面
+        this.messagePanel.show = false;
+        const type = STANDARD_TABLE_LIST_PREFIX;
+        const tab = {
+          type,
+          tableName: 'CP_C_TASK',
+          tableId: 24386
+        };
+        this.tabOpen(tab);
       },
       nextPage() {
-        if (this.panel.start < this.panel.total && this.panel.loaded) {
+        if (this.panel.start < this.panel.total) {
           this.getMessages();
         }
       },
-      getMessages(start) {
+      getMessages(start) { // 请求我的任务数据
         const self = this;
         //        self.panel.list = [];
         if (start !== undefined) {
@@ -306,7 +314,17 @@
         });
       },
 
-      markReadNote() {},
+      markReadNote(item) { // 我的任务单条跳转单对象界面
+        this.messagePanel.show = false;
+        const type = 'tableDetailVertical';
+        const tab = {
+          type,
+          tableName: 'CP_C_TASK',
+          tableId: 24386,
+          id: item.ID.val
+        };
+        this.tabOpen(tab);
+      },
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();

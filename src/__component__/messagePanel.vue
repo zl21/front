@@ -64,15 +64,20 @@
 <script>
 
   export default {
-    props: ['panel'],
+    props: {
+      panel: {
+        type: Object,
+        default: () => ({})
+      },
+    },
     computed: {
       messagePanel() {
         return this.panel;
       }
     },
     watch: {
-      'panel.show': function (val, old) {
-        if (!val) {
+      panel(val) {
+        if (!val.show) {
           this.$refs.messageBox.scrollTop = 0;
         }
       }
@@ -86,19 +91,17 @@
       };
     },
     mounted() {
-      const _self = this;
-      $('.panel-content').scroll(() => {
-        _self.handleScroll();
+      this.$refs.messageBox.scroll(() => {
+        this.handleScroll();
       });
     },
     methods: {
       handleScroll() {
-        const _self = this;
-        if (_self.$refs.messageBox.scrollTop / _self.$refs.messageBox.scrollHeight > 0.5) {
-          _self.$emit('nextPage');
+        if (this.$refs.messageBox.scrollTop / this.$refs.messageBox.scrollHeight > 0.5) {
+          this.$emit('nextPage');
         }
       },
-      moreDescription(item, index) {
+      moreDescription(item) {
         item.isShow = !item.isShow;
       },
       markRead(item) { // 触发navBar 标记已读方法
