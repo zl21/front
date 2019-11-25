@@ -66,6 +66,8 @@
               option[items.item.field] = items.item.props.refobjid
                 ? items.item.props.refobjid
                 : items.item.value;
+            } else {
+              option[items.item.field] = items.item.value || '';
             }
           } else {
             if (Array.isArray(items.item.value)) {
@@ -674,10 +676,19 @@
         if (!this.formDataObject[current.item.field]) {
           // 判断是否有值
           valueLabel[current.item.field] = '';
+          if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
+            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
+          }
           return valueLabel;
         }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
-          valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+          console.log(current, '000');
+
+          if (current.item.props.fkdisplay === 'mop') {
+            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
+          } else {
+            valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+          }
         } else if (current.item.type === 'DropDownSelectFilter') {
           if (current.item.value instanceof Array) {
             // 结果为数组则为选中项
