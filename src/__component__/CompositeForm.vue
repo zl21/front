@@ -1085,8 +1085,8 @@
             || item.fkdisplay === 'pop'
             || item.fkdisplay === 'mrp'
           ) {
-            str = 'input';
-            return str;
+            // str = 'input';
+            // return str;
           }
         }
         if (
@@ -1697,8 +1697,8 @@
             || item.props.fkdisplay === 'pop'
             || item.props.fkdisplay === 'mrp'
           ) {
-            item.props.type = 'text';
-            item.type = 'input';
+            // item.props.type = 'text';
+            // item.type = 'input';
             item.props.defaultSelected = [{
               ID: current.refobjid,
               Label: current.valuedata
