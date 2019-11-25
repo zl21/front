@@ -1191,6 +1191,7 @@
         dom.click();
 
         return false;
+        // eslint-disable-next-line no-unreachable
         fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
@@ -1513,12 +1514,14 @@
                   //   this._items.value = this._items.props.defaultSelected[0].Label;
                   // } else {
                   // }
+                  this._items.props.refobjid = item.LABLE_VALUES[0].VALUE;
                   this._items.value = this._items.props.defaultSelected;
                 } else if (this._items.props.Selected) {
                   this._items.props.Selected = [{
                     ID: item.LABLE_VALUES[0].VALUE || '',
                     Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
+                  this._items.props.refobjid = item.LABLE_VALUES[0].VALUE;
                   this._items.value = item.LABLE_VALUES[0].LABLE;
                 } else if (this._items.type === 'select') {
                   this._items.value = item.LABLE_VALUES[0].VALUE || '';
