@@ -473,6 +473,9 @@
       },
       dataSource: {
         handler(val) {
+          setTimeout(() => {
+            this.currentPage = this.itemInfo.tablePageInfo.currentPageIndex;
+          }, 0);
           if (this.isRefreshClick) {
             this.afterSendData = {};
             this.afterSendDataLabel = {};

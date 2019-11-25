@@ -21,7 +21,7 @@ export default {
       changeData: Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
   },
-  updateMainTabPanelsData(state, data) { // 更新主表tab数据
+  updateMainTabPanelsData(state, data, itemTabelPageInfo) { // 更新主表tab数据
     const arr = [];
     data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
@@ -62,8 +62,8 @@ export default {
         inputValue: ''
       }; // 表格搜索的数据
       obj.tablePageInfo = {
-        currentPageIndex: 1,
-        pageSize: 10
+        currentPageIndex: itemTabelPageInfo ? itemTabelPageInfo.currentPageIndex : 1,
+        pageSize: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10
       }; // 表格的页码和每页多少条
       obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);

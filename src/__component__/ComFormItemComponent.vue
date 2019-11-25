@@ -62,16 +62,22 @@
           }
           if (items.item.props.readonly) {
             // 外键 不可编辑
-            option[items.item.field] = items.item.props.refobjid
-              ? items.item.props.refobjid
-              : items.item.value;
+            if (items.item.props.refobjid !== '-1') {
+              option[items.item.field] = items.item.props.refobjid
+                ? items.item.props.refobjid
+                : items.item.value;
+            }
           } else {
             if (Array.isArray(items.item.value)) {
               if (
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                option[items.item.field] = items.item.value[0].ID;
+                if (items.item.value[0].ID !== '-1') {
+                  option[items.item.field] = '';
+                } else {
+                  option[items.item.field] = items.item.value[0].ID;
+                }
               } else if (items.item.value[0]) {
                 if (items.item.type === 'ImageUpload') {
                   option[items.item.field] = JSON.stringify(items.item.value);
@@ -83,7 +89,11 @@
               }
             } else if (items.item.value) {
               if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
-                option[items.item.field] = items.item.props.Selected[0].ID;
+                if (items.item.props.Selected[0].ID !== '-1') {
+                  option[items.item.field] = '';
+                } else {
+                  option[items.item.field] = items.item.props.Selected[0].ID;
+                }
               } else {
                 option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
               }
@@ -114,10 +124,8 @@
               option[items.item.field] = '';
             }
           }
-
           return option;
         }, {});
-
         return obj;
       },
       // 计算属性的 div 的坐标起始点
