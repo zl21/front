@@ -36,7 +36,8 @@ export default {
     table,
     objid,
     type,
-    tabIndex
+    tabIndex,
+    itemTabelPageInfo
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -49,10 +50,10 @@ export default {
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
-          commit('updateMainTabPanelsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         } else {
           commit('updateMainButtonsData', resData);
-          commit('updateMainTabPanelsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
 
         if (resData.reftabs && resData.reftabs.length > 0) {
@@ -91,8 +92,8 @@ export default {
                       objid,
                       refcolid: firstReftab.refcolid,
                       searchdata: {
-                        startindex: 0,
-                        range: 10,
+                        startindex: itemTabelPageInfo ? (Number(itemTabelPageInfo.currentPageIndex) - 1) * Number(itemTabelPageInfo.pageSize) : 0,
+                        range: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10,
                         column_include_uicontroller: true
                       },
                       tabIndex
@@ -253,12 +254,12 @@ export default {
 
   //   if (type === 'add') {
   //     if (Object.keys(add).length > 0) {
-  //       labelData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {})); 
+  //       labelData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
   //       fkIdData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
   //     }
   //   } else if (type === 'modify') {
   //     if (Object.keys(modify).length > 0) {
-  //       labelData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {})); 
+  //       labelData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
   //       fkIdData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
   //     }
   //   }
@@ -269,7 +270,7 @@ export default {
   //         if (label[0] !== '') {
   //           labelData[value] = label[0];
   //         }
-  //       } 
+  //       }
   //       if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length > 1) { // 外键多选
   //         const label = labelData[value].map(item => item.Label).join(',');
   //         labelData[value] = label[0];
@@ -291,7 +292,7 @@ export default {
   //           fkIdData[value] = Number(ID[0]);
   //         }
   //       }
-        
+  
   //       if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length > 1) { // 外键多选
   //         const ID = fkIdData[value].map(item => item.ID).join(',');
   //         fkIdData[value] = ID[0];
@@ -305,7 +306,7 @@ export default {
   //     modifyDataForSave[tableName] = modifyChangeData;
   //   }
 
-   
+  
   //   console.log('modifyDataForSave', modifyDataForSave);
   //   console.log('modifyDataForSaveAfter', modifyDataForSaveAfter);
   //   if (type === 'add') { // 新增保存参数
@@ -546,7 +547,7 @@ export default {
   //           if (label[0] !== '') {
   //             defaultForSave[value] = label[0];
   //           }
-  //         } 
+  //         }
   //         if (defaultForSave[value] && Array.isArray(defaultForSave[value]) && defaultForSave[value].length > 1) { // 外键多选
   //           const label = defaultForSave[value].map(item => item.Label).join(',');
   //           defaultForSave[value] = label[0];
@@ -727,7 +728,7 @@ export default {
       let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) { // 子表取值
         itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值     
+        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
       }
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
@@ -780,7 +781,7 @@ export default {
           objid: objId,
           data: { ...itemModify },
           after: itemModifyLabel,
-          before: itemBeforeLabel,       
+          before: itemBeforeLabel,
         };
         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
           if (res.data.code === 0) {
