@@ -1703,7 +1703,7 @@
               Label: current.valuedata
             }];
            
-            item.value = item.props.defaultSelected;
+            item.value = current.valuedata;
           }
           if (
             item.props.fkdisplay === 'mop'
