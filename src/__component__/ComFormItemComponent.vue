@@ -75,10 +75,18 @@
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                if (items.item.value[0].ID !== '-1') {
+                if (items.item.value[0].ID === '-1') {
                   option[items.item.field] = '';
                 } else {
-                  option[items.item.field] = items.item.value[0].ID;
+                  option[items.item.field] = items.item.value.reduce((arr, option) => {
+                    arr.push(option.ID);
+                    return arr;
+                  }, []);
+                  if (option[items.item.field].length > 1) {
+                    option[items.item.field] = option[items.item.field].join(',');
+                  } else {
+                    option[items.item.field] = option[items.item.field].join('');
+                  }
                 }
               } else if (items.item.value[0]) {
                 if (items.item.type === 'ImageUpload') {
@@ -91,7 +99,7 @@
               }
             } else if (items.item.value) {
               if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
-                if (items.item.props.Selected[0].ID !== '-1') {
+                if (items.item.props.Selected[0].ID === '-1') {
                   option[items.item.field] = '';
                 } else {
                   option[items.item.field] = items.item.props.Selected[0].ID;
