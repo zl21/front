@@ -62,16 +62,32 @@
           }
           if (items.item.props.readonly) {
             // 外键 不可编辑
-            option[items.item.field] = items.item.props.refobjid
-              ? items.item.props.refobjid
-              : items.item.value;
+            if (items.item.props.refobjid !== '-1') {
+              option[items.item.field] = items.item.props.refobjid
+                ? items.item.props.refobjid
+                : items.item.value;
+            } else {
+              option[items.item.field] = items.item.value || '';
+            }
           } else {
             if (Array.isArray(items.item.value)) {
               if (
                 items.item.value[0]
                 && Object.hasOwnProperty.call(items.item.value[0], 'ID')
               ) {
-                option[items.item.field] = items.item.value[0].ID;
+                if (items.item.value[0].ID === '-1') {
+                  option[items.item.field] = '';
+                } else {
+                  option[items.item.field] = items.item.value.reduce((arr, option) => {
+                    arr.push(option.ID);
+                    return arr;
+                  }, []);
+                  if (option[items.item.field].length > 1) {
+                    option[items.item.field] = option[items.item.field].join(',');
+                  } else {
+                    option[items.item.field] = option[items.item.field].join('');
+                  }
+                }
               } else if (items.item.value[0]) {
                 if (items.item.type === 'ImageUpload') {
                   option[items.item.field] = JSON.stringify(items.item.value);
@@ -83,7 +99,11 @@
               }
             } else if (items.item.value) {
               if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
-                option[items.item.field] = items.item.props.Selected[0].ID;
+                if (items.item.props.Selected[0].ID === '-1') {
+                  option[items.item.field] = '';
+                } else {
+                  option[items.item.field] = items.item.props.Selected[0].ID;
+                }
               } else {
                 option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
               }
@@ -114,10 +134,8 @@
               option[items.item.field] = '';
             }
           }
-
           return option;
         }, {});
-
         return obj;
       },
       // 计算属性的 div 的坐标起始点
@@ -533,7 +551,7 @@
               obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
               if (Version() === '1.3') {
                 //  id 转number
-                obj[current.item.field] = Number(obj[current.item.field]);
+                obj[current.item.field] = obj[current.item.field];
               }
             } else if (this.condition) {
               // 模糊查询
@@ -666,10 +684,19 @@
         if (!this.formDataObject[current.item.field]) {
           // 判断是否有值
           valueLabel[current.item.field] = '';
+          if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
+            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
+          }
           return valueLabel;
         }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
-          valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+          console.log(current, '000');
+
+          if (current.item.props.fkdisplay === 'mop') {
+            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
+          } else {
+            valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+          }
         } else if (current.item.type === 'DropDownSelectFilter') {
           if (current.item.value instanceof Array) {
             // 结果为数组则为选中项
@@ -701,6 +728,9 @@
           }
         } else {
           valueLabel[current.item.field] = current.item.value;
+        }
+        if (current.item.props.isuppercase && typeof valueLabel[current.item.field] === 'string') {
+          valueLabel[current.item.field] = valueLabel[current.item.field].toLocaleUpperCase();
         }
         return valueLabel;
       },

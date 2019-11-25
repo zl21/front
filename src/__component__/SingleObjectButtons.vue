@@ -303,6 +303,7 @@
           system: '系统',
           terminate: '已终止',
           examine: '审批中',
+          void: '已作废',
           agreement: '已同意',
           reject: '已驳回',
         };
@@ -355,6 +356,27 @@
         // this.refresh = this.refreshButton;
         return this.refreshButton;
       },
+      tablePage() {
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
+        return page;
+      }
     },
     props: {
       watermarkimg: {// 水印
@@ -512,13 +534,33 @@
         //     type: 'fresh'
         //   }
         // });
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         if (this.objectType === 'horizontal') { // 横向布局
           if (this.tabCurrentIndex === 0) { // 主表
-            this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
+            this.getObjectTabForMainTable({
+              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+            });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
@@ -530,8 +572,8 @@
             promise.then(() => {
               const searchdata = {
                 column_include_uicontroller: true,
-                startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
-                range: this.tablePageInfo.pageSize,
+                startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
+                range: page.pageSize,
                 fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
               };
               this.getObjectTableItemForTableData({
@@ -547,14 +589,17 @@
             });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({ table: this.tableName, objid: this.itemId, tabIndex });
-
+          this.getObjectForMainTableForm({
+            table: this.tableName, objid: this.itemId, tabIndex
+          });
           // if (tabrelation === '1:m') {
 
           // }else if (tabrelation === '1:1') {
 
           // }
-          this.getObjectTabForMainTable({ table: this.tableName, objid: this.itemId, tabIndex });
+          this.getObjectTabForMainTable({
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+          });
         }
         setTimeout(() => {
           if (message) {
@@ -609,12 +654,30 @@
         this.importData.importDialogTitle = this.itemInfo.tabledesc;
       },
       importsuccess() {
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
         const { refcolid } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         const searchdata = {
           column_include_uicontroller: true,
-          startindex: this.tablePageInfo.currentPageIndex - 1,
-          range: this.tablePageInfo.pageSize,
+          startindex: page.currentPageIndex - 1,
+          range: page.pageSize,
         };
         this.getObjectTableItemForTableData({
           table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -1126,6 +1189,24 @@
         // }
       },
       objectEXPORT() { // 导出功能
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
         const { refcolid, tabledesc } = this.itemInfo;
         const itemSelected = Object.values(this.updateData[this.itemName].delete[this.itemName]).reduce((item, obj) => {
           item.push(obj.ID);
@@ -1139,8 +1220,8 @@
           objectIds: `${refcolid}=${this.itemId}`,
           column_include_uicontroller: true,
           fixedcolumns: Object.values(this.updateData[this.itemName].delete[this.itemName]).length === 0 ? { ID: null } : selectedId,
-          startindex: (Number(this.tablePageInfo.currentPageIndex) - 1) * Number(this.tablePageInfo.pageSize),
-          range: this.tablePageInfo.pageSize,
+          startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
+          range: page.pageSize,
         };
 
         const OBJ = {
@@ -1166,12 +1247,20 @@
             document.body.removeChild(eleLink);
             this.clearItemTableSearchValue();// 清除子表搜索框值
             if (this.objectType === 'horizontal') { // 横向布局
+              let page = {};
+              this.tabPanel.every((item) => {
+                if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+                  page = item.tablePageInfo;
+                  return false;
+                }
+                return true;
+              });
               const { tablename } = this.itemInfo;
               const tabIndex = this.tabCurrentIndex;
               const searchdata = {
                 column_include_uicontroller: true,
                 startindex: 0,
-                range: this.tablePageInfo.pageSize,
+                range: page.pageSize,
               };
               this.getObjectTableItemForTableData({
                 table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -1405,6 +1494,24 @@
         //   startIndex: 0,
         //   range: 10
         // };
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
         const tabIndex = this.tabCurrentIndex;
         if (this.subtables()) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
@@ -1510,8 +1617,8 @@
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: this.tablePageInfo.currentPageIndex - 1,
-                          range: this.tablePageInfo.pageSize,
+                          startindex: page.currentPageIndex - 1,
+                          range: page.pageSize,
                         };
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -1563,8 +1670,8 @@
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: this.tablePageInfo.currentPageIndex - 1,
-                          range: this.tablePageInfo.pageSize,
+                          startindex: page.currentPageIndex - 1,
+                          range: page.pageSize,
                         };
                         this.getObjectTableItemForTableData({
                           table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
@@ -2101,6 +2208,9 @@
       saveAfter(type, tableName, stop, removeMessage) {
         if (!stop) { // 保存失败时，不清空store里面存的参数，
           this.clearEditData();// 清空store update数据
+        } else { // 保存失败不执行任何逻辑
+          this.saveEventAfter = '';
+          return;
         }
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
@@ -2307,6 +2417,24 @@
       window.removeEventListener('network', this.networkEventListener);
     },
     mounted() {
+      // if (this.objectType === 'horizontal') { // 横向布局
+      //   this.tabPanel.every((item) => {
+      //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+      //       this.tablePage = item.tablePageInfo;
+      //       return false;
+      //     }
+      //     return true;
+      //   });
+      // } else {
+      //   this.tabPanel.every((item) => {
+      //     if (item.tablename === this.itemName) {
+      //       this.tablePage = item.tablePageInfo;
+      //       return false;
+      //     }
+      //     return true;
+      //   });
+      // }
+
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
       }

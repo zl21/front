@@ -20,7 +20,7 @@ export default {
       changeData: Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
   },
-  updateMainTabPanelsData(state, data) { // 更新主表tab数据
+  updateMainTabPanelsData(state, data, itemTabelPageInfo) { // 更新主表tab数据
     const arr = [];
     data.reftabs.sort((a, b) => a.order - b.order);
     data.reftabs.forEach((item) => {
@@ -61,8 +61,8 @@ export default {
         inputValue: ''
       }; // 表格搜索的数据
       obj.tablePageInfo = {
-        currentPageIndex: 1,
-        pageSize: 10
+        currentPageIndex: itemTabelPageInfo ? itemTabelPageInfo.currentPageIndex : 1,
+        pageSize: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10
       }; // 表格的页码和每页多少条
       arr.push(obj);
     });
@@ -236,11 +236,14 @@ export default {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
+                        b.refobjid = '';
+                      }
                     }
                   } else if (b.valuedata) {
                     if (b.display === 'doc') {
                       copySaveDataForParam[b.colname] = b.valuedata;
-                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
                       const number = JSON.parse(b.valuedata).lists.result.length;
@@ -274,6 +277,7 @@ export default {
     //     });
     //   }
     // });
+    console.log(333, data.data.addcolums);
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },

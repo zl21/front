@@ -37,7 +37,8 @@ export default {
     table,
     objid,
     type,
-    tabIndex
+    tabIndex,
+    itemTabelPageInfo
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -50,10 +51,10 @@ export default {
         if (type === 'copy') {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
-          commit('updateMainTabPanelsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         } else {
           commit('updateMainButtonsData', resData);
-          commit('updateMainTabPanelsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
 
         if (resData.reftabs && resData.reftabs.length > 0) {
@@ -93,8 +94,8 @@ export default {
                       refcolid: firstReftab.refcolid,
                       searchdata: {
                         column_include_uicontroller: true,
-                        startindex: 0,
-                        range: 10,
+                        startindex: itemTabelPageInfo ? (Number(itemTabelPageInfo.currentPageIndex) - 1) * Number(itemTabelPageInfo.pageSize) : 0,
+                        range: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10,
                         fixedcolumns: childTableFixedcolumns
                       },
                       tabIndex

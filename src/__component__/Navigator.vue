@@ -103,6 +103,24 @@
     </div>
     <div class="tag right">
       <i
+        class="iconfont iconbj_message"
+        @click.prevent="messageSlide"
+      />
+    </div>
+    <Drawer
+      v-model="messagePanel.show"
+      :closable="false"
+    >
+      <messagePanel
+        :panel="messagePanel"
+        @markRead="markReadNote"
+        @ignoreMsg="ignoreMsg"
+        @jumpTask="jumpTask"
+        @nextPage="nextPage"
+      />
+    </Drawer>
+    <div class="tag right">
+      <i
         class="iconfont iconmd-person"
         @click="show = true"
       />
@@ -132,6 +150,7 @@
   import { mapState, mapMutations } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
+  import messagePanel from './messagePanel';
   import Dialog from './Dialog.vue';
   import closedImg from '../assets/image/closed@2x.png';
   import openedImg from '../assets/image/open@2x.png';
@@ -147,7 +166,8 @@
       NavigatorPrimaryMenu,
       SetPanel,
       Dialog,
-      NavigatorSubMenu
+      NavigatorSubMenu,
+      messagePanel
     },
     
     data() {
@@ -158,6 +178,13 @@
           openedImg,
           logoImg,
           bannerImg,
+        },
+        messagePanel: {
+          show: false,
+          list: [],
+          loaded: true,
+          start: 0,
+          total: 0
         },
         show: false,
         searchBtn: true,
@@ -185,6 +212,7 @@
         menuLists: ({ menuLists }) => menuLists,
         navigatorSetting: ({ navigatorSetting }) => navigatorSetting,
         showModule: ({ showModule }) => showModule,
+        userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
       }),
       
@@ -192,10 +220,12 @@
     watch: {
       showModule(val) {
         if (!val.Navigator) {
-          this.$el.parentElement.hidden = true;
-          this.$el.parentElement.parentElement.hidden = true;
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
-          this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+          if (this.$el) {
+            this.$el.parentElement.hidden = true;
+            this.$el.parentElement.parentElement.hidden = true;
+            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.firstElementChild.firstElementChild.style.padding = '0px';
+            this.$el.parentElement.nextElementSibling.firstElementChild.lastElementChild.style.margin = '0px';
+          }
         }
       },
       searchBtn(val) {
@@ -220,6 +250,63 @@
           this.changeSelectedPrimaryMenu(index);
         }
       },
+      messageSlide() {
+        this.messagePanel.show = !this.messagePanel.show;
+        if (this.messagePanel.show) {
+          this.getMessages(0);
+        }
+        // this.searchShow = true;
+        // this.cascaderShow = false;
+        // this.cascaderOpen = false;
+        // this.setPanel.show = false;
+      },
+      ignoreMsg() {
+        network.post('/p/cs/ignoreAllMsg').then((res) => {
+          if (res.data.code === 0) {
+            this.getMessages(0);
+          }
+        });
+      },
+      jumpTask() {
+         
+      },
+      nextPage() {
+        if (this.panel.start < this.panel.total && this.panel.loaded) {
+          this.getMessages();
+        }
+      },
+      getMessages(start) {
+        const self = this;
+        //        self.panel.list = [];
+        if (start !== undefined) {
+          self.messagePanel.start = start;
+          self.messagePanel.list = [];
+        }
+        const searchdata = {
+          table: 'CP_C_TASK',
+          column_include_uicontroller: true,
+          fixedcolumns: {
+            OPERATOR_ID: [this.userInfo.id],
+            READSTATE: ['=0'],
+            TASKSTATE: ['=2', '=3']
+          },
+          multiple: [],
+          startindex: self.messagePanel.start,
+          range: 20,
+          orderby: [{ column: 'CP_C_TASK.ID', asc: false }]
+        };
+        network.post('/p/cs/QueryList', urlSearchParams({ searchdata })).then((res) => {
+          const result = res.data;
+          if (result.code === 0) {
+            self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
+            self.messagePanel.start = result.datas.start + result.datas.rowCount;
+            self.messagePanel.total = result.datas.totalRowCount;
+          //            self.panel.start = result.start
+          }
+        });
+      },
+
+      markReadNote() {},
       changePwdBox() {
         this.show = false;
         this.$refs.dialogRef.open();

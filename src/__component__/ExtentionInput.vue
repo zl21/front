@@ -147,17 +147,25 @@
         if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
           try {
             const copyData = JSON.parse(paste) ? JSON.parse(paste) : '';
-            const supportTypeMap = extentionForColumn().reduce((a, c) => { a[c.key] = c.supportType || []; return a; }, {});
+            let supportTypeMap = {};
+            const currentTableName = this.$route.params.tableName;
+            if (currentTableName === 'AD_COLUMN') {
+              supportTypeMap = extentionForColumn().reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
+            } else if (currentTableName === 'AD_TABLE') {
+              supportTypeMap = extentionForTable().reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
+            }
             const unMappedKey = [];
             if (copyData) {
-              // Object.keys(copyData).forEach((key) => {
-              //   if (supportTypeMap[key].indexOf(this.webConfig.supportType) === -1) {
-              //     unMappedKey.push(key);
-              //     delete copyData[key];
-              //   }
-              // });
+              Object.keys(copyData).forEach((key) => {
+                const notAllowedKey = !supportTypeMap[key];
+                const notSupportedKey = supportTypeMap[key] && supportTypeMap[key] !== 'ALL' && supportTypeMap[key].indexOf(this.webConfig.supportType) === -1;
+                if (notAllowedKey || notSupportedKey) {
+                  unMappedKey.push(key);
+                  delete copyData[key];
+                }
+              });
             }
-            //this.placeholder = `如下扩展属性：[${unMappedKey.toString()}] 与当前赋值方式不匹配。`;
+            this.placeholder = `不被支持的扩展属性：[${unMappedKey.toString()}]，请核实后再操作。`;
             if (Object.keys(copyData).length === 0) {
               return;
             }
@@ -230,10 +238,12 @@
   .extentionInput {
     position: relative;
     textarea {
-      resize: none;
+      resize: vertical !important;
     }
     textarea::placeholder {
+      font-family: Consolas, "Hiragino Sans GB", "Microsoft YaHei", serif;
       color: red;
+      font-size: 13px;
     }
     i {
       font-size: 16px;
