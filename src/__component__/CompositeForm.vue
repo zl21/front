@@ -444,12 +444,12 @@
       // eslint-disable-next-line consistent-return
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
-        // console.log(data, setdefval);
         if (current.item.props.isuppercase && data[current.item.field]) {
           if (typeof data[current.item.field] === 'string') { 
             data[current.item.field] = data[current.item.field].toUpperCase();
           }
         }
+        console.log(data, setdefval);
         // 针对明细列表外键回车查询功能
         if (this.conditiontype !== 'list') {
           if (current) {
@@ -551,6 +551,7 @@
           this.mountChecked = true;
         }, 200);
         this.refcolvaData = {};
+        console.log(value, this.defaultFormData);
         this.defaultFormData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -1690,21 +1691,29 @@
         }
         if ((checkIsReadonly && item.props.fkdisplay)) {
           //  不可编辑 变成 input
-          
+          const refobjid = current.refobjid !== '-1' ? current.refobjid : '';
           if (
             item.props.fkdisplay === 'drp'
-            || item.props.fkdisplay === 'mop'
-            || item.props.fkdisplay === 'pop'
             || item.props.fkdisplay === 'mrp'
           ) {
             // item.props.type = 'text';
             // item.type = 'input';
             item.props.defaultSelected = [{
-              ID: current.refobjid,
+              ID: refobjid,
               Label: current.valuedata
             }];
+           
+            item.value = current.valuedata;
+          }
+          if (
+            item.props.fkdisplay === 'mop'
+            || item.props.fkdisplay === 'pop'
+          ) {
+            // item.props.type = 'text';
+            // item.type = 'input';
+           
             item.props.Selected = [{
-              ID: current.refobjid,
+              ID: refobjid,
               Label: current.valuedata
             }];
             item.value = current.valuedata;

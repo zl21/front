@@ -34,7 +34,7 @@
       >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value">
+        <template v-if="!!_items.value &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -46,7 +46,7 @@
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID">
+        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -1191,6 +1191,7 @@
         dom.click();
 
         return false;
+        // eslint-disable-next-line no-unreachable
         fkHttpRequest().fkObjectSave({
           searchObject: {
             ...obj
@@ -1513,12 +1514,14 @@
                   //   this._items.value = this._items.props.defaultSelected[0].Label;
                   // } else {
                   // }
+                  this._items.props.refobjid = item.LABLE_VALUES[0].VALUE;
                   this._items.value = this._items.props.defaultSelected;
                 } else if (this._items.props.Selected) {
                   this._items.props.Selected = [{
                     ID: item.LABLE_VALUES[0].VALUE || '',
                     Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
+                  this._items.props.refobjid = item.LABLE_VALUES[0].VALUE;
                   this._items.value = item.LABLE_VALUES[0].LABLE;
                 } else if (this._items.type === 'select') {
                   this._items.value = item.LABLE_VALUES[0].VALUE || '';
