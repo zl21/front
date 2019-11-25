@@ -533,7 +533,7 @@
               obj[current.item.field] = current.item.props.Selected && current.item.props.Selected[0].ID || '';
               if (Version() === '1.3') {
                 //  id 转number
-                obj[current.item.field] = Number(obj[current.item.field]);
+                obj[current.item.field] = obj[current.item.field];
               }
             } else if (this.condition) {
               // 模糊查询
