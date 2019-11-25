@@ -236,11 +236,14 @@ export default {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
+                        b.refobjid = '';
+                      }
                     }
                   } else if (b.valuedata) {
                     if (b.display === 'doc') {
                       copySaveDataForParam[b.colname] = b.valuedata;
-                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
                       const number = JSON.parse(b.valuedata).lists.result.length;
@@ -274,6 +277,7 @@ export default {
     //     });
     //   }
     // });
+    console.log(333, data.data.addcolums);
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },
