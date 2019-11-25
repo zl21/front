@@ -3,6 +3,7 @@
     :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
   >
     <AttachFilter
+      v-if="!propsData.disabled"
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
@@ -34,6 +35,27 @@
         />
       </div>
     </AttachFilter>
+    <Input
+      v-if="propsData.disabled"
+      ref="AttachFilter"
+      v-model="value"
+      v-bind="propsData"
+      :auot-data="propsData.AutoData"
+      :default-selected="selected"
+      @on-show="attachFilterPopperShow"
+      @input="attachFilterInput"
+      @on-change="attachFilterChange"
+      @on-select="attachFilterSelected"
+      @on-focus="attachFilterInputFocus"
+      @on-blur="attachFilterInputBlur"
+      @on-keyup="attachFilterInputKeyup"
+      @on-keydown="attachFilterInputKeydown"
+      @on-ok="attachFilterOk"
+      @on-cancel="attachFilterCancel"
+      @on-popclick="attachFilterPopclick"
+      @on-clear="attachFilterClear"
+      @on-uploadFile="attachFile"
+    />
   </div>
 </template>
 
