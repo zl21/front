@@ -260,8 +260,16 @@
         // this.cascaderOpen = false;
         // this.setPanel.show = false;
       },
-      ignoreMsg() {},
-      jumpTask() {},
+      ignoreMsg() {
+        network.post('/p/cs/ignoreAllMsg').then((res) => {
+          if (res.data.code === 0) {
+            this.getMessages(0);
+          }
+        });
+      },
+      jumpTask() {
+         
+      },
       nextPage() {
         if (this.panel.start < this.panel.total && this.panel.loaded) {
           this.getMessages();

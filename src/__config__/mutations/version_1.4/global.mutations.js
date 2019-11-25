@@ -256,7 +256,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label
+    linkId, url
   }) {
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -274,11 +274,6 @@ export default {
     if (type === 'tableDetailAction') {
       if (url) {
         path = `${url.toUpperCase()}`;
-        const routeInfo = {
-          path,
-          query: { label }
-        };
-        router.push(routeInfo);
       } else {
         path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
