@@ -469,7 +469,6 @@
           name: addname,
           label
         });
-        console.log(addname, label);
         updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
         if (props.serviceId) {
           if (Version() === '1.4') {
@@ -1500,7 +1499,8 @@
               if (e.value.key === this._items.field) {
                 return false;
               }
-              if (!this._items.props.showCol) {
+              // 隐藏且配置了this._items.props.webconf
+              if (!this._items.props.showCol && this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
                 return false;
               }
               if (item.COLUMN_TYPE === 0) {
