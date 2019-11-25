@@ -303,6 +303,7 @@
           system: '系统',
           terminate: '已终止',
           examine: '审批中',
+          void: '已作废',
           agreement: '已同意',
           reject: '已驳回',
         };
