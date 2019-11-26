@@ -15,9 +15,6 @@
   import CustomizeModule from '../__config__/customize.config';
   import { CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX } from '../constants/global';
   import mixins from '../__config__/mixins/customize';
-  import moduleName from '../__utils__/getModuleName';
-
-
   
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
