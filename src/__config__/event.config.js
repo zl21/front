@@ -3,7 +3,6 @@ import router from './router.config';
 
 import {
   STANDARD_TABLE_LIST_PREFIX,
-  CUSTOMIZED_MODULE_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
 } from '../constants/global';
@@ -40,7 +39,7 @@ export const routeTo = ({ type, info }, cb) => {
       if (info.url) {
         const actionType = info.url.substring(0, info.url.indexOf('/'));
         if (actionType === 'SYSTEM') {
-          path =`/${info.url}` ;
+          path = `/${info.url}`;
         } else if (actionType === 'https:' || actionType === 'http:') {
           path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
@@ -75,9 +74,9 @@ export const routeTo = ({ type, info }, cb) => {
 export const menuClick = (data, cb) => {
   if (typeof cb === 'function') { cb(); }
   const {
-    type, value, id, vuedisplay 
+    type, value, id, url 
   } = data;
-  routeTo({ type: vuedisplay && vuedisplay === 'external' ? vuedisplay : type, info: { tableName: value, tableId: id } }, cb);
+  routeTo({ type, info: { tableName: value, tableId: id, url } }, cb);
 };
 
 export default { hideMenu, routeTo, menuClick };
