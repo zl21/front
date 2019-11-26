@@ -1,4 +1,6 @@
 import router from '../../router.config';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+
 
 export default {
   updateTabPanelsData(state, data) {
@@ -121,6 +123,11 @@ export default {
         state.updateData[data.tableName].add[data.tableName] = {};
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+        DispatchEvent('globalNotice', {
+          detail: {
+            updataLoading: false
+          }
+        });
       }
     }
   },
@@ -396,5 +403,8 @@ export default {
   },
   updateWatermarkimg(state, value) { // 修改水印
     state.jflowWaterMark = value;
+  },
+  updataGlobalLoading(state, value) { // 更新全局loading
+    state.globalLoading = value;
   }
 };

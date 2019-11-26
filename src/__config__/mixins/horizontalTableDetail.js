@@ -31,6 +31,7 @@ export default () => ({
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
+      globalLoading: ({ globalLoading }) => globalLoading,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -76,7 +77,8 @@ export default () => ({
         'updateObjTabActionSlientConfirm',
         'updateTableSearchData',
         'updateRefreshButton',
-        'updateButtonsDataForCustomization'
+        'updateButtonsDataForCustomization',
+        'updataGlobalLoading'
       ]),
   },
   beforeDestroy() {

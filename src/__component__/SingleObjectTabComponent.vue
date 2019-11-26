@@ -17,6 +17,7 @@
       :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
     />
+    <!-- 子表表格新增区域form -->
     <compositeForm
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -69,6 +70,7 @@
         @VerifyMessage="verifyFormPanel"
       />
     </div>
+    <!-- 左右结构主表和子表的form(面板) -->
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"

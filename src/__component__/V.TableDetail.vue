@@ -13,6 +13,7 @@
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
     />
+    <!-- 上下结构主表 form-->
     <composite-form
       v-if="mainFormInfo.formData.isShow"
       class="compositeAllform"

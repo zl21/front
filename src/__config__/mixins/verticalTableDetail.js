@@ -35,6 +35,7 @@ export default () => ({
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
+      globalLoading: ({ globalLoading }) => globalLoading,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -81,7 +82,9 @@ export default () => ({
         'updateAddDefaultData',
         'updateObjTabActionSlientConfirm',
         'updateTableSearchData',
-        'updateRefreshButton'
+        'updateRefreshButton',
+        'updataGlobalLoading'
+
         // 'resetFormReadOnlyAttribute'
 
       ]),

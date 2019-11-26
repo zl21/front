@@ -16,10 +16,10 @@ function createIcon(store) {
     count: 0
   }];
   store.commit('global/changeNavigatorSetting', data);
-  pollBacklogData(store)
+  pollBacklogData(store);
   setInterval(() => {
     pollBacklogData(store);
-  }, 20000);
+  }, 100000);
 }
 // 点击图标打开待办列表
 function openTodoLists() {
