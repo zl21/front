@@ -16,6 +16,17 @@
         </div>
         <div class="import-panel">
           <div class="el-upload__tip">
+            有效数据起始行:<input
+              v-model="inputValue"
+              class="inputValue"
+            >
+          </div>
+          <div class="el-upload__tip">
+            <Checkbox v-model="singleValue">
+              内容重复是否更新已有记录
+            </Checkbox>
+          </div>
+          <div class="el-upload__tip">
             {{ ChineseDictionary.IMPORTTITLE }}
             <a
               @click.stop="downloadTemplate"
@@ -154,6 +165,8 @@
     components: {},
     data() {
       return {
+        inputValue: '', // 有效起始行
+        singleValue: '', // 更新记录
         modalVisible: false,
         showFlag: false,
         loading: false, // 是否加载
@@ -274,11 +287,14 @@
         // 上传文件
         const fileInformationUploaded = this.files;
         const url = `${getGateway('/p/cs/import')}`;
+        const updataValue = this.singleValue ? 'Y' : 'N';
         const sendData = {
           table: this.tablename,
           mainTable: this.mainTable,
           mainId: this.mainId,
-          menu: this.title
+          menu: this.title,
+          isUpdate: updataValue,
+          startRow: this.inputValue
         };
         const aUploadParame = Object.assign(
           {},
@@ -329,18 +345,55 @@
         if (e.status === 403) {
           this.closeDialog();
         } else {
-          // this.$store.commit('errorDialog', {
-          //   // 弹框报错
-          //   // message: e
-          // });
-          const data = {
-            title: '警告',
-            mask: true,
-            content: e,
-            onOk: () => {
+          const emg = e;
+          let formatJsonEmg = null;
+          try {
+            formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+          } catch (v) {
+            if (typeof emg === 'string') {
+              formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
             }
-          };
-          this.$Modal.fcWarning(data);
+          }
+          window.vm.$Modal.fcError({
+            mask: true,
+            titleAlign: 'center',
+            title: '错误',
+            render: h => h('div', {
+              style: {
+                padding: '10px 20px 0',
+                display: 'flex',
+                lineHeight: '16px'
+              }
+            }, [
+            
+              h('i', {
+                props: {
+                },
+                style: {
+                  marginRight: '5px',
+                  display: 'inline-block',
+                  'font-size': '28px',
+                  'margin-right': ' 10px',
+                  'line-height': ' 1',
+                  padding: ' 10px 0',
+                  color: 'red'
+                },
+                class: 'iconfont iconbj_error fcError '
+              }),
+              h('div', {
+                style: `width: 80%;
+                  margin: 1px;
+                  margin-bottom: -8px;
+                  box-sizing: border-box;
+                  padding: 5px;
+                  resize: none;
+                  max-height: 100px;
+                  max-width: 300px;
+                  overflow: auto;
+                  `
+              }, formatJsonEmg)
+            ])
+          });
           this.clearFile();
         }
       },
@@ -372,6 +425,12 @@
       margin-top: 10px;
       font-size: 12px;
       color: #575757;
+      .inputValue{
+        border: none;
+        border-bottom: 1px solid #b8b8b8;
+        text-align: center;
+        width: 72px;
+      }
     }
     .upload-panel {
       height: 50px;
