@@ -828,7 +828,7 @@
         }
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
-          if (!optionValue) {
+          if (optionValue === undefined) {
             optionValue = '';
           }
           if (typeof optionValue !== 'string') {
