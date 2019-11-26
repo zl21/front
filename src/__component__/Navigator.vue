@@ -355,6 +355,7 @@
         } else {
           tabid = data.actid;
         }
+        debugger;
         routeTo(
           { type, info: { tableName: data.name, tableId: tabid } },
           () => {

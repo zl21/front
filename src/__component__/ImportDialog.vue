@@ -18,14 +18,19 @@
           <div class="el-upload__tip">
             有效数据起始行:<input
               v-model="inputValue"
+              type="number"
               class="inputValue"
+            >;
+            <Checkbox
+              v-model="singleValue"
+              class="singleValue"
             >
-          </div>
-          <div class="el-upload__tip">
-            <Checkbox v-model="singleValue">
-              内容重复是否更新已有记录
+              AK重复是否更新已有记录;
             </Checkbox>
           </div>
+          <!-- <div class="el-upload__tip">
+           
+          </div> -->
           <div class="el-upload__tip">
             {{ ChineseDictionary.IMPORTTITLE }}
             <a
@@ -430,6 +435,9 @@
         border-bottom: 1px solid #b8b8b8;
         text-align: center;
         width: 72px;
+      }
+      .singleValue{
+        margin-left:10px;
       }
     }
     .upload-panel {
