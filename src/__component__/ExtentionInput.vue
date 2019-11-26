@@ -82,6 +82,7 @@
     },
     data() {
       return {
+        hasModified: false,
         placeholder: '',
         currentValue: '',
         showModal: false,
@@ -104,7 +105,7 @@
           configOptions = this.extentionConfig;
         }
         return configOptions;
-      }
+      },
     },
     methods: {
       onKeydown(e) {
@@ -127,6 +128,8 @@
         this.$emit('valueChange', '');
       },
       onOk() {
+        // 手动选择配置以后，hasModified置为true
+        this.hasModified = true;
         this.setFormatedValue();
         if (this.currentValue === '') {
           this.$emit('valueChange', this.currentValue);
@@ -146,6 +149,7 @@
         const paste = (e.clipboardData || window.clipboardData).getData('text/plain');
         if (this.$refs.textarea && this.$refs.textarea.$el.querySelector('textarea') === document.activeElement) {
           try {
+            this.hasModified = true;
             const copyData = JSON.parse(paste) ? JSON.parse(paste) : '';
             let supportTypeMap = {};
             const currentTableName = this.$route.params.tableName;
@@ -167,6 +171,7 @@
             }
             this.placeholder = `不被支持的扩展属性：[${unMappedKey.toString()}]，请核实后再操作。`;
             if (Object.keys(copyData).length === 0) {
+              this.$emit('valueChange', '');
               return;
             }
             this.transformedData = copyData;
@@ -206,6 +211,14 @@
         },
         deep: true
       },
+      'webConfig.supportType': {
+        handler() {
+          if (this.hasModified) {
+            this.placeholder = '';
+            this.deleteValue();
+          }
+        }
+      }
     },
     mounted() {
       this.rows = this.ctrlOptions.rows || this.rows;
