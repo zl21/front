@@ -17,9 +17,12 @@
         <div class="import-panel">
           <div class="el-upload__tip">
             有效数据起始行:<input
-              v-model="inputValue"
-              type="number"
+              :value="inpNum"
               class="inputValue"
+              type="text"
+              placeholder="只能输入正整数"
+              @input="handleInput"
+              @change="handleInput"
             >;
             <Checkbox
               v-model="singleValue"
@@ -209,10 +212,22 @@
     computed: {
       completeTitle() {
         return `${this.title}导入`;
+      },
+      inpNum() {
+        return this.inputValue;
       }
     },
 
     methods: {
+      handleInput(event) {
+        const val = event.target.value.trim();
+        // 只能是正整数或空,可根据需求修改正则
+        if (/^[1-9]\d*$|^$/.test(val)) {
+          this.inputValue = val;
+        } else {
+          event.target.value = this.inputValue;
+        }
+      },
       clearFile() {
         this.fileName = '';
         this.loading = false;
@@ -299,7 +314,7 @@
           mainId: this.mainId,
           menu: this.title,
           isUpdate: updataValue,
-          startRow: this.inputValue
+          startRow: this.inpNum
         };
         const aUploadParame = Object.assign(
           {},
@@ -434,7 +449,7 @@
         border: none;
         border-bottom: 1px solid #b8b8b8;
         text-align: center;
-        width: 72px;
+        width: 100px;
       }
       .singleValue{
         margin-left:10px;
