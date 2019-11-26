@@ -1,6 +1,8 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
 import router from '../../router.config';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -112,6 +114,11 @@ export default {
         state.updateData[data.tableName].add[data.tableName] = {};
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+        DispatchEvent('globalNotice', {
+          detail: {
+            updataLoading: false
+          }
+        });
       }
     }
   },
@@ -236,11 +243,14 @@ export default {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
+                        b.refobjid = '';
+                      }
                     }
                   } else if (b.valuedata) {
                     if (b.display === 'doc') {
                       copySaveDataForParam[b.colname] = b.valuedata;
-                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') {
+                    } else if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop') {
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
                       const number = JSON.parse(b.valuedata).lists.result.length;
@@ -274,6 +284,7 @@ export default {
     //     });
     //   }
     // });
+    console.log(333, data.data.addcolums);
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },
@@ -405,5 +416,8 @@ export default {
   },
   updateWatermarkimg(state, value) { // 修改水印
     state.jflowWaterMark = value;
+  },
+  updataGlobalLoading(state, value) { // 更新全局loading
+    state.globalLoading = value;
   }
 };

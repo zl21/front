@@ -165,7 +165,8 @@
                 return h('Poptip', {
                   props: {
                     trigger: 'hover',
-                    content: params.row.submitErrorMsg
+                    content: params.row.submitErrorMsg,
+                    transfer: true
                   }
                 }, [h(
                   'span',

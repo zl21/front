@@ -2,6 +2,8 @@ import { stringify } from 'querystring';
 import { cpus } from 'os';
 import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -113,6 +115,11 @@ export default {
       state.updateData[data.tableName].add[data.tableName] = {};
     } else if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+      DispatchEvent('globalNotice', {
+        detail: {
+          updataLoading: false
+        }
+      });
     }
   },
   updateModifyData(state, data) {
@@ -218,6 +225,9 @@ export default {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
+                        b.refobjid = '';
+                      }
                     }
                   } else if (b.valuedata) {
                     if (b.display === 'doc') {
@@ -404,5 +414,8 @@ export default {
   },
   updateWatermarkimg(state, value) { // 修改水印
     state.jflowWaterMark = value;
+  },
+  updataGlobalLoading(state, value) { // 更新全局loading
+    state.globalLoading = value;
   }
 };

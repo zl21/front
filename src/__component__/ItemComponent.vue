@@ -34,7 +34,7 @@
       >*</span>
       <template v-if=" _items.props.fkdisplay === 'pop' && type==='PanelForm'">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'">
+        <template v-if="!!_items.value &&_items.props.Selected[0] && !!_items.props.Selected[0].ID && _items.props.Selected[0].ID !=='-1'&& _items.props.Selected[0].ID !==0 && _items.props.Selected[0].ID !=='0'">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -46,7 +46,7 @@
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'">
+        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
@@ -469,7 +469,6 @@
           name: addname,
           label
         });
-        console.log(addname, label);
         updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
         if (props.serviceId) {
           if (Version() === '1.4') {
@@ -1500,7 +1499,8 @@
               if (e.value.key === this._items.field) {
                 return false;
               }
-              if (!this._items.props.showCol) {
+              // 隐藏且配置了this._items.props.webconf
+              if (!this._items.props.showCol && this._items.props.webconf && this._items.props.webconf.clearWhenHidden) {
                 return false;
               }
               if (item.COLUMN_TYPE === 0) {

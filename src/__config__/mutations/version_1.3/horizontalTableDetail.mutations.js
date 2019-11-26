@@ -1,4 +1,6 @@
 import router from '../../router.config';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+
 
 export default {
   updateTabPanelsData(state, data) {
@@ -121,6 +123,11 @@ export default {
         state.updateData[data.tableName].add[data.tableName] = {};
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
+        DispatchEvent('globalNotice', {
+          detail: {
+            updataLoading: false
+          }
+        });
       }
     }
   },
@@ -254,6 +261,9 @@ export default {
                       copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
+                      if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
+                        b.refobjid = '';
+                      }
                     }
                   } else if (b.valuedata) {
                     if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
@@ -393,5 +403,8 @@ export default {
   },
   updateWatermarkimg(state, value) { // 修改水印
     state.jflowWaterMark = value;
+  },
+  updataGlobalLoading(state, value) { // 更新全局loading
+    state.globalLoading = value;
   }
 };

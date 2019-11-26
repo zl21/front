@@ -43,7 +43,9 @@ export default () => ({
     jflowPluginDataArray: [], // jflow按钮
     instanceId: null, // jflow流程标志
     refreshButton: true, // 为方便jflow控制，改为全局状态调用
-    jflowWaterMark: null // jflow水印
+    jflowWaterMark: null, // jflow水印
+    globalLoading: false,
+
 
   },
   actions: actions(),

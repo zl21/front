@@ -449,7 +449,6 @@
             data[current.item.field] = data[current.item.field].toUpperCase();
           }
         }
-        console.log(data, setdefval);
         // 针对明细列表外键回车查询功能
         if (this.conditiontype !== 'list') {
           if (current) {
@@ -551,7 +550,6 @@
           this.mountChecked = true;
         }, 200);
         this.refcolvaData = {};
-        console.log(value, this.defaultFormData);
         this.defaultFormData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), value);
         // 去除 空字符串
         const defaultFormData = Object.keys(this.defaultFormData).reduce((arr, option) => {
@@ -945,7 +943,6 @@
                   let LinkageFormfocus = document.querySelector('.compositeAllform');
                   if (LinkageFormfocus && LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`)) {
                     LinkageFormfocus = LinkageFormfocus.querySelector(`#${current.refcolval.srccol}`).querySelector('input');
-                    console.log(LinkageFormfocus);
                     setTimeout(() => {
                       LinkageFormfocus.focus();
                     }, 100);
