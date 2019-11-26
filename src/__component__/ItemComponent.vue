@@ -419,15 +419,20 @@
           // 大弹窗卡槽页面
           if (item.props.fkdisplay === 'pop') {
             // item.componentType = myPopDialog;
-            item.props.fkobj.show = false;
+            if (!item.props.disabled) {
+              item.props.fkobj.show = false;
+            }
           } else {
             // item.componentType = Dialog;
-            item.props.fkobj.show = true;
-            if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
-              item.props.datalist = dataProp[item.type].props.datalist.concat(
-                item.props.datalist
-              );
+            if (!item.props.disabled) {
+              item.props.fkobj.show = true;
+              if (!item.props.datalist[0] || item.props.datalist[0].value !== '更多筛选') {
+                item.props.datalist = dataProp[item.type].props.datalist.concat(
+                  item.props.datalist
+                );
+              }
             }
+            
 
             item.props.dialog.model['footer-hide'] = false;
             // item.props.datalist.forEach((option, i) => {
