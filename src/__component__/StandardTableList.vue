@@ -440,8 +440,15 @@
           let type = '';
           if (colDef.objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
-          } else {
+          } else if (colDef.objdistype === 'object') {
             type = 'tableDetailVertical';
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置外键关联表的显示配置'
+            };
+            this.$Modal.fcWarning(data);
           }
           this.tabHref({
             id: refobjid,
