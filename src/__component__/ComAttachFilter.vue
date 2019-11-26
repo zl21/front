@@ -40,6 +40,7 @@
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
+      type="text"
       :auot-data="propsData.AutoData"
       :default-selected="selected"
       @on-show="attachFilterPopperShow"
