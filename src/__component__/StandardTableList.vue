@@ -430,15 +430,24 @@
       onCellSingleClick(colDef, rowData, target) {
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
-          console.log(rowData[colDef.colId]);
-          const { reftableid, reftablename, refobjid, reftabdesc } = rowData[colDef.colId];
+          const {
+            reftableid, reftablename, refobjid, reftabdesc 
+          } = rowData[colDef.colId];
           this.addKeepAliveLabelMaps({ name: `S.${reftablename}.${reftableid}`, label: reftabdesc });
           updateSessionObject('keepAliveLabelMaps', { k: `S.${reftablename}.${reftableid}`, v: reftabdesc });
+          //  tableDetailHorizontal
+          // tableDetailVertical
+          let type = '';
+          if (colDef.objdistype === 'tabpanle') { // 上下结构
+            type = 'tableDetailHorizontal';
+          } else {
+            type = 'tableDetailVertical';
+          }
           this.tabHref({
             id: refobjid,
             tableName: reftablename,
             tableId: reftableid,
-            type: 'tableDetailVertical'
+            type
           });
         }
         if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
@@ -994,7 +1003,7 @@
               } else {
                 const title = this.ChineseDictionary.WARNING;
                 const contentText = `${JSON.parse(obj.confirm).desc}`;
-              this.dialogMessage(title, contentText);
+                this.dialogMessage(title, contentText);
               }
             } else {
               const title = this.ChineseDictionary.WARNING;
