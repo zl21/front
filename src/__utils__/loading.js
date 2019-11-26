@@ -37,14 +37,15 @@ Loading.install = ((Vue) => {
 
       e.preventDefault();
     });
-
     Loading.installed = true;
   };
 
   Vue.prototype.$loading.hide = () => {
     const tpl = document.querySelector('#vue-loading');
     const dom = document.getElementById('content');
-    dom.removeChild(tpl);
+    if (tpl) {
+      dom.removeChild(tpl);
+    }
   };
 });
  
