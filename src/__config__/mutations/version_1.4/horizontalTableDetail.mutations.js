@@ -262,8 +262,12 @@ export default {
                     if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'pop') { // 外键类型要特殊整合
                       copySaveDataForParam[b.colname] = [{ ID: b.refobjid, Label: b.valuedata }];
                     } else if (b.fkdisplay === 'mop') {
-                      const number = JSON.parse(b.valuedata).lists.result.length;
-                      copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                      try {
+                        const number = JSON.parse(b.valuedata).lists.result.length;
+                        copySaveDataForParam[b.colname] = [{ ID: b.valuedata, Label: `已经选中${number}条数据` }];
+                      } catch (e) {
+                        copySaveDataForParam[b.colname] = b.valuedata;
+                      }
                     } else {
                       copySaveDataForParam[b.colname] = b.valuedata;// 重组数据添加到add
                     }
