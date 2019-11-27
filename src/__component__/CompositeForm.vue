@@ -738,6 +738,7 @@
               }
               // 先清除一下
               Fitem[index].item.props.data = {};
+              Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
               const check = this.getLinkData(current);
               if (check[1]) {
@@ -1751,9 +1752,9 @@
         } else {
           item = this.$refs.FormComponent_0.newFormItemLists;
         }
-        item[index].item.props.totalRowCount = res.data.data.totalRowCount;
         item[index].item.props.pageSize = res.data.data.defaultrange;
         item[index].item.props.data = res.data.data;
+        item[index].item.props.totalRowCount = res.data.data.totalRowCount;
       },
       freshDropDownSelectFilterAutoData(res, index, current, type) {
         // 外键的模糊搜索数据更新
