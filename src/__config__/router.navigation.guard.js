@@ -1,3 +1,4 @@
+import Vue from 'Vue';
 import store from './store.config';
 import {
   CUSTOMIZED_MODULE_PREFIX,
@@ -27,6 +28,7 @@ Object.keys(PluginModule).forEach((key) => {
 
 export default (router) => {
   router.beforeEach((to, from, next) => {
+    Vue.prototype.fromRoute = from;
     if (router.getMatchedComponents(to.path).length === 0) {
       next('/');
     }
