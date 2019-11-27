@@ -594,9 +594,9 @@
           // }else if (tabrelation === '1:1') {
 
           // }
-          // this.getObjectTabForMainTable({
-          //   table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
-          // });
+          this.getObjectTabForMainTable({
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+          });
         }
         setTimeout(() => {
           if (message) {
