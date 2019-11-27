@@ -59,7 +59,6 @@
             </Option>
           </Select>
           <div class="detail-search-input">
-            // eslint-disable-next-line vue/html-self-closing
             <Input
               v-model="searchInfo"
               search
