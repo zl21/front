@@ -116,7 +116,9 @@
       propstype() {
         // 将设置的props和默认props进行assign
         // const item = this.items;
-        this.value = this.defaultValue;
+        
+        this.value = this.defaultSelected[0].Label;
+        
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
         //   const valuedata = JSON.parse(this.selected[0].Label);
@@ -375,6 +377,7 @@
     created() {
       this.propsData = this.propstype;
       this.value = this.defaultValue;
+      console.log(this.defaultValue);
       this.selected = this.defaultSelected;
       if (!this.selected[0]) {
         this.selected = [{

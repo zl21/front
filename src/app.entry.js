@@ -11,7 +11,7 @@ import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, jflowTabShow, enableInitializationRequest 
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest 
 } from './constants/global';
 import customizedModalConfig from './__config__/customizeDialog.config';
 import CompositeForm from './__component__/CompositeForm';
@@ -120,7 +120,7 @@ export default (projectConfig = {
       axios,
       store,
       jflowIp: jflowRequestDomain(),
-      showTab: jflowTabShow()
+      closeJflowIcon: closeJflowIcon()
     });
   }
   if (enableGateWay()) {
