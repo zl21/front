@@ -5,6 +5,7 @@
       :title="completeTitle"
       :mask="true"
       :closable="true"
+      :mask-closable="false"
       :width="width"
       class="importDialog"
     >
@@ -173,7 +174,7 @@
     components: {},
     data() {
       return {
-        inputValue: '', // 有效起始行
+        inputValue: '2', // 有效起始行
         singleValue: '', // 更新记录
         modalVisible: false,
         showFlag: false,

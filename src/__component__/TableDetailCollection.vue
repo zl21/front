@@ -1,3 +1,5 @@
+/* eslint-disable vue/html-indent */
+/* eslint-disable vue/html-self-closing */
 <template>
   <div class="TableDetailCollection">
     <div class="detail-collection">
@@ -57,13 +59,14 @@
             </Option>
           </Select>
           <div class="detail-search-input">
+            // eslint-disable-next-line vue/html-self-closing
             <Input
               v-model="searchInfo"
               search
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                  >
             <Button
               slot="prepend"
               @click="searTabelList"
