@@ -586,9 +586,9 @@
             });
           }
         } else { // 纵向布局
-          this.getObjectForMainTableForm({
-            table: this.tableName, objid: this.itemId, tabIndex
-          });
+          // this.getObjectForMainTableForm({
+          //   table: this.tableName, objid: this.itemId, tabIndex
+          // });
           // if (tabrelation === '1:m') {
 
           // }else if (tabrelation === '1:1') {
