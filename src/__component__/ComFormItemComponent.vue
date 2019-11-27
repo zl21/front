@@ -323,18 +323,18 @@
       formDataObject: {
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理
-          this.oldformData = old;
-          if (this.indexItem === -1) {
-            return;
-          }
-          //   拦截默认值
-          if (!this.actived) {
-            return;
-          }
-          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-          val = Object.assign(allValue, this.formValueItem);
+          // this.oldformData = old;
+          // if (this.indexItem === -1) {
+          //   return;
+          // }
+          // //   拦截默认值
+          // if (!this.actived) {
+          //   return;
+          // }
+          // const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+          // val = Object.assign(allValue, this.formValueItem);
          
-          this.computFormLinkage(val, old);
+          // this.computFormLinkage(val, old);
         },
         deep: true
       },

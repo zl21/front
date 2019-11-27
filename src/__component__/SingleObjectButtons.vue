@@ -247,18 +247,18 @@
       },
       tabwebact: {
         handler(val) {
-          this.dataArray.waListButtonsConfig.waListButtons = [];
-          if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 新增按钮渲染逻辑
-            } else { // 编辑按钮渲染逻辑
-              this.waListButtons(val);
-            }
-          } else if (this.objectType === 'vertical') {
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-            } else { // 新增按钮渲染逻辑
-              this.waListButtons(val);
-            }
-          }
+          // this.dataArray.waListButtonsConfig.waListButtons = [];
+          // if (this.objectType === 'horizontal') { // 横向布局
+          //   if (this.itemId === 'New') { // 新增按钮渲染逻辑
+          //   } else { // 编辑按钮渲染逻辑
+          //     this.waListButtons(val);
+          //   }
+          // } else if (this.objectType === 'vertical') {
+          //   if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+          //   } else { // 新增按钮渲染逻辑
+          //     this.waListButtons(val);
+          //   }
+          // }
         },
         deep: true
       },
