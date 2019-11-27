@@ -28,9 +28,8 @@
             <Checkbox
               v-model="singleValue"
               class="singleValue"
-            >
-              AK重复是否更新已有记录;
-            </Checkbox>
+            />
+            AK重复是否更新已有记录;
           </div>
           <!-- <div class="el-upload__tip">
            
