@@ -525,84 +525,84 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
-        // DispatchEvent('tabRefreshClick');
-        // // DispatchEvent('jflowPlugin', {
-        // //   detail: {
-        // //     type: 'fresh'
-        // //   }
-        // // });
-        // let page = {};
-        // if (this.objectType === 'horizontal') { // 横向布局
-        //   this.tabPanel.every((item) => {
-        //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {
-        //       page = item.tablePageInfo;
-        //       return false;
-        //     }
-        //     return true;
-        //   });
-        // } else {
-        //   this.tabPanel.every((item) => {
-        //     if (item.tablename === this.itemName) {
-        //       page = item.tablePageInfo;
-        //       return false;
-        //     }
-        //     return true;
-        //   });
-        // }
-        // const {
-        //   tablename, refcolid, tabrelation, tabinlinemode
-        // } = this.itemInfo;
-        // const tabIndex = this.tabCurrentIndex;
-        // if (this.objectType === 'horizontal') { // 横向布局
-        //   if (this.tabCurrentIndex === 0) { // 主表
-        //     this.getObjectTabForMainTable({
-        //       table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
-        //     });
-        //   } else if (tabrelation === '1:m') { // 子表
-        //     this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
-        //     const promise = new Promise((resolve, reject) => {
-        //       this.getObjectTabForChildTableButtons({
-        //         maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
-        //       });
-        //     });
-
-        //     promise.then(() => {
-        //       const searchdata = {
-        //         column_include_uicontroller: true,
-        //         startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
-        //         range: page.pageSize,
-        //         fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
-        //       };
-        //       this.getObjectTableItemForTableData({
-        //         table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
-        //       });
-        //     });
-        //   } else if (tabrelation === '1:1') {
-        //     this.getObjectTabForChildTableButtons({
-        //       maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
-        //     });
-        //     this.getItemObjForChildTableForm({
-        //       table: tablename, objid: this.itemId, refcolid, tabIndex
-        //     });
+        DispatchEvent('tabRefreshClick');
+        // DispatchEvent('jflowPlugin', {
+        //   detail: {
+        //     type: 'fresh'
         //   }
-        // } else { // 纵向布局
-        //   this.getObjectForMainTableForm({
-        //     table: this.tableName, objid: this.itemId, tabIndex
-        //   });
-        //   // if (tabrelation === '1:m') {
+        // });
+        let page = {};
+        if (this.objectType === 'horizontal') { // 横向布局
+          this.tabPanel.every((item) => {
+            if (this.itemName !== this.tableName && item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        } else {
+          this.tabPanel.every((item) => {
+            if (item.tablename === this.itemName) {
+              page = item.tablePageInfo;
+              return false;
+            }
+            return true;
+          });
+        }
+        const {
+          tablename, refcolid, tabrelation, tabinlinemode
+        } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.tabCurrentIndex === 0) { // 主表
+            this.getObjectTabForMainTable({
+              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+            });
+          } else if (tabrelation === '1:m') { // 子表
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+            const promise = new Promise((resolve, reject) => {
+              this.getObjectTabForChildTableButtons({
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+              });
+            });
 
-        //   // }else if (tabrelation === '1:1') {
+            promise.then(() => {
+              const searchdata = {
+                column_include_uicontroller: true,
+                startindex: (Number(page.currentPageIndex) - 1) * Number(page.pageSize),
+                range: page.pageSize,
+                fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
+              };
+              this.getObjectTableItemForTableData({
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+              });
+            });
+          } else if (tabrelation === '1:1') {
+            this.getObjectTabForChildTableButtons({
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+            });
+            this.getItemObjForChildTableForm({
+              table: tablename, objid: this.itemId, refcolid, tabIndex
+            });
+          }
+        } else { // 纵向布局
+          // this.getObjectForMainTableForm({
+          //   table: this.tableName, objid: this.itemId, tabIndex
+          // });
+          // // if (tabrelation === '1:m') {
 
-        //   // }
-        //   this.getObjectTabForMainTable({
-        //     table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
-        //   });
-        // }
-        // setTimeout(() => {
-        //   if (message) {
-        //     this.$Message.success(message);
-        //   }
-        // }, 500);
+          // // }else if (tabrelation === '1:1') {
+
+          // // }
+          // this.getObjectTabForMainTable({
+          //   table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+          // });
+        }
+        setTimeout(() => {
+          if (message) {
+            this.$Message.success(message);
+          }
+        }, 500);
       },
       objectTabAction(obj) { // 按钮执行事件判断逻辑
         switch (obj.eName) {
