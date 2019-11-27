@@ -863,7 +863,7 @@
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
-          } else {
+          } else if (item.props.webconf.setAttributes.props.required === false) {
             item.required = false;
           }
 
