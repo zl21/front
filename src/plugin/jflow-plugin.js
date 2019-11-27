@@ -22,7 +22,7 @@ let configurationFlag = false; // 是否是直接访问但对象界面  为true�
 let jflowIp = ''; // jflow项目的ip
 let modifiableFieldName = []; // jflow可修改字段名
 let instanceId = null; // 流程id
-let showTab = false; // 是否是tab展示
+let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
 
 function getQueryButtons(data) {
@@ -543,7 +543,7 @@ function AxiosGuard(axios) { // axios拦截
       }
 
       if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
-        !showTab ? todoList(store, router) : null;
+        !closeJflowIcon ? todoList(store, router) : null;
       }
     }
 
@@ -592,12 +592,12 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.axios = axios;
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;
-  window.jflowPlugin.showTab = showTab;
+  window.jflowPlugin.closeJflowIcon = closeJflowIcon;
 }
 
 
 const install = function install(Vue, options = {}) {
-  showTab = options.showTab;
+  closeJflowIcon = options.closeJflowIcon;
   if (options.axios && options.router && options.store && options.jflowIp) {
     axios = options.axios;
     router = options.router;

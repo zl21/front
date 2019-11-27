@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, jflowTabShow, enableInitializationRequest 
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest 
 } from './src/constants/global';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
@@ -32,7 +32,7 @@ if (enableJflow() && jflowRequestDomain()) {
     axios,
     store,
     jflowIp: jflowRequestDomain(),
-    showTab: jflowTabShow()
+    closeJflowIcon: closeJflowIcon()
   });
 }
 
