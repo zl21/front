@@ -874,16 +874,15 @@ export default {
       table,
       objid: objId
     })).then((res) => {
-      alert(JSON.stringify(res));
-      // if (res.data.code === 0) {
-      //   const submitData = res.data;
-      //   resolve();
-      //   commit('updateSubmitData', submitData);
-      // } else {
-      //   const data = res.data.data;
-      //   commit('updatetooltipForItemTableData', data);
-      //   reject();
-      // }
+      if (res.data.code === 0) {
+        const submitData = res.data;
+        resolve();
+        commit('updateSubmitData', submitData);
+      } else {
+        const data = res.data.data;
+        commit('updatetooltipForItemTableData', data);
+        reject();
+      }
     });
   },
   getObjectTryUnSubmit({
