@@ -247,18 +247,18 @@
       },
       tabwebact: {
         handler(val) {
-          // this.dataArray.waListButtonsConfig.waListButtons = [];
-          // if (this.objectType === 'horizontal') { // 横向布局
-          //   if (this.itemId === 'New') { // 新增按钮渲染逻辑
-          //   } else { // 编辑按钮渲染逻辑
-          //     this.waListButtons(val);
-          //   }
-          // } else if (this.objectType === 'vertical') {
-          //   if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-          //   } else { // 新增按钮渲染逻辑
-          //     this.waListButtons(val);
-          //   }
-          // }
+          this.dataArray.waListButtonsConfig.waListButtons = [];
+          if (this.objectType === 'horizontal') { // 横向布局
+            if (this.itemId === 'New') { // 新增按钮渲染逻辑
+            } else { // 编辑按钮渲染逻辑
+              this.waListButtons(val);
+            }
+          } else if (this.objectType === 'vertical') {
+            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+            } else { // 新增按钮渲染逻辑
+              this.waListButtons(val);
+            }
+          }
         },
         deep: true
       },
@@ -2366,19 +2366,19 @@
               objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
             });
           });
-          promise.then(() => {
-                         const message = this.buttonsData.submitData.message;
-                         if (message) {
-                           this.upData(`${message}`);
-                         } else {
-                           this.upData();
-                         }
-                         this.saveEventAfter = '';
-                       },
-                       () => { // 状态为rejected时执行
-                         this.upData();
-                         this.saveEventAfter = '';
-                       });
+          // promise.then(() => {
+          //                const message = this.buttonsData.submitData.message;
+          //                if (message) {
+          //                  this.upData(`${message}`);
+          //                } else {
+          //                  this.upData();
+          //                }
+          //                this.saveEventAfter = '';
+          //              },
+          //              () => { // 状态为rejected时执行
+          //                this.upData();
+          //                this.saveEventAfter = '';
+          //              });
         }
 
         if (event.detail.type === 'refresh') {
