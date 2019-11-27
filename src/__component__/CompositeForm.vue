@@ -32,6 +32,7 @@
                 :form-index="index"
                 :form-item-lists="item.childs"
                 :isreftabs="isreftabsForm"
+                :set-objreadonly="setObjreadonly"
                 :child-table-name="childTableName"
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
@@ -64,6 +65,7 @@
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
           :verifymessageform="VerifyMessageForm"
+          :set-objreadonly="setObjreadonly"
           :mapp-status="setMapping"
           :module-form-type="moduleFormType"
           :default-column="defaultColumnCol"
@@ -262,6 +264,9 @@
     computed: {
       path() {
         return this.paths[1] || '';
+      },
+      setObjreadonly() {
+        return this.objreadonly;
       },
       tableGetName() {
         // 获取表名称
