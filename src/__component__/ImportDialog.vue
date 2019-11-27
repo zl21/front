@@ -5,6 +5,7 @@
       :title="completeTitle"
       :mask="true"
       :closable="true"
+      :mask-closable="false"
       :width="width"
       class="importDialog"
     >
