@@ -261,6 +261,12 @@
         default() {
           return '';
         }
+      },
+      setObjreadonly: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
     inject: [MODULE_COMPONENT_NAME],
@@ -368,7 +374,9 @@
           }
           // 设置属性
           if (item.props.webconf && item.props.webconf.setAttributes) {
-            this.setAttributes(item, i, val);
+            if (!this.setObjreadonly) {
+              this.setAttributes(item, i, val);
+            }
           }
 
 
@@ -690,8 +698,6 @@
           return valueLabel;
         }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
-          console.log(current, '000');
-
           if (current.item.props.fkdisplay === 'mop') {
             valueLabel[current.item.field] = current.item.props.Selected[0].ID;
           } else {
