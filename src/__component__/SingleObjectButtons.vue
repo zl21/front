@@ -1325,7 +1325,6 @@
           tableName,
           back: true,
         };
-        // this.clearEditData();
         this.$store.commit('global/tabHref', param);
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
@@ -2421,6 +2420,7 @@
       window.removeEventListener('globalNotice', this.updataLoading);
     },
     mounted() {
+      console.log('🍓', this.fromRoute);
       // if (this.objectType === 'horizontal') { // 横向布局
       //   this.tabPanel.every((item) => {
       //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {
