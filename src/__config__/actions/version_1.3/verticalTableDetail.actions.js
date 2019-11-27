@@ -874,7 +874,7 @@ export default {
       table,
       objid: objId
     })).then((res) => {
-      alert(res);
+      alert(JSON.stringify(res));
       // if (res.data.code === 0) {
       //   const submitData = res.data;
       //   resolve();
