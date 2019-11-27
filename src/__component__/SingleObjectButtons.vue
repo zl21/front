@@ -586,17 +586,17 @@
             });
           }
         } else { // 纵向布局
-          // this.getObjectForMainTableForm({
-          //   table: this.tableName, objid: this.itemId, tabIndex
-          // });
-          // // if (tabrelation === '1:m') {
+          this.getObjectForMainTableForm({
+            table: this.tableName, objid: this.itemId, tabIndex
+          });
+          // if (tabrelation === '1:m') {
 
-          // // }else if (tabrelation === '1:1') {
+          // }else if (tabrelation === '1:1') {
 
-          // // }
-          // this.getObjectTabForMainTable({
-          //   table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
-          // });
+          // }
+          this.getObjectTabForMainTable({
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+          });
         }
         setTimeout(() => {
           if (message) {
