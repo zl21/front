@@ -117,7 +117,7 @@
         // 将设置的props和默认props进行assign
         // const item = this.items;
         
-        this.value = this.defaultSelected[0].Label;
+        this.value = (this.defaultSelected[0] && this.defaultSelected[0].Label) || '';
         
         this.selected = this.defaultSelected;
         // if (this.selected[0].Label && /total/.test(this.selected[0].Label)) {
