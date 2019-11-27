@@ -161,7 +161,7 @@
                   a[c.key] = c.supportType || 'ALL';
                 } else if (c.key === '__root__') {
                   if (c.type === 'input-group') {
-                    c.inputLists.forEach(d => {
+                    c.inputLists.forEach((d) => {
                       a[d.key] = d.supportType || 'ALL';
                     });
                   }
