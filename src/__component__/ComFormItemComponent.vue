@@ -288,6 +288,7 @@
         oldformData: {}, // 老的change
         setHeight: 34,
         timerSet: '',
+        timerWatch: '', // 监听change 触发
         actived: false
       };
     },
@@ -337,10 +338,12 @@
           if (!this.actived) {
             return;
           }
-          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-          val = Object.assign(allValue, this.formValueItem);
-         
-          this.computFormLinkage(val, old);
+          clearTimeout(this.timerWatch);
+          this.timerWatch = setTimeout(() => {
+            const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+            val = Object.assign(allValue, this.formValueItem);
+            this.computFormLinkage(val, old);
+          }, 100);
         },
         deep: true
       },
@@ -656,7 +659,7 @@
         // 向父组件抛出整个数据对象以及当前修改的字段
         const setLabel = this.getLable(current);
 
-        this.$emit('formDataChange', obj, valueItem, current, setLabel);
+        this.$emit('formDataChange', obj, valueItem, current, setLabel, this);
         //  change 值 走后台接口赋值
         if (current.item.field) {
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
@@ -862,9 +865,9 @@
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
-          if (item.props.webconf.setAttributes.props.value === '') {
-            item.value = '';
-          }
+          // if (item.props.webconf.setAttributes.props.value === '') {
+          //   item.value = '';
+          // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           if (item.props.webconf.setAttributes.props.required) {
@@ -878,7 +881,7 @@
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
           item.required = item.oldProps._required;
         }        
-        this.VerificationFormInt();
+        // this.VerificationFormInt();
         return true;
       },
       filtercolumn(item, formindex, val) {
@@ -912,7 +915,8 @@
             return false;
           }
           if (this.newFormItemLists[formindex] && checkout === -1) {
-            this.newFormItemLists[formindex].item.value = -1;
+            this.newFormItemLists[formindex].item.value = '';
+            // this.VerificationFormInt();
           }
           // input.innerText = '';
         }
@@ -965,7 +969,7 @@
                 this.dataProcessing(this.newFormItemLists[index], index);
               }
 
-              this.VerificationFormInt();
+              // this.VerificationFormInt();
               // this.VerificationForm = this.VerificationMap();
               // this.VerificationFormInt();
             }

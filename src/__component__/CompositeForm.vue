@@ -447,7 +447,7 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data, setdefval, current, label) {
+      formDataChange(data, setdefval, current, label, $this) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
           if (typeof data[current.item.field] === 'string') { 
@@ -470,6 +470,8 @@
           this.labelForm = {};
           return false;
         }
+        // 必填校验
+        $this.VerificationFormInt();
         // 修改联动的值
         this.setChangeValue(data, current);
         if (Array.isArray(data)) {
@@ -746,6 +748,7 @@
               Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
               const check = this.getLinkData(current);
+
               if (check[1]) {
                 const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
                 searchObject = {
@@ -1404,24 +1407,17 @@
         }
 
         if (item.type === 'checkbox') {
-          const checkName = ['Y', '1', true];
-          const falseName = ['N', '0', false];
-          const check = falseName.some(
-            x => x === current.valuedata || x === current.defval
-          );
-          if (check) {
-            // eslint-disable-next-line no-tabs
-            item.props.falseValue = current.valuedata || current.defval || falseName[0];
-            const index = falseName.findIndex(x => x === item.props.falseValue);
-            item.props.trueValue = checkName[index] || checkName[0];
-          } else {
-            // eslint-disable-next-line no-tabs
-            item.props.trueValue = current.valuedata || current.defval || checkName[0];
-            const index = checkName.findIndex(x => x === item.props.trueValue);
-            item.props.falseValue = falseName[index] || falseName[0];
+          if (Array.isArray(item.props.combobox)) {
+            item.props.combobox.forEach((option) => {
+              if (option.limitdis) {
+                item.props.trueValue = option.limitval;
+              } else {
+                item.props.falseValue = option.limitval;
+              }
+            });
           }
           item.props.disabled = checkIsReadonly;
-          return current.valuedata || current.defval || '';
+          return current.valuedata || current.defval || item.props.falseValue;
         }
 
         if (current.type === 'OBJ_SELECT' || current.display === 'select') {
@@ -1575,6 +1571,12 @@
             item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
+            // eslint-disable-next-line no-case-declarations
+            const selft = this;
+            // eslint-disable-next-line no-case-declarations
+            const mrpcurrentThat = current;
+            item.props.isShowPopTip = () => selft.getLinkData(mrpcurrentThat)[0];
+
             break;
           case 'pop':
             if (!item.props.disabled) {
