@@ -659,7 +659,7 @@
         // 向父组件抛出整个数据对象以及当前修改的字段
         const setLabel = this.getLable(current);
 
-        this.$emit('formDataChange', obj, valueItem, current, setLabel);
+        this.$emit('formDataChange', obj, valueItem, current, setLabel, this);
         //  change 值 走后台接口赋值
         if (current.item.field) {
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
@@ -881,7 +881,7 @@
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
           item.required = item.oldProps._required;
         }        
-        this.VerificationFormInt();
+        // this.VerificationFormInt();
         return true;
       },
       filtercolumn(item, formindex, val) {
@@ -915,7 +915,8 @@
             return false;
           }
           if (this.newFormItemLists[formindex] && checkout === -1) {
-            this.newFormItemLists[formindex].item.value = -1;
+            this.newFormItemLists[formindex].item.value = '';
+            // this.VerificationFormInt();
           }
           // input.innerText = '';
         }
@@ -968,7 +969,7 @@
                 this.dataProcessing(this.newFormItemLists[index], index);
               }
 
-              this.VerificationFormInt();
+              // this.VerificationFormInt();
               // this.VerificationForm = this.VerificationMap();
               // this.VerificationFormInt();
             }
