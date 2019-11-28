@@ -1,37 +1,37 @@
 <template>
-    <div class="commonTable">
-        <Table
-                :columns="columns"
-                class="table"
-                ref="table"
-                :height="true"
-                :data="tableData"
-                :row-class-name="rowClassName"
-                :total-data="tableTotalData"
-                @on-selection-change="tableSelectionChange"
-                @on-row-dblclick="tableRowDbclick"
-                @on-row-click="tableRowClick"
-                @on-sort-change="tableSortChange"
-                @on-select-all="tableSelectionChange"
-        />
-        <Spin
-                v-show="spinShow"
-                fix
-        >
-            <Icon
-                    type="ios-loading"
-                    size="48"
-                    class="demo-spin-icon-load"
-            />
-            <div>Loading</div>
-        </Spin>
-    </div>
+  <div class="commonTable">
+    <Table
+      ref="table"
+      :columns="columns"
+      class="table"
+      :height="true"
+      :data="tableData"
+      :row-class-name="rowClassName"
+      :total-data="tableTotalData"
+      @on-selection-change="tableSelectionChange"
+      @on-row-dblclick="tableRowDbclick"
+      @on-row-click="tableRowClick"
+      @on-sort-change="tableSortChange"
+      @on-select-all="tableSelectionChange"
+    />
+    <Spin
+      v-show="spinShow"
+      fix
+    >
+      <Icon
+        type="ios-loading"
+        size="48"
+        class="demo-spin-icon-load"
+      />
+      <div>Loading</div>
+    </Spin>
+  </div>
 </template>
 
 <script>
   /* eslint-disable no-lonely-if */
 
-  import {mapMutations} from 'vuex';
+  import { mapMutations } from 'vuex';
 
   export default {
     data() {
@@ -308,87 +308,83 @@
         return cssStr;
       }, // 行样式
       customerUrlRender() {
-        return (h, params) => {
-          return h('span', {
-            style: {
-              color: '#0f8ee9',
-              'text-decoration': 'underline',
-              cursor: 'pointer'
-            },
-            on: {
-              click: () => {
-                const objdistype = params.column.customerurl.objdistype;
-                if (objdistype === 'popwin') {
-                  // 自定义弹窗
-                  this.$emit('CustomizedDialog', params);
-                } else if (objdistype === 'tabpanle') {
-                  // 左右结构单对象界面
-                  const type = 'tableDetailHorizontal';
-                  const tab = {
-                    type,
-                    tableName: params.column.customerurl.reftablename,
-                    tableId: params.column.customerurl.reftableid,
-                    label: params.column.customerurl.reftabdesc,
-                    id: params.row[params.column.customerurl.refobjid]
-                  };
-                  this.tabOpen(tab);
-                } else if (objdistype === 'object') {
-                  // 上下结构单对象界面
-                  const type = 'tableDetailVertical';
-                  const tab = {
-                    type,
-                    tableName: params.column.customerurl.reftablename,
-                    tableId: params.column.customerurl.reftableid,
-                    label: params.column.customerurl.reftabdesc,
-                    id: params.row[params.column.customerurl.refobjid]
-                  };
-                  this.tabOpen(tab);
-                } else if (objdistype === 'customized') {
-                  // 自定义界面
-                  const type = 'tableDetailAction';
-                  const tab = {
-                    type,
-                    label: params.column.customerurl.reftabdesc,
-                    customizedModuleName: params.column.customerurl.tableurl,
-                    customizedModuleId: params.column.customerurl.reftableid
-                  };
-                  this.tabOpen(tab);
-                }
+        return (h, params) => h('span', {
+          style: {
+            color: '#0f8ee9',
+            'text-decoration': 'underline',
+            cursor: 'pointer'
+          },
+          on: {
+            click: () => {
+              const objdistype = params.column.customerurl.objdistype;
+              if (objdistype === 'popwin') {
+                // 自定义弹窗
+                this.$emit('CustomizedDialog', params);
+              } else if (objdistype === 'tabpanle') {
+                // 左右结构单对象界面
+                const type = 'tableDetailHorizontal';
+                const tab = {
+                  type,
+                  tableName: params.column.customerurl.reftablename,
+                  tableId: params.column.customerurl.reftableid,
+                  label: params.column.customerurl.reftabdesc,
+                  id: params.row[params.column.customerurl.refobjid]
+                };
+                this.tabOpen(tab);
+              } else if (objdistype === 'object') {
+                // 上下结构单对象界面
+                const type = 'tableDetailVertical';
+                const tab = {
+                  type,
+                  tableName: params.column.customerurl.reftablename,
+                  tableId: params.column.customerurl.reftableid,
+                  label: params.column.customerurl.reftabdesc,
+                  id: params.row[params.column.customerurl.refobjid]
+                };
+                this.tabOpen(tab);
+              } else if (objdistype === 'customized') {
+                // 自定义界面
+                const type = 'tableDetailAction';
+                const tab = {
+                  type,
+                  label: params.column.customerurl.reftabdesc,
+                  customizedModuleName: params.column.customerurl.tableurl,
+                  customizedModuleId: params.column.customerurl.reftableid
+                };
+                this.tabOpen(tab);
               }
-            },
-          }, params.row[params.column.colname]);
-        };
+            }
+          },
+        }, params.row[params.column.colname]);
       }, // 外键连接定制界面
       tooltipRenderHeader() {
-        return (h, params) => {
-          return h('span', [
-            h('Poptip', {
-              style: {},
-              props: {
-                trigger: 'hover',
-                transfer: true,
-                wordWrap: true,
-                content: 'content',
-                placement: 'top'
+        return (h, params) => h('span', [
+          h('Poptip', {
+            style: {},
+            props: {
+              trigger: 'hover',
+              transfer: true,
+              wordWrap: true,
+              content: 'content',
+              placement: 'top'
 
-              },
-              scopedSlots: {
-                default: () => h('div', {
-                  style: {},
-                  domProps: {
-                    innerHTML: `<i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i> <span>${params.column.name}</span>`
-                  }
-                }),
-                content: () => h('div', {
-                  style: {},
-                  domProps: {
-                    innerHTML: `<span>${params.column.comment}</span>`
-                  }
-                }),
-              },
-            })
-          ]);
-        };
+            },
+            scopedSlots: {
+              default: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<i class="iconfont comment iconios-information-circle-outline" style="color: orangered"></i> <span>${params.column.name}</span>`
+                }
+              }),
+              content: () => h('div', {
+                style: {},
+                domProps: {
+                  innerHTML: `<span>${params.column.comment}</span>`
+                }
+              }),
+            },
+          })
+        ]);
       }, // 表头提示的render
       fkIconRender(cellData) {
         // 外键关联到icon
@@ -556,7 +552,7 @@
       }, // 普通表格双击事件
       tableSortChange(val) {
         const self = this;
-        const arrayOfSortInfo = [{colId: val.key, sort: val.order}];
+        const arrayOfSortInfo = [{ colId: val.key, sort: val.order }];
         if (typeof self.onSortChanged === 'function') {
           self.onSortChanged(arrayOfSortInfo);
         }

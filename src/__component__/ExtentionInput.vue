@@ -156,7 +156,18 @@
             if (currentTableName === 'AD_COLUMN') {
               supportTypeMap = extentionForColumn().reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
             } else if (currentTableName === 'AD_TABLE') {
-              supportTypeMap = extentionForTable().reduce((a, c) => { a[c.key] = c.supportType || 'ALL'; return a; }, {});
+              supportTypeMap = extentionForTable().reduce((a, c) => {
+                if (c.key !== '__root__') {
+                  a[c.key] = c.supportType || 'ALL';
+                } else if (c.key === '__root__') {
+                  if (c.type === 'input-group') {
+                    c.inputLists.forEach((d) => {
+                      a[d.key] = d.supportType || 'ALL';
+                    });
+                  }
+                }
+                return a;
+              }, {});
             }
             const unMappedKey = [];
             if (copyData) {

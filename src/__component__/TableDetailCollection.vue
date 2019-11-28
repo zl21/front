@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -2557,12 +2557,12 @@
                   id: data.refobjid
                 });
               } else {
-                const data = {
+                const datas = {
                   mask: true,
                   title: '警告',
                   content: '请设置外键关联表的显示配置'
                 };
-                this.$Modal.fcWarning(data);
+                this.$Modal.fcWarning(datas);
               }
               // event.stopPropagation();
             }

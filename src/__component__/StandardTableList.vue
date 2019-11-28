@@ -449,6 +449,7 @@
               content: '请设置外键关联表的显示配置'
             };
             this.$Modal.fcWarning(data);
+            return;
           }
           this.tabHref({
             id: refobjid,

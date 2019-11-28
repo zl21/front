@@ -463,7 +463,7 @@
       routerNext(value) {
         // 路由跳转
         const props = this._items.props;
-        const type = 'tableDetailVertical';
+        const type = props.objdisplay;
         // console.log(this._items.props);
         const tableName = props.reftable;
         const tableId = props.reftableid;
@@ -492,8 +492,23 @@
         } else {
           id = props.refobjid;
         }
+        // xhj修改，改为根据接口返回的objdisplay类型跳转
+        let types = '';
+        if (type === 'tabpanle') { // 上下结构
+          types = 'tableDetailHorizontal';
+        } else if (type === 'object') {
+          types = 'tableDetailVertical';
+        } else {
+          const data = {
+            mask: true,
+            title: '警告',
+            content: '请设置外键关联表的显示配置'
+          };
+          this.$Modal.fcWarning(data);
+          return;
+        }
         this.tabOpen({
-          type,
+          type: types,
           tableName,
           tableId,
           id,
