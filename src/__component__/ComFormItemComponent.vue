@@ -288,6 +288,7 @@
         oldformData: {}, // 老的change
         setHeight: 34,
         timerSet: '',
+        timerWatch: '', // 监听change 触发
         actived: false
       };
     },
@@ -337,10 +338,12 @@
           if (!this.actived) {
             return;
           }
-          const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
-          val = Object.assign(allValue, this.formValueItem);
-         
-          this.computFormLinkage(val, old);
+          clearTimeout(this.timerWatch);
+          this.timerWatch = setTimeout(() => {
+            const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+            val = Object.assign(allValue, this.formValueItem);
+            this.computFormLinkage(val, old);
+          }, 100);
         },
         deep: true
       },
@@ -862,9 +865,9 @@
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
-          if (item.props.webconf.setAttributes.props.value === '') {
-            item.value = '';
-          }
+          // if (item.props.webconf.setAttributes.props.value === '') {
+          //   item.value = '';
+          // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
           if (item.props.webconf.setAttributes.props.required) {

@@ -746,6 +746,7 @@
               Fitem[index].item.props.totalRowCount = 0;
               let searchObject = {};
               const check = this.getLinkData(current);
+
               if (check[1]) {
                 const query = current.refcolval.expre === 'equal' ? `=${check[1]}` : '';
                 searchObject = {
@@ -1575,6 +1576,12 @@
             item.props.enterType = true;
             item.props.AutoData = [];
             item.props.defaultSelected = this.defaultValue(current);
+            // eslint-disable-next-line no-case-declarations
+            const selft = this;
+            // eslint-disable-next-line no-case-declarations
+            const mrpcurrentThat = current;
+            item.props.isShowPopTip = () => selft.getLinkData(mrpcurrentThat)[0];
+
             break;
           case 'pop':
             if (!item.props.disabled) {
