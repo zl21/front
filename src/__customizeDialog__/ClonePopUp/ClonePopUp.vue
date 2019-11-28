@@ -173,6 +173,7 @@
           .then((res) => {
             // this.$loading.hide();
             if (res.data.code !== 0) {
+              this.$loading.hide();
               return;
             }
             const data = {
@@ -180,6 +181,7 @@
               title: '成功',
               content: '克隆成功'
             };
+            this.$loading.hide();
             this.$Modal.fcSuccess(data);
             this.$emit('closeActionDialog', true); // 关闭弹框
           });

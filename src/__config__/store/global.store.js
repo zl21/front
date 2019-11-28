@@ -26,6 +26,10 @@ export default {
       Navigator: true, // 隐藏菜单栏
     },
     LinkUrl: [],
+    exportTask: {
+      dialog: false,
+      successMsg: false
+    }, // 导出状态
 
     
   },

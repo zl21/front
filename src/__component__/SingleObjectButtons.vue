@@ -84,7 +84,7 @@
 
 <script>
 
-  import { mapMutations, mapState } from 'vuex';
+  import { mapMutations, mapState, mapActions } from 'vuex';
   import buttonmap from '../assets/js/buttonmap';
   import ButtonGroup from './ButtonComponent';
   import router from '../__config__/router.config';
@@ -272,6 +272,7 @@
         modifyData: ({ modifyData }) => modifyData,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
+        exportTasks: ({ exportTasks }) => exportTasks
       }),
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
@@ -430,6 +431,7 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
+      ...mapActions('global', ['getExportedState']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
@@ -1234,13 +1236,53 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
-            const eleLink = document.createElement('a');
-            const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
-            eleLink.setAttribute('href', path);
-            eleLink.style.display = 'none';
-            document.body.appendChild(eleLink);
-            eleLink.click();
-            document.body.removeChild(eleLink);
+            if (Version === '1.4') {
+              const eleLink = document.createElement('a');
+              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+              eleLink.setAttribute('href', path);
+              eleLink.style.display = 'none';
+              document.body.appendChild(eleLink);
+              eleLink.click();
+              document.body.removeChild(eleLink);
+            } else {
+              this.$loading.show();
+              const promises = new Promise((resolve, reject) => {
+                this.getExportedState({
+                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
+                });
+              });
+              promises.then(() => {
+                this.$loading.hide();
+                if (this.exportTasks.dialog) {
+                  const message = {
+                    mask: true,
+                    title: '提醒',
+                    content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                    showCancel: true,
+                    onOk: () => {
+                      const type = 'tableDetailVertical';
+                      const tab = {
+                        type,
+                        tableName: 'CP_C_TASK',
+                        tableId: '24386',
+                        id: this.buttons.exportdata
+                      };
+                      this.tabOpen(tab);
+                    }
+                  };
+                  this.$Modal.fcWarning(message);
+                }
+                if (this.exportTasks.successMsg) {
+                  const contents = {
+                    mask: true,
+                    title: '成功',
+                    content: this.exportTasks.resultMsg
+                  };
+                  this.$Message.success(contents);
+                }
+              });
+            }
+           
             this.clearItemTableSearchValue();// 清除子表搜索框值
             if (this.objectType === 'horizontal') { // 横向布局
               let page = {};
