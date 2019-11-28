@@ -69,7 +69,9 @@
         />
       </Badge>
     </div>
-    <div :class="searchBtn ? 'tag right' :'tag tag-search right' ">
+    <div
+      :class="searchBtn ? 'tag right' :'tag tag-search right' "
+    >
       <template v-if="searchBtn === false">
         <AutoComplete
           ref="AutoComplete"
@@ -78,7 +80,6 @@
           icon="ios-search"
           placeholder="请输入要查询的功能名"
           @on-click="searchBtn = true"
-          @click="setBtn"
           @on-keydown="enter"
           @on-change="searchData"
         >
@@ -94,17 +95,23 @@
         </AutoComplete>
       </template>
       
-      
-      <i
+      <span
         v-if="searchBtn === true"
-        class="iconfont iconbj_search"
+        class="buttonIcon"
         @click="searchBtn = false"
-      />
+      >
+        <i
+          class="iconfont iconbj_search"
+        />
+      </span>
     </div>
-    <div class="tag right">
+    <div
+      v-if="versionValue"
+      class="tag right"
+      @click.prevent="messageSlide"
+    >
       <i
         class="iconfont iconbj_message"
-        @click.prevent="messageSlide"
       />
     </div>
     <Drawer
@@ -119,10 +126,12 @@
         @nextPage="nextPage"
       />
     </Drawer>
-    <div class="tag right">
+    <div
+      class="tag right"
+      @click="show = true"
+    >
       <i
         class="iconfont iconmd-person"
-        @click="show = true"
       />
     </div>
     <Drawer
@@ -159,7 +168,7 @@
   import { routeTo } from '../__config__/event.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
-  import { STANDARD_TABLE_LIST_PREFIX } from '../constants/global';
+  import { STANDARD_TABLE_LIST_PREFIX, Version } from '../constants/global';
 
   export default {
     name: 'Navigator',
@@ -216,6 +225,12 @@
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
       }),
+      versionValue() {
+        if (Version() === '1.4') {
+          return false;
+        }
+        return true;
+      }
       
     },
     watch: {
@@ -466,7 +481,11 @@
      .middle::-webkit-scrollbar {
         display: none;
     }
-    
+   .buttonIcon{
+     width:100%;
+     height:100%;
+     display: inline-block;
+   } 
     .nav-search {
       input {
         display: inline-block;

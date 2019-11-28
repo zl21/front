@@ -14,6 +14,9 @@ import customize from '../../customize.config';
 import { getSeesionObject } from '../../../__utils__/sessionStorage';
 
 export default {
+  updateExportedState(state, exportTask) {
+    state.exportTasks = exportTask;
+  },
   changeNavigatorSetting(state, data) {
     state.navigatorSetting = data;
   },
