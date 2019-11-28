@@ -329,7 +329,7 @@
       },
       formDataObject: {
         handler(val, old) {
-          // 页面的联动关系及计算逻辑的处理
+          // 页面的联动关系及计算逻辑的处理;
           this.oldformData = old;
           if (this.indexItem === -1) {
             return;
