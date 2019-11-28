@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -131,7 +131,7 @@
   /* eslint-disable vue/no-reserved-keys,vue/no-dupe-keys,consistent-return,array-callback-return,no-else-return */
   import Vue from 'vue';
 
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapMutations, mapActions } from 'vuex';
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
@@ -312,6 +312,7 @@
         // menuLists: ({ menuLists }) => menuLists
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         activeTab: ({ activeTab }) => activeTab,
+        exportTasks: ({ exportTasks }) => exportTasks
 
       }),
       objList() { // 返回克隆表定制弹框所需数据
@@ -514,6 +515,8 @@
       this.ChineseDictionary = ChineseDictionary;
     },
     methods: {
+      ...mapActions('global', ['getExportedState']),
+
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       getEditAbleId(data) {
         this.columnEditElementId = {};
@@ -3276,16 +3279,55 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
-            this.searchCondition = null;
-            this.searchInfo = '';
-            this.currentPage = 1;
-            const eleLink = document.createElement('a');
-            const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
-            eleLink.setAttribute('href', path);
-            eleLink.style.display = 'none';
-            document.body.appendChild(eleLink);
-            eleLink.click();
-            document.body.removeChild(eleLink);
+            if (Version() === '1.4') {
+              this.searchCondition = null;
+              this.searchInfo = '';
+              this.currentPage = 1;
+              const eleLink = document.createElement('a');
+              const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
+              eleLink.setAttribute('href', path);
+              eleLink.style.display = 'none';
+              document.body.appendChild(eleLink);
+              eleLink.click();
+              document.body.removeChild(eleLink);
+            } else {
+              this.$loading.show();
+              const promises = new Promise((resolve, reject) => {
+                this.getExportedState({
+                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
+                });
+              });
+              promises.then(() => {
+                this.$loading.hide();
+                if (this.exportTasks.dialog) {
+                  const message = {
+                    mask: true,
+                    title: '提醒',
+                    content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                    showCancel: true,
+                    onOk: () => {
+                      const type = 'tableDetailVertical';
+                      const tab = {
+                        type,
+                        tableName: 'CP_C_TASK',
+                        tableId: '24386',
+                        id: this.buttons.exportdata
+                      };
+                      this.tabOpen(tab);
+                    }
+                  };
+                  this.$Modal.fcWarning(message);
+                }
+                if (this.exportTasks.successMsg) {
+                  const contents = {
+                    mask: true,
+                    title: '成功',
+                    content: this.exportTasks.resultMsg
+                  };
+                  this.$Message.success(contents);
+                }
+              });
+            }
             this.getTabelList(1);
           }
         });

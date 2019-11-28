@@ -135,15 +135,12 @@
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.newHint = '请输入新密码';
-          return false;
-        }
-        if (this.newpaswd.length > 5) {
+        } else if (this.newpaswd.length > 5) {
           if (!/[A-Za-z]/.test(this.newpaswd) || !/[0-9]/.test(this.newpaswd)) {
             this.newHint = '密码必须由6位以上数字、字母组成';
             this.errorpawdgrade1 = 'red';
             this.inconformity2 = true;
             this.pawdgrade1 = true;
-            return false;
           }
           this.errorpawdgrade1 = '#818181';
           this.newHint = '密码必须由6位以上数字、字母组成';
@@ -152,7 +149,6 @@
           this.errorpawdgrade1 = 'red';
           this.inconformity2 = true;
           this.pawdgrade1 = true;
-          return false;
         }
       },
       focus(e, num) { // 聚焦清除提示
@@ -211,6 +207,7 @@
             this.$emit('closeActionDialog', true);
           }
         });
+        return true;
       }
     }
   };

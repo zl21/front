@@ -158,7 +158,9 @@
         activeTab: ({ activeTab }) => activeTab,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
-        LinkUrl: ({ LinkUrl }) => LinkUrl
+        LinkUrl: ({ LinkUrl }) => LinkUrl,
+        exportTasks: ({ exportTasks }) => exportTasks
+
 
       }),
       formLists() {
@@ -203,7 +205,7 @@
       },
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory']),
+      ...mapActions('global', ['updateAccessHistory', 'getExportedState']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
@@ -1569,13 +1571,52 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            const eleLink = document.createElement('a');
-            const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
-            eleLink.setAttribute('href', path);
-            eleLink.style.display = 'none';
-            document.body.appendChild(eleLink);
-            eleLink.click();
-            document.body.removeChild(eleLink);
+            if (Version === '1.4') {
+              const eleLink = document.createElement('a');
+              const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
+              eleLink.setAttribute('href', path);
+              eleLink.style.display = 'none';
+              document.body.appendChild(eleLink);
+              eleLink.click();
+              document.body.removeChild(eleLink);
+            } else {
+              this.$loading.show();
+              const promises = new Promise((resolve, reject) => {
+                this.getExportedState({
+                  objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
+                });
+              });
+              promises.then(() => {
+                this.$loading.hide();
+                if (this.exportTasks.dialog) {
+                  const message = {
+                    mask: true,
+                    title: '提醒',
+                    content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                    showCancel: true,
+                    onOk: () => {
+                      const type = 'tableDetailVertical';
+                      const tab = {
+                        type,
+                        tableName: 'CP_C_TASK',
+                        tableId: '24386',
+                        id: this.buttons.exportdata
+                      };
+                      this.tabOpen(tab);
+                    }
+                  };
+                  this.$Modal.fcWarning(message);
+                }
+                if (this.exportTasks.successMsg) {
+                  const contents = {
+                    mask: true,
+                    title: '成功',
+                    content: this.exportTasks.resultMsg
+                  };
+                  this.$Message.success(contents);
+                }
+              });
+            }
           }
         });
       },
