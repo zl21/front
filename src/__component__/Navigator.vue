@@ -264,7 +264,7 @@
           }, 300);
         }
       },
-      searchList(val) {
+      searchList() {
         this.$refs.AutoComplete.$el.querySelector('input').click();
       }
     },
@@ -378,28 +378,22 @@
         }
       },
       routeTonext(data) {
-        const param = {
-          url: data.url,
-          isMenu: false
-
-        };
-        this.directionalRouter(param);
-        // const type = data.type;
-        // let tabid = 0;
-        // if (type === 'table') {
-        //   tabid = data.tabid;
-        // } else {
-        //   tabid = data.actid;
+        const {
+          name, url, type, tabid, actid
+        } = data;
+        let tableId = '';
+        if (type === 'table') {
+          tableId = tabid;
+        } else {
+          tableId = actid;
+        }
+        routeTo({ type, info: { tableName: name, tableId, url } }, () => {
+          this.keyWord = '';
+          setTimeout(() => {
+            this.searchList = [];
+          }, 100);
+        });
         // }
-        // routeTo(
-        //   { type, info: { tableName: data.name, tableId: tabid } },
-        //   () => {
-        //     this.keyWord = '';
-        //     setTimeout(() => {
-        //       this.searchList = [];
-        //     }, 100);
-        //   }
-        // );
       },
       searchData(value) {
         this.searchList = [];

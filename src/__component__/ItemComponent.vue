@@ -358,6 +358,7 @@
     components: {
       EnumerableInput, ExtentionInput, ComAttachFilter, Docfile
     },
+    inject: [MODULE_COMPONENT_NAME],
     props: {
       labelWidth: {
         type: Number,
@@ -1508,7 +1509,7 @@
     // console.log(this.type,this.formIndex);
     },
     mounted() {
-      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+      window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
         if (e.value.type === 'equal') {
           // 表单赋值
           e.value.list.forEach((item) => {
@@ -1600,7 +1601,7 @@
         }
       });
 
-      window.addEventListener(`${MODULE_COMPONENT_NAME}setLinkForm`, (e) => {
+      window.addEventListener(`${this.moduleComponentName}setLinkForm`, (e) => {
         // 设置表单联动清空
         if (Object.hasOwnProperty.call(this._items.validate, 'refcolval')) {
           if (this._items.validate.refcolval.srccol === e.value.key) {
