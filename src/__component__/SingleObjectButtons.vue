@@ -432,7 +432,8 @@
     },
     inject: [MODULE_COMPONENT_NAME],
     methods: {
-      ...mapActions('global', ['getExportedState']),
+      ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
+
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (id) {
@@ -445,6 +446,7 @@
             this.$loading.hide();
             this.closeActionDialog();
             if (this.exportTasks.dialog) {
+              this.updataTaskMessageCount(id);
               const message = {
                 mask: true,
                 title: '提醒',
@@ -1295,6 +1297,7 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
+                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',

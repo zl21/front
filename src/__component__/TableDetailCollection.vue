@@ -516,8 +516,7 @@
       this.ChineseDictionary = ChineseDictionary;
     },
     methods: {
-      ...mapActions('global', ['getExportedState']),
-
+      ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
       imporSuccess(id) {
         if (id) {
@@ -530,6 +529,7 @@
             this.$loading.hide();
             this.closeImportDialog();
             if (this.exportTasks.dialog) {
+              this.updataTaskMessageCount(id);
               const message = {
                 mask: true,
                 title: '提醒',
@@ -3341,6 +3341,7 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
+                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',
