@@ -269,7 +269,7 @@
       }
     },
     methods: {
-      ...mapActions('global', ['getTaskMessageCount']),
+      ...mapActions('global', ['getTaskMessageCount', 'updataTaskMessageCount']),
       ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
@@ -345,6 +345,7 @@
 
       markReadNote(item) { // 我的任务单条跳转单对象界面
         this.messagePanel.show = false;
+        this.updataTaskMessageCount(item.ID.val);
         const type = 'tableDetailVertical';
         const tab = {
           type,

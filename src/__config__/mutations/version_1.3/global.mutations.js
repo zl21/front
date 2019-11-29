@@ -15,6 +15,9 @@ import { getSeesionObject, updateSessionObject } from '../../../__utils__/sessio
 
 
 export default {
+  updateIgnoreMsg(state) {
+    state.taskMessageCount -= 1;
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
