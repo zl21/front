@@ -1,3 +1,4 @@
+
 const updateSessionObject = (target, { k, v }) => {
   const data = JSON.parse(window.sessionStorage.getItem(target)) || {};
   data[k] = v;

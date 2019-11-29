@@ -11,9 +11,52 @@ import {
 } from '../../../constants/global';
 import router from '../../router.config';
 import customize from '../../customize.config';
-import { getSeesionObject } from '../../../__utils__/sessionStorage';
+import { getSeesionObject, updateSessionObject } from '../../../__utils__/sessionStorage';
+
 
 export default {
+  directionalRouter(state, param) {
+    // id:勾选ID，
+    // url:配置url,
+    // isMenu,
+    // lablel:名称
+    const actionType = param.url.substring(0, param.url.indexOf('/'));
+    const singleEditType = param.url.substring(param.url.lastIndexOf('/') + 1, param.url.length);
+    if (actionType === 'SYSTEM') {
+      if (singleEditType === ':itemId') {
+        const path = `/${param.url.replace(/:itemId/, param.id)}`;
+        router.push(
+          path
+        );
+      } else {
+        const path = `/${param.url}`;
+        router.push(
+          path
+        );
+      }
+    } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+      const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
+      const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      router.push({
+        path
+      });
+      if (param.isMenu) {
+        const obj = {
+          customizedModuleName,
+          id: param.id
+        };
+        window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+        Object.keys(customize).forEach((customizeName) => {
+          const nameToUpperCase = customizeName.toUpperCase();
+          if (nameToUpperCase === customizedModuleName) {
+            const labelName = customize[customizeName].labelName;
+            const name = `C.${customizedModuleName}.${param.id}`;
+            state.keepAliveLabelMaps[name] = `${labelName}`;
+          }
+        });
+      }
+    }
+  },
   updateTaskMessageCount(state, updateTaskMessageCount) { // 更新我的任务数量
     state.taskMessageCount = updateTaskMessageCount;
   },
@@ -238,17 +281,42 @@ export default {
     });
   }, // 关闭当前tab
   tabHref(state, {// 当前tab更换路由
-    back, type, tableName, tableId, id
+    back, type, tableName, tableId, id, label, gateWay
   }) {
+    // back:返回标志, 
+    // type:跳转类型,
+    // tableName:主表表名,
+    // tableId:主表ID,
+    // id:明细ID,
+    // label:显示名称, 
+    // gateWay:网关
+    
+    const keepAliveModuleName = `S.${tableName}.${tableId}`;
+    if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
+      state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
+      state.serviceIdMap[tableName] = `${gateWay}`;
+      const keepAliveLabelMapsObj = {
+        k: keepAliveModuleName,
+        v: label
+      };
+     
+      updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+    }
+    if (state.serviceIdMap[tableName] === undefined) {
+      const serviceIdMapObj = {
+        k: tableName,
+        v: gateWay
+      };
+      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    }
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-
+     
       router.push({ path });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-
       router.push({ path });
     }
     if (back) {
@@ -262,26 +330,52 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url
+    linkId, url, label, gateWay
   }) {
-    let path = '';
+    // back:返回标志, 
+    // type:跳转类型,
+    // tableName:主表表名,
+    // tableId:主表ID,
+    // id:明细ID,
+    // label:显示名称, 
+    // gateWay:网关
+    
+    const keepAliveModuleName = `S.${tableName}.${tableId}`;
+    if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
+      state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
+      state.serviceIdMap[tableName] = `${gateWay}`;
+      const keepAliveLabelMapsObj = {
+        k: keepAliveModuleName,
+        v: label
+      };
+     
+      updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+    }
+    if (state.serviceIdMap[tableName] === undefined) {
+      const serviceIdMapObj = {
+        k: tableName,
+        v: gateWay
+      };
+      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    }
+    let paths = '';
     if (type === STANDARD_TABLE_LIST_PREFIX) {
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      paths = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
     } else if (type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      paths = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
     } else if (type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      paths = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
     } else if (type === 'tableDetailAction') {
       if (url) {
-        path = `${url.toUpperCase()}`;
+        paths = `${url.toUpperCase()}`;
       } else {
-        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+        paths = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
     } else if (type === 'tableDetailUrl') {
-      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+      paths = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
     }
     router.push({
-      path
+      paths
     });
   },
   updataUserInfoMessage(state, { userInfo }) {

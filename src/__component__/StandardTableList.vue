@@ -206,7 +206,7 @@
     },
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState']),
-      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -247,123 +247,92 @@
       },
       onRowDoubleClick(colDef, row) {
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
+          let type = '';
           if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
-            const actionType = tableurl.substring(0, tableurl.indexOf('/'));
-            const singleEditType = tableurl.substring(tableurl.lastIndexOf('/') + 1, tableurl.length);
-            if (actionType === 'SYSTEM') {
-              if (singleEditType === ':itemId') {
-                const path = `/${tableurl.replace(/:itemId/, id)}`;
-                router.push(
-                  path
-                );
-              } else {
-                const path = `/${tableurl}`;
-                router.push(
-                  path
-                );
-              }
-            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              const url = row._OBJURL.val;
-              const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
-              const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-              router.push({
-                path
-              });
-              const obj = {
-                customizedModuleName,
-                id
-              };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-              Object.keys(customize).forEach((customizeName) => {
-                const nameToUpperCase = customizeName.toUpperCase();
-                if (nameToUpperCase === customizedModuleName) {
-                  const labelName = customize[customizeName].labelName;
-                  const name = `C.${customizedModuleName}.${id}`;
-                  this.addKeepAliveLabelMaps({ name, label: labelName });
-                  // this.addServiceIdMap({ name, label: labelName });
-                }
-              });
-            }
-          } else if (row._OBJTYPE.val === 'tabpanle') {
-            // 单对象左右结构
-            const type = 'tableDetailHorizontal';
-            const tab = {
-              type,
-              tableName: row._TABLENAME.val,
-              tableId: row._TABLEID.val,
-              id: row._OBJID.val
+            const param = {
+              url: tableurl,
+              id,
+              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
+              isMenu: true
             };
-            this.tabHref(tab);
-          } else if (row._OBJTYPE.val === 'object') {
+            this.directionalRouter(param);// 定向路由跳转方法
+            return;
+          } if (row._OBJTYPE.val === 'object') {
             // 单对象上下结构
-            const type = 'tableDetailVertical';
-            const tab = {
-              type,
-              tableName: row._TABLENAME.val,
-              tableId: row._TABLEID.val,
-              id: row._OBJID.val
+            type = 'tableDetailVertical';
+          } else if (row._OBJTYPE.val === 'tabpanle') { // 左右结构
+            type = 'tableDetailHorizontal';
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置外键关联表的显示配置'
             };
-            this.tabHref(tab);
+            this.$Modal.fcWarning(data);
+            return;
           }
+          this.tabHref({
+            type,
+            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
+            tableName: row._TABLENAME.val,
+            tableId: row._TABLEID.val,
+            id: row._OBJID.val,
+            gateWay: row.OWNERID ? row.OWNERID.serviceId : null
+          });
         } else {
           const { tableName, tableId } = this.$route.params;
           const id = row.ID.val;
-          const label = `${this.activeTab.label}编辑`;
           if (this.ag.tableurl) {
-            const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
-            const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
-            if (actionType === 'SYSTEM') {
-              if (singleEditType === ':itemId') {
-                const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
-                router.push(
-                  path
-                );
-              } else {
-                const path = `/${this.ag.tableurl}`;
-                router.push(
-                  path
-                );
-              }
-            } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-              // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
-              // this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-              // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-              // const obj = {
-              //   customizedName: name,
-              //   customizedLabel: tab.webdesc
-              // };
-              // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
-              // router.push(
-              //   path
-              // );
-              const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
-              let path = '';
-              if (singleEditType === ':itemId') {
-                path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-              } else {
-                path = `/${this.ag.tableurl}`;
-              }
-              router.push({
-                path
-              });
-              const obj = {
-                customizedModuleName,
-                id
-              };
-              window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-              Object.keys(customize).forEach((customizeName) => {
-                const nameToUpperCase = customizeName.toUpperCase();
-                if (nameToUpperCase === customizedModuleName) {
-                  const labelName = customize[customizeName].labelName;
-                  const name = `C.${customizedModuleName}.${id}`;
-                  this.addKeepAliveLabelMaps({ name, label: labelName });
-                  // this.addServiceIdMap({ name, label: labelName });
-                }
-              });
-            }
+            // const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
+            // const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
+            // if (actionType === 'SYSTEM') {
+            //   if (singleEditType === ':itemId') {
+            //     const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
+            //     router.push(
+            //       path
+            //     );
+            //   } else {
+            //     const path = `/${this.ag.tableurl}`;
+            //     router.push(
+            //       path
+            //     );
+            //   }
+            // } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+            //   const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
+            //   let path = '';
+            //   if (singleEditType === ':itemId') {
+            //     path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
+            //   } else {
+            //     path = `/${this.ag.tableurl}`;
+            //   }
+            //   router.push({
+            //     path
+            //   });
+            //   const obj = {
+            //     customizedModuleName,
+            //     id
+            //   };
+            //   window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
+            //   Object.keys(customize).forEach((customizeName) => {
+            //     const nameToUpperCase = customizeName.toUpperCase();
+            //     if (nameToUpperCase === customizedModuleName) {
+            //       const labelName = customize[customizeName].labelName;
+            //       const name = `C.${customizedModuleName}.${id}`;
+            //       this.addKeepAliveLabelMaps({ name, label: labelName });
+            //     }
+            //   });
+            // }
+
+
+            const param = {
+              url: this.ag.tableurl,
+              id,
+              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
+              isMenu: true
+            };
+            this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
             const type = 'tableDetailHorizontal';
@@ -371,7 +340,6 @@
               type,
               tableName,
               tableId,
-              label,
               id
             };
             this.tabHref(tab);
@@ -382,7 +350,6 @@
               type,
               tableName,
               tableId,
-              label,
               id
             };
             this.tabHref(tab);

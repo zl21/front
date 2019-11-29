@@ -242,7 +242,7 @@
     },
     watch: {
       taskMessageCounts(val) {
-        if (val) {
+        if (val && Version() === '1.3') {
           this.getTaskMessageCount(val);
         }
       },
@@ -270,7 +270,7 @@
     },
     methods: {
       ...mapActions('global', ['getTaskMessageCount']),
-      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen']),
+      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen', 'directionalRouter']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
@@ -371,28 +371,35 @@
             index = 0;
           }  
           const routerItem = this.searchList[index];
+   
           if (routerItem) {
             this.routeTonext(routerItem);
           }
         }
       },
       routeTonext(data) {
-        const type = data.type;
-        let tabid = 0;
-        if (type === 'table') {
-          tabid = data.tabid;
-        } else {
-          tabid = data.actid;
-        }
-        routeTo(
-          { type, info: { tableName: data.name, tableId: tabid } },
-          () => {
-            this.keyWord = '';
-            setTimeout(() => {
-              this.searchList = [];
-            }, 100);
-          }
-        );
+        const param = {
+          url: data.url,
+          isMenu: false
+
+        };
+        this.directionalRouter(param);
+        // const type = data.type;
+        // let tabid = 0;
+        // if (type === 'table') {
+        //   tabid = data.tabid;
+        // } else {
+        //   tabid = data.actid;
+        // }
+        // routeTo(
+        //   { type, info: { tableName: data.name, tableId: tabid } },
+        //   () => {
+        //     this.keyWord = '';
+        //     setTimeout(() => {
+        //       this.searchList = [];
+        //     }, 100);
+        //   }
+        // );
       },
       searchData(value) {
         this.searchList = [];
@@ -445,10 +452,11 @@
     },
     mounted() {
       this.loadEnterpriseConfig();
-      this.getMessageCount();
-      this.messageTimer = setInterval(() => {
-        this.getMessageCount();
-      }, 30000);
+      if (Version() === '1.3') {
+        this.messageTimer = setInterval(() => {
+          this.getMessageCount();
+        }, 30000);
+      }
     },
     beforeDestroy() {
       clearInterval(this.messageTimer);
