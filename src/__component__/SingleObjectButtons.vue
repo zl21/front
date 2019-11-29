@@ -2533,6 +2533,7 @@
           }
         });
       }
+      
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
         this.buttonsReorganization(this.tabcmd);
       }
