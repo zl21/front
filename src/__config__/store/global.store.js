@@ -30,6 +30,7 @@ export default {
       dialog: false,
       successMsg: false
     }, // 导出状态
+    taskMessageCount: 0, // 我的任务数量
 
     
   },

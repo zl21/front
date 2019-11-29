@@ -14,7 +14,10 @@ import customize from '../../customize.config';
 import { getSeesionObject } from '../../../__utils__/sessionStorage';
 
 export default {
-  updateExportedState(state, exportTask) {
+  updateTaskMessageCount(state, updateTaskMessageCount) { // 更新我的任务数量
+    state.taskMessageCount = updateTaskMessageCount;
+  },
+  updateExportedState(state, exportTask) { // 更新导出状态
     state.exportTasks = exportTask;
   },
   changeNavigatorSetting(state, data) {
