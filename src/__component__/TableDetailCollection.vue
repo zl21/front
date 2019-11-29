@@ -109,6 +109,7 @@
       :main-id="pageItemId"
       @confirmImport="importsuccess"
       @closeDialog="closeImportDialog"
+      @imporSuccess="imporSuccess"
     />
     <!-- 自定义弹出框 -->
     <Dialog
@@ -518,6 +519,46 @@
       ...mapActions('global', ['getExportedState']),
 
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      imporSuccess(id) {
+        if (id) {
+          const promises = new Promise((resolve, reject) => {
+            this.getExportedState({
+              objid: id, id, resolve, reject 
+            });
+          });
+          promises.then(() => {
+            this.$loading.hide();
+            this.closeImportDialog();
+            if (this.exportTasks.dialog) {
+              const message = {
+                mask: true,
+                title: '提醒',
+                content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                showCancel: true,
+                onOk: () => {
+                  const type = 'tableDetailVertical';
+                  const tab = {
+                    type,
+                    tableName: 'CP_C_TASK',
+                    tableId: '24386',
+                    id
+                  };
+                  this.tabOpen(tab);
+                }
+              };
+              this.$Modal.fcWarning(message);
+            }
+            if (this.exportTasks.successMsg) {
+              const contents = {
+                mask: true,
+                title: '成功',
+                content: this.exportTasks.resultMsg
+              };
+              this.$Message.success(contents);
+            }
+          });
+        }
+      },
       getEditAbleId(data) {
         this.columnEditElementId = {};
         this.editElementId = [];

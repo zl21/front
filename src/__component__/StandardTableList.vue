@@ -60,6 +60,7 @@
       :main-id="buttons.tableId"
       @confirmImport="searchClickData"
       @closeDialog="closeDialog"
+      @imporSuccess="imporSuccess"
     />
     <ErrorModal
       ref="dialogRefs"
@@ -207,6 +208,46 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      imporSuccess(id) {
+        if (id) {
+          const promises = new Promise((resolve, reject) => {
+            this.getExportedState({
+              objid: id, id, resolve, reject 
+            });
+          });
+          promises.then(() => {
+            this.setImportDialogTitle(false);
+            this.$loading.hide();
+            if (this.exportTasks.dialog) {
+              const message = {
+                mask: true,
+                title: '提醒',
+                content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                showCancel: true,
+                onOk: () => {
+                  const type = 'tableDetailVertical';
+                  const tab = {
+                    type,
+                    tableName: 'CP_C_TASK',
+                    tableId: '24386',
+                    id
+                  };
+                  this.tabOpen(tab);
+                }
+              };
+              this.$Modal.fcWarning(message);
+            }
+            if (this.exportTasks.successMsg) {
+              const contents = {
+                mask: true,
+                title: '成功',
+                content: this.exportTasks.resultMsg
+              };
+              this.$Message.success(contents);
+            }
+          });
+        }
+      },
       commonTableCustomizedDialog(params) {
         this.$refs.dialogRef.open();
         this.dialogComponentNameConfig.title = params.column.customerurl.reftabdesc;
@@ -1475,7 +1516,7 @@
 
         if (obj.name === this.buttonMap.CMD_IMPORT.name) {
           // 导入
-          this.setImportDialogTitle();
+          this.setImportDialogTitle(true);
           // this.importGetUploadParametersForButtons(); // 调用导入参数接口
           return;
         }

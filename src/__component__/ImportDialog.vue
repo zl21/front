@@ -131,6 +131,7 @@
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import network, { urlSearchParams, getGateway } from '../__utils__/network';
   import Upload from '../__utils__/upload';
+  import { Version } from '../constants/global';
 
   export default {
     name: 'ImportDialog',
@@ -306,6 +307,7 @@
         this.loading = true;
         // 上传文件
         const fileInformationUploaded = this.files;
+        this.$loading.show();
         const url = `${getGateway('/p/cs/import')}`;
         const updataValue = this.singleValue ? 'Y' : 'N';
         const sendData = {
@@ -337,13 +339,19 @@
       handleSuccess(response) {
         this.loading = false;
         if (response.code === 0) {
-          this.closeDialog();
-          this.fileName = '';
-          this.$Modal.fcSuccess({
-            title: '成功',
-            mask: true,
-            content: response.message
-          });
+          if (Version() === '1.4') {
+            this.$loading.hide();
+
+            this.closeDialog();
+            this.fileName = '';
+            this.$Modal.fcSuccess({
+              title: '成功',
+              mask: true,
+              content: response.message
+            });
+          } else {
+            this.$emit('imporSuccess', response.data);
+          }
         } else {
           if (response.data.path === 'undefined ===') {
             this.errorMsg.errorUrl = '';
