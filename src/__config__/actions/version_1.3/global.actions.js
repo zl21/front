@@ -32,7 +32,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 2;// 循环的次数
+      const times = 4;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};
@@ -134,6 +134,15 @@ export default {
       }, 1000);
     }
   },
+  updataTaskMessageCount({ commit }, id) { // 更新我的任务数量
+    network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
+      const datas = res.data;
+      if (datas.code === 0) { 
+        commit('updateIgnoreMsg');
+      }
+    });
+  },
+   
   getTaskMessageCount({ commit }, userId) { // 获取我的任务数量
     network.post('/p/c/getMsgCnt', urlSearchParams({ userId })).then((res) => {
       if (res.data.code === 0) {

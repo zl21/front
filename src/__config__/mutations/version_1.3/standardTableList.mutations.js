@@ -100,8 +100,8 @@ export default {
     buttons.selectIdArr = rowIdArray;
     buttons.selectArr = rowArray;
   },
-  setImportDialogTitle({ buttons }) { // 导出操作
-    buttons.importData.importDialog = true;
+  setImportDialogTitle({ buttons }, value) { // 导出操作
+    buttons.importData.importDialog = value;
     buttons.importData.importDialogTitle = this.state.global.activeTab.label;
   },
   closeImportDialog({ buttons }) { // 导出操作
