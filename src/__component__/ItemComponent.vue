@@ -678,7 +678,7 @@
 
       // fkrpSelected event
       fkrpSelected(value, $this) {
-        if (!value[0].ID || value[0].ID === '-1') {
+        if (value[0] && (!value[0].ID || value[0].ID === '-1')) {
           value.splice(0, 1);
         }
         this._items.value = value;

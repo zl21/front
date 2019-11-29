@@ -860,10 +860,10 @@
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
-          item.oldProps = JSON.parse(JSON.stringify(item.props));
-          // if(){
-
-          // }
+          item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr,i) => {
+            arr[i] = props[i] || false;
+            return arr;
+          },{});
           item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
@@ -883,7 +883,7 @@
 
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
-          this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
+          this.newFormItemLists[formindex].item.props = Object.assign(props, item.oldProps);
           item.required = item.oldProps._required;
         }        
         // this.VerificationFormInt();
