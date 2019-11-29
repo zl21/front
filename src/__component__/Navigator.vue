@@ -110,9 +110,11 @@
       class="tag right"
       @click.prevent="messageSlide"
     >
-      <i
-        class="iconfont iconbj_message"
-      />
+      <Badge :count="taskMessageCount">
+        <i
+          class="iconfont iconbj_message badge"  
+        />
+      </Badge>
     </div>
     <Drawer
       v-model="messagePanel.show"
@@ -156,7 +158,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapMutations, mapActions } from 'vuex';
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
@@ -213,7 +215,8 @@
           },
         }, // 弹框配置信息
         dialogComponentName: null,
-        togglePrimaryMenuData: []
+        togglePrimaryMenuData: [],
+        messageTimer: null
       };
     },
     computed: {
@@ -224,16 +227,25 @@
         showModule: ({ showModule }) => showModule,
         userInfo: ({ userInfo }) => userInfo,
         primaryMenuIndex: state => state.primaryMenuIndex,
+        taskMessageCount: state => state.taskMessageCount,
       }),
       versionValue() {
         if (Version() === '1.4') {
           return false;
         }
         return true;
+      },
+      taskMessageCounts() {
+        return this.userInfo.id;
       }
       
     },
     watch: {
+      taskMessageCounts(val) {
+        if (val) {
+          this.getTaskMessageCount(val);
+        }
+      },
       showModule(val) {
         if (!val.Navigator) {
           if (this.$el) {
@@ -257,7 +269,8 @@
       }
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen']),
+      ...mapActions('global', ['getTaskMessageCount']),
+      ...mapMutations('global', ['updateTaskMessageCount', 'doCollapseHistoryAndFavorite', 'changeSelectedPrimaryMenu', 'hideMenu', 'tabOpen']),
       togglePrimaryMenu(data, index) {
         this.togglePrimaryMenuData = data;
         if (index === this.primaryMenuIndex) {
@@ -279,6 +292,7 @@
       ignoreMsg() { // 我的任务忽略功能
         network.post('/p/cs/ignoreAllMsg').then((res) => {
           if (res.data.code === 0) {
+            this.updateTaskMessageCount(0);
             this.getMessages(0);
           }
         });
@@ -422,10 +436,23 @@
         this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
         this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
       },
+      getMessageCount() {
+        if (!this.userInfo.id) {
+          return;
+        }
+        this.getTaskMessageCount(this.userInfo.id);
+      }
     },
     mounted() {
       this.loadEnterpriseConfig();
+      this.getMessageCount();
+      this.messageTimer = setInterval(() => {
+        this.getMessageCount();
+      }, 30000);
     },
+    beforeDestroy() {
+      clearInterval(this.messageTimer);
+    }
   };
 </script>
 
@@ -445,7 +472,18 @@
     height: 100%;
     display: flex;
     background-color: #1f272c;
-    
+     a{
+          color:white
+        }
+      .badge{
+        width: 42px;
+        height: 42px;
+        // background: #eee;
+        border-radius: 6px;
+        display: inline-block;
+       
+       
+    }
     .left {
       img.trigger {
         height: 50px;
