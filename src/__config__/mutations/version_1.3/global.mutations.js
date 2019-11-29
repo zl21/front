@@ -339,7 +339,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // gateWay:网关
-    
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -358,24 +357,24 @@ export default {
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
-    let paths = '';
+    let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX) {
-      paths = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
     } else if (type === 'tableDetailHorizontal') {
-      paths = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
     } else if (type === 'tableDetailVertical') {
-      paths = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
     } else if (type === 'tableDetailAction') {
       if (url) {
-        paths = `${url.toUpperCase()}`;
+        path = `${url.toUpperCase()}`;
       } else {
-        paths = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${customizedModuleId}`;
       }
     } else if (type === 'tableDetailUrl') {
-      paths = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
+      path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
     }
     router.push({
-      paths
+      path
     });
   },
   updataUserInfoMessage(state, { userInfo }) {
