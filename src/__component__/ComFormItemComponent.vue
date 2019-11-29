@@ -32,6 +32,7 @@
   import layoutAlgorithm from '../__utils__/layoutAlgorithm';
   import { Version, interlocks, MODULE_COMPONENT_NAME } from '../constants/global';
 
+
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
 
@@ -295,7 +296,7 @@
     mounted() {
       this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
-      window.addEventListener(`${MODULE_COMPONENT_NAME}setProps`, (e) => {
+      window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
         if (e.value.type === 'change') {
           const checkItem = this.newFormItemLists.some((item) => {
             const index = e.value.current.findIndex(x => x === item.item.field);
@@ -331,6 +332,7 @@
         handler(val, old) {
           // 页面的联动关系及计算逻辑的处理;
           this.oldformData = old;
+
           if (this.indexItem === -1) {
             return;
           }
@@ -382,7 +384,6 @@
             }
           }
 
-
           //  扩展属性 来源字段
           if (item.props.webconf && item.props.webconf.targetField) {
             item.props.supportType = val[item.props.webconf.targetField];
@@ -417,6 +418,8 @@
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
             if (checkVal !== checkShow) {
+              console.log(item.title);
+
               this.hidecolumn(item, i, val);
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
@@ -665,7 +668,7 @@
           if (this.setAttsetProps && this.setAttsetProps[current.item.field]) {
             clearTimeout(this.timerSet);
             this.timerSet = setTimeout(() => {
-              window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
+              window.eventType(`${this.moduleComponentName}setProps`, window, { current: this.setAttsetProps[current.item.field], type: 'change' });
             }, 100);
           }
         }
@@ -772,7 +775,7 @@
           success: (res) => {
             const tableName = this.isMainTable ? '' : this.childTableName;
 
-            window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, {
+            window.eventType(`${this.moduleComponentName}setProps`, window, {
               type: 'equal', key, list: res, tableName 
             });
           }
@@ -854,16 +857,18 @@
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
-
+        const props = JSON.parse(JSON.stringify(item.props));
+        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
           item.oldProps = JSON.parse(JSON.stringify(item.props));
+          // if(){
+
+          // }
           item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
         }
-        const props = JSON.parse(JSON.stringify(item.props));
-        const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
@@ -876,7 +881,7 @@
             item.required = false;
           }
 
-          window.eventType(`${MODULE_COMPONENT_NAME}setProps`, window, item);
+          window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(item.oldProps, {});
           item.required = item.oldProps._required;
