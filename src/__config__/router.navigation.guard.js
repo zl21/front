@@ -259,7 +259,7 @@ export default (router) => {
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
     const isNotFromSameTable = to.params.tableName !== from.params.tableName;
     if (isFromStandardTable && isTableDetail && isNotFromSameTable) {
-      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: getKeepAliveModuleName(from) });
+      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
     }
   });
 };
