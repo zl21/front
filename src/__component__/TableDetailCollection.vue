@@ -26,7 +26,7 @@
               :key="item.name"
               @click="buttonClick(item)"
             >
-              【{{ item.name }}】
+              【{{ item.eName }}】
             </a>
           </ul>
           <Dialog
@@ -403,7 +403,6 @@
           }
         }
 
-
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
@@ -427,7 +426,7 @@
                 newData.name = newData.webdesc;
                 delete (newData.webdesc);
               }
-              newData.eName = newData.vuedisplay;
+              newData.eName = newData.vuedisplay?newData.vuedisplay:newData.eName;
               newData[key] = item[key];
               return newData;
             }, {});
@@ -517,7 +516,7 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps','updateExportedState']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       imporSuccess(id) {
         if (id) {
           this.updateExportedState({});
@@ -991,6 +990,7 @@
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
+            mask: true,
             title: '警告',
             content: '请先选择需要删除的记录！'
           };
