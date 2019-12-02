@@ -238,14 +238,22 @@
               this.$Modal.fcWarning(message);
             }
             if (this.exportTasks.successMsg) {
-              const contents = {
+              const data = {
                 mask: true,
                 title: '成功',
-                content: this.exportTasks.resultMsg
+                content: `${this.exportTasks.resultMsg}`
               };
-              this.$Message.fcSuccess(contents);
+              this.$Modal.fcSuccess(data);
             }
           }, () => {
+            if (this.exportTasks.warningMsg) {
+              const data = {
+                mask: true,
+                title: '错误',
+                content: `${this.exportTasks.resultMsg}`
+              };
+              this.$Modal.fcError(data);
+            }
             this.$loading.hide();
           });
         }
@@ -1625,6 +1633,16 @@
                   };
                   this.$Message.success(contents);
                 }
+              }, () => {
+                if (this.exportTasks.warningMsg) {
+                  const data = {
+                    mask: true,
+                    title: '错误',
+                    content: `${this.exportTasks.resultMsg}`
+                  };
+                  this.$Modal.fcError(data);
+                }
+                this.$loading.hide();
               });
             }
           }
