@@ -1626,12 +1626,12 @@
                   this.$Modal.fcWarning(message);
                 }
                 if (this.exportTasks.successMsg) {
-                  const contents = {
+                  const data = {
                     mask: true,
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.success(contents);
+                  this.$Message.fcSuccess(data);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
