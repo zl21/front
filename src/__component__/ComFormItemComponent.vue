@@ -474,7 +474,7 @@
               this.verificationMap(this.formIndex, index, item, type);
             }
           });
-        }, 10);
+        }, 50);
       },
       verificationMap(formIndex, index, items, type) {
         // 获取校验的配置及节点
