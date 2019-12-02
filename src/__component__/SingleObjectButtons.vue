@@ -74,7 +74,7 @@
       :title="importData.importDialogTitle"
       :tablename="itemName"
       :main-table="tableName"
-      :main-id="tableId"
+      :main-id="itemId"
       @confirmImport="importsuccess"
       @closeDialog="closeActionDialog"
       @imporSuccess="imporSuccess"
@@ -471,17 +471,18 @@
                 title: '成功',
                 content: this.exportTasks.resultMsg
               };
-              this.$Message.fcSuccess(data);
+              this.$Modal.fcSuccess(data);
             }
           }, () => {
-            if (this.exportTasks.warningMsg) {
-              const data = {
-                mask: true,
-                title: '错误',
-                content: `${this.exportTasks.resultMsg}`
-              };
-              this.$Modal.fcError(data);
-            }
+            // if (this.exportTasks.warningMsg) {
+            //   const data = {
+            //     mask: true,
+            //     title: '错误',
+            //     content: `${this.exportTasks.resultMsg}`
+            //   };
+            //   this.$Modal.fcError(data);
+            // }
+            this.closeActionDialog();
             this.$loading.hide();
           });
         }
@@ -1307,7 +1308,6 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
-                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',
@@ -1319,9 +1319,10 @@
                         type,
                         tableName: 'CP_C_TASK',
                         tableId: '24386',
-                        id: this.buttons.exportdata
+                        id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
+                      this.updataTaskMessageCount(this.buttonsData.exportdata);
                     }
                   };
                   this.$Modal.fcWarning(message);
@@ -1332,7 +1333,7 @@
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.fcSuccess(data);
+                  this.$Modal.fcSuccess(data);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
@@ -1341,7 +1342,7 @@
                     title: '错误',
                     content: `${this.exportTasks.resultMsg}`
                   };
-                  this.$Modal.fcError(data);
+                  this.$Modal.error(data);
                 }
                 this.$loading.hide();
               });

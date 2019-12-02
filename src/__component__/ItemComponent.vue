@@ -708,12 +708,13 @@
       },
       fkrpSelectedClear($this) {
         this._items.value = undefined;
+        this._items.props.defaultSelected = [];
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
           && typeof this._items.event.clear === 'function'
         ) {
-          this._items.event.clear($this);
+          this._items.event.clear($this, this._items);
         }
         if (
           Object.prototype.hasOwnProperty.call(
@@ -1583,8 +1584,29 @@
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
           this._items.required = e.value.required;
-          this._items.props = e.value.props;
+
+          console.log(e.value.props, this._items.props.defaultSelected, e.value.props.name);
+          // this._items.props = Object.assign(this._items.props, e.value.props);
+          this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
+          // if (this._items.props.fkdisplay === 'drp' 
+          //   || this._items.props.fkdisplay === 'mrp'
+          // ) {
+          //   console.log(e.value.value, this._items.props.name, '');
+
+          //   if (this._items.value === undefined) {
+          //     this._items.props.defaultSelected = [];
+          //   }
+          // }
+          // if (this._items.props.fkdisplay === 'mop' 
+          //   || this._items.props.fkdisplay === 'pop'
+          // ) {
+          //   if (this._items.value === undefined) {
+          //     this._items.props.Selected = [];
+          //   } else {
+          //     this._items.value = e.value.value;
+          //   }
+          // }
         
           // if (e.value.value === '') {
           //   this.clearItem();

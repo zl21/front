@@ -422,6 +422,7 @@
       setChangeValue(data) {
         // 修改联动值
         // this.getStateData();
+
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
@@ -429,7 +430,7 @@
         const LinkageFormItem = LinkageForm[key];
         if (LinkageFormItem) {
           // 通知清空
-          window.eventType(`${MODULE_COMPONENT_NAME}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
         }
         // let documentkey = '';
 
@@ -449,7 +450,7 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data, setdefval, current, label, $this) {
+      formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
           if (typeof data[current.item.field] === 'string') { 
@@ -474,9 +475,11 @@
         }
         // 必填校验
         clearTimeout(this.setVerifyMessageTime);
-        this.setVerifyMessageTime = setTimeout(() => {
+        this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
-        }, 400);
+        }, 100);
+
+
         // 修改联动的值
         this.setChangeValue(data, current);
         if (Array.isArray(data)) {
@@ -525,7 +528,9 @@
         this.setChangeTime = setTimeout(() => {
           this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
           this.getStateData();
-        }, 100);
+        }, 50);
+
+        
         // 注释
       },
       VerifyMessageForm(value, type) {
@@ -534,21 +539,34 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
+
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const data = this.setVerifiy();
+          // 
+          const formData = Object.assign(this.defaultFormData, this.formData);
+          this.VerificationForm.forEach((item) => {
+            Object.keys(formData).forEach((option) => {
+              if (item.key === option.split(':')[0]) {
+                item.value = formData[option];
+              }
+            });
+          });
+          
+          const data = this.setVerifiy();     
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
           this.$emit('VerifyMessage', data);
-        }, 200);
+        }, 10);
       },
       setVerifyMessageForm() {
         //  校验赋值
         Object.keys(this.$refs).forEach((item) => {
           if (this.$refs[item] && this.$refs[item][0]) {
-            this.$refs[item][0].VerificationFormInt();
+            this.$refs[item][0].VerificationFormInt('change');
+          } else if (this.$refs[item]) {
+            this.$refs[item].VerificationFormInt('change');
           }
         });
       },
@@ -666,8 +684,32 @@
                 this.searchClickData();
               }
             },
-            clear: () => {
+            clear: ($this, item) => {
               this.getStateData(); // 获取主表信息
+              // let Fitem = [];
+              // if (current.formIndex !== 'inpubobj') {
+              //   Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
+              //     .newFormItemLists;
+              // } else {
+              //   Fitem = this.$refs.FormComponent_0.newFormItemLists;
+              // }
+              // if (item) {
+              //   Fitem[index].item.props.defaultSelected = item.props.defaultSelected;
+              //   Fitem[index].item.value = undefined;
+              // }
+
+              // if (
+              //   items.props.fkdisplay === 'drp'
+              //   || items.props.fkdisplay === 'mrp'
+              // ) {
+              //   this.newFormItemLists[index].props.defaultSelected = items.props.defaultSelected;
+              // }
+              // if (
+              //   items.props.fkdisplay === 'mop'
+              //   || items.props.fkdisplay === 'pop'
+              // ) {
+              //   this.newFormItemLists[index].props.Selected = items.props.Selected;
+              // }
             },
             change: (value) => {
               if (current.fkdisplay) {
@@ -1819,11 +1861,16 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
-          if (Array.isArray(item.value) && item.value[0]) {
-            if (item.value[0].ID === '' || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+          if (Array.isArray(item.value) && item.fkdisplay) {
+            if (item.value[0]) {
+              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+                item.value = '';
+              }
+            } else if (item.value[0] === undefined || item.value[0] === '') {
               item.value = '';
             }
           }
+
           if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);

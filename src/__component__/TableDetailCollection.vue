@@ -517,9 +517,10 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps','updateExportedState']),
       imporSuccess(id) {
         if (id) {
+          this.updateExportedState({});
           const promises = new Promise((resolve, reject) => {
             this.getExportedState({
               objid: id, id, resolve, reject 
@@ -554,18 +555,19 @@
                 title: '成功',
                 content: this.exportTasks.resultMsg
               };
-              this.$Message.fcSuccess(data);
+              this.$Message.success(data);
             }
           }, () => {
-            if (this.exportTasks.warningMsg) {
-              const data = {
-                mask: true,
-                title: '错误',
-                content: `${this.exportTasks.resultMsg}`
-              };
-              this.$Modal.fcError(data);
-            }
+            // if (this.exportTasks.warningMsg) {
+            //   const data = {
+            //     mask: true,
+            //     title: '错误',
+            //     content: `${this.exportTasks.resultMsg}`
+            //   };
+            //   this.$Modal.error(data);
+            // }
             this.$loading.hide();
+            this.closeImportDialog();
           });
         }
       },
@@ -3342,6 +3344,7 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else {
+              this.updateExportedState({});
               this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
@@ -3363,7 +3366,7 @@
                         type,
                         tableName: 'CP_C_TASK',
                         tableId: '24386',
-                        id: this.buttons.exportdata
+                        id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
                     }
@@ -3377,6 +3380,7 @@
                     content: this.exportTasks.resultMsg
                   };
                   this.$Message.success(contents);
+                  // this.$Message.fcSuccess(contents);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
@@ -3385,7 +3389,7 @@
                     title: '错误',
                     content: `${this.exportTasks.resultMsg}`
                   };
-                  this.$Modal.fcError(data);
+                  this.$Modal.error(data);
                 }
                 this.$loading.hide();
               });
