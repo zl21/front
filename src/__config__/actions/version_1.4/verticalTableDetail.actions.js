@@ -64,8 +64,11 @@ export default {
           // 获取子表按钮
           // && !stopItemRequest
           if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口    // 子表配置自定义tab时阻止子表接口请求
-            if (resData.reftabs[0].refcolid !== -1) {
-              debugger;
+            let webactType = '';
+            if (resData.reftabs[0].webact) { // 自定义tab全定制，tab切换时不需要请求
+              webactType = resData.reftabs[0].webact.substring(0, resData.reftabs[0].webact.lastIndexOf('/')).toUpperCase();
+            }
+            if (resData.reftabs[0].refcolid !== -1 && webactType !== 'ALL') { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
               // commit('updateActiveRefFormInfo', resData.reftabs[0]);
               // 获取第一个tab的子表表单
               

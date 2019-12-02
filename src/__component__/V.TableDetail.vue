@@ -124,15 +124,10 @@
 
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-
-      // if (this.tabPanel[0].webact) { // 自定义tab全定制，tab切换时不需要请求
-      //   webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
-      // }
-      // if (webactType !== 'ALL') {
-          
-      // }
+      
+     
       this.getObjectTabForMainTable({
-        table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex, stopItemRequest: true 
+        table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
       });
     },
     methods: {
