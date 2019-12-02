@@ -466,6 +466,7 @@
       },
       VerificationFormInt(type) {
         //  form 计算 校验
+        console.log(type, 'type===');
         clearTimeout(this.setVerficaTime);
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];
@@ -900,7 +901,7 @@
           item.required = item.oldProps._required;
         } 
         if (type === 'mounted') {
-          this.VerificationFormInt();
+          this.VerificationFormInt('mounted');
         }   
         return true;
       },
@@ -937,7 +938,7 @@
           if (this.newFormItemLists[formindex] && checkout === -1) {
             this.newFormItemLists[formindex].item.value = '';
             if (type === 'mounted') {
-              this.VerificationFormInt();
+              this.VerificationFormInt('mounted');
             }   
           }
           // input.innerText = '';
@@ -991,7 +992,7 @@
                 this.dataProcessing(this.newFormItemLists[index], index);
               }
               if (type === 'mounted') {
-                this.VerificationFormInt();
+                this.VerificationFormInt('mounted');
               }  
             }
           }

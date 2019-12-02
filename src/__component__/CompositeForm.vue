@@ -533,7 +533,7 @@
         
         // 注释
       },
-      VerifyMessageForm(value, type, changeType) {
+      VerifyMessageForm(value, type) {
         // 获取需要校验的表单
         // 初始化form 校验
         this.mountChecked = true;
@@ -544,17 +544,15 @@
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
           // 
-          if (changeType === 'change') {
-            this.VerificationForm.forEach((item) => {
-              Object.keys(this.formData).forEach((option) => {
-                if (item.key === option.split(':')[0]) {
-                  item.value = this.formData[option];
-                }
-              });
+          const formData = Object.assign(this.defaultFormData, this.formData);
+          this.VerificationForm.forEach((item) => {
+            Object.keys(formData).forEach((option) => {
+              if (item.key === option.split(':')[0]) {
+                item.value = formData[option];
+              }
             });
-          }
+          });
           
-
           const data = this.setVerifiy();     
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
@@ -1863,15 +1861,16 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
-          if (Array.isArray(item.value)) {
+          if (Array.isArray(item.value) && item.fkdisplay) {
             if (item.value[0]) {
-              if (item.value[0].ID === '' || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
                 item.value = '';
               }
             } else if (item.value[0] === undefined || item.value[0] === '') {
               item.value = '';
             }
           }
+
           if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
