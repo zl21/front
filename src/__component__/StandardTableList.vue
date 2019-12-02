@@ -1633,7 +1633,7 @@
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.fcSuccess(data);
+                  this.$Modal.fcSuccess(data);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {

@@ -554,7 +554,7 @@
                 title: '成功',
                 content: this.exportTasks.resultMsg
               };
-              this.$Message.fcSuccess(data);
+              this.$Message.success(data);
             }
           }, () => {
             // if (this.exportTasks.warningMsg) {
@@ -3377,7 +3377,8 @@
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.fcSuccess(contents);
+                  this.$Message.success(contents);
+                  // this.$Message.fcSuccess(contents);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
