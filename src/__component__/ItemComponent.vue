@@ -708,12 +708,13 @@
       },
       fkrpSelectedClear($this) {
         this._items.value = undefined;
+        this._items.props.defaultSelected = [];
         this.valueChange();
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
           && typeof this._items.event.clear === 'function'
         ) {
-          this._items.event.clear($this);
+          this._items.event.clear($this, this._items);
         }
         if (
           Object.prototype.hasOwnProperty.call(
@@ -1584,7 +1585,28 @@
           // 表单修改属性
           this._items.required = e.value.required;
           this._items.props = e.value.props;
+          
           this._items.props.readonly = e.value.props.disabled;
+          if (this._items.props.fkdisplay === 'drp' 
+            || this._items.props.fkdisplay === 'mrp'
+          ) {
+            console.log(e.value.value, this._items.props.name, '');
+
+            if (this._items.value === undefined) {
+              this._items.props.defaultSelected = [];
+            } else if (e.value.value[0]) {
+              this._items.value = e.value.value;
+            }
+          }
+          if (this._items.props.fkdisplay === 'mop' 
+            || this._items.props.fkdisplay === 'pop'
+          ) {
+            if (this._items.value === undefined) {
+              this._items.props.Selected = [];
+            } else {
+              this._items.value = e.value.value;
+            }
+          }
         
           // if (e.value.value === '') {
           //   this.clearItem();

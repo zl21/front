@@ -376,12 +376,12 @@
           const item = items.item;
           // 筛选字段
           if (item.props.webconf && item.props.webconf.filtercolval) {
-            this.filtercolumn(item, i, val);
+            this.filtercolumn(item, i, val, old);
           }
           // 设置属性
           if (item.props.webconf && item.props.webconf.setAttributes) {
             if (!this.setObjreadonly) {
-              this.setAttributes(item, i, val);
+              this.setAttributes(item, i, val, old);
             }
           }
 
@@ -401,7 +401,7 @@
               val[item.validate.dynamicforcompute.computecolumn]
               === old[item.validate.dynamicforcompute.computecolumn]
             ) {
-              this.dynamicforcompute(item, val, i);
+              this.dynamicforcompute(item, val, i, old);
             } else {
               // this.formDataChange();
             }
@@ -419,7 +419,7 @@
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
             if (checkVal !== checkShow) {
-              this.hidecolumn(item, i, val);
+              this.hidecolumn(item, i, val, old);
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
             // 来源字段
@@ -445,8 +445,8 @@
       formInit() {
         const val = this.getStateData();
         setTimeout(() => {
-          this.computFormLinkage(val);
-        }, 100);
+          this.computFormLinkage(val, 'mounted');
+        }, 50);
       }, 
       mountdataFormInt() {
         this.actived = false;
@@ -808,7 +808,7 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;
+        this.newFormItemLists[index].item.value = value;    
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
@@ -845,7 +845,7 @@
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
-      setAttributes(item, formindex, val) {
+      setAttributes(item, formindex, val, type) {
         //  设置属性
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
@@ -898,11 +898,13 @@
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.oldProps);
           item.required = item.oldProps._required;
-        }    
-        // this.VerificationFormInt();
+        } 
+        if (type === 'mounted') {
+          this.VerificationFormInt();
+        }   
         return true;
       },
-      filtercolumn(item, formindex, val) {
+      filtercolumn(item, formindex, val, type) {
         // 过滤筛选
         const filterValue = val[item.props.webconf.filtercolval.col];
         if (!filterValue) {
@@ -934,13 +936,15 @@
           }
           if (this.newFormItemLists[formindex] && checkout === -1) {
             this.newFormItemLists[formindex].item.value = '';
-            // this.VerificationFormInt();
+            if (type === 'mounted') {
+              this.VerificationFormInt();
+            }   
           }
           // input.innerText = '';
         }
         return true;
       },
-      hidecolumn(items, index, json) {
+      hidecolumn(items, index, json, type) {
         // 隐藏
         const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
 
@@ -986,7 +990,9 @@
                 this.newFormItemLists[index].item.props.defaultSelected = [];
                 this.dataProcessing(this.newFormItemLists[index], index);
               }
-              // this.VerificationFormInt();
+              if (type === 'mounted') {
+                this.VerificationFormInt();
+              }  
             }
           }
           return option;

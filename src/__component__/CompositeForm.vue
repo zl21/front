@@ -477,7 +477,7 @@
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
-        }, 50);
+        }, 100);
 
 
         // 修改联动的值
@@ -686,8 +686,32 @@
                 this.searchClickData();
               }
             },
-            clear: () => {
+            clear: ($this, item) => {
               this.getStateData(); // 获取主表信息
+              // let Fitem = [];
+              // if (current.formIndex !== 'inpubobj') {
+              //   Fitem = this.$refs[`FormComponent_${current.formIndex}`][0]
+              //     .newFormItemLists;
+              // } else {
+              //   Fitem = this.$refs.FormComponent_0.newFormItemLists;
+              // }
+              // if (item) {
+              //   Fitem[index].item.props.defaultSelected = item.props.defaultSelected;
+              //   Fitem[index].item.value = undefined;
+              // }
+
+              // if (
+              //   items.props.fkdisplay === 'drp'
+              //   || items.props.fkdisplay === 'mrp'
+              // ) {
+              //   this.newFormItemLists[index].props.defaultSelected = items.props.defaultSelected;
+              // }
+              // if (
+              //   items.props.fkdisplay === 'mop'
+              //   || items.props.fkdisplay === 'pop'
+              // ) {
+              //   this.newFormItemLists[index].props.Selected = items.props.Selected;
+              // }
             },
             change: (value) => {
               if (current.fkdisplay) {
