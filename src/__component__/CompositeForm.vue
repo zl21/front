@@ -557,6 +557,7 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
+          // console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
         }, 10);
       },
@@ -1869,6 +1870,13 @@
             } else if (item.value[0] === undefined || item.value[0] === '') {
               item.value = '';
             }
+          }
+
+          if (Array.isArray(item.value) && item.value[0] === undefined) {
+            item.value = '';
+          }
+          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
+            item.value = '';
           }
 
           if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
