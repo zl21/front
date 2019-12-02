@@ -26,7 +26,7 @@
               :key="item.name"
               @click="buttonClick(item)"
             >
-              【{{ item.eName }}】
+              【{{ item.name }}】
             </a>
           </ul>
           <Dialog
@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -529,7 +529,6 @@
             this.$loading.hide();
             this.closeImportDialog();
             if (this.exportTasks.dialog) {
-              this.updataTaskMessageCount(id);
               const message = {
                 mask: true,
                 title: '提醒',
@@ -544,6 +543,8 @@
                     id
                   };
                   this.tabOpen(tab);
+              this.updataTaskMessageCount(id);
+
                 }
               };
               this.$Modal.fcWarning(message);
@@ -3354,7 +3355,6 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
-                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',
@@ -3369,6 +3369,8 @@
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
+                  this.updataTaskMessageCount(this.buttonsData.exportdata);
+
                     }
                   };
                   this.$Modal.fcWarning(message);
