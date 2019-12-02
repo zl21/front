@@ -517,9 +517,10 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps','updateExportedState']),
       imporSuccess(id) {
         if (id) {
+          this.updateExportedState({});
           const promises = new Promise((resolve, reject) => {
             this.getExportedState({
               objid: id, id, resolve, reject 
@@ -3343,6 +3344,7 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else {
+              this.updateExportedState({});
               this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
@@ -3364,7 +3366,7 @@
                         type,
                         tableName: 'CP_C_TASK',
                         tableId: '24386',
-                        id: this.buttons.exportdata
+                        id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
                     }

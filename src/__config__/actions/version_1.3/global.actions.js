@@ -61,10 +61,11 @@ export default {
                     commit('updateExportedState', exportTask);
                   } else {
                     if (index === times) { // 已轮询4次之后，到我的任务查看
+                      // exportTask.exportedState = true;
                       exportTask.dialog = true;
                       clearInterval(timer);
-                      resolve();
                       commit('updateExportedState', exportTask);
+                        resolve();
                     }
                     exportTask.exportedState = false;
                   }
@@ -145,7 +146,6 @@ export default {
                         } else {
                           errorList.push({ message: exportTask.resultMsg.message });
                         }
-               
                         if (exportTask.resultMsg.data !== undefined && exportTask.resultMsg.data.length > 0) {
                           for (const msg of exportTask.resultMsg.data) {
                             if (msg.hasOwnProperty('rowIndex')) {
@@ -208,7 +208,7 @@ export default {
                               }),
                               h('div', {
                                 domProps: {
-                                  innerHTML: errorList.length > 1 ? errorList[2].message : ''
+                                  innerHTML: errorList.length > 2 ? errorList[2].message : ''
                                 }
                               },)
                             ])

@@ -74,7 +74,7 @@
       :title="importData.importDialogTitle"
       :tablename="itemName"
       :main-table="tableName"
-      :main-id="tableId"
+      :main-id="itemId"
       @confirmImport="importsuccess"
       @closeDialog="closeActionDialog"
       @imporSuccess="imporSuccess"
@@ -1308,7 +1308,6 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
-                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',
@@ -1320,9 +1319,10 @@
                         type,
                         tableName: 'CP_C_TASK',
                         tableId: '24386',
-                        id: this.buttons.exportdata
+                        id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
+                      this.updataTaskMessageCount(this.buttonsData.exportdata);
                     }
                   };
                   this.$Modal.fcWarning(message);
