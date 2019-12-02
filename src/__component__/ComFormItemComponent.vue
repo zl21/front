@@ -464,19 +464,19 @@
           }, 300);
         }, 100);
       },
-      VerificationFormInt() {
+      VerificationFormInt(type) {
         //  form 计算 校验
         clearTimeout(this.setVerficaTime);
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];
           this.newFormItemLists.forEach((item, index) => {
             if (item.item.required && item.show && !item.item.props.disabled) {
-              this.verificationMap(this.formIndex, index, item);
+              this.verificationMap(this.formIndex, index, item, type);
             }
           });
         }, 10);
       },
-      verificationMap(formIndex, index, items) {
+      verificationMap(formIndex, index, items, type) {
         // 获取校验的配置及节点
         const elDiv = this.$refs[`component_${index}`][0]
           && this.$refs[`component_${index}`][0].$el;
@@ -489,7 +489,7 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        let valueData = this.formDataObject[items.item.field];
+        let valueData = this.formDataObject[items.item.field];       
         if (items.item.props.fkdisplay === 'drp' 
           || items.item.props.fkdisplay === 'mrp'
           || items.item.props.fkdisplay === 'mop'
@@ -510,7 +510,7 @@
           onfousInput
         });
         if (this.verifymessageform) {
-          this.verifymessageform(this.VerificationForm, this.formIndex);
+          this.verifymessageform(this.VerificationForm, this.formIndex, type);
         }
         return true;
       },

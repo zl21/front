@@ -422,6 +422,7 @@
       setChangeValue(data) {
         // 修改联动值
         // this.getStateData();
+
         const mappStatus = this.$store.state[this[MODULE_COMPONENT_NAME]].mappStatus || [];
         const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
 
@@ -429,7 +430,7 @@
         const LinkageFormItem = LinkageForm[key];
         if (LinkageFormItem) {
           // 通知清空
-          window.eventType(`${MODULE_COMPONENT_NAME}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}setLinkForm`, window, { key: Object.keys(data)[0], data, tableName: this.tableGetName });
         }
         // let documentkey = '';
 
@@ -449,7 +450,7 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
-      formDataChange(data, setdefval, current, label, $this) {
+      formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
           if (typeof data[current.item.field] === 'string') { 
@@ -474,9 +475,11 @@
         }
         // 必填校验
         clearTimeout(this.setVerifyMessageTime);
-        this.setVerifyMessageTime = setTimeout(() => {
+        this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
-        }, 400);
+        }, 50);
+
+
         // 修改联动的值
         this.setChangeValue(data, current);
         if (Array.isArray(data)) {
@@ -525,30 +528,47 @@
         this.setChangeTime = setTimeout(() => {
           this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
           this.getStateData();
-        }, 100);
+        }, 50);
+
+        
         // 注释
       },
-      VerifyMessageForm(value, type) {
+      VerifyMessageForm(value, type, changeType) {
         // 获取需要校验的表单
         // 初始化form 校验
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
+
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const data = this.setVerifiy();
+          // 
+          if (changeType === 'change') {
+            this.VerificationForm.forEach((item) => {
+              Object.keys(this.formData).forEach((option) => {
+                if (item.key === option.split(':')[0]) {
+                  item.value = this.formData[option];
+                }
+              });
+            });
+          }
+          
+
+          const data = this.setVerifiy();     
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
           this.$emit('VerifyMessage', data);
-        }, 200);
+        }, 10);
       },
       setVerifyMessageForm() {
         //  校验赋值
         Object.keys(this.$refs).forEach((item) => {
           if (this.$refs[item] && this.$refs[item][0]) {
-            this.$refs[item][0].VerificationFormInt();
+            this.$refs[item][0].VerificationFormInt('change');
+          } else if (this.$refs[item]) {
+            this.$refs[item].VerificationFormInt('change');
           }
         });
       },
