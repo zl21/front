@@ -466,7 +466,6 @@
       },
       VerificationFormInt(type) {
         //  form 计算 校验
-        console.log(type, 'type===');
         clearTimeout(this.setVerficaTime);
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];
@@ -507,6 +506,7 @@
           value: valueData,
           key: items.item.field,
           label: items.item.title,
+          defval: items.item.value,
           fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });

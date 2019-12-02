@@ -446,7 +446,6 @@
             this.$loading.hide();
             this.closeActionDialog();
             if (this.exportTasks.dialog) {
-              this.updataTaskMessageCount(id);
               const message = {
                 mask: true,
                 title: '提醒',
@@ -460,6 +459,7 @@
                     tableId: '24386',
                     id
                   };
+                  this.updataTaskMessageCount(id);
                   this.tabOpen(tab);
                 }
               };

@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -403,7 +403,6 @@
           }
         }
 
-
         // 如果子表中objectTab接口返回DisableEXPORT为true则不显示导出按钮
         if (!DisableEXPORT) {
           buttonmap.CMD_EXPORT_LIST.eName = 'actionEXPORT';
@@ -427,7 +426,7 @@
                 newData.name = newData.webdesc;
                 delete (newData.webdesc);
               }
-              newData.eName = newData.vuedisplay;
+              newData.eName = newData.vuedisplay?newData.vuedisplay:newData.eName;
               newData[key] = item[key];
               return newData;
             }, {});
@@ -517,7 +516,7 @@
     },
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps','updateExportedState']),
+      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       imporSuccess(id) {
         if (id) {
           this.updateExportedState({});
@@ -530,7 +529,6 @@
             this.$loading.hide();
             this.closeImportDialog();
             if (this.exportTasks.dialog) {
-              this.updataTaskMessageCount(id);
               const message = {
                 mask: true,
                 title: '提醒',
@@ -545,6 +543,8 @@
                     id
                   };
                   this.tabOpen(tab);
+              this.updataTaskMessageCount(id);
+
                 }
               };
               this.$Modal.fcWarning(message);
@@ -991,6 +991,7 @@
       objectTryDelete(obj) { // 按钮删除方法
         if (this.tableRowSelectedIds.length === 0) {
           const data = {
+            mask: true,
             title: '警告',
             content: '请先选择需要删除的记录！'
           };
@@ -3354,7 +3355,6 @@
               promises.then(() => {
                 this.$loading.hide();
                 if (this.exportTasks.dialog) {
-                  this.updataTaskMessageCount(this.buttonsData.exportdata);
                   const message = {
                     mask: true,
                     title: '提醒',
@@ -3369,6 +3369,8 @@
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
+                  this.updataTaskMessageCount(this.buttonsData.exportdata);
+
                     }
                   };
                   this.$Modal.fcWarning(message);
