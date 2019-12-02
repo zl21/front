@@ -39,9 +39,7 @@ export default {
     type,
     tabIndex,
     itemTabelPageInfo,
-    stopItemRequest,
   }) {
-    // stopItemRequest:阻止发送子表接口请求
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
@@ -68,10 +66,7 @@ export default {
             if (resData.reftabs[0].webact) { // 自定义tab全定制，tab切换时不需要请求
               webactType = resData.reftabs[0].webact.substring(0, resData.reftabs[0].webact.lastIndexOf('/')).toUpperCase();
             }
-            if (resData.reftabs[0].refcolid !== -1 && webactType !== 'ALL') { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
-              // commit('updateActiveRefFormInfo', resData.reftabs[0]);
-              // 获取第一个tab的子表表单
-              
+            if (webactType !== 'ALL') {
               const getObjectTabPromise = new Promise((rec, rej) => {
                 if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
@@ -84,44 +79,50 @@ export default {
                   this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
-              if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
-                const formParam = {
-                  table: firstReftab.tablename,
-                  inlinemode: firstReftab.tabinlinemode,
-                  tabIndex
-                };
-                this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
-              }
-              // 获取第一个tab的子表列表数据
-              if (resData.reftabs[tabIndex].tabrelation === '1:m') {
-                getObjectTabPromise.then(() => {
-                  if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+              if (resData.reftabs[0].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
+                // commit('updateActiveRefFormInfo', resData.reftabs[0]);
+                // 获取第一个tab的子表表单
+                
+               
+                if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                  const formParam = {
+                    table: firstReftab.tablename,
+                    inlinemode: firstReftab.tabinlinemode,
+                    tabIndex
+                  };
+                  this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
+                }
+                // 获取第一个tab的子表列表数据
+                if (resData.reftabs[tabIndex].tabrelation === '1:m') {
+                  getObjectTabPromise.then(() => {
+                    if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                      const tableParam = {
+                        table: firstReftab.tablename,
+                        objid,
+                        refcolid: firstReftab.refcolid,
+                        searchdata: {
+                          column_include_uicontroller: true,
+                          startindex: itemTabelPageInfo ? (Number(itemTabelPageInfo.currentPageIndex) - 1) * Number(itemTabelPageInfo.pageSize) : 0,
+                          range: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10,
+                          fixedcolumns: childTableFixedcolumns
+                        },
+                        tabIndex
+                      };
+                      this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                      childTableFixedcolumns = {};
+                    }
+                  });
+                } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
+                  // 获取子表面板数据
+                  if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
-                      searchdata: {
-                        column_include_uicontroller: true,
-                        startindex: itemTabelPageInfo ? (Number(itemTabelPageInfo.currentPageIndex) - 1) * Number(itemTabelPageInfo.pageSize) : 0,
-                        range: itemTabelPageInfo ? itemTabelPageInfo.pageSize : 10,
-                        fixedcolumns: childTableFixedcolumns
-                      },
                       tabIndex
                     };
-                    this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
-                    childTableFixedcolumns = {};
+                    this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                   }
-                });
-              } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
-                // 获取子表面板数据
-                if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
-                  const tableParam = {
-                    table: firstReftab.tablename,
-                    objid,
-                    refcolid: firstReftab.refcolid,
-                    tabIndex
-                  };
-                  this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                 }
               }
             }
