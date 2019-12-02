@@ -471,7 +471,7 @@
                 title: '成功',
                 content: this.exportTasks.resultMsg
               };
-              this.$Message.success(contents);
+              this.$Message.fcSuccess(contents);
             }
           });
         }
@@ -1322,7 +1322,7 @@
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.success(contents);
+                  this.$Message.fcSuccess(contents);
                 }
               });
             }
