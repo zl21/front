@@ -48,11 +48,17 @@ export default {
               // 筛选信息验证导出是否成功
               data.data.addcolums.filter(item => item.parentdesc === '基本信息')[0].childs.forEach((b) => {
                 if (b.colname === 'TASKSTATE') {
-                  if (b.valuedata === '2' || b.valuedata === '3') {
+                  if (b.valuedata === '2') {
                     exportTask.exportedState = true;
                     clearInterval(timer);
                     resolve();
                     exportTask.successMsg = true;
+                    commit('updateExportedState', exportTask);
+                  } else if (b.valuedata === '3') { // 异常终止
+                    exportTask.exportedState = false;
+                    clearInterval(timer);
+                    reject();
+                    exportTask.warningMsg = true;
                     commit('updateExportedState', exportTask);
                   } else {
                     if (index === times) { // 已轮询4次之后，到我的任务查看
@@ -128,7 +134,9 @@ export default {
                   }
                 });
               }
-            } 
+            } else {
+              reject();
+            }
           });
         }
       }, 1000);

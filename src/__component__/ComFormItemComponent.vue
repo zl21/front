@@ -288,6 +288,7 @@
         formDatadefObject: {}, // 获取form默认值
         oldformData: {}, // 老的change
         setHeight: 34,
+        setVerficaTime: '', // 校验时间
         timerSet: '',
         timerWatch: '', // 监听change 触发
         actived: false
@@ -363,7 +364,7 @@
         setTimeout(() => {
           //  传form 默认值
           if (this.verifymessageform) {
-            this.verifymessageform(this.VerificationForm, this.formIndex);
+            // this.verifymessageform(this.VerificationForm, this.formIndex);
           }
         }, 0);
       }
@@ -418,8 +419,6 @@
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
             if (checkVal !== checkShow) {
-              console.log(item.title);
-
               this.hidecolumn(item, i, val);
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
@@ -467,12 +466,15 @@
       },
       VerificationFormInt() {
         //  form 计算 校验
-        this.VerificationForm = [];
-        this.newFormItemLists.forEach((item, index) => {
-          if (item.item.required && item.show && !item.item.props.disabled) {
-            this.verificationMap(this.formIndex, index, item);
-          }
-        });
+        clearTimeout(this.setVerficaTime);
+        this.setVerficaTime = setTimeout(() => {
+          this.VerificationForm = [];
+          this.newFormItemLists.forEach((item, index) => {
+            if (item.item.required && item.show && !item.item.props.disabled) {
+              this.verificationMap(this.formIndex, index, item);
+            }
+          });
+        }, 10);
       },
       verificationMap(formIndex, index, items) {
         // 获取校验的配置及节点
@@ -498,6 +500,9 @@
           fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
+        if (this.verifymessageform) {
+          this.verifymessageform(this.VerificationForm, this.formIndex);
+        }
         return true;
       },
       setMapping(data) {
@@ -860,10 +865,10 @@
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
-          item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr,i) => {
+          item.oldProps = Object.keys(item.props.webconf.setAttributes.props).reduce((arr, i) => {
             arr[i] = props[i] || false;
             return arr;
-          },{});
+          }, {});
           item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
@@ -880,12 +885,11 @@
           } else if (item.props.webconf.setAttributes.props.required === false) {
             item.required = false;
           }
-
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.props = Object.assign(props, item.oldProps);
           item.required = item.oldProps._required;
-        }        
+        }    
         // this.VerificationFormInt();
         return true;
       },
@@ -973,9 +977,6 @@
                 this.newFormItemLists[index].item.props.defaultSelected = [];
                 this.dataProcessing(this.newFormItemLists[index], index);
               }
-
-              // this.VerificationFormInt();
-              // this.VerificationForm = this.VerificationMap();
               // this.VerificationFormInt();
             }
           }
