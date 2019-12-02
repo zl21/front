@@ -245,6 +245,8 @@
               };
               this.$Message.success(contents);
             }
+          }, () => {
+            this.$loading.hide();
           });
         }
       },

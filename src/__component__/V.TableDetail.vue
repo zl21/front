@@ -77,10 +77,12 @@
           obj.componentAttribute.itemInfo = item;
           obj.componentAttribute.tableName = item.tablename;
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
-          obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-          obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
-          obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
-          obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
+          if (this.mainFormInfo.buttonsData) {
+            obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
+            obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
+            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+            obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
+          }
           obj.componentAttribute.childTableNames = this.childTableNames;
           obj.componentAttribute.mainFormPaths = this.formPaths;
           obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -122,7 +124,11 @@
 
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-      this.getObjectTabForMainTable({ table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex });
+      
+     
+      this.getObjectTabForMainTable({
+        table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
+      });
     },
     methods: {
       itemTableCheckFunc() {

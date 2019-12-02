@@ -18,9 +18,116 @@ import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
+import { updateSessionObject } from '../__utils__/sessionStorage';
 
 
 const pluginModules = {};
+
+const getKeepAliveModuleName = (routeInfo) => {
+  const {
+    tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName, linkModuleName
+  } = routeInfo.params;
+  const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
+  let keepAliveModuleName = '';
+  const { routePrefix } = routeInfo.meta;
+  switch (routePrefix) {
+    // Condition One: 路由到标准列表界面名称
+    case STANDARD_TABLE_LIST_PREFIX:
+      keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+      break;
+
+    // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
+    case VERTICAL_TABLE_DETAIL_PREFIX:
+      keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
+      break;
+
+    // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面
+    case HORIZONTAL_TABLE_DETAIL_PREFIX:
+      keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
+      break;
+
+    // Condition Four: 路由到用户自定义界面
+    case CUSTOMIZED_MODULE_PREFIX:
+      keepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
+      break;
+
+    // Condition Five: 路由到插件界面
+    case PLUGIN_MODULE_PREFIX:
+      keepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
+      break;
+
+    // Condition Five: 路由到外链界面
+    case LINK_MODULE_PREFIX:
+      keepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}`;
+      break;
+
+    default:
+      break;
+  }
+  return keepAliveModuleName;
+};
+
+const getDynamicModuleTag = (to) => {
+  const { routePrefix } = to.meta;
+  let dynamicModuleTag = '';
+  switch (routePrefix) {
+    // Condition One: 路由到标准列表界面名称
+    case STANDARD_TABLE_LIST_PREFIX:
+      dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
+      break;
+
+    // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
+    case VERTICAL_TABLE_DETAIL_PREFIX:
+      dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
+      break;
+
+    // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面
+    case HORIZONTAL_TABLE_DETAIL_PREFIX:
+      dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
+      break;
+
+    // Condition Four: 路由到用户自定义界面
+    case CUSTOMIZED_MODULE_PREFIX:
+      dynamicModuleTag = CUSTOMIZED_MODULE_COMPONENT_PREFIX;
+      break;
+
+    // Condition Five: 路由到插件界面
+    case PLUGIN_MODULE_PREFIX:
+      dynamicModuleTag = PLUGIN_MODULE_COMPONENT_PREFIX;
+      break;
+
+    // Condition Five: 路由到外链界面
+    case LINK_MODULE_PREFIX:
+      dynamicModuleTag = LINK_MODULE_COMPONENT_PREFIX;
+      break;
+
+    default:
+      break;
+  }
+  return dynamicModuleTag;
+};
+
+const getOriginModuleName = (to) => {
+  const {
+    tableName, tableId, customizedModuleName, customizedModuleId, linkModuleName, linkModuleId
+  } = to.params;
+  const { routePrefix } = to.meta;
+  let originModuleName = '';
+  switch (routePrefix) {
+    case CUSTOMIZED_MODULE_PREFIX:
+      originModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
+      break;
+
+    case LINK_MODULE_PREFIX:
+      originModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}.${linkModuleId}`;
+      break;
+
+    default:
+      originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+  }
+  return originModuleName;
+};
+
 Object.keys(PluginModule).forEach((key) => {
   pluginModules[key.toUpperCase()] = PluginModule[key];
 });
@@ -33,19 +140,10 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, tableId, itemId, customizedModuleName, customizedModuleId, pluginModuleName, linkModuleName, linkModuleId
+      tableName, itemId, customizedModuleName, pluginModuleName, linkModuleName,
     } = to.params;
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
-    const fromTableName = from.params.tableName;
-    const fromTableId = from.params.tableId;
-    const fromItemId = from.params.itemId;
-    const fromCustomizedModuleName = from.params.customizedModuleName;
-    const fromCustomizedModuleId = from.params.customizedModuleId;
-    const fromPluginModuleName = from.params.pluginModuleName;
-    const fromLinkName = from.params.linkName;
     const { routePrefix } = to.meta;
-
-    const fromRoutePrefix = from.meta.routePrefix;
     const { isBack } = to.query;
     const moduleGenerator = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
@@ -59,106 +157,12 @@ export default (router) => {
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
-    const fromParamItemId = String(fromItemId) === '-1' ? 'New' : `${fromItemId}`;
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
-    let dynamicModuleTag = '';
-    let keepAliveModuleName = '';
-    let fromKeepAliveModuleName = '';
-    let originModuleName = '';
-    // const originModuleName = routePrefix === CUSTOMIZED_MODULE_PREFIX
-    //   ? `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`
-    //   : `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-
-    switch (routePrefix) {
-      case CUSTOMIZED_MODULE_PREFIX:
-        originModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
-        break;
-
-      case LINK_MODULE_PREFIX:
-        originModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}.${linkModuleId}`;
-        break;
-
-      default:
-        originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-    }
-    switch (fromRoutePrefix) {
-      // Condition One: 来自标准列表界面
-      case STANDARD_TABLE_LIST_PREFIX:
-        fromKeepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}`;
-        break;
-
-      // Condition Two: 来自列表明细界面
-      case VERTICAL_TABLE_DETAIL_PREFIX:
-        fromKeepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}.${fromParamItemId}`;
-        break;
-
-      // Condition Three: 来自列表明细界面
-      case HORIZONTAL_TABLE_DETAIL_PREFIX:
-        fromKeepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${fromTableName}.${fromTableId}.${fromParamItemId}`;
-        break;
-
-      // Condition Four: 来自用户自定义界面
-      case CUSTOMIZED_MODULE_PREFIX:
-        fromKeepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${fromCustomizedModuleName}.${fromCustomizedModuleId}`;
-        break;
-
-      // Condition Five: 来自系统内置的插件界面
-      case PLUGIN_MODULE_PREFIX:
-        fromKeepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${fromPluginModuleName}`;
-        break;
-
-      // Condition Six: 来自外链界面
-      case LINK_MODULE_PREFIX:
-        fromKeepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${fromLinkName}`;
-        break;
-
-      
-        // Condition Seven: 来自单对象界面
-     
-      default:
-        break;
-    }
-
-    switch (routePrefix) {
-      // Condition One: 路由到标准列表界面名称
-      case STANDARD_TABLE_LIST_PREFIX:
-        keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
-        dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
-        break;
-
-      // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
-      case VERTICAL_TABLE_DETAIL_PREFIX:
-        keepAliveModuleName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
-        dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
-        break;
-
-      // Condition Three: 路由到左右Tab页签切换（横向布局）的列表明细界面
-      case HORIZONTAL_TABLE_DETAIL_PREFIX:
-        keepAliveModuleName = `${HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${paramItemId}`;
-        dynamicModuleTag = HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX;
-        break;
-
-      // Condition Four: 路由到用户自定义界面
-      case CUSTOMIZED_MODULE_PREFIX:
-        keepAliveModuleName = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName}.${customizedModuleId}`;
-        dynamicModuleTag = CUSTOMIZED_MODULE_COMPONENT_PREFIX;
-        break;
-
-      // Condition Five: 路由到插件界面
-      case PLUGIN_MODULE_PREFIX:
-        keepAliveModuleName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
-        dynamicModuleTag = PLUGIN_MODULE_COMPONENT_PREFIX;
-        break;
-
-      // Condition Five: 路由到外链界面
-      case LINK_MODULE_PREFIX:
-        keepAliveModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}`;
-        dynamicModuleTag = LINK_MODULE_COMPONENT_PREFIX;
-        break;
-
-      default:
-        break;
-    }
+    const fromParamItemId = String(from.params.itemId) === '-1' ? 'New' : `${from.params.itemId}`;
+    const fromKeepAliveModuleName = getKeepAliveModuleName(from); // 来源字段的keepAliveModuleName，即模块的moduleComponentName
+    const originModuleName = getOriginModuleName(to); // 单对象界面对应的原标准列表界面的moduleComponentName
+    const keepAliveModuleName = getKeepAliveModuleName(to); // 当前界面对应的keepAliveModuleName，即模块的moduleComponentName
+    const dynamicModuleTag = getDynamicModuleTag(to); // 当前界面对应的路由标识。
 
     // 处理 keepAliveModuleName：目标路由的模块默认都要加入keepAlive列表
     if (!keepAliveLists.includes(keepAliveModuleName) && keepAliveModuleName !== '') {
@@ -246,5 +250,16 @@ export default (router) => {
     }
 
     next();
+  });
+
+  // 增加后置路由守卫
+  router.afterEach((to, from) => {
+    // 记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
+    const isFromStandardTable = from.meta.routePrefix === STANDARD_TABLE_LIST_PREFIX;
+    const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
+    const isNotFromSameTable = to.params.tableName !== from.params.tableName;
+    if (isFromStandardTable && isTableDetail && isNotFromSameTable) {
+      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
+    }
   });
 };
