@@ -506,6 +506,7 @@
           value: valueData,
           key: items.item.field,
           label: items.item.title,
+          defval: items.item.value,
           fkdisplay: items.item.props.fkdisplay,
           onfousInput
         });
