@@ -224,6 +224,8 @@
         show: true,
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
+        setVerifyMessageTime: null,
+        setChangeTime: null,
         LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
       };
@@ -471,7 +473,10 @@
           return false;
         }
         // 必填校验
-        $this.VerificationFormInt();
+        clearTimeout(this.setVerifyMessageTime);
+        this.setVerifyMessageTime = setTimeout(() => {
+          this.setVerifyMessageForm();
+        }, 400);
         // 修改联动的值
         this.setChangeValue(data, current);
         if (Array.isArray(data)) {
@@ -487,24 +492,7 @@
         } else {
           delete this.formData[current.item.inputname];
         }
-        //  校验赋值
-        this.VerificationForm.forEach((item) => {
-          Object.keys(this.formData).forEach((option) => {
-            if (item.key === option.split(':')[0]) {
-              item.value = this.formData[option];
-            }
-          });
-        });
-        // 校验
-        const message = this.setVerifiy();
-
-        if (message.messageTip.length > 0) {
-          this.verifyMessItem = message;
-          this.$emit('VerifyMessage', message);
-        } else {
-          this.verifyMessItem = {};
-          this.$emit('VerifyMessage', {});
-        }
+        
         // let v1.4外键 及number
         if (!this.formData[current.item.field]) {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
@@ -533,10 +521,12 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+        clearTimeout(this.setChangeTime);
+        this.setChangeTime = setTimeout(() => {
+          this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+          this.getStateData();
+        }, 100);
         // 注释
-
-        this.getStateData();
       },
       VerifyMessageForm(value, type) {
         // 获取需要校验的表单
@@ -544,12 +534,23 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
-        this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-        const data = this.setVerifiy();
-        if (data.messageTip.length > 0) {
-          this.verifyMessItem = data;
-        }
-        this.$emit('VerifyMessage', data);
+        clearTimeout(this.setVerifyMessageTime);
+        this.setVerifyMessageTime = setTimeout(() => {
+          this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
+          const data = this.setVerifiy();
+          if (data.messageTip.length > 0) {
+            this.verifyMessItem = data;
+          }
+          this.$emit('VerifyMessage', data);
+        }, 200);
+      },
+      setVerifyMessageForm() {
+        //  校验赋值
+        Object.keys(this.$refs).forEach((item) => {
+          if (this.$refs[item] && this.$refs[item][0]) {
+            this.$refs[item][0].VerificationFormInt();
+          }
+        });
       },
       mountdataForm(value, formItem) {
         // 获取表单默认值
@@ -1818,6 +1819,11 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
+          if (Array.isArray(item.value) && item.value[0]) {
+            if (item.value[0].ID === '' || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+              item.value = '';
+            }
+          }
           if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
