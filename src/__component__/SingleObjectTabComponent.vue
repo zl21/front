@@ -128,9 +128,18 @@
   import compositeForm from './CompositeForm';
   import horizontalMixins from '../__config__/mixins/horizontalTableDetail';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
+  import CompontentNotFound from './CompontentNotFound';
   import CustomizeModule from '../__config__/customize.config';
 
+
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
+
+  const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
+  const customizeModules = {};
+  Object.keys(CustomizeModule).forEach((key) => {
+    customizeModules[key.toUpperCase()] = CustomizeModule[key];
+  });
+  
 
   export default {
 
@@ -290,16 +299,19 @@
           }
         }
         if(this.componentName) { // 定制tab自定义组件
-          Object.keys(CustomizeModule).every((customizeName) => {
-            const nameToUpperCase = customizeName.toUpperCase();
-            if (nameToUpperCase === this.componentName) {
-              Vue.component(this.componentName, CustomizeModule[customizeName].component);
-              return false;
+          const customizedModuleName = this.componentName;
+          if (Vue.component(customizedModuleName) === undefined) {
+            const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
+            if (target) {
+              Vue.component(customizedModuleName, target.component);
+              this.customizeComponent = customizedModuleName;
+            } else {
+              Vue.component(customizedModuleName, CompontentNotFound);
+              this.customizeComponent = customizedModuleName;
             }
-            return true;
-          });
-
-          this.customizeComponent = this.componentName;
+          } else {
+            this.customizeComponent = customizedModuleName;
+          }
         }
         this.objectTableComponent = tableComponent;
         this.objectButtonComponent = buttonComponent;
