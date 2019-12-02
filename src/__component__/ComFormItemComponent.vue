@@ -489,7 +489,16 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        const valueData = this.formDataObject[items.item.field];
+        let valueData = this.formDataObject[items.item.field];
+        if (items.item.props.fkdisplay === 'drp' 
+          || items.item.props.fkdisplay === 'mrp'
+          || items.item.props.fkdisplay === 'mop'
+          || items.item.props.fkdisplay === 'pop') {
+          if (!valueData || valueData === '0') {
+            // 外键 校验
+            valueData = '';
+          }
+        }
         this.VerificationForm.push({
           index,
           eq: formIndex,
