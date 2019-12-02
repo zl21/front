@@ -371,47 +371,43 @@
       // 上传失败
       handleError(e) {
         this.$loading.hide();
-
-        if (e.status === 403) {
-          this.closeDialog();
-        } else {
-          const emg = e;
-          let formatJsonEmg = null;
-          try {
-            formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
-          } catch (v) {
-            if (typeof emg === 'string') {
-              formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
-            }
+        const emg = e;
+        let formatJsonEmg = null;
+        try {
+          formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+        } catch (v) {
+          if (typeof emg === 'string') {
+            formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
           }
-          window.vm.$Modal.fcError({
-            mask: true,
-            titleAlign: 'center',
-            title: '错误',
-            render: h => h('div', {
-              style: {
-                padding: '10px 20px 0',
-                display: 'flex',
-                lineHeight: '16px'
-              }
-            }, [
+        }
+        window.vm.$Modal.fcError({
+          mask: true,
+          titleAlign: 'center',
+          title: '错误',
+          render: h => h('div', {
+            style: {
+              padding: '10px 20px 0',
+              display: 'flex',
+              lineHeight: '16px'
+            }
+          }, [
             
-              h('i', {
-                props: {
-                },
-                style: {
-                  marginRight: '5px',
-                  display: 'inline-block',
-                  'font-size': '28px',
-                  'margin-right': ' 10px',
-                  'line-height': ' 1',
-                  padding: ' 10px 0',
-                  color: 'red'
-                },
-                class: 'iconfont iconbj_error fcError '
-              }),
-              h('div', {
-                style: `width: 80%;
+            h('i', {
+              props: {
+              },
+              style: {
+                marginRight: '5px',
+                display: 'inline-block',
+                'font-size': '28px',
+                'margin-right': ' 10px',
+                'line-height': ' 1',
+                padding: ' 10px 0',
+                color: 'red'
+              },
+              class: 'iconfont iconbj_error fcError '
+            }),
+            h('div', {
+              style: `width: 80%;
                   margin: 1px;
                   margin-bottom: -8px;
                   box-sizing: border-box;
@@ -421,11 +417,11 @@
                   max-width: 300px;
                   overflow: auto;
                   `
-              }, formatJsonEmg)
-            ])
-          });
-          this.clearFile();
-        }
+            }, formatJsonEmg)
+          ])
+        });
+        this.clearFile();
+        this.closeDialog();
       },
       closeDialog() {
         this.modalVisible = false;

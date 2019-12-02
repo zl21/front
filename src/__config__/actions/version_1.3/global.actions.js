@@ -94,13 +94,54 @@ export default {
                       } else {
                         const errorList = [];
                         if (exportTask.file) {
+                          reject();
                           exportTask.file = JSON.parse(exportTask.file);
                           errorList.push({ message: `<a href="${exportTask.file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
                         } else if (!exportTask.file) {
-                          exportTask.warningMsg = true;
-                          exportTask.resultMsg= JSON.stringify(exportTask.resultMsg)
+                          const message= JSON.stringify(exportTask.resultMsg);
+                          window.vm.$Modal.fcError({
+                            mask: true,
+                            titleAlign: 'center',
+                            title: '错误',
+                            render: h => h('div', {
+                              style: {
+                                padding: '10px 20px 0',
+                                display: 'flex',
+                                lineHeight: '16px'
+                              }
+                            }, [
+                              
+                              h('i', {
+                                props: {
+                                },
+                                style: {
+                                  marginRight: '5px',
+                                  display: 'inline-block',
+                                  'font-size': '28px',
+                                  'margin-right': ' 10px',
+                                  'line-height': ' 1',
+                                  padding: ' 10px 0',
+                                  color: 'red'
+                                },
+                                class: 'iconfont iconbj_error fcError '
+                              }),
+                              h('div', {
+                                style: `width: 80%;
+                                    margin: 1px;
+                                    margin-bottom: -8px;
+                                    box-sizing: border-box;
+                                    padding: 5px;
+                                    resize: none;
+                                    max-height: 100px;
+                                    max-width: 300px;
+                                    overflow: auto;
+                                    `
+                              }, message)
+                            ])
+                          });
                           commit('updateExportedState', exportTask);
                           reject();
+                          return;
                         } else {
                           errorList.push({ message: exportTask.resultMsg.message });
                         }
@@ -114,65 +155,65 @@ export default {
                             }
                           }
                         }
-                        // window.vm.$Modal.fcError({
-                        //   mask: true,
-                        //   titleAlign: 'center',
-                        //   title: '错误',
-                        //   render: h => h('div', {
-                        //     style: {
-                        //       padding: '10px 20px 0',
-                        //       display: 'flex',
-                        //       lineHeight: '16px'
-                        //     }
-                        //   }, [
+                        window.vm.$Modal.fcError({
+                          mask: true,
+                          titleAlign: 'center',
+                          title: '错误',
+                          render: h => h('div', {
+                            style: {
+                              padding: '10px 20px 0',
+                              display: 'flex',
+                              lineHeight: '16px'
+                            }
+                          }, [
                             
-                        //     h('i', {
-                        //       props: {
-                        //       },
-                        //       style: {
-                        //         marginRight: '5px',
-                        //         display: 'inline-block',
-                        //         'font-size': '28px',
-                        //         'margin-right': ' 10px',
-                        //         'line-height': ' 1',
-                        //         padding: ' 10px 0',
-                        //         color: 'red'
-                        //       },
-                        //       class: 'iconfont iconbj_error fcError '
-                        //     }),
-                        //     h('div', {
-                        //       style: `width: 80%;
-                        //           margin: 1px;
-                        //           margin-bottom: -8px;
-                        //           box-sizing: border-box;
-                        //           padding: 5px;
-                        //           resize: none;
-                        //           max-height: 100px;
-                        //           max-width: 300px;
-                        //           overflow: auto;
-                        //           `
-                        //     }, [
+                            h('i', {
+                              props: {
+                              },
+                              style: {
+                                marginRight: '5px',
+                                display: 'inline-block',
+                                'font-size': '28px',
+                                'margin-right': ' 10px',
+                                'line-height': ' 1',
+                                padding: ' 10px 0',
+                                color: 'red'
+                              },
+                              class: 'iconfont iconbj_error fcError '
+                            }),
+                            h('div', {
+                              style: `width: 80%;
+                                  margin: 1px;
+                                  margin-bottom: -8px;
+                                  box-sizing: border-box;
+                                  padding: 5px;
+                                  resize: none;
+                                  max-height: 100px;
+                                  max-width: 300px;
+                                  overflow: auto;
+                                  `
+                            }, [
                            
-                        //       h('a', {
-                        //         style: {
-                        //         },
-                        //         domProps: {
-                        //           innerHTML: errorList.length > 0 ? errorList[0].message : ''
-                        //         }
-                        //       },),
-                        //       h('div', {
-                        //         domProps: {
-                        //           innerHTML: errorList.length > 1 ? errorList[1].message : ''
-                        //         }
-                        //       }),
-                        //       h('div', {
-                        //         domProps: {
-                        //           innerHTML: errorList.length > 1 ? errorList[2].message : ''
-                        //         }
-                        //       },)
-                        //     ])
-                        //   ])
-                        // });
+                              h('a', {
+                                style: {
+                                },
+                                domProps: {
+                                  innerHTML: errorList.length > 0 ? errorList[0].message : ''
+                                }
+                              },),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 1 ? errorList[1].message : ''
+                                }
+                              }),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 1 ? errorList[2].message : ''
+                                }
+                              },)
+                            ])
+                          ])
+                        });
                       }
                     } else if (exportTask.file) {
                       exportTask.file = JSON.parse(exportTask.file);
