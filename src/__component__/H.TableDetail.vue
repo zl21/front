@@ -142,9 +142,10 @@
 
     },
     mounted() {
+      this.getMainTable(this.tabCurrentIndex, false);
     },
     created() {
-      this.getMainTable(this.tabCurrentIndex, false);
+     
     }
   };
 </script>

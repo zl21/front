@@ -466,7 +466,6 @@
       },
       VerificationFormInt(type) {
         //  form 计算 校验
-        console.log(type, 'type===');
         clearTimeout(this.setVerficaTime);
         this.setVerficaTime = setTimeout(() => {
           this.VerificationForm = [];

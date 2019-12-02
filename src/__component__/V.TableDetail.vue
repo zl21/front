@@ -116,6 +116,9 @@
       compositeForm
     },
     created() {
+      
+    },
+    mounted() {
       const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
