@@ -38,8 +38,10 @@ export default {
     objid,
     type,
     tabIndex,
-    itemTabelPageInfo
+    itemTabelPageInfo,
+    stopItemRequest,
   }) {
+    // stopItemRequest:阻止发送子表接口请求
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
@@ -60,22 +62,25 @@ export default {
         if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
-          if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
-            const getObjectTabPromise = new Promise((rec, rej) => {
-              if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
-                const param = {
-                  table: firstReftab.tablename,
-                  objid,
-                  tabIndex,
-                  rec,
-                  rej
-                };
-                this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
-              }
-            });
+          // && !stopItemRequest
+          if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口    // 子表配置自定义tab时阻止子表接口请求
             if (resData.reftabs[0].refcolid !== -1) {
+              debugger;
               // commit('updateActiveRefFormInfo', resData.reftabs[0]);
               // 获取第一个tab的子表表单
+              
+              const getObjectTabPromise = new Promise((rec, rej) => {
+                if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                  const param = {
+                    table: firstReftab.tablename,
+                    objid,
+                    tabIndex,
+                    rec,
+                    rej
+                  };
+                  this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+                }
+              });
               if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                 const formParam = {
                   table: firstReftab.tablename,
