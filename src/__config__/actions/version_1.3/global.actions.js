@@ -55,10 +55,9 @@ export default {
                     exportTask.successMsg = true;
                     commit('updateExportedState', exportTask);
                   } else if (b.valuedata === '3') { // 异常终止
-                    exportTask.exportedState = false;
+                    exportTask.exportedState = true;
                     clearInterval(timer);
-                    reject();
-                    exportTask.warningMsg = true;
+                    // reject();
                     commit('updateExportedState', exportTask);
                   } else {
                     if (index === times) { // 已轮询4次之后，到我的任务查看
@@ -95,12 +94,58 @@ export default {
                       } else {
                         const errorList = [];
                         if (exportTask.file) {
+                          reject();
                           exportTask.file = JSON.parse(exportTask.file);
                           errorList.push({ message: `<a href="${exportTask.file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
+                        } else if (!exportTask.file) {
+                          const message= JSON.stringify(exportTask.resultMsg);
+                          window.vm.$Modal.fcError({
+                            mask: true,
+                            titleAlign: 'center',
+                            title: '错误',
+                            render: h => h('div', {
+                              style: {
+                                padding: '10px 20px 0',
+                                display: 'flex',
+                                lineHeight: '16px'
+                              }
+                            }, [
+                              
+                              h('i', {
+                                props: {
+                                },
+                                style: {
+                                  marginRight: '5px',
+                                  display: 'inline-block',
+                                  'font-size': '28px',
+                                  'margin-right': ' 10px',
+                                  'line-height': ' 1',
+                                  padding: ' 10px 0',
+                                  color: 'red'
+                                },
+                                class: 'iconfont iconbj_error fcError '
+                              }),
+                              h('div', {
+                                style: `width: 80%;
+                                    margin: 1px;
+                                    margin-bottom: -8px;
+                                    box-sizing: border-box;
+                                    padding: 5px;
+                                    resize: none;
+                                    max-height: 100px;
+                                    max-width: 300px;
+                                    overflow: auto;
+                                    `
+                              }, message)
+                            ])
+                          });
+                          commit('updateExportedState', exportTask);
+                          reject();
+                          return;
                         } else {
                           errorList.push({ message: exportTask.resultMsg.message });
                         }
-                
+               
                         if (exportTask.resultMsg.data !== undefined && exportTask.resultMsg.data.length > 0) {
                           for (const msg of exportTask.resultMsg.data) {
                             if (msg.hasOwnProperty('rowIndex')) {
@@ -110,12 +155,65 @@ export default {
                             }
                           }
                         }
-                        const contents = {
+                        window.vm.$Modal.fcError({
                           mask: true,
-                          title: '警告',
-                          content: errorList
-                        };
-                        this.$Modal.fcWarning(contents);
+                          titleAlign: 'center',
+                          title: '错误',
+                          render: h => h('div', {
+                            style: {
+                              padding: '10px 20px 0',
+                              display: 'flex',
+                              lineHeight: '16px'
+                            }
+                          }, [
+                            
+                            h('i', {
+                              props: {
+                              },
+                              style: {
+                                marginRight: '5px',
+                                display: 'inline-block',
+                                'font-size': '28px',
+                                'margin-right': ' 10px',
+                                'line-height': ' 1',
+                                padding: ' 10px 0',
+                                color: 'red'
+                              },
+                              class: 'iconfont iconbj_error fcError '
+                            }),
+                            h('div', {
+                              style: `width: 80%;
+                                  margin: 1px;
+                                  margin-bottom: -8px;
+                                  box-sizing: border-box;
+                                  padding: 5px;
+                                  resize: none;
+                                  max-height: 100px;
+                                  max-width: 300px;
+                                  overflow: auto;
+                                  `
+                            }, [
+                           
+                              h('a', {
+                                style: {
+                                },
+                                domProps: {
+                                  innerHTML: errorList.length > 0 ? errorList[0].message : ''
+                                }
+                              },),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 1 ? errorList[1].message : ''
+                                }
+                              }),
+                              h('div', {
+                                domProps: {
+                                  innerHTML: errorList.length > 1 ? errorList[2].message : ''
+                                }
+                              },)
+                            ])
+                          ])
+                        });
                       }
                     } else if (exportTask.file) {
                       exportTask.file = JSON.parse(exportTask.file);

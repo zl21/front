@@ -1819,8 +1819,12 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
-          if (Array.isArray(item.value) && item.value[0]) {
-            if (item.value[0].ID === '' || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+          if (Array.isArray(item.value)) {
+            if (item.value[0]) {
+              if (item.value[0].ID === '' || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+                item.value = '';
+              }
+            } else if (item.value[0] === undefined || item.value[0] === '') {
               item.value = '';
             }
           }
