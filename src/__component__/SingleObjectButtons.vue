@@ -482,6 +482,7 @@
               };
               this.$Modal.fcError(data);
             }
+            this.closeActionDialog();
             this.$loading.hide();
           });
         }
@@ -1341,7 +1342,7 @@
                     title: '错误',
                     content: `${this.exportTasks.resultMsg}`
                   };
-                  this.$Modal.fcError(data);
+                  this.$Modal.error(data);
                 }
                 this.$loading.hide();
               });

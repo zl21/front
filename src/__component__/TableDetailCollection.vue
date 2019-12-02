@@ -563,9 +563,10 @@
                 title: '错误',
                 content: `${this.exportTasks.resultMsg}`
               };
-              this.$Modal.fcError(data);
+              this.$Modal.error(data);
             }
             this.$loading.hide();
+            this.closeImportDialog();
           });
         }
       },
@@ -3376,7 +3377,7 @@
                     title: '成功',
                     content: this.exportTasks.resultMsg
                   };
-                  this.$Message.success(contents);
+                  this.$Message.fcSuccess(contents);
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
@@ -3385,7 +3386,7 @@
                     title: '错误',
                     content: `${this.exportTasks.resultMsg}`
                   };
-                  this.$Modal.fcError(data);
+                  this.$Modal.error(data);
                 }
                 this.$loading.hide();
               });

@@ -370,6 +370,8 @@
       },
       // 上传失败
       handleError(e) {
+        this.$loading.hide();
+
         if (e.status === 403) {
           this.closeDialog();
         } else {

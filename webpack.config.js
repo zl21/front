@@ -56,7 +56,7 @@ module.exports = env => ({
         target
       },
       {
-        context: '/api',
+        context: '/api/rpt',
         target: 'http://47.99.229.124:9093' // 打印
       },
       {

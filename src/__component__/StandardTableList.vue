@@ -249,12 +249,13 @@
             if (this.exportTasks.warningMsg) {
               const data = {
                 mask: true,
-                title: '错误',
-                content: `${this.exportTasks.resultMsg}`
+                title: '错dddd误',
+                content:'ddddd'
               };
               this.$Modal.fcError(data);
             }
             this.$loading.hide();
+            this.setImportDialogTitle(false);
           });
         }
       },
