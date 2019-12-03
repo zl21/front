@@ -1598,7 +1598,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else {
+            } else if (Version() === '1.3') {
               this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
