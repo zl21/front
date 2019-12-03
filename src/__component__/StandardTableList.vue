@@ -206,7 +206,7 @@
       },
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory', 'getExportedState']),
+      ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       imporSuccess(id) {
         if (id) {
@@ -233,6 +233,7 @@
                     id
                   };
                   this.tabOpen(tab);
+                  this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
                 }
               };
               this.$Modal.fcWarning(message);
@@ -1622,6 +1623,7 @@
                         id: this.buttons.exportdata
                       };
                       this.tabOpen(tab);
+                      this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
                     }
                   };
                   this.$Modal.fcWarning(message);

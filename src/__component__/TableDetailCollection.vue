@@ -543,7 +543,7 @@
                     id
                   };
                   this.tabOpen(tab);
-                  this.updataTaskMessageCount(id);
+                  this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
                 }
               };
               this.$Modal.fcWarning(message);
@@ -3368,7 +3368,7 @@
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
-                      this.updataTaskMessageCount(this.buttonsData.exportdata);
+                      this.updataTaskMessageCount({ id: this.buttonsData.exportdata, stopUpdataQuantity: true });
                     }
                   };
                   this.$Modal.fcWarning(message);

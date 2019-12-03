@@ -98,7 +98,7 @@
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
-  import { getSeesionObject , updateSessionObject,deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
 
   export default {
@@ -460,7 +460,7 @@
                     tableId: '24386',
                     id
                   };
-                  this.updataTaskMessageCount(id);
+                  this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
                   this.tabOpen(tab);
                 }
               };
@@ -1323,7 +1323,7 @@
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
-                      this.updataTaskMessageCount(this.buttonsData.exportdata);
+                      this.updataTaskMessageCount({ id: this.buttonsData.exportdata, stopUpdataQuantity: true });
                     }
                   };
                   this.$Modal.fcWarning(message);
