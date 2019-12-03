@@ -1434,7 +1434,6 @@
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
       clickButtonsBack() { // 按钮返回事件   
-
         const { tableId, tableName } = this.$route.params;
         const routeMapRecord = getSeesionObject('routeMapRecord');
         const keepAliveModuleName = this.activeTab.keepAliveModuleName;
@@ -1456,15 +1455,6 @@
             back: true,
           };
           this.tabHref(param);
-        }
-      },
-      hideBackButton() {
-        const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
-        const currentRoute = this.$router.currentRoute.path;
-        if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
-          this.dataArray.back = false;
-          // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
-          updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
         }
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
@@ -2534,7 +2524,25 @@
           this.$loading.hide();
         }
       },
-    
+      hideBackButton() {
+        const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+        const currentRoute = this.$router.currentRoute.path;
+        if (this.itemId === 'New') {
+          if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
+            this.dataArray.back = false;
+            // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+            updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+          }
+        } else {
+          const addRouteToEditorData = getSeesionObject('addRouteToEditor');
+          Object.keys(addRouteToEditorData).map((a) => {
+            if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a]&&currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
+              this.dataArray.back = false;
+              deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+            }
+          });
+        }
+      },
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
       //     if (button.vuedisplay === 'edit') {
@@ -2554,6 +2562,7 @@
       //     return false;
       //   });
       // }
+    
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
