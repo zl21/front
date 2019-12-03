@@ -123,6 +123,12 @@ export default {
                 const index = c.url.lastIndexOf('/');
                 const customizedModuleName = c.url.substring(index + 1, c.url.length);
                 a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+              } else if (actionType === 'SYSTEM') {
+                const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
+                const id = i.substring(i.lastIndexOf('/') + 1, i.length);
+                const n =i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
+                const name = n.substring(n.lastIndexOf('/') + 1, n.length);
+                a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
           } else if (c.type === 'table') {
@@ -280,7 +286,7 @@ export default {
             }
           } else if (!tab.stopRouterPush) {
             router.push('/');
-            }
+          }
         }
       }
     });
@@ -363,19 +369,19 @@ export default {
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
     let path = '';
-    if (type === STANDARD_TABLE_LIST_PREFIX) {
+    if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       }
-    } else if (type === 'tableDetailHorizontal') {
+    } else if (type === 'tableDetailHorizontal' || type === 'H') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
         path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
       }
-    } else if (type === 'tableDetailVertical') {
+    } else if (type === 'tableDetailVertical' || type === 'V') {
       if (url) {
         path = `${url.toUpperCase()}`;
       } else {
