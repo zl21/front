@@ -262,10 +262,18 @@ export default (router) => {
     const isFromStandardTable = from.meta.routePrefix === STANDARD_TABLE_LIST_PREFIX;
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
     const isNotFromSameTable = to.params.tableName !== from.params.tableName;
-    if (isFromStandardTable && isTableDetail && isNotFromSameTable) {
+    if (!isNotFromSameTable) {
+      window.sessionStorage.removeItem('dynamicRouting');
+    }
+    const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
+    // console.log({
+    //   isFromStandardTable, isTableDetail, isNotFromSameTable, isDynamicRouting
+    // });
+    if (isDynamicRouting && isFromStandardTable && isTableDetail && isNotFromSameTable) {
+      window.sessionStorage.removeItem('dynamicRouting');
       updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
     }
-    const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/')+1);
+    const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
     updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
   });
 };
