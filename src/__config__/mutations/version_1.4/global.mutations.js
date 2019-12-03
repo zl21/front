@@ -93,6 +93,15 @@ export default {
   },
 
   updateMenuLists(state, menuLists) {
+    menuLists.forEach((k) => {
+      k.children.forEach((a) => {
+        a.children.forEach((q, i) => {
+          if (q.isHidden) {
+            a.children.splice(i);
+          }
+        });
+      });
+    });
     state.menuLists = menuLists;
     if (menuLists.length > 0) {
       state.keepAliveLabelMaps = menuLists
@@ -124,8 +133,6 @@ export default {
                 const menuType = c.url.substring(c.url.lastIndexOf('/') + 1, c.url.length);
                 const modifyPageUrl = c.url.substring(0, Number(c.url.length) - 3);
                 if (menuType === 'New') {
-                  console.log(444,c.url)
-
                   const clickMenuAddSingleObjectData = {
                     k: `/${c.url}`,
                     v: modifyPageUrl
