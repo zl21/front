@@ -98,6 +98,7 @@
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
+  import { getSeesionObject , updateSessionObject,deleteFromSessionObject } from '../__utils__/sessionStorage';
 
 
   export default {
@@ -1290,7 +1291,7 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
-            if (Version === '1.4') {
+            if (Version() === '1.4') {
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1425,7 +1426,7 @@
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
-      clickButtonsBack() { // 按钮返回事件
+      clickButtonsBack() { // 按钮返回事件       
         const { tableId, tableName } = this.$route.params;
         const param = {
           tableId,
@@ -2527,6 +2528,13 @@
       // window.removeEventListener('globalNotice', this.updataLoading);
     },
     mounted() {
+      const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+      const currentRoute = this.$router.currentRoute.path;
+      if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
+        this.dataArray.back = false;
+        deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+        updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+      }
       // if (this.objectType === 'horizontal') { // 横向布局
       //   this.tabPanel.every((item) => {
       //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {

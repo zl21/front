@@ -264,8 +264,8 @@ axios.interceptors.response.use(
 
 export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceId = store.state.serviceIdMap;
-  const serviceName = store.state.activeTab.tableName;
+  const serviceId = store().state.serviceIdMap;
+  const serviceName = store().state.activeTab.tableName;
   if (!(enableGateWay())) {
     return url;
   }

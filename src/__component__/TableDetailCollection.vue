@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -426,7 +426,7 @@
                 newData.name = newData.webdesc;
                 delete (newData.webdesc);
               }
-              newData.eName = newData.vuedisplay?newData.vuedisplay:newData.eName;
+              newData.eName = newData.vuedisplay ? newData.vuedisplay : newData.eName;
               newData[key] = item[key];
               return newData;
             }, {});
@@ -543,8 +543,7 @@
                     id
                   };
                   this.tabOpen(tab);
-              this.updataTaskMessageCount(id);
-
+                  this.updataTaskMessageCount(id);
                 }
               };
               this.$Modal.fcWarning(message);
@@ -3369,8 +3368,7 @@
                         id: this.buttonsData.exportdata
                       };
                       this.tabOpen(tab);
-                  this.updataTaskMessageCount(this.buttonsData.exportdata);
-
+                      this.updataTaskMessageCount(this.buttonsData.exportdata);
                     }
                   };
                   this.$Modal.fcWarning(message);

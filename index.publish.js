@@ -24,13 +24,14 @@ const validateConfig = config => ({
 
 export default {
   version: '1.7.1',
+  temporaryVersion: '1.7.5',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
    *   image: {
    *     enterpriseLogo: '',  // 公司 Logo 图片
    *     enterpriseBanner: '', // 公司Banner 图片
-   *   }, // 此配置项必传。
+   *   }, // 此配置项必传
    *   globalComponent: {
    *     Login: '',  // 登录页
    *     WelcomePage: '', // 欢迎页
