@@ -9,10 +9,12 @@
       :width="width"
       :loading="loading"
       :title-align="titleAlign"
-      @on-ok="confirm"
-      @on-cancle="oncancle"
+      :footer-hide="true"
     >
-      <div slot="Modalsolt">
+      <div
+        slot="Modalsolt"
+        class="ModalModify"
+      >
         <Spin
           v-if="loading"
           fix
@@ -34,6 +36,21 @@
           type=""
           @formChange="formChange"
         />
+        <div class="button R3-button-group modifyButton">
+          <Button
+            type="fcdefault"
+            @click="oncancle"
+          >
+            取消
+          </Button>
+          <Button
+            type="primary"
+            style="margin:0 0 0 10px;"
+            @click="confirm"
+          >
+            确认
+          </Button>
+        </div>
       </div>
     </ModalConfirm>
   </div>
@@ -176,7 +193,9 @@
           searchObject,
           success: (res) => {
             this.loading = false;
-            this.$emit('on-save-success', res);
+            if (res.data.code === 0) {
+              this.$emit('on-save-success', res.data);
+            }
           }
         });
       },
@@ -200,7 +219,9 @@
           searchObject,
           success: (res) => {
             this.loading = false;
-            this.$emit('on-save-success', res);
+            if (res.data.code === 0) {
+              this.$emit('on-save-success', res.data);
+            }
           }
         });
       },
@@ -224,17 +245,37 @@
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
-        console.log(data, defaultData, changeData);
         this.formChangeData = Object.assign(this.formChangeData, data);
         this.defaultData = Object.assign(this.defaultData, changeData);
+        Object.keys(this.defaultData).forEach((item) => {
+          if (this.defaultData[item] === '' || this.defaultData[item] === undefined) {
+            delete this.formChangeData[item];
+            delete this.defaultData[item];
+          }
+        });
+      },
+      checkData() {
+        return Object.keys(this.formChangeData).length > 0;
       },
       confirm() {
         // b保存提交
+        const checkTip = this.checkData();
+        if (!checkTip) {
+          const message = {
+            mask: true,
+            title: '提醒',
+            content: '没有数据更新，请确认！',
+          };
+          this.$Modal.fcWarning(message);
+          return false;
+        }
+        this.loading = true;
         if (Version() === '1.3') {
           this.saveDataOld();
         } else {
           this.saveData();
         }
+        return true;
       }
     },
     mounted() {
@@ -249,6 +290,16 @@
     margin: 0px 0 10px;
     height: 24px;
     line-height:24px;
+}
+.modifyButton{
+  text-align: right;
+  position:absolute;
+  bottom: -4px;
+  right: 0px;
+}
+.ModalModify{
+  position: relative;
+  padding-bottom: 40px
 }
 .pop-formPanel{
     padding: 16px;
