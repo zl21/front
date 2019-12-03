@@ -194,7 +194,7 @@
           success: (res) => {
             this.loading = false;
             if (res.data.code === 0) {
-              this.$emit('on-save-success', res);
+              this.$emit('on-save-success', res.data);
             }
           }
         });
@@ -220,7 +220,7 @@
           success: (res) => {
             this.loading = false;
             if (res.data.code === 0) {
-              this.$emit('on-save-success', res);
+              this.$emit('on-save-success', res.data);
             }
           }
         });
@@ -245,18 +245,37 @@
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
-        console.log(data, defaultData, changeData);
         this.formChangeData = Object.assign(this.formChangeData, data);
         this.defaultData = Object.assign(this.defaultData, changeData);
+        Object.keys(this.defaultData).forEach((item) => {
+          if (this.defaultData[item] === '' || this.defaultData[item] === undefined) {
+            delete this.formChangeData[item];
+            delete this.defaultData[item];
+          }
+        });
+      },
+      checkData() {
+        return Object.keys(this.formChangeData).length > 0;
       },
       confirm() {
         // b保存提交
+        const checkTip = this.checkData();
+        if (!checkTip) {
+          const message = {
+            mask: true,
+            title: '提醒',
+            content: '没有数据更新，请确认！',
+          };
+          this.$Modal.fcWarning(message);
+          return false;
+        }
         this.loading = true;
         if (Version() === '1.3') {
           this.saveDataOld();
         } else {
           this.saveData();
         }
+        return true;
       }
     },
     mounted() {
