@@ -93,6 +93,15 @@ export default {
   },
 
   updateMenuLists(state, menuLists) {
+    menuLists.forEach((k) => {
+      k.children.forEach((a) => {
+        a.children.forEach((q, i) => {
+          if (q.isHidden) {
+            a.children.splice(i, 1);
+          }
+        });
+      });
+    });
     state.menuLists = menuLists;
     if (menuLists.length > 0) {
       state.keepAliveLabelMaps = menuLists
@@ -272,7 +281,7 @@ export default {
             }
           } else if (!tab.stopRouterPush) {
             router.push('/');
-            }
+          }
         }
       }
     });

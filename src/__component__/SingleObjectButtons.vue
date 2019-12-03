@@ -1433,13 +1433,13 @@
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
-      clickButtonsBack() { // 按钮返回事件    
+      clickButtonsBack() { // 按钮返回事件   
+
         const { tableId, tableName } = this.$route.params;
         const routeMapRecord = getSeesionObject('routeMapRecord');
         const keepAliveModuleName = this.activeTab.keepAliveModuleName;
         const tabUrl = keepAliveModuleName.substring(0, 1);
         const currentRoute = this.$router.currentRoute.path;
-
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
