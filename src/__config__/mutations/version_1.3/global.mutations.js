@@ -101,15 +101,6 @@ export default {
     }
   },
   updateMenuLists(state, menuLists) {
-    menuLists.forEach((k) => {
-      k.children.forEach((a) => {
-        a.children.forEach((q, i) => {
-          if (q.isHidden) {
-            a.children.splice(i);
-          }
-        });
-      });
-    });
     state.menuLists = menuLists;
     if (menuLists.length > 0) {
       state.keepAliveLabelMaps = menuLists

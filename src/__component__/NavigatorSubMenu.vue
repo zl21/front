@@ -14,11 +14,12 @@
       </li>
       <li
         v-for="(endMenu, endIndex) in subMenu.children"
+        v-if="!endMenu.isHidden"
         :key="`endMenu-${endIndex}`"
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ endMenu.label }}
+        {{ endMenu.label}}
       </li>
     </ul>
   </div>
