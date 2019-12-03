@@ -1,7 +1,8 @@
 import axios from 'axios';
 import md5 from 'md5';
 import router from '../__config__/router.config';
-import store from '../__config__/store/global.store';
+import store from '../__config__/store.config';
+
 import {
   ignoreGateWay, ignorePattern, enableGateWay, globalGateWay, defaultQuietRoutes, getTouristRoute, enableJflow, REQUEST_PENDDING_EXPIRE
 } from '../constants/global';
@@ -264,8 +265,9 @@ axios.interceptors.response.use(
 
 export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
-  const serviceId = store().state.serviceIdMap;
-  const serviceName = store().state.activeTab.tableName;
+  const serviceId = store.state.global.serviceIdMap;
+  
+  const serviceName = store.state.global.activeTab.tableName;
   if (!(enableGateWay())) {
     return url;
   }
