@@ -145,7 +145,18 @@ export default {
         .reduce((a, c) => a.concat(c))
         .filter(d => d.type === 'table' || d.type === 'action')
         .reduce((a, c) => {
-          a[c.value.toUpperCase()] = c.serviceId;
+          let menuType = '';
+          if (c.url) {
+            menuType = c.url.substring(c.url.lastIndexOf('/') + 1, c.url.length);
+          }
+          if (menuType === 'New') {
+            const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
+            const n = i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
+            const name = n.substring(n.lastIndexOf('/') + 1, n.length);
+            a[name.toUpperCase()] = c.serviceId;
+          } else {
+            a[c.value.toUpperCase()] = c.serviceId;
+          }
           return a;
         }, {});
     }
