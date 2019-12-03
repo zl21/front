@@ -265,12 +265,14 @@ export default {
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            router.push({
-              path: state.activeTab.routeFullPath,
-            });
-          } else {
+            if (!tab.stopRouterPush) {
+              router.push({
+                path: state.activeTab.routeFullPath,
+              });
+            }
+          } else if (!tab.stopRouterPush) {
             router.push('/');
-          }
+            }
         }
       }
     });
@@ -353,12 +355,24 @@ export default {
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
     let path = '';
-    if (type === STANDARD_TABLE_LIST_PREFIX) {
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-    } else if (type === 'tableDetailHorizontal') {
-      path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
-    } else if (type === 'tableDetailVertical') {
-      path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+    if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      } else {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      }
+    } else if (type === 'tableDetailHorizontal' || type === 'H') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      } else {
+        path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      }
+    } else if (type === 'tableDetailVertical' || type === 'V') {
+      if (url) {
+        path = `${url.toUpperCase()}`;
+      } else {
+        path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
+      }
     } else if (type === 'tableDetailAction') {
       if (url) {
         path = `${url.toUpperCase()}`;
@@ -368,6 +382,7 @@ export default {
     } else if (type === 'tableDetailUrl') {
       path = `${LINK_MODULE_PREFIX}/${linkName.toUpperCase()}/${linkId}`;
     }
+    
     router.push({
       path
     });

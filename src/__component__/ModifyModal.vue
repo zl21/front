@@ -292,13 +292,16 @@
     line-height:24px;
 }
 .modifyButton{
-  text-align: right;
-  position:absolute;
-  bottom: -4px;
-  right: 0px;
+    text-align: right;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+
 }
 .ModalModify{
   position: relative;
+  max-height: 500px;
+  overflow: auto;
   padding-bottom: 40px
 }
 .pop-formPanel{
