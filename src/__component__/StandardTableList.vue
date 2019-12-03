@@ -357,6 +357,7 @@
       },
       onRowDoubleClick(colDef, row) {
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
+          window.sessionStorage.setItem('dynamicRouting', true);
           let type = '';
           if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;

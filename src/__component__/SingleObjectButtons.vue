@@ -1439,6 +1439,7 @@
         const keepAliveModuleName = this.activeTab.keepAliveModuleName;
         const tabUrl = keepAliveModuleName.substring(0, 1);
         const currentRoute = this.$router.currentRoute.path;
+        console.log(333,routeMapRecord,keepAliveModuleName)
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
