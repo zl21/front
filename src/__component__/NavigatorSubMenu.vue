@@ -27,6 +27,8 @@
 <script>
   import { mapMutations, mapState } from 'vuex';
   import { routeTo } from '../__config__/event.config';
+  import { updateSessionObject } from '../__utils__/sessionStorage';
+
 
   export default {
     name: 'NavigatorSubMenu',
@@ -54,6 +56,15 @@
         const {
           value, id, url 
         } = data;
+        const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
+
+        if (menuType === 'New') {
+          const clickMenuAddSingleObjectData = {
+            k: `/${url}`,
+            v: menuType
+          };
+          updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+        }
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });
