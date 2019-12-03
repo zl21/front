@@ -23,6 +23,7 @@ module.exports = {
   enableJflow: false, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
   jflowRequestDomain: 'http://r3.burgeon.cn:32940', // jflow后台地址
+  // jflowRequestDomain: 'http://10.14.5.198:8080', //客户专用jflow后台地址
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求

@@ -524,11 +524,11 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        clearTimeout(this.setChangeTime);
-        this.setChangeTime = setTimeout(() => {
-          this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
-          this.getStateData();
-        }, 50);
+        // clearTimeout(this.setChangeTime);
+        // this.setChangeTime = setTimeout(() => {
+        // }, 50);
+        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+        this.getStateData();
 
         
         // 注释

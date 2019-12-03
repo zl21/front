@@ -256,7 +256,6 @@
             // }
             this.$loading.hide();
             this.setImportDialogTitle(false);
-
           });
         }
       },
@@ -1591,7 +1590,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (Version === '1.4') {
+            if (Version() === '1.4') {
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1599,7 +1598,7 @@
               document.body.appendChild(eleLink);
               eleLink.click();
               document.body.removeChild(eleLink);
-            } else {
+            } else if (Version() === '1.3') {
               this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({

@@ -140,7 +140,7 @@ export default (router) => {
     const { commit } = store;
     const { keepAliveLists, openedMenuLists } = store.state.global;
     const {
-      tableName, itemId, customizedModuleName, pluginModuleName, linkModuleName,
+      tableName, tableId, itemId, customizedModuleName, pluginModuleName, linkModuleName,
     } = to.params;
     const preventRegisterModule = [CUSTOMIZED_MODULE_PREFIX, PLUGIN_MODULE_PREFIX, LINK_MODULE_PREFIX];
     const { routePrefix } = to.meta;
@@ -158,7 +158,11 @@ export default (router) => {
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
     const paramItemId = String(itemId) === '-1' ? 'New' : `${itemId}`;
+    const paramTableId = tableId;
     const fromParamItemId = String(from.params.itemId) === '-1' ? 'New' : `${from.params.itemId}`;
+    const fromParamTableId = from.params.tableId;
+
+   
     const fromKeepAliveModuleName = getKeepAliveModuleName(from); // 来源字段的keepAliveModuleName，即模块的moduleComponentName
     const originModuleName = getOriginModuleName(to); // 单对象界面对应的原标准列表界面的moduleComponentName
     const keepAliveModuleName = getKeepAliveModuleName(to); // 当前界面对应的keepAliveModuleName，即模块的moduleComponentName
@@ -199,7 +203,7 @@ export default (router) => {
         next({ path: existModule.routeFullPath });
       } else {
         // [返回][新增]动作需要清除当前明细界面模块的keepAlive
-        if (isBack || (paramItemId === 'New' && fromParamItemId !== 'undefined')) {
+        if (isBack || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
         // Step One: 处理菜单Tab页签的显示逻辑。

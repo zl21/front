@@ -4,7 +4,8 @@ import { Version } from '../../constants/global';
 
 const mutations = () => require(`../mutations/version_${Version()}/global.mutations`).default;
 const actions = () => require(`../actions/version_${Version()}/global.actions`).default;
-export default {
+
+export default () => ({
   namespaced: true,
   state: {
     primaryMenuIndex: -1,
@@ -30,13 +31,11 @@ export default {
       dialog: false,
       successMsg: false
     }, // 导出状态
-    exportTasks:{
-
-    },
+    exportTasks: {},
     taskMessageCount: 0, // 我的任务数量
 
     
   },
   mutations: mutations(),
   actions: actions(),
-};
+});
