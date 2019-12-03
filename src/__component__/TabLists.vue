@@ -133,7 +133,6 @@
         }
       },
       handleClose(tag) {
-        debugger
         this.tabCloseAppoint(tag);
       }, // 关闭当前tab
       emptyClick() {
