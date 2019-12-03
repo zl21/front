@@ -56,15 +56,17 @@
         const {
           value, id, url 
         } = data;
-        const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
-
-        if (menuType === 'New') {
-          const clickMenuAddSingleObjectData = {
-            k: `/${url}`,
-            v: menuType
-          };
-          updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+        if (url) {
+          const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
+          if (menuType === 'New') {
+            const clickMenuAddSingleObjectData = {
+              k: `/${url}`,
+              v: menuType
+            };
+            updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+          }
         }
+       
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });
