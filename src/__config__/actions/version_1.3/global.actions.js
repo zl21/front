@@ -65,7 +65,7 @@ export default {
                       exportTask.dialog = true;
                       clearInterval(timer);
                       commit('updateExportedState', exportTask);
-                        resolve();
+                      resolve();
                     }
                     exportTask.exportedState = false;
                   }
@@ -99,7 +99,7 @@ export default {
                           exportTask.file = JSON.parse(exportTask.file);
                           errorList.push({ message: `<a href="${exportTask.file[0].url}" download="download" style="color: #0F8EE9">${exportTask.resultMsg.message}（下载报错信息）</a>` });
                         } else if (!exportTask.file) {
-                          const message= JSON.stringify(exportTask.resultMsg);
+                          const message = JSON.stringify(exportTask.resultMsg);
                           window.vm.$Modal.fcError({
                             mask: true,
                             titleAlign: 'center',
@@ -240,11 +240,13 @@ export default {
       }, 1000);
     }
   },
-  updataTaskMessageCount({ commit }, id) { // 更新我的任务数量
+  updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
     network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
-        commit('updateIgnoreMsg');
+        if (!stopUpdataQuantity) {
+          commit('updateIgnoreMsg');
+        }
       }
     });
   },

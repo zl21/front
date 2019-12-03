@@ -87,7 +87,7 @@
         this.$loading.show();
         network.post('/p/cs/release', urlSearchParams(searchdata))
           .then((res) => {
-            this.$loading.show();
+            this.$loading.hide();
             if (res.data.code !== 0) {
               return;
             }

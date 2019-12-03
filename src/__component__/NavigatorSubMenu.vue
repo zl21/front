@@ -58,10 +58,11 @@
         } = data;
         if (url) {
           const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
+          const modifyPageUrl = url.substring(0, Number(url.length) - 3);
           if (menuType === 'New') {
             const clickMenuAddSingleObjectData = {
               k: `/${url}`,
-              v: menuType
+              v: modifyPageUrl
             };
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
           }

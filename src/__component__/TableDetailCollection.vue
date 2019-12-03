@@ -518,56 +518,60 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       imporSuccess(id) {
-        if (id) {
-          this.updateExportedState({});
-          const promises = new Promise((resolve, reject) => {
-            this.getExportedState({
-              objid: id, id, resolve, reject 
+        if (Version() === '1.3') {
+          if (id) {
+            this.updateExportedState({});
+            const promises = new Promise((resolve, reject) => {
+              this.getExportedState({
+                objid: id, id, resolve, reject 
+              });
             });
-          });
-          promises.then(() => {
-            this.$loading.hide();
-            this.closeImportDialog();
-            if (this.exportTasks.dialog) {
-              const message = {
-                mask: true,
-                title: '提醒',
-                content: ' 本次操作已后台处理，是否至[我的任务]查看',
-                showCancel: true,
-                onOk: () => {
-                  const type = 'tableDetailVertical';
-                  const tab = {
-                    type,
-                    tableName: 'CP_C_TASK',
-                    tableId: '24386',
-                    id
-                  };
-                  this.tabOpen(tab);
-                  this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
-                }
-              };
-              this.$Modal.fcWarning(message);
-            }
-            if (this.exportTasks.successMsg) {
-              const data = {
-                mask: true,
-                title: '成功',
-                content: this.exportTasks.resultMsg
-              };
-              this.$Message.success(data);
-            }
-          }, () => {
-            // if (this.exportTasks.warningMsg) {
-            //   const data = {
-            //     mask: true,
-            //     title: '错误',
-            //     content: `${this.exportTasks.resultMsg}`
-            //   };
-            //   this.$Modal.error(data);
-            // }
-            this.$loading.hide();
-            this.closeImportDialog();
-          });
+            promises.then(() => {
+              this.$loading.hide();
+              this.closeImportDialog();
+              if (this.exportTasks.dialog) {
+                const message = {
+                  mask: true,
+                  title: '提醒',
+                  content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                  showCancel: true,
+                  onOk: () => {
+                    const type = 'tableDetailVertical';
+                    const tab = {
+                      type,
+                      tableName: 'CP_C_TASK',
+                      tableId: '24386',
+                      id
+                    };
+                    this.tabOpen(tab);
+                    this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
+                  }
+                };
+                this.$Modal.fcWarning(message);
+              }
+              if (this.exportTasks.successMsg) {
+                const data = {
+                  mask: true,
+                  title: '成功',
+                  content: this.exportTasks.resultMsg
+                };
+                this.$Message.success(data);
+              }
+            }, () => {
+              // if (this.exportTasks.warningMsg) {
+              //   const data = {
+              //     mask: true,
+              //     title: '错误',
+              //     content: `${this.exportTasks.resultMsg}`
+              //   };
+              //   this.$Modal.error(data);
+              // }
+              this.$loading.hide();
+              this.closeImportDialog();
+            });
+          }
+        } else {
+          this.$loading.hide();
         }
       },
       getEditAbleId(data) {

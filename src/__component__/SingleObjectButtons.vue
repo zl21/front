@@ -99,6 +99,7 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { hideMenu } from '../__config__/event.config';
 
 
   export default {
@@ -182,6 +183,7 @@
       tabcmd: {
         handler(val) {
           if (Object.keys(val).length > 0) {
+            this.hideBackButton();
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
               if (this.itemName !== this.tableName) { // 以下配置仅控制子表
@@ -249,6 +251,7 @@
       },
       tabwebact: {
         handler(val) {
+          this.hideBackButton();
           this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemId === 'New') { // 新增按钮渲染逻辑
@@ -435,57 +438,61 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'decreasekeepAliveLists', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
-        if (id) {
-          const promises = new Promise((resolve, reject) => {
-            this.getExportedState({
-              objid: id, id, resolve, reject 
+        if (Version() === '1.3') {
+          if (id) {
+            const promises = new Promise((resolve, reject) => {
+              this.getExportedState({
+                objid: id, id, resolve, reject 
+              });
             });
-          });
-          promises.then(() => {
-            this.$loading.hide();
-            this.closeActionDialog();
-            if (this.exportTasks.dialog) {
-              const message = {
-                mask: true,
-                title: '提醒',
-                content: ' 本次操作已后台处理，是否至[我的任务]查看',
-                showCancel: true,
-                onOk: () => {
-                  const type = 'tableDetailVertical';
-                  const tab = {
-                    type,
-                    tableName: 'CP_C_TASK',
-                    tableId: '24386',
-                    id
-                  };
-                  this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
-                  this.tabOpen(tab);
-                }
-              };
-              this.$Modal.fcWarning(message);
-            }
-            if (this.exportTasks.successMsg) {
-              const data = {
-                mask: true,
-                title: '成功',
-                content: this.exportTasks.resultMsg
-              };
-              this.$Modal.fcSuccess(data);
-            }
-          }, () => {
-            // if (this.exportTasks.warningMsg) {
-            //   const data = {
-            //     mask: true,
-            //     title: '错误',
-            //     content: `${this.exportTasks.resultMsg}`
-            //   };
-            //   this.$Modal.fcError(data);
-            // }
-            this.closeActionDialog();
-            this.$loading.hide();
-          });
+            promises.then(() => {
+              this.$loading.hide();
+              this.closeActionDialog();
+              if (this.exportTasks.dialog) {
+                const message = {
+                  mask: true,
+                  title: '提醒',
+                  content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                  showCancel: true,
+                  onOk: () => {
+                    const type = 'tableDetailVertical';
+                    const tab = {
+                      type,
+                      tableName: 'CP_C_TASK',
+                      tableId: '24386',
+                      id
+                    };
+                    this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
+                    this.tabOpen(tab);
+                  }
+                };
+                this.$Modal.fcWarning(message);
+              }
+              if (this.exportTasks.successMsg) {
+                const data = {
+                  mask: true,
+                  title: '成功',
+                  content: this.exportTasks.resultMsg
+                };
+                this.$Modal.fcSuccess(data);
+              }
+            }, () => {
+              // if (this.exportTasks.warningMsg) {
+              //   const data = {
+              //     mask: true,
+              //     title: '错误',
+              //     content: `${this.exportTasks.resultMsg}`
+              //   };
+              //   this.$Modal.fcError(data);
+              // }
+              this.closeActionDialog();
+              this.$loading.hide();
+            });
+          }
+        } else {
+          this.$loading.hide();
         }
       },
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
@@ -1426,14 +1433,39 @@
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
       },
-      clickButtonsBack() { // 按钮返回事件       
+      clickButtonsBack() { // 按钮返回事件    
         const { tableId, tableName } = this.$route.params;
-        const param = {
-          tableId,
-          tableName,
-          back: true,
-        };
-        this.$store.commit('global/tabHref', param);
+        const routeMapRecord = getSeesionObject('routeMapRecord');
+        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const tabUrl = keepAliveModuleName.substring(0, 1);
+        const currentRoute = this.$router.currentRoute.path;
+
+        if (routeMapRecord[keepAliveModuleName]) {
+          const param = {
+            type: tabUrl,
+            url: routeMapRecord[keepAliveModuleName]
+          };
+          this.tabOpen(param);
+          deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ tableName, routeFullPath: currentRoute, stopRouterPush: true });
+        } else {
+          const param = {
+            tableId,
+            tableName,
+            back: true,
+          };
+          this.tabHref(param);
+        }
+      },
+      hideBackButton() {
+        const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+        const currentRoute = this.$router.currentRoute.path;
+        if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
+          this.dataArray.back = false;
+          // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+          updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+        }
       },
       getbuttonGroupData(tabcmd) { // 按钮渲染逻辑
         const tabcmdData = tabcmd;
@@ -2501,7 +2533,8 @@
         if (!event.detail.updataLoading) {
           this.$loading.hide();
         }
-      }
+      },
+    
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
       //     if (button.vuedisplay === 'edit') {
@@ -2528,13 +2561,7 @@
       // window.removeEventListener('globalNotice', this.updataLoading);
     },
     mounted() {
-      const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
-      const currentRoute = this.$router.currentRoute.path;
-      if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
-        this.dataArray.back = false;
-        deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
-        updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
-      }
+      this.hideBackButton();
       // if (this.objectType === 'horizontal') { // 横向布局
       //   this.tabPanel.every((item) => {
       //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {
