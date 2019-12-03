@@ -279,8 +279,7 @@
       onSaveSuccess(data) {
         // 重新请求
         this.modifyDialogshow = false;
-        console.log(data,);
-        this.$Message.info(data.message);
+        this.$Message.success(data.message);
         this.getQueryList();
       },
       getQueryList() {
