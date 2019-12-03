@@ -921,7 +921,10 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
-       
+        //  display none
+        if (current.display === 'none') {
+          obj.show = false;
+        }
        
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
