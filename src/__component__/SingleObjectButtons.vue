@@ -1290,7 +1290,7 @@
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
-            if (Version === '1.4') {
+            if (Version() === '1.4') {
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', path);

@@ -177,7 +177,11 @@ export default {
     }
   },
   decreasekeepAliveLists(state, name) {
+    console.log('0', state.keepAliveLists);
+    console.log(1, name);
     state.keepAliveLists.splice(state.keepAliveLists.indexOf(name), 1);
+
+    console.log(2, state.keepAliveLists);
   },
   toggleActiveMenu(state, index) {
     state.openedMenuLists.forEach((d) => { d.isActive = false; });

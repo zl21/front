@@ -256,7 +256,6 @@
             // }
             this.$loading.hide();
             this.setImportDialogTitle(false);
-
           });
         }
       },
@@ -1591,7 +1590,7 @@
         });
         promise.then(() => {
           if (this.buttons.exportdata) {
-            if (Version === '1.4') {
+            if (Version() === '1.4') {
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
