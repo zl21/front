@@ -277,9 +277,10 @@
       onCancleSuccess() {
         this.modifyDialogshow = false;
       },
-      onSaveSuccess() {
+      onSaveSuccess(data) {
         // 重新请求
         this.modifyDialogshow = false;
+        this.$Message.success(data.message);
         this.getQueryList();
       },
       getQueryList() {
@@ -902,13 +903,11 @@
       },
       freshDropDownSelectFilterAutoData(res, index, type) {
         // 外键的模糊搜索数据更新
-        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];
-        console.log(this.formItemsLists[index].item);
+        this.formItemsLists[index].item.props.hidecolumns = ['id', 'value'];        
         if (type === 'empty') {
           this.formItemsLists[index].item.props.defaultSelected = [];
 
           // this.formItemsLists[index].item.props.AutoData = [];
-          console.log(this.formItemsLists[index].item.props);
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }
