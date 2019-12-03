@@ -11,7 +11,7 @@ import {
 } from '../../../constants/global';
 import router from '../../router.config';
 import customize from '../../customize.config';
-import { getSeesionObject, updateSessionObject } from '../../../__utils__/sessionStorage';
+import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
 
 
 export default {
@@ -93,15 +93,6 @@ export default {
   },
 
   updateMenuLists(state, menuLists) {
-    menuLists.forEach((k) => {
-      k.children.forEach((a) => {
-        a.children.forEach((q, i) => {
-          if (q.isHidden) {
-            a.children.splice(i, 1);
-          }
-        });
-      });
-    });
     state.menuLists = menuLists;
     if (menuLists.length > 0) {
       state.keepAliveLabelMaps = menuLists
@@ -124,6 +115,23 @@ export default {
                 const index = c.url.lastIndexOf('/');
                 const customizedModuleName = c.url.substring(index + 1, c.url.length);
                 a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+              } else if (actionType === 'SYSTEM') {
+                const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
+                const id = i.substring(i.lastIndexOf('/') + 1, i.length);
+                const n = i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
+                const name = n.substring(n.lastIndexOf('/') + 1, n.length);
+                a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
+                const menuType = c.url.substring(c.url.lastIndexOf('/') + 1, c.url.length);
+                const modifyPageUrl = c.url.substring(0, Number(c.url.length) - 3);
+                if (menuType === 'New') {
+                  console.log(444,c.url)
+
+                  const clickMenuAddSingleObjectData = {
+                    k: `/${c.url}`,
+                    v: modifyPageUrl
+                  };
+                  updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+                }
               }
             }
           } else if (c.type === 'table') {
@@ -173,7 +181,7 @@ export default {
         }
       });
     }
-    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
+    // state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
@@ -260,6 +268,14 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
+    Object.values(clickMenuAddSingleObjectData).map((item) => {
+      const routeFullPath = state.activeTab.routeFullPath;
+      const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
+      if (routeFullPath.indexOf(item) !== -1) {
+        deleteFromSessionObject('clickMenuAddSingleObject', resRouteFullPath);
+      }
+    });
     const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。

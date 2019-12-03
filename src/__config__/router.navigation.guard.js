@@ -265,7 +265,7 @@ export default (router) => {
     if (isFromStandardTable && isTableDetail && isNotFromSameTable) {
       updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
     }
-
-    
+    const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/')+1);
+    updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
   });
 };
