@@ -197,6 +197,7 @@
         }
       },
       $route() {
+        
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (this.$route.query.isBack && !this._inactive) {
@@ -206,14 +207,21 @@
       },
     },
     methods: {
+<<<<<<< HEAD
       ...mapActions('global', ['updateAccessHistory', 'getExportedState','updataTaskMessageCount']),
+=======
+      ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount']),
+>>>>>>> v1.4
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       imporSuccess(id) {
-        if (id) {
-          const promises = new Promise((resolve, reject) => {
-            this.getExportedState({
-              objid: id, id, resolve, reject 
+        if (Version() === '1.3') {
+          if (id) {
+            const promises = new Promise((resolve, reject) => {
+              this.getExportedState({
+                objid: id, id, resolve, reject 
+              });
             });
+<<<<<<< HEAD
           });
           promises.then(() => {
             this.setImportDialogTitle(false);
@@ -258,6 +266,54 @@
             this.$loading.hide();
             this.setImportDialogTitle(false);
           });
+=======
+            promises.then(() => {          
+              this.setImportDialogTitle(false);
+              this.$loading.hide();
+              if (this.exportTasks.dialog) {
+                const message = {
+                  mask: true,
+                  title: '提醒',
+                  content: ' 本次操作已后台处理，是否至[我的任务]查看',
+                  showCancel: true,
+                  onOk: () => {
+                    const type = 'tableDetailVertical';
+                    const tab = {
+                      type,
+                      tableName: 'CP_C_TASK',
+                      tableId: '24386',
+                      id
+                    };
+                    this.tabOpen(tab);
+                    this.updataTaskMessageCount({ id, stopUpdataQuantity: true });
+                  }
+                };
+                this.$Modal.fcWarning(message);
+              }
+              if (this.exportTasks.successMsg) {
+                const data = {
+                  mask: true,
+                  title: '成功',
+                  content: `${this.exportTasks.resultMsg}`
+                };
+                this.$Modal.fcSuccess(data);
+              }
+            }, () => {
+              // if (this.exportTasks.warningMsg) {
+              //   const data = {
+              //     mask: true,
+              //     title: '错误',
+              //     content: `${this.exportTasks.resultMsg}`
+              //   };
+              //   this.$Modal.fcError(data);
+              // }
+              this.$loading.hide();
+              this.setImportDialogTitle(false);
+            });
+          }
+        } else {
+          this.$loading.hide();
+>>>>>>> v1.4
         }
       },
       commonTableCustomizedDialog(params) {
@@ -1623,6 +1679,7 @@
                       };
                        this.updataTaskMessageCount(this.buttons.exportdata);
                       this.tabOpen(tab);
+                      this.updataTaskMessageCount({ id: this.buttons.exportdata, stopUpdataQuantity: true });
                     }
                   };
                   this.$Modal.fcWarning(message);
