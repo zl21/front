@@ -510,14 +510,12 @@
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const {
-            reftableid, reftablename, refobjid, reftabdesc 
-          } = rowData[colDef.colId];
-          this.addKeepAliveLabelMaps({ name: `S.${reftablename}.${reftableid}`, label: reftabdesc });
-          updateSessionObject('keepAliveLabelMaps', { k: `S.${reftablename}.${reftableid}`, v: reftabdesc });
+            objdistype, reftableid, reftable, reftabdesc: fkdesc, serviceId
+          } = colDef;
           let type = '';
-          if (colDef.objdistype === 'tabpanle') { // 上下结构
+          if (objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
-          } else if (colDef.objdistype === 'object') {
+          } else if (objdistype === 'object') {
             type = 'tableDetailVertical';
           } else {
             const data = {
@@ -529,10 +527,12 @@
             return;
           }
           this.tabHref({
-            id: refobjid,
-            tableName: reftablename,
+            id: rowData.ID.val,
+            tableName: reftable,
             tableId: reftableid,
-            type
+            type,
+            label: fkdesc,
+            serviceId
           });
         }
         if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {
@@ -1619,6 +1619,7 @@
         }
       },
       batchExport() {
+        this.$loading.show();
         let searchData = {};
         const { tableName } = this.$route.params;
         // 导出
@@ -1645,6 +1646,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') {
+              this.$loading.hide();
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1653,7 +1655,6 @@
               eleLink.click();
               document.body.removeChild(eleLink);
             } else if (Version() === '1.3') {
-              this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttons.exportdata, id: this.buttons.exportdata, resolve, reject 
@@ -1692,6 +1693,7 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
+                  this.$loading.hide();
                   const data = {
                     mask: true,
                     title: '错误',
@@ -1699,10 +1701,13 @@
                   };
                   this.$Modal.fcError(data);
                 }
-                this.$loading.hide();
               });
             }
+          } else {
+            this.$loading.hide();
           }
+        }, () => {
+          this.$loading.hide();
         });
       },
       deleteTableList() { // 删除方法
