@@ -318,7 +318,7 @@
             };
             this.directionalRouter(param);// 定向路由跳转方法
             return;
-          } if (row._OBJTYPE.val === 'object') {
+          } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
           } else if (row._OBJTYPE.val === 'tabpanle') { // 左右结构
