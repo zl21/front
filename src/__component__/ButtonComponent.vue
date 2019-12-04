@@ -276,6 +276,7 @@
           printIdArray = this.idArray;
           if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
             const data = {
+              mask: true,
               title: '警告',
               content: '请先选择需要打印预览的记录！'
             };
@@ -283,6 +284,7 @@
             return;
           } if (printIdArray.length === 0 && id === 2527) { // 直接打印
             const data = {
+              mask: true,
               title: '警告',
               content: '请先选择需要直接打印的记录！'
             };

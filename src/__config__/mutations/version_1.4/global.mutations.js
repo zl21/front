@@ -312,7 +312,7 @@ export default {
     });
   }, // 关闭当前tab
   tabHref(state, {// 当前tab更换路由
-    back, type, tableName, tableId, id, label, gateWay
+    back, type, tableName, tableId, id, label, serviceId
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -321,11 +321,10 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // gateWay:网关
-    
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
-      state.serviceIdMap[tableName] = `${gateWay}`;
+      state.serviceIdMap[tableName] = `${serviceId}`;
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label
@@ -336,7 +335,7 @@ export default {
     if (state.serviceIdMap[tableName] === undefined) {
       const serviceIdMapObj = {
         k: tableName,
-        v: gateWay
+        v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
@@ -361,7 +360,7 @@ export default {
   },
   tabOpen(state, {// 打开一个新tab添加路由
     type, tableName, tableId, id, customizedModuleName, customizedModuleId, linkName,
-    linkId, url, label, gateWay
+    linkId, url, label, serviceId
   }) {
     // back:返回标志, 
     // type:跳转类型,
@@ -369,11 +368,11 @@ export default {
     // tableId:主表ID,
     // id:明细ID,
     // label:显示名称, 
-    // gateWay:网关
+    // serviceId:网关
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
-      state.serviceIdMap[tableName] = `${gateWay}`;
+      state.serviceIdMap[tableName] = `${serviceId}`;
       const keepAliveLabelMapsObj = {
         k: keepAliveModuleName,
         v: label
@@ -384,7 +383,7 @@ export default {
     if (state.serviceIdMap[tableName] === undefined) {
       const serviceIdMapObj = {
         k: tableName,
-        v: gateWay
+        v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
     }
