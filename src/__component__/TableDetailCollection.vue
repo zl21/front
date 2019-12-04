@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3332,11 +3332,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
+              this.$loading.hide();
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -3349,7 +3351,6 @@
               document.body.removeChild(eleLink);
             } else {
               this.updateExportedState({});
-              this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
@@ -3388,17 +3389,18 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  const data = {
+                  this.$Modal.fcError({
                     mask: true,
                     title: '错误',
-                    content: `${this.exportTasks.resultMsg}`
-                  };
-                  this.$Modal.error(data);
+                    content: `${this.exportTasks.resultMsg}`,
+                  });
                 }
                 this.$loading.hide();
               });
+              this.getTabelList(1);
             }
-            this.getTabelList(1);
+          } else {
+            this.$loading.hide();
           }
         });
       },
