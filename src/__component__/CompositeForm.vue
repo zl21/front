@@ -811,6 +811,11 @@
                   startindex: 0,
                   range: $this.pageSize
                 };
+                // 多值查询判断
+                const refArray = this.getRefcolvalArray(current);
+                if (refArray[0]) {
+                  searchObject.fixedcolumns = refArray[1];
+                }
               }
               fkHttpRequest().fkQueryList({
                 searchObject,
@@ -906,6 +911,11 @@
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
                 };
+                // 多值查询判断
+                const refArray = this.getRefcolvalArray(current);
+                if (refArray[0]) {
+                  searchObject.fixedcolumns = refArray[1];
+                }
               }              
               
               fkHttpRequest().fkQueryList({
@@ -952,6 +962,27 @@
       },
       getsetAttsetProps() {
         return this.setAttsetProps;
+      },
+      getRefcolvalArray(current) {
+        // 获取 多值查询
+        // eslint-disable-next-line no-unused-vars
+        if (current.webconf && current.webconf.refcolvalArray) {
+          const refVal = current.webconf.refcolvalArray.reduce((arr, item) => {
+            if (item.maintable) {
+              this.getStateData(); // 获取主表信息
+              const refcolval = this.refcolvalAll[item.srccol]
+                ? this.refcolvalAll[item.srccol]
+                : '';
+              arr[item.fixcolumn] = `=${refcolval || ''}`;
+            } else {
+              const data = Object.assign(this.defaultFormData, this.formData);
+              arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
+            }
+            return arr;
+          }, {});
+          return [true, refVal];
+        }
+        return [false];
       },
       getLinkData(current) {
         // 获取表信息
@@ -1059,13 +1090,6 @@
           return false;
         }
         let sendData = {};
-
-        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-        let LinkageFormInput = '';
-
-        if (current.refcolval && current.refcolval.srccol) {
-          LinkageFormInput = LinkageForm[current.refcolval.srccol];
-        }
         const check = this.getLinkData(current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
@@ -1087,6 +1111,13 @@
             colid: current.colid,
             fixedcolumns: {}
           }; 
+          // 多值查询判断
+          const refArray = this.getRefcolvalArray(current);
+          if (refArray[0]) {
+            sendData.fixedcolumns = {
+              whereKeys: refArray[1]
+            }; 
+          }
         }
         if (!check[0]) {
           return false;
