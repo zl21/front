@@ -459,14 +459,12 @@
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const {
-            reftableid, reftablename, refobjid, reftabdesc 
-          } = rowData[colDef.colId];
-          this.addKeepAliveLabelMaps({ name: `S.${reftablename}.${reftableid}`, label: reftabdesc });
-          updateSessionObject('keepAliveLabelMaps', { k: `S.${reftablename}.${reftableid}`, v: reftabdesc });
+            objdistype, reftableid, reftable, reftabdesc: fkdesc, serviceId
+          } = colDef;
           let type = '';
-          if (colDef.objdistype === 'tabpanle') { // 上下结构
+          if (objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
-          } else if (colDef.objdistype === 'object') {
+          } else if (objdistype === 'object') {
             type = 'tableDetailVertical';
           } else {
             const data = {
@@ -478,10 +476,12 @@
             return;
           }
           this.tabHref({
-            id: refobjid,
-            tableName: reftablename,
+            id: rowData.ID.val,
+            tableName: reftable,
             tableId: reftableid,
-            type
+            type,
+            label: fkdesc,
+            serviceId
           });
         }
         if (colDef.customerurl && Object.keys(colDef.customerurl).length > 0) {

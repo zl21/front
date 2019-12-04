@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+                >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -2602,20 +2602,11 @@
             click: (event) => {
               // TODO 外键关联跳转
               const data = this.dataSource.row[params.index][cellData.colname];
+              let type = '';
               if (cellData.objdistype === 'object') {
-                this.tabOpen({
-                  type: 'tableDetailVertical',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  id: data.refobjid
-                });
+                type = 'V';
               } else if (cellData.objdistype === 'tabpanle') {
-                this.tabOpen({
-                  type: 'tableDetailHorizontal',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  id: data.refobjid
-                });
+                type = 'H';
               } else {
                 const datas = {
                   mask: true,
@@ -2623,7 +2614,16 @@
                   content: '请设置外键关联表的显示配置'
                 };
                 this.$Modal.fcWarning(datas);
+                return;
               }
+              this.tabOpen({
+                type,
+                tableName: data.reftablename,
+                tableId: data.reftableid,
+                id: data.refobjid,
+                serviceId: data.serviceId,
+                label: data.reftabdesc
+              });
               // event.stopPropagation();
             }
           }
