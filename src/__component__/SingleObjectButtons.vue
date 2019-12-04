@@ -653,11 +653,6 @@
           this.getObjectForMainTableForm({
             table: this.tableName, objid: this.itemId, tabIndex
           });
-          // if (tabrelation === '1:m') {
-
-          // }else if (tabrelation === '1:1') {
-
-          // }
           this.getObjectTabForMainTable({
             table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
           });
@@ -1224,7 +1219,7 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
-          if (this.isrefrsh) {
+          if (tab.isrefrsh) {
             this.upData();
           }
         }, () => {
@@ -1239,14 +1234,10 @@
           title,
         };
         this.dialogConfig.footerHide = true;
-        // this.actionDialog.show = true;
-        // this.actionDialog.title = tab.webdesc;
         const url = tab.action;
         const index = url.lastIndexOf('/');
         const filePath = url.substring(index + 1, url.length);
-        // Vue.component(filePath, CustomizeModule[filePath].component);
         this.dialogComponentName = filePath;
-        // }
       },
       objectEXPORT() { // 导出功能
         let page = {};
@@ -1598,7 +1589,6 @@
               buttonData.splice(index);
             }
             this.dataArray.waListButtonsConfig.waListButtons.push(item);
-            this.isrefrsh = item.isrefrsh;
           });
         }
       },
