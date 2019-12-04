@@ -9,7 +9,8 @@
       :key="`subMenu-${index}`"
       class="menu-group"
     >
-      <li v-if="subMenu.children.length>0" class="title">
+      <li v-if="subMenu.children.length>0"
+class="title">
         {{ subMenu.label }}
       </li>
       <li
@@ -40,7 +41,7 @@
         default: () => []
       }
     },
-
+   
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
