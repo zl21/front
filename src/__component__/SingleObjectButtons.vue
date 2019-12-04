@@ -1439,7 +1439,6 @@
         const keepAliveModuleName = this.activeTab.keepAliveModuleName;
         const tabUrl = keepAliveModuleName.substring(0, 1);
         const currentRoute = this.$router.currentRoute.path;
-        console.log(333,routeMapRecord,keepAliveModuleName)
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
@@ -2537,7 +2536,7 @@
         } else {
           const addRouteToEditorData = getSeesionObject('addRouteToEditor');
           Object.keys(addRouteToEditorData).map((a) => {
-            if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a]&&currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
+            if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
               this.dataArray.back = false;
               deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
             }
