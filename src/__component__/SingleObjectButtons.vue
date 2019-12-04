@@ -1225,7 +1225,7 @@
         }, () => {
           this.$loading.hide();
         });
-      }
+      },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
         const title = `${tab.webdesc}`;
