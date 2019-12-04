@@ -862,9 +862,10 @@
           };
           this.$Modal.fcSuccess(data);
           if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
-            const dom = document.getElementById('hideRefresh');
-            const myEvent = new Event('click');
-            dom.dispatchEvent(myEvent);
+            // const dom = document.getElementById('hideRefresh');
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
+            this.refresh();
           }
         }, () => {
           this.$loading.hide();
@@ -895,10 +896,41 @@
       },
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
-          const dom = document.getElementById('hideRefresh');
-          const myEvent = new Event('click');
-          dom.dispatchEvent(myEvent);
+          this.refresh();
+          this.isrefrsh = '';
+          // const dom = document.getElementById('hideRefresh');
+          // const myEvent = new Event('click');
+          // dom.dispatchEvent(myEvent);
         }
+      },
+      refresh() {
+        const { itemId, tableName } = this.$route.params;
+        this.getObjectForMainTableForm({
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex
+        });
+        this.getObjectTabForMainTable({
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo 
+        });
+        const fixedcolumns = {};
+        if (this.searchCondition) {
+          fixedcolumns[this.searchCondition] = this.searchInfo;
+        }
+        const params = {
+          table: tableName,
+          objid: itemId,
+          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
+        };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          params.searchdata.orderby = this.currentOrderList;
+        }
+        this.getObjectTableItemForTableData(params);
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;

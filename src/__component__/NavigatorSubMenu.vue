@@ -9,7 +9,8 @@
       :key="`subMenu-${index}`"
       class="menu-group"
     >
-      <li class="title">
+      <li v-if="subMenu.children.length>0" class="title">
+        {{ subMenu.children.length }}
         {{ subMenu.label }}
       </li>
       <li
@@ -19,7 +20,7 @@
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ endMenu.label}}
+        {{ endMenu.label }}
       </li>
     </ul>
   </div>
@@ -40,6 +41,23 @@
         default: () => []
       }
     },
+    // watch: {
+    //   data: {
+    //     handler(val) {
+    //       val.forEach((d) => {
+    //          d.filter(item => item !== 5);
+    //         // d.children.forEach((c) => {
+    //         //     if(!c.isHidden){
+    //         //       delete c;
+    //         //     }
+    //         // });
+    //       });
+
+    //       this.data = val.concat([]);
+    //     },
+    //     deep: true
+    //   },
+    // },
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
