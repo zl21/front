@@ -9,7 +9,7 @@
       :key="`subMenu-${index}`"
       class="menu-group"
     >
-      <li class="title">
+      <li v-if="subMenu.children.length>0" class="title">
         {{ subMenu.label }}
       </li>
       <li
@@ -19,7 +19,7 @@
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ endMenu.label}}
+        {{ endMenu.label }}
       </li>
     </ul>
   </div>
@@ -40,6 +40,7 @@
         default: () => []
       }
     },
+
     computed: {
       ...mapState('global', {
         collapseHistoryAndFavorite: state => state.collapseHistoryAndFavorite,
