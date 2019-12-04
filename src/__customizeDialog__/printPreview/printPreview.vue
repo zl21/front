@@ -56,12 +56,13 @@
     mounted() {
       const userId = this.userInfo.id;// 用户ID
       const { tableName } = router.currentRoute.params;// 明细ID
-      let printIds = [];
-
+      let printIds = [] || '';
       if (this[MODULE_COMPONENT_NAME][0] === 'S') {
         printIds = this.idArray;
       } else {
-        printIds = this.itemId;
+        const { itemId } = this.$route.params;
+        printIds = itemId;
+        // printIds = this.itemId;
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
       // network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {

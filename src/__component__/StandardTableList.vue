@@ -197,7 +197,6 @@
         }
       },
       $route() {
-        
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (this.$route.query.isBack && !this._inactive) {
@@ -464,8 +463,6 @@
           } = rowData[colDef.colId];
           this.addKeepAliveLabelMaps({ name: `S.${reftablename}.${reftableid}`, label: reftabdesc });
           updateSessionObject('keepAliveLabelMaps', { k: `S.${reftablename}.${reftableid}`, v: reftabdesc });
-          //  tableDetailHorizontal
-          // tableDetailVertical
           let type = '';
           if (colDef.objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
