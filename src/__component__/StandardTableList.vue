@@ -321,7 +321,7 @@
           } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
-          } else if (row._OBJTYPE.val === 'tabpanle') { // 左右结构
+          } else if (row._OBJTYPE && row._OBJTYPE.val === 'tabpanle') { // 左右结构
             type = 'tableDetailHorizontal';
           } else {
             const data = {
