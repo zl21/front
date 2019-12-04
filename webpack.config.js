@@ -60,8 +60,9 @@ module.exports = env => ({
         target
       },
       {
-        context: '/api/rpt',
-        target: 'http://47.99.229.124:9093' // 打印
+        context: '/api',
+        // target: 'http://47.99.229.124:9093' // 打印
+        target: 'http://106.15.24.156:19999' // 打印李宁环境
       },
       {
         context: '/jflow',

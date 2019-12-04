@@ -109,6 +109,7 @@
         :footer-hide="dialogConfig.footerHide"
         :confirm="dialogConfig.confirm"
         :item-id="itemId"
+        :closable="true"
         :dialog-component-name="dialogComponentName"
         @clearDialogComponentName="clearDialogComponentName"
         @clearSelectIdArray="clearSelectIdArray"
@@ -270,11 +271,12 @@
             printContent = item;
           }
         });
-        let printIdArray = [];
+        let printIdArray = [] || '';
         if (this[MODULE_COMPONENT_NAME][0] === 'S') { // 只有列表界面需要勾选明细
           printIdArray = this.idArray;
           if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
             const data = {
+              mask: true,
               title: '警告',
               content: '请先选择需要打印预览的记录！'
             };
@@ -282,17 +284,21 @@
             return;
           } if (printIdArray.length === 0 && id === 2527) { // 直接打印
             const data = {
+              mask: true,
               title: '警告',
               content: '请先选择需要直接打印的记录！'
             };
             this.$Modal.fcWarning(data);
             return;
           }
+        } else {
+          const { itemId } = this.$route.params;
+          printIdArray = itemId;
         }
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
          
-          network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`).then((res) => {
+          network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}`).then((res) => {
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
