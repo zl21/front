@@ -9,6 +9,7 @@
       :width="width"
       :loading="loading"
       :title-align="titleAlign"
+      @on-cancle="oncancle"
       :footer-hide="true"
     >
       <div
@@ -293,9 +294,9 @@
 }
 .modifyButton{
     text-align: right;
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
 
 }
 .ModalModify{
