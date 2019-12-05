@@ -519,19 +519,19 @@
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
-          if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
-              this.addButtonShow(buttonData);
-            } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(buttonData);
-            }
-          } else if (this.objectType === 'vertical') {
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-              this.addButtonShow(buttonData);
-            } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(buttonData);
-            }
+          // if (this.objectType === 'horizontal') { // 横向布局
+          if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
+            this.addButtonShow(buttonData);
+          } else { // 新增按钮渲染逻辑
+            this.getbuttonGroupData(buttonData);
           }
+          // } else if (this.objectType === 'vertical') {
+          //   if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+          //     this.addButtonShow(buttonData);
+          //   } else { // 新增按钮渲染逻辑
+          //     this.getbuttonGroupData(buttonData);
+          //   }
+          // }
           if (this.copy === true) {
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);
@@ -1479,6 +1479,7 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
+                   
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1665,7 +1666,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        this.clickButtonsBack();
+                        this.deleteSuccessEvent();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
@@ -1694,7 +1695,7 @@
                     promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }, () => {
                       const deleteMessage = this.buttonsData.deleteData;
@@ -1845,7 +1846,7 @@
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
@@ -1874,7 +1875,7 @@
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
@@ -1904,7 +1905,7 @@
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
+                  this.deleteSuccessEvent();
                   // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
@@ -1933,7 +1934,7 @@
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
+                  this.deleteSuccessEvent();
                   // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
@@ -1954,7 +1955,17 @@
           });
         }
       },
-
+      deleteSuccessEvent() {
+        const value = this.hideBackButton();
+        if (value) {
+          const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+          const currentRoute = this.$router.currentRoute.path;
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+        } else {
+          this.clickButtonsBack();
+        }
+      },
       objectAdd() { // 新增
         const id = 'New';
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
@@ -2526,16 +2537,23 @@
             this.dataArray.back = false;
             // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+            return true;
           }
-        } else {
-          const addRouteToEditorData = getSeesionObject('addRouteToEditor');
-          Object.keys(addRouteToEditorData).map((a) => {
-            if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
-              this.dataArray.back = false;
-              deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
-            }
-          });
+          return false;
+        } 
+        const addRouteToEditorData = getSeesionObject('addRouteToEditor');
+        let flag = false;
+        Object.keys(addRouteToEditorData).some((a) => {
+          if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
+            flag = true;
+          }
+        });
+        if (flag) {
+          this.dataArray.back = false;
+          deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+          return true;
         }
+        return false;
       },
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {
