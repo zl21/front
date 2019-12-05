@@ -28,10 +28,14 @@ export default {
 =======
   version: '1.7.1',
 <<<<<<< HEAD
+<<<<<<< HEAD
   temporaryVersion: '1.7.5',
 >>>>>>> v1.4
 =======
   temporaryVersion: '1.7.6',
+>>>>>>> v1.4
+=======
+  temporaryVersion: '1.7.7',
 >>>>>>> v1.4
   /**
    * @param projectConfig 项目配置
