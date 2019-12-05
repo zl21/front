@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="isShow"
     class="navigator-primary-menu"
     :class="{ active: index === primaryMenuIndex }"
     @click.stop="togglePrimaryMenu(data.children)"
@@ -7,18 +8,22 @@
     {{ data.label }}
   </div>
 </template>
-
 <script>
   import { mapState, mapMutations } from 'vuex';
 
   export default {
+
     name: 'NavigatorPrimaryMenu',
     components: {
     },
+  
     computed: {
       ...mapState('global', {
         primaryMenuIndex: state => state.primaryMenuIndex,
-      })
+      }),
+      isShow() {
+        return this.data.children.filter(subMenu => subMenu.children.length > 0 && subMenu.children.filter(c => !c.isHidden).length > 0).length > 0;
+      }
     },
     methods: {
       togglePrimaryMenu(data) {

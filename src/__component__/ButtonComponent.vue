@@ -297,11 +297,13 @@
         }
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
-         
+          this.$loading.show();
+
           network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}`).then((res) => {
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
+                  this.$loading.hide();
                   this.objTabActionDialog(tab);
                 } else { 
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
@@ -310,19 +312,28 @@
               } else {
                 const printId = this.itemId;
                 if (id === 2530) {
+                  this.$loading.hide();
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
                   this.setIframeForPrint(src);
                 }
               }
+            } else {
+              this.$loading.hide();
             }
+          }).catch(() => {
+            this.$loading.hide();
           });
         } else {
           this.objTabActionDialog(tab);
         }
       },
       setIframeForPrint(printSrc) {
+        const getElement = document.getElementById('iFrame');
+        if (getElement) {
+          document.body.removeChild(getElement);
+        }
         const iFrame = document.createElement('iframe');
         iFrame.src = printSrc;
         iFrame.id = 'iFrame';
@@ -331,6 +342,16 @@
         document.getElementById('iFrame').focus();
         document.getElementById('iFrame').contentWindow.print();
         this.clearSelectIdArray();
+        const dom = document.getElementById('iFrame');
+        if (dom.attachEvent) {  
+          dom.attachEvent('onload', () => { // IE  
+            this.$loading.hide();
+          });  
+        } else {  
+          dom.onload = () => { // 非IE  
+            this.$loading.hide();
+          };  
+        }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
@@ -341,6 +362,7 @@
         this.dialogConfig.footerHide = true;
         // Vue.component(filePath, CustomizeModule[filePath].component);
         this.dialogComponentName = tab.cuscomponent;
+
         // }
       },
       btnclick(type, item) {
