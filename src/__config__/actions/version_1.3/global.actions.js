@@ -32,7 +32,7 @@ export default {
     objid, id, resolve, reject 
   }) { // 获取导出状态
     if (enableInitializationRequest()) {
-      const times = 4;// 循环的次数
+      const times = 1;// 循环的次数
       let index = 0;// 当前次数
       let timer = 0;// 定时器
       const exportTask = {};
@@ -241,7 +241,6 @@ export default {
     }
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
-    debugger
     network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
