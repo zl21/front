@@ -13,40 +13,42 @@
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
     />
-    <!-- 上下结构主表 form-->
-    <composite-form
-      v-if="mainFormInfo.formData.isShow"
-      class="compositeAllform"
-      object-type="vertical"
-      :is-main-table="true"
-      :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
-      :readonly="mainFormInfo.buttonsData.data.objreadonly"
-      :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
-      :master-name="$route.params.tableName"
-      :master-id="$route.params.itemId"
-      module-form-type="vertical"
-      :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
-      :paths="formPaths"
-      :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
-      :child-table-name="getItemName"
-      type="PanelForm"
-      @formChange="formChange"
-      @InitializationForm="InitializationForm"
-      @VerifyMessage="verifyFormPanelMain"
-    />
-    <TabPanels
-      v-if="tabPanels.length > 0"
-      ref="tabPanel"
-      class="tabPanel"
-      :tab-margin-left="20"
-      is-keep-alive
-      :type="'singleCard'"
-      :tab-panels="tabPanels"
-    />
+    <div class="verticalTableDetailContent">
+      <!-- 上下结构主表 form-->
+      <composite-form
+        v-if="mainFormInfo.formData.isShow"
+        class="compositeAllform"
+        object-type="vertical"
+        :is-main-table="true"
+        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly"
+        :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
+        :master-name="$route.params.tableName"
+        :master-id="$route.params.itemId"
+        module-form-type="vertical"
+        :default-data="Object.keys(defaultDataForCopy).length>0?defaultDataForCopy.data:mainFormInfo.formData.data"
+        :paths="formPaths"
+        :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
+        :child-table-name="getItemName"
+        type="PanelForm"
+        @formChange="formChange"
+        @InitializationForm="InitializationForm"
+        @VerifyMessage="verifyFormPanelMain"
+      />
+      <TabPanels
+        v-if="tabPanels.length > 0"
+        ref="tabPanel"
+        class="tabPanel"
+        :tab-margin-left="20"
+        is-keep-alive
+        :type="'singleCard'"
+        :tab-panels="tabPanels"
+      />
     <!-- <TableDetailCollection
       :data-source="dataSource"
       @tableSearch="getRefTableSearchList"
     /> -->
+    </div>
   </div>
 </template>
 
@@ -232,8 +234,13 @@
 
 <style lang="less" scoped>
   .verticalTableDetail {
-    flex: 1;
-    overflow-y: auto;
+   height: 100%;
+    display: flex;
+    flex-direction: column;
+    .verticalTableDetailContent{
+      flex: 1;
+      overflow: auto;
+    }
     .tabPanel {
       margin: 10px 0;
     }
