@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="data.children.filter(subMenu => subMenu.children.length > 0 && subMenu.children.filter(c => !c.isHidden).length > 0).length>0"
+    v-if="isShow"
     class="navigator-primary-menu"
     :class="{ active: index === primaryMenuIndex }"
     @click.stop="togglePrimaryMenu(data.children)"
@@ -16,10 +16,14 @@
     name: 'NavigatorPrimaryMenu',
     components: {
     },
+  
     computed: {
       ...mapState('global', {
         primaryMenuIndex: state => state.primaryMenuIndex,
-      })
+      }),
+      isShow() {
+        return this.data.children.filter(subMenu => subMenu.children.length > 0 && subMenu.children.filter(c => !c.isHidden).length > 0).length > 0;
+      }
     },
     methods: {
       togglePrimaryMenu(data) {
