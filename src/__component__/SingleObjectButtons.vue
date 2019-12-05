@@ -93,14 +93,13 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import { hideMenu } from '../__config__/event.config';
-
 
   export default {
     data() {
@@ -288,7 +287,8 @@
         return this.watermarkimg;
       },
       waterMarkText() {
-        const textMap = {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const textMap = Object.assign({
           accepet: '已验收',
           back: '已退回',
           box: '已装箱',
@@ -309,7 +309,10 @@
           void: '已作废',
           agreement: '已同意',
           reject: '已驳回',
-        };
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].text;
+          return a;
+        }, {}));
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
           return textMap[src];
@@ -317,7 +320,8 @@
         return '';
       }, // 水印组件的文字
       waterMarkColor() {
-        const colorMap = {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const colorMap = Object.assign({
           accepet: '#e80000',
           back: '#979797',
           box: '#e80000',
@@ -338,7 +342,10 @@
           examine: '#FF9900',
           agreement: '#09A155',
           reject: '#ED4014',
-        };
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].color;
+          return a;
+        }, {}));
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
           return colorMap[src];
