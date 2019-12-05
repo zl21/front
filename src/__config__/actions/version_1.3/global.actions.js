@@ -241,7 +241,6 @@ export default {
     }
   },
   updataTaskMessageCount({ commit }, { id, stopUpdataQuantity }) { // 更新我的任务数量
-    debugger
     network.post('/p/cs/ignoreMsg', urlSearchParams({ id })).then((res) => {
       const datas = res.data;
       if (datas.code === 0) { 
