@@ -303,7 +303,8 @@
         const tab = {
           type,
           tableName: 'CP_C_TASK',
-          tableId: 24386
+          tableId: 24386,
+          label: '我的任务'
         };
         this.tabOpen(tab);
       },
@@ -345,7 +346,7 @@
 
       markReadNote(item) { // 我的任务单条跳转单对象界面
         this.messagePanel.show = false;
-        this.updataTaskMessageCount(item.ID.val);
+        this.updataTaskMessageCount({ id: item.ID.val });
         const type = 'tableDetailVertical';
         const tab = {
           type,
