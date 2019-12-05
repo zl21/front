@@ -13,6 +13,7 @@ const proxyLists = ['/p/c'];
 const proxyListsForGateway = ['/ad-app/p/c'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
+const proxyListForShangFei = ['/user-center', '/shangfei'];
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
@@ -41,7 +42,10 @@ module.exports = env => ({
     },
     publicPath: '/',
     proxy: [
-      
+      {
+        context: proxyListForShangFei,
+        target,
+      },
       {
         context: proxyLists,
         target

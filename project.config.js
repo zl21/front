@@ -12,6 +12,7 @@ module.exports = {
   target: 'http://r3.burgeon.cn:28888', // 李宁
   // target: 'http://106.15.24.156:19093', // 李宁AD
   // target: 'http://139.224.169.76:28888', // 沁园
+  // target: 'http://10.14.5.196', // 商飞
   Version: '1.3', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: false, // 网关是否打开,

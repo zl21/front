@@ -4,16 +4,22 @@
     :class="{ active: index === primaryMenuIndex }"
     @click.stop="togglePrimaryMenu(data.children)"
   >
-    {{ data.label}}
+    {{ data.label }}
   </div>
 </template>
 <script>
   import { mapState, mapMutations } from 'vuex';
 
   export default {
-// 
 
     name: 'NavigatorPrimaryMenu',
+    mounted() {
+      // const data = Object.assign({}, this.data);
+      // setTimeout(() => {
+      //   this.data.children.map(d => d.children)
+      //     .reduce((a, c) => {console.log(444,a,c)})
+      // }, 1000);
+    },
     components: {
     },
     computed: {
