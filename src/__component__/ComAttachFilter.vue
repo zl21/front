@@ -377,7 +377,7 @@
     created() {
       this.propsData = this.propstype;
       this.value = this.defaultValue;
-      console.log(this.defaultValue);
+      
       this.selected = this.defaultSelected;
       if (!this.selected[0]) {
         this.selected = [{
