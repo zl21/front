@@ -459,7 +459,7 @@
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const {
-            objdistype, reftableid, reftable, reftabdesc: fkdesc, serviceId
+            objdistype, reftableid, reftable, fkdesc, serviceId
           } = colDef;
           let type = '';
           if (objdistype === 'tabpanle') { // 上下结构
