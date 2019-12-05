@@ -54,6 +54,7 @@
         
     },
     mounted() {
+      this.src = '';
       const userId = this.userInfo.id;// 用户ID
       const { tableName } = router.currentRoute.params;// 明细ID
       let printIds = [] || '';
@@ -65,6 +66,18 @@
         // printIds = this.itemId;
       }
       this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
+
+      // const dom = document.getElementById('printframe');
+      // if (dom.attachEvent) {  
+      //   dom.attachEvent('onload', () => { // IE  
+      //     this.$loading.hide();
+      //   });  
+      // } else {  
+      //   dom.onload = () => { // 非IE  
+      //     this.$loading.hide();
+      //   };  
+      // }
+
       // network.get(`/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`).then((res) => {
       //   if (res.status === 200 && res.statusText === 'OK') {
       //     this.src = `/api/rpt/preview?tableName=${tableName}&objIds=${printIds}&userId=${userId}`;
