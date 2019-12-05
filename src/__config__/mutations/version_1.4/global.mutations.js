@@ -162,13 +162,7 @@ export default {
     }
 
     // 以下逻辑是为了解决菜单外路由跳转提供信息
-    const customizedMessage = JSON.parse(window.sessionStorage.getItem('customizedMessage'));
-    const tableDetailUrlMessage = JSON.parse(window.sessionStorage.getItem('tableDetailUrlMessage'));
-    const customizedMessageForbutton = JSON.parse(window.sessionStorage.getItem('customizedMessageForbutton'));
-    if (customizedMessageForbutton) { // 取按钮跳转定制界面label
-      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
-    }
-
+    const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (tableDetailUrlMessage) { // 取按钮跳转外链label
       const labelName = tableDetailUrlMessage.linkName;
       const name = `L.${tableDetailUrlMessage.linkName.toUpperCase()}.${tableDetailUrlMessage.linkId}`;
@@ -179,7 +173,12 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
 
-    
+    // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
+    const customizedMessage = getSeesionObject('customizedMessage');
+    const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
+    if (customizedMessageForbutton) { // 取按钮跳转定制界面label
+      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
+    }
     if (customizedMessage) {
       Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
         const nameToUpperCase = customizeName.toUpperCase();
@@ -190,7 +189,7 @@ export default {
         }
       });
     }
-    // state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
+    state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
