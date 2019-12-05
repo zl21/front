@@ -303,7 +303,7 @@
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {
-              this.$loading.hide();
+                  this.$loading.hide();
                   this.objTabActionDialog(tab);
                 } else { 
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${this.idArray}&userId=${this.userInfo.id}`;
@@ -312,7 +312,7 @@
               } else {
                 const printId = this.itemId;
                 if (id === 2530) {
-              this.$loading.hide();
+                  this.$loading.hide();
                   this.objTabActionDialog(tab);
                 } else {
                   src = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printId}&userId=${this.userInfo.id}`;
@@ -322,6 +322,8 @@
             } else {
               this.$loading.hide();
             }
+          }).catch(() => {
+            this.$loading.hide();
           });
         } else {
           this.objTabActionDialog(tab);
