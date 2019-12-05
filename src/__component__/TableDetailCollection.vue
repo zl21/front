@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -862,9 +862,10 @@
           };
           this.$Modal.fcSuccess(data);
           if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
-            const dom = document.getElementById('hideRefresh');
-            const myEvent = new Event('click');
-            dom.dispatchEvent(myEvent);
+            // const dom = document.getElementById('hideRefresh');
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
+            this.refresh();
           }
         }, () => {
           this.$loading.hide();
@@ -895,10 +896,41 @@
       },
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
         if (this.isrefrsh) {
-          const dom = document.getElementById('hideRefresh');
-          const myEvent = new Event('click');
-          dom.dispatchEvent(myEvent);
+          this.refresh();
+          this.isrefrsh = '';
+          // const dom = document.getElementById('hideRefresh');
+          // const myEvent = new Event('click');
+          // dom.dispatchEvent(myEvent);
         }
+      },
+      refresh() {
+        const { itemId, tableName } = this.$route.params;
+        this.getObjectForMainTableForm({
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex
+        });
+        this.getObjectTabForMainTable({
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo 
+        });
+        const fixedcolumns = {};
+        if (this.searchCondition) {
+          fixedcolumns[this.searchCondition] = this.searchInfo;
+        }
+        const params = {
+          table: tableName,
+          objid: itemId,
+          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+            range: this.pageInfo.pageSize,
+            fixedcolumns
+          }
+        };
+        if (this.currentOrderList.length > 0) {
+          // 如果没有排序则不传该参数
+          params.searchdata.orderby = this.currentOrderList;
+        }
+        this.getObjectTableItemForTableData(params);
       },
       clearDialogComponentName() {
         this.dialogComponentName = null;
@@ -2602,20 +2634,11 @@
             click: (event) => {
               // TODO 外键关联跳转
               const data = this.dataSource.row[params.index][cellData.colname];
+              let type = '';
               if (cellData.objdistype === 'object') {
-                this.tabOpen({
-                  type: 'tableDetailVertical',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  id: data.refobjid
-                });
+                type = 'V';
               } else if (cellData.objdistype === 'tabpanle') {
-                this.tabOpen({
-                  type: 'tableDetailHorizontal',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  id: data.refobjid
-                });
+                type = 'H';
               } else {
                 const datas = {
                   mask: true,
@@ -2623,7 +2646,16 @@
                   content: '请设置外键关联表的显示配置'
                 };
                 this.$Modal.fcWarning(datas);
+                return;
               }
+              this.tabOpen({
+                type,
+                tableName: data.reftablename,
+                tableId: data.reftableid,
+                id: data.refobjid,
+                serviceId: data.serviceId,
+                label: data.reftabdesc
+              });
               // event.stopPropagation();
             }
           }
@@ -3332,11 +3364,13 @@
           menu: this.itemInfo.tabledesc
         };
         const promise = new Promise((resolve, reject) => {
+          this.$loading.show();
           this.getExportQueryForButtons({ OBJ, resolve, reject });
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
+              this.$loading.hide();
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -3349,7 +3383,6 @@
               document.body.removeChild(eleLink);
             } else {
               this.updateExportedState({});
-              this.$loading.show();
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
                   objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
@@ -3388,17 +3421,18 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  const data = {
+                  this.$Modal.fcError({
                     mask: true,
                     title: '错误',
-                    content: `${this.exportTasks.resultMsg}`
-                  };
-                  this.$Modal.error(data);
+                    content: `${this.exportTasks.resultMsg}`,
+                  });
                 }
                 this.$loading.hide();
               });
+              this.getTabelList(1);
             }
-            this.getTabelList(1);
+          } else {
+            this.$loading.hide();
           }
         });
       },

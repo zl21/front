@@ -337,11 +337,9 @@
 
       // 上传成功
       handleSuccess(response) {
-        this.loading = false;
         if (response.code === 0) {
           if (Version() === '1.4') {
             this.$loading.hide();
-
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
@@ -353,6 +351,7 @@
             this.$emit('imporSuccess', response.data);
           }
         } else {
+          this.$loading.hide();
           if (response.data.path === 'undefined ===') {
             this.errorMsg.errorUrl = '';
           } else {
