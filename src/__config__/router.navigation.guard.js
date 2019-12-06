@@ -281,7 +281,7 @@ export default (router) => {
     }
     // 记录规则三：
     // window.sessionStorage.removeItem('dynamicRoutingForHideBackButton');
-    // const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
+    const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
 
 
     const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);

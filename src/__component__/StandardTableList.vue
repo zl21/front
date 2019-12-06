@@ -1982,13 +1982,18 @@
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
+          
           const {
             allPages, currentPage, currentPageSize, total 
           } = this.$refs.agTableElement.$children[0];
           if (this.buttons.selectIdArr.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * (total / currentPageSize - 2);
           }
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          setTimeout(() => {
+            this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          }, 500);
+         
+         
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       },
