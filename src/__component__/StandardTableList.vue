@@ -463,7 +463,7 @@
             // , reftableid, reftable, fkdesc, serviceId
           } = colDef;
           const {
-            reftableid, reftablename, refobjid, reftabdesc ,serviceId
+            reftableid, reftablename, refobjid, reftabdesc, serviceId
           } = rowData[colDef.colId];
           let type = '';
           if (objdistype === 'tabpanle') { // 上下结构
