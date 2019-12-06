@@ -178,6 +178,7 @@ export default {
       });
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
@@ -317,7 +318,6 @@ export default {
         k: keepAliveModuleName,
         v: label
       };
-     
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
     if (state.serviceIdMap[tableName] === undefined) {

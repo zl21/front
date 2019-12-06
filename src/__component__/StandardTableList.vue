@@ -459,8 +459,12 @@
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const {
-            objdistype, reftableid, reftable, fkdesc, serviceId
+            objdistype
+            // , reftableid, reftable, fkdesc, serviceId
           } = colDef;
+          const {
+            reftableid, reftablename, refobjid, reftabdesc ,serviceId
+          } = rowData[colDef.colId];
           let type = '';
           if (objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
@@ -476,11 +480,11 @@
             return;
           }
           this.tabHref({
-            id: rowData.ID.val,
-            tableName: reftable,
+            id: refobjid,
+            tableName: reftablename,
             tableId: reftableid,
             type,
-            label: fkdesc,
+            label: reftabdesc,
             serviceId
           });
         }
