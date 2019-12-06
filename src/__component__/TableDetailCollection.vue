@@ -65,7 +65,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                 >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1082,8 +1082,10 @@
                     refcolid,
                     searchdata: {
                       column_include_uicontroller: true,
-                      startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-                      range: this.pageInfo.pageSize,
+                      // startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
+                      startindex: 0,
+                      // range: this.pageInfo.pageSize,
+                      range: 10,
                       fixedcolumns: {}
                     },
                     tabIndex

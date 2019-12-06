@@ -93,14 +93,13 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import { hideMenu } from '../__config__/event.config';
-
 
   export default {
     data() {
@@ -288,7 +287,8 @@
         return this.watermarkimg;
       },
       waterMarkText() {
-        const textMap = {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const textMap = Object.assign({
           accepet: '已验收',
           back: '已退回',
           box: '已装箱',
@@ -309,7 +309,10 @@
           void: '已作废',
           agreement: '已同意',
           reject: '已驳回',
-        };
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].text;
+          return a;
+        }, {}));
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
           return textMap[src];
@@ -317,7 +320,8 @@
         return '';
       }, // 水印组件的文字
       waterMarkColor() {
-        const colorMap = {
+        const customizeWaterMark = getCustomizeWaterMark();
+        const colorMap = Object.assign({
           accepet: '#e80000',
           back: '#979797',
           box: '#e80000',
@@ -338,7 +342,10 @@
           examine: '#FF9900',
           agreement: '#09A155',
           reject: '#ED4014',
-        };
+        }, Object.keys(customizeWaterMark).reduce((a, c) => {
+          a[c] = customizeWaterMark[c].color;
+          return a;
+        }, {}));
         if (this.watermarkimg.includes('/static/img/')) {
           const src = this.watermarkimg.split('/')[3].split('.')[0];
           return colorMap[src];
@@ -519,19 +526,19 @@
       },
       buttonsReorganization(buttonData) { // 根据页面不同执行按钮渲染逻辑
         if (Object.values(buttonData).length > 0) {
-          if (this.objectType === 'horizontal') { // 横向布局
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
-              this.addButtonShow(buttonData);
-            } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(buttonData);
-            }
-          } else if (this.objectType === 'vertical') {
-            if (this.itemId === 'New') { // 编辑按钮渲染逻辑
-              this.addButtonShow(buttonData);
-            } else { // 新增按钮渲染逻辑
-              this.getbuttonGroupData(buttonData);
-            }
+          // if (this.objectType === 'horizontal') { // 横向布局
+          if (this.itemId === 'New') { // 编辑按钮渲染逻辑   根据copy来控制复制按钮操作后按钮的显示条件
+            this.addButtonShow(buttonData);
+          } else { // 新增按钮渲染逻辑
+            this.getbuttonGroupData(buttonData);
           }
+          // } else if (this.objectType === 'vertical') {
+          //   if (this.itemId === 'New') { // 编辑按钮渲染逻辑
+          //     this.addButtonShow(buttonData);
+          //   } else { // 新增按钮渲染逻辑
+          //     this.getbuttonGroupData(buttonData);
+          //   }
+          // }
           if (this.copy === true) {
             this.updateRefreshButton(false);
             this.addButtonShow(buttonData);
@@ -1479,6 +1486,7 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
+                   
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1665,7 +1673,7 @@
                       const deleteMessage = this.buttonsData.deleteData;
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
-                        this.clickButtonsBack();
+                        this.deleteSuccessEvent();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                         // this.clickButtonsBack();
                       }
@@ -1694,7 +1702,7 @@
                     promise.then(() => {
                       const deleteMessage = this.buttonsData.deleteData;
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }, () => {
                       const deleteMessage = this.buttonsData.deleteData;
@@ -1845,7 +1853,7 @@
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
@@ -1874,7 +1882,7 @@
                     const deleteMessage = this.buttonsData.deleteData;
                     if (deleteMessage) {
                       this.$Message.success(`${deleteMessage}`);
-                      this.clickButtonsBack();
+                      this.deleteSuccessEvent();
                       // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                     }
                   }, () => {
@@ -1904,7 +1912,7 @@
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
+                  this.deleteSuccessEvent();
                   // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
@@ -1933,7 +1941,7 @@
                 const deleteMessage = this.buttonsData.deleteData;
                 if (deleteMessage) {
                   this.$Message.success(`${deleteMessage}`);
-                  this.clickButtonsBack();
+                  this.deleteSuccessEvent();
                   // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                 }
               }, () => {
@@ -1954,7 +1962,17 @@
           });
         }
       },
-
+      deleteSuccessEvent() {
+        const value = this.hideBackButton();
+        if (value) {
+          const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+          const currentRoute = this.$router.currentRoute.path;
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
+        } else {
+          this.clickButtonsBack();
+        }
+      },
       objectAdd() { // 新增
         const id = 'New';
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
@@ -2526,16 +2544,23 @@
             this.dataArray.back = false;
             // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+            return true;
           }
-        } else {
-          const addRouteToEditorData = getSeesionObject('addRouteToEditor');
-          Object.keys(addRouteToEditorData).map((a) => {
-            if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
-              this.dataArray.back = false;
-              deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
-            }
-          });
+          return false;
+        } 
+        const addRouteToEditorData = getSeesionObject('addRouteToEditor');
+        let flag = false;
+        Object.keys(addRouteToEditorData).some((a) => {
+          if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
+            flag = true;
+          }
+        });
+        if (flag) {
+          this.dataArray.back = false;
+          deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
+          return true;
         }
+        return false;
       },
       // clickKeepAliveLabelMaps(buttonData) {
       //   buttonData.objbutton.map((button) => {

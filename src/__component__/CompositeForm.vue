@@ -543,7 +543,6 @@
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          // 
           const formData = Object.assign(this.defaultFormData, this.formData);
           this.VerificationForm.forEach((item) => {
             Object.keys(formData).forEach((option) => {
@@ -811,6 +810,11 @@
                   startindex: 0,
                   range: $this.pageSize
                 };
+                // 多值查询判断
+                const refArray = this.getRefcolvalArray(current);
+                if (refArray[0]) {
+                  searchObject.fixedcolumns = refArray[1];
+                }
               }
               fkHttpRequest().fkQueryList({
                 searchObject,
@@ -906,6 +910,11 @@
                   startindex: $this.data.defaultrange * ($this.currentPage - 1),
                   range: $this.pageSize
                 };
+                // 多值查询判断
+                const refArray = this.getRefcolvalArray(current);
+                if (refArray[0]) {
+                  searchObject.fixedcolumns = refArray[1];
+                }
               }              
               
               fkHttpRequest().fkQueryList({
@@ -952,6 +961,28 @@
       },
       getsetAttsetProps() {
         return this.setAttsetProps;
+      },
+      getRefcolvalArray(current) {
+        // 获取 多值查询
+        // eslint-disable-next-line no-unused-vars
+        if (current.webconf && current.webconf.refcolvalArray) {
+          const refVal = current.webconf.refcolvalArray.reduce((arr, item) => {
+            if (item.maintable) {
+              this.getStateData(); // 获取主表信息
+              const refcolval = this.refcolvalAll[item.srccol]
+                ? this.refcolvalAll[item.srccol]
+                : '';
+              arr[item.fixcolumn] = `=${refcolval || ''}`;
+              arr[item.fixcolumn] = `${refcolval ? `=${refcolval}` : ''}`;
+            } else {
+              const data = Object.assign(this.defaultFormData, this.formData);
+              arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
+            }
+            return arr;
+          }, {});
+          return [true, refVal];
+        }
+        return [false];
       },
       getLinkData(current) {
         // 获取表信息
@@ -1059,13 +1090,6 @@
           return false;
         }
         let sendData = {};
-
-        const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
-        let LinkageFormInput = '';
-
-        if (current.refcolval && current.refcolval.srccol) {
-          LinkageFormInput = LinkageForm[current.refcolval.srccol];
-        }
         const check = this.getLinkData(current);
         if (!check[0] && !check[1]) {
           document.activeElement.value = '';
@@ -1087,6 +1111,13 @@
             colid: current.colid,
             fixedcolumns: {}
           }; 
+          // 多值查询判断
+          const refArray = this.getRefcolvalArray(current);
+          if (refArray[0]) {
+            sendData.fixedcolumns = {
+              whereKeys: refArray[1]
+            }; 
+          }
         }
         if (!check[0]) {
           return false;
@@ -1201,11 +1232,11 @@
         // 组件的默认值  
         // const checkIsReadonly = this.isReadonly(item);
 
-        if (item.readonly === true && item.fkdisplay) {
-          //  不可编辑 变成 input
+        // if (item.readonly === true && item.fkdisplay) {
+        //   //  不可编辑 变成 input
 
-          return item.valuedata || item.defval || '';
-        }
+        //   return item.valuedata || item.defval || '';
+        // }
         // 设置表单的默认值
         if (
           (item.display === 'textarea' && !item.fkdisplay)
@@ -1335,10 +1366,10 @@
         if (item.fkobj) {
           item.fkdisplay = item.fkobj.fkdisplay;
         }
+
         if (item.fkdisplay === 'drp' || item.fkdisplay === 'mrp' || item.fkdisplay === 'pop' || item.fkdisplay === 'mop') {
           // 外键默认值
           const arr = [];
-
           const ID = item.refobjid ? item.refobjid : '';
           if (item.fkdisplay === 'mrp' && fkdisplayValue) {
             // 多选change
@@ -1356,7 +1387,7 @@
           } if (item.fkdisplay === 'mrp' && item.refobjid) {
             // 多选默认值
             const refobjid = (item.refobjid && item.refobjid.split(',')) || [];
-            const valuedata = (item.valuedata && item.valuedata.split(',')) || [];
+            const valuedata = ((item.valuedata || item.defval) && (item.valuedata || item.defval).split(',')) || [];
             const option = refobjid.reduce((currty, itemI, index) => {
               currty.push({
                 ID: itemI || '',
@@ -1367,7 +1398,6 @@
             // arr = [...option];
             return option;
           }
-
           arr.push({
             ID: item.refobjid === '-1' ? '' : ID,
             Label: item.valuedata || item.defval || ''
@@ -1626,45 +1656,45 @@
 
             break;
           case 'pop':
-            if (!item.props.disabled) {
-              item.props.type = 'AttachFilter';
-              item.props.optionTip = false;
-              item.props.enterType = true;
-              item.props.show = false;
-              // 失去光标是否保存
-              item.props.dialog = {
-                model: {
-                  title: current.fkdesc,
-                  width: 920,
-                  mask: true,
-                  draggable: true,
-                  closable: true,
-                  scrollable: true,
-                  maskClosable: false,
-                  'footer-hide': true
-                }
-              };
-              //  单对象界面
-              item.props.AutoData = [];
-              item.props.fkobj = {
-                colid: current.colid,
-                reftable: current.reftable,
-                serviceId: current.serviceId,
-                reftableid: current.reftableid,
-                show: false,
-                url:
-                  `${current.serviceId ? (`/${current.serviceId}`) : ''
-                  }/p/cs/menuimport`
-              };
-              item.props.datalist = [];
-              item.props.Selected = [];
-              if (!item.props.readonly && !this.objreadonly) {
-                item.props.Selected.push(this.defaultValue(current)[0]);
-                item.value = this.defaultValue(current)[0].Label;
-              } else {
-                item.value = this.defaultValue(current)[0].Label;
+            item.props.type = 'AttachFilter';
+            item.props.optionTip = false;
+            item.props.enterType = true;
+            item.props.show = false;
+            // 失去光标是否保存
+            item.props.dialog = {
+              model: {
+                title: current.fkdesc,
+                width: 920,
+                mask: true,
+                draggable: true,
+                closable: true,
+                scrollable: true,
+                maskClosable: false,
+                'footer-hide': true
               }
-            }
+            };
+            //  单对象界面
+            item.props.AutoData = [];
+            item.props.fkobj = {
+              colid: current.colid,
+              reftable: current.reftable,
+              serviceId: current.serviceId,
+              reftableid: current.reftableid,
+              show: false,
+              url:
+                `${current.serviceId ? (`/${current.serviceId}`) : ''
+                }/p/cs/menuimport`
+            };
+            item.props.datalist = [];
+            item.props.Selected = [];
+            // if (!item.props.readonly && !this.objreadonly) {
+            //   item.props.Selected.push(this.defaultValue(current)[0]);
+            //   item.value = this.defaultValue(current)[0].Label;
+            // } else {
+            //   item.value = this.defaultValue(current)[0].Label;
+            // }
+            item.props.Selected.push(this.defaultValue(current)[0]);
+            item.value = this.defaultValue(current)[0].Label;
 
             break;
           case 'mop':
@@ -1704,10 +1734,12 @@
             item.props.Selected = [];
             // 过滤值
             item.props.filterDate = {};
-            if (!item.props.readonly && !this.objreadonly) {
-              item.value = this.defaultValue(current)[1];
-              item.props.Selected.push(this.defaultValue(current)[0]);
-            }
+            item.value = '';
+            item.props.Selected.push(this.defaultValue(current)[0]);
+            // if (!item.props.readonly && !this.objreadonly) {
+            //   item.value = this.defaultValue(current)[1];
+            //   item.props.Selected.push(this.defaultValue(current)[0]);
+            // }
 
             break;
           default:
@@ -1741,36 +1773,33 @@
         if (current.display === 'clob') {
           item.props.path = `${this.masterName}/${this.masterId}/`;
         }
-        if ((checkIsReadonly && item.props.fkdisplay)) {
-          //  不可编辑 变成 input
-          const refobjid = current.refobjid !== '-1' ? current.refobjid : '';
-          if (
-            item.props.fkdisplay === 'drp'
-            || item.props.fkdisplay === 'mrp'
-          ) {
-            // item.props.type = 'text';
-            // item.type = 'input';
-            item.props.defaultSelected = [{
-              ID: refobjid,
-              Label: current.valuedata
-            }];
+        // if ((checkIsReadonly && item.props.fkdisplay)) {
+        //   //  不可编辑 变成 input
+        //   const refobjid = current.refobjid !== '-1' ? current.refobjid : '';
+        //   if (
+        //     item.props.fkdisplay === 'drp'
+        //     || item.props.fkdisplay === 'mrp'
+        //   ) {
+        //     // item.props.type = 'text';
+        //     // item.type = 'input';
+        //     item.props.defaultSelected = [{
+        //       ID: refobjid,
+        //       Label: current.valuedata
+        //     }];
            
-            item.value = current.valuedata;
-          }
-          if (
-            item.props.fkdisplay === 'mop'
-            || item.props.fkdisplay === 'pop'
-          ) {
-            // item.props.type = 'text';
-            // item.type = 'input';
-           
-            item.props.Selected = [{
-              ID: refobjid,
-              Label: current.valuedata
-            }];
-            item.value = current.valuedata;
-          }
-        }
+        //     item.value = current.valuedata;
+        //   }
+        //   if (
+        //     item.props.fkdisplay === 'mop'
+        //     || item.props.fkdisplay === 'pop'
+        //   ) {           
+        //     item.props.Selected = [{
+        //       ID: refobjid,
+        //       Label: current.valuedata
+        //     }];
+        //     item.value = current.valuedata;
+        //   }
+        // }
         item.props.disabled = checkIsReadonly;
         return item;
       },
