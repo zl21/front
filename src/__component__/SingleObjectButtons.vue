@@ -507,6 +507,7 @@
           this.upData();
         }
       },
+     
       subtables() {
         if (Version() === '1.4') {
           if (this.isreftabs) {
@@ -738,7 +739,7 @@
         const tabIndex = this.tabCurrentIndex;
         const searchdata = {
           column_include_uicontroller: true,
-          startindex: page.currentPageIndex - 1,
+          startindex: (page.currentPageIndex - 1) * page.pageSize,
           range: page.pageSize,
         };
         this.getObjectTableItemForTableData({
@@ -1744,14 +1745,15 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        const searchdata = {
-                          column_include_uicontroller: true,
-                          startindex: page.currentPageIndex - 1,
-                          range: page.pageSize,
-                        };
-                        this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
-                        });
+                        DispatchEvent('changePageForSelete');
+                        // const searchdata = {
+                        //   column_include_uicontroller: true,
+                        //   startindex: (page.currentPageIndex - 1) * page.pageSize,
+                        //   range: page.pageSize,
+                        // };
+                        // this.getObjectTableItemForTableData({
+                        //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                        // });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
@@ -1799,7 +1801,7 @@
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
                         const searchdata = {
                           column_include_uicontroller: true,
-                          startindex: page.currentPageIndex - 1,
+                          startindex: (page.currentPageIndex - 1) * page.pageSize,
                           range: page.pageSize,
                         };
                         this.getObjectTableItemForTableData({
@@ -2067,7 +2069,7 @@
           this.mainTableEditorSaveIsreftabs(obj);
         }
       },
-
+    
       mainTableEditorSaveIsreftabs(obj) { // 主表编辑保存存在子表
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
