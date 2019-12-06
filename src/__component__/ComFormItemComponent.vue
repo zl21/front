@@ -691,6 +691,7 @@
 
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
+          console.log(current.item.title);
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
               if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
@@ -764,7 +765,7 @@
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formDataObject)));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formValueItem)));
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -867,6 +868,10 @@
             arr[i] = props[i] || false;
             return arr;
           }, {});
+          // eslint-disable-next-line no-prototype-builtins
+          if (!Object.hasOwnProperty('readonly', item.oldProps)) {
+            item.oldProps.readonly = props.readonly;
+          }
           item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
