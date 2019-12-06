@@ -7,10 +7,16 @@ const updateSessionObject = (target, { k, v }) => {
 
 const deleteFromSessionObject = (target, key) => {
   const data = JSON.parse(window.sessionStorage.getItem(target)) || {};
-  delete data[key];
-  window.sessionStorage.setItem(target, JSON.stringify(data));
+  if (data[key] !== undefined) {
+    delete data[key];
+    window.sessionStorage.setItem(target, JSON.stringify(data));
+  }
 };
 
 const getSeesionObject = target => JSON.parse(window.sessionStorage.getItem(target)) || {};
 
-export { updateSessionObject, getSeesionObject, deleteFromSessionObject };
+const removeSessionObject = (target) => {
+  window.sessionStorage.removeItem(target);
+};
+
+export { updateSessionObject, getSeesionObject, deleteFromSessionObject, removeSessionObject };

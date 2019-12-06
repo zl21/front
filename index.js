@@ -9,8 +9,9 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest 
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
+import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
@@ -56,6 +57,7 @@ const createDOM = () => {
   return div;
 };
 const init = () => {
+  removeSessionObject(HAS_BEEN_DESTROYED_MODULE);
   const rootDom = createDOM();
   window.vm = new Vue({
     router,
