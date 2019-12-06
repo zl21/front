@@ -3,7 +3,7 @@
   <div class="CopyPersonList">
     <Button
       type="primary"
-      @click="queryLists"
+      @click="searchData.page = 1;queryLists()"
     >
       查询
     </Button>
@@ -58,6 +58,7 @@
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
+                    this.searchData.page = 1;
                     this.queryLists();
                   }
                 }
@@ -75,6 +76,7 @@
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
+                    this.searchData.page = 1;
                     this.queryLists();
                   }
                 }
@@ -273,7 +275,6 @@
         ) {
           delete this.searchData.businessType;
         }
-        this.searchData.page = 1;
       },
       getselectOption() {
         this.$network.post('/jflow/p/cs/task/relation/list', {}).then((res) => {
