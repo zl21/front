@@ -459,8 +459,12 @@
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           const {
-            objdistype, reftableid, reftable, fkdesc, serviceId
+            objdistype
+            // , reftableid, reftable, fkdesc, serviceId
           } = colDef;
+          const {
+            reftableid, reftablename, refobjid, reftabdesc, serviceId
+          } = rowData[colDef.colId];
           let type = '';
           if (objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
@@ -476,11 +480,11 @@
             return;
           }
           this.tabHref({
-            id: rowData.ID.val,
-            tableName: reftable,
+            id: refobjid,
+            tableName: reftablename,
             tableId: reftableid,
             type,
-            label: fkdesc,
+            label: reftabdesc,
             serviceId
           });
         }
@@ -1977,6 +1981,8 @@
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
+          this.searchData.startIndex = 0;// 以上操作过后，列表回到第一页
+          this.searchData.range = 10;
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }

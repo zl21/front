@@ -190,7 +190,7 @@ export default {
       });
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('serviceIdMap'));
+    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
@@ -330,7 +330,6 @@ export default {
         v: label
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-      state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     }
     if (state.serviceIdMap[tableName] === undefined) {
       const serviceIdMapObj = {
@@ -338,7 +337,7 @@ export default {
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('serviceIdMap'));
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -380,7 +379,6 @@ export default {
       };
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-      state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     }
     if (state.serviceIdMap[tableName] === undefined) {
       const serviceIdMapObj = {
@@ -388,7 +386,7 @@ export default {
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('serviceIdMap'));
+      // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {

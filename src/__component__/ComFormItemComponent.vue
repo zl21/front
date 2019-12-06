@@ -61,73 +61,76 @@
           if (value === undefined) {
             return option;
           }
-          if (items.item.props.readonly) {
-            // 外键 不可编辑
-            if (items.item.props.refobjid !== '-1') {
-              option[items.item.field] = items.item.props.refobjid
-                ? items.item.props.refobjid
-                : items.item.value;
-            } else {
-              option[items.item.field] = items.item.value || '';
-            }
-          } else {
-            if (Array.isArray(items.item.value)) {
-              if (
-                items.item.value[0]
-                && Object.hasOwnProperty.call(items.item.value[0], 'ID')
-              ) {
-                if (items.item.value[0].ID === '-1') {
-                  option[items.item.field] = '';
-                } else {
-                  option[items.item.field] = items.item.value.reduce((arr, option) => {
-                    arr.push(option.ID);
-                    return arr;
-                  }, []);
-                  if (option[items.item.field].length > 1) {
-                    option[items.item.field] = option[items.item.field].join(',');
-                  } else {
-                    option[items.item.field] = option[items.item.field].join('');
-                  }
-                }
-              } else if (items.item.value[0]) {
-                if (items.item.type === 'ImageUpload') {
-                  option[items.item.field] = JSON.stringify(items.item.value);
-                } else if (items.item.type === 'docfile') {
-                  option[items.item.field] = JSON.stringify(items.item.value);
-                } else {
-                  option[items.item.field] = items.item.value[0];
-                }
-              }
-            } else if (items.item.value) {
-              if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
-                if (items.item.props.Selected[0].ID === '-1') {
-                  option[items.item.field] = '';
-                } else {
-                  option[items.item.field] = items.item.props.Selected[0].ID;
-                }
+          // if (items.item.props.readonly) {
+          // 外键 不可编辑
+          //   if (items.item.props.refobjid !== '-1') {
+          //     option[items.item.field] = items.item.props.refobjid
+          //       ? items.item.props.refobjid
+          //       : items.item.value;
+          //     if (Array.isArray(items.item.value) && items.item.value[0]) {
+          //       option[items.item.field] = items.item.value[0].ID;
+          //     }
+          //   } else {
+          //     option[items.item.field] = items.item.value || '';
+          //   }
+          // } else {
+          // }
+          if (Array.isArray(items.item.value)) {
+            if (
+              items.item.value[0]
+              && Object.hasOwnProperty.call(items.item.value[0], 'ID')
+            ) {
+              if (items.item.value[0].ID === '-1') {
+                option[items.item.field] = '';
               } else {
-                option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
-              }
-            }
-
-            if (items.item.props.number) {
-              if (option[items.item.field]) {
-                if (/-/.test(option[items.item.field])) {
-                  option[items.item.field] = Number(
-                    option[items.item.field]
-                      .replace(/^\s+|\s+$/g, '')
-                      .replace(/-/g, '')
-                  );
+                option[items.item.field] = items.item.value.reduce((arr, optionII) => {
+                  arr.push(optionII.ID);
+                  return arr;
+                }, []);
+                if (option[items.item.field].length > 1) {
+                  option[items.item.field] = option[items.item.field].join(',');
                 } else {
-                  option[items.item.field] = Number(option[items.item.field]);
+                  option[items.item.field] = option[items.item.field].join('');
                 }
               }
-            } else if (typeof option[items.item.field] === 'string') {
-              option[items.item.field] = option[items.item.field].replace(
-                /^\s+|\s+$/g,
-                ''
-              );
+            } else if (items.item.value[0]) {
+              if (items.item.type === 'ImageUpload') {
+                option[items.item.field] = JSON.stringify(items.item.value);
+              } else if (items.item.type === 'docfile') {
+                option[items.item.field] = JSON.stringify(items.item.value);
+              } else {
+                option[items.item.field] = items.item.value[0];
+              }
             }
+          } else if (items.item.value) {
+            if (items.item.props.Selected && items.item.props.Selected[0] && items.item.props.Selected[0].ID) {
+              if (items.item.props.Selected[0].ID === '-1') {
+                option[items.item.field] = '';
+              } else {
+                option[items.item.field] = items.item.props.Selected[0].ID;
+              }
+            } else {
+              option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
+            }
+          }
+
+          if (items.item.props.number) {
+            if (option[items.item.field]) {
+              if (/-/.test(option[items.item.field])) {
+                option[items.item.field] = Number(
+                  option[items.item.field]
+                    .replace(/^\s+|\s+$/g, '')
+                    .replace(/-/g, '')
+                );
+              } else {
+                option[items.item.field] = Number(option[items.item.field]);
+              }
+            }
+          } else if (typeof option[items.item.field] === 'string') {
+            option[items.item.field] = option[items.item.field].replace(
+              /^\s+|\s+$/g,
+              ''
+            );
           }
           // 初始化隐藏字段clearWhenHidden 清除功能 
           if (items.item.props.webconf && items.item.props.webconf.clearWhenHidden) {

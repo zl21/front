@@ -4,7 +4,7 @@
     :style="waterMarkStyle"
   >
     <i class="iconfont iconbj_docstate" />
-    <div class="textTip">
+    <div class="textTip" :class="{ smallText: textArr.length >= 5 }">
       <div v-for="(item, index) in textArr" :key="index">
         {{ item }}
       </div>
@@ -57,6 +57,9 @@
             width: 80px;
             display: flex;
             justify-content: space-around;
+        }
+        .smallText {
+          font-size: 14px;
         }
     }
 </style>
