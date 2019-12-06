@@ -609,11 +609,6 @@
 
       // select input
       selectChange(value, $this) {
-        if (value === undefined) {
-          value = '';
-        } else if (value[0] === undefined) {
-          value = '';
-        }
         this._items.value = value;
         this.valueChange();
         if (
@@ -624,9 +619,14 @@
         }
       },
       selectClear($this) {
-        // this._items.value = '';
-        // this.valueChange();
-        
+        this._items.value = '';
+        this.valueChange();
+        if (
+          Object.prototype.hasOwnProperty.call(this._items.event, 'clear')
+          && typeof this._items.event.clear === 'function'
+        ) {
+          this._items.event.clear($this);
+        }
       },
       selectOpenChange(value, $this) {
         if (
@@ -1585,7 +1585,6 @@
           // 表单修改属性
           this._items.required = e.value.required;
 
-          console.log(e.value.field, e.value.props.disabled, this._items.props.defaultSelected, e.value.props.name);
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;

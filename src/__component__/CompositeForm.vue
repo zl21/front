@@ -225,7 +225,6 @@
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
         setVerifyMessageTime: null,
-        formDataAll: {},
         setChangeTime: null,
         LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
@@ -475,7 +474,6 @@
           return false;
         }
         // 必填校验
-        this.VerificationFormItem = [];
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
@@ -489,8 +487,6 @@
         }
         const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
         this.formData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
-        this.formDataAll = Object.assign(JSON.parse(JSON.stringify(this.formDataAll)), data);
-
         this.formDataDef = Object.assign(formData, setdefval);
         // 获取表单的默认值
         const key = Object.keys(data)[0];
@@ -509,9 +505,7 @@
           } else {
             this.formData[current.item.field] = '';
           }
-          this.formDataAll[current.item.field] = this.formData[current.item.field];
         }
-
 
         // 获取需要校验的表单
         // 开启
@@ -530,37 +524,13 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        // 校验
+        // clearTimeout(this.setChangeTime);
+        // this.setChangeTime = setTimeout(() => {
+        // }, 50);
+        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+        this.getStateData();
+
         
-        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
-          // eslint-disable-next-line no-shadow
-          delete this.formData[current.item.field];
-          delete this.formDataDef[current.item.field];
-          delete this.labelForm[current.item.field];
-          // eslint-disable-next-line no-shadow
-          const data = {
-            key: current.item.field,
-            itemName: this.tableGetName
-          };
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-        } else if (this.conditiontype !== 'list' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
-          delete this.formData[current.item.field];
-          delete this.formDataDef[current.item.field];
-          delete this.labelForm[current.item.field];
-          if (this.tableGetName) {
-            const data = {
-              key: current.item.field,
-              itemName: this.tableGetName
-            };
-            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-          }
-        }
-        
-        clearTimeout(this.setChangeTime);
-        this.setChangeTime = setTimeout(() => {
-          this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
-          this.getStateData();
-        }, 5);
         // 注释
       },
       VerifyMessageForm(value, type) {
@@ -569,15 +539,16 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
+
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
+          const formData = Object.assign(this.defaultFormData, this.formData);
           this.VerificationForm.forEach((item) => {
             Object.keys(formData).forEach((option) => {
               if (item.key === option.split(':')[0]) {
                 item.value = formData[option];
-              } 
+              }
             });
           });
           
@@ -585,6 +556,7 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
+          // console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
         }, 10);
       },
@@ -1003,7 +975,7 @@
               arr[item.fixcolumn] = `=${refcolval || ''}`;
               arr[item.fixcolumn] = `${refcolval ? `=${refcolval}` : ''}`;
             } else {
-              const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
+              const data = Object.assign(this.defaultFormData, this.formData);
               arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
             }
             return arr;
@@ -1033,7 +1005,7 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
+            const data = Object.assign(this.defaultFormData, this.formData);
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
@@ -1187,7 +1159,8 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
-        const checkIsReadonly = this.isReadonly(item);        
+        const checkIsReadonly = this.isReadonly(item);
+        
 
         if (checkIsReadonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
@@ -1722,11 +1695,6 @@
             // }
             item.props.Selected.push(this.defaultValue(current)[0]);
             item.value = this.defaultValue(current)[0].Label;
-            if (!item.props.readonly && !this.objreadonly) {
-              item.props.showDisabled = false;
-            } else {
-              item.props.showDisabled = true;
-            }
 
             break;
           case 'mop':
@@ -1768,11 +1736,10 @@
             item.props.filterDate = {};
             item.value = '';
             item.props.Selected.push(this.defaultValue(current)[0]);
-            if (!item.props.readonly && !this.objreadonly) {
-              item.props.showDisabled = false;
-            } else {
-              item.props.showDisabled = true;
-            }
+            // if (!item.props.readonly && !this.objreadonly) {
+            //   item.value = this.defaultValue(current)[1];
+            //   item.props.Selected.push(this.defaultValue(current)[0]);
+            // }
 
             break;
           default:
@@ -2034,6 +2001,7 @@
     },
     mounted() {
       this.Comparison();
+     
 
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
