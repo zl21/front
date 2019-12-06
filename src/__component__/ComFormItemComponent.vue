@@ -764,7 +764,7 @@
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formDataObject)));
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -815,21 +815,8 @@
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
       },
-      refcolval(items, json) {
-        if (interlocks() === true) {
-          const srccol = items.validate.refcolval.srccol;
-          
-          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-          if (!jsonArr[srccol]) {
-            if (items.type === 'DropDownSelectFilter') {
-              // console.log(items.props.defaultSelected, index, items);
-              // this.newFormItemLists[index].item.value = '';
-              // this.newFormItemLists[index].item.props.defaultSelected = [];
-            } else {
-              // this.newFormItemLists[index].item.value = '';
-            }
-          }
-        }
+      refcolval() {
+        
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
@@ -849,7 +836,7 @@
       },
       setAttributes(item, formindex, val, type) {
         //  设置属性
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(val)));
         const field = item.props.webconf.setAttributes.field;
         if (!Array.isArray(field)) {
           return false;
@@ -948,7 +935,7 @@
       },
       hidecolumn(items, index, json, type) {
         // 隐藏
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(json)));
 
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
