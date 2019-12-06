@@ -496,8 +496,10 @@
         const key = Object.keys(data)[0];
         if (key && key.split(':').length > 1) {
           delete this.formData[current.item.field];
+          delete this.formDataAll[current.item.field]
         } else {
           delete this.formData[current.item.inputname];
+          delete this.formDataAll[current.item.inputname]
         }
         
         // let v1.4外键 及number
@@ -548,6 +550,7 @@
           delete this.formDataDef[current.item.field];
           delete this.labelForm[current.item.field];
           if (this.tableGetName) {
+          // eslint-disable-next-line no-shadow
             const data = {
               key: current.item.field,
               itemName: this.tableGetName
