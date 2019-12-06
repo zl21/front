@@ -1082,7 +1082,11 @@
                   } = this.$refs.page;
                   let startIndex = 0;
                   const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
-                  if (tableRowSelectedIdsLength === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+                  let currentPageSizes = Math.ceil(total % currentPageSize);
+                  if (currentPageSizes === 0) {
+                    currentPageSizes = currentPageSize;
+                  }
+                  if (tableRowSelectedIdsLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
                     startIndex = currentPageSize * ((total - tableRowSelectedIdsLength) / currentPageSize - 1);
                   } else {
                     startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
@@ -1163,6 +1167,37 @@
         //     });
         //   }
         // };
+      },
+      changePageForSeleteData() {
+        const { itemId } = router.currentRoute.params;
+        const { refcolid } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
+        const {
+          allPages, currentPage, currentPageSize, total 
+        } = this.$refs.page;
+        let startIndex = 0;
+        const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
+        let currentPageSizes = Math.ceil(total % currentPageSize);
+        if (currentPageSizes === 0) {
+          currentPageSizes = currentPageSize;
+        }
+        if (tableRowSelectedIdsLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+          startIndex = currentPageSize * ((total - tableRowSelectedIdsLength) / currentPageSize - 1);
+        } else {
+          startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
+        }
+        this.getObjectTableItemForTableData({
+          table: this.tableName,
+          objid: itemId,
+          refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: startIndex,
+            range: this.pageInfo.pageSize,
+            fixedcolumns: {}
+          },
+          tabIndex
+        });
       },
       filterColumns(data) {
         if (!data) {
@@ -3534,6 +3569,12 @@
           this.isRefreshClick = true;
         }
       });
+      if (!this._inactive) {
+            window.addEventListener('changePageForSelete',this.changePageForSeleteData);
+      }
+    },
+    beforeDestroy() {
+      window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
     },
     activated() {
       this.isRefreshClick = false;
