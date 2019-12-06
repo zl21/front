@@ -22,7 +22,7 @@
         class="item"
         @click="routeTo(endMenu)"
       >
-        {{ endMenu.label }}
+        {{ endMenu.url }}
       </li>
     </ul>
   </div>

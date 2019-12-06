@@ -1081,27 +1081,24 @@
                     allPages, currentPage, currentPageSize, total 
                   } = this.$refs.page;
                   let startIndex = 0;
-                  let time = 0;
-                  if (this.tableRowSelectedIds.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
-                    startIndex = currentPageSize * (total / currentPageSize - 2);
-                    time = 500;
+                  const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
+                  if (tableRowSelectedIdsLength === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+                    startIndex = currentPageSize * ((total - tableRowSelectedIdsLength) / currentPageSize - 1);
                   } else {
                     startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
                   }
-                  setTimeout(() => {
-                    this.getObjectTableItemForTableData({
-                      table: this.tableName,
-                      objid: itemId,
-                      refcolid,
-                      searchdata: {
-                        column_include_uicontroller: true,
-                        startindex: startIndex,
-                        range: this.pageInfo.pageSize,
-                        fixedcolumns: {}
-                      },
-                      tabIndex
-                    });
-                  }, time);
+                  this.getObjectTableItemForTableData({
+                    table: this.tableName,
+                    objid: itemId,
+                    refcolid,
+                    searchdata: {
+                      column_include_uicontroller: true,
+                      startindex: startIndex,
+                      range: this.pageInfo.pageSize,
+                      fixedcolumns: {}
+                    },
+                    tabIndex
+                  });
                 }
               }
             });

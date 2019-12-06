@@ -11,8 +11,9 @@
 <script>
   import Vue from 'vue';
   import { mapState } from 'vuex';
+  import { getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
   import mixins from '../__config__/mixins/horizontalTableDetail';
-  import { HORIZONTAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX } from '../constants/global';
+  import { HORIZONTAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX, HAS_BEEN_DESTROYED_MODULE } from '../constants/global';
   import HorizontalTableDetail from './H.TableDetail';
   import moduleName from '../__utils__/getModuleName';
   
@@ -31,9 +32,10 @@
         const { routePrefix } = this.$route.meta;
         if (routePrefix !== HORIZONTAL_TABLE_DETAIL_PREFIX) { return; }
         const componentName = moduleName();
-
-        if (Vue.component(componentName) === undefined) {
+        const hasBeenDestroyed = getSeesionObject(HAS_BEEN_DESTROYED_MODULE)[componentName];
+        if (Vue.component(componentName) === undefined || hasBeenDestroyed) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()], isKeepAliveModel: true }, HorizontalTableDetail)));
+          deleteFromSessionObject(HAS_BEEN_DESTROYED_MODULE, componentName);
         }
         this.currentTable = componentName;
       }
