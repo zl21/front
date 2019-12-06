@@ -867,6 +867,10 @@
             arr[i] = props[i] || false;
             return arr;
           }, {});
+          // eslint-disable-next-line no-prototype-builtins
+          if (!Object.hasOwnProperty('readonly', item.oldProps)) {
+            item.oldProps.readonly = props.readonly;
+          }
           item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
