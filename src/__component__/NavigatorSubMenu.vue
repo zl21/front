@@ -78,6 +78,8 @@
           value, id, url 
         } = data;
         if (url) {
+          window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+          window.sessionStorage.setItem('dynamicRouting', true);
           const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
           const modifyPageUrl = url.substring(0, Number(url.length) - 3);
           if (menuType === 'New') {
@@ -88,7 +90,6 @@
             updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
           }
         }
-       
         routeTo({ type, info: { tableName: value, tableId: id, url } }, () => {
           this.hideMenu();
         });

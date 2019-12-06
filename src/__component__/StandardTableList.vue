@@ -384,7 +384,7 @@
             //   });
             // }
 
-
+            
             const param = {
               url: this.ag.tableurl,
               id,
@@ -458,9 +458,14 @@
       onCellSingleClick(colDef, rowData, target) {
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
+          window.sessionStorage.setItem('dynamicRouting', true);
           const {
-            objdistype, reftableid, reftable, fkdesc, serviceId
+            objdistype
+            // , reftableid, reftable, fkdesc, serviceId
           } = colDef;
+          const {
+            reftableid, reftablename, refobjid, reftabdesc, serviceId
+          } = rowData[colDef.colId];
           let type = '';
           if (objdistype === 'tabpanle') { // 上下结构
             type = 'tableDetailHorizontal';
@@ -476,11 +481,11 @@
             return;
           }
           this.tabHref({
-            id: rowData.ID.val,
-            tableName: reftable,
+            id: refobjid,
+            tableName: reftablename,
             tableId: reftableid,
             type,
-            label: fkdesc,
+            label: reftabdesc,
             serviceId
           });
         }
@@ -1977,7 +1982,18 @@
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
-          this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          
+          const {
+            allPages, currentPage, currentPageSize, total 
+          } = this.$refs.agTableElement.$children[0];
+          if (this.buttons.selectIdArr.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+            this.searchData.startIndex = currentPageSize * (total / currentPageSize - 2);
+          }
+          setTimeout(() => {
+            this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
+          }, 500);
+         
+         
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }
       },

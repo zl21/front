@@ -524,13 +524,31 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        // clearTimeout(this.setChangeTime);
-        // this.setChangeTime = setTimeout(() => {
-        // }, 50);
-        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
-        this.getStateData();
-
         
+        
+        if (this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+          // eslint-disable-next-line no-shadow
+          delete this.formData[current.item.field];
+          delete this.formDataDef[current.item.field];
+          delete this.labelForm[current.item.field];
+          // eslint-disable-next-line no-shadow
+          const data = {
+            key: current.item.field,
+            itemName: this.tableGetName
+          };
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+        } else if (this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+          delete this.formData[current.item.field];
+          delete this.formDataDef[current.item.field];
+          delete this.labelForm[current.item.field];
+        }
+        
+        clearTimeout(this.setChangeTime);
+        this.setChangeTime = setTimeout(() => {
+          console.log(this.tableGetName);
+          this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+          this.getStateData();
+        }, 5);
         // 注释
       },
       VerifyMessageForm(value, type) {
@@ -543,7 +561,7 @@
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const formData = Object.assign(this.defaultFormData, this.formData);
+          const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
           this.VerificationForm.forEach((item) => {
             Object.keys(formData).forEach((option) => {
               if (item.key === option.split(':')[0]) {
@@ -1005,7 +1023,7 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            const data = Object.assign(this.defaultFormData, this.formData);
+            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
@@ -2001,7 +2019,6 @@
     },
     mounted() {
       this.Comparison();
-     
 
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {

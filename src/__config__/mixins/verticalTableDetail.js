@@ -84,8 +84,8 @@ export default () => ({
         'updateObjTabActionSlientConfirm',
         'updateTableSearchData',
         'updateRefreshButton',
-        'updataGlobalLoading'
-
+        'updataGlobalLoading',
+        'seleteAddData'
         // 'resetFormReadOnlyAttribute'
 
       ]),

@@ -6,6 +6,7 @@
       <div class="detail-top">
         <div class="page-buttons">
           <Page
+            ref="page"
             :total="dataSource.totalRowCount"
             :page-size-opts="dataSource.selectrange"
             :current="currentPage"
@@ -1076,18 +1077,31 @@
                   const { refcolid } = this.itemInfo;
                   const tabIndex = this.tabCurrentIndex;
                   this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
-                  this.getObjectTableItemForTableData({
-                    table: this.tableName,
-                    objid: itemId,
-                    refcolid,
-                    searchdata: {
-                      column_include_uicontroller: true,
-                      startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-                      range: this.pageInfo.pageSize,
-                      fixedcolumns: {}
-                    },
-                    tabIndex
-                  });
+                  const {
+                    allPages, currentPage, currentPageSize, total 
+                  } = this.$refs.page;
+                  let startIndex = 0;
+                  let time = 0;
+                  if (this.tableRowSelectedIds.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+                    startIndex = currentPageSize * (total / currentPageSize - 2);
+                    time = 500;
+                  } else {
+                    startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
+                  }
+                  setTimeout(() => {
+                    this.getObjectTableItemForTableData({
+                      table: this.tableName,
+                      objid: itemId,
+                      refcolid,
+                      searchdata: {
+                        column_include_uicontroller: true,
+                        startindex: startIndex,
+                        range: this.pageInfo.pageSize,
+                        fixedcolumns: {}
+                      },
+                      tabIndex
+                    });
+                  }, time);
                 }
               }
             });

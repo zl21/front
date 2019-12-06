@@ -133,7 +133,18 @@ export default {
       }
     }
   },
-
+  seleteAddData(state, data) { // 删除状态里add的空值
+    // key,需要删除的key
+    // itemName;子表表名
+    const { tableName, itemId } = router.currentRoute.params;
+    if (itemId === 'New') {
+      if (data.itemName) {
+        delete state.updateData[data.itemName].add[data.itemName][data.key];
+      } else {
+        delete state.updateData[tableName].add[tableName][data.key];
+      }
+    }
+  },
   updateModifyData(state, data) {
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].modify = data.value;
@@ -251,7 +262,7 @@ export default {
                   // } else
                   if (c.readonly === true) {
                     if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
-                      copySaveDataForParam[b.colname] = c.defval;
+                      // copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
                       if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
