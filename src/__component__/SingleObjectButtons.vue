@@ -1799,14 +1799,15 @@
                         // this.clickButtonsBack();
                         // this.getQueryListForAg(searchData);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        const searchdata = {
-                          column_include_uicontroller: true,
-                          startindex: (page.currentPageIndex - 1) * page.pageSize,
-                          range: page.pageSize,
-                        };
-                        this.getObjectTableItemForTableData({
-                          table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
-                        });
+                        DispatchEvent('changePageForSelete');
+                        // const searchdata = {
+                        //   column_include_uicontroller: true,
+                        //   startindex: (page.currentPageIndex - 1) * page.pageSize,
+                        //   range: page.pageSize,
+                        // };
+                        // this.getObjectTableItemForTableData({
+                        //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                        // });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                       }
