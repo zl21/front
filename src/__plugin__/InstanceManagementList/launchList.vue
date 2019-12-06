@@ -157,66 +157,7 @@
           },
           {
             title: '流程状态',
-            key: 'processStatus',
-            render: (h, params) => {
-              let processStatusT = '';
-              if (params.row.processStatus === 4) {
-                return h('Poptip', {
-                  props: {
-                    trigger: 'hover',
-                    content: params.row.submitErrorMsg,
-                    transfer: true
-                  }
-                }, [h(
-                  'span',
-                  {
-                    style: {
-                      color: 'rgba(255, 0, 0, 1)',
-                      cursor: 'pointer'
-                    },
-                  // on: {
-                  //   click: () => {
-                  //     // this.modalShow = true;
-                  //     // this.instanceId = params.row.instanceId;
-                  //     // this.submitTask(this.instanceId);
-                  //   }
-                  // }
-                  },
-                  '提交失败，重新提交'
-                )]);
-              } 
-              switch (params.row.processStatus) {
-              case 0:
-                processStatusT = '待审批';
-                break;
-              case 1:
-                processStatusT = '审批中';
-                break;
-              case 2:
-                processStatusT = '已中止';
-                break;
-              case 3:
-                processStatusT = '已完结';
-                break;
-              // case 4:processStatusT="业务系统提交失败";break;
-              case -1:
-                processStatusT = '已撤销';
-                break;
-              default: break;
-              }
-              return h(
-                'p',
-                {
-                  style: {
-                    maxWidth: '160px',
-                    overflow: 'hidden',
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap'
-                  }
-                },
-                processStatusT
-              );
-            }
+            key: 'processStatusName'
           },
           {
             title: '详情',
