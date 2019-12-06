@@ -80,7 +80,8 @@ export default () => ({
         'updateRefreshButton',
         'updateButtonsDataForCustomization',
         'updataGlobalLoading',
-        'seleteAddData'
+        'seleteAddData',
+        'emptyChangeData'
       ]),
   },
   beforeDestroy() {

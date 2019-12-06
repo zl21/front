@@ -1998,9 +1998,10 @@
             id
           });
         }
-        setTimeout(() => {
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyChangeData`, this.tableName);
-        }, 2000);
+        // setTimeout(() => {
+        //   // this.emptyChangeData(this.tableName);
+        //   // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyChangeData`, this.tableName);
+        // }, 2000);
         // setTimeout(() => {
         //   this.getObjectTabForMainTable({ table: this.tableName, objid: 'New' });
         //   this.getObjectForMainTableForm({ table: this.tableName, objid: 'New' });

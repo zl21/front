@@ -85,7 +85,8 @@ export default () => ({
         'updateTableSearchData',
         'updateRefreshButton',
         'updataGlobalLoading',
-        'seleteAddData'
+        'seleteAddData',
+        'emptyChangeData'
         // 'resetFormReadOnlyAttribute'
 
       ]),
