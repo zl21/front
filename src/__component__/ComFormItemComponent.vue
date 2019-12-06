@@ -346,7 +346,7 @@
           }
           clearTimeout(this.timerWatch);
           this.timerWatch = setTimeout(() => {
-            const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
+            const allValue = Object.assign(JSON.parse(JSON.stringify(this.refcolvalData)), JSON.parse(JSON.stringify(val)));
             val = Object.assign(allValue, this.formValueItem);
             this.computFormLinkage(val, old);
           }, 100);
@@ -373,8 +373,9 @@
       }
     },
     methods: {
-      computFormLinkage(val, old) {
+      computFormLinkage(newData, old) {
         // 页面计算关系
+        const val = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formValueItem)));
         this.newFormItemLists.map((items, i) => {
           const item = items.item;
           // 筛选字段
@@ -492,7 +493,7 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        let valueData = this.formDataObject[items.item.field];       
+        let valueData = this.formValueItem[items.item.field];       
         if (items.item.props.fkdisplay === 'drp' 
           || items.item.props.fkdisplay === 'mrp'
           || items.item.props.fkdisplay === 'mop'
@@ -654,6 +655,7 @@
             }];
           } else if (current.item.props.isuppercase) {
             if (typeof current.item.value === 'string') {
+              obj[current.item.field] = obj[current.item.field].toUpperCase();
               valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
             } else {
               valueItem[Object.keys(obj)[0]] = current.item.value;
@@ -670,8 +672,8 @@
           obj[start.colname] = current.item.value[0];
           obj[end.colname] = current.item.value[1];
         }
-        // checkbox
         
+        // checkbox
         this.formValueItem = Object.assign(this.formValueItem, obj);
         // 兼容结束
 
@@ -691,7 +693,6 @@
 
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          console.log(current.item.title);
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
               if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
@@ -861,6 +862,7 @@
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
+
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
@@ -872,11 +874,17 @@
           if (!Object.hasOwnProperty('readonly', item.oldProps)) {
             item.oldProps.readonly = props.readonly;
           }
-          item.oldProps._required = item.required;
+          if (item.required === undefined) {
+            item.oldProps._required = false;
+          } else {
+            item.oldProps._required = item.required;
+          }
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
         }
+
+
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';

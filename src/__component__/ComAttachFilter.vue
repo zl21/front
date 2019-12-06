@@ -3,7 +3,7 @@
     :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
   >
     <AttachFilter
-      v-if="!propsData.disabled"
+      v-if="!propsData.showDisabled"
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
@@ -36,7 +36,7 @@
       </div>
     </AttachFilter>
     <Input
-      v-if="propsData.disabled"
+      v-if="propsData.showDisabled"
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
