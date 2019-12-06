@@ -7,6 +7,7 @@
         <div class="page-buttons">
           <Page
             :total="dataSource.totalRowCount"
+            ref="page"
             :page-size-opts="dataSource.selectrange"
             :current="currentPage"
             class="table-page"
@@ -65,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                 >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1076,16 +1077,23 @@
                   const { refcolid } = this.itemInfo;
                   const tabIndex = this.tabCurrentIndex;
                   this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
+                  const {
+                    allPages, currentPage, currentPageSize, total 
+                  } = this.$refs.page;
+                  let startIndex = 0;
+                  if (this.tableRowSelectedIds.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+                    startIndex = currentPageSize * (total / currentPageSize - 2);
+                  } else {
+                    startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
+                  }
                   this.getObjectTableItemForTableData({
                     table: this.tableName,
                     objid: itemId,
                     refcolid,
                     searchdata: {
                       column_include_uicontroller: true,
-                      // startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
-                      startindex: 0,
-                      // range: this.pageInfo.pageSize,
-                      range: 10,
+                      startindex: startIndex,
+                      range: this.pageInfo.pageSize,
                       fixedcolumns: {}
                     },
                     tabIndex
