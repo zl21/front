@@ -994,7 +994,7 @@
               arr[item.fixcolumn] = `=${refcolval || ''}`;
               arr[item.fixcolumn] = `${refcolval ? `=${refcolval}` : ''}`;
             } else {
-              const data = Object.assign(this.defaultFormData, this.formData);
+              const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
               arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
             }
             return arr;
@@ -1024,7 +1024,7 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
+            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
