@@ -171,6 +171,8 @@
   import network, { urlSearchParams } from '../__utils__/network';
   import NavigatorSubMenu from './NavigatorSubMenu';
   import { STANDARD_TABLE_LIST_PREFIX, Version } from '../constants/global';
+  import { updateSessionObject } from '../__utils__/sessionStorage';
+
 
   export default {
     name: 'Navigator',
@@ -388,6 +390,17 @@
           tableId = tabid;
         } else {
           tableId = actid;
+        }
+        window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+        window.sessionStorage.setItem('dynamicRouting', true);
+        const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
+        const modifyPageUrl = url.substring(0, Number(url.length) - 3);
+        if (menuType === 'New') {
+          const clickMenuAddSingleObjectData = {
+            k: `/${url}`,
+            v: modifyPageUrl
+          };
+          updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
         }
         routeTo({ type, info: { tableName: name, tableId, url } }, () => {
           this.keyWord = '';
