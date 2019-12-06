@@ -1585,7 +1585,7 @@
           // 表单修改属性
           this._items.required = e.value.required;
 
-          console.log(e.value.props, this._items.props.defaultSelected, e.value.props.name);
+          console.log(e.value.field,e.value.props.disabled, this._items.props.defaultSelected, e.value.props.name);
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;

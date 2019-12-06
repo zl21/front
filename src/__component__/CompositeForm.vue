@@ -225,6 +225,7 @@
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
         setVerifyMessageTime: null,
+        formDataAll: {},
         setChangeTime: null,
         LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
@@ -474,6 +475,7 @@
           return false;
         }
         // 必填校验
+        this.VerificationFormItem = [];
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
@@ -524,9 +526,10 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
+        // 校验
+        this.formDataAll = JSON.parse(JSON.stringify(this.formData));
         
-        
-        if (this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
           delete this.formData[current.item.field];
           delete this.formDataDef[current.item.field];
@@ -537,7 +540,7 @@
             itemName: this.tableGetName
           };
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-        } else if (this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+        } else if (this.conditiontype !== 'list' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
           delete this.formData[current.item.field];
           delete this.formDataDef[current.item.field];
           delete this.labelForm[current.item.field];
@@ -545,7 +548,6 @@
         
         clearTimeout(this.setChangeTime);
         this.setChangeTime = setTimeout(() => {
-          console.log(this.tableGetName);
           this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
           this.getStateData();
         }, 5);
@@ -561,7 +563,7 @@
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
+          const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
           this.VerificationForm.forEach((item) => {
             Object.keys(formData).forEach((option) => {
               if (item.key === option.split(':')[0]) {
@@ -574,7 +576,6 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
-          // console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
         }, 10);
       },
@@ -993,7 +994,7 @@
               arr[item.fixcolumn] = `=${refcolval || ''}`;
               arr[item.fixcolumn] = `${refcolval ? `=${refcolval}` : ''}`;
             } else {
-              const data = Object.assign(this.defaultFormData, this.formData);
+              const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
               arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
             }
             return arr;
@@ -1023,7 +1024,7 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
+            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formDataAll);
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
