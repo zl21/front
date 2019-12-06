@@ -384,7 +384,7 @@
             //   });
             // }
 
-
+            
             const param = {
               url: this.ag.tableurl,
               id,
@@ -458,6 +458,7 @@
       onCellSingleClick(colDef, rowData, target) {
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
+          window.sessionStorage.setItem('dynamicRouting', true);
           const {
             objdistype
             // , reftableid, reftable, fkdesc, serviceId
@@ -1981,8 +1982,12 @@
           if (response && response.data && response.data.code === -1) {
             merge = true;
           }
-          this.searchData.startIndex = 0;// 以上操作过后，列表回到第一页
-          this.searchData.range = 10;
+          const {
+            allPages, currentPage, currentPageSize, total 
+          } = this.$refs.agTableElement.$children[0];
+          if (this.buttons.selectIdArr.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+            this.searchData.startIndex = currentPageSize * (total / currentPageSize - 2);
+          }
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
           this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         }

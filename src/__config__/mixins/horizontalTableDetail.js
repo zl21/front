@@ -78,7 +78,8 @@ export default () => ({
         'updateTableSearchData',
         'updateRefreshButton',
         'updateButtonsDataForCustomization',
-        'updataGlobalLoading'
+        'updataGlobalLoading',
+        'seleteAddData'
       ]),
   },
   beforeDestroy() {
