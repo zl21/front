@@ -263,8 +263,11 @@ export default (router) => {
 
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
     const isNotFromSameTable = to.params.tableName !== from.params.tableName;
+    const isNotFromSameTableForHideBackButton = to.params.itemId !== (from.params.itemId === 'New');
+
     if (!isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
+      window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
     }
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
     // console.log({
@@ -282,9 +285,9 @@ export default (router) => {
     // 记录规则三：
     // window.sessionStorage.removeItem('dynamicRoutingForHideBackButton');
     const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
-
-
-    const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
-    updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
+    if (isDynamicRoutingForHideBackButton && !isFromStandardTable && isNotFromSameTableForHideBackButton) { // 非列表
+      const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
+      updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
+    }
   });
 };
