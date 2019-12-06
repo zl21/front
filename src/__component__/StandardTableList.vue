@@ -384,7 +384,7 @@
             //   });
             // }
 
-
+            
             const param = {
               url: this.ag.tableurl,
               id,
@@ -458,6 +458,7 @@
       onCellSingleClick(colDef, rowData, target) {
         const { tableId } = this.$route.params;
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
+          window.sessionStorage.setItem('dynamicRouting', true);
           const {
             objdistype
             // , reftableid, reftable, fkdesc, serviceId
