@@ -588,8 +588,9 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
+          console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
-        }, 10);
+        }, 100);
       },
       setVerifyMessageForm() {
         //  校验赋值
@@ -1943,7 +1944,7 @@
           if (Array.isArray(item.value) && item.value[0] === undefined) {
             item.value = '';
           }
-          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
+          if (item.value === 0  && (item.defval === undefined || item.defval === '')) {
             item.value = '';
           }
 
