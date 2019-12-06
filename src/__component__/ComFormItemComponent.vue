@@ -346,7 +346,7 @@
           }
           clearTimeout(this.timerWatch);
           this.timerWatch = setTimeout(() => {
-            const allValue = Object.assign(JSON.parse(JSON.stringify(this.refcolvalData)), JSON.parse(JSON.stringify(val)));
+            const allValue = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.refcolvalData)));
             val = Object.assign(allValue, this.formValueItem);
             this.computFormLinkage(val, old);
           }, 100);
@@ -373,9 +373,8 @@
       }
     },
     methods: {
-      computFormLinkage(newData, old) {
+      computFormLinkage(val, old) {
         // 页面计算关系
-        const val = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formValueItem)));
         this.newFormItemLists.map((items, i) => {
           const item = items.item;
           // 筛选字段
@@ -493,7 +492,7 @@
         } else {
           onfousInput = elDiv.querySelector('input');
         }
-        let valueData = this.formValueItem[items.item.field];       
+        let valueData = this.formDataObject[items.item.field];       
         if (items.item.props.fkdisplay === 'drp' 
           || items.item.props.fkdisplay === 'mrp'
           || items.item.props.fkdisplay === 'mop'
@@ -655,8 +654,9 @@
             }];
           } else if (current.item.props.isuppercase) {
             if (typeof current.item.value === 'string') {
-              obj[current.item.field] = obj[current.item.field].toUpperCase();
-              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+              if (valueItem[Object.keys(obj)[0]]) {
+                valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+              }
             } else {
               valueItem[Object.keys(obj)[0]] = current.item.value;
             }
@@ -672,8 +672,8 @@
           obj[start.colname] = current.item.value[0];
           obj[end.colname] = current.item.value[1];
         }
-        
         // checkbox
+        
         this.formValueItem = Object.assign(this.formValueItem, obj);
         // 兼容结束
 
@@ -766,7 +766,7 @@
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(this.formValueItem)));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -817,8 +817,21 @@
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
       },
-      refcolval() {
-        
+      refcolval(items, json) {
+        if (interlocks() === true) {
+          const srccol = items.validate.refcolval.srccol;
+          
+          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+          if (!jsonArr[srccol]) {
+            if (items.type === 'DropDownSelectFilter') {
+              // console.log(items.props.defaultSelected, index, items);
+              // this.newFormItemLists[index].item.value = '';
+              // this.newFormItemLists[index].item.props.defaultSelected = [];
+            } else {
+              // this.newFormItemLists[index].item.value = '';
+            }
+          }
+        }
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
@@ -838,7 +851,7 @@
       },
       setAttributes(item, formindex, val, type) {
         //  设置属性
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(val)));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
         if (!Array.isArray(field)) {
           return false;
@@ -862,7 +875,6 @@
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
-
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
@@ -870,21 +882,11 @@
             arr[i] = props[i] || false;
             return arr;
           }, {});
-          // eslint-disable-next-line no-prototype-builtins
-          if (!Object.hasOwnProperty('readonly', item.oldProps)) {
-            item.oldProps.readonly = props.readonly;
-          }
-          if (item.required === undefined) {
-            item.oldProps._required = false;
-          } else {
-            item.oldProps._required = item.required;
-          }
+          item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
         }
-
-
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
@@ -948,7 +950,7 @@
       },
       hidecolumn(items, index, json, type) {
         // 隐藏
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.getStateData())), JSON.parse(JSON.stringify(json)));
+        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
 
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
