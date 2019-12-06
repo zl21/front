@@ -654,9 +654,7 @@
             }];
           } else if (current.item.props.isuppercase) {
             if (typeof current.item.value === 'string') {
-              if (valueItem[Object.keys(obj)[0]]) {
-                valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
-              }
+              valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
             } else {
               valueItem[Object.keys(obj)[0]] = current.item.value;
             }
