@@ -489,6 +489,8 @@
         }
         const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
         this.formData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
+        this.formDataAll = Object.assign(JSON.parse(JSON.stringify(this.formDataAll)), data);
+
         this.formDataDef = Object.assign(formData, setdefval);
         // 获取表单的默认值
         const key = Object.keys(data)[0];
@@ -507,7 +509,9 @@
           } else {
             this.formData[current.item.field] = '';
           }
+          this.formDataAll[current.item.field] = this.formData[current.item.field];
         }
+
 
         // 获取需要校验的表单
         // 开启
@@ -527,7 +531,6 @@
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
         // 校验
-        this.formDataAll = JSON.parse(JSON.stringify(this.formData));
         
         if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
@@ -544,6 +547,13 @@
           delete this.formData[current.item.field];
           delete this.formDataDef[current.item.field];
           delete this.labelForm[current.item.field];
+          if (this.tableGetName) {
+            const data = {
+              key: current.item.field,
+              itemName: this.tableGetName
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+          }
         }
         
         clearTimeout(this.setChangeTime);
@@ -559,7 +569,6 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
-
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
@@ -568,7 +577,7 @@
             Object.keys(formData).forEach((option) => {
               if (item.key === option.split(':')[0]) {
                 item.value = formData[option];
-              }
+              } 
             });
           });
           
@@ -1178,8 +1187,7 @@
       checkDisplay(item) {
         // 组件显示类型
         let str = '';
-        const checkIsReadonly = this.isReadonly(item);
-        
+        const checkIsReadonly = this.isReadonly(item);        
 
         if (checkIsReadonly === true && item.fkdisplay) {
           //  不可编辑 变成 input
@@ -1714,6 +1722,11 @@
             // }
             item.props.Selected.push(this.defaultValue(current)[0]);
             item.value = this.defaultValue(current)[0].Label;
+            if (!item.props.readonly && !this.objreadonly) {
+              item.props.showDisabled = false;
+            } else {
+              item.props.showDisabled = true;
+            }
 
             break;
           case 'mop':
@@ -1755,10 +1768,11 @@
             item.props.filterDate = {};
             item.value = '';
             item.props.Selected.push(this.defaultValue(current)[0]);
-            // if (!item.props.readonly && !this.objreadonly) {
-            //   item.value = this.defaultValue(current)[1];
-            //   item.props.Selected.push(this.defaultValue(current)[0]);
-            // }
+            if (!item.props.readonly && !this.objreadonly) {
+              item.props.showDisabled = false;
+            } else {
+              item.props.showDisabled = true;
+            }
 
             break;
           default:
