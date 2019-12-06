@@ -76,6 +76,7 @@
         fixedcolumns: {},
         defaultData: {},
         Condition: 'list',
+        changeType: 'Modify',
         objids: [],
         poptitle: '批量修改',
         loading: false,
@@ -246,8 +247,8 @@
       },
       formChange(data, defaultData, changeData) {
         // form 修改的数据
-        this.formChangeData = Object.assign(this.formChangeData, data);
-        this.defaultData = Object.assign(this.defaultData, changeData);
+        this.formChangeData = Object.assign({}, data);
+        this.defaultData = Object.assign({}, changeData);
         Object.keys(this.defaultData).forEach((item) => {
           if (this.defaultData[item] === '' || this.defaultData[item] === undefined) {
             delete this.formChangeData[item];

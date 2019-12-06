@@ -496,8 +496,10 @@
         const key = Object.keys(data)[0];
         if (key && key.split(':').length > 1) {
           delete this.formData[current.item.field];
+          delete this.formDataAll[current.item.field]
         } else {
           delete this.formData[current.item.inputname];
+          delete this.formDataAll[current.item.inputname]
         }
         
         // let v1.4外键 及number
@@ -548,6 +550,7 @@
           delete this.formDataDef[current.item.field];
           delete this.labelForm[current.item.field];
           if (this.tableGetName) {
+          // eslint-disable-next-line no-shadow
             const data = {
               key: current.item.field,
               itemName: this.tableGetName
@@ -585,8 +588,9 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
+          console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
-        }, 10);
+        }, 100);
       },
       setVerifyMessageForm() {
         //  校验赋值
@@ -1940,7 +1944,7 @@
           if (Array.isArray(item.value) && item.value[0] === undefined) {
             item.value = '';
           }
-          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
+          if (item.value === 0  && (item.defval === undefined || item.defval === '')) {
             item.value = '';
           }
 
