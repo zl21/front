@@ -3313,12 +3313,13 @@
                 }
               } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
                 // 左右结构取行内的colid
-                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
+                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cur.srccol]) : undefined;
                 if (obj) {
                   // 有修改过的，取修改过的。
                   fixedcolumns[cur.fixcolumn] = obj[cur.srccol].toString() ? express + obj[cur.srccol] : '';
                 } else {
-                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  const fixedcolumnsKeyValue = this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  fixedcolumns[cur.fixcolumn] = express + fixedcolumnsKeyValue;
                 }
               } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
                 fixedcolumns[cur.fixcolumn] = '';
@@ -3358,7 +3359,8 @@
                   fixedcolumns[cur.fixcolumn] = express + obj[cur.srccol];
                 } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
                   // ，没有修改过的取默认的
-                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  const fixedcolumnsKeyValue = this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  fixedcolumns[cur.fixcolumn] = express + fixedcolumnsKeyValue;
                 } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
                   fixedcolumns[cur.fixcolumn] = '';
                 }
