@@ -524,7 +524,7 @@
             this.updateExportedState({});
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
-                objid: id, id, resolve, reject 
+                objid: id, id, resolve, reject
               });
             });
             promises.then(() => {
@@ -910,7 +910,7 @@
           table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex
         });
         this.getObjectTabForMainTable({
-          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo 
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo
         });
         const fixedcolumns = {};
         if (this.searchCondition) {
@@ -1078,7 +1078,7 @@
                   const tabIndex = this.tabCurrentIndex;
                   this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
                   const {
-                    allPages, currentPage, currentPageSize, total 
+                    allPages, currentPage, currentPageSize, total
                   } = this.$refs.page;
                   let startIndex = 0;
                   const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
@@ -1173,7 +1173,7 @@
         const { refcolid } = this.itemInfo;
         const tabIndex = this.tabCurrentIndex;
         const {
-          allPages, currentPage, currentPageSize, total 
+          allPages, currentPage, currentPageSize, total
         } = this.$refs.page;
         let startIndex = 0;
         const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
@@ -3284,6 +3284,87 @@
               }
             }
           }
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray.length > 0) { // webconf
+          cellData.webconf.refcolvalArray.forEach((cur) => {
+            if (this.type === pageType.Horizontal) {
+              const express = '=';
+              if (cur.maintable) {
+                // 需要从主表取
+                const { tableName } = this.$router.currentRoute.params;
+                const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[tableName];
+                const defaultValue = mainTablePanelData.default;
+                const modifyValue = mainTablePanelData.modify;
+                // 先从修改里找 如果修改的里面没有 就从默认值里取
+                if (modifyValue[tableName] && modifyValue[tableName][cur.srccol]) {
+                  const colname = modifyValue[tableName][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  }
+                } else {
+                  // 默认值取
+                  const colname = defaultValue[tableName][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  }
+                }
+                const colname = mainTablePanelData[cur.srccol];
+                if (colname && mainTablePanelData.isfk) {
+                  fixedcolumns[cur.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+                }
+              } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
+                // 左右结构取行内的colid
+                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
+                if (obj) {
+                  // 有修改过的，取修改过的。
+                  fixedcolumns[cur.fixcolumn] = express + obj[cur.srccol];
+                } else {
+                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                }
+              } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
+                fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].val;
+              }
+            } else {
+              // 先判断主表是否有关联字段  没有则取行的refobjid
+              const express = '=';
+              if (cur.maintable) {
+                // 需要从主表取
+                const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
+                const defaultValue = mainTablePanelData.default;
+                const modifyValue = mainTablePanelData.modify;
+                // 先从修改里找 如果修改的里面没有 就从默认值里取
+                if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cur.srccol]) {
+                  const colname = modifyValue[this.mainFormInfo.tablename][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  }
+                } else {
+                  // 默认值取
+                  const colname = defaultValue[this.mainFormInfo.tablename][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  }
+                }
+                const colname = mainTablePanelData[cur.srccol];
+                if (colname && mainTablePanelData.isfk) {
+                  fixedcolumns[cur.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+                }
+              } else {
+                // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+                // 上下结构子表
+                // 左右结构取行内的colid
+                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cur.srccol]) : undefined;
+                if (obj) {
+                  // 有修改过的，取修改过的。
+                  fixedcolumns[cur.fixcolumn] = express + obj[cur.srccol];
+                } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
+                  // ，没有修改过的取默认的
+                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
+                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].val;
+                }
+              }
+            }
+          });
         }
         return fixedcolumns;
       },
@@ -3431,7 +3512,7 @@
               this.updateExportedState({});
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
-                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
+                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject
                 });
               });
               promises.then(() => {
