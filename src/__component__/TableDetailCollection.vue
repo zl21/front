@@ -3298,13 +3298,13 @@
                 if (modifyValue[tableName] && modifyValue[tableName][cur.srccol]) {
                   const colname = modifyValue[tableName][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
                   }
                 } else {
                   // 默认值取
                   const colname = defaultValue[tableName][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
                   }
                 }
                 const colname = mainTablePanelData[cur.srccol];
@@ -3316,12 +3316,12 @@
                 const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cellData.refcolval.srccol]) : undefined;
                 if (obj) {
                   // 有修改过的，取修改过的。
-                  fixedcolumns[cur.fixcolumn] = express + obj[cur.srccol];
+                  fixedcolumns[cur.fixcolumn] = obj[cur.srccol].toString() ? express + obj[cur.srccol] : '';
                 } else {
                   fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
                 }
               } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
-                fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].val;
+                fixedcolumns[cur.fixcolumn] = '';
               }
             } else {
               // 先判断主表是否有关联字段  没有则取行的refobjid
@@ -3335,13 +3335,13 @@
                 if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cur.srccol]) {
                   const colname = modifyValue[this.mainFormInfo.tablename][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
                   }
                 } else {
                   // 默认值取
                   const colname = defaultValue[this.mainFormInfo.tablename][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
                   }
                 }
                 const colname = mainTablePanelData[cur.srccol];
@@ -3360,7 +3360,7 @@
                   // ，没有修改过的取默认的
                   fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
                 } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
-                  fixedcolumns[cur.fixcolumn] = express + this.dataSource.row[params.index][cur.srccol].val;
+                  fixedcolumns[cur.fixcolumn] = '';
                 }
               }
             }
