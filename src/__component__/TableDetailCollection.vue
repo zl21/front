@@ -3298,13 +3298,17 @@
                 if (modifyValue[tableName] && modifyValue[tableName][cur.srccol]) {
                   const colname = modifyValue[tableName][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
                   }
                 } else {
                   // 默认值取
                   const colname = defaultValue[tableName][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
                   }
                 }
                 const colname = mainTablePanelData[cur.srccol];
@@ -3336,13 +3340,17 @@
                 if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cur.srccol]) {
                   const colname = modifyValue[this.mainFormInfo.tablename][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
                   }
                 } else {
                   // 默认值取
                   const colname = defaultValue[this.mainFormInfo.tablename][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] = colname.toString() ? `${express}${colname}` : '';
+                    fixedcolumns[cur.fixcolumn] =`${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
                   }
                 }
                 const colname = mainTablePanelData[cur.srccol];
