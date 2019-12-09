@@ -695,6 +695,9 @@
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
+              if (!Array.isArray(current.item.value)) {
+                return false;
+              }
               if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
                 return false;
               }
@@ -770,7 +773,8 @@
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const jsonArr = this.setJson(current, this.formDataObject);
+
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -853,16 +857,28 @@
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
+      setJson(item, val) {
+        // 子表明细联动
+        if (item.props.tableGetName) {
+          // eslint-disable-next-line no-const-assign
+          return Object.assign(JSON.parse(JSON.stringify(val)), this.formValueItem);
+        } 
+        // eslint-disable-next-line no-const-assign
+        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+      },
       setAttributes(item, formindex, val, type) {
         //  设置属性
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
+        // 获取值
+        const jsonArr = this.setJson(item, val);
+
         if (!Array.isArray(field)) {
           return false;
         }
 
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
+
           if (optionValue === undefined) {
             optionValue = '';
           }
@@ -877,6 +893,7 @@
           }
 
           const refval = option.refval.split(',');
+
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
@@ -909,7 +926,6 @@
           // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
-
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else if (item.props.webconf.setAttributes.props.required === false) {
@@ -967,8 +983,8 @@
       },
       hidecolumn(items, index, json, type) {
         // 隐藏
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-
+        // 获取值
+        const jsonArr = this.setJson(items, json);
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
