@@ -556,7 +556,7 @@
               if (Version() === '1.3') {
                 //  id 转number
                 if (current.item.value.length < 2) {
-                  obj[current.item.field] = Number(obj[current.item.field]);
+                  obj[current.item.field] = obj[current.item.field];
                 } 
               }
             } else if (this.condition !== '') {
@@ -695,7 +695,7 @@
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
+              if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
                 return false;
               }
               if (this.oldformData[current.item.field] === obj[current.item.field]) {
@@ -715,7 +715,11 @@
         const valueLabel = {};
         if (!this.formDataObject[current.item.field]) {
           // 判断是否有值
-          valueLabel[current.item.field] = '';
+          if (this.formValueItem[current.item.field] !== undefined && this.formValueItem[current.item.field] !== null) {
+            valueLabel[current.item.field] = this.formValueItem[current.item.field];
+          } else {
+            valueLabel[current.item.field] = '';
+          }
           if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
             valueLabel[current.item.field] = current.item.props.Selected[0].ID;
           }
@@ -856,6 +860,7 @@
         if (!Array.isArray(field)) {
           return false;
         }
+
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
           if (optionValue === undefined) {
@@ -875,6 +880,7 @@
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
+
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
@@ -882,17 +888,28 @@
             arr[i] = props[i] || false;
             return arr;
           }, {});
-          item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
+
+          // eslint-disable-next-line no-prototype-builtins
+          if (!Object.hasOwnProperty('readonly', item.oldProps)) {
+            item.oldProps.readonly = props.readonly;
+          }
+          if (item.required === undefined) {
+            item.oldProps._required = false;
+          } else {
+            item.oldProps._required = item.required;
+          }
         }
+
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
           // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else if (item.props.webconf.setAttributes.props.required === false) {
