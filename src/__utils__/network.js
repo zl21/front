@@ -8,6 +8,7 @@ import {
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
+
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
 

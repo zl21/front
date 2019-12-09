@@ -2547,79 +2547,53 @@
           if (clickMenuAddSingleObjectData[currentRoute]) { // 不显示返回按钮
             this.dataArray.back = false;
             // deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
-            updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
+            // updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
             return true;
           }
           return false;
         } 
         const addRouteToEditorData = getSeesionObject('addRouteToEditor');
         let flag = false;
-        Object.keys(addRouteToEditorData).some((a) => {
+        Object.keys(addRouteToEditorData).some((a) => { // 菜单跳转单对象新增，保存后跳转到编辑界面，满足记录规则三维护的关系中存在当前菜单跳转新增界面匹配的对应关系，不显示返回按钮
           if (addRouteToEditorData[a] === clickMenuAddSingleObjectData[a] && currentRoute.indexOf(clickMenuAddSingleObjectData[a]) !== -1) {
             flag = true;
           }
         });
+
+
         if (flag) {
           this.dataArray.back = false;
           deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
           return true;
         }
+        let flagForRouteMapRecord = false;
+        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+        Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+          if (keepAliveModuleName === item) {
+            flagForRouteMapRecord = true;
+          }
+        });
+        if (flagForRouteMapRecord) {
+          this.dataArray.back = false;
+          // deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+          return true;
+        }
+
         return false;
       },
-      // clickKeepAliveLabelMaps(buttonData) {
-      //   buttonData.objbutton.map((button) => {
-      //     if (button.vuedisplay === 'edit') {
-      //       const editTableId = button.action.lastIndexOf('/');
-      //       const editTableName = button.action.substring(0, editTableId);
-      //       const label = `${this.activeTab.label.substring(2, '编辑')}虚表`;
-      //       const name = `S.${editTableName}.${editTableId}`;
-      //       this.addKeepAliveLabelMaps({ name, label });
-      //     } else if (button.vuedisplay === 'external') {
-      //       const linkUrl = button.action;
-      //       const linkId = button.webid;
-      //       this.increaseLinkUrl({ linkId, linkUrl });
-      //       const label = `${button.webdesc}`;
-      //       const name = `L.${button.webname.toUpperCase()}.${linkId}`;
-      //       this.addKeepAliveLabelMaps({ name, label });
-      //     }
-      //     return false;
-      //   });
-      // }
     
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      // window.removeEventListener('globalNotice', this.updataLoading);
     },
     mounted() {
       this.hideBackButton();
-      // if (this.objectType === 'horizontal') { // 横向布局
-      //   this.tabPanel.every((item) => {
-      //     if (this.itemName !== this.tableName && item.tablename === this.itemName) {
-      //       this.tablePage = item.tablePageInfo;
-      //       return false;
-      //     }
-      //     return true;
-      //   });
-      // } else {
-      //   this.tabPanel.every((item) => {
-      //     if (item.tablename === this.itemName) {
-      //       this.tablePage = item.tablePageInfo;
-      //       return false;
-      //     }
-      //     return true;
-      //   });
-      // }
-
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('globalNotice', this.updataLoading);
       }
-       
-      // this.dataArray.refresh = this.refreshButtons;
-      // this.clickKeepAliveLabelMaps(this.tabwebact);
-
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
           if (this.itemName !== this.tableName) {

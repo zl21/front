@@ -121,15 +121,6 @@ export default {
                 const n = i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
                 const name = n.substring(n.lastIndexOf('/') + 1, n.length);
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
-                const menuType = c.url.substring(c.url.lastIndexOf('/') + 1, c.url.length);
-                const modifyPageUrl = c.url.substring(0, Number(c.url.length) - 3);
-                if (menuType === 'New') {
-                  const clickMenuAddSingleObjectData = {
-                    k: `/${c.url}`,
-                    v: modifyPageUrl
-                  };
-                  updateSessionObject('clickMenuAddSingleObject', clickMenuAddSingleObjectData);
-                }
               }
             }
           } else if (c.type === 'table') {
@@ -277,14 +268,25 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
     const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
     Object.values(clickMenuAddSingleObjectData).map((item) => {
       const routeFullPath = state.activeTab.routeFullPath;
       const resRouteFullPath = ` ${routeFullPath.substring(routeFullPath.indexOf('/') + 1, routeFullPath.lastIndexOf('/'))}/New`;
       if (routeFullPath.indexOf(item) !== -1) {
-        deleteFromSessionObject('clickMenuAddSingleObject', resRouteFullPath);
+        const path = `/${resRouteFullPath}`.replace(/\s/g, '');
+        deleteFromSessionObject('clickMenuAddSingleObject', path);
       }
     });
+    // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
+    const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
+      if (keepAliveModuleName === item) {
+        deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+      }
+    });
+
     const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
