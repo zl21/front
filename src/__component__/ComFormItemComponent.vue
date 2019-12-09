@@ -298,6 +298,8 @@
       };
     },
     mounted() {
+      this.formValueItem = {};
+      console.log('mounted');
       this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
@@ -861,7 +863,7 @@
         // 子表明细联动
         if (item.props.tableGetName) {
           // eslint-disable-next-line no-const-assign
-          return Object.assign(JSON.parse(JSON.stringify(val)), this.formValueItem);
+          return JSON.parse(JSON.stringify(val));
         } 
         // eslint-disable-next-line no-const-assign
         return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
