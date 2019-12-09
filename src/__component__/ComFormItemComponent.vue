@@ -556,7 +556,12 @@
               if (Version() === '1.3') {
                 //  id 转number
                 if (current.item.value.length < 2) {
-                  obj[current.item.field] = Number(obj[current.item.field]);
+                  // eslint-disable-next-line no-restricted-globals
+                  if (isNaN(Number(obj[current.item.field]))) {
+                    obj[current.item.field] = obj[current.item.field];
+                  } else {
+                    obj[current.item.field] = Number(obj[current.item.field]);
+                  }
                 } 
               }
             } else if (this.condition !== '') {
@@ -695,7 +700,10 @@
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (Number(current.item.value[0].ID) !== Number(obj[current.item.field]) && current.item.value[0].ID !== '') {
+              if (!Array.isArray(current.item.value)) {
+                return false;
+              }
+              if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
                 return false;
               }
               if (this.oldformData[current.item.field] === obj[current.item.field]) {
