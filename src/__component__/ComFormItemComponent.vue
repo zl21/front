@@ -558,7 +558,12 @@
               if (Version() === '1.3') {
                 //  id 转number
                 if (current.item.value.length < 2) {
-                  obj[current.item.field] = obj[current.item.field];
+                  // eslint-disable-next-line no-restricted-globals
+                  if (isNaN(Number(obj[current.item.field]))) {
+                    obj[current.item.field] = obj[current.item.field];
+                  } else {
+                    obj[current.item.field] = Number(obj[current.item.field]);
+                  }
                 } 
               }
             } else if (this.condition !== '') {

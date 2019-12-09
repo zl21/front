@@ -12,11 +12,12 @@ const deleteFromSessionObject = (target, key) => {
     window.sessionStorage.setItem(target, JSON.stringify(data));
   }
 };
-
 const getSeesionObject = target => JSON.parse(window.sessionStorage.getItem(target)) || {};
 
 const removeSessionObject = (target) => {
   window.sessionStorage.removeItem(target);
 };
 
-export { updateSessionObject, getSeesionObject, deleteFromSessionObject, removeSessionObject };
+export {
+  updateSessionObject, getSeesionObject, deleteFromSessionObject, removeSessionObject 
+};
