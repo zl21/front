@@ -480,6 +480,8 @@
             this.$Modal.fcWarning(data);
             return;
           }
+          window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+
           this.tabHref({
             id: refobjid,
             tableName: reftablename,

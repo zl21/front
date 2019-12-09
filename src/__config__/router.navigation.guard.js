@@ -270,6 +270,8 @@ export default (router) => {
       window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
     }
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
+    const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
+
     // console.log({
     //   isFromStandardTable, isTableDetail, isNotFromSameTable, isDynamicRouting
     // });
@@ -278,13 +280,11 @@ export default (router) => {
       updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
     }
     // 记录规则二：不是从同表的列表跳转到单对象界面，如果目标界面与来源界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
-    if (isDynamicRouting && isNotFromSameTable) {
+    if (isDynamicRoutingForHideBackButton && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       updateSessionObject('routeMapRecordForHideBackButton', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
     }
-    // 记录规则三：
-    // window.sessionStorage.removeItem('dynamicRoutingForHideBackButton');
-    const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
+    // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
     if (isDynamicRoutingForHideBackButton && !isFromStandardTable && isNotFromSameTableForHideBackButton) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
       updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 

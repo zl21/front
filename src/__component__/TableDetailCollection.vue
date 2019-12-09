@@ -2694,6 +2694,7 @@
                 this.$Modal.fcWarning(datas);
                 return;
               }
+              window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
               this.tabOpen({
                 type,
                 tableName: data.reftablename,
@@ -3348,7 +3349,7 @@
                   // 默认值取
                   const colname = defaultValue[this.mainFormInfo.tablename][cur.srccol];
                   if (colname) {
-                    fixedcolumns[cur.fixcolumn] =`${express}${colname}`;
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
                   } else {
                     fixedcolumns[cur.fixcolumn] = '';
                   }
@@ -3661,7 +3662,7 @@
         }
       });
       if (!this._inactive) {
-            window.addEventListener('changePageForSelete',this.changePageForSeleteData);
+        window.addEventListener('changePageForSelete', this.changePageForSeleteData);
       }
     },
     beforeDestroy() {
