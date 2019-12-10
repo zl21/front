@@ -654,7 +654,7 @@
         clearTimeout(this.InitializationFormTime);
         this.InitializationFormTime = setTimeout(() => {
           this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
-        }, 100);
+        }, 5);
         // 注释
       },
       getObjId(current) {
