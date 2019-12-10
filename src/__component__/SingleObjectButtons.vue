@@ -2508,8 +2508,9 @@
       jflowClick(event) {
         if (event.detail.type === 'submit') {
           const promise = new Promise((resolve, reject) => {
+            const submitButtonPath = this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')];
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject
             });
           });
           // promise.then(() => {

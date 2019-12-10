@@ -5,7 +5,7 @@
       <div class="btnArea">
         <Button
           type="primary"
-          @click="queryLists"
+          @click="searchData.page = 1;queryLists()"
         >
           查询
         </Button>
@@ -136,6 +136,7 @@
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
+                    this.searchData.page = 1;
                     this.queryLists();
                   }
                 }
@@ -153,6 +154,7 @@
               event: {
                 keydown: (event) => {
                   if (event.keyCode === 13) {
+                    this.searchData.page = 1;
                     this.queryLists();
                   }
                 }
@@ -251,43 +253,7 @@
           },
           {
             title: '流程状态',
-            key: 'processStatus',
-            render: (h, params) => {
-              let processStatusT = '';
-              switch (params.row.processStatus) {
-              case 0:
-                processStatusT = '待审批';
-                break;
-              case 1:
-                processStatusT = '审批中';
-                break;
-              case 2:
-                processStatusT = '已中止';
-                break;
-              case 3:
-                processStatusT = '已完结';
-                break;
-              case 4:
-                processStatusT = '业务系统提交失败';
-                break;
-              case -1:
-                processStatusT = '已撤销';
-                break;
-              default: break;
-              }
-              return h(
-                'p',
-                {
-                  style: {
-                    maxWidth: '160px',
-                    overflow: 'hidden',
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap'
-                  }
-                },
-                processStatusT
-              );
-            }
+            key: 'processStatusName'
           },
           {
             title: '详情',
@@ -537,7 +503,6 @@
         ) {
           delete this.searchData.businessType;
         }
-        this.searchData.page = 1;
       },
       // 0同意/1驳回、2转派
       batchoperate() {

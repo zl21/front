@@ -36,6 +36,7 @@ export default () => ({
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
+      defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
