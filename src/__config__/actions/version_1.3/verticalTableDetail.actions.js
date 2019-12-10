@@ -824,8 +824,8 @@ export default {
               
             },
             before: {
-              value,
-              itemBeforeLabel
+              ...value,
+              ...itemBeforeLabel
             } 
           };
         }
