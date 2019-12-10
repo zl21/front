@@ -1,5 +1,8 @@
 <template>
-  <div class="horizontalTableDetail">
+  <div
+    :id="currentTableName"
+    class="horizontalTableDetail"
+  >
     <TabPanels
       type="line"
       is-keep-alive
@@ -75,6 +78,9 @@
           });
         }
         return arr;
+      },
+      currentTableName() {
+        return this.$route.params.tableName;
       }
     },
     methods: {

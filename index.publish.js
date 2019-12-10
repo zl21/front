@@ -23,8 +23,8 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.7.1',
-  temporaryVersion: '1.7.8',
+  version: '1.7.2',
+  temporaryVersion: '1.7.9',
   /**
    * @param projectConfig 项目配置
    * projectConfig: {

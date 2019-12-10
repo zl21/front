@@ -29,8 +29,10 @@ Loading.install = ((Vue) => {
 
     const tpl = new LoadingTip().$mount().$el;
     // 3、把创建的实例添加到容器中
-    const dom = document.getElementById('content');
-    dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
+    const currentTableName = window.vm.$store.state.global.activeTab.tableName;
+    const dom = document.querySelector(`#${currentTableName}`);
+
+    // dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
     dom.appendChild(tpl);
     // 阻止遮罩滑动
     document.querySelector('#vue-loading').addEventListener('touchmove', (e) => {
@@ -43,8 +45,9 @@ Loading.install = ((Vue) => {
 
   Vue.prototype.$loading.hide = () => {
     const tpl = document.querySelector('#vue-loading');
-    const dom = document.getElementById('content');
-    dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
+    const currentTableName = window.vm.$store.state.global.activeTab.tableName;
+    const dom = document.querySelector(`#${currentTableName}`);
+    // dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
 
     if (tpl) {
       dom.removeChild(tpl);

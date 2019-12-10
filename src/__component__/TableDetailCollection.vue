@@ -6,8 +6,8 @@
       <div class="detail-top">
         <div class="page-buttons">
           <Page
-            :total="dataSource.totalRowCount"
             ref="page"
+            :total="dataSource.totalRowCount"
             :page-size-opts="dataSource.selectrange"
             :current="currentPage"
             class="table-page"
@@ -524,7 +524,7 @@
             this.updateExportedState({});
             const promises = new Promise((resolve, reject) => {
               this.getExportedState({
-                objid: id, id, resolve, reject 
+                objid: id, id, resolve, reject
               });
             });
             promises.then(() => {
@@ -910,7 +910,7 @@
           table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex
         });
         this.getObjectTabForMainTable({
-          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo 
+          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo
         });
         const fixedcolumns = {};
         if (this.searchCondition) {
@@ -1078,11 +1078,16 @@
                   const tabIndex = this.tabCurrentIndex;
                   this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
                   const {
-                    allPages, currentPage, currentPageSize, total 
+                    allPages, currentPage, currentPageSize, total
                   } = this.$refs.page;
                   let startIndex = 0;
-                  if (this.tableRowSelectedIds.length === currentPageSize && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
-                    startIndex = currentPageSize * (total / currentPageSize - 2);
+                  const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
+                  let currentPageSizes = Math.ceil(total % currentPageSize);
+                  if (currentPageSizes === 0) {
+                    currentPageSizes = currentPageSize;
+                  }
+                  if (tableRowSelectedIdsLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+                    startIndex = currentPageSize * ((total - tableRowSelectedIdsLength) / currentPageSize - 1);
                   } else {
                     startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
                   }
@@ -1162,6 +1167,37 @@
         //     });
         //   }
         // };
+      },
+      changePageForSeleteData() {
+        const { itemId } = router.currentRoute.params;
+        const { refcolid } = this.itemInfo;
+        const tabIndex = this.tabCurrentIndex;
+        const {
+          allPages, currentPage, currentPageSize, total
+        } = this.$refs.page;
+        let startIndex = 0;
+        const tableRowSelectedIdsLength = this.tableRowSelectedIds.length;
+        let currentPageSizes = Math.ceil(total % currentPageSize);
+        if (currentPageSizes === 0) {
+          currentPageSizes = currentPageSize;
+        }
+        if (tableRowSelectedIdsLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+          startIndex = currentPageSize * ((total - tableRowSelectedIdsLength) / currentPageSize - 1);
+        } else {
+          startIndex = (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize);
+        }
+        this.getObjectTableItemForTableData({
+          table: this.tableName,
+          objid: itemId,
+          refcolid,
+          searchdata: {
+            column_include_uicontroller: true,
+            startindex: startIndex,
+            range: this.pageInfo.pageSize,
+            fixedcolumns: {}
+          },
+          tabIndex
+        });
       },
       filterColumns(data) {
         if (!data) {
@@ -2658,6 +2694,7 @@
                 this.$Modal.fcWarning(datas);
                 return;
               }
+              window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
               this.tabOpen({
                 type,
                 tableName: data.reftablename,
@@ -3248,6 +3285,97 @@
               }
             }
           }
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray.length > 0) { // webconf
+          cellData.webconf.refcolvalArray.forEach((cur) => {
+            if (this.type === pageType.Horizontal) {
+              const express = '=';
+              if (cur.maintable) {
+                // 需要从主表取
+                const { tableName } = this.$router.currentRoute.params;
+                const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[tableName];
+                const defaultValue = mainTablePanelData.default;
+                const modifyValue = mainTablePanelData.modify;
+                // 先从修改里找 如果修改的里面没有 就从默认值里取
+                if (modifyValue[tableName] && modifyValue[tableName][cur.srccol]) {
+                  const colname = modifyValue[tableName][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
+                  }
+                } else {
+                  // 默认值取
+                  const colname = defaultValue[tableName][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
+                  }
+                }
+                const colname = mainTablePanelData[cur.srccol];
+                if (colname && mainTablePanelData.isfk) {
+                  fixedcolumns[cur.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+                }
+              } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
+                // 左右结构取行内的colid
+                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cur.srccol]) : undefined;
+                if (obj) {
+                  // 有修改过的，取修改过的。
+                  fixedcolumns[cur.fixcolumn] = obj[cur.srccol].toString() ? express + obj[cur.srccol] : '';
+                } else {
+                  const fixedcolumnsKeyValue = this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  fixedcolumns[cur.fixcolumn] = express + fixedcolumnsKeyValue;
+                }
+              } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
+                fixedcolumns[cur.fixcolumn] = '';
+              }
+            } else {
+              // 先判断主表是否有关联字段  没有则取行的refobjid
+              const express = '=';
+              if (cur.maintable) {
+                // 需要从主表取
+                const mainTablePanelData = this.$store.state[this.moduleComponentName].updateData[this.mainFormInfo.tablename];
+                const defaultValue = mainTablePanelData.default;
+                const modifyValue = mainTablePanelData.modify;
+                // 先从修改里找 如果修改的里面没有 就从默认值里取
+                if (modifyValue[this.mainFormInfo.tablename] && modifyValue[this.mainFormInfo.tablename][cur.srccol]) {
+                  const colname = modifyValue[this.mainFormInfo.tablename][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
+                  }
+                } else {
+                  // 默认值取
+                  const colname = defaultValue[this.mainFormInfo.tablename][cur.srccol];
+                  if (colname) {
+                    fixedcolumns[cur.fixcolumn] = `${express}${colname}`;
+                  } else {
+                    fixedcolumns[cur.fixcolumn] = '';
+                  }
+                }
+                const colname = mainTablePanelData[cur.srccol];
+                if (colname && mainTablePanelData.isfk) {
+                  fixedcolumns[cur.fixcolumn] = `${express}${mainTablePanelData.refobjid}`;
+                }
+              } else {
+                // fixedcolumns[cellData.refcolval.fixcolumn] = `${express}${row.refobjid}`;
+                // 上下结构子表
+                // 左右结构取行内的colid
+                const obj = this.afterSendData[this.tableName] ? this.afterSendData[this.tableName].find(item => item.ID === params.row.ID && item[cur.srccol]) : undefined;
+                if (obj) {
+                  // 有修改过的，取修改过的。
+                  fixedcolumns[cur.fixcolumn] = express + obj[cur.srccol];
+                } else if (this.copyDataSource.row[params.index][cur.srccol].val !== '') {
+                  // ，没有修改过的取默认的
+                  const fixedcolumnsKeyValue = this.dataSource.row[params.index][cur.srccol].refobjid ? this.dataSource.row[params.index][cur.srccol].refobjid : this.dataSource.row[params.index][cur.srccol].val;
+                  fixedcolumns[cur.fixcolumn] = express + fixedcolumnsKeyValue;
+                } else if (this.copyDataSource.row[params.index][cur.srccol].val === '') {
+                  fixedcolumns[cur.fixcolumn] = '';
+                }
+              }
+            }
+          });
         }
         return fixedcolumns;
       },
@@ -3395,7 +3523,7 @@
               this.updateExportedState({});
               const promises = new Promise((resolve, reject) => {
                 this.getExportedState({
-                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject 
+                  objid: this.buttonsData.exportdata, id: this.buttonsData.exportdata, resolve, reject
                 });
               });
               promises.then(() => {
@@ -3533,6 +3661,12 @@
           this.isRefreshClick = true;
         }
       });
+      if (!this._inactive) {
+        window.addEventListener('changePageForSelete', this.changePageForSeleteData);
+      }
+    },
+    beforeDestroy() {
+      window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
     },
     activated() {
       this.isRefreshClick = false;

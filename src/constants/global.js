@@ -41,7 +41,7 @@ export const DB_NAME = 'R3';
 export const DB_SCHEMA_NETWORK = 'Network';
 export const ENABLE_NETWORK_MONITOR = () => (window.ProjectConfig && typeof window.ProjectConfig.enableNetworkMonitor === 'boolean' ? window.ProjectConfig.enableNetworkMonitor : project.enableNetworkMonitor);
 export const SLOW_NETWORK_THRESHOLD = 0;
-
+export const HAS_BEEN_DESTROYED_MODULE = 'destroyedModule';
 // 需要走全局公共网关的接口
 export const globalGateWay = [
   '/p/cs/getSubSystems',

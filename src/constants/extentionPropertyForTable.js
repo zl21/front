@@ -251,4 +251,44 @@ export default [
     outputValueType: 'JSON',
     description: '自定义参数格式及内容'
   },
+  {
+    name: '列表数据权限配置',
+    key: 'precolnameslist',
+    type: 'object-group',
+    showLabel: false,
+    enableIncrease: true,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制列表界面过滤的数据，以及列表界面查询条件可以选到的数据'
+  },
+  {
+    name: '单对象数据权限配置',
+    key: 'precolnames',
+    type: 'object-group',
+    showLabel: false,
+    enableIncrease: true,
+    objectInfo: [
+      {
+        name: '数据权限标识',
+        key: 'premtype',
+        type: 'input'
+      },
+      {
+        name: '本表对应字段',
+        key: 'refcol',
+        type: 'input'
+      }
+    ],
+    description: '控制单对象界面可以选到的数据'
+  },
 ];

@@ -2,7 +2,8 @@ import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 import router from '../router.config';
-import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
+import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE } from '../../constants/global';
+import { updateSessionObject } from '../../__utils__/sessionStorage';
 
 export default () => ({
   provide: {
@@ -84,10 +85,12 @@ export default () => ({
         'updateTableSearchData',
         'updateRefreshButton',
         'updataGlobalLoading',
-        'seleteAddData'
+        'seleteAddData',
+        'emptyChangeData'
         // 'resetFormReadOnlyAttribute'
 
       ]),
+    ...mapMutations('global', ['decreasekeepAliveLists', 'increaseKeepAliveLists']),
   },
   beforeDestroy() {
     try {
@@ -97,5 +100,13 @@ export default () => ({
     } catch (e) {
       console.log(e);
     }
-  }
+  },
+  deactivated() {
+    if (this.keepAliveLists && this.keepAliveLists.length > 0 && this.keepAliveLists.indexOf(this[MODULE_COMPONENT_NAME]) === -1) {
+      if (this.$options.isKeepAliveModel) {
+        updateSessionObject(HAS_BEEN_DESTROYED_MODULE, { k: this[MODULE_COMPONENT_NAME], v: true });
+        this.$destroy();
+      }
+    }
+  },
 });

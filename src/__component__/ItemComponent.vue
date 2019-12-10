@@ -465,27 +465,31 @@
         // 路由跳转
         const props = this._items.props;
         const type = props.objdisplay;
+        const serviceId = props.serviceId;
+
         // console.log(this._items.props);
         const tableName = props.reftable;
         const tableId = props.reftableid;
         const label = this._items.props.fkdesc;
-        const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
-        const addname = `S.${tableName}.${props.reftableid}`;
-        this.addKeepAliveLabelMaps({
-          name: addname,
-          label
-        });
-        updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
-        if (props.serviceId) {
-          if (Version() === '1.4') {
-            serviceIdMap[tableName] = props.serviceId;
-            window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
-            this.addServiceIdMap({
-              tableName,
-              gateWay: props.serviceId
-            });
-          }
-        }
+        // xhj修改，改为使用tabOpen方法，以下存serviceId逻辑已弃用
+
+        // const serviceIdMap = JSON.parse(window.sessionStorage.getItem('serviceIdMap'));
+        // const addname = `S.${tableName}.${props.reftableid}`;
+        // this.addKeepAliveLabelMaps({
+        //   name: addname,
+        //   label
+        // });
+        // updateSessionObject('keepAliveLabelMaps', { k: addname, v: label });
+        // if (props.serviceId) {
+        //   if (Version() === '1.4') {
+        //     serviceIdMap[tableName] = props.serviceId;
+        //     window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMap));
+        //     this.addServiceIdMap({
+        //       tableName,
+        //       gateWay: props.serviceId
+        //     });
+        //   }
+        // }
 
         let id = 0;
         if (!props.readonly) {
@@ -508,13 +512,14 @@
           this.$Modal.fcWarning(data);
           return;
         }
+        window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         this.tabOpen({
           type: types,
           tableName,
           tableId,
           id,
-          label
-
+          label,
+          serviceId
         });
       },
       valueChange() {
@@ -1585,7 +1590,6 @@
           // 表单修改属性
           this._items.required = e.value.required;
 
-          console.log(e.value.props, this._items.props.defaultSelected, e.value.props.name);
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;

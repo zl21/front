@@ -1,5 +1,8 @@
 <template>
-  <div class="verticalTableDetail">
+  <div
+    :id="currentTableName"
+    class="verticalTableDetail"
+  >
     <component
       :is="currentSingleButtonComponentName"
       :tabcmd="mainFormInfo.buttonsData.data.tabcmd"
@@ -100,6 +103,9 @@
           arr.push(obj);
         });
         return arr;
+      },
+      currentTableName() {
+        return this.$route.params.tableName;
       },
       formPaths() {
         if (this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd && this.mainFormInfo.buttonsData.data.tabcmd.paths) {
