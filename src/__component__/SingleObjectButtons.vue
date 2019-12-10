@@ -2662,11 +2662,14 @@
     },
     // activated() {
     //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
-    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 0) {
+    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 1) {
     //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-    //       // const routeFullPath = this.activeTab.routeFullPath;
-    //       deleteFromSessionObject('routeMapRecordForHideBackButton', Object.keys(routeMapRecordForHideBackButtonData).pop());
-    //       window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //       const routeFullPath = this.activeTab.routeFullPath;
+    //       if (routeMapRecordForHideBackButtonData[routeFullPath] === item) {
+    //         deleteFromSessionObject('routeMapRecordForHideBackButton', routeMapRecordForHideBackButtonData[routeFullPath]);
+    //         window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //       }
+    //       console.log(3333, Object.keys(routeMapRecordForHideBackButtonData).pop());
     //     });
     //   }
     // },
