@@ -181,8 +181,8 @@
       },    
       tabcmd: {
         handler(val) {
+          this.hideBackButton();
           if (Object.keys(val).length > 0) {
-            this.hideBackButton();
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
               if (this.itemName !== this.tableName) { // 以下配置仅控制子表
@@ -2568,10 +2568,10 @@
           return true;
         }
         let flagForRouteMapRecord = false;
-        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const routeFullPath = this.activeTab.routeFullPath;
         const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-          if (keepAliveModuleName === item) {
+          if (routeFullPath === item) {
             flagForRouteMapRecord = true;
           }
         });
@@ -2659,7 +2659,17 @@
       this.tableId = tableId;
       this.itemId = itemId;
       this.buttonMap = buttonmap;
-    }
+    },
+    // activated() {
+    //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 0) {
+    //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+    //       // const routeFullPath = this.activeTab.routeFullPath;
+    //       deleteFromSessionObject('routeMapRecordForHideBackButton', Object.keys(routeMapRecordForHideBackButtonData).pop());
+    //       window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //     });
+    //   }
+    // },
   };
 </script>
 

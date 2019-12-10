@@ -281,9 +281,9 @@ export default {
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+      const routeFullPath = state.activeTab.routeFullPath;
+      if (routeFullPath === item) {
+        deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
         window.sessionStorage.setItem('ignore', true);
       }
     });
