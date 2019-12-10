@@ -284,6 +284,7 @@ export default {
       const keepAliveModuleName = state.activeTab.keepAliveModuleName;
       if (keepAliveModuleName === item) {
         deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+        window.sessionStorage.setItem('ignore', true);
       }
     });
 
@@ -305,9 +306,11 @@ export default {
               router.push({
                 path: state.activeTab.routeFullPath,
               });
+              window.sessionStorage.removeItem('ignore');
             }
           } else if (!tab.stopRouterPush) {
             router.push('/');
+            window.sessionStorage.removeItem('ignore');
           }
         }
       }
