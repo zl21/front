@@ -772,15 +772,6 @@ export default {
             ...itemTableAdd
           }
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
       } else if (sataTypeName === 'modify') {
         parames = {
           table: tableName,
@@ -789,25 +780,16 @@ export default {
           after: itemModifyLabel,
           before: itemBeforeLabel,
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
       } else if (sataTypeName === 'addAndModify') {
+        const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
+        const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+        Object.assign(itemAdd[itemName], add);
+        const itemTableAdd = Object.assign({}, itemAdd);
+        itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = [
+          itemTableAdd[itemName]
+        ];
         if (Object.values(itemAdd[itemName]).length > 0) {
-          const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
-          const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          const itemTableAdd = Object.assign({}, itemAdd);
-          itemTableAdd[itemName].ID = -1;
-          itemTableAdd[itemName] = [
-            itemTableAdd[itemName]
-          ];
           parames = {
             table: tableName, // 主表表名
             objid: objId, // 明细id
@@ -815,15 +797,6 @@ export default {
               ...itemTableAdd
             }
           };
-          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-            if (res.data.code === 0) {
-              const data = res.data;
-              resolve();
-              commit('updateNewMainTableAddSaveData', { data, itemName });
-            } else {
-              reject();
-            }
-          });
         }
         if (Object.values(itemModify[itemName]).length > 0) {
           parames = {
@@ -834,15 +807,27 @@ export default {
             before: itemBeforeLabel
 
           };
-          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-            if (res.data.code === 0) {
-              const data = res.data;
-              resolve();
-              commit('updateNewMainTableAddSaveData', { data, itemName });
-            } else {
-              reject();
-            }
-          });
+        }
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemModify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+              ...itemModifyLabel 
+              
+            },
+            before: {
+              value,
+              itemBeforeLabel
+            } 
+          };
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);
@@ -853,16 +838,16 @@ export default {
           after: { ...modifyLabel },
           before: value,
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
       }
+      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+        if (res.data.code === 0) {
+          const data = res.data;
+          resolve();
+          commit('updateNewMainTableAddSaveData', { data, itemName });
+        } else {
+          reject();
+        }
+      });
     }
   },
   
