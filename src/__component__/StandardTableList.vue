@@ -1,7 +1,10 @@
 
 <!--suppress ALL -->
 <template>
-  <div class="StandardTableListRootDiv">
+  <div
+    :id="buttons.tableName"
+    class="StandardTableListRootDiv"
+  >
     <ButtonGroup
       :data-array="buttons.dataArray"
       :id-array="idArray"
