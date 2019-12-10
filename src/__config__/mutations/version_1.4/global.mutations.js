@@ -342,7 +342,10 @@ export default {
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      console.log(1, serviceIdMapObj);
+      console.log(2, state.serviceIdMap[tableName]);
+
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMapObj);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -391,7 +394,9 @@ export default {
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      console.log(1, serviceIdMapObj);
+      console.log(2, state.serviceIdMap[tableName]);
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMapObj);
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
