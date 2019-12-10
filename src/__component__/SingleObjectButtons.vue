@@ -2008,16 +2008,19 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 保存按钮事件逻辑
+      objectSave(obj) { // 按钮保存操作               
+        this.determineSaveType(obj);        
+      },
+      determineSaveType(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
-          if (this.verifyRequiredInformation()) { // 校验
+          if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
           }
         } else if (this.itemId !== '-1') { // 主表编辑保存
           this.mainTableEditorSave(obj);
         }
       },
-      mainTableNewSaveAndEditorNewSave() { // 主表新增保存
+      mainTableNewSaveAndEditorNewSave() { // 主表新增保存和编辑新增保存
         this.saveParameters();// 调用获取参数方法
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;
@@ -2025,17 +2028,23 @@
         const type = 'add';
         const path = this.dynamic.requestUrlPath;
         const objId = -1;
+
+        if (!this.subtables()) { // 为false的情况下是没有子表
+          // console.log('没有子表');
+          if (this.dynamic.requestUrlPath) { // 配置path
+            // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
+            this.savaNewTable(type, path, objId);
+          } else { // 没有配置path
+            this.savaNewTable(type, path, objId);
+          }
+        }
         if (this.subtables()) { // 存在子表
+          // console.log('有子表');
           if (this.dynamic.requestUrlPath) { // 配置path
             this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           } else { // 没有配置path
             this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
           }
-        } else if (this.dynamic.requestUrlPath) { // 无子表，配置path
-          // console.log(' 主表新增保存,配置path的', this.dynamic.requestUrlPath);
-          this.savaNewTable(type, path, objId);
-        } else { // 没有配置path
-          this.savaNewTable(type, path, objId);
         }
       },
       mainTableEditorSave(obj) { // 主表编辑保存
