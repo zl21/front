@@ -651,10 +651,11 @@
         this.getStateData();
         this.defaultFormData = defaultFormData;
         // 默认值
-        clearTimeout(this.InitializationFormTime);
-        this.InitializationFormTime = setTimeout(() => {
-          this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
-        }, 5);
+        // clearTimeout(this.InitializationFormTime);
+        // this.InitializationFormTime = setTimeout(() => {
+        // }, 5);
+
+        this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
       getObjId(current) {
