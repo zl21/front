@@ -19,7 +19,11 @@ export default {
     state.currentLoading.push(tableName);
   },
   deleteLoading(state, tableName) {
-    state.currentLoading.splice(tableName, 1);
+    const index = state.currentLoading.indexOf(tableName);
+    if (index > -1) {
+      state.currentLoading.splice(index, 1);
+    }
+    // state.currentLoading.splice(tableName, 1);
   },
   directionalRouter(state, param) {
     // id:勾选ID，
