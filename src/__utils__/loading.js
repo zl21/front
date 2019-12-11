@@ -47,7 +47,6 @@ Loading.install = ((Vue) => {
   };
 
   Vue.prototype.$loading.hide = (tableName) => {
-    return;
     store.commit('global/updataLoading', tableName);
     const currentTableName = store.state.global.activeTab.tableName;
     const currentLoading = store.state.global.currentLoading;
