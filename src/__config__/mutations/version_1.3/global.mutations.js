@@ -258,6 +258,8 @@ export default {
     state.keepAliveLists = [];
     state.activeTab = {};
     router.push('/');
+    window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
+    window.sessionStorage.removeItem('addRouteToEditor');
   },
   againClickOpenedMenuLists(state, {
     label,

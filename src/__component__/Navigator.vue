@@ -391,7 +391,7 @@
         } else {
           tableId = actid;
         }
-        window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+        // window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
         window.sessionStorage.setItem('dynamicRouting', true);
         const menuType = url.substring(url.lastIndexOf('/') + 1, url.length);
         if (menuType === 'New') {
