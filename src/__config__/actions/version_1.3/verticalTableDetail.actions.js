@@ -808,6 +808,67 @@ export default {
 
           };
         }
+        // 2种保存合并（主表修改，子表新增）
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+            },
+            before: {
+              ...value,
+            } 
+          };
+        }
+
+        // 2种保存合并（主表修改，子表修改）
+        if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...itemModify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+              ...itemModifyLabel 
+              
+            },
+            before: {
+              ...value,
+              ...itemBeforeLabel
+            } 
+          };
+        }
+
+        // 2种保存合并（子表修改，子表新增）
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+              
+            },
+            before: {
+              ...value,
+            } 
+          };
+        }
+        // 3种保存合并（主表修改，子表新增，子表修改）
         if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
