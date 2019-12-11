@@ -18,6 +18,9 @@ export default {
   updataLoading(state, tableName) {
     state.currentLoading.push(tableName);
   },
+  deleteLoading(state, tableName) {
+    state.currentLoading.splice(tableName, 1);
+  },
   updateIgnoreMsg(state) {
     state.taskMessageCount -= 1;
   },

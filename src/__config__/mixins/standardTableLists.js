@@ -57,7 +57,7 @@ export default () => ({
         'setActionDialog',
         'closeImportDialog',
         'setAgTableErrorMessage',
-        'setPrintValueForButtons'
+        'setPrintValueForButtons',
       
         
       ]),
@@ -85,6 +85,7 @@ export default () => ({
       const tpl = document.querySelector(`#${currentTableName}-loading`);
       if (tpl) {
         tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
       }
     }
   },

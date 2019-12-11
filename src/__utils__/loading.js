@@ -53,6 +53,7 @@ Loading.install = ((Vue) => {
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
     if (tpl) {
       tpl.remove();
+      store.commit('global/deleteLoading', currentTableName);
     }
   };
 });
