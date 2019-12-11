@@ -260,6 +260,7 @@
 
         columnEditElementId: {}, // 保存每列的可编辑元素的id
         editElementId: [], // 表格可编辑元素id 用于回车键使用
+        rouuterParams: {}
       };
     },
     props: {
@@ -375,16 +376,16 @@
               });
             }
 
-            tabcmd.cmds.map((item, index) => {
+            tabcmd.cmds.length > 0 && tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
                 tabcmd.prem[index] = false;
               } else if (tabcmd.prem[index]) {
                 const type = item.split('action');
                 const str = `CMD_${type[1].toUpperCase()}`;
                 if (str !== 'CMD_MODIFY') { // 保存不显示
-                  let buttonConfigInfo = buttonmap[str];
+                  const buttonConfig = JSON.stringify(buttonmap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+                  let buttonConfigInfo = JSON.parse(buttonConfig);
                   if (this.buttonsData.submitData) {
-                    // this.buttonsData.submitData.oK = true;
                   } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                     buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                   }
@@ -398,7 +399,6 @@
                   );
                 }
               }
-
               return item;
             });
           }
@@ -528,7 +528,7 @@
               });
             });
             promises.then(() => {
-              this.$loading.hide();
+              this.$loading.hide(this.rouuterParams.tableName);
               this.closeImportDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -567,12 +567,12 @@
               //   };
               //   this.$Modal.error(data);
               // }
-              this.$loading.hide();
+              this.$loading.hide(this.rouuterParams.tableName);
               this.closeImportDialog();
             });
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(this.rouuterParams.tableName);
         }
       },
       getEditAbleId(data) {
@@ -854,7 +854,7 @@
         });
 
         promise.then(() => {
-          this.$loading.hide();
+          this.$loading.hide(this.rouuterParams.tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -869,7 +869,7 @@
             this.refresh();
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.rouuterParams.tableName);
         });
       },
       objTabActiondDownload(tab) {
@@ -3508,7 +3508,7 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide();
+              this.$loading.hide(this.rouuterParams.tableName);
               this.searchCondition = null;
               this.searchInfo = '';
               this.currentPage = 1;
@@ -3527,7 +3527,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide();
+                this.$loading.hide(this.rouuterParams.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -3565,12 +3565,12 @@
                     content: `${this.exportTasks.resultMsg}`,
                   });
                 }
-                this.$loading.hide();
+                this.$loading.hide(this.rouuterParams.tableName);
               });
               this.getTabelList(1);
             }
           } else {
-            this.$loading.hide();
+            this.$loading.hide(this.rouuterParams.tableName);
           }
         });
       },
@@ -3664,6 +3664,12 @@
       if (!this._inactive) {
         window.addEventListener('changePageForSelete', this.changePageForSeleteData);
       }
+      const { itemId, tableName, tableId } = this.$route.params;
+      this.rouuterParams = {
+        tableName,
+        itemId,
+        tableId
+      };
     },
     beforeDestroy() {
       window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);

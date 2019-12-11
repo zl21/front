@@ -15,6 +15,9 @@ import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '
 
 
 export default {
+  updataLoading(state, tableName) {
+    state.currentLoading.push(tableName);
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
@@ -281,9 +284,9 @@ export default {
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+      const routeFullPath = state.activeTab.routeFullPath;
+      if (routeFullPath === item) {
+        deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
         window.sessionStorage.setItem('ignore', true);
       }
     });
@@ -336,13 +339,14 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -385,13 +389,14 @@ export default {
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {

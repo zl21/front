@@ -15,6 +15,9 @@ import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '
 
 
 export default {
+  updataLoading(state, tableName) {
+    state.currentLoading.push(tableName);
+  },
   updateIgnoreMsg(state) {
     state.taskMessageCount -= 1;
   },
@@ -178,7 +181,7 @@ export default {
       });
     }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
-    state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+    // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
   increaseLinkUrl(state, { linkId, linkUrl }) {
     const linkType = {};
@@ -278,9 +281,9 @@ export default {
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+      const routeFullPath = state.activeTab.routeFullPath;
+      if (routeFullPath === item) {
+        deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
         window.sessionStorage.setItem('ignore', true);
       }
     });
@@ -334,13 +337,13 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
-      const serviceIdMapObj = {
-        k: tableName,
-        v: serviceId
-      };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-    }
+    // if (state.serviceIdMap[tableName] === undefined) {
+    //   const serviceIdMapObj = {
+    //     k: tableName,
+    //     v: serviceId
+    //   };
+    //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    // }
     let path = '';
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
@@ -382,13 +385,13 @@ export default {
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
-      const serviceIdMapObj = {
-        k: tableName,
-        v: serviceId
-      };
-      updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-    }
+    // if (state.serviceIdMap[tableName] === undefined) {
+    //   const serviceIdMapObj = {
+    //     k: tableName,
+    //     v: serviceId
+    //   };
+    //   updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
+    // }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {
       if (url) {

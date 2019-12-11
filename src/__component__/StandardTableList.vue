@@ -221,7 +221,7 @@
             });
             promises.then(() => {          
               this.setImportDialogTitle(false);
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
@@ -259,12 +259,12 @@
               //   };
               //   this.$Modal.fcError(data);
               // }
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               this.setImportDialogTitle(false);
             });
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(this.buttons.tableName);
         }
       },
       commonTableCustomizedDialog(params) {
@@ -1230,7 +1230,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1257,7 +1257,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1278,7 +1278,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then(() => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -1290,7 +1290,7 @@
               this.searchClickData();
             }
           }, () => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
           });
         }
       },
@@ -1605,7 +1605,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1620,7 +1620,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide();
+                this.$loading.hide(this.buttons.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1651,7 +1651,7 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  this.$loading.hide();
+                  this.$loading.hide(this.buttons.tableName);
                   const data = {
                     mask: true,
                     title: '错误',
@@ -1662,10 +1662,10 @@
               });
             }
           } else {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.buttons.tableName);
         });
       },
       deleteTableList() { // 删除方法
@@ -1696,7 +1696,7 @@
           });
         });
         promise.then(() => {
-          // this.$loading.hide();
+          // this.$loading.hide(this.buttons.tableName);
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             mask: true,
