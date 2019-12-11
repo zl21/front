@@ -15,6 +15,9 @@ import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '
 
 
 export default {
+  updataLoading(state, tableName) {
+    state.currentLoading.push(tableName);
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
@@ -336,16 +339,14 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      console.log(1, serviceIdMapObj);
-      console.log(2, state.serviceIdMap[tableName]);
-
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMapObj);
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -388,15 +389,14 @@ export default {
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      console.log(1, serviceIdMapObj);
-      console.log(2, state.serviceIdMap[tableName]);
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMapObj);
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {

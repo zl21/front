@@ -1,4 +1,5 @@
-#vue-loading {
+
+.vue-loading {
     z-index: 3040;
     transition: opacity .3s;
     background-color: rgba(255, 255, 255, 0.8);

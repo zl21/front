@@ -14,6 +14,15 @@ export default () => ({
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
+  activated() {
+    const currentTableName = store.state.global.activeTab.tableName;
+    if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+      const tpl = document.querySelector(`#${currentTableName}-loading`);
+      if (tpl) {
+        tpl.remove();
+      }
+    }
+  },
   computed: {
     ...mapState(getComponentName(), {
       childReadonly: ({ childTableReadonly }) => childTableReadonly,

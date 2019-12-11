@@ -33,7 +33,7 @@ export default () => ({
     }, // 导出状态
     exportTasks: {},
     taskMessageCount: 0, // 我的任务数量
-
+    currentLoading: []// 当前tabloading标记
     
   },
   mutations: mutations(),

@@ -79,6 +79,15 @@ export default () => ({
       webconf: ({ webconf }) => webconf
     }),
   },
+  activated() {
+    const currentTableName = store.state.global.activeTab.tableName;
+    if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+      const tpl = document.querySelector(`#${currentTableName}-loading`);
+      if (tpl) {
+        tpl.remove();
+      }
+    }
+  },
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
