@@ -20,6 +20,7 @@ export default () => ({
       const tpl = document.querySelector(`#${currentTableName}-loading`);
       if (tpl) {
         tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
       }
     }
   },
@@ -91,7 +92,7 @@ export default () => ({
         'updateButtonsDataForCustomization',
         'updataGlobalLoading',
         'seleteAddData',
-        'emptyChangeData'
+        'emptyChangeData',
       ]),
   },
   beforeDestroy() {

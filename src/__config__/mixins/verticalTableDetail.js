@@ -19,6 +19,7 @@ export default () => ({
       const tpl = document.querySelector(`#${currentTableName}-loading`);
       if (tpl) {
         tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
       }
     }
   },
@@ -94,7 +95,7 @@ export default () => ({
         'updateRefreshButton',
         'updataGlobalLoading',
         'seleteAddData',
-        'emptyChangeData'
+        'emptyChangeData',
         // 'resetFormReadOnlyAttribute'
 
       ]),

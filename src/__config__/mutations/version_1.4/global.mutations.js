@@ -18,6 +18,9 @@ export default {
   updataLoading(state, tableName) {
     state.currentLoading.push(tableName);
   },
+  deleteLoading(state, tableName) {
+    state.currentLoading.splice(tableName, 1);
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
@@ -167,22 +170,22 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
 
-    // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
-    const customizedMessage = getSeesionObject('customizedMessage');
-    const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
-    if (JSON.stringify(customizedMessageForbutton) !== '{}') { // 取按钮跳转定制界面label
-      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
-    }
-    if (JSON.stringify(customizedMessage) !== '{}') {
-      Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
-        const nameToUpperCase = customizeName.toUpperCase();
-        if (nameToUpperCase === customizedMessage.customizedModuleName) {
-          const labelName = customize[customizeName].labelName;
-          const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
-          state.keepAliveLabelMaps[name] = `${labelName}`;
-        }
-      });
-    }
+    // // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
+    // const customizedMessage = getSeesionObject('customizedMessage');
+    // const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
+    // if (JSON.stringify(customizedMessageForbutton) !== '{}') { // 取按钮跳转定制界面label
+    //   state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
+    // }
+    // if (JSON.stringify(customizedMessage) !== '{}') {
+    //   Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
+    //     const nameToUpperCase = customizeName.toUpperCase();
+    //     if (nameToUpperCase === customizedMessage.customizedModuleName) {
+    //       const labelName = customize[customizeName].labelName;
+    //       const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
+    //       state.keepAliveLabelMaps[name] = `${labelName}`;
+    //     }
+    //   });
+    // }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
