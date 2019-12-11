@@ -15,9 +15,9 @@ export default () => ({
   },
   activated() {
     const currentTableName = store.state.global.activeTab.tableName;
-    if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
-      const tpl = document.querySelector(`#${currentTableName}-loading`);
-      if (tpl) {
+    const tpl = document.querySelector(`#${currentTableName}-loading`);
+    if (tpl) {
+      if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
         tpl.remove();
         store.commit('global/deleteLoading', currentTableName);
       }
