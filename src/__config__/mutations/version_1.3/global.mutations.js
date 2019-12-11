@@ -15,6 +15,9 @@ import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '
 
 
 export default {
+  updataLoading(state, tableName) {
+    state.currentLoading.push(tableName);
+  },
   updateIgnoreMsg(state) {
     state.taskMessageCount -= 1;
   },

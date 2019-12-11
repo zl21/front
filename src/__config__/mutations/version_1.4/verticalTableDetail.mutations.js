@@ -335,7 +335,6 @@ export default {
   //   }
   // },
   emptyChangeData(state, tableName) {
-    debugger
     if (state.updateData[tableName].changeData) {
       state.updateData[tableName].add = {};
       state.updateData[tableName].changeData = {};
