@@ -79,7 +79,7 @@
           this.$Modal.fcWarning(data);
           return;
         }
-        const { itemId } = router.currentRoute.params;
+        const { itemId,tableName } = router.currentRoute.params;
         const searchdata = {
           env: this.envValue, 
           objId: itemId, 
@@ -87,7 +87,7 @@
         this.$loading.show();
         network.post('/p/cs/release', urlSearchParams(searchdata))
           .then((res) => {
-            this.$loading.hide();
+            this.$loading.hide(tableName);
             if (res.data.code !== 0) {
               return;
             }
