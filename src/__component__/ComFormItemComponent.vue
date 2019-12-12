@@ -305,7 +305,6 @@
     },
     mounted() {
       this.formValueItem = {};
-      console.log('mounted');
       this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
@@ -322,7 +321,7 @@
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
         // 获取校验
-        this.VerificationFormInt();
+        this.VerificationFormInt('mounted');
         // 获取 默认值
         this.mountdataFormInt();
       }, 500);
@@ -705,35 +704,26 @@
         }
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
-          if (obj[current.item.field] || obj[current.item.field] === '') {
-            if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (current.item.type === 'AttachFilter') {
-                if ((current.item.props.Selected[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.props.Selected[0].ID !== '') {
-                  return false;
-                }
-              } else {
-                if (!Array.isArray(current.item.value)) {
-                  return false;
-                }
-                if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
-                  return false;
-                }
-              }
-              
-              if (this.oldformData[current.item.field] === obj[current.item.field]) {
-                return false;
-              }
-              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
-            } else {
-              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
+          if (setLabel[current.item.field] === '' && (obj[current.item.field] === undefined || obj[current.item.field] === '')) {
+            if (current.item.value) {
+              return false;
             }
+            // if (this.oldformData[current.item.field] && setLabel[current.item.field] === '') {
+            //   return false;
+            // }
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           } else {
-            if (current.item.type === 'AttachFilter') {
-              if (!current.item.props.Selected[0] || current.item.value !== current.item.props.Selected[0].Label) {
-                return false;
-              }
+            console.log(setLabel[current.item.field],);
+            if (obj[current.item.field] && setLabel[current.item.field]) {
+              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
             }
-            
+          }
+        } else {
+          // if (this.oldformData[current.item.field] === obj[current.item.field]) {
+          //   return false;
+          // }
+          // eslint-disable-next-line no-lonely-if
+          if (current.item.props.webconf && current.item.props.webconf.formRequest) {
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -741,18 +731,18 @@
       getLable(current) {
         // R3 label 属性
         const valueLabel = {};
-        if (!this.formDataObject[current.item.field]) {
-          // 判断是否有值
-          if (this.formValueItem[current.item.field] !== undefined && this.formValueItem[current.item.field] !== null) {
-            valueLabel[current.item.field] = this.formValueItem[current.item.field];
-          } else {
-            valueLabel[current.item.field] = '';
-          }
-          if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
-            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
-          }
-          return valueLabel;
-        }
+        // if (!this.formDataObject[current.item.field]) {
+        //   // 判断是否有值
+        //   if (this.formValueItem[current.item.field] !== undefined && this.formValueItem[current.item.field] !== null) {
+        //     valueLabel[current.item.field] = this.formValueItem[current.item.field];
+        //   } else {
+        //     valueLabel[current.item.field] = '';
+        //   }
+        //   if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
+        //     valueLabel[current.item.field] = current.item.props.Selected[0].ID;
+        //   }
+        //   return valueLabel;
+        // }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
           if (current.item.props.fkdisplay === 'mop') {
             valueLabel[current.item.field] = current.item.props.Selected[0].ID;
