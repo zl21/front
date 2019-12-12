@@ -3,7 +3,7 @@
     :class="propsData.fkdisplay === 'pop' ? 'comAttachFilter AttachFilter-pop':'comAttachFilter'"
   >
     <AttachFilter
-      v-if="!propsData.showDisabled"
+      v-if="!showDisabled"
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
@@ -36,7 +36,7 @@
       </div>
     </AttachFilter>
     <Input
-      v-if="propsData.showDisabled"
+      v-if="showDisabled"
       ref="AttachFilter"
       v-model="value"
       v-bind="propsData"
@@ -107,6 +107,7 @@
         ],
         clickTimer: 0,
         value: '',
+        showDisabled: false,
         fkobj: {}, // 过滤
         propsData: {},
         resultData: {} // 结果传值
@@ -126,6 +127,9 @@
         // }
 
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
+        if (this.propsData.disabled) {
+          this.showDisabled = this.propsData.disabled;
+        }
         if (this.propstype.fkdisplay === 'pop') {
           this.propstype.show = false;
           this.propsData.componentType = myPopDialog;
@@ -139,8 +143,9 @@
       valueChange(type) {
         window.clearTimeout(this.clickTimer);
         this.clickTimer = window.setTimeout(() => {
+          console.log('555',type);
           this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
-        }, 100);
+        }, 200);
       },
       attachFilterInput(value) {
         this.value = value;
@@ -196,7 +201,7 @@
           ];
           this.filterDate = {};
         }
-        this.valueChange('blur');
+        //this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -377,6 +382,9 @@
     created() {
       this.propsData = this.propstype;
       this.value = this.defaultValue;
+      if (this.propsData.disabled) {
+        this.showDisabled = this.propsData.disabled;
+      }
       
       this.selected = this.defaultSelected;
       if (!this.selected[0]) {
@@ -394,7 +402,7 @@
       }
       if (this.selected[0] && this.selected[0].ID) {
         if (this.propstype.fkdisplay !== 'pop') {
-          this.propsData.disabled = true;
+          // this.propsData.disabled = true;
         }
       }
     }

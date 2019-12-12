@@ -31,6 +31,7 @@
         <span
           :class="{active:tag.isActive === true}"
           class="openedMenuListsItem"
+          :title="tag.label"
         >
           {{ tag.label }}
           <span
