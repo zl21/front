@@ -143,8 +143,9 @@
       valueChange(type) {
         window.clearTimeout(this.clickTimer);
         this.clickTimer = window.setTimeout(() => {
+          console.log('555',type);
           this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
-        }, 100);
+        }, 200);
       },
       attachFilterInput(value) {
         this.value = value;
@@ -200,7 +201,7 @@
           ];
           this.filterDate = {};
         }
-        this.valueChange('blur');
+        //this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
