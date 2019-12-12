@@ -2537,7 +2537,7 @@
         }
       },
       updataLoading(event) {
-        if (!event.detail.updataLoading) {
+        if (event.detail.copy) {
           this.$loading.hide(this.tableName);
         }
       },
@@ -2593,7 +2593,7 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNotice', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', this.updataLoading);
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
