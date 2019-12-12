@@ -28,6 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
+                :is-copy="isCopy"
                 :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
@@ -61,6 +62,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
+          :is-copy="isCopy"
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
@@ -91,6 +93,7 @@
   import regExp from '../constants/regExp';
   import { getGateway } from '../__utils__/network';
   import ItemComponent from './ItemComponent';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
@@ -223,6 +226,7 @@
         setAttsetProps: {}, // 静态属性 映射
         pathArry: [], // path 数组
         show: true,
+        copyInt: true,
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
         setVerifyMessageTime: null,
@@ -295,6 +299,10 @@
     updated() {},
     methods: {
       CollapseClose() {},
+      isCopy() {
+        // 是否是copty 
+        return this.defaultData.copy;
+      },
       Comparison() {
         //  重新初始化校验
         this.VerificationForm = [];
@@ -475,6 +483,7 @@
           this.labelForm = {};
           return false;
         }
+        this.copyInt = false;
         // 必填校验
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => { 
@@ -504,7 +513,7 @@
         }
 
         // let v1.4外键 及number
-        if (!this.formData[current.item.field]) {
+        if (!this.formData[current.item.field] && Version() === '1.4') {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
@@ -517,11 +526,12 @@
 
         // 获取需要校验的表单
         // 开启
-        // if (Version() === '1.3') {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // } else {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // }
+        if (Version() === '1.3') {
+          if (this.formData[current.item.field] === '' || this.formData[current.item.field] === undefined) {
+            this.formData[current.item.field] = '';
+            this.formDataSave[current.item.field] = null;
+          }
+        }
         // 开启
         // 注释
 
@@ -571,7 +581,6 @@
         this.mountChecked = true;
         this.VerificationFormItem[type] = [];
         this.VerificationFormItem[type].push(...value);
-
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
@@ -589,8 +598,17 @@
             this.verifyMessItem = data;
           }
           // console.log(data.messageTip);
+          if (this.copyInt && this.defaultData.copy) {
+            DispatchEvent('globalNoticeCopy', {
+              detail: {
+                copy: true
+              }
+            });
+          }
+
+          
           this.$emit('VerifyMessage', data);
-        }, 10);
+        }, 100);
       },
       setVerifyMessageForm() {
         //  校验赋值
@@ -1520,7 +1538,7 @@
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
-            const string = `^\\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+            const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${
               current.scale
             }})?$`;
             const typeRegExp = new RegExp(string);
@@ -1917,24 +1935,24 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
-          if (Array.isArray(item.value) && item.fkdisplay) {
-            if (item.value[0]) {
-              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
-                item.value = '';
-              }
-            } else if (item.value[0] === undefined || item.value[0] === '') {
-              item.value = '';
-            }
-          }
+          // if (Array.isArray(item.value) && item.fkdisplay) {
+          //   if (item.value[0]) {
+          //     if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === null) {
+          //       item.value = '';
+          //     }
+          //   } else if (item.value[0] === null || item.value[0] === '') {
+          //     item.value = '';
+          //   }
+          // }
 
-          if (Array.isArray(item.value) && item.value[0] === undefined) {
-            item.value = '';
-          }
-          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
-            item.value = '';
-          }
-
-          if (item.value === undefined || item.value === '' || item.value === null || (item.value === 0 && item.fkdisplay) || item.value === '[]') {
+          // if (Array.isArray(item.value) && item.value[0] === null) {
+          //   item.value = '';
+          // }
+          // if (item.value === 0 && item.type === 'select' && item.defval === null) {
+          //   item.value = '';
+          // }
+          const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), JSON.parse(JSON.stringify(this.labelForm)));
+          if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
@@ -2025,6 +2043,7 @@
     mounted() {
       this.Comparison();
      
+      console.log('type00000', this.defaultData.copy, new Date().getTime());
 
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {

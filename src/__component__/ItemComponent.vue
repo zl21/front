@@ -203,6 +203,7 @@
           :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
+          placeholder="请选择"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
           :auto-data="_items.props.AutoData"
@@ -348,8 +349,6 @@
   import { Version, MODULE_COMPONENT_NAME } from '../constants/global';
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
-
-  import { updateSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -529,6 +528,22 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
+        // if (this._items.props.scale > 0) {
+        //   if (this._items.value.split('.').length > 1) {
+        //     const string = `^\\\d{0,${this._items.props.length + 1}}(\\\.[0-9]{0,${
+        //       this._items.props.scale
+        //     }})?$`;
+        //     const typeRegExp = new RegExp(string);
+        //     this._items.props.regx = typeRegExp;
+        //   } else {
+        //     const stringII = `^\\\d{0,${this._items.props.length}}(\\\.[0-9]{0,${
+        //       this._items.props.scale
+        //     }})?$`;
+        //     const typeRegExpII = new RegExp(stringII);
+        //     this._items.props.regx = typeRegExpII;
+        //   }
+        // }
+        
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
           && typeof this._items.event.change === 'function'
