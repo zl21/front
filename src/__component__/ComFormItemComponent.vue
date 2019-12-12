@@ -190,7 +190,13 @@
       mountdataForm: {
         type: Function,
         default() {
-          return '';
+          return function () {};
+        }
+      },
+      isCopy: {
+        type: Function,
+        default() {
+          return function () {};
         }
       },
       getsetAttsetProps: {
@@ -697,17 +703,23 @@
             }, 100);
           }
         }
-
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (!Array.isArray(current.item.value)) {
-                return false;
+              if (current.item.type === 'AttachFilter') {
+                if ((current.item.props.Selected[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.props.Selected[0].ID !== '') {
+                  return false;
+                }
+              } else {
+                if (!Array.isArray(current.item.value)) {
+                  return false;
+                }
+                if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
+                  return false;
+                }
               }
-              if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
-                return false;
-              }
+              
               if (this.oldformData[current.item.field] === obj[current.item.field]) {
                 return false;
               }
@@ -716,6 +728,12 @@
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
             }
           } else {
+            if (current.item.type === 'AttachFilter') {
+              if (!current.item.props.Selected[0] || current.item.value !== current.item.props.Selected[0].Label) {
+                return false;
+              }
+            }
+            
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -799,7 +817,9 @@
           return false;
         }
         //   拦截默认值
-        if (!this.actived) {
+        const isCopyCheck = this.isCopy();
+        console.log(isCopyCheck);
+        if (!this.actived && !isCopyCheck) {
           return true;
         }
         fkHttpRequest().equalformRequest({
@@ -890,6 +910,9 @@
             optionValue = '';
           }
           if (typeof optionValue !== 'string') {
+            if (optionValue === null) {
+              optionValue = '';
+            }
             optionValue = optionValue.toString();
             optionValue = optionValue.replace(/^\s+|\s+$/g, '');
           }

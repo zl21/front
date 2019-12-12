@@ -349,8 +349,6 @@
   import EnumerableInput from './EnumerableInput';
   import ExtentionInput from './ExtentionInput';
 
-  import { updateSessionObject } from '../__utils__/sessionStorage';
-
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
@@ -529,6 +527,22 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
+        // if (this._items.props.scale > 0) {
+        //   if (this._items.value.split('.').length > 1) {
+        //     const string = `^\\\d{0,${this._items.props.length + 1}}(\\\.[0-9]{0,${
+        //       this._items.props.scale
+        //     }})?$`;
+        //     const typeRegExp = new RegExp(string);
+        //     this._items.props.regx = typeRegExp;
+        //   } else {
+        //     const stringII = `^\\\d{0,${this._items.props.length}}(\\\.[0-9]{0,${
+        //       this._items.props.scale
+        //     }})?$`;
+        //     const typeRegExpII = new RegExp(stringII);
+        //     this._items.props.regx = typeRegExpII;
+        //   }
+        // }
+        
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
           && typeof this._items.event.change === 'function'
