@@ -603,7 +603,7 @@
               detail: {
                 copy: true
               }
-            });
+            }); 
           }
 
           
