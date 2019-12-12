@@ -299,7 +299,7 @@ export default (router) => {
       // });
     }
     // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
-    if (isDynamicRoutingForHideBackButton && !isFromStandardTable && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
+    if (!isFromStandardTable && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
       updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
     }

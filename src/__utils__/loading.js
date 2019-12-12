@@ -47,13 +47,16 @@ Loading.install = ((Vue) => {
   };
 
   Vue.prototype.$loading.hide = (tableName) => {
-    const currentTableName = store.state.global.activeTab.tableName;
     store.commit('global/updataLoading', tableName);
+    const currentTableName = store.state.global.activeTab.tableName;
+    const currentLoading = store.state.global.currentLoading;
     const tpl = document.querySelector(`#${currentTableName}-loading`);
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
     if (tpl) {
-      tpl.remove();
-      store.commit('global/deleteLoading', currentTableName);
+      if (currentLoading.indexOf(currentTableName) !== -1) {
+        tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
+      }
     }
   };
 });
