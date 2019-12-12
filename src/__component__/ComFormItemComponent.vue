@@ -299,6 +299,7 @@
         setHeight: 34,
         setVerficaTime: '', // 校验时间
         timerSet: '',
+        fkHttpRequestTime:'',
         timerWatch: '', // 监听change 触发
         actived: false
       };
@@ -306,6 +307,7 @@
     mounted() {
       this.formValueItem = {};
       this.setAttsetProps = this.getsetAttsetProps();
+
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
         if (e.value.type === 'change') {
@@ -349,6 +351,7 @@
           }
           //   拦截默认值
           if (!this.actived) {
+            //this.formInit();
             return;
           }
           clearTimeout(this.timerWatch);
@@ -435,8 +438,30 @@
             // 来源字段
             this.refcolval(item, val, i);
           }
+          if (old === 'mounted') {
+            this.setformUrl(item, val, items);
+          }
           return items;
         });
+      },
+      setformUrl(item, val,items) {
+        if (item.props.webconf && item.props.webconf.formRequest) {
+          const setLabel = this.getLable(items);
+          if (setLabel[item.field] === '' && (val[item.field] === undefined || val[item.field] === '')) {
+            if (item.value) {
+              return false;
+            }
+            this.formRequest(item.field, val, item, item.props.webconf.formRequest);
+          } else if (val[item.field] && setLabel[item.field]) {
+            this.formRequest(item.field, val, item, item.props.webconf.formRequest);
+          }
+        } else {
+          // eslint-disable-next-line no-lonely-if
+          if (item.props.webconf && item.props.webconf.formRequest) {
+            this.formRequest(item.field, val, item, item.props.webconf.formRequest);
+          }
+        }
+        return true;
       },
       inputget(formIndex, index, items) {
         const elDiv = this.$refs[`component_${index}`][0]
@@ -466,9 +491,9 @@
             const setLabel = this.getLable(item);
             arr = Object.assign(arr, setLabel);
             return arr;
-          }, {});          
+          }, {}); 
+          this.formInit();         
           this.mountdataForm(this.formDataObject, Item);
-          this.formInit();
           setTimeout(() => {
             this.actived = true;
           }, 300);
@@ -702,26 +727,17 @@
             }, 100);
           }
         }
-      
+
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (setLabel[current.item.field] === '' && (obj[current.item.field] === undefined || obj[current.item.field] === '')) {
             if (current.item.value) {
               return false;
             }
-            // if (this.oldformData[current.item.field] && setLabel[current.item.field] === '') {
-            //   return false;
-            // }
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
-          } else {
-            console.log(setLabel[current.item.field],);
-            if (obj[current.item.field] && setLabel[current.item.field]) {
-              this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
-            }
+          } else if (obj[current.item.field] && setLabel[current.item.field]) {
+            this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         } else {
-          // if (this.oldformData[current.item.field] === obj[current.item.field]) {
-          //   return false;
-          // }
           // eslint-disable-next-line no-lonely-if
           if (current.item.props.webconf && current.item.props.webconf.formRequest) {
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
@@ -744,10 +760,10 @@
         //   return valueLabel;
         // }
         if (current.item.type === 'AttachFilter' && current.item.props.Selected[0]) {
-          if (current.item.props.fkdisplay === 'mop') {
-            valueLabel[current.item.field] = current.item.props.Selected[0].ID;
-          } else {
+          if (current.item.props.Selected[0]) {
             valueLabel[current.item.field] = current.item.props.Selected[0].Label;
+          } else {
+            valueLabel[current.item.field] = '';
           }
         } else if (current.item.type === 'DropDownSelectFilter') {
           if (current.item.value instanceof Array) {
@@ -789,7 +805,6 @@
       formRequest(key, obj, current, conf) {
         // 走后台接口
         const jsonArr = this.setJson(current, this.formDataObject);
-
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -808,7 +823,6 @@
         }
         //   拦截默认值
         const isCopyCheck = this.isCopy();
-        console.log(isCopyCheck);
         if (!this.actived && !isCopyCheck) {
           return true;
         }
@@ -837,7 +851,7 @@
       },
       inputChange(value, items, index) {
         this.indexItem = index;
-        this.newFormItemLists[index].item.value = value;    
+        this.newFormItemLists[index].item.value = value;   
         this.newFormItemLists = this.newFormItemLists.concat([]);
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
@@ -953,7 +967,7 @@
           }
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
-          this.newFormItemLists[formindex].item.props = Object.assign(props, item.oldProps);
+          this.newFormItemLists[formindex].item.props = Object.assign(this.newFormItemLists[formindex].item.props, item.oldProps);
           item.required = item.oldProps._required;
         } 
         if (type === 'mounted') {
