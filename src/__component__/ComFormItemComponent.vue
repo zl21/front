@@ -793,6 +793,8 @@
             } else {
               valueLabel[current.item.field] = '';
             }
+          } else {
+            valueLabel[current.item.field] = '';
           }
         } else {
           valueLabel[current.item.field] = current.item.value;
