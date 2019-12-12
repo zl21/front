@@ -299,7 +299,8 @@
         setHeight: 34,
         setVerficaTime: '', // 校验时间
         timerSet: '',
-        fkHttpRequestTime:'',
+        fkHttpRequestTime: '',
+        formRequestJson: { }, // 表单传参比较
         timerWatch: '', // 监听change 触发
         actived: false
       };
@@ -351,7 +352,7 @@
           }
           //   拦截默认值
           if (!this.actived) {
-            //this.formInit();
+            // this.formInit();
             return;
           }
           clearTimeout(this.timerWatch);
@@ -444,8 +445,13 @@
           return items;
         });
       },
-      setformUrl(item, val,items) {
+      setformUrl(item, val, items) {
         if (item.props.webconf && item.props.webconf.formRequest) {
+          const isCopyCheck = this.isCopy();
+          if (!this.actived && isCopyCheck) {
+            return true;
+          }
+
           const setLabel = this.getLable(items);
           if (setLabel[item.field] === '' && (val[item.field] === undefined || val[item.field] === '')) {
             if (item.value) {
@@ -817,6 +823,10 @@
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
+        if (JSON.stringify(ASSIGN) === JSON.stringify(this.formRequestJson)) {
+          return false;
+        }
+        this.formRequestJson = JSON.parse(JSON.stringify(ASSIGN));
         const data = {
           ASSIGN
         };
