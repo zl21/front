@@ -28,6 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
+                :isCopy="isCopy"
                 :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
@@ -61,6 +62,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
+          :isCopy="isCopy"
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
@@ -295,6 +297,10 @@
     updated() {},
     methods: {
       CollapseClose() {},
+      isCopy() {
+        // 是否是copty 
+        return this.defaultData.copy;
+      },
       Comparison() {
         //  重新初始化校验
         this.VerificationForm = [];
@@ -504,7 +510,7 @@
         }
 
         // let v1.4外键 及number
-        if (!this.formData[current.item.field]) {
+        if (!this.formData[current.item.field] && Version() === '1.4') {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
@@ -517,11 +523,12 @@
 
         // 获取需要校验的表单
         // 开启
-        // if (Version() === '1.3') {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // } else {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // }
+        if (Version() === '1.3') {
+          if (this.formData[current.item.field] === '' || this.formData[current.item.field] === undefined) {
+            this.formData[current.item.field] = '';
+            this.formDataSave[current.item.field] = null;
+          }
+        }
         // 开启
         // 注释
 
@@ -1520,7 +1527,7 @@
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
-            const string = `^\\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
+            const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${
               current.scale
             }})?$`;
             const typeRegExp = new RegExp(string);
@@ -1919,18 +1926,18 @@
           // 校验值是不是有值
           if (Array.isArray(item.value) && item.fkdisplay) {
             if (item.value[0]) {
-              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === null) {
                 item.value = '';
               }
-            } else if (item.value[0] === undefined || item.value[0] === '') {
+            } else if (item.value[0] === null || item.value[0] === '') {
               item.value = '';
             }
           }
 
-          if (Array.isArray(item.value) && item.value[0] === undefined) {
+          if (Array.isArray(item.value) && item.value[0] === null) {
             item.value = '';
           }
-          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
+          if (item.value === 0 && item.type === 'select' && item.defval === null) {
             item.value = '';
           }
 
