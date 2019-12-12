@@ -337,9 +337,10 @@
 
       // 上传成功
       handleSuccess(response) {
+        const { tableName } = this.$route.params;
         if (response.code === 0) {
           if (Version() === '1.4') {
-            this.$loading.hide();
+            this.$loading.hide(tableName);
             this.closeDialog();
             this.fileName = '';
             this.$Modal.fcSuccess({
@@ -351,7 +352,7 @@
             this.$emit('imporSuccess', response.data);
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(tableName);
           if (response.data.path === 'undefined ===') {
             this.errorMsg.errorUrl = '';
           } else {
@@ -369,7 +370,8 @@
       },
       // 上传失败
       handleError(e) {
-        this.$loading.hide();
+        const { tableName } = this.$route.params;
+        this.$loading.hide(tableName);
         const emg = e;
         let formatJsonEmg = null;
         try {

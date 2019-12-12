@@ -57,7 +57,7 @@ export default () => ({
         'setActionDialog',
         'closeImportDialog',
         'setAgTableErrorMessage',
-        'setPrintValueForButtons'
+        'setPrintValueForButtons',
       
         
       ]),
@@ -78,6 +78,16 @@ export default () => ({
       buttons: ({ buttons }) => buttons,
       webconf: ({ webconf }) => webconf
     }),
+  },
+  activated() {
+    const currentTableName = store.state.global.activeTab.tableName;
+    const tpl = document.querySelector(`#${currentTableName}-loading`);
+    if (tpl) {
+      if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+        tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
+      }
+    }
   },
   beforeDestroy() {
     try {

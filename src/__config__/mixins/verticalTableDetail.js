@@ -14,6 +14,14 @@ export default () => ({
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   activated() {
+    const currentTableName = store.state.global.activeTab.tableName;
+    const tpl = document.querySelector(`#${currentTableName}-loading`);
+    if (tpl) {
+      if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+        tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
+      }
+    }
   },
   computed: {
     ...mapState('global', {
@@ -36,6 +44,7 @@ export default () => ({
       jflowPluginDataArray: ({ jflowPluginDataArray }) => jflowPluginDataArray,
       refreshButton: ({ refreshButton }) => refreshButton,
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
+      defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
@@ -86,7 +95,7 @@ export default () => ({
         'updateRefreshButton',
         'updataGlobalLoading',
         'seleteAddData',
-        'emptyChangeData'
+        'emptyChangeData',
         // 'resetFormReadOnlyAttribute'
 
       ]),

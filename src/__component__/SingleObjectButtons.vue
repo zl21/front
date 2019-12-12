@@ -99,7 +99,6 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-  import { hideMenu } from '../__config__/event.config';
 
   export default {
     data() {
@@ -181,8 +180,8 @@
       },    
       tabcmd: {
         handler(val) {
+          this.hideBackButton();
           if (Object.keys(val).length > 0) {
-            this.hideBackButton();
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
               if (this.itemName !== this.tableName) { // 以下配置仅控制子表
@@ -455,7 +454,7 @@
               });
             });
             promises.then(() => {
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
               this.closeActionDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -495,11 +494,11 @@
               //   this.$Modal.fcError(data);
               // }
               this.closeActionDialog();
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
             });
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         }
       },
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
@@ -1219,7 +1218,7 @@
           this.$loading.show();
         });
         promise.then(() => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -1231,7 +1230,7 @@
             this.upData();
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1299,7 +1298,7 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1314,7 +1313,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide();
+                this.$loading.hide(this.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1344,7 +1343,7 @@
                   this.$Modal.fcSuccess(data);
                 }
               }, () => {
-                this.$loading.hide();
+                this.$loading.hide(this.tableName);
                 if (this.exportTasks.warningMsg) {
                   this.$Modal.fcError({
                     mask: true,
@@ -1378,10 +1377,10 @@
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           } else {
-            this.$loading.hide();
+            this.$loading.hide(this.tableName);
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         });
       },
       objectCopy() { // 按钮复制功能
@@ -2117,15 +2116,15 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              if (Version() === '1.3') {
-                let mainModify = [];
-                if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-                }
-                if (mainModify.length > 0) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                }
-              }
+              // if (Version() === '1.3') {
+              //   let mainModify = [];
+              //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+              //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              //   }
+              //   if (mainModify.length > 0) {
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              //   }
+              // }
             }
           }
         } else { // 横向结构
@@ -2178,15 +2177,15 @@
               }
             }
 
-            if (Version() === '1.3') {
-              let mainModify = [];
-              if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              }
-              if (mainModify.length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
+            // if (Version() === '1.3') {
+            //   let mainModify = [];
+            //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+            //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+            //   }
+            //   if (mainModify.length > 0) {
+            //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            //   }
+            // }
           }
         }
       },
@@ -2508,8 +2507,9 @@
       jflowClick(event) {
         if (event.detail.type === 'submit') {
           const promise = new Promise((resolve, reject) => {
+            const submitButtonPath = this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')];
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject
             });
           });
           // promise.then(() => {
@@ -2536,8 +2536,8 @@
         }
       },
       updataLoading(event) {
-        if (!event.detail.updataLoading) {
-          this.$loading.hide();
+        if (event.detail.copy) {
+          this.$loading.hide(this.tableName);
         }
       },
       hideBackButton() {
@@ -2567,10 +2567,10 @@
           return true;
         }
         let flagForRouteMapRecord = false;
-        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const routeFullPath = this.activeTab.routeFullPath;
         const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-          if (keepAliveModuleName === item) {
+          if (routeFullPath === item) {
             flagForRouteMapRecord = true;
           }
         });
@@ -2592,7 +2592,7 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNotice', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', this.updataLoading);
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
@@ -2658,7 +2658,20 @@
       this.tableId = tableId;
       this.itemId = itemId;
       this.buttonMap = buttonmap;
-    }
+    },
+    // activated() {
+    //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 1) {
+    //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+    //       const routeFullPath = this.activeTab.routeFullPath;
+    //       if (routeMapRecordForHideBackButtonData[routeFullPath] === item) {
+    //         deleteFromSessionObject('routeMapRecordForHideBackButton', routeMapRecordForHideBackButtonData[routeFullPath]);
+    //         window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //       }
+    //       console.log(3333, Object.keys(routeMapRecordForHideBackButtonData).pop());
+    //     });
+    //   }
+    // },
   };
 </script>
 

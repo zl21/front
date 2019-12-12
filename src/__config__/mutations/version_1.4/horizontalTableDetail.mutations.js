@@ -125,11 +125,6 @@ export default {
         state.updateData[data.tableName].add[data.tableName] = {};
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign(state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
-        DispatchEvent('globalNotice', {
-          detail: {
-            updataLoading: false
-          }
-        });
       }
     }
   },
@@ -315,6 +310,7 @@ export default {
     //     });
     //   }
     // });
+    state.tabPanels[0].componentAttribute.panelData.copy = true;
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
   },
   emptyChangeData(state, tableName) {
