@@ -1,8 +1,6 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
 import router from '../../router.config';
-import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -114,11 +112,6 @@ export default {
         state.updateData[data.tableName].add[data.tableName] = {};
       } else {
         state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
-        DispatchEvent('globalNotice', {
-          detail: {
-            updataLoading: false
-          }
-        });
       }
     }
   },
@@ -298,6 +291,7 @@ export default {
     //     });
     //   }
     // });
+    state.mainFormInfo.formData.data.copy = true;
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },
