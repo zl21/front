@@ -181,8 +181,8 @@
       },    
       tabcmd: {
         handler(val) {
+          this.hideBackButton();
           if (Object.keys(val).length > 0) {
-            this.hideBackButton();
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
               if (this.itemName !== this.tableName) { // 以下配置仅控制子表
@@ -455,7 +455,7 @@
               });
             });
             promises.then(() => {
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
               this.closeActionDialog();
               if (this.exportTasks.dialog) {
                 const message = {
@@ -495,11 +495,11 @@
               //   this.$Modal.fcError(data);
               // }
               this.closeActionDialog();
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
             });
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         }
       },
       dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作
@@ -1219,7 +1219,7 @@
           this.$loading.show();
         });
         promise.then(() => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -1231,7 +1231,7 @@
             this.upData();
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1299,7 +1299,7 @@
         promise.then(() => {
           if (this.buttonsData.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide();
+              this.$loading.hide(this.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttonsData.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1314,7 +1314,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide();
+                this.$loading.hide(this.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1344,7 +1344,7 @@
                   this.$Modal.fcSuccess(data);
                 }
               }, () => {
-                this.$loading.hide();
+                this.$loading.hide(this.tableName);
                 if (this.exportTasks.warningMsg) {
                   this.$Modal.fcError({
                     mask: true,
@@ -1378,10 +1378,10 @@
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
           } else {
-            this.$loading.hide();
+            this.$loading.hide(this.tableName);
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         });
       },
       objectCopy() { // 按钮复制功能
@@ -2538,7 +2538,7 @@
       },
       updataLoading(event) {
         if (!event.detail.updataLoading) {
-          this.$loading.hide();
+          this.$loading.hide(this.tableName);
         }
       },
       hideBackButton() {
@@ -2568,10 +2568,10 @@
           return true;
         }
         let flagForRouteMapRecord = false;
-        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const routeFullPath = this.activeTab.routeFullPath;
         const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-          if (keepAliveModuleName === item) {
+          if (routeFullPath === item) {
             flagForRouteMapRecord = true;
           }
         });
@@ -2659,7 +2659,20 @@
       this.tableId = tableId;
       this.itemId = itemId;
       this.buttonMap = buttonmap;
-    }
+    },
+    // activated() {
+    //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 1) {
+    //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+    //       const routeFullPath = this.activeTab.routeFullPath;
+    //       if (routeMapRecordForHideBackButtonData[routeFullPath] === item) {
+    //         deleteFromSessionObject('routeMapRecordForHideBackButton', routeMapRecordForHideBackButtonData[routeFullPath]);
+    //         window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //       }
+    //       console.log(3333, Object.keys(routeMapRecordForHideBackButtonData).pop());
+    //     });
+    //   }
+    // },
   };
 </script>
 

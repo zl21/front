@@ -15,6 +15,16 @@ import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '
 
 
 export default {
+  updataLoading(state, tableName) {
+    state.currentLoading.push(tableName);
+  },
+  deleteLoading(state, tableName) {
+    const index = state.currentLoading.indexOf(tableName);
+    if (index > -1) {
+      state.currentLoading.splice(index, 1);
+    }
+    // state.currentLoading.splice(tableName, 1);
+  },
   directionalRouter(state, param) {
     // id:勾选ID，
     // url:配置url,
@@ -164,22 +174,22 @@ export default {
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
 
-    // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
-    const customizedMessage = getSeesionObject('customizedMessage');
-    const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
-    if (JSON.stringify(customizedMessageForbutton) !== '{}') { // 取按钮跳转定制界面label
-      state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
-    }
-    if (JSON.stringify(customizedMessage) !== '{}') {
-      Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
-        const nameToUpperCase = customizeName.toUpperCase();
-        if (nameToUpperCase === customizedMessage.customizedModuleName) {
-          const labelName = customize[customizeName].labelName;
-          const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
-          state.keepAliveLabelMaps[name] = `${labelName}`;
-        }
-      });
-    }
+    // // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
+    // const customizedMessage = getSeesionObject('customizedMessage');
+    // const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
+    // if (JSON.stringify(customizedMessageForbutton) !== '{}') { // 取按钮跳转定制界面label
+    //   state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
+    // }
+    // if (JSON.stringify(customizedMessage) !== '{}') {
+    //   Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
+    //     const nameToUpperCase = customizeName.toUpperCase();
+    //     if (nameToUpperCase === customizedMessage.customizedModuleName) {
+    //       const labelName = customize[customizeName].labelName;
+    //       const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
+    //       state.keepAliveLabelMaps[name] = `${labelName}`;
+    //     }
+    //   });
+    // }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
@@ -255,6 +265,8 @@ export default {
     state.keepAliveLists = [];
     state.activeTab = {};
     router.push('/');
+    window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
+    window.sessionStorage.removeItem('addRouteToEditor');
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -281,9 +293,9 @@ export default {
     // 删除规则二：关闭页签时，清除外键类型跳转的session中存储的对应关系。
     const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecordForHideBackButton', keepAliveModuleName);
+      const routeFullPath = state.activeTab.routeFullPath;
+      if (routeFullPath === item) {
+        deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
         window.sessionStorage.setItem('ignore', true);
       }
     });
@@ -336,13 +348,14 @@ export default {
       };
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, serviceIdMap);
     }
     let path = '';
     if (type === 'tableDetailHorizontal') {
@@ -385,13 +398,14 @@ export default {
      
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
-    if (state.serviceIdMap[tableName] === undefined) {
+    const serviceIdMap = getSeesionObject('serviceIdMap');
+    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
       };
       updateSessionObject('serviceIdMap', serviceIdMapObj);// serviceId因刷新后来源信息消失，存入session
-      // state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
+      state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
     }
     let path = '';
     if (type === STANDARD_TABLE_LIST_PREFIX || type === 'S') {

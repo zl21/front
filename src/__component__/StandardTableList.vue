@@ -221,7 +221,7 @@
             });
             promises.then(() => {          
               this.setImportDialogTitle(false);
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
@@ -259,12 +259,12 @@
               //   };
               //   this.$Modal.fcError(data);
               // }
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               this.setImportDialogTitle(false);
             });
           }
         } else {
-          this.$loading.hide();
+          this.$loading.hide(this.buttons.tableName);
         }
       },
       commonTableCustomizedDialog(params) {
@@ -310,7 +310,15 @@
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRouting', true);
           let type = '';
-          if (row._OBJURL && row._OBJURL.val) {
+          if (!row._TABLENAME || !row._TABLENAME.val || !row._TABLEID || !row._TABLEID.val || !row._OBJID || !row._OBJID.val) {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请维护表名或OBJID'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          } if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
             const param = {
@@ -341,7 +349,7 @@
             tableName: row._TABLENAME.val,
             tableId: row._TABLEID.val,
             id: row._OBJID.val,
-            gateWay: row.OWNERID ? row.OWNERID.serviceId : null
+            serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
           const { tableName, tableId } = this.$route.params;
@@ -1230,7 +1238,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1257,7 +1265,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1278,7 +1286,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then(() => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -1290,7 +1298,7 @@
               this.searchClickData();
             }
           }, () => {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
           });
         }
       },
@@ -1605,7 +1613,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide();
+              this.$loading.hide(this.buttons.tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1620,7 +1628,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide();
+                this.$loading.hide(this.buttons.tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1651,7 +1659,7 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  this.$loading.hide();
+                  this.$loading.hide(this.buttons.tableName);
                   const data = {
                     mask: true,
                     title: '错误',
@@ -1662,10 +1670,10 @@
               });
             }
           } else {
-            this.$loading.hide();
+            this.$loading.hide(this.buttons.tableName);
           }
         }, () => {
-          this.$loading.hide();
+          this.$loading.hide(this.buttons.tableName);
         });
       },
       deleteTableList() { // 删除方法
@@ -1696,7 +1704,7 @@
           });
         });
         promise.then(() => {
-          // this.$loading.hide();
+          // this.$loading.hide(this.buttons.tableName);
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             mask: true,

@@ -14,6 +14,16 @@ export default () => ({
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
+  activated() {
+    const currentTableName = store.state.global.activeTab.tableName;
+    const tpl = document.querySelector(`#${currentTableName}-loading`);
+    if (tpl) {
+      if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+        tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
+      }
+    }
+  },
   computed: {
     ...mapState(getComponentName(), {
       childReadonly: ({ childTableReadonly }) => childTableReadonly,
@@ -82,7 +92,7 @@ export default () => ({
         'updateButtonsDataForCustomization',
         'updataGlobalLoading',
         'seleteAddData',
-        'emptyChangeData'
+        'emptyChangeData',
       ]),
   },
   beforeDestroy() {

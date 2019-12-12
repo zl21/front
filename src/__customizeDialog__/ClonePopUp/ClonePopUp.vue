@@ -171,9 +171,9 @@
         };
         network.post('/p/cs/clone', searchdata)
           .then((res) => {
-            // this.$loading.hide();
+            const { tableName } = this.$route.params;
             if (res.data.code !== 0) {
-              this.$loading.hide();
+              this.$loading.hide(tableName);
               return;
             }
             const data = {
@@ -181,7 +181,7 @@
               title: '成功',
               content: '克隆成功'
             };
-            this.$loading.hide();
+            this.$loading.hide(tableName);
             this.$Modal.fcSuccess(data);
             this.$emit('closeActionDialog', true); // 关闭弹框
           });
