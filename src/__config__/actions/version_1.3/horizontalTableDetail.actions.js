@@ -193,15 +193,6 @@ export default {
           after: { ...modifyLabel },
           before: labelregroupTableName,
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
       } else if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter.addDefault;
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
@@ -218,16 +209,7 @@ export default {
             ...itemTableAdd
           }
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
-      } else if (sataTypeName === 'modify') {
+      } else if (sataTypeName === 'modify') { // 子表修改
         parames = {
           table: tableName,
           objid: objId,
@@ -235,25 +217,19 @@ export default {
           after: { ...itemModifyLabel },
           before: itemBeforeLabel,
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
-      } else if (sataTypeName === 'addAndModify') {
-        if (Object.values(itemAdd[itemName]).length > 0) {
-          const addDefault = itemCurrentParameter.addDefault;
-          const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-          Object.assign(itemAdd[itemName], add);
-          const itemTableAdd = Object.assign({}, itemAdd);
-          itemTableAdd[itemName].ID = -1;
-          itemTableAdd[itemName] = [
-            itemTableAdd[itemName]
-          ];
+      } else if (sataTypeName === 'addAndModify') { // 同时执行多种保存
+        const addDefault = itemCurrentParameter.addDefault;
+        const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
+        Object.assign(itemAdd[itemName], add);
+        const itemTableAdd = Object.assign({}, itemAdd);
+        itemTableAdd[itemName].ID = -1;
+        itemTableAdd[itemName] = [
+          itemTableAdd[itemName]
+        ];
+        const itemAddAndModify = {};// 整合子表新增与子表修改参数，合并到一个数组
+        itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
+        // 子表新增保存
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemModify[itemName]).length === 0) {
           parames = {
             table: tableName, // 主表表名
             objid: objId, // 明细id
@@ -261,17 +237,7 @@ export default {
               ...itemTableAdd
             }
           };
-          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-            if (res.data.code === 0) {
-              const data = res.data;
-              resolve();
-              commit('updateNewMainTableAddSaveData', { data, itemName });
-            } else {
-              reject();
-            }
-          });
-        } 
-        if (Object.values(itemModify[itemName]).length > 0) {
+        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(itemAdd[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) { // 子表修改保存
           parames = {
             table: tableName,
             objid: objId,
@@ -279,15 +245,70 @@ export default {
             after: { ...itemModifyLabel },
             before: itemBeforeLabel,
           };
-          network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-            if (res.data.code === 0) {
-              const data = res.data;
-              resolve();
-              commit('updateNewMainTableAddSaveData', { data, itemName });
-            } else {
-              reject();
-            }
-          });
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, // 明细id
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...itemAddAndModify
+            },
+            after: { ...itemModifyLabel },
+            before: itemBeforeLabel,
+          };
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+            },
+            before: {
+              ...value,
+            } 
+          };
+        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...itemModify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+              ...itemModifyLabel 
+              
+            },
+            before: {
+              ...value,
+              ...itemBeforeLabel
+            } 
+          };
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemAddAndModify
+            },
+            after: { 
+              ...modifyLabel,
+              ...itemModifyLabel 
+              
+            },
+            before: {
+              ...value,
+              ...itemBeforeLabel
+            } 
+          };
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);
@@ -298,16 +319,16 @@ export default {
           after: { ...modifyLabel },
           before: value
         };
-        network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-          if (res.data.code === 0) {
-            const data = res.data;
-            resolve();
-            commit('updateNewMainTableAddSaveData', { data, itemName });
-          } else {
-            reject();
-          }
-        });
       }
+      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+        if (res.data.code === 0) {
+          const data = res.data;
+          resolve();
+          commit('updateNewMainTableAddSaveData', { data, itemName });
+        } else {
+          reject();
+        }
+      });
     }
   },
   performMainTableDeleteAction({ commit }, {

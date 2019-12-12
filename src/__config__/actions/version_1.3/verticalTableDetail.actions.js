@@ -789,7 +789,10 @@ export default {
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
-        if (Object.values(itemAdd[itemName]).length > 0) {
+        const itemAddAndModify = {};
+        itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
+        // 子表新增保存
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) {
           parames = {
             table: tableName, // 主表表名
             objid: objId, // 明细id
@@ -797,8 +800,7 @@ export default {
               ...itemTableAdd
             }
           };
-        }
-        if (Object.values(itemModify[itemName]).length > 0) {
+        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemAdd[itemName]).length === 0) { // 子表修改保存
           parames = {
             table: tableName,
             objid: objId,
@@ -807,9 +809,7 @@ export default {
             before: itemBeforeLabel
 
           };
-        }
-        // 2种保存合并（主表修改，子表新增）
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -825,10 +825,7 @@ export default {
               ...value,
             } 
           };
-        }
-
-        // 2种保存合并（主表修改，子表修改）
-        if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -847,17 +844,13 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        }
-
-        // 2种保存合并（子表修改，子表新增）
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0) {
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
             objid: objId,
             data: {
-              ...modify,
-              ...itemTableAdd
+              ...itemAddAndModify
             },
             after: { 
               ...modifyLabel,
@@ -867,17 +860,15 @@ export default {
               ...value,
             } 
           };
-        }
-        // 3种保存合并（主表修改，子表新增，子表修改）
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) {
+        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
+        
           parames = {
             table: tableName,
             objid: objId,
             data: {
               ...modify,
-              ...itemModify,
-              ...itemTableAdd
+              ...itemAddAndModify
             },
             after: { 
               ...modifyLabel,

@@ -99,7 +99,6 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-  import { hideMenu } from '../__config__/event.config';
 
   export default {
     data() {
@@ -2178,15 +2177,15 @@
               }
             }
 
-            if (Version() === '1.3') {
-              let mainModify = [];
-              if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              }
-              if (mainModify.length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
+            // if (Version() === '1.3') {
+            //   let mainModify = [];
+            //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+            //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+            //   }
+            //   if (mainModify.length > 0) {
+            //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            //   }
+            // }
           }
         }
       },
