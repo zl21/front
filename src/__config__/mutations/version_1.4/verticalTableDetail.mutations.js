@@ -115,11 +115,6 @@ export default {
       state.updateData[data.tableName].add[data.tableName] = {};
     } else if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].add[data.tableName] = Object.assign({}, state.updateData[data.tableName].add[data.tableName], data.value[data.tableName]);
-      DispatchEvent('globalNotice', {
-        detail: {
-          updataLoading: false
-        }
-      });
     }
   },
   seleteAddData(state, data) { // 删除状态里add的空值
@@ -280,6 +275,7 @@ export default {
     //     });
     //   }
     // });
+    state.mainFormInfo.formData.data.copy = true;
     state.mainFormInfo.formData.data.addcolums = data.data.addcolums;
     state.updateData[tableName].changeData = Object.assign({}, copySaveDataForParam, modifyData);
   },

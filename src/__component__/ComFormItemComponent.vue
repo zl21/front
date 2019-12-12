@@ -190,7 +190,13 @@
       mountdataForm: {
         type: Function,
         default() {
-          return '';
+          return function () {};
+        }
+      },
+      isCopy: {
+        type: Function,
+        default() {
+          return function () {};
         }
       },
       getsetAttsetProps: {
@@ -298,6 +304,8 @@
       };
     },
     mounted() {
+      this.formValueItem = {};
+      console.log('mounted');
       this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
@@ -695,17 +703,23 @@
             }, 100);
           }
         }
-
       
         if (current.item.props.webconf && current.item.props.webconf.formRequest) {
           if (obj[current.item.field] || obj[current.item.field] === '') {
             if (current.item.props.fkdisplay && current.item.value[0]) {
-              if (!Array.isArray(current.item.value)) {
-                return false;
+              if (current.item.type === 'AttachFilter') {
+                if ((current.item.props.Selected[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.props.Selected[0].ID !== '') {
+                  return false;
+                }
+              } else {
+                if (!Array.isArray(current.item.value)) {
+                  return false;
+                }
+                if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
+                  return false;
+                }
               }
-              if ((current.item.value[0].ID).toString() !== (obj[current.item.field]).toString() && current.item.value[0].ID !== '') {
-                return false;
-              }
+              
               if (this.oldformData[current.item.field] === obj[current.item.field]) {
                 return false;
               }
@@ -714,6 +728,12 @@
               this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
             }
           } else {
+            if (current.item.type === 'AttachFilter') {
+              if (!current.item.props.Selected[0] || current.item.value !== current.item.props.Selected[0].Label) {
+                return false;
+              }
+            }
+            
             this.formRequest(current.item.field, obj, current.item, current.item.props.webconf.formRequest);
           }
         }
@@ -723,7 +743,11 @@
         const valueLabel = {};
         if (!this.formDataObject[current.item.field]) {
           // 判断是否有值
-          valueLabel[current.item.field] = '';
+          if (this.formValueItem[current.item.field] !== undefined && this.formValueItem[current.item.field] !== null) {
+            valueLabel[current.item.field] = this.formValueItem[current.item.field];
+          } else {
+            valueLabel[current.item.field] = '';
+          }
           if (current.item.props.fkdisplay === 'mop' && current.item.props.Selected[0] && current.item.props.Selected[0].ID) {
             valueLabel[current.item.field] = current.item.props.Selected[0].ID;
           }
@@ -774,7 +798,8 @@
       },
       formRequest(key, obj, current, conf) {
         // 走后台接口
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(this.formDataObject)), JSON.parse(JSON.stringify(this.getStateData())));
+        const jsonArr = this.setJson(current, this.formDataObject);
+
         // 拦截是否相同
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
@@ -792,7 +817,9 @@
           return false;
         }
         //   拦截默认值
-        if (!this.actived) {
+        const isCopyCheck = this.isCopy();
+        console.log(isCopyCheck);
+        if (!this.actived && !isCopyCheck) {
           return true;
         }
         fkHttpRequest().equalformRequest({
@@ -857,19 +884,35 @@
           this.newFormItemLists[_index].item.value = eval(str);
         }
       },
+      setJson(item, val) {
+        // 子表明细联动
+        if (item.props.tableGetName) {
+          // eslint-disable-next-line no-const-assign
+          return JSON.parse(JSON.stringify(val));
+        } 
+        // eslint-disable-next-line no-const-assign
+        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+      },
       setAttributes(item, formindex, val, type) {
         //  设置属性
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
         const field = item.props.webconf.setAttributes.field;
+        // 获取值
+        const jsonArr = this.setJson(item, val);
+
         if (!Array.isArray(field)) {
           return false;
         }
+
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
+
           if (optionValue === undefined) {
             optionValue = '';
           }
           if (typeof optionValue !== 'string') {
+            if (optionValue === null) {
+              optionValue = '';
+            }
             optionValue = optionValue.toString();
             optionValue = optionValue.replace(/^\s+|\s+$/g, '');
           }
@@ -880,9 +923,11 @@
           }
 
           const refval = option.refval.split(',');
+
           const refIndex = refval.findIndex(x => x.toString() === optionValue);
           return refIndex !== -1;
         });
+
         const props = JSON.parse(JSON.stringify(item.props));
         const checkoutProps = Object.keys(item.props.webconf.setAttributes.props).every(setItem => item.props.webconf.setAttributes.props[setItem] === props[setItem]);
         if (!item.oldProps) {
@@ -890,11 +935,21 @@
             arr[i] = props[i] || false;
             return arr;
           }, {});
-          item.oldProps._required = item.required;
           if (item.props.regx) {
             item.oldProps.regx = item.props.regx;
           }
+
+          // eslint-disable-next-line no-prototype-builtins
+          if (!Object.hasOwnProperty('readonly', item.oldProps)) {
+            item.oldProps.readonly = props.readonly;
+          }
+          if (item.required === undefined) {
+            item.oldProps._required = false;
+          } else {
+            item.oldProps._required = item.required;
+          }
         }
+
         if (checkout && !checkoutProps) {
           // if (item.props.webconf.setAttributes.props.value === '') {
           //   item.value = '';
@@ -958,8 +1013,8 @@
       },
       hidecolumn(items, index, json, type) {
         // 隐藏
-        const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-
+        // 获取值
+        const jsonArr = this.setJson(items, json);
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段

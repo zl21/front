@@ -28,6 +28,7 @@
                 :ref="'FormComponent_'+index"
                 :key="index"
                 :path="path"
+                :isCopy="isCopy"
                 :class="tableGetName=== '' ? 'R3masterForm' : tableGetName"
                 :form-index="index"
                 :form-item-lists="item.childs"
@@ -61,6 +62,7 @@
           :path="path"
           :isreftabs="isreftabsForm"
           :form-index="0"
+          :isCopy="isCopy"
           :class="tableGetName"
           :refcolval-data="refcolvaData"
           :child-table-name="childTableNameForm"
@@ -215,6 +217,7 @@
         refcolvaData: {}, // 当前组件修改后和当前
         refcolvalAll: {}, // 关联当前页面的 所有数据
         conditiontype: '', // 是查询还是保存界面
+        InitializationFormTime: '', // 当前初始化时间
         childFormData: [],    
         labelForm: {}, // label 值
         r3Form: {},
@@ -226,6 +229,7 @@
         tip: 'new',
         setVerifyMessageTime: null,
         setChangeTime: null,
+        formDataSave: {}, // change
         LinkageForm: [], // 界面 所有表单组件配置
         expand: 'expand' // 面板是否展开
       };
@@ -293,6 +297,10 @@
     updated() {},
     methods: {
       CollapseClose() {},
+      isCopy() {
+        // 是否是copty 
+        return this.defaultData.copy;
+      },
       Comparison() {
         //  重新初始化校验
         this.VerificationForm = [];
@@ -487,17 +495,22 @@
         }
         const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultSetValue)), this.formDataDef);
         this.formData = Object.assign(JSON.parse(JSON.stringify(this.formData)), data);
+        this.formDataSave = Object.assign(JSON.parse(JSON.stringify(this.formDataSave)), data);
+
         this.formDataDef = Object.assign(formData, setdefval);
         // 获取表单的默认值
+
         const key = Object.keys(data)[0];
         if (key && key.split(':').length > 1) {
           delete this.formData[current.item.field];
+          delete this.formDataSave[current.item.field];
         } else {
           delete this.formData[current.item.inputname];
+          delete this.formDataSave[current.item.inputname];
         }
-        
+
         // let v1.4外键 及number
-        if (!this.formData[current.item.field]) {
+        if (!this.formData[current.item.field] && Version() === '1.4') {
           if (current.item.props.number === true || current.item.props.fkdisplay === 'pop' || current.item.props.fkdisplay === 'drp') {
             this.formData[current.item.field] = 0;
           } else if (current.item.props.fkdisplay) {
@@ -505,15 +518,17 @@
           } else {
             this.formData[current.item.field] = '';
           }
+          this.formDataSave[current.item.field] = this.formData[current.item.field];
         }
 
         // 获取需要校验的表单
         // 开启
-        // if (Version() === '1.3') {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // } else {
-        //   this.$emit('formChange', this.formData, this.formDataDef, this.formData);
-        // }
+        if (Version() === '1.3') {
+          if (this.formData[current.item.field] === '' || this.formData[current.item.field] === undefined) {
+            this.formData[current.item.field] = '';
+            this.formDataSave[current.item.field] = null;
+          }
+        }
         // 开启
         // 注释
 
@@ -527,7 +542,31 @@
         // clearTimeout(this.setChangeTime);
         // this.setChangeTime = setTimeout(() => {
         // }, 50);
-        this.$emit('formChange', this.formData, this.formDataDef, this.labelForm);
+        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+          // eslint-disable-next-line no-shadow
+          delete this.formDataSave[current.item.field];
+          delete this.formDataDef[current.item.field];
+          delete this.labelForm[current.item.field];
+          // eslint-disable-next-line no-shadow
+          const data = {
+            key: current.item.field,
+            itemName: this.tableGetName
+          };
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+        } else if (this.conditiontype !== 'list' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+          // console.log(data, label, this.labelForm[current.item.field], this.r3Form[current.item.field]);
+          delete this.formDataSave[current.item.field];
+          delete this.formDataDef[current.item.field];
+          delete this.labelForm[current.item.field];
+          // eslint-disable-next-line no-shadow
+          const data = {
+            key: current.item.field,
+            itemName: this.tableGetName
+          };
+          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+        } 
+
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelForm);
         this.getStateData();
 
         
@@ -543,7 +582,7 @@
         clearTimeout(this.setVerifyMessageTime);
         this.setVerifyMessageTime = setTimeout(() => {
           this.VerificationForm = this.VerificationFormItem.reduce((arr, item) => arr.concat(item), []);
-          const formData = Object.assign(this.defaultFormData, this.formData);
+          const formData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
           this.VerificationForm.forEach((item) => {
             Object.keys(formData).forEach((option) => {
               if (item.key === option.split(':')[0]) {
@@ -615,33 +654,14 @@
         if (this.moduleFormType === 'horizontal') {
           this.formData = Object.assign({}, defaultSetValue);
           // 开启
-          // if (Version() === '1.3') {
-          //   this.$emit('formChange', this.defaultSetValue, this.defaultSetValue, defaultSetValue);
-          // } else {
-          //   this.$emit('formChange', defaultSetValue, this.defaultSetValue);
-          // }
-          // 开启
-          // 注释
-          // let label = Object.keys(defaultSetValue).reduce((arr,item)=>{
-          //   //arr[item]
-          //     console.log(arr,item);
-          //     arr[item] = this.defaultSetValue[]
-          //     return arr;
-          // },{})
-          // this.$emit('formChange', defaultSetValue, this.defaultSetValue, this.r3Form);  
-          // 注释
         }
         this.getStateData();
         this.defaultFormData = defaultFormData;
-        // 开启
-        // if (Version() === '1.3') {
-        //   
-        //   this.$emit('InitializationForm', this.r3Form, this.defaultSetValue, defaultFormData);
-        // } else {
-        //   this.$emit('InitializationForm', defaultFormData, this.defaultSetValue);
-        // }
-        // 开启
-        // 注释
+        // 默认值
+        // clearTimeout(this.InitializationFormTime);
+        // this.InitializationFormTime = setTimeout(() => {
+        // }, 5);
+
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
@@ -975,7 +995,7 @@
               arr[item.fixcolumn] = `=${refcolval || ''}`;
               arr[item.fixcolumn] = `${refcolval ? `=${refcolval}` : ''}`;
             } else {
-              const data = Object.assign(this.defaultFormData, this.formData);
+              const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
               arr[item.fixcolumn] = `${data[item.srccol] ? `=${data[item.srccol]}` : ''}`;
             }
             return arr;
@@ -1005,7 +1025,7 @@
             //   refcolval = data[current.refcolval.srccol]; 
             // }
           } else {
-            const data = Object.assign(this.defaultFormData, this.formData);
+            const data = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), this.formData);
             refcolval = data[current.refcolval.srccol]; 
           }
           const LinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
@@ -1695,6 +1715,11 @@
             // }
             item.props.Selected.push(this.defaultValue(current)[0]);
             item.value = this.defaultValue(current)[0].Label;
+            if (!item.props.readonly && !this.objreadonly) {
+              item.props.disabled = false;
+            } else {
+              item.props.disabled = true;
+            }
 
             break;
           case 'mop':
@@ -1740,6 +1765,11 @@
             //   item.value = this.defaultValue(current)[1];
             //   item.props.Selected.push(this.defaultValue(current)[0]);
             // }
+            if (!item.props.readonly && !this.objreadonly) {
+              item.props.disabled = false;
+            } else {
+              item.props.disabled = true;
+            }
 
             break;
           default:
@@ -1896,18 +1926,18 @@
           // 校验值是不是有值
           if (Array.isArray(item.value) && item.fkdisplay) {
             if (item.value[0]) {
-              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === undefined) {
+              if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === null) {
                 item.value = '';
               }
-            } else if (item.value[0] === undefined || item.value[0] === '') {
+            } else if (item.value[0] === null || item.value[0] === '') {
               item.value = '';
             }
           }
 
-          if (Array.isArray(item.value) && item.value[0] === undefined) {
+          if (Array.isArray(item.value) && item.value[0] === null) {
             item.value = '';
           }
-          if (item.value === 0 && item.type === 'select' && item.defval === undefined) {
+          if (item.value === 0 && item.type === 'select' && item.defval === null) {
             item.value = '';
           }
 

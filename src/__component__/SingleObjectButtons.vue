@@ -699,7 +699,7 @@
           this.objectTryVoid(obj);
           break;
         case 'actionCANCOPY': // 复制
-          this.copyFlag = true;
+          // this.copyFlag = true;
           this.objectCopy();
           break;
         case 'actionCopyBill':
@@ -1426,15 +1426,16 @@
         }
         this.updataGlobalLoading(true);
         this.changeCopy(true);
-        this.$loading.show();
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        this.$loading.show();
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        this.$loading.show();
       },
       clickButtonsBack() { // 按钮返回事件   
         const { tableId, tableName } = this.$route.params;
@@ -2537,7 +2538,7 @@
         }
       },
       updataLoading(event) {
-        if (!event.detail.updataLoading) {
+        if (event.detail.copy) {
           this.$loading.hide(this.tableName);
         }
       },
@@ -2593,7 +2594,7 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNotice', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', this.updataLoading);
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
