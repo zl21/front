@@ -129,6 +129,8 @@
         this.propsData = JSON.parse(JSON.stringify(this.propstype));
         if (this.propsData.disabled) {
           this.showDisabled = this.propsData.disabled;
+        } else {
+          this.showDisabled = false;
         }
         if (this.propstype.fkdisplay === 'pop') {
           this.propstype.show = false;
@@ -143,7 +145,6 @@
       valueChange(type) {
         window.clearTimeout(this.clickTimer);
         this.clickTimer = window.setTimeout(() => {
-          console.log('555',type);
           this.$emit('valuechange', { value: this.value, selected: this.selected, type }, this);
         }, 200);
       },
@@ -201,7 +202,7 @@
           ];
           this.filterDate = {};
         }
-        //this.valueChange('blur');
+        // this.valueChange('blur');
         this.$emit('on-blur', event, $this);
       },
       attachFilterInputKeyup(value, event, $this) {
@@ -384,6 +385,8 @@
       this.value = this.defaultValue;
       if (this.propsData.disabled) {
         this.showDisabled = this.propsData.disabled;
+      } else {
+        this.showDisabled = false;
       }
       
       this.selected = this.defaultSelected;
