@@ -260,6 +260,9 @@ export default {
                   // } else
                   if (c.readonly === true) {
                     if (c.defval) { // 处理复制时有不可编辑，且有默认值情况
+                      if (c.display === 'select') {
+                        copySaveDataForParam[b.colname] = c.defval;
+                      }
                       // copySaveDataForParam[b.colname] = c.defval;
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空

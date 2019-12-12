@@ -1429,7 +1429,7 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show();
+        // this.$loading.show();
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
@@ -2536,11 +2536,6 @@
           this.saveEventAfter = '';
         }
       },
-      updataLoading(event) {
-        if (event.detail.copy) {
-          this.$loading.hide(this.tableName);
-        }
-      },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -2593,7 +2588,11 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNoticeCopy', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', (event) => {
+          if (event.detail.copy) {
+            this.$loading.hide(this.tableName);
+          }
+        });
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {

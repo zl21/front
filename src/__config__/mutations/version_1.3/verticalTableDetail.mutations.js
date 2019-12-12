@@ -243,7 +243,9 @@ export default {
                   // } else
                   if (c.readonly === true) {
                     if (c.defval) {
-                      // copySaveDataForParam[b.colname] = c.defval;
+                      if (c.display === 'select') {
+                        copySaveDataForParam[b.colname] = c.defval;
+                      }
                     } else {
                       b.valuedata = '';// 将配置为不可编辑的值置空
                       if (b.fkdisplay === 'drp' || b.fkdisplay === 'mrp' || b.fkdisplay === 'pop' || b.fkdisplay === 'mop') {
