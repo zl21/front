@@ -215,374 +215,7 @@ export default {
       }
     });
   },
-  // performMainTableSaveAction({
-  //   commit
-  // }, {
-  //   parame,
-  //   resolve,
-  //   reject
-  // }) { // 主表保存
-  //   const {
-  //     tableName
-  //   } = parame;
-  //   const {
-  //     add
-  //   } = parame;
-  //   const {
-  //     objId
-  //   } = parame;
-  //   const {
-  //     type
-  //   } = parame;
-  //   const {
-  //     itemName
-  //   } = parame;
-  //   const {
-  //     itemCurrentParameter
-  //   } = parame;
-  //   const {
-  //     isreftabs
-  //   } = parame;
-  //   const {
-  //     itemNameGroup
-  //   } = parame;
-  //   const { sataType } = parame;
-  //   const { modify } = parame;
-  //   let parames = {};
-  //   let labelName = {};
-  //   let fkId = {};
-  //   let labelData = {};
-  //   let fkIdData = {};
-  //   const modifyDataForSaveAfter = {};
-  //   debugger;
-  //   const modifyDataForSave = {};
-
-
-  //   if (type === 'add') {
-  //     if (Object.keys(add).length > 0) {
-  //       labelData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
-  //       fkIdData = Object.assign({}, Object.keys(add).reduce((obj, value) => add[value], {}));
-  //     }
-  //   } else if (type === 'modify') {
-  //     if (Object.keys(modify).length > 0) {
-  //       labelData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
-  //       fkIdData = Object.assign({}, Object.keys(modify).reduce((obj, value) => modify[value], {}));
-  //     }
-  //   }
-  //   if (type === 'modify') {
-  //     labelName = Object.keys(labelData).reduce((obj, value) => {
-  //       if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length === 1) { // 是外键类型(外键单选)
-  //         const label = labelData[value].map(item => item.Label);
-  //         if (label[0] !== '') {
-  //           labelData[value] = label[0];
-  //         }
-  //       }
-  //       if (labelData[value] && Array.isArray(labelData[value]) && labelData[value].length > 1) { // 外键多选
-  //         const label = labelData[value].map(item => item.Label).join(',');
-  //         labelData[value] = label[0];
-  //       }
-  //       obj[value] = labelData[value];
-  //       return obj;
-  //     }, {});
-  //     console.log('🍓', labelName);
-  //     const modifyChangeDataAfter = Object.assign({}, labelData, labelName);
-
-  //     modifyDataForSaveAfter[tableName] = modifyChangeDataAfter;
-  //   }
-
-  //   if (Object.keys(fkIdData).length > 0) {
-  //     fkId = Object.keys(fkIdData).reduce((obj, value) => {
-  //       if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length === 1) { // 是外键类型(外键单选)
-  //         const ID = fkIdData[value].map(item => item.ID);
-  //         if (ID[0] !== '' && ID[0] !== 'undefined') {
-  //           fkIdData[value] = Number(ID[0]);
-  //         }
-  //       }
   
-  //       if (fkIdData[value] && Array.isArray(fkIdData[value]) && fkIdData[value].length > 1) { // 外键多选
-  //         const ID = fkIdData[value].map(item => item.ID).join(',');
-  //         fkIdData[value] = ID[0];
-  //       }
-
-  //       obj[value] = fkIdData[value];
-  //       return obj;
-  //     }, {});
-
-  //     const modifyChangeData = Object.assign({}, fkIdData, fkId);
-  //     modifyDataForSave[tableName] = modifyChangeData;
-  //   }
-
-  
-  //   console.log('modifyDataForSave', modifyDataForSave);
-  //   console.log('modifyDataForSaveAfter', modifyDataForSaveAfter);
-  //   if (type === 'add') { // 新增保存参数
-  //     if (isreftabs) { // 存在子表
-  //       if (itemNameGroup.length > 0) {
-  //         const itemAdd = itemCurrentParameter.add;
-  //         const {
-  //           addDefault
-  //         } = itemCurrentParameter;
-
-  //         if (Object.values(itemAdd[itemName]).length > 0) {
-  //           const itemTableAdd = Object.assign({}, itemAdd);
-  //           itemTableAdd[itemName].ID = objId;
-  //           itemTableAdd[itemName] = [
-  //             itemTableAdd[itemName]
-  //           ];
-  //           parames = {
-  //             table: tableName, // 主表表名
-  //             objid: objId, // 固定传值-1 表示新增
-  //             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //               ...add,
-  //               ...itemTableAdd,
-  //             }
-  //           };
-  //         } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
-  //           const itemTableAdd = Object.assign({}, addDefault);
-  //           itemTableAdd[itemName].ID = objId;
-  //           itemTableAdd[itemName] = [
-  //             itemTableAdd[itemName]
-  //           ];
-  //           parames = {
-  //             table: tableName, // 主表表名
-  //             objid: objId, // 固定传值-1 表示新增
-  //             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //               ...add,
-  //               ...itemTableAdd,
-  //             }
-  //           };
-  //         } else {
-  //           parames = {
-  //             table: tableName, // 主表表名
-  //             objid: objId, // 固定传值-1 表示新增
-  //             data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //               ...modifyDataForSave,
-  //             }
-  //           };
-  //         }
-  //       } else {
-  //         parames = {
-  //           table: tableName, // 主表表名
-  //           objid: objId,
-  //           data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //             ...modifyDataForSave,
-  //           }
-  //         };
-  //       }
-  //     } else {
-  //       parames = {
-  //         table: tableName, // 主表表名
-  //         objid: objId, // 固定传值-1 表示新增
-  //         data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //           ...modifyDataForSave
-  //         }
-  //       };
-  //     }
-  //     network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
-  //       if (res.data.code === 0) {
-  //         const data = res.data;
-  //         resolve();
-  //         commit('updateNewMainTableAddSaveData', {
-  //           data,
-  //           itemName
-  //         });
-  //       } else {
-  //         reject();
-  //       }
-  //     });
-  //   } else if (type === 'modify') { // 编辑保存参数
-  //     const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
-
-  //     const itemDefault = itemCurrentParameter ? itemCurrentParameter.default : {};
-  //     const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
-  //     // const itemDefault = itemCurrentParameter.addDefault;// 子表新增
-  //     const sataTypeName = sataType ? sataType.sataType : '';
-  //     const dufault = parame.default;
-  //     if (sataTypeName === 'add') { // 子表新增
-  //       const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
-  //       const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-  //       Object.assign(itemAdd[itemName], add);
-  //       const itemTableAdd = Object.assign({}, itemAdd);
-  //       itemTableAdd[itemName].ID = -1;
-  //       itemTableAdd[itemName] = [
-  //         itemTableAdd[itemName]
-  //       ];
-  //       parames = {
-  //         table: tableName, // 主表表名
-  //         objid: objId, // 明细id
-  //         data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //           ...itemTableAdd
-  //         }
-  //       };
-  //       network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-  //         if (res.data.code === 0) {
-  //           const data = res.data;
-  //           resolve();
-  //           commit('updateNewMainTableAddSaveData', { data, itemName });
-  //         } else {
-  //           reject();
-  //         }
-  //       });
-  //     } else if (sataTypeName === 'modify') {
-  //       const defaultData = [];
-  //       const defaultForSaveArray = [];
-  //       const defaultForSave = {};
-  //       const dufaultDataForSave = {};
-  //       itemModify[itemName].forEach((modifyItem) => {
-  //         itemDefault[itemName].forEach((defaultItem) => {
-  //           if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-  //             Object.keys(defaultItem).reduce((obj, item) => {
-  //               Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-  //                 if (item === modifyDataItem) {
-  //                   let itemDefault = {};
-  //                   defaultForSave[modifyDataItem] = defaultItem[item];
-  //                   itemDefault = Object.assign({}, modifyItem, defaultForSave);
-  //                   defaultForSaveArray.push(itemDefault);
-  //                 }
-  //                 return modifyDataObj;
-  //               }, {});
-  //               return obj;
-  //             }, {});
-  //             defaultData.push(defaultItem);
-  //           }
-  //         });
-  //       });
-  //       dufaultDataForSave[tableName] = defaultForSave;
-  //       parames = {
-  //         table: tableName,
-  //         objid: objId,
-  //         data: { ...itemModify },
-  //         after: { ...itemModify },
-  //         before: { defaultForSaveArray }
-  //       };
-  //       network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-  //         if (res.data.code === 0) {
-  //           const data = res.data;
-  //           resolve();
-  //           commit('updateNewMainTableAddSaveData', { data, itemName });
-  //         } else {
-  //           reject();
-  //         }
-  //       });
-  //     } else if (sataTypeName === 'addAndModify') {
-  //       if (Object.values(itemAdd[itemName]).length > 0) {
-  //         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
-  //         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-  //         Object.assign(itemAdd[itemName], add);
-  //         const itemTableAdd = Object.assign({}, itemAdd);
-  //         itemTableAdd[itemName].ID = -1;
-  //         itemTableAdd[itemName] = [
-  //           itemTableAdd[itemName]
-  //         ];
-  //         parames = {
-  //           table: tableName, // 主表表名
-  //           objid: objId, // 明细id
-  //           data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-  //             ...itemTableAdd
-  //           }
-  //         };
-  //         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-  //           if (res.data.code === 0) {
-  //             const data = res.data;
-  //             resolve();
-  //             commit('updateNewMainTableAddSaveData', { data, itemName });
-  //           } else {
-  //             reject();
-  //           }
-  //         });
-  //       }
-  //       if (Object.values(itemModify[itemName]).length > 0) {
-  //         const defaultData = [];
-  //         const defaultForSaveArray = [];
-  //         const defaultForSave = {};
-  //         const dufaultDataForSave = {};
-  //         itemModify[itemName].forEach((modifyItem) => {
-  //           itemDefault[itemName].forEach((defaultItem) => {
-  //             if (modifyItem.ID === defaultItem.EXCEPT_COLUMN_NAME) {
-  //               Object.keys(defaultItem).reduce((obj, item) => {
-  //                 Object.keys(modifyItem).reduce((modifyDataObj, modifyDataItem) => {
-  //                   if (item === modifyDataItem) {
-  //                     let itemDefault = {};
-  //                     defaultForSave[modifyDataItem] = defaultItem[item];
-  //                     itemDefault = Object.assign({}, modifyItem, defaultForSave);
-  //                     defaultForSaveArray.push(itemDefault);
-  //                   }
-  //                   return modifyDataObj;
-  //                 }, {});
-  //                 return obj;
-  //               }, {});
-  //               defaultData.push(defaultItem);
-  //             }
-  //           });
-  //         });
-  //         dufaultDataForSave[tableName] = defaultForSave;
-  //         parames = {
-  //           table: tableName,
-  //           objid: objId,
-  //           data: { ...itemModify },
-  //           after: { ...itemModify },
-  //           before: { defaultForSaveArray }
-  //         };
-  //         network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-  //           if (res.data.code === 0) {
-  //             const data = res.data;
-  //             resolve();
-  //             commit('updateNewMainTableAddSaveData', { data, itemName });
-  //           } else {
-  //             reject();
-  //           }
-  //         });
-  //       }
-  //     } else {
-  //       const dufaultData = dufault[tableName];
-  //       const defaultForSave = {};
-  //       const dufaultDataForSave = {};
-  //       Object.keys(dufaultData).reduce((obj, item) => {
-  //         const modifyData = modify[tableName];
-  //         Object.keys(modifyData).reduce((modifyDataObj, modifyDataItem) => {
-  //           if (item === modifyDataItem) {
-  //             defaultForSave[modifyDataItem] = dufaultData[item];
-  //           }
-  //           return modifyDataObj;
-  //         }, {});
-  //         return obj;
-  //       }, {});
-  //       const defaultChangeDataAfterlabelName = Object.keys(defaultForSave).reduce((obj, value) => {
-  //         if (defaultForSave[value] && Array.isArray(defaultForSave[value]) && defaultForSave[value].length === 1) { // 是外键类型(外键单选)
-  //           const label = defaultForSave[value].map(item => item.Label);
-  //           if (label[0] !== '') {
-  //             defaultForSave[value] = label[0];
-  //           }
-  //         }
-  //         if (defaultForSave[value] && Array.isArray(defaultForSave[value]) && defaultForSave[value].length > 1) { // 外键多选
-  //           const label = defaultForSave[value].map(item => item.Label).join(',');
-  //           defaultForSave[value] = label[0];
-  //         }
-  //         obj[value] = defaultForSave[value];
-  //         return obj;
-  //       }, {});
-  //       dufaultDataForSave[tableName] = defaultChangeDataAfterlabelName;
-  //       parames = {
-  //         table: tableName,
-  //         objid: objId,
-  //         data: modifyDataForSave,
-  //         after: modifyDataForSaveAfter,
-  //         before: dufaultDataForSave
-  //       };
-  //       network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
-  //         if (res.data.code === 0) {
-  //           const data = res.data;
-  //           resolve();
-  //           commit('updateNewMainTableAddSaveData', { data, itemName });
-  //         } else {
-  //           reject();
-  //         }
-  //       });
-  //     }
-  //   }
-  // },
-  
- 
   performMainTableDeleteAction({
     commit
   }, {
@@ -765,21 +398,61 @@ export default {
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
-        parames = {
-          table: tableName, // 主表表名
-          objid: objId, // 明细id
-          data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-            ...itemTableAdd
-          }
-        };
+       
+        if (Object.values(modify[tableName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemTableAdd
+            },
+            after: { 
+              ...modifyLabel,
+            },
+            before: {
+              ...value,
+            } 
+          };
+        } else {
+          parames = {
+            table: tableName, // 主表表名
+            objid: objId, // 明细id
+            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+              ...itemTableAdd
+            }
+          };
+        }
       } else if (sataTypeName === 'modify') {
-        parames = {
-          table: tableName,
-          objid: objId,
-          data: { ...itemModify },
-          after: itemModifyLabel,
-          before: itemBeforeLabel,
-        };
+        if (Object.values(modify[tableName]).length > 0) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: {
+              ...modify,
+              ...itemModify,
+            },
+            after: { 
+              ...modifyLabel,
+              ...itemModifyLabel 
+              
+            },
+            before: {
+              ...value,
+              ...itemBeforeLabel
+            } 
+          };
+        } else {
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...itemModify },
+            after: itemModifyLabel,
+            before: itemBeforeLabel,
+          };
+        }
       } else if (sataTypeName === 'addAndModify') {
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
@@ -792,24 +465,25 @@ export default {
         const itemAddAndModify = {};
         itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
         // 子表新增保存
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) {
-          parames = {
-            table: tableName, // 主表表名
-            objid: objId, // 明细id
-            data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-              ...itemTableAdd
-            }
-          };
-        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemAdd[itemName]).length === 0) { // 子表修改保存
-          parames = {
-            table: tableName,
-            objid: objId,
-            data: { ...itemModify },
-            after: { ...itemModifyLabel },
-            before: itemBeforeLabel
+        // if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) {
+        //   parames = {
+        //     table: tableName, // 主表表名
+        //     objid: objId, // 明细id
+        //     data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+        //       ...itemTableAdd
+        //     }
+        //   };
+        // } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemAdd[itemName]).length === 0) { // 子表修改保存
+        //   parames = {
+        //     table: tableName,
+        //     objid: objId,
+        //     data: { ...itemModify },
+        //     after: { ...itemModifyLabel },
+        //     before: itemBeforeLabel
 
-          };
-        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
+        //   };
+        // } else 
+        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -831,8 +505,8 @@ export default {
             table: tableName,
             objid: objId,
             data: {
+              ...modify,
               ...itemModify,
-              ...itemTableAdd
             },
             after: { 
               ...modifyLabel,
@@ -845,7 +519,6 @@ export default {
             } 
           };
         } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
-          const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
             objid: objId,
@@ -853,11 +526,11 @@ export default {
               ...itemAddAndModify
             },
             after: { 
-              ...modifyLabel,
+              ...itemModifyLabel 
               
             },
             before: {
-              ...value,
+              ...itemBeforeLabel
             } 
           };
         } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
