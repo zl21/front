@@ -305,7 +305,6 @@
     },
     mounted() {
       this.formValueItem = {};
-      console.log('mounted');
       this.setAttsetProps = this.getsetAttsetProps();
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
@@ -322,7 +321,7 @@
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
         // 获取校验
-        this.VerificationFormInt();
+        this.VerificationFormInt('mounted');
         // 获取 默认值
         this.mountdataFormInt();
       }, 500);

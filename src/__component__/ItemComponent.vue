@@ -203,6 +203,7 @@
           :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
+          placeholder="请选择"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
           :auto-data="_items.props.AutoData"
