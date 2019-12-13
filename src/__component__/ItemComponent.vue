@@ -1141,10 +1141,11 @@
               } else if (this.$parent.pathcheck === '') {
                 // parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
+                that.upSaveImg(parms, '');
+
               } else {
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
-
                 that.upSaveImg(parms, '', path, index);
               }
             } else {

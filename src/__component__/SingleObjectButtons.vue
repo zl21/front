@@ -2536,11 +2536,6 @@
           this.saveEventAfter = '';
         }
       },
-      updataLoading(event) {
-        if (event.detail.copy) {
-          this.$loading.hide(this.tableName);
-        }
-      },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -2593,7 +2588,11 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNoticeCopy', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', (event) => {
+          if (event.detail.copy) {
+            this.$loading.hide(this.tableName);
+          }
+        });
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
