@@ -486,7 +486,6 @@
           this.labelForm = {};
           return false;
         }
-        this.copyInt = false;
 
 
         // 修改联动的值
@@ -602,13 +601,15 @@
             this.verifyMessItem = data;
           }
           // console.log(data.messageTip);
-          if (this.copyInt && this.defaultData.copy) {
-            DispatchEvent('globalNoticeCopy', {
-              detail: {
-                copy: true
-              }
-            }); 
-          }
+          setTimeout(() => {
+            if (this.defaultData.copy) {
+              DispatchEvent('globalNoticeCopy', {
+                detail: {
+                  copy: true
+                }
+              }); 
+            }
+          }, 100);
 
           
           this.$emit('VerifyMessage', data);
@@ -695,6 +696,8 @@
         // clearTimeout(this.InitializationFormTime);
         // this.InitializationFormTime = setTimeout(() => {
         // }, 5);
+        this.copyInt = false;
+
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
@@ -2026,7 +2029,6 @@
 
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
             const label = `请输入${item.label}`;
-            console.log(this.labelForm[item.key], '====.labelForm', label, item.label);
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
               VerificationMessage.validateForm = item.onfousInput;
@@ -2047,7 +2049,6 @@
             }
           }
         });
-        console.log(VerificationMessage, 'VerificationMessage');
         return VerificationMessage;
       },
       focusItem(index, current, arry) {
