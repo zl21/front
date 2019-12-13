@@ -308,6 +308,7 @@
     mounted() {
       this.formValueItem = {};
       this.setAttsetProps = this.getsetAttsetProps();
+      this.formRequestJson = {};
 
       // 映射回调
       window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
@@ -452,15 +453,8 @@
             return true;
           }
 
-          const setLabel = this.getLable(items);
-          if (setLabel[item.field] === '' && (val[item.field] === undefined || val[item.field] === '')) {
-            if (item.value) {
-              return false;
-            }
-            this.formRequest(item.field, val, item, item.props.webconf.formRequest);
-          } else if (val[item.field] && setLabel[item.field]) {
-            this.formRequest(item.field, val, item, item.props.webconf.formRequest);
-          }
+          // const setLabel = this.getLable(items);
+          this.formRequest(item.field, val, item, item.props.webconf.formRequest);
         } else {
           // eslint-disable-next-line no-lonely-if
           if (item.props.webconf && item.props.webconf.formRequest) {
@@ -485,6 +479,8 @@
       },  
       formInit() {
         const val = this.getStateData();
+        this.formRequestJson = {};
+
         setTimeout(() => {
           this.computFormLinkage(val, 'mounted');
         }, 50);
@@ -699,6 +695,8 @@
             if (typeof current.item.value === 'string') {
               if (valueItem[Object.keys(obj)[0]]) {
                 valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
+              } else {
+                valueItem[Object.keys(obj)[0]] = current.item.value.toUpperCase();
               }
             } else {
               valueItem[Object.keys(obj)[0]] = current.item.value;
@@ -792,7 +790,7 @@
             valueLabel[current.item.field] = '';
           }
         } else if (current.item.type === 'select') {
-          if (current.item.value) {
+          if (current.item.value !== undefined) {
             const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
             if (optionIndex !== -1) {
               valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
@@ -1038,9 +1036,14 @@
         this.newFormItemLists = this.newFormItemLists.map((option) => {
           if (option.item.field === refcolumn) {
             if (option.item) {
-              const value = jsonArr[refcolumn];
+              let value = jsonArr[refcolumn];
+              if (value !== undefined) {
+                value = value.toString();
+              } else {
+                value = '';
+              }
               const refvalArr = refval.split(',');
-              const refIndex = refvalArr.findIndex(x => x.toString() === value.toString());
+              const refIndex = refvalArr.findIndex(x => x.toString() === value);
 
               if (refIndex !== -1) {
                 this.newFormItemLists[index].show = true;

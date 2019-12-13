@@ -1331,9 +1331,11 @@
             }
           } catch (err) {
             if (typeof item.valuedata === 'string') {
-              arr = [{
-                URL: item.valuedata
-              }];
+              if (item.valuedata.length > 0) {
+                arr = [{
+                  URL: item.valuedata
+                }];
+              }
             } else {
               arr = [];
             }
@@ -2043,8 +2045,6 @@
     mounted() {
       this.Comparison();
      
-      console.log('type00000', this.defaultData.copy, new Date().getTime());
-
       setTimeout(() => {
         if (this.LinkageForm.length > 0 && this.LinkageForm[0]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
