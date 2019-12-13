@@ -433,6 +433,7 @@
             const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
+
             if (checkVal !== checkShow) {
               this.hidecolumn(item, i, val, old);
             }
@@ -449,7 +450,7 @@
       setformUrl(item, val, items) {
         if (item.props.webconf && item.props.webconf.formRequest) {
           const isCopyCheck = this.isCopy();
-          if (!this.actived && isCopyCheck) {
+          if (this.actived && isCopyCheck) {
             return true;
           }
 
@@ -791,7 +792,11 @@
           }
         } else if (current.item.type === 'select') {
           if (current.item.value !== undefined) {
-            const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
+            let value = current.item.value;
+            if (Array.isArray(current.item.value)) {
+              value = current.item.value[0];
+            }
+            const optionIndex = current.item.options.findIndex(x => x.value === value);
             if (optionIndex !== -1) {
               valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
             } else {

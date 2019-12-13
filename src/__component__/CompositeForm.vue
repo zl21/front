@@ -250,6 +250,7 @@
           this.mountChecked = false;
           // 清空界面的 默认值
           this.defaultFormData = {};
+
           // 开启 (刷新界面))
           this.mountNumber = (Math.random() * 1000).toFixed(0);
           // 组件重组
@@ -309,6 +310,7 @@
         this.verifyMessItem = [];
         this.formData = {};
         this.formDataDef = {};
+        this.formDataSave = {};
       },
       isReadonly(current) {
         // 设置界面的 是否 disable
@@ -542,6 +544,7 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
+        console.log(this.labelForm, '====');
         // clearTimeout(this.setChangeTime);
         // this.setChangeTime = setTimeout(() => {
         // }, 50);
@@ -642,6 +645,7 @@
           }
           return arr;
         }, {});
+
         // 1.3 外键传参 label
         // if (Version() === '1.3') {
         //   const formItemArry = formItem.reduce((arr, item) => {
@@ -655,24 +659,41 @@
         this.r3Form = Object.assign(this.r3Form, formItem);
 
 
-        // 外部change的值(复制修改过后的值 去修改 页面)
-        const defaultSetValue = Object.keys(this.defaultSetValue).reduce((arr, option) => {
-          if (defaultFormData[option]) {
-            arr[option] = defaultFormData[option];
+        // 、、 外部change的值(复制修改过后的值 去修改 页面)
+        const defaultSetValue = Object.keys(JSON.parse(JSON.stringify(this.defaultSetValue))).reduce((arr, option) => {
+          if (this.defaultSetValue[option]) {
+            if (Array.isArray(this.defaultSetValue[option])) {
+              if (this.defaultSetValue[option][0]) {
+                if (this.defaultSetValue[option][0].ID) {
+                  arr[option] = this.defaultSetValue[option][0].ID;
+                  if (this.defaultSetValue[option].length > 1) {
+                    arr[option] = this.defaultSetValue[option].reduce((curry, item) => {
+                      curry.push(item.ID);
+                      return curry;
+                    }, []);
+                  }
+                } else {
+                  arr[option] = this.defaultSetValue[option];
+                }
+              }
+            } else {
+              arr[option] = this.defaultSetValue[option];
+            }
+            // this.labelForm = Object.assign(,);
           }
           return arr;
         }, {});
-        if (this.moduleFormType === 'horizontal') {
-          this.formData = Object.assign({}, defaultSetValue);
-          // 开启
-        }
+        // if (this.moduleFormType === 'horizontal') {
+        //   // 开启
+        // }
+        // this.formData = Object.assign({}, defaultSetValue);
+
         this.getStateData();
-        this.defaultFormData = defaultFormData;
+        this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
         // 默认值
         // clearTimeout(this.InitializationFormTime);
         // this.InitializationFormTime = setTimeout(() => {
         // }, 5);
-
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
       },
@@ -1259,6 +1280,47 @@
 
         return str;
       },
+      setLabel(key, value, item) {
+        const valueLabel = {};
+        if (item.display === 'checkbox') {
+          const optionIndex = item.combobox.findIndex(x => x.limitval === value);
+          if (optionIndex !== -1) {
+            valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
+          } else {
+            valueLabel[item.colname] = '';
+          }
+        } else if (item.display === 'select') {
+          if (value !== undefined) {
+            if (Array.isArray(value)) {
+              value = value[0];
+            }
+            const optionIndex = item.combobox.findIndex(x => x.value === value);
+            if (optionIndex !== -1) {
+              valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
+            } else {
+              valueLabel[item.colname] = '';
+            }
+          } else {
+            valueLabel[item.colname] = '';
+          }
+        }
+        if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop' || item.fkdisplay === 'drp') {
+          if (Array.isArray(value)) {
+            valueLabel[item.colname] = value[0].Label;
+          }
+        } else if (item.fkdisplay === 'mrp') {
+          if (Array.isArray(value)) {
+            valueLabel[item.colname] = value.reduce((arr, option, i) => {
+              arr.push(option.Label);
+              return arr;
+            }, [])
+              .join(',');
+          }
+        } else {
+          valueLabel[item.colname] = value;
+        }
+        this.labelForm = Object.assign(this.labelForm, valueLabel);
+      },
       defaultValue(item) {
         // 组件的默认值  
         // const checkIsReadonly = this.isReadonly(item);
@@ -1269,6 +1331,11 @@
         //   return item.valuedata || item.defval || '';
         // }
         // 设置表单的默认值
+        if (this.defaultSetValue[item.colname] !== undefined) {
+          if (this.defaultData.copy) {
+            this.setLabel(item.colname, this.defaultSetValue[item.colname], item);
+          }
+        }
         if (
           (item.display === 'textarea' && !item.fkdisplay)
           || (item.display === 'text' && !item.fkdisplay)
@@ -1937,6 +2004,7 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
+          console.log(this.defaultData.copy);
           // if (Array.isArray(item.value) && item.fkdisplay) {
           //   if (item.value[0]) {
           //     if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === null) {
@@ -1954,6 +2022,8 @@
           //   item.value = '';
           // }
           const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), JSON.parse(JSON.stringify(this.labelForm)));
+          console.log(this.labelForm[item.key], '000this.labelForm');
+
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
