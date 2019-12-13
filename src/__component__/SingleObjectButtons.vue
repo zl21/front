@@ -99,7 +99,6 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-  import { hideMenu } from '../__config__/event.config';
 
   export default {
     data() {
@@ -2118,15 +2117,15 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              if (Version() === '1.3') {
-                let mainModify = [];
-                if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-                }
-                if (mainModify.length > 0) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                }
-              }
+              // if (Version() === '1.3') {
+              //   let mainModify = [];
+              //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+              //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              //   }
+              //   if (mainModify.length > 0) {
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              //   }
+              // }
             }
           }
         } else { // 横向结构
@@ -2179,15 +2178,15 @@
               }
             }
 
-            if (Version() === '1.3') {
-              let mainModify = [];
-              if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              }
-              if (mainModify.length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
+            // if (Version() === '1.3') {
+            //   let mainModify = [];
+            //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+            //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+            //   }
+            //   if (mainModify.length > 0) {
+            //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            //   }
+            // }
           }
         }
       },
@@ -2537,11 +2536,6 @@
           this.saveEventAfter = '';
         }
       },
-      updataLoading(event) {
-        if (event.detail.copy) {
-          this.$loading.hide(this.tableName);
-        }
-      },
       hideBackButton() {
         const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
         const currentRoute = this.$router.currentRoute.path;
@@ -2594,7 +2588,11 @@
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNoticeCopy', this.updataLoading);
+        window.addEventListener('globalNoticeCopy', (event) => {
+          if (event.detail.copy) {
+            this.$loading.hide(this.tableName);
+          }
+        });
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
