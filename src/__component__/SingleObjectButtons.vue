@@ -99,7 +99,6 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
-  import { hideMenu } from '../__config__/event.config';
 
   export default {
     data() {
@@ -1430,7 +1429,7 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        // this.$loading.show();
+        this.$loading.show();
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
@@ -2118,15 +2117,15 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              if (Version() === '1.3') {
-                let mainModify = [];
-                if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                  mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-                }
-                if (mainModify.length > 0) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-                }
-              }
+              // if (Version() === '1.3') {
+              //   let mainModify = [];
+              //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+              //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+              //   }
+              //   if (mainModify.length > 0) {
+              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+              //   }
+              // }
             }
           }
         } else { // 横向结构
@@ -2179,15 +2178,15 @@
               }
             }
 
-            if (Version() === '1.3') {
-              let mainModify = [];
-              if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-                mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              }
-              if (mainModify.length > 0) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              }
-            }
+            // if (Version() === '1.3') {
+            //   let mainModify = [];
+            //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
+            //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
+            //   }
+            //   if (mainModify.length > 0) {
+            //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
+            //   }
+            // }
           }
         }
       },
