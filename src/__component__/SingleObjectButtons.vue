@@ -2578,22 +2578,21 @@
 
         return false;
       },
-      closeLoading(event) {
-        if (event.detail.copy) {
-          this.$loading.hide(this.tableName);
-        }
-      }
+    
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.removeEventListener('globalNoticeCopy', this.closeLoading);
     },
     mounted() {
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNoticeCopy', this.closeLoading);
+        window.addEventListener('globalNoticeCopy', (event) => {
+          if (event.detail.copy) {
+            this.$loading.hide(this.tableName);
+          }
+        });
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
@@ -2660,6 +2659,19 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
+    // activated() {
+    //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
+    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 1) {
+    //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
+    //       const routeFullPath = this.activeTab.routeFullPath;
+    //       if (routeMapRecordForHideBackButtonData[routeFullPath] === item) {
+    //         deleteFromSessionObject('routeMapRecordForHideBackButton', routeMapRecordForHideBackButtonData[routeFullPath]);
+    //         window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+    //       }
+    //       console.log(3333, Object.keys(routeMapRecordForHideBackButtonData).pop());
+    //     });
+    //   }
+    // },
   };
 </script>
 
