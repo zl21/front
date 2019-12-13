@@ -216,7 +216,7 @@ export default {
                       }
                       if (c.display === 'select') {
                         copySaveDataForParam[b.colname] = c.defval;
-                      } else if (c.fkdisplay === 'pop') {
+                      } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
                         copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
                       }
                     } else {
