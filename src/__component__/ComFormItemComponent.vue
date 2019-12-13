@@ -338,6 +338,7 @@
     watch: {
       mountedType() {
         // 监听刷新、切换
+        this.formRequestJson = {};
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -480,8 +481,6 @@
       },  
       formInit() {
         const val = this.getStateData();
-        this.formRequestJson = {};
-
         setTimeout(() => {
           this.computFormLinkage(val, 'mounted');
         }, 50);
@@ -820,12 +819,14 @@
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
         // }
+        
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
+        console.log(JSON.stringify(ASSIGN), JSON.stringify(this.formRequestJson));
         if (JSON.stringify(ASSIGN) === JSON.stringify(this.formRequestJson)) {
           return false;
         }
