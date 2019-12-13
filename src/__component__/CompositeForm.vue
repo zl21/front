@@ -227,6 +227,7 @@
         pathArry: [], // path 数组
         show: true,
         copyInt: true,
+        labelFormSave: {},
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
         setVerifyMessageTime: null,
@@ -486,11 +487,6 @@
           return false;
         }
         this.copyInt = false;
-        // 必填校验
-        clearTimeout(this.setVerifyMessageTime);
-        this.setVerifyMessageTime = setTimeout(() => { 
-          this.setVerifyMessageForm();
-        }, 100);
 
 
         // 修改联动的值
@@ -544,7 +540,12 @@
         //   return arr;
         // }, {});
         this.labelForm = Object.assign(this.labelForm, label);
-        console.log(this.labelForm, '====');
+        this.labelFormSave = Object.assign(this.labelFormSave, label);
+        // 必填校验
+        clearTimeout(this.setVerifyMessageTime);
+        this.setVerifyMessageTime = setTimeout(() => { 
+          this.setVerifyMessageForm();
+        }, 100);
         // clearTimeout(this.setChangeTime);
         // this.setChangeTime = setTimeout(() => {
         // }, 50);
@@ -552,7 +553,7 @@
           // eslint-disable-next-line no-shadow
           delete this.formDataSave[current.item.field];
           delete this.formDataDef[current.item.field];
-          delete this.labelForm[current.item.field];
+          delete this.labelFormSave[current.item.field];
           // eslint-disable-next-line no-shadow
           const data = {
             key: current.item.field,
@@ -563,7 +564,7 @@
           // console.log(data, label, this.labelForm[current.item.field], this.r3Form[current.item.field]);
           delete this.formDataSave[current.item.field];
           delete this.formDataDef[current.item.field];
-          delete this.labelForm[current.item.field];
+          delete this.labelFormSave[current.item.field];
           // eslint-disable-next-line no-shadow
           const data = {
             key: current.item.field,
@@ -572,7 +573,7 @@
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
         } 
 
-        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelForm);
+        this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave);
         this.getStateData();
 
         
@@ -1281,6 +1282,7 @@
         return str;
       },
       setLabel(key, value, item) {
+        return false;
         const valueLabel = {};
         if (item.display === 'checkbox') {
           const optionIndex = item.combobox.findIndex(x => x.limitval === value);
@@ -2004,7 +2006,6 @@
         };
         this.VerificationForm.forEach((item) => {
           // 校验值是不是有值
-          console.log(this.defaultData.copy);
           // if (Array.isArray(item.value) && item.fkdisplay) {
           //   if (item.value[0]) {
           //     if (item.value[0].ID === '' || item.value[0].ID === 0 || item.value[0].ID === '-1' || item.value[0].ID === null) {
@@ -2021,11 +2022,11 @@
           // if (item.value === 0 && item.type === 'select' && item.defval === null) {
           //   item.value = '';
           // }
-          const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), JSON.parse(JSON.stringify(this.labelForm)));
-          console.log(this.labelForm[item.key], '000this.labelForm');
+          const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), this.labelForm);
 
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
             const label = `请输入${item.label}`;
+            console.log(this.labelForm[item.key], '====.labelForm', label, item.label);
             VerificationMessage.messageTip.push(label);
             if (VerificationMessage.messageTip.length < 2) {
               VerificationMessage.validateForm = item.onfousInput;
@@ -2046,6 +2047,7 @@
             }
           }
         });
+        console.log(VerificationMessage, 'VerificationMessage');
         return VerificationMessage;
       },
       focusItem(index, current, arry) {
