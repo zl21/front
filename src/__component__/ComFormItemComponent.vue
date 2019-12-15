@@ -338,6 +338,7 @@
     watch: {
       mountedType() {
         // 监听刷新、切换
+        this.formRequestJson = {};
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -433,6 +434,7 @@
             const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
             const checkVal = arrIndex !== -1 ? 1 : 0;
             const checkShow = items.show ? 1 : 0;
+
             if (checkVal !== checkShow) {
               this.hidecolumn(item, i, val, old);
             }
@@ -449,7 +451,7 @@
       setformUrl(item, val, items) {
         if (item.props.webconf && item.props.webconf.formRequest) {
           const isCopyCheck = this.isCopy();
-          if (!this.actived && isCopyCheck) {
+          if (this.actived && isCopyCheck) {
             return true;
           }
 
@@ -479,8 +481,6 @@
       },  
       formInit() {
         const val = this.getStateData();
-        this.formRequestJson = {};
-
         setTimeout(() => {
           this.computFormLinkage(val, 'mounted');
         }, 50);
@@ -791,7 +791,11 @@
           }
         } else if (current.item.type === 'select') {
           if (current.item.value !== undefined) {
-            const optionIndex = current.item.options.findIndex(x => x.value === current.item.value);
+            let value = current.item.value;
+            if (Array.isArray(current.item.value)) {
+              value = current.item.value[0];
+            }
+            const optionIndex = current.item.options.findIndex(x => x.value === value);
             if (optionIndex !== -1) {
               valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
             } else {
@@ -815,12 +819,14 @@
         // if (this.formDataObject[key] === obj[key]) {
         //   return false;
         // }
+        
         const refcolumn = conf.refcolumn.split(',');
         const ASSIGN = refcolumn.reduce((arr, item) => {
           arr[item] = jsonArr[item] || '';
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
+        console.log(JSON.stringify(ASSIGN), JSON.stringify(this.formRequestJson));
         if (JSON.stringify(ASSIGN) === JSON.stringify(this.formRequestJson)) {
           return false;
         }
