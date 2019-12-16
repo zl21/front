@@ -299,7 +299,12 @@ export default {
             }
           };
         }
-      } else { // 没有子表
+      } else if (path) { // 没有子表 ,有path的参数
+        const { modify } = parame;
+        parames = {
+          ...modify,
+        };
+      } else {
         const { modify } = parame;
         parames = {
           table: tableName, // 主表表名
@@ -414,7 +419,7 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, isreftabs,resolve, reject
+    objId, table, path, isreftabs, resolve, reject
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -449,7 +454,7 @@ export default {
     });
   },
   getObjectTryUnSubmit({ commit }, {
-    objId, table, path,isreftabs, resolve, reject
+    objId, table, path, isreftabs, resolve, reject
   }) { // 获取取消提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -467,7 +472,7 @@ export default {
       param = {
         objId,
         table
-      }
+      };
     }
     network.post(path || '/p/cs/objectUnSubmit', param).then((res) => {
       if (res.data.code === 0) {
@@ -484,7 +489,7 @@ export default {
     });
   },
   getObjectTryInvalid({ commit }, {
-    objId, table, path,isreftabs, resolve, reject
+    objId, table, path, isreftabs, resolve, reject
   }) { // 获取作废数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -504,7 +509,7 @@ export default {
         table
       };
     }
-    network.post(path || '/p/cs/objectVoid',param).then((res) => {
+    network.post(path || '/p/cs/objectVoid', param).then((res) => {
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
