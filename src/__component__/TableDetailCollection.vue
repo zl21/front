@@ -3714,6 +3714,11 @@
       };
     },
     beforeDestroy() {
+      window.removeEventListener('tabRefreshClick', () => {
+        if (!this._inactive) {
+          this.isRefreshClick = false;
+        }
+      });
       window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
     },
     activated() {
