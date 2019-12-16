@@ -2000,8 +2000,12 @@
             allPages, currentPage, currentPageSize, total 
           } = this.$refs.agTableElement.$children[0];
           const selectIdArrLength = this.buttons.selectIdArr ? this.buttons.selectIdArr.length : 0;
-          const detailTable = document.querySelector('.detailTable').agTable.api.paginationProxy.pageSize;
-          if (selectIdArrLength === detailTable && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
+          // const detailTable = document.querySelector('.detailTable').agTable.api.paginationProxy.pageSize;
+          let currentPageSizes = Math.ceil(total % currentPageSize);
+          if (currentPageSizes === 0) {
+            currentPageSizes = currentPageSize;
+          }
+          if (selectIdArrLength === currentPageSizes && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
           }
           this.getQueryListForAg(Object.assign({}, this.searchData, { merge }));
