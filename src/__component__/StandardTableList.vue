@@ -2026,8 +2026,11 @@
       }
     },
     mounted() {
-      window.addEventListener('network', this.networkEventListener);
-      window.addEventListener('jflowEvent', this.jflowEvent);
+      if (!this._inactive) {
+        window.addEventListener('network', this.networkEventListener);
+        window.addEventListener('jflowEvent', this.jflowEvent);
+        window.addEventListener('network', this.networkGetTableQuery);
+      }
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -2036,8 +2039,6 @@
       promise.then(() => {
         this.getbuttonGroupdata();
       });
-
-      window.addEventListener('network', this.networkGetTableQuery);
     },
     activated() {
       const { tableId } = this.$route.params;

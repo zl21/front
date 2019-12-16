@@ -1520,6 +1520,11 @@
                   this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                   const labelValue = data.values.length > 0 ? data.values[0].label : '';
                   this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                },
+                'on-open-change': (state, data) => {
+                  if (Version() === '1.3' && !state) {
+                    this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  }
                 }
               }
             },
@@ -1892,7 +1897,7 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 this.putLabelDataFromCell(labelValue, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               },
               'on-clear': (value) => {
@@ -2206,7 +2211,7 @@
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 this.putLabelDataFromCell(labelValue, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
               },
               'on-clear': (value) => {
@@ -3045,6 +3050,7 @@
         return null;
       },
       putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
+        console.log(currentValue, oldValue);
         // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
@@ -3057,23 +3063,52 @@
             currentValue = '';
           }
         }
+        if (Version() === '1.3' && !currentValue) {
+          currentValue = null;
+        }
 
-        if (this.afterSendData[this.tableName]) {
-          const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (rowDatas.length > 0) {
-            rowDatas[0][colname] = currentValue;
+        if (Version() === '1.3') {
+          if (this.afterSendData[this.tableName]) {
+            const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+            if (currentValue.toString() !== oldValue.toString()) {
+              if (rowDatas.length > 0) {
+                rowDatas[0][colname] = currentValue;
+              } else {
+                const param = {};
+                param[EXCEPT_COLUMN_NAME] = IDValue;
+                param[colname] = currentValue;
+                this.afterSendData[this.tableName].push(param);
+              }
+            } else {
+              if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+                delete rowDatas[0][colname];
+              }
+            }
           } else {
+            this.afterSendData[this.tableName] = [];
             const param = {};
             param[EXCEPT_COLUMN_NAME] = IDValue;
             param[colname] = currentValue;
             this.afterSendData[this.tableName].push(param);
           }
         } else {
-          this.afterSendData[this.tableName] = [];
-          const param = {};
-          param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
-          this.afterSendData[this.tableName].push(param);
+          if (this.afterSendData[this.tableName]) {
+            const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+            if (rowDatas.length > 0) {
+              rowDatas[0][colname] = currentValue;
+            } else {
+              const param = {};
+              param[EXCEPT_COLUMN_NAME] = IDValue;
+              param[colname] = currentValue;
+              this.afterSendData[this.tableName].push(param);
+            }
+          } else {
+            this.afterSendData[this.tableName] = [];
+            const param = {};
+            param[EXCEPT_COLUMN_NAME] = IDValue;
+            param[colname] = currentValue;
+            this.afterSendData[this.tableName].push(param);
+          }
         }
         // console.log(currentValue, oldValue);
         // if (this.beforeSendData[this.tableName]) {
