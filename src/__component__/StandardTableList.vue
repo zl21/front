@@ -1999,7 +1999,7 @@
           const {
             allPages, currentPage, currentPageSize, total 
           } = this.$refs.agTableElement.$children[0];
-          const selectIdArrLength = this.buttons.selectIdArr.length;
+          const selectIdArrLength = this.buttons.selectIdArr ? this.buttons.selectIdArr.length : 0;
           const detailTable = document.querySelector('.detailTable').agTable.api.paginationProxy.pageSize;
           if (selectIdArrLength === detailTable && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
