@@ -2578,21 +2578,23 @@
 
         return false;
       },
-    
+      hideLoading(value) {
+        if (value.detail.copy) {
+          this.$loading.hide(this.tableName);
+        }
+      }
     },  
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
+      window.removeEventListener('globalNoticeCopy', this.hideLoading);
     },
     mounted() {
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globalNoticeCopy', (event) => {
-          if (event.detail.copy) {
-            this.$loading.hide(this.tableName);
-          }
-        });
+        window.addEventListener('globalNoticeCopy', this.hideLoading);
+        window.addEventListener('network', this.networkEventListener);// 监听接口
       }
       if (this.objectType === 'horizontal') { // 横向布局
         this.tabPanel.forEach((item) => {
@@ -2648,30 +2650,14 @@
         this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
       }
     },
-    beforeCreate() {
-    },
     created() {
       this.ChineseDictionary = ChineseDictionary;
-      window.addEventListener('network', this.networkEventListener);// 监听接口
       const { tableName, tableId, itemId } = router.currentRoute.params;
       this.tableName = tableName;
       this.tableId = tableId;
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
-    // activated() {
-    //   const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
-    //   if (Object.keys(routeMapRecordForHideBackButtonData).length > 1) {
-    //     Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
-    //       const routeFullPath = this.activeTab.routeFullPath;
-    //       if (routeMapRecordForHideBackButtonData[routeFullPath] === item) {
-    //         deleteFromSessionObject('routeMapRecordForHideBackButton', routeMapRecordForHideBackButtonData[routeFullPath]);
-    //         window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
-    //       }
-    //       console.log(3333, Object.keys(routeMapRecordForHideBackButtonData).pop());
-    //     });
-    //   }
-    // },
   };
 </script>
 

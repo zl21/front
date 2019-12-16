@@ -237,7 +237,9 @@
     mounted() {
       const { itemId } = this.$route.params;
       this.objId = itemId;
-      window.addEventListener('customizeClick', this.customizeClick);
+      if (!this._inactive) {
+        window.addEventListener('customizeClick', this.clickCustomize);
+      }
     },
     props: {
       itemInfo: {// 当前子表信息
@@ -279,7 +281,7 @@
     components: {
     },
     methods: {
-      customizeClick(event) {
+      clickCustomize(event) {
         if (event.type === 'save') {
           this.saveParams = event.detail;
           this.objectSave(event.detail);
@@ -619,7 +621,7 @@
      
     },
     beforeDestroy() {
-      window.removeEventListener('customizeClick', this.customizeClick);
+      window.removeEventListener('customizeClick', this.clickCustomize);
     },
   };
 </script>

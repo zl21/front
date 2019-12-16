@@ -260,9 +260,10 @@ export default (router) => {
   router.afterEach((to, from) => {
     // 记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
     const isFromStandardTable = from.meta.routePrefix === STANDARD_TABLE_LIST_PREFIX;
+    const isFromPlugin = from.meta.routePrefix === PLUGIN_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（插件类型路由））
 
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
-    const isNotFromSameTable = to.params.tableName !== from.params.tableName;
+    const isNotFromSameTable = to.params.tableName !== from.params.tableName;// 目标单对象界面和列表界面属于不同的表（Table不同）
     const isNotFromSameTableForHideBackButton = to.params.itemId !== (from.params.itemId === 'New');
 
     if (!isNotFromSameTable) {
@@ -276,7 +277,7 @@ export default (router) => {
     // console.log({
     //   isFromStandardTable, isTableDetail, isNotFromSameTable, isDynamicRouting
     // });
-    if (isDynamicRouting && isFromStandardTable && isTableDetail && isNotFromSameTable) {
+    if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
     }
@@ -299,7 +300,7 @@ export default (router) => {
       // });
     }
     // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
-    if (!isFromStandardTable && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
+    if (!(isFromStandardTable || isFromPlugin) && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
       updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
     }
