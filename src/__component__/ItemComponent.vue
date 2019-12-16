@@ -1142,7 +1142,6 @@
                 // parms.path = '/p/cs/objectSave';
                 this.deleteImgData(parms, index);
                 that.upSaveImg(parms, '');
-
               } else {
                 const path = this.$parent.pathcheck !== '';
                 this.valueImgChange();
@@ -1524,14 +1523,8 @@
           this._items.value = '';
         }
         this.valueChange();
-      }
-      
-    },
-    created() {
-    // console.log(this.type,this.formIndex);
-    },
-    mounted() {
-      window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
+      },
+      setListenerSetProps(e) {
         if (e.value.type === 'equal') {
           // 表单赋值
           e.value.list.forEach((item) => {
@@ -1553,10 +1546,6 @@
                     ID: item.LABLE_VALUES[0].VALUE || '',
                     Label: item.LABLE_VALUES[0].LABLE || ''
                   }];
-                  // if (this._items.props.disabled) {
-                  //   this._items.value = this._items.props.defaultSelected[0].Label;
-                  // } else {
-                  // }
                   this._items.props.refobjid = item.LABLE_VALUES[0].VALUE;
                   this._items.value = this._items.props.defaultSelected;
                 } else if (this._items.props.Selected) {
@@ -1589,14 +1578,6 @@
                  
                   return arr;
                 }, []);
-                // if (this._items.props.disabled) {
-                //   if (labelIput.length < 2) {
-                //     this._items.value = labelIput.join('');
-                //   } else {
-                //     this._items.value = labelIput.join(',');
-                //   }
-                // } else {
-                // }
                 this._items.value = this._items.props.defaultSelected;
               }
               this.valueChange();
@@ -1609,41 +1590,9 @@
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
-          // if (this._items.props.fkdisplay === 'drp' 
-          //   || this._items.props.fkdisplay === 'mrp'
-          // ) {
-          //   console.log(e.value.value, this._items.props.name, '');
-
-          //   if (this._items.value === undefined) {
-          //     this._items.props.defaultSelected = [];
-          //   }
-          // }
-          // if (this._items.props.fkdisplay === 'mop' 
-          //   || this._items.props.fkdisplay === 'pop'
-          // ) {
-          //   if (this._items.value === undefined) {
-          //     this._items.props.Selected = [];
-          //   } else {
-          //     this._items.value = e.value.value;
-          //   }
-          // }
-        
-          // if (e.value.value === '') {
-          //   this.clearItem();
-          //   this.valueChange();
-          // } else if (Array.isArray(e.value.value)) {
-          //   this._items.props.selected = e.value.value;
-          //   this._items.props.defaultSelected = e.value.value;
-          //   this._items.value = e.value.value;
-          //   this.valueChange();
-          // } else {
-          //   this._items.value = e.value.value || '';
-          //   this.valueChange();
-          // }
         }
-      });
-
-      window.addEventListener(`${this.moduleComponentName}setLinkForm`, (e) => {
+      },
+      setListenerSetLinkForm(e) {
         // 设置表单联动清空
         if (Object.hasOwnProperty.call(this._items.validate, 'refcolval')) {
           if (this._items.validate.refcolval.srccol === e.value.key) {
@@ -1656,7 +1605,19 @@
             }
           }
         }
-      });
+      }
+      
+    },
+    beforeDestroy() {
+      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
+      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetLinkForm);
+    },
+    created() {
+    // console.log(this.type,this.formIndex);
+    },
+    mounted() {
+      window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
+      window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
     }
   };
 </script>
