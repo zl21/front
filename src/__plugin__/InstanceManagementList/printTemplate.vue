@@ -156,29 +156,31 @@
         window.close(); 
       }, // 取消
       getEventListenerParam() {
-        if (window.opener) {
-          window.opener.postMessage({ ready: true }, '*');// 向全局发送消息
-        }
-
-        window.addEventListener('message', (event) => {
-          if (event.data.print) {
-            this.tableId = event.data.print.tableId; // 主表id
-            this.userId = event.data.print.userId; // 用户id
-            // 打印预览需要的参数d
-            // const printPreview = {
-            //   tableName: event.data.print.tableName,
-            //   userId: event.data.print.userId,
-            //   objIds: event.data.print.objIds
-            // };
-            // this.tableName = event.data.print.tableName;
-            // this.userId = event.data.print.userId;
-            // this.objIds = event.data.print.objIds;
-            // window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));// 存打印模版所需参数
-            if (this.tableId && this.userId) {
-              this.getTempleteData(this.tableId, this.userId);
-            }
+        if (!this._inactive) {
+          if (window.opener) {
+            window.opener.postMessage({ ready: true }, '*');// 向全局发送消息
           }
-        }, false);
+
+          window.addEventListener('message', (event) => {
+            if (event.data.print) {
+              this.tableId = event.data.print.tableId; // 主表id
+              this.userId = event.data.print.userId; // 用户id
+              // 打印预览需要的参数d
+              // const printPreview = {
+              //   tableName: event.data.print.tableName,
+              //   userId: event.data.print.userId,
+              //   objIds: event.data.print.objIds
+              // };
+              // this.tableName = event.data.print.tableName;
+              // this.userId = event.data.print.userId;
+              // this.objIds = event.data.print.objIds;
+              // window.sessionStorage.setItem('printPreview', JSON.stringify(printPreview));// 存打印模版所需参数
+              if (this.tableId && this.userId) {
+                this.getTempleteData(this.tableId, this.userId);
+              }
+            }
+          }, false);
+        }
       }
     },
     created() {

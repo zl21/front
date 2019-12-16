@@ -305,23 +305,16 @@
         actived: false
       };
     },
+    beforeDestroy() {
+      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setPropsListener);
+    },
     mounted() {
       this.formValueItem = {};
       this.setAttsetProps = this.getsetAttsetProps();
       this.formRequestJson = {};
 
       // 映射回调
-      window.addEventListener(`${this.moduleComponentName}setProps`, (e) => {
-        if (e.value.type === 'change') {
-          const checkItem = this.newFormItemLists.some((item) => {
-            const index = e.value.current.findIndex(x => x === item.item.field);
-            return index != -1;
-          });
-          if (checkItem) {
-            this.formInit();
-          }
-        }
-      });
+      window.addEventListener(`${this.moduleComponentName}setProps`, this.setPropsListener);
       this.mappStatus(this.Mapping, this.mapData);
       setTimeout(() => {
         // 获取校验
@@ -386,6 +379,17 @@
       }
     },
     methods: {
+      setPropsListener(e) {
+        if (e.value.type === 'change') {
+          const checkItem = this.newFormItemLists.some((item) => {
+            const index = e.value.current.findIndex(x => x === item.item.field);
+            return index != -1;
+          });
+          if (checkItem) {
+            this.formInit();
+          }
+        }
+      },
       computFormLinkage(val, old) {
         // 页面计算关系
         this.newFormItemLists.map((items, i) => {

@@ -144,14 +144,13 @@
     components: {
       Dialog
     },
-  
+    beforeDestroy() {
+      window.removeEventListener('childTableSaveFile', this.childTableClickSaveFile);
+    },
     mounted() {
-      window.addEventListener('childTableSaveFile', () => {
-        if (!this._inactive) {
-          const dom = document.getElementById('actionMODIFY');
-          dom.click();
-        }
-      }, false);
+      if (!this._inactive) {
+        window.addEventListener('childTableSaveFile', this.childTableClickSaveFile);
+      }
     },
     data() {
       return {
@@ -245,6 +244,10 @@
      
     },
     methods: {
+      childTableClickSaveFile() { // 手动触发保存
+        const dom = document.getElementById('actionMODIFY');
+        dom.click();
+      },
       // dialogComponentSaveSuccess() { // 自定义弹框执行确定按钮操作  暂时不需要保存并打印
       //   setTimeout(() => {
       //     this.print(2530);

@@ -2114,6 +2114,11 @@
         }
         return this.refcolvalAll;
       },
+      setResize() {
+        if (this.$el) {
+          this.setdefaultColumnCol();
+        }
+      }
     },
     mounted() {
       this.Comparison();
@@ -2134,29 +2139,11 @@
       }
       this.conditiontype = this.condition;
 
-      window.addEventListener('resize', () => {
-        if (this.$el) {
-          this.setdefaultColumnCol();
-        }
-      });
-      if (!this.$el) {
-        window.removeaddEventListener('resize');
-      }
+      window.addEventListener('resize', this.setResize);
+      
       if (this.type === 'PanelForm') {
         return false;
       }
-      
-      // if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`]) {
-      //   console.log(this);
-
-      //   const data = {
-      //     name: `${this[MODULE_COMPONENT_NAME]}`,
-      //     vm: ''
-      //   };
-      //   this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateCompositeForm`, data);
-      // }  
-      
-     
       return true;
     },
     created() {
@@ -2174,6 +2161,9 @@
           docm.dispatchEvent(event);
         }
       };
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.setResize);
     },
     deactivated() {
       // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {

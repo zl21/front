@@ -1999,7 +1999,7 @@
           const {
             allPages, currentPage, currentPageSize, total 
           } = this.$refs.agTableElement.$children[0];
-          const selectIdArrLength = this.buttons.selectIdArr.length;
+          const selectIdArrLength = this.buttons.selectIdArr ? this.buttons.selectIdArr.length : 0;
           const detailTable = document.querySelector('.detailTable').agTable.api.paginationProxy.pageSize;
           if (selectIdArrLength === detailTable && allPages === currentPage) { // 如果分页在最后一页并且删除当页全部
             this.searchData.startIndex = currentPageSize * ((total - selectIdArrLength) / currentPageSize - 1);
@@ -2026,8 +2026,11 @@
       }
     },
     mounted() {
-      window.addEventListener('network', this.networkEventListener);
-      window.addEventListener('jflowEvent', this.jflowEvent);
+      if (!this._inactive) {
+        window.addEventListener('network', this.networkEventListener);
+        window.addEventListener('jflowEvent', this.jflowEvent);
+        window.addEventListener('network', this.networkGetTableQuery);
+      }
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
@@ -2036,8 +2039,6 @@
       promise.then(() => {
         this.getbuttonGroupdata();
       });
-
-      window.addEventListener('network', this.networkGetTableQuery);
     },
     activated() {
       const { tableId } = this.$route.params;
