@@ -850,7 +850,9 @@
           searchObject: data,
           success: (res) => {
             const tableName = this.isMainTable ? '' : this.childTableName;
-
+            if(res.length<1){
+              return false;
+            }
             window.eventType(`${this.moduleComponentName}setProps`, window, {
               type: 'equal', key, list: res, tableName 
             });
