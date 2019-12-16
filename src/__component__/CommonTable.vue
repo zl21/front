@@ -398,7 +398,7 @@
               if (event.target.className) {
                 const data = this.datas.row[params.index][cellData.colname];
                 if (cellData.objdistype === 'object') {
-                  window.sessionStorage.setItem('dynamicRouting', true);
+                  window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
                   this.tabHref({
                     type: 'tableDetailVertical',
                     tableName: data.reftablename,
@@ -407,7 +407,7 @@
                     id: data.refobjid
                   });
                 } else if (cellData.objdistype === 'tabpanle') {
-                  window.sessionStorage.setItem('dynamicRouting', true);
+                  window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
                   this.tabHref({
                     type: 'tableDetailHorizontal',
                     tableName: data.reftablename,
