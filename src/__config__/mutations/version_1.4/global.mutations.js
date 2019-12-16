@@ -349,7 +349,7 @@ export default {
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
     const serviceIdMap = getSeesionObject('serviceIdMap');
-    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
+    if (serviceId && JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
@@ -399,7 +399,7 @@ export default {
       updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
     }
     const serviceIdMap = getSeesionObject('serviceIdMap');
-    if (JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
+    if (serviceId && JSON.stringify(serviceIdMap) !== '{}' && serviceIdMap !== null) {
       const serviceIdMapObj = {
         k: tableName,
         v: serviceId
