@@ -34,7 +34,6 @@ const matchGateWay = (url) => {
     return globalServiceId || undefined;
   }
   if (tableName) {
-    console.log(222,serviceIdMap)
     if (serviceIdMap[tableName] !== 'undefined') {
       const serviceIdMapApi = serviceIdMap[tableName];
       return serviceIdMapApi || undefined;
