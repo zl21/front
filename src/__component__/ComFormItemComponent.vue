@@ -830,7 +830,6 @@
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
-        console.log(JSON.stringify(ASSIGN), JSON.stringify(this.formRequestJson));
         if (JSON.stringify(ASSIGN) === JSON.stringify(this.formRequestJson)) {
           return false;
         }
@@ -929,7 +928,6 @@
 
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
-
           if (optionValue === undefined) {
             optionValue = '';
           }
@@ -987,8 +985,9 @@
           }
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
-          this.newFormItemLists[formindex].item.props = Object.assign(this.newFormItemLists[formindex].item.props, item.oldProps);
-          item.required = item.oldProps._required;
+          this.newFormItemLists[formindex].item.required = item.oldProps._required;
+          this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
+          this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
         } 
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
