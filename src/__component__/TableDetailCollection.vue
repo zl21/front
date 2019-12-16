@@ -1438,7 +1438,7 @@
               'on-change': (event, data) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
                 this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, event.target.value);
               },
               'on-focus': (e, i) => {
               },
@@ -1492,7 +1492,7 @@
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
 
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
               }
             }
           })
@@ -1519,10 +1519,10 @@
                 'on-change': (event, data) => {
                   this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                   const labelValue = data.values.length > 0 ? data.values[0].label : '';
-                  this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, event);
                 },
                 'on-open-change': (state, data) => {
-                  if (Version() === '1.3' && !state) {
+                  if (!state) {
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                   }
                 }
@@ -1898,7 +1898,7 @@
                   return acc;
                 }, []).join(',');
                 this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, ids);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -1913,8 +1913,8 @@
                 }
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell('', value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
               }
             }
           })
@@ -2212,7 +2212,7 @@
                   return acc;
                 }, []).join(',');
                 this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, ids);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -2227,8 +2227,8 @@
                 }
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell('', value.defaultSelected && value.defaultSelected.length > 0 ? value.defaultSelected[0].ID : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
               }
             }
           })
@@ -2308,10 +2308,10 @@
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
                 if (item.selected[0]) {
                   this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
                 } else {
                   this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
                 }
               }
             }
@@ -2389,10 +2389,10 @@
                 this.copyDataSource.row[params.index][cellData.colname].defaultSelected = item.selected;
                 if (item.selected[0]) {
                   this.putDataFromCell(item.selected[0].ID, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell(item.selected[0].Label, params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, item.selected[0].ID);
                 } else {
                   this.putDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                  this.putLabelDataFromCell('', params.row[cellData.colname], cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, '');
                 }
               }
             }
@@ -2597,7 +2597,7 @@
                   }
                 }
                 this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, value);
               }
             }
           })
@@ -2623,7 +2623,7 @@
             on: {
               'on-change': (event, dateType, data) => {
                 this.putDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(event, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, event);
               }
             }
           })
@@ -3050,7 +3050,6 @@
         return null;
       },
       putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
-        console.log(currentValue, oldValue);
         // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
@@ -3067,33 +3066,9 @@
           currentValue = null;
         }
 
-        if (Version() === '1.3') {
-          if (this.afterSendData[this.tableName]) {
-            const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-            if (currentValue.toString() !== oldValue.toString()) {
-              if (rowDatas.length > 0) {
-                rowDatas[0][colname] = currentValue;
-              } else {
-                const param = {};
-                param[EXCEPT_COLUMN_NAME] = IDValue;
-                param[colname] = currentValue;
-                this.afterSendData[this.tableName].push(param);
-              }
-            } else {
-              if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-                delete rowDatas[0][colname];
-              }
-            }
-          } else {
-            this.afterSendData[this.tableName] = [];
-            const param = {};
-            param[EXCEPT_COLUMN_NAME] = IDValue;
-            param[colname] = currentValue;
-            this.afterSendData[this.tableName].push(param);
-          }
-        } else {
-          if (this.afterSendData[this.tableName]) {
-            const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+        if (this.afterSendData[this.tableName]) {
+          const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+          if (currentValue.toString() !== oldValue.toString()) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3103,13 +3078,38 @@
               this.afterSendData[this.tableName].push(param);
             }
           } else {
-            this.afterSendData[this.tableName] = [];
-            const param = {};
-            param[EXCEPT_COLUMN_NAME] = IDValue;
-            param[colname] = currentValue;
-            this.afterSendData[this.tableName].push(param);
+            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+              delete rowDatas[0][colname];
+            }
           }
+        } else {
+          this.afterSendData[this.tableName] = [];
+          const param = {};
+          param[EXCEPT_COLUMN_NAME] = IDValue;
+          param[colname] = currentValue;
+          this.afterSendData[this.tableName].push(param);
         }
+        // if (Version() === '1.3') {
+        //
+        // } else {
+        // if (this.afterSendData[this.tableName]) {
+        //   const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+        //   if (rowDatas.length > 0) {
+        //     rowDatas[0][colname] = currentValue;
+        //   } else {
+        //     const param = {};
+        //     param[EXCEPT_COLUMN_NAME] = IDValue;
+        //     param[colname] = currentValue;
+        //     this.afterSendData[this.tableName].push(param);
+        //   }
+        // } else {
+        //   this.afterSendData[this.tableName] = [];
+        //   const param = {};
+        //   param[EXCEPT_COLUMN_NAME] = IDValue;
+        //   param[colname] = currentValue;
+        //   this.afterSendData[this.tableName].push(param);
+        // }
+
         // console.log(currentValue, oldValue);
         // if (this.beforeSendData[this.tableName]) {
         //   const rowDatas = this.beforeSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
@@ -3132,18 +3132,24 @@
         // 表单验证
         this.verifyMessage();
       },
-      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
+      putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue) {
         // 组装数据 存入store
 
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (rowDatas.length > 0) {
-            rowDatas[0][colname] = currentValue;
+          if (currentValue.toString() !== oldIdValue.toString()) {
+            if (rowDatas.length > 0) {
+              rowDatas[0][colname] = currentValue;
+            } else {
+              const param = {};
+              param[EXCEPT_COLUMN_NAME] = IDValue;
+              param[colname] = currentValue;
+              this.afterSendDataLabel[this.tableName].push(param);
+            }
           } else {
-            const param = {};
-            param[EXCEPT_COLUMN_NAME] = IDValue;
-            param[colname] = currentValue;
-            this.afterSendDataLabel[this.tableName].push(param);
+            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+              delete rowDatas[0][colname];
+            }
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
@@ -3439,7 +3445,7 @@
         data.map((ele) => {
           tabthData.forEach((col) => {
             if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME && ele[col.colname] !== undefined) {
-              if (ele[col.colname] === '' || ele[col.colname] === 0) {
+              if (ele[col.colname] === '' || ele[col.colname] === 0 || ele[col.colname] === null) {
                 this.verifyTipObj[ele.ID] = `${col.name}不能为空，请输入！`;
               }
             }
@@ -3707,6 +3713,11 @@
       };
     },
     beforeDestroy() {
+      window.removeEventListener('tabRefreshClick', () => {
+        if (!this._inactive) {
+          this.isRefreshClick = false;
+        }
+      });
       window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
     },
     activated() {

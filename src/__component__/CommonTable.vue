@@ -395,28 +395,39 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-              const data = this.datas.row[params.index][cellData.colname];
-              if (cellData.objdistype === 'object') {
-                this.tabHref({
-                  type: 'tableDetailVertical',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  label: data.reftabdesc,
-                  id: data.refobjid
-                });
-              } else if (cellData.objdistype === 'tabpanle') {
-                this.tabHref({
-                  type: 'tableDetailHorizontal',
-                  tableName: data.reftablename,
-                  tableId: data.reftableid,
-                  label: data.reftabdesc,
-                  id: data.refobjid
-                });
+              if (event.target.className) {
+                const data = this.datas.row[params.index][cellData.colname];
+                if (cellData.objdistype === 'object') {
+                  window.sessionStorage.setItem('dynamicRouting', true);
+                  this.tabHref({
+                    type: 'tableDetailVertical',
+                    tableName: data.reftablename,
+                    tableId: data.reftableid,
+                    label: data.reftabdesc,
+                    id: data.refobjid
+                  });
+                } else if (cellData.objdistype === 'tabpanle') {
+                  window.sessionStorage.setItem('dynamicRouting', true);
+                  this.tabHref({
+                    type: 'tableDetailHorizontal',
+                    tableName: data.reftablename,
+                    tableId: data.reftableid,
+                    label: data.reftabdesc,
+                    id: data.refobjid
+                  });
+                } else {
+                  const messageData = {
+                    mask: true,
+                    title: '警告',
+                    content: '请设置外键关联表的显示配置'
+                  };
+                  this.$Modal.fcWarning(messageData);
+                }
               }
               event.stopPropagation();
             }
           }
-        });
+        },);
       },
       imageRender(colname) {
         return (h, params) => {
