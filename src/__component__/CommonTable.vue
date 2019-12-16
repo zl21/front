@@ -95,7 +95,7 @@
           align: 'right',
           fixed: 'left'
         }];
-        if (Object.keys(this.datas).length > 0) {
+        if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 0) {
           return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
             if (cur.comment) {
               if (cur.name === 'ID') {
