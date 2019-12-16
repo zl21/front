@@ -3050,7 +3050,6 @@
         return null;
       },
       putDataFromCell(currentValue, oldValue, colname, IDValue, type, fkdisplay) {
-        console.log(currentValue, oldValue);
         // 组装数据 存入store
         if (!currentValue) {
           if (fkdisplay === 'mrp' || fkdisplay === 'mop') {
@@ -3446,7 +3445,7 @@
         data.map((ele) => {
           tabthData.forEach((col) => {
             if (col.isnotnull && col.colname !== EXCEPT_COLUMN_NAME && ele[col.colname] !== undefined) {
-              if (ele[col.colname] === '' || ele[col.colname] === 0) {
+              if (ele[col.colname] === '' || ele[col.colname] === 0 || ele[col.colname] === null) {
                 this.verifyTipObj[ele.ID] = `${col.name}不能为空，请输入！`;
               }
             }
