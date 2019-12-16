@@ -1522,7 +1522,7 @@
                   this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, event);
                 },
                 'on-open-change': (state, data) => {
-                  if (Version() === '1.3' && !state) {
+                  if (!state) {
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                   }
                 }
