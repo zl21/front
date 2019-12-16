@@ -173,12 +173,14 @@
                       click: () => {
                         params.row.loadType = 0;
                         if (Version() === '1.4') {
+                          window.sessionStorage.setItem('dynamicRouting', true);
                           window.jflowPlugin.router.push({
                             path: params.row.formUrl
                           });
                         } else {
                           const query = this.urlParse(params.row.formUrl);
                           const formUrl = `/SYSTEM/TABLE_DETAIL/V/${query.tableName}/${query.pid}/${query.id}`;
+                          window.sessionStorage.setItem('dynamicRouting', true);
                           window.jflowPlugin.router.push({
                             path: formUrl
                           });
