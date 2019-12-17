@@ -180,7 +180,7 @@
       },    
       tabcmd: {
         handler(val) {
-          this.hideBackButton();
+          // this.hideBackButton();
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -249,7 +249,7 @@
       },
       tabwebact: {
         handler(val) {
-          this.hideBackButton();
+          // this.hideBackButton();
           this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemId === 'New') { // 新增按钮渲染逻辑
@@ -2579,7 +2579,9 @@
         return false;
       },
       hideLoading(value) {
-        if (value.detail.copy) {
+        const currentTableName = this.activeTab.tableName;
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (dom && (value.detail.hideCopyLoading || value.detail.hideLoadingForButton)) {
           this.$loading.hide(this.tableName);
         }
       }
@@ -2587,12 +2589,15 @@
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.removeEventListener('globalNoticeCopy', this.hideLoading);
+      window.addEventListener('globalNoticeCopy', this.hideLoading);
+      window.removeEventListener('globaVerifyMessageClosed', this.hideLoading);
     },
     mounted() {
+      this.$loading.show();
       this.hideBackButton();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
+        window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
         window.addEventListener('globalNoticeCopy', this.hideLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
