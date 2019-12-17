@@ -154,11 +154,8 @@ export default {
             const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
             const n = i.substring(i.indexOf('/') + 1, i.lastIndexOf('/'));
             const name = n.substring(n.lastIndexOf('/') + 1, n.length);
-            console.log(444, c.serviceId);
             a[name.toUpperCase()] = c.serviceId;
           } else {
-            console.log(555, c.serviceId);
-
             a[c.value.toUpperCase()] = c.serviceId;
           }
           return a;
@@ -341,7 +338,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-    debugger;
 
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
@@ -392,7 +388,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-    debugger;
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
