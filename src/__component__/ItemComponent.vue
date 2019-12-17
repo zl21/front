@@ -1586,7 +1586,9 @@
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
           this._items.required = e.value.required;
-
+          if (e.value.regx) {
+            this._items.props.regx = e.value.regx;
+          }
           // this._items.props = Object.assign(this._items.props, e.value.props);
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;

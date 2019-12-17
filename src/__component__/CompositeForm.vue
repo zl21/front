@@ -605,9 +605,15 @@
             if (this.defaultData.copy) {
               DispatchEvent('globalNoticeCopy', {
                 detail: {
-                  copy: true
+                  hideCopyLoading: true
                 }
               }); 
+            } else {
+              DispatchEvent('globaVerifyMessageClosed', {
+                detail: {
+                  hideLoadingForButton: true
+                }
+              });
             }
           }, 100);
 
