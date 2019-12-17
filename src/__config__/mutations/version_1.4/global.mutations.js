@@ -338,6 +338,7 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
+
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -475,7 +476,7 @@ export default {
     state.keepAliveLabelMaps[name] = `${label}`;
   },
   addServiceIdMap(state, { tableName, gateWay }) {
-    state.serviceIdMap[tableName] = `${gateWay}`;
+    // state.serviceIdMap[tableName] = `${gateWay}`;
   }
 
   

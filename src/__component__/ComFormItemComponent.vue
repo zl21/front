@@ -850,7 +850,7 @@
           searchObject: data,
           success: (res) => {
             const tableName = this.isMainTable ? '' : this.childTableName;
-            if(res.length<1){
+            if (res.length < 1) {
               return false;
             }
             window.eventType(`${this.moduleComponentName}setProps`, window, {
@@ -980,6 +980,9 @@
           // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+          if (item.oldProps.regx) {
+            item.props.regx = item.oldProps.regx;
+          }
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else if (item.props.webconf.setAttributes.props.required === false) {
@@ -990,6 +993,9 @@
           this.newFormItemLists[formindex].item.required = item.oldProps._required;
           this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
           this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
+          if (item.oldProps.regx) {
+            this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
+          }
         } 
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');
