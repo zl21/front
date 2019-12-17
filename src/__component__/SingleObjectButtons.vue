@@ -180,7 +180,7 @@
       },    
       tabcmd: {
         handler(val) {
-          // this.hideBackButton();
+          this.hideBackButton();
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -249,7 +249,7 @@
       },
       tabwebact: {
         handler(val) {
-          // this.hideBackButton();
+          this.hideBackButton();
           this.dataArray.waListButtonsConfig.waListButtons = [];
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemId === 'New') { // 新增按钮渲染逻辑
@@ -2593,8 +2593,8 @@
       window.removeEventListener('globaVerifyMessageClosed', this.hideLoading);
     },
     mounted() {
-      this.$loading.show();
       this.hideBackButton();
+      this.$loading.show();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
