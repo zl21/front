@@ -606,23 +606,6 @@
             this.verifyMessItem = data;
           }
           // console.log(data.messageTip);
-          setTimeout(() => {
-            if (this.defaultData.copy) {
-              DispatchEvent('globalNoticeCopy', {
-                detail: {
-                  hideCopyLoading: true
-                }
-              }); 
-            } else {
-              DispatchEvent('globaVerifyMessageClosed', {
-                detail: {
-                  hideLoadingForButton: true
-                }
-              });
-            }
-          }, 100);
-
-          
           this.$emit('VerifyMessage', data);
         }, 100);
       },
@@ -704,10 +687,27 @@
         this.getStateData();
         this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
         // 默认值
-        // clearTimeout(this.InitializationFormTime);
-        // this.InitializationFormTime = setTimeout(() => {
-        // }, 5);
+        
         this.copyInt = false;
+        clearTimeout(this.InitializationFormTime);
+        this.InitializationFormTime = setTimeout(() => {
+          setTimeout(() => {
+            if (this.defaultData.copy) {
+              DispatchEvent('globalNoticeCopy', {
+                detail: {
+                  hideCopyLoading: true
+                }
+              }); 
+            } else {
+              DispatchEvent('globaVerifyMessageClosed', {
+                detail: {
+                  hideLoadingForButton: true
+                }
+              });
+            }
+          }, 50);
+        }, 100);
+        
 
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
