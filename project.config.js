@@ -5,7 +5,11 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   // target: 'http://47.99.229.124:8098', // 框架研发网关开启环境
+<<<<<<< HEAD
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
+=======
+  target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
+>>>>>>> 81f5b1c7f242b53db9224714c4f87e17373b4c57
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://dev.burgeononline.com:8120', // 掌云测试环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
@@ -14,7 +18,11 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞
   Version: '1.3', // 版本号
+<<<<<<< HEAD
   interlocks: true, // 是否打开三级联动装置
+=======
+  interlocks: false, // 是否打开三级联动装置
+>>>>>>> 81f5b1c7f242b53db9224714c4f87e17373b4c57
   enableGateWay: false, // 网关是否打开,
   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
