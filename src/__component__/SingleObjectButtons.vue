@@ -924,7 +924,7 @@
           tableName: editTableName,
           tableId: editTableId,
           label: 'this.activeTab.label',
-          id: this.itemId
+          id: this.itemId,
         });
       },
       objTabActiondDownload(tab) {
