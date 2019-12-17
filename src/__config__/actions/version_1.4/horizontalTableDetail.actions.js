@@ -301,9 +301,9 @@ export default {
         }
       } else if (path) { // 没有子表 ,有path的参数
         const { modify } = parame;
-        parames = {
-          ...modify,
-        };
+        const mainTabale = modify[tableName];
+        mainTabale.ID = objId;
+        parames = mainTabale;
       } else {
         const { modify } = parame;
         parames = {
