@@ -2593,8 +2593,8 @@
       window.removeEventListener('globaVerifyMessageClosed', this.hideLoading);
     },
     mounted() {
-      this.$loading.show();
       this.hideBackButton();
+      this.$loading.show();
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
