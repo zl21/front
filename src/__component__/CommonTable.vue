@@ -404,7 +404,8 @@
                     tableName: data.reftablename,
                     tableId: data.reftableid,
                     label: data.reftabdesc,
-                    id: data.refobjid
+                    id: data.refobjid,
+                    serviceId: data.serviceId
                   });
                 } else if (cellData.objdistype === 'tabpanle') {
                   window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
@@ -413,7 +414,8 @@
                     tableName: data.reftablename,
                     tableId: data.reftableid,
                     label: data.reftabdesc,
-                    id: data.refobjid
+                    id: data.refobjid,
+                    serviceId: data.serviceId
                   });
                 } else {
                   const messageData = {
