@@ -306,12 +306,13 @@ async function jflowsave(flag, request) {
 
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
-          jflowButtons(router.currentRoute.params.itemId);
-          // 流程发起成功刷新界面
-          DispatchEvent('jflowClick', {
-            detail: {
-              type: 'refresh'
-            }
+          jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 流程发起成功刷新界面
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
+              }
+            });
           });
         }
 
