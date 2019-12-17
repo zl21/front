@@ -308,6 +308,10 @@
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setPropsListener);
     },
+    deactivated() {
+      // 清除时间
+      clearTimeout(this.timerWatch);
+    },
     mounted() {
       this.formValueItem = {};
       this.setAttsetProps = this.getsetAttsetProps();
@@ -807,6 +811,21 @@
             }
           } else {
             valueLabel[current.item.field] = '';
+          }
+        } else if (current.item.type === 'ImageUpload' || current.item.type === 'docfile') {
+          try {
+            if (Array.isArray(current.item.value)) {
+              valueLabel[current.item.field] = current.item.value.length === 0 ? '' : current.item.value;
+            } else {
+              const value = JSON.parse(current.item.value);
+              if (value.length === 0) {
+                valueLabel[current.item.field] = '';
+              } else {
+                valueLabel[current.item.field] = current.item.value;
+              }
+            }
+          } catch (err) {
+            valueLabel[current.item.field] = current.item.value;
           }
         } else {
           valueLabel[current.item.field] = current.item.value;

@@ -1,4 +1,5 @@
 import store from '../__config__/store.config';
+import router from '../__config__/router.config';
 
 const Loading = {};
 
@@ -11,9 +12,9 @@ Loading.install = ((Vue) => {
   Vue.prototype.$loading = {};
 
   Vue.prototype.$loading.show = () => {
-    // 如果页面有loading则不继续执行
-    const currentTableName = store.state.global.activeTab.tableName;
-
+    // 如果页面有loading则不继续执行{
+    const currentTableName = router.currentRoute.params.tableName;
+    //   currentTableName = store.state.global.activeTab.tableName;
     if (document.querySelector(currentTableName)) return;
 
     // 1、创建构造器，定义loading模板
