@@ -2110,7 +2110,11 @@
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain, this.formData);
+          if (this.tableGetName === '') {
+            this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain, this.formData);
+          } else {
+            this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain);
+          }
         }
         return this.refcolvalAll;
       },
