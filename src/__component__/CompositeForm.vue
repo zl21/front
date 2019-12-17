@@ -608,6 +608,12 @@
                   copy: true
                 }
               }); 
+            } else {
+              DispatchEvent('globaVerifyMessageClosed', {
+                detail: {
+                  loading: false
+                }
+              });
             }
           }, 100);
 
