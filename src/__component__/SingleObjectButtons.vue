@@ -1448,7 +1448,7 @@
             url: routeMapRecord[keepAliveModuleName]
           };
           this.tabOpen(param);
-          deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+          // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName, routeFullPath: currentRoute, stopRouterPush: true });
         } else {
