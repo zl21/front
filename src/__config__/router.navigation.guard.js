@@ -279,7 +279,7 @@ export default (router) => {
     // });
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
-      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath }); 
+      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
     }
     // 记录规则二：不是从同表的列表跳转到单对象界面，如果目标界面与来源界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
     if (isDynamicRoutingForHideBackButton && isNotFromSameTable && !ignore && (to.path !== '/' && from.path !== '/')) {
