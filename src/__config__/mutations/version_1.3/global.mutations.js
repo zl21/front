@@ -260,6 +260,7 @@ export default {
     router.push('/');
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
+    window.sessionStorage.removeItem('routeMapRecord');
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -292,6 +293,15 @@ export default {
         window.sessionStorage.setItem('ignore', true);
       }
     });
+    // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
+    const routeMapRecord = getSeesionObject('routeMapRecord');
+    Object.keys(routeMapRecord).map((item) => {
+      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
+      if (keepAliveModuleName === item) {
+        deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+      }
+    });
+    
 
     const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;

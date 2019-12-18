@@ -115,10 +115,9 @@
     LINK_MODULE_COMPONENT_PREFIX,
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import { updateSessionObject } from '../__utils__/sessionStorage';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-
+  import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -202,8 +201,24 @@
       $route() {
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
-          if (this.$route.query.isBack && !this._inactive) {
-            this.searchClickData({ value: 'true' });
+          if (!this._inactive) {
+            const routeMapRecord = getSeesionObject('routeMapRecord');
+            const { routeFullPath } = this.activeTab;
+            let falag = false;
+            if (routeMapRecord) {
+              Object.entries(routeMapRecord).forEach(([key, value]) => {
+                if (value === routeFullPath) {
+                  falag = true;
+                  deleteFromSessionObject('routeMapRecord', key);
+                }
+              });
+            }
+            // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
+            // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
+           
+            if ((this.$route.query.isBack || falag)) {
+              this.searchClickData({ value: 'true' });
+            }
           }
         }, 0);
       },
