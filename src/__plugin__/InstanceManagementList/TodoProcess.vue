@@ -253,7 +253,39 @@
           },
           {
             title: '流程状态',
-            key: 'processStatusName'
+            key: 'processStatusName',
+            render: (h, params) => {
+              if (params.row.processStatus === 4) {
+                return h('Poptip', {
+                  props: {
+                    trigger: 'hover',
+                    content: params.row.submitErrorMsg,
+                    transfer: true
+                  }
+                }, [h(
+                  'span',
+                  {
+                    style: {
+                      color: 'rgba(255, 0, 0, 1)',
+                      cursor: 'pointer'
+                    }
+                  },
+                  params.row.processStatusName
+                )]);
+              }
+              return h(
+                'p',
+                {
+                  style: {
+                    maxWidth: '160px',
+                    overflow: 'hidden',
+                    'text-overflow': 'ellipsis',
+                    'white-space': 'nowrap'
+                  }
+                },
+                params.row.processStatusName
+              );
+            }
           },
           {
             title: '详情',

@@ -2508,7 +2508,7 @@
       jflowClick(event) {
         if (event.detail.type === 'submit') {
           const promise = new Promise((resolve, reject) => {
-            const submitButtonPath = this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')];
+            const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')]:null;
             this.getObjectTrySubmit({
               objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject
             });
@@ -2594,7 +2594,9 @@
     },
     mounted() {
       this.hideBackButton();
-      this.$loading.show();
+      if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+        this.$loading.show();
+      }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
