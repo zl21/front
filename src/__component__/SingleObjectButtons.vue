@@ -2594,7 +2594,9 @@
     },
     mounted() {
       this.hideBackButton();
-      this.$loading.show();
+      if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+        this.$loading.show();
+      }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
