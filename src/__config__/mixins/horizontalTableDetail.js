@@ -15,7 +15,7 @@ export default () => ({
     this[MODULE_COMPONENT_NAME] = getComponentName();
   },
   activated() {
-    const currentTableName = store.state.global.activeTab.tableName;
+    const currentTableName = this.$router.currentRoute.params.tableName;
     const tpl = document.querySelector(`#${currentTableName}-loading`);
     if (tpl) {
       if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {

@@ -317,7 +317,11 @@ export default {
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            if (!tab.stopRouterPush) {
+            if (tab.stopRouterPush) {
+              if (item.tableName === tab.tableName) {
+                state.activeTab = openedMenuLists[index];
+              }
+            } else {
               router.push({
                 path: state.activeTab.routeFullPath,
               });

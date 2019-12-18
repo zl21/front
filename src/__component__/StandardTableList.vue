@@ -203,21 +203,25 @@
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
           if (!this._inactive) {
             const routeMapRecord = getSeesionObject('routeMapRecord');
-            const { routeFullPath } = this.activeTab;
+            const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
+            const routeFullPath = this.$router.currentRoute.path;
+            // const { routeFullPath } = this.activeTab;
             let falag = false;
-            if (routeMapRecord) {
+            let routeMapRecordKey = '';
+            if (routeMapRecord && isDynamicRouting) {
               Object.entries(routeMapRecord).forEach(([key, value]) => {
                 if (value === routeFullPath) {
                   falag = true;
-                  deleteFromSessionObject('routeMapRecord', key);
+                  routeMapRecordKey = key;
                 }
               });
             }
             // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
-           
-            if ((this.$route.query.isBack || falag)) {
+            if ((this.$route.query.isBack || falag) && isDynamicRouting) {
               this.searchClickData({ value: 'true' });
+              window.sessionStorage.removeItem('dynamicRoutingIsBack');
+              deleteFromSessionObject('routeMapRecord', routeMapRecordKey);
             }
           }
         }, 0);
