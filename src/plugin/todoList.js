@@ -35,7 +35,7 @@ function openTodoLists() {
 
 function pollBacklogData(store) {
   window.jflowPlugin.axios.post('/jflow/p/cs/task/backlog/list', {
-    page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, userId: JSON.parse(window.localStorage.getItem('userInfo')).id
+    page: 1, pageSize: 10, searchType: '0,1', excuStatus: 0, isPoll: true, userId: JSON.parse(window.localStorage.getItem('userInfo')).id
   }).then((res) => {
     if (res.data.resultCode === 0 && res.data.data.total > 0) {
       let data = store.state.global.navigatorSetting.concat([]);
