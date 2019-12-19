@@ -124,6 +124,7 @@
         dataArray: {
           refresh: false, // 显示刷新
           back: true, // 显示返回
+          temporaryStorage: true, // 显示暂存
           printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏

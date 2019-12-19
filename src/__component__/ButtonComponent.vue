@@ -94,6 +94,13 @@
         v-text="refresh"
       />
       <Button
+        v-if="dataArray.temporaryStorage"
+        id="temporaryStorage"
+        type="fcdefault"
+        @click="btnclick('temporaryStorage')"
+        v-text="temporaryStorage"
+      />
+      <Button
         v-if="dataArray.back"
         id="back"
         type="fcdefault"
@@ -176,6 +183,7 @@
         search: '查找',
         refresh: '刷新',
         back: '返回',
+        temporaryStorage:'暂存',
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据
