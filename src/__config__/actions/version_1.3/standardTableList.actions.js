@@ -49,11 +49,8 @@ export default {
         if (queryData.datas.webconf && queryData.datas.webconf.commonTable) {
           commit('updateWebconfCommonTable', queryData.datas.webconf);
         }
-        if (queryData.datas.webconf) {
-          queryData.datas.webconf.temp_storage.isenable = true;
-          if (queryData.datas.webconf.dynamicRouting || (queryData.datas.webconf.temp_storage && queryData.datas.webconf.temp_storage.isenable)) {
-            commit('updateWebconfDynamicRouting', queryData.datas.webconf);
-          } 
+        if (queryData.datas.webconf && queryData.datas.webconf.dynamicRouting) {
+          commit('updateWebconfDynamicRouting', queryData.datas.webconf);
         }
       }
     });
