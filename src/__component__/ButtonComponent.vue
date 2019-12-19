@@ -183,7 +183,7 @@
         search: '查找',
         refresh: '刷新',
         back: '返回',
-        temporaryStorage:'暂存',
+        temporaryStorage: '暂存',
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据

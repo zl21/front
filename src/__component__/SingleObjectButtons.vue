@@ -103,6 +103,7 @@
   export default {
     data() {
       return {
+        temporaryStorage: false, // 是否开启暂存
         loading: true,
         importData: {
           importDialog: '',
@@ -555,11 +556,19 @@
           this.clickButtonsCollect();
         } else if (type === 'back') {
           this.clickButtonsBack();
+        } else if (type === 'temporaryStorage') {
+          this.clickButtonsTemporaryStorage();
         } else if (type === 'refresh') {
           this.clickButtonsRefresh();
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);
         }
+      },
+      clickButtonsTemporaryStorage() { // 暂存事件
+        this.temporaryStorage = true;
+         const dom = document.getElementById('actionMODIFY');
+              const myEvent = new Event('click');
+              dom.dispatchEvent(myEvent);
       },
       clickExtraposition(obj) { // jflow方法
         DispatchEvent('jflowPlugin', {
@@ -682,9 +691,6 @@
 
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
-          break;
-        case 'actionGROUPSUBMIT': // 批量提交
-          this.objectGROUPSUBMIT();
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
@@ -1453,7 +1459,6 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName, routeFullPath: currentRoute, stopRouterPush: true });
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-
         } else {
           const param = {
             tableId,
@@ -2011,10 +2016,7 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 按钮保存操作               
-        this.determineSaveType(obj);        
-      },
-      determineSaveType(obj) { // 保存按钮事件逻辑
+      objectSave(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2194,6 +2196,10 @@
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
+        if (this.temporaryStorage) {
+          this.temporaryStorage = false;
+          return true;
+        }
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
 
