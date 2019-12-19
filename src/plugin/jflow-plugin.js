@@ -183,7 +183,6 @@ function thirdlogin() { // 三方登录  获取accessToken
   axios.post('/jflow/p/c/thirdlogin', {
     username: 'guest'
   }).then(() => {
-    window.jflowPlugin.jflowIp = jflowIp;
     getConfigMap();
   });
 }
@@ -599,6 +598,7 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;
   window.jflowPlugin.closeJflowIcon = closeJflowIcon;
+  window.jflowPlugin.jflowIp = jflowIp;
 }
 
 
@@ -609,6 +609,7 @@ const install = function install(Vue, options = {}) {
     router = options.router;
     store = options.store;
     jflowIp = options.jflowIp;
+    
     thirdlogin();
     RoutingGuard(options.router);
     AxiosGuard(options.axios);
