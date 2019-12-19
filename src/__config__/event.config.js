@@ -1,5 +1,7 @@
 import store from './store.config';
 import router from './router.config';
+import { getUrl } from '../__utils__/url';
+
 
 import {
   STANDARD_TABLE_LIST_PREFIX,
@@ -43,7 +45,7 @@ export const routeTo = ({ type, info }, cb) => {
         } else if (actionType === 'https:' || actionType === 'http:') {
           path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          path = `/${info.url.toUpperCase()}/${info.tableId}`;
+          path = getUrl({ url: info.url, id: info.tableId ,type: 'customized' });
         } else {
           class Person {
             constructor(wrong, eg, url) {
