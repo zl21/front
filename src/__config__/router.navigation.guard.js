@@ -310,3 +310,4 @@ export default (router) => {
     }
   });
 };
+export { getKeepAliveModuleName };

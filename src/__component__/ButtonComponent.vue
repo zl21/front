@@ -9,6 +9,13 @@
         v-text="search"
       />
       <Button
+        v-show="dataArray.reset"
+        id="reset"
+        type="fcdefault"
+        @click="btnclick('reset')"
+        v-text="reset"
+      />
+      <Button
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :id="item.eName"
         :key="item.eName"
@@ -93,6 +100,7 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
+     
       <Button
         v-if="dataArray.temporaryStorage"
         id="temporaryStorage"
@@ -107,6 +115,7 @@
         @click="btnclick('back')"
         v-text="back"
       />
+      
       <Dialog
         ref="dialogRef"
         :id-array="idArray"
@@ -184,6 +193,7 @@
         refresh: '刷新',
         back: '返回',
         temporaryStorage: '暂存',
+        reset: '重置',
         errorDialog: false, // 消息弹框
         dialogVisible: false, // 消息提示框
         dialogMessage: '', // 消息提示框显示数据

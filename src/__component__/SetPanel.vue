@@ -107,7 +107,7 @@
       this.setDefaultSearchFoldnum();
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite','emptyTabs']),
       setDefaultSearchFoldnum() {
         if (enableInitializationRequest()) {
           network
@@ -169,6 +169,7 @@
         network
           .get('/p/cs/logout')
           .then(() => {
+            this.emptyTabs();
             router.push({ path: getTouristRoute() });
           })
           .catch(() => {

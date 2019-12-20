@@ -97,6 +97,8 @@
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
+
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
@@ -1459,19 +1461,25 @@
       clickButtonsBack() { // 按钮返回事件   
         const { tableId, tableName } = this.$route.params;
         const routeMapRecord = getSeesionObject('routeMapRecord');
-        const keepAliveModuleName = this.activeTab.keepAliveModuleName;
+        const currentRoute = this.activeTab.routeFullPath;
+        const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
-        const currentRoute = this.$router.currentRoute.path;
+        // const currentRoute = this.$router.currentRoute.path;
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
             url: routeMapRecord[keepAliveModuleName]
           };
           this.tabOpen(param);
+          const deleteValue = {
+            k: 'keepAliveModuleName',
+            v: keepAliveModuleName
+          };
+          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           this.decreasekeepAliveLists(keepAliveModuleName);
-          this.tabCloseAppoint({ tableName, routeFullPath: currentRoute, stopRouterPush: true });
-          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else {
           const param = {
             tableId,
