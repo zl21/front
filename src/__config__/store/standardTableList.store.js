@@ -30,7 +30,7 @@ export default () => ({
         actionCollection: true, // 是否显示收藏
         collectiImg: false, // 是否收藏
         search: true,
-        reset: true, // 重置按钮
+        reset: false, // 重置按钮
         waListButtonsConfig: {// 自定义按钮
           waListButtons: []
         },
@@ -108,7 +108,7 @@ export default () => ({
       fixedColumn: ''
     },
     webconf: {
-      commonTable: true, // 普通表格开关
+      commonTable: false, // 普通表格开关
       dynamicRouting: false, // 表格时候开启动态路由
     }
   },
