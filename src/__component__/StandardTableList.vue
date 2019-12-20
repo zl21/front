@@ -376,47 +376,6 @@
           const { tableName, tableId } = this.$route.params;
           const id = row.ID.val;
           if (this.ag.tableurl) {
-            // const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
-            // const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
-            // if (actionType === 'SYSTEM') {
-            //   if (singleEditType === ':itemId') {
-            //     const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
-            //     router.push(
-            //       path
-            //     );
-            //   } else {
-            //     const path = `/${this.ag.tableurl}`;
-            //     router.push(
-            //       path
-            //     );
-            //   }
-            // } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            //   const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
-            //   let path = '';
-            //   if (singleEditType === ':itemId') {
-            //     path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-            //   } else {
-            //     path = `/${this.ag.tableurl}`;
-            //   }
-            //   router.push({
-            //     path
-            //   });
-            //   const obj = {
-            //     customizedModuleName,
-            //     id
-            //   };
-            //   window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-            //   Object.keys(customize).forEach((customizeName) => {
-            //     const nameToUpperCase = customizeName.toUpperCase();
-            //     if (nameToUpperCase === customizedModuleName) {
-            //       const labelName = customize[customizeName].labelName;
-            //       const name = `C.${customizedModuleName}.${id}`;
-            //       this.addKeepAliveLabelMaps({ name, label: labelName });
-            //     }
-            //   });
-            // }
-
-            
             const param = {
               url: this.ag.tableurl,
               id,
