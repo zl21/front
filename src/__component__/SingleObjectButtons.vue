@@ -105,6 +105,8 @@
   export default {
     data() {
       return {
+        temporaryStorage: false, // 是否开启暂存
+        temporaryStoragePath: '',
         loading: true,
         importData: {
           importDialog: '',
@@ -126,6 +128,7 @@
         dataArray: {
           refresh: false, // 显示刷新
           back: true, // 显示返回
+          temporaryStorage: false, // 显示暂存
           printValue: false, // 是否显示打印
           actionCollection: false,
           collectiImg: false, // 是否收藏
@@ -556,11 +559,31 @@
           this.clickButtonsCollect();
         } else if (type === 'back') {
           this.clickButtonsBack();
+        } else if (type === 'temporaryStorage') {
+          this.clickButtonsTemporaryStorage();
         } else if (type === 'refresh') {
           this.clickButtonsRefresh();
         } else if (type === 'extraposition') {
           this.clickExtraposition(obj);
         }
+      },
+      clickButtonsTemporaryStorage() { // 暂存事件
+        this.temporaryStorage = true;
+        if (this.tempStorage.isenable) {
+          if (this.tempStorage.path) {
+            this.temporaryStoragePath = this.tempStorage.path;
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置暂存path配置'
+            };
+            this.$Modal.fcWarning(data);
+          }
+        }
+        const dom = document.getElementById('actionMODIFY');
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);              
       },
       clickExtraposition(obj) { // jflow方法
         DispatchEvent('jflowPlugin', {
@@ -683,9 +706,6 @@
 
         case 'actionEXPORT': // 导出
           this.objectEXPORT();
-          break;
-        case 'actionGROUPSUBMIT': // 批量提交
-          this.objectGROUPSUBMIT();
           break;
         case 'actionDELETE': // 删除
           this.objectTryDelete(obj);
@@ -1491,6 +1511,9 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
+                          if (this.tempStorage.isenable) {
+                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
@@ -1517,6 +1540,9 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
+                          if (this.tempStorage.isenable) {
+                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
@@ -1549,6 +1575,9 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
+                          if (this.tempStorage.isenable) {
+                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
@@ -1577,6 +1606,9 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
+                        if (this.tempStorage.isenable) {
+                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                        }
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
@@ -1614,15 +1646,15 @@
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
-              if (item === 'actionADD') {
-                this.dynamic.editTheNewId = '-1';// 编辑新增标识
-                this.dynamic.eName = 'actionMODIFY';
-                this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
-                if (this.tabcmd.paths) {
-                  this.dynamic.requestUrlPath = this.tabcmd.paths[index];
-                }
-                this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
+              if (this.tempStorage.isenable) {
+                this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
               }
+              this.dynamic.eName = 'actionMODIFY';
+              this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
+              if (this.tabcmd.paths) {
+                this.dynamic.requestUrlPath = this.tabcmd.paths[index];
+              }
+              this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(this.dynamic);
             }
           }
         });
@@ -2017,10 +2049,7 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 按钮保存操作               
-        this.determineSaveType(obj);        
-      },
-      determineSaveType(obj) { // 保存按钮事件逻辑
+      objectSave(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2200,6 +2229,10 @@
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
+        if (this.temporaryStorage) {
+          this.temporaryStorage = false;
+          return true;
+        }
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
 
@@ -2319,11 +2352,13 @@
           objectType,
           isreftabs,
           sataType,
-          itemNameGroup
+          itemNameGroup,
+          temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
+        this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
         promise.then(() => {

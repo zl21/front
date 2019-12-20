@@ -154,15 +154,9 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
-    const { tableName } = parame;
-    const { objId } = parame;
-    const { path } = parame;
-    const { type } = parame;
-    const { itemName } = parame;
-    const { itemCurrentParameter } = parame;
-    const { isreftabs } = parame;
-    const { itemNameGroup } = parame;
-    const { sataType } = parame;
+    const {
+      tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType , temporaryStoragePath
+    } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
 
@@ -315,7 +309,7 @@ export default {
         };
       }
     }
-    network.post(path || '/p/cs/objectSave', parames).then((res) => {
+    network.post(temporaryStoragePath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve();

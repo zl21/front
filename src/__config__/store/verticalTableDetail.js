@@ -45,7 +45,10 @@ export default () => ({
     refreshButton: true, // 为方便jflow控制，改为全局状态调用
     jflowWaterMark: null, // jflow水印
     globalLoading: false,
-
+    tempStorage: {
+      isenable: true,
+      path: '/p/cs/objectSave111'
+    }
 
   },
   actions: actions(),
