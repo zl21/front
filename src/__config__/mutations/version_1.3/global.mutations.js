@@ -265,6 +265,7 @@ export default {
       }
     });
   },
+ 
   tabCloseAppoint(state, tab) {
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
     const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
@@ -286,13 +287,13 @@ export default {
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
-    const routeMapRecord = getSeesionObject('routeMapRecord');
-    Object.keys(routeMapRecord).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
-      }
-    });
+    // const routeMapRecord = getSeesionObject('routeMapRecord');
+    // Object.keys(routeMapRecord).map((item) => {
+    //   const keepAliveModuleName = state.activeTab.keepAliveModuleName;
+    //   if (keepAliveModuleName === item) {
+    //     deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+    //   }
+    // });
     
 
     const { openedMenuLists } = state;
@@ -300,7 +301,15 @@ export default {
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
     openedMenuLists.forEach((item, index) => {
-      if (item.routeFullPath === tabRouteFullPath) {
+      if (tab.stopRouterPush) {
+        const { tableName } = router.currentRoute.params;
+        if (item.tableName === tableName) {
+          state.activeTab = openedMenuLists[index];
+        }
+        if (item.routeFullPath === tabRouteFullPath) {
+          openedMenuLists.splice(index, 1);
+        }
+      } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath) {
           if (openedMenuLists.length > 0) {
@@ -309,19 +318,11 @@ export default {
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            if (tab.stopRouterPush) {
-              if (item.tableName === tab.tableName) {
-                state.activeTab = openedMenuLists[index];
-              }
-            } else {
-              router.push({
-                path: state.activeTab.routeFullPath,
-              });
-              window.sessionStorage.removeItem('ignore');
-            }
-          } else if (!tab.stopRouterPush) {
+            router.push({
+              path: state.activeTab.routeFullPath,
+            });
+          } else {
             router.push('/');
-            window.sessionStorage.removeItem('ignore');
           }
         }
       }
