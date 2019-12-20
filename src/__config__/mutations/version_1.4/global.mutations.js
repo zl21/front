@@ -289,13 +289,17 @@ export default {
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
-    // const routeMapRecord = getSeesionObject('routeMapRecord');
-    // Object.keys(routeMapRecord).map((item) => {
-    //   const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-    //   if (keepAliveModuleName === item) {
-    //     deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
-    //   }
-    // });
+    const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
+
+    if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
+      const routeMapRecord = getSeesionObject('routeMapRecord');
+      Object.keys(routeMapRecord).map((item) => {
+        const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+        if (dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === item) {
+          deleteFromSessionObject('routeMapRecord', dynamicRoutingIsBackForDeleteValue.keepAliveModuleName);
+        }
+      });
+    }
     
 
     const { openedMenuLists } = state;

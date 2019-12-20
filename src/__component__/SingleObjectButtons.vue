@@ -1451,10 +1451,15 @@
             url: routeMapRecord[keepAliveModuleName]
           };
           this.tabOpen(param);
+          const deleteValue = {
+            k: 'keepAliveModuleName',
+            v: keepAliveModuleName
+          };
+          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
-          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
         } else {
           const param = {
             tableId,

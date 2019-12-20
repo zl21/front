@@ -205,14 +205,14 @@
             const routeMapRecord = getSeesionObject('routeMapRecord');
             const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
             const routeFullPath = this.$router.currentRoute.path;
-            // const { routeFullPath } = this.activeTab;
-            let falag = false;
-            let routeMapRecordKey = '';
-            if (routeMapRecord && isDynamicRouting) {
+            if (routeMapRecord && isDynamicRouting) { // 动态路由返回
+              const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
               Object.entries(routeMapRecord).forEach(([key, value]) => {
-                if (value === routeFullPath) {
-                  falag = true;
-                  routeMapRecordKey = key;
+                if (value === routeFullPath && dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === key) {
+                  this.searchClickData({ value: 'true' });
+                  window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
+                  deleteFromSessionObject('routeMapRecord', dynamicRoutingIsBackForDeleteValue.keepAliveModuleName);// 清除动态路由对应关系
+                  deleteFromSessionObject('dynamicRoutingIsBackForDelete', 'keepAliveModuleName');// 清除动态路由需要返回的单对象界面
                 }
               });
             }
@@ -220,10 +220,6 @@
             // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
             if (this.$route.query.isBack) {
               this.searchClickData({ value: 'true' });
-            } else if (falag && isDynamicRouting) {
-              this.searchClickData({ value: 'true' });
-              window.sessionStorage.removeItem('dynamicRoutingIsBack');
-              deleteFromSessionObject('routeMapRecord', routeMapRecordKey);
             }
           }
         }, 0);
