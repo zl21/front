@@ -110,7 +110,7 @@
                 option[items.item.field] = items.item.props.Selected[0].ID;
               }
             } else {
-              option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
+              option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval; 
             }
           }
 
@@ -935,7 +935,7 @@
           return JSON.parse(JSON.stringify(val));
         } 
         // eslint-disable-next-line no-const-assign
-        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData('item'))));
       },
       setAttributes(item, formindex, val, type) {
         //  设置属性
