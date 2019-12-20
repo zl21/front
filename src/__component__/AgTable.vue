@@ -335,6 +335,7 @@
 
 <style lang="less">
  .standardTable {
+   overflow: hidden;
    padding: 20px 0 0 0;
    display: flex;
    flex: 1;
