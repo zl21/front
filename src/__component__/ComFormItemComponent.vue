@@ -805,7 +805,7 @@
             }
             const optionIndex = current.item.options.findIndex(x => x.value === value);
             if (optionIndex !== -1) {
-              valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+              valueLabel[current.item.field] = current.item.options[optionIndex].label;
             } else {
               valueLabel[current.item.field] = '';
             }
