@@ -9,6 +9,13 @@
         v-text="search"
       />
       <Button
+        v-show="dataArray.reset"
+        id="reset"
+        type="fcdefault"
+        @click="btnclick('reset')"
+        v-text="reset"
+      />
+      <Button
         v-for="(item, index) in dataArray.buttonGroupShowConfig.buttonGroupShow"
         :id="item.eName"
         :key="item.eName"
@@ -93,13 +100,7 @@
         @click="btnclick('refresh')"
         v-text="refresh"
       />
-      <Button
-        v-show="dataArray.reset"
-        id="reset"
-        type="fcdefault"
-        @click="btnclick('reset')"
-        v-text="reset"
-      />
+     
       <Button
         v-if="dataArray.back"
         id="back"
