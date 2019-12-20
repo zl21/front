@@ -57,9 +57,9 @@ const getCategory = () => {
       if (res.data.data) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
-          .reduce((a, c) => a.concat(c))
+          .reduce((a, c) => a.concat(c), [])
           .map(d => d.children)
-          .reduce((a, c) => a.concat(c))
+          .reduce((a, c) => a.concat(c), [])
           .filter(d => d.type === 'table' || d.type === 'action')
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));

@@ -3,7 +3,6 @@ import {
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
-  CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_PREFIX,
   LINK_MODULE_COMPONENT_PREFIX,
   LINK_MODULE_PREFIX,
@@ -12,6 +11,7 @@ import {
 import router from '../../router.config';
 import customize from '../../customize.config';
 import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
+import { getLabel } from '../../../__utils__/url';
 
 
 export default {
@@ -45,23 +45,30 @@ export default {
         );
       }
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
+      // if (param.url.indexOf('?') !== -1) { 
+      //   const paramIndex = param.url.lastIndexOf('?');
+      //   const index = param.url.lastIndexOf('/');
+      //   customizedModuleName = param.url.substring(paramIndex, index + 1);
+      // } else {
+      //   customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
+      // }
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       router.push({
         path
       });
       if (param.isMenu) {
-        const obj = {
-          customizedModuleName,
-          id: param.id
-        };
-        window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
         Object.keys(customize).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customize[customizeName].labelName;
             const name = `C.${customizedModuleName}.${param.id}`;
             state.keepAliveLabelMaps[name] = `${labelName}`;
+            const keepAliveLabelMapsObj = {
+              k: name,
+              v: labelName
+            };
+            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
           }
         });
       }
@@ -122,9 +129,7 @@ export default {
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
               // 自定义界面的处理
-                const index = c.url.lastIndexOf('/');
-                const customizedModuleName = c.url.substring(index + 1, c.url.length);
-                a[`${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedModuleName.toUpperCase()}.${c.id}`] = c.label;
+                a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
                 const id = i.substring(i.lastIndexOf('/') + 1, i.length);
@@ -173,23 +178,6 @@ export default {
       state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
       state.keepAliveLabelMaps[name] = `${tableDetailUrlMessage.linkLabel}`;
     }
-
-    // // 列表配置双击跳转定制界面，需在文档里维护对应的labelName属性
-    // const customizedMessage = getSeesionObject('customizedMessage');
-    // const customizedMessageForbutton = getSeesionObject('customizedMessageForbutton');
-    // if (JSON.stringify(customizedMessageForbutton) !== '{}') { // 取按钮跳转定制界面label
-    //   state.keepAliveLabelMaps[customizedMessageForbutton.customizedName] = `${customizedMessageForbutton.customizedLabel}`;
-    // }
-    // if (JSON.stringify(customizedMessage) !== '{}') {
-    //   Object.keys(customize).forEach((customizeName) => { // 处理列表界面跳转定制界面label获取问题
-    //     const nameToUpperCase = customizeName.toUpperCase();
-    //     if (nameToUpperCase === customizedMessage.customizedModuleName) {
-    //       const labelName = customize[customizeName].labelName;
-    //       const name = `C.${customizedMessage.customizedModuleName.toUpperCase()}.${customizedMessage.id}`;
-    //       state.keepAliveLabelMaps[name] = `${labelName}`;
-    //     }
-    //   });
-    // }
     state.keepAliveLabelMaps = Object.assign({}, state.keepAliveLabelMaps, getSeesionObject('keepAliveLabelMaps'));
     state.serviceIdMap = Object.assign({}, state.serviceIdMap, getSeesionObject('serviceIdMap'));
   },
@@ -301,13 +289,17 @@ export default {
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
-    const routeMapRecord = getSeesionObject('routeMapRecord');
-    Object.keys(routeMapRecord).map((item) => {
-      const keepAliveModuleName = state.activeTab.keepAliveModuleName;
-      if (keepAliveModuleName === item) {
-        deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
-      }
-    });
+    const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
+
+    if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
+      const routeMapRecord = getSeesionObject('routeMapRecord');
+      Object.keys(routeMapRecord).map((item) => {
+        const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+        if (dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === item) {
+          deleteFromSessionObject('routeMapRecord', dynamicRoutingIsBackForDeleteValue.keepAliveModuleName);
+        }
+      });
+    }
     
 
     const { openedMenuLists } = state;
@@ -315,7 +307,15 @@ export default {
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
     openedMenuLists.forEach((item, index) => {
-      if (item.routeFullPath === tabRouteFullPath) {
+      if (tab.stopRouterPush) {
+        const { tableName } = router.currentRoute.params;
+        if (item.tableName === tableName) {
+          state.activeTab = openedMenuLists[index];
+        }
+        if (item.routeFullPath === tabRouteFullPath) {
+          openedMenuLists.splice(index, 1);
+        }
+      } else if (item.routeFullPath === tabRouteFullPath) {
         openedMenuLists.splice(index, 1);
         if (tabRouteFullPath) {
           if (openedMenuLists.length > 0) {
@@ -324,19 +324,11 @@ export default {
             } else {
               state.activeTab = openedMenuLists[index - 1]; // 关闭当前tab时始终打开的是最后一个tab
             }
-            if (tab.stopRouterPush) {
-              if (item.tableName === tab.tableName) {
-                state.activeTab = openedMenuLists[index];
-              }
-            } else {
-              router.push({
-                path: state.activeTab.routeFullPath,
-              });
-              window.sessionStorage.removeItem('ignore');
-            }
-          } else if (!tab.stopRouterPush) {
+            router.push({
+              path: state.activeTab.routeFullPath,
+            });
+          } else {
             router.push('/');
-            window.sessionStorage.removeItem('ignore');
           }
         }
       }
