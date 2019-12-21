@@ -29,5 +29,6 @@ module.exports = {
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
-  customizeWaterMark: {}, // 启用外部自定义水印配置
+  customizeWaterMark: {}, // 启用外部自定义水印配置,
+  specifiedGlobalGateWay: undefined
 };
