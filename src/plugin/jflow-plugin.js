@@ -517,6 +517,7 @@ function AxiosGuard(axios) { // axios拦截
   });
   axios.interceptors.response.use(async (response) => {
     // let config=AxiosGuard(axios);
+    console.log(response.data);
     if (response.data.code === 0) { // 请求成功
       if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
         response.data.data = modifyFieldConfiguration(response.data.data);
@@ -545,11 +546,13 @@ function AxiosGuard(axios) { // axios拦截
         window.localStorage.setItem('userInfo', JSON.stringify(response.data));
         userInfo = response.data;
         window.jflowPlugin.userInfo = userInfo;
+
+        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
       }
 
-      if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
-        !closeJflowIcon ? todoList(store, router) : null;
-      }
+      // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
+      //   !closeJflowIcon ? todoList(store, router) : null;
+      // }
     }
 
     return response;
