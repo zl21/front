@@ -517,7 +517,6 @@ function AxiosGuard(axios) { // axios拦截
   });
   axios.interceptors.response.use(async (response) => {
     // let config=AxiosGuard(axios);
-    console.log(response.data);
     if (response.data.code === 0) { // 请求成功
       if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
         response.data.data = modifyFieldConfiguration(response.data.data);
