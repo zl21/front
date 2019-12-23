@@ -91,7 +91,7 @@
       columns() {
         const defaultColumns = [{
           type: 'selection',
-          width: 40,
+          width: 22,
           align: 'right',
           fixed: 'left'
         }];
@@ -104,7 +104,7 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 60,
+                  width: 40,
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
@@ -174,7 +174,7 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 60,
+                  width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
               } else if (cur.display === 'image') {
