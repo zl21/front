@@ -3068,7 +3068,7 @@
 
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (currentValue.toString() !== oldValue.toString()) {
+          if (currentValue !== oldValue) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
