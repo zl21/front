@@ -365,5 +365,27 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
+  },
+  testUpdateData(state, itemName) { // 检测数据变化
+    const { tableName, itemId } = router.currentRoute.params;
+    if (itemId === 'New') { // 单对象新增界面
+      const addDataForItemTable = state.updateData[tableName].add[itemName];
+      const addDataForMainTable = state.updateData[tableName].add[tableName];
+      if (JSON.stringify(addDataForItemTable) === '{}') {
+        this.state.global.testData = true;
+      } 
+      if (JSON.stringify(addDataForMainTable) === '{}') {
+        this.state.global.testData = true;
+      }
+    } // 单对象编辑界面
+    // const modifyDataForItemTable = state.updateData[tableName].modify[itemName];
+    const modifyDataForMainTable = state.updateData[tableName].modify[tableName];
+
+    // if (JSON.stringify(modifyDataForItemTable) === '{}') {
+    //   return true;
+    // }
+    if (JSON.stringify(modifyDataForMainTable) === '{}') {
+      this.state.global.testData = true;
+    }
   }
 };

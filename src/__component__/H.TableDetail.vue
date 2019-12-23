@@ -14,7 +14,7 @@
 
 <script>
   /* eslint-disable no-lonely-if */
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
 
@@ -25,10 +25,12 @@
     },
     computed: {
       ...mapState('global', {
-        activeTab: ({ activeTab }) => activeTab
+        activeTab: ({ activeTab }) => activeTab,
+        isRequest: ({ isRequest }) => isRequest,
       }),
       tabPanels() {
         const arr = [];
+
         if (this.tabPanel) {
           this.tabPanel.forEach((item, index) => {
             //             vuedisplay: "TabItem"
@@ -74,6 +76,7 @@
             }
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
+            obj.isRequest = false;
             arr.push(obj);
           });
         }
@@ -84,7 +87,11 @@
       }
     },
     methods: {
+      
+      ...mapMutations('global', ['isRequestUpdata']),
+
       tabClick(index) {
+        this.isRequestUpdata({ tabPanel: this.tabPanels, index });
         this.updateTabCurrentIndex(index);
         if (index === 0) { // 主表
           this.getMainTable(index, true);

@@ -185,6 +185,10 @@
       },
       tabClick(index) {
         // tab点击
+        if (this.isRequest) {
+          return;
+        }
+        this.isRequest = true;
         if (index === this.tabCurrentIndex) {
           return;
         }

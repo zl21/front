@@ -93,6 +93,7 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
+        'testUpdateData'
       ]),
   },
   beforeDestroy() {

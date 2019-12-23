@@ -477,6 +477,10 @@ export default {
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
+  },
+  isRequestUpdata(state, { data, index }) {
+    data[index] = true;
+    state.isRequest = data;
   }
   
   

@@ -483,6 +483,16 @@ export default {
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     // state.serviceIdMap[tableName] = `${gateWay}`;
+  },
+
+  isRequestUpdata(state, { tabPanel, index }) {
+    console.log(33, tabPanel);
+    state.isRequest = tabPanel.map(item => item.isRequest);
+    
+    // state.isRequest[index] = true;
+    // if (state.isRequest.length === 0) {
+    //   state.isRequest = isRequestArr;
+    // }
   }
 
   

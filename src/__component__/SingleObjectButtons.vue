@@ -277,7 +277,8 @@
         modifyData: ({ modifyData }) => modifyData,
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
-        exportTasks: ({ exportTasks }) => exportTasks
+        exportTasks: ({ exportTasks }) => exportTasks,
+        testData: ({ testData }) => testData,
       }),
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
@@ -570,6 +571,21 @@
         });
       },
       clickButtonsRefresh() { // 按钮刷新事件
+        this.testUpdateData(this.itemName);
+        const itemNames = this.itemNameGroup.filter(c => c.tableName !== this.tableName);// 因左右结构itemNameGroup包含主表，上下结构不包括
+       if (itemNames.includes(this.itemName)) { // 子表
+          if (this.testData) {
+            this.refresh();
+          } else {
+            this.Warning('确定刷新？');
+          }
+        } else if (this.testData) {
+          this.refresh();
+        } else {
+          this.Warning('确定刷新？');
+        }
+     
+     
         // DispatchEvent('tabRefreshClick', {
         //   detail: {
         //     a: '刷新'
@@ -579,7 +595,20 @@
 
         //   console.log(event.detail);
         // }, false);
-      
+      },
+      Warning(content) {
+        const data = {
+          title: '警告',
+          mask: true,
+          content,
+          showCancel: true,
+          onOk: () => {
+            this.refresh();
+          }
+        };
+        this.$Modal.fcWarning(data);
+      },
+      refresh() {
         if (this.itemInfo.webact) { // 兼容半定制界面
           const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
           if (webactType !== 'order') {
@@ -1029,117 +1058,8 @@
           );
         } 
       },
-
-      // // 判断跳转到哪个页面
-      // const url = tab.action;
-      // const index = url.lastIndexOf('/');
-      // const customizedModuleName = url.substring(index + 1, url.length);
-      // const label = tab.webdesc;
-      // const type = 'tableDetailAction';
-      // const name = Object.keys(this.keepAliveLabelMaps);
-      // let customizedModuleId = '';
-      // name.forEach((item) => {
-      //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-      //     customizedModuleId = item.split(/\./)[2];
-      //   }
-      // });
-      // // if (tab.actiontype === 'url') {
-      // //   this.objTabActionUrl(tab);
-      // // } else
-      // if (tab.action) {
-      //   this.tabOpen({
-      //     type,
-      //     customizedModuleName,
-      //     customizedModuleId,
-      //     label
-      //   });
-      // }
-      // objTabActionUrl(tab) { // 外链类型
-      //   // const linkUrl = tab.action;
-      //   // const linkId = tab.webid;
-      //   // this.increaseLinkUrl({ linkId, linkUrl });
-      //   // const label = `${tab.webdesc}`;
-      //   // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
-      //   // this.addKeepAliveLabelMaps({ name, label });
-      //   // const linkInfo = {
-      //   //   linkUrl: tab.action,
-      //   //   linkId: tab.webid,
-      //   //   label,
-      //   //   name
-      //   // };
-      //   // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
-      //   // setTimeout(() => {
-      //   //   this.tabOpen({
-      //   //     type: 'tableDetailUrl',
-      //   //     tableName: tab.webname.toUpperCase(),
-      //   //     tableId: tab.webid,
-      //   //     label: tab.webdesc,
-      //   //     url: tab.action
-      //   //   });
-      //   // }, 500);
-      //   const eleLink = document.createElement('a');
-      //   eleLink.href = tab.action;
-      //   eleLink.target = '_blank';
-      //   document.body.appendChild(eleLink);
-      //   eleLink.click();
-      //   document.body.removeChild(eleLink);
-      // },
-      objTabActionSlient(tab) { // 动作定义静默
-        this.objTabActionSlientConfirm(tab);
-        // tab.confirm = true
-        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // if (!tab) tab = self.activeTabAction;
-        // if (tab.confirm) {
-        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-        //     const data = {
-        //       title: '警告',
-        //       mask: true,
-        //       content: tab.confirm,
-        //       onOk: () => {
-        //         this.objTabActionSlientConfirm(tab);
-        //       }
-        //     };
-        //     this.$Modal.fcWarning(data);
-        //   } else if (JSON.parse(tab.confirm).desc) {
-        //     //            确定后执行下一步操作
-        //     //            判断是否先执行保存
-        //     if (JSON.parse(tab.confirm).isSave) {
-        //       console.log('暂时未处理配置isSave的相关逻辑');
-        //       // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
-        //     } else {
-        //       const data = {
-        //         title: '警告',
-        //         mask: true,
-        //         showCancel: true, 
-        //         content: JSON.parse(tab.confirm).desc,
-        //         onOk: () => {
-        //           this.objTabActionSlientConfirm(tab);
-        //         }
-        //       };
-        //       this.$Modal.fcWarning(data);
-        //     }
-        //     // self.confirmTips({
-        //     //   action: 'confirm',
-        //     //   title: tab.webdesc,
-        //     //   type: 'warning',
-        //     //   list: [],
-        //     //   isAction: true,
-        //     //   desc: JSON.parse(tab.confirm).desc,
-        //     // });
-        //     // 清除提示信息
-        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-        //     self.beforeObjectSubmit(() => {
-        //       self.objTabActionSlientConfirm(tab);
-        //     });
-        //   } else { // 静默直接执行
-        //     self.objTabActionSlientConfirm(tab);
-        //   }
-        // } else {
-        //   self.objTabActionSlientConfirm(tab);
-        // }
-      },
       // 动作定义静默执行
-      objTabActionSlientConfirm(tab) {
+      objTabActionSlient(tab) {
         let params = {};
         const label = `${this.activeTab.label.replace('编辑', '')}`;
         let ids = [];// 子表勾选1.4ID格式
@@ -2017,10 +1937,7 @@
         //   this.buttonShowType = 'add';
         // }, 2000);
       },
-      objectSave(obj) { // 按钮保存操作               
-        this.determineSaveType(obj);        
-      },
-      determineSaveType(obj) { // 保存按钮事件逻辑
+      objectSave(obj) { // 保存按钮事件逻辑
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2088,10 +2005,6 @@
         const type = 'modify';
         const objId = this.itemId;
         if (this.objectType === 'vertical') {
-          // if (Object.values(this.updateData[itemName].add[itemName]).length < 1) {
-          // } else {
-          //   this.itemTableValidation = true;
-          // }
           if (this.verifyRequiredInformation()) { // 纵向结构保存校验
             let itemModify = [];
             let itemAdd = [];
@@ -2126,15 +2039,6 @@
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              // if (Version() === '1.3') {
-              //   let mainModify = [];
-              //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-              //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              //   }
-              //   if (mainModify.length > 0) {
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              //   }
-              // }
             }
           }
         } else { // 横向结构
