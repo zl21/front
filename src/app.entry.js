@@ -11,7 +11,7 @@ import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryption, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -131,7 +131,7 @@ export default (projectConfig = {
       store,
       jflowIp: jflowRequestDomain(),
       closeJflowIcon: closeJflowIcon(),
-      encryption: encryption()
+      encryptionJflow: encryptionJflow()
     });
   }
   if (enableGateWay()) {

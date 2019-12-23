@@ -24,7 +24,7 @@ let modifiableFieldName = []; // jflow可修改字段名
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
-let encryption = false; // 传参是否加密
+let encryptionJflow = false; // 传参是否加密
 
 function getQueryButtons(data) {
   const tabcmd = data.tabcmd;
@@ -184,7 +184,7 @@ function thirdlogin() { // 三方登录  获取accessToken
   let data = {
     username: 'guest'
   };
-  if (encryption) {
+  if (encryptionJflow) {
     // 加密处理
     const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
     data = `${randomKey}${btoa(JSON.stringify({
@@ -484,7 +484,7 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
-      if (encryption) {
+      if (encryptionJflow) {
         config.headers['Content-Type'] = 'application/json';
         // 加密处理
         // const encrypt = new JSEncrypt();
@@ -629,7 +629,7 @@ function createComponent() { // 创建跟节点实例
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
-  encryption = options.encryption;
+  encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
     axios = options.axios;
     router = options.router;

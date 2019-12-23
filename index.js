@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryption, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -34,7 +34,7 @@ if (enableJflow() && jflowRequestDomain()) {
     store,
     jflowIp: jflowRequestDomain(),
     closeJflowIcon: closeJflowIcon(),
-    encryption: encryption()
+    encryptionJflow: encryptionJflow()
   });
 }
 
