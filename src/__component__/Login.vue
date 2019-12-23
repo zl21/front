@@ -71,10 +71,12 @@
         } else if (this.$refs.username.value !== '' && this.$refs.password.value !== '') {
           const globalServiceId = window.sessionStorage.getItem('serviceId');
           network.post(enableGateWay() ? `/${globalServiceId}/p/c/getCaptcha` : '/p/c/getCaptcha').then((res) => {
+            const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
             network.post(enableGateWay() ? `/${globalServiceId}/p/c/login` : '/p/c/login', urlSearchParams({
               username: this.$refs.username.value,
-              password: encryptedPassword() ? `cjM${btoa(this.$refs.password.value)}` : this.$refs.password.value,
+              password: encryptedPassword() ? `${randomKey}${btoa(this.$refs.password.value)}` : this.$refs.password.value,
               captcha: res.data.captcha,
+              encrypted: encryptedPassword(),
               rememberMe: false,
               lang: 'zh_CN',
             })).then((r) => {
