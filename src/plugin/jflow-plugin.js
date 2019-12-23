@@ -24,6 +24,7 @@ let modifiableFieldName = []; // jflow可修改字段名
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
+let encryption = false; // 传参是否加密
 
 function getQueryButtons(data) {
   const tabcmd = data.tabcmd;
@@ -180,9 +181,20 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
 }
 
 function thirdlogin() { // 三方登录  获取accessToken
-  axios.post('/jflow/p/c/thirdlogin', {
+  let data = {
     username: 'guest'
-  }).then(() => {
+  };
+  if (encryption) {
+    // 加密处理
+    const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDG+Jl+wstXQ/2xgPByeJXBAIjltwPJxUrgolfnP4qIAfGhIXG/fhkIJUfHHw2G6VrCCcE+pvwJcQsJ5sfOw62wIuWhKgBcJoJ+zGcHbCeTKKgsuIn5/d7Nv3hvDZUbc0W2XD1e7LPyxCO4LEjNv9zvo9q+sCnz9l9QtyHJ7nVttwIDAQAB';
+    const encrypt = new JSEncrypt();
+    encrypt.setPublicKey(`-----BEGIN PUBLIC KEY-----${PUBLIC_KEY}-----END PUBLIC KEY-----`);
+    data = encrypt.encrypt({
+      username: 'guest'
+    });
+  }
+  
+  axios.post('/jflow/p/c/thirdlogin', data).then(() => {
     getConfigMap();
   });
 }
@@ -474,6 +486,13 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
+      if (encryption) {
+        // 加密处理
+        const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDG+Jl+wstXQ/2xgPByeJXBAIjltwPJxUrgolfnP4qIAfGhIXG/fhkIJUfHHw2G6VrCCcE+pvwJcQsJ5sfOw62wIuWhKgBcJoJ+zGcHbCeTKKgsuIn5/d7Nv3hvDZUbc0W2XD1e7LPyxCO4LEjNv9zvo9q+sCnz9l9QtyHJ7nVttwIDAQAB';
+        const encrypt = new JSEncrypt();
+        encrypt.setPublicKey(`-----BEGIN PUBLIC KEY-----${PUBLIC_KEY}-----END PUBLIC KEY-----`);
+        config.data = encrypt.encrypt(config.data);
+      }
     }
     if (configurationFlag) { // 配置了流程图并
       // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
@@ -606,6 +625,7 @@ function createComponent() { // 创建跟节点实例
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
+  encryption = options.encryption;
   if (options.axios && options.router && options.store && options.jflowIp) {
     axios = options.axios;
     router = options.router;
