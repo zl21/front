@@ -545,11 +545,13 @@ function AxiosGuard(axios) { // axios拦截
         window.localStorage.setItem('userInfo', JSON.stringify(response.data));
         userInfo = response.data;
         window.jflowPlugin.userInfo = userInfo;
+
+        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
       }
 
-      if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
-        !closeJflowIcon ? todoList(store, router) : null;
-      }
+      // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
+      //   !closeJflowIcon ? todoList(store, router) : null;
+      // }
     }
 
     return response;
