@@ -30,5 +30,6 @@ module.exports = {
   enableInitializationRequest: true, // 是否开启初始化请求
   // enableCustomInterface: false // 是否开启自定义接口,
   customizeWaterMark: {}, // 启用外部自定义水印配置,
-  specifiedGlobalGateWay: undefined
+  specifiedGlobalGateWay: undefined,
+  encryptedPassword: true, // 是否允许login接口password加密
 };

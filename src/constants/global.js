@@ -17,7 +17,7 @@ export const enableTabLists = () => (window.ProjectConfig && typeof window.Proje
 export const enableHistoryAndFavorite = () => (window.ProjectConfig && typeof window.ProjectConfig.enableHistoryAndFavorite === 'boolean' ? window.ProjectConfig.enableHistoryAndFavorite : project.enableHistoryAndFavorite);
 export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConfig.touristRoute ? window.ProjectConfig.touristRoute : project.touristRoute);
 export const getCustomizeWaterMark = () => (window.ProjectConfig && window.ProjectConfig.customizeWaterMark ? window.ProjectConfig.customizeWaterMark : project.customizeWaterMark);
-
+export const encryptedPassword = () => (window.ProjectConfig && window.ProjectConfig.encryptedPassword ? window.ProjectConfig.encryptedPassword : project.encryptedPassword);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
