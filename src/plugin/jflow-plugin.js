@@ -187,9 +187,9 @@ function thirdlogin() { // 三方登录  获取accessToken
   if (encryptionJflow) {
     // 加密处理
     const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
-    data = `${randomKey}${btoa(JSON.stringify({
+    data = `${randomKey}${window.btoa(unescape(encodeURIComponent(JSON.stringify({
       username: 'guest'
-    }))}`;
+    }))))}`;
   }
   
   axios.post('/jflow/p/c/thirdlogin', data).then(() => {
@@ -495,7 +495,7 @@ function AxiosGuard(axios) { // axios拦截
         // const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
         // config.data = encrypt.encrypt(`${randomKey}${btoa(config.data)}`);
         const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
-        config.data = `${randomKey}${btoa(JSON.stringify(config.data))}`;
+        config.data = `${randomKey}${window.btoa(unescape(encodeURIComponent(JSON.stringify(config.data))))}`;
       }
     }
     if (configurationFlag) { // 配置了流程图并
