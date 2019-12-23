@@ -186,12 +186,10 @@ function thirdlogin() { // 三方登录  获取accessToken
   };
   if (encryption) {
     // 加密处理
-    const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDG+Jl+wstXQ/2xgPByeJXBAIjltwPJxUrgolfnP4qIAfGhIXG/fhkIJUfHHw2G6VrCCcE+pvwJcQsJ5sfOw62wIuWhKgBcJoJ+zGcHbCeTKKgsuIn5/d7Nv3hvDZUbc0W2XD1e7LPyxCO4LEjNv9zvo9q+sCnz9l9QtyHJ7nVttwIDAQAB';
-    const encrypt = new JSEncrypt();
-    encrypt.setPublicKey(`-----BEGIN PUBLIC KEY-----${PUBLIC_KEY}-----END PUBLIC KEY-----`);
-    data = encrypt.encrypt({
+    const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
+    data = `${randomKey}${btoa(JSON.stringify({
       username: 'guest'
-    });
+    }))}`;
   }
   
   axios.post('/jflow/p/c/thirdlogin', data).then(() => {
@@ -487,11 +485,17 @@ function AxiosGuard(axios) { // axios拦截
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
       if (encryption) {
+        config.headers['Content-Type'] = 'application/json';
         // 加密处理
-        const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDG+Jl+wstXQ/2xgPByeJXBAIjltwPJxUrgolfnP4qIAfGhIXG/fhkIJUfHHw2G6VrCCcE+pvwJcQsJ5sfOw62wIuWhKgBcJoJ+zGcHbCeTKKgsuIn5/d7Nv3hvDZUbc0W2XD1e7LPyxCO4LEjNv9zvo9q+sCnz9l9QtyHJ7nVttwIDAQAB';
-        const encrypt = new JSEncrypt();
-        encrypt.setPublicKey(`-----BEGIN PUBLIC KEY-----${PUBLIC_KEY}-----END PUBLIC KEY-----`);
-        config.data = encrypt.encrypt(config.data);
+        // const encrypt = new JSEncrypt();
+        // encrypt.setPublicKey(`
+        // -----BEGIN PRIVATE KEY-----
+        // MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCEnS3uyErA1crP/WcmIviSjmRWR+8oY/C9mjA/YbobHw/F28I+U10VHSf5gyQMNSH9WJRPStCBVhlyKzZySc8tV30IsuMF8mp1fxqMJQojFYk0mL8s/DabCHFsGNV364RPiJP2e7ZPR2fyD2r6FgG+QbZPW0JkDAgNiuobc2zUcLpSwD4Q5VSFCnOnv+3JzZqYTNBYvDpCG1I6lVAlTjOjWjNsaTnVyj++vh+IAZuMYGeYFkTX8CXxtBm8RpFjLQyqpjm167FxLM0a06mQvSB9e/ytnBvMGsVWLx4o7EoPIlt4ruJ+GCASmZHjYmUWkJ78W0PAQbfjm1eFw+CL9TwbAgMBAAECggEAVWTFRCJziHLis0Xwmu0f9Xd9gtW1WePpDJ5x/Q5YAcjhpj3ZebrCkKsCp7fbiYTZS0Mz1U9Orkob/pl26OdAYmkY2XYfnB+6j8h19tKPEYJ3pIfLaxNJslEggEQJibv9qh0/chO9lJVdiNCGyV1MaA/2bmlMehIJSXcvQtfzt2OlFT95WyCHR00not7iZAymr1ZdAwQ6Gunb7JFHgk7sMlHlaPkr3+Nl39DQPDN0BiYyG7GWvCGoGfoA98QJ3nGCnoexFazX1EVyubP3BS2tYpGfbXZBQAlwlAaPaPaO5/i0/whYWOA1u/0T+hspe/LsIyHFv1E0tUOYyG5wIHNQeQKBgQDLUWMq7wCs+GJXHK+RpWlxcsHvfZs0P+ULsCXrvRmJmq6siUbXMl0+RmX1kjnN9ApIfQrfPRAecFd+7vBRdBGbdEbfMK9Em+F4qORcjL4SsVSitjhXNIA8egJfY+X86AO5h5PmyGpPUXJGeyKwC58t7vHZWMfOUepQ5znPaBcYZQKBgQCm+dBXVMPdOvdtcrR2HKsxCfJwQkDJD4PywHD7KS5oKNIDNwbETEJCNRWM8seTyVmbps/P396puuScAS296HNEteBOJ8GX8F9DcMi4sJ49aN45LAQX7ZBNogLa+vpHaTUPPotmXtZ8VHRLCsk00haShPJqZDsoRcubkZrWLWB6fwKBgQDIf3X/vLk52aeAqDUqt6gHzFcbSQ5otCm3IPoEQvKQFA3071sAlBYHd3zMcmq2gtYxLb4u7xSaL8bY0eADMya52iyZpHTyf5YVWtf3vIMkA+OmoXNl68wZ12fHkcgXYuVpbB2aFEFh/rtmbb+DQ7KxpVSyNS60c2tSZPNJaSh9UQKBgBP0/cLCXdqeRp5tPEZ1rLxivPhP4uBlG1czSw2p4WMPpfI+bG+f0beKErZS+imewjgJWwM0da+Bp/tBZM8y7jwDJPkSZWAcmbY8z7DLY05hr1XT/fVCLqIowACeSLWqTG4zAoRMx4P6sB+b/WpzxcDjZPn0WuG4XdqNL51ztPlPAoGAWX7W3Uz7eJ5jZJD9p3/0WoEDAYXrzQqPFt1lo0gU79v8dIiUrTbAYmi4p09i+wuI5XB02BTHdv1Nfkb/Wr2nB/SclFtkZxwofAzZVL1DvBdyvZ/e+QhxUEaYJzqdVNHr/c3uW4F5oHzxZomGDuTQ7WeZVTMDJ59YRQBoiAg8EHY=
+        // -----END PRIVATE KEY-----`);
+        // const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
+        // config.data = encrypt.encrypt(`${randomKey}${btoa(config.data)}`);
+        const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
+        config.data = `${randomKey}${btoa(JSON.stringify(config.data))}`;
       }
     }
     if (configurationFlag) { // 配置了流程图并
