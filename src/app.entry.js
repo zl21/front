@@ -11,7 +11,7 @@ import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -57,9 +57,9 @@ const getCategory = () => {
       if (res.data.data) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
-          .reduce((a, c) => a.concat(c))
+          .reduce((a, c) => a.concat(c), [])
           .map(d => d.children)
-          .reduce((a, c) => a.concat(c))
+          .reduce((a, c) => a.concat(c), [])
           .filter(d => d.type === 'table' || d.type === 'action')
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
@@ -70,13 +70,21 @@ const getCategory = () => {
 
 const getGateWayServiceId = () => {
   if (enableInitializationRequest()) {
-    network.get('/p/c/get_service_id').then((res) => {
-      window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+    if (specifiedGlobalGateWay()) {
+      window.sessionStorage.setItem('serviceId', specifiedGlobalGateWay());
       getCategory();
       setTimeout(() => {
         init();
       }, 0);
-    });
+    } else {
+      network.get('/p/c/get_service_id').then((res) => {
+        window.sessionStorage.setItem('serviceId', res.data.data.serviceId);
+        getCategory();
+        setTimeout(() => {
+          init();
+        }, 0);
+      });
+    }
   }
 };
 

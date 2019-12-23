@@ -30,6 +30,7 @@ export default () => ({
         actionCollection: true, // 是否显示收藏
         collectiImg: false, // 是否收藏
         search: true,
+        reset: false, // 重置按钮
         waListButtonsConfig: {// 自定义按钮
           waListButtons: []
         },

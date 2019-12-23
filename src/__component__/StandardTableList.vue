@@ -115,10 +115,9 @@
     LINK_MODULE_COMPONENT_PREFIX,
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import { updateSessionObject } from '../__utils__/sessionStorage';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-
+  import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -135,6 +134,7 @@
     data() {
       return {
         actionModal: false,
+        resetType: false, // 是否是重置的功能
         dialogComponent: null,
         searchData: {
           table: this.$route.params.tableName,
@@ -164,7 +164,6 @@
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks
-
 
       }),
       formLists() {
@@ -202,14 +201,32 @@
       $route() {
         setTimeout(() => {
           // 当路由变化，且观测到是返回动作的时候，延迟执行查询动作。
-          if (this.$route.query.isBack && !this._inactive) {
-            this.searchClickData({ value: 'true' });
+          if (!this._inactive) {
+            const routeMapRecord = getSeesionObject('routeMapRecord');
+            const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
+            const routeFullPath = this.$router.currentRoute.path;
+            if (routeMapRecord && isDynamicRouting) { // 动态路由返回
+              const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+              Object.entries(routeMapRecord).forEach(([key, value]) => {
+                if (value === routeFullPath && dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === key) {
+                  this.searchClickData({ value: 'true' });
+                  window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
+                  deleteFromSessionObject('routeMapRecord', dynamicRoutingIsBackForDeleteValue.keepAliveModuleName);// 清除动态路由对应关系
+                  deleteFromSessionObject('dynamicRoutingIsBackForDelete', 'keepAliveModuleName');// 清除动态路由需要返回的单对象界面
+                }
+              });
+            }
+            // 符合记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
+            // 所返回的列表界面符合以上逻辑关系，则刷新当前列表界面
+            if (this.$route.query.isBack) {
+              this.searchClickData({ value: 'true' });
+            }
           }
         }, 0);
       },
     },
     methods: {
-      ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount']),
+      ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -355,47 +372,6 @@
           const { tableName, tableId } = this.$route.params;
           const id = row.ID.val;
           if (this.ag.tableurl) {
-            // const actionType = this.ag.tableurl.substring(0, this.ag.tableurl.indexOf('/'));
-            // const singleEditType = this.ag.tableurl.substring(this.ag.tableurl.lastIndexOf('/') + 1, this.ag.tableurl.length);
-            // if (actionType === 'SYSTEM') {
-            //   if (singleEditType === ':itemId') {
-            //     const path = `/${this.ag.tableurl.replace(/:itemId/, id)}`;
-            //     router.push(
-            //       path
-            //     );
-            //   } else {
-            //     const path = `/${this.ag.tableurl}`;
-            //     router.push(
-            //       path
-            //     );
-            //   }
-            // } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            //   const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
-            //   let path = '';
-            //   if (singleEditType === ':itemId') {
-            //     path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${id}`;
-            //   } else {
-            //     path = `/${this.ag.tableurl}`;
-            //   }
-            //   router.push({
-            //     path
-            //   });
-            //   const obj = {
-            //     customizedModuleName,
-            //     id
-            //   };
-            //   window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-            //   Object.keys(customize).forEach((customizeName) => {
-            //     const nameToUpperCase = customizeName.toUpperCase();
-            //     if (nameToUpperCase === customizedModuleName) {
-            //       const labelName = customize[customizeName].labelName;
-            //       const name = `C.${customizedModuleName}.${id}`;
-            //       this.addKeepAliveLabelMaps({ name, label: labelName });
-            //     }
-            //   });
-            // }
-
-            
             const param = {
               url: this.ag.tableurl,
               id,
@@ -549,7 +525,7 @@
       refactoringData(defaultFormItemsLists) {
         // 对获取的数据进行处理
         let items = [];
-        if (this.formItemsLists.length > 0) {
+        if (this.formItemsLists.length > 0 && !this.resetType) {
           return this.formItemsLists;
         }
         items = JSON.parse(JSON.stringify(defaultFormItemsLists)).reduce(
@@ -836,7 +812,16 @@
         //     this.searchClickData();
         //   }, 200);
         // }
+        this.resetType = false;
         return items;
+      },
+      resetForm() {
+        // 列表查询重置
+        this.resetType = true;
+        const promise = new Promise((resolve, reject) => {
+          const searchData = this.searchData;
+          this.getTableQueryForForm({ searchData, resolve, reject });
+        });
       },
       defaultValue(item) {
         // 设置表单的默认值
@@ -890,7 +875,8 @@
       },
       getTableQuery() {
         // 获取列表的查询字段
-        this.getTableQueryForForm(this.searchData);
+        const searchData = this.searchData;
+        this.getTableQueryForForm({ searchData });
       },
       formDataChange(data, item, index) { // 表单数据修改
         if (JSON.stringify(this.formItems.data) !== JSON.stringify(data)) {
@@ -993,6 +979,9 @@
           this.webactionClick(type, obj);
         } else if (type === 'Collection') {
           this.clickButtonsCollect();
+        } else if (type === 'reset') {
+          // 重置列表渲染
+          this.resetForm();
         } else {
           this.searchClickData();
         }

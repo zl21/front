@@ -183,7 +183,6 @@ function thirdlogin() { // 三方登录  获取accessToken
   axios.post('/jflow/p/c/thirdlogin', {
     username: 'guest'
   }).then(() => {
-    window.jflowPlugin.jflowIp = jflowIp;
     getConfigMap();
   });
 }
@@ -306,12 +305,13 @@ async function jflowsave(flag, request) {
 
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
-          jflowButtons(router.currentRoute.params.itemId);
-          // 流程发起成功刷新界面
-          DispatchEvent('jflowClick', {
-            detail: {
-              type: 'refresh'
-            }
+          jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 流程发起成功刷新界面
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
+              }
+            });
           });
         }
 
@@ -545,11 +545,13 @@ function AxiosGuard(axios) { // axios拦截
         window.localStorage.setItem('userInfo', JSON.stringify(response.data));
         userInfo = response.data;
         window.jflowPlugin.userInfo = userInfo;
+
+        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
       }
 
-      if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
-        !closeJflowIcon ? todoList(store, router) : null;
-      }
+      // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
+      //   !closeJflowIcon ? todoList(store, router) : null;
+      // }
     }
 
     return response;
@@ -598,6 +600,7 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.router = router;
   window.jflowPlugin.store = store;
   window.jflowPlugin.closeJflowIcon = closeJflowIcon;
+  window.jflowPlugin.jflowIp = jflowIp;
 }
 
 
@@ -608,6 +611,7 @@ const install = function install(Vue, options = {}) {
     router = options.router;
     store = options.store;
     jflowIp = options.jflowIp;
+    
     thirdlogin();
     RoutingGuard(options.router);
     AxiosGuard(options.axios);

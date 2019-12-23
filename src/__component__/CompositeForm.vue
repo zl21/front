@@ -241,7 +241,7 @@
       mountNumber: {
         handler() {
           // 组件重组
-          this.computdefaultData = this.reorganizeForm();
+          this.reorganizeForm();
         }
 
       },
@@ -255,7 +255,7 @@
           // 开启 (刷新界面))
           this.mountNumber = (Math.random() * 1000).toFixed(0);
           // 组件重组
-          this.computdefaultData = this.reorganizeForm();
+          this.reorganizeForm();
 
           this.defaultColumnCol = this.defaultData.objviewcol || 4;
           this.Comparison();
@@ -264,7 +264,7 @@
       },
       objreadonly: {
         handler() {
-          this.computdefaultData = this.reorganizeForm();
+          this.reorganizeForm();
           this.conditiontype = this.condition;
           this.Comparison();
         },
@@ -339,8 +339,7 @@
         this.mapData = Object.assign(this.mapData, mapData);
         this.Mapping = Object.assign(this.Mapping, Mapping);
       },
-      reorganizeForm() {
-        // 重置表单 配置
+      reorganizeFormInit() {
         let items = [];
         // 有面板的数据
         // 有面板的数据  child,inpubobj,childs
@@ -430,7 +429,15 @@
             return array;
           }, []);
         }
+
         return items;
+      },
+      reorganizeForm() {
+        // 重置表单 配置
+        clearTimeout(this.setChangeTime);
+        this.setChangeTime = setTimeout(() => {
+          this.computdefaultData = this.reorganizeFormInit();
+        }, 80);
       },
       setChangeValue(data) {
         // 修改联动值
@@ -524,7 +531,7 @@
         // 获取需要校验的表单
         // 开启
         if (Version() === '1.3') {
-          if (this.formData[current.item.field] === '' || this.formData[current.item.field] === undefined) {
+          if (this.formData[current.item.field] === '' || this.formData[current.item.field] === undefined || this.formData[current.item.field] === '[]') {
             this.formData[current.item.field] = '';
             this.formDataSave[current.item.field] = null;
           }
@@ -545,9 +552,7 @@
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
         }, 100);
-        // clearTimeout(this.setChangeTime);
-        // this.setChangeTime = setTimeout(() => {
-        // }, 50);
+       
         if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
           delete this.formDataSave[current.item.field];
@@ -601,17 +606,6 @@
             this.verifyMessItem = data;
           }
           // console.log(data.messageTip);
-          setTimeout(() => {
-            if (this.defaultData.copy) {
-              DispatchEvent('globalNoticeCopy', {
-                detail: {
-                  copy: true
-                }
-              }); 
-            }
-          }, 100);
-
-          
           this.$emit('VerifyMessage', data);
         }, 100);
       },
@@ -693,10 +687,27 @@
         this.getStateData();
         this.defaultFormData = Object.assign(defaultFormData, defaultSetValue);
         // 默认值
-        // clearTimeout(this.InitializationFormTime);
-        // this.InitializationFormTime = setTimeout(() => {
-        // }, 5);
+        
         this.copyInt = false;
+        clearTimeout(this.InitializationFormTime);
+        this.InitializationFormTime = setTimeout(() => {
+          setTimeout(() => {
+            if (this.defaultData.copy) {
+              DispatchEvent('globalNoticeCopy', {
+                detail: {
+                  hideCopyLoading: true
+                }
+              }); 
+            } else {
+              DispatchEvent('globaVerifyMessageClosed', {
+                detail: {
+                  hideLoadingForButton: true
+                }
+              });
+            }
+          }, 50);
+        }, 100);
+        
 
         this.$emit('InitializationForm', defaultFormData, this.defaultSetValue, this.r3Form);
         // 注释
@@ -712,6 +723,7 @@
       },
       reduceForm(array, current, index) {
         // 重新配置 表单的 事件及属性
+       
         const obj = {};
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
@@ -2026,7 +2038,6 @@
           //   item.value = '';
           // }
           const labelForm = Object.assign(JSON.parse(JSON.stringify(this.r3Form)), this.labelForm);
-
           if (labelForm[item.key] === undefined || labelForm[item.key] === '' || labelForm[item.key] === null) {
             const label = `请输入${item.label}`;
             VerificationMessage.messageTip.push(label);
@@ -2110,7 +2121,11 @@
           const addMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].add[this.masterName] || {})));
           const modifyMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].modify[this.masterName] || {})));
           const defaultMain = JSON.parse(JSON.stringify((state.updateData[this.masterName].default[this.masterName] || {})));
-          this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain);
+          if (this.tableGetName === '') {
+            this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain, this.formData);
+          } else {
+            this.refcolvalAll = Object.assign(defaultMain, addMain, modifyMain);
+          }
         }
         return this.refcolvalAll;
       },
@@ -2147,7 +2162,7 @@
       return true;
     },
     created() {
-      this.computdefaultData = this.reorganizeForm();
+      this.reorganizeForm();
       this.mountNumber = (Math.random() * 1000).toFixed(0);
       window.eventType = function eventType(name, docm, obj) {
         const event = document.createEvent('HTMLEvents');
@@ -2166,6 +2181,8 @@
       window.removeEventListener('resize', this.setResize);
     },
     deactivated() {
+      clearTimeout(this.setChangeTime);
+
       // if (this.$store._mutations && this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
       //   if (this.moduleFormType !== 'horizontal' || !this.isreftabsForm) {
       //     this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, []);

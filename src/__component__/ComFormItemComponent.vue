@@ -110,7 +110,7 @@
                 option[items.item.field] = items.item.props.Selected[0].ID;
               }
             } else {
-              option[items.item.field] = items.item.props.defval || items.item.props.valuedata || items.item.value; 
+              option[items.item.field] = items.item.value || items.item.props.valuedata || items.item.props.defval; 
             }
           }
 
@@ -307,6 +307,10 @@
     },
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setPropsListener);
+    },
+    deactivated() {
+      // 清除时间
+      clearTimeout(this.timerWatch);
     },
     mounted() {
       this.formValueItem = {};
@@ -801,12 +805,27 @@
             }
             const optionIndex = current.item.options.findIndex(x => x.value === value);
             if (optionIndex !== -1) {
-              valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
+              valueLabel[current.item.field] = current.item.options[optionIndex].label;
             } else {
               valueLabel[current.item.field] = '';
             }
           } else {
             valueLabel[current.item.field] = '';
+          }
+        } else if (current.item.type === 'ImageUpload' || current.item.type === 'docfile') {
+          try {
+            if (Array.isArray(current.item.value)) {
+              valueLabel[current.item.field] = current.item.value.length === 0 ? '' : current.item.value;
+            } else {
+              const value = JSON.parse(current.item.value);
+              if (value.length === 0) {
+                valueLabel[current.item.field] = '';
+              } else {
+                valueLabel[current.item.field] = current.item.value;
+              }
+            }
+          } catch (err) {
+            valueLabel[current.item.field] = current.item.value;
           }
         } else {
           valueLabel[current.item.field] = current.item.value;
@@ -830,7 +849,6 @@
           return arr;
         }, {});
         //          ID: obj[current.field] || obj[current.inputname],
-        console.log(JSON.stringify(ASSIGN), JSON.stringify(this.formRequestJson));
         if (JSON.stringify(ASSIGN) === JSON.stringify(this.formRequestJson)) {
           return false;
         }
@@ -851,7 +869,9 @@
           searchObject: data,
           success: (res) => {
             const tableName = this.isMainTable ? '' : this.childTableName;
-
+            if (res.length < 1) {
+              return false;
+            }
             window.eventType(`${this.moduleComponentName}setProps`, window, {
               type: 'equal', key, list: res, tableName 
             });
@@ -915,7 +935,7 @@
           return JSON.parse(JSON.stringify(val));
         } 
         // eslint-disable-next-line no-const-assign
-        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData())));
+        return Object.assign(JSON.parse(JSON.stringify(val)), JSON.parse(JSON.stringify(this.getStateData('item'))));
       },
       setAttributes(item, formindex, val, type) {
         //  设置属性
@@ -929,7 +949,6 @@
 
         const checkout = field.every((option) => {
           let optionValue = jsonArr[option.refcolumn];
-
           if (optionValue === undefined) {
             optionValue = '';
           }
@@ -980,6 +999,9 @@
           // }
           
           item.props = Object.assign(props, item.props.webconf.setAttributes.props);
+          if (item.oldProps.regx) {
+            item.props.regx = item.oldProps.regx;
+          }
           if (item.props.webconf.setAttributes.props.required) {
             item.required = true;
           } else if (item.props.webconf.setAttributes.props.required === false) {
@@ -987,8 +1009,12 @@
           }
           window.eventType(`${this.moduleComponentName}setProps`, window, item);
         } else if (checkout !== true && checkoutProps) {
-          this.newFormItemLists[formindex].item.props = Object.assign(this.newFormItemLists[formindex].item.props, item.oldProps);
-          item.required = item.oldProps._required;
+          this.newFormItemLists[formindex].item.required = item.oldProps._required;
+          this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
+          this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
+          if (item.oldProps.regx) {
+            this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
+          }
         } 
         if (type === 'mounted') {
           this.VerificationFormInt('mounted');

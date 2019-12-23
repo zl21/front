@@ -270,7 +270,9 @@ export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   
-  const serviceName = store.state.global.activeTab.tableName;
+  // const serviceName = store.state.global.activeTab.tableName;
+  const serviceName = router.currentRoute.params.tableName;
+
   if (!(enableGateWay())) {
     return url;
   }

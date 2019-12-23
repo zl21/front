@@ -398,22 +398,24 @@
               if (event.target.className) {
                 const data = this.datas.row[params.index][cellData.colname];
                 if (cellData.objdistype === 'object') {
-                  window.sessionStorage.setItem('dynamicRouting', true);
+                  window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
                   this.tabHref({
                     type: 'tableDetailVertical',
                     tableName: data.reftablename,
                     tableId: data.reftableid,
                     label: data.reftabdesc,
-                    id: data.refobjid
+                    id: data.refobjid,
+                    serviceId: data.serviceId
                   });
                 } else if (cellData.objdistype === 'tabpanle') {
-                  window.sessionStorage.setItem('dynamicRouting', true);
+                  window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
                   this.tabHref({
                     type: 'tableDetailHorizontal',
                     tableName: data.reftablename,
                     tableId: data.reftableid,
                     label: data.reftabdesc,
-                    id: data.refobjid
+                    id: data.refobjid,
+                    serviceId: data.serviceId
                   });
                 } else {
                   const messageData = {

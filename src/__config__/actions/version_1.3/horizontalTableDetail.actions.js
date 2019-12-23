@@ -351,7 +351,15 @@ export default {
             } 
           };
         }
-      } 
+      } else { // 左右结构单主表
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: modify,
+          after: modifyLabel,
+          before: labelregroupTableName,
+        };
+      }
       // else { // 主表修改
       //   const value = Object.assign({}, modify, labelregroupTableName);
       //   parames = {
