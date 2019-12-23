@@ -486,9 +486,16 @@ export default {
   },
 
   isRequestUpdata(state, { tabPanel, index }) {
-    console.log(33, tabPanel);
-    state.isRequest = tabPanel.map(item => item.isRequest);
-    
+    let arr = [];
+    arr = tabPanel.filter(item => item.isRequest);
+    arr[index] = true;
+    if (state.isRequest.length === 0) {
+      state.isRequest = arr;
+    }
+    if(arr[index]!==true){
+
+    }
+    // state.isRequest = arr;
     // state.isRequest[index] = true;
     // if (state.isRequest.length === 0) {
     //   state.isRequest = isRequestArr;
