@@ -92,53 +92,55 @@
 
       tabClick(index) {
         this.isRequestUpdata({ tabPanel: this.tabPanels, index });
-        this.updateTabCurrentIndex(index);
-        if (index === 0) { // 主表
-          this.getMainTable(index, true);
-        } else { // 子表
-          let webactType = '';
-          if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
-            webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
-          }
-          if (webactType !== 'ALL') {
-            if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
-              const { tableName, itemId } = this.$route.params;
-              const {
-                tablename, refcolid, tableSearchData, tabinlinemode
-              } = this.tabPanel[index];
-              if (this.tabPanel[index].refcolid !== -1) {
-                this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
-              }
-              new Promise((resolve, reject) => {
-                this.getObjectTabForChildTableButtons({
-                  maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
-                });
-              }).then(() => {
+        if (!this.isRequest[index]) {
+          this.updateTabCurrentIndex(index);
+          if (index === 0) { // 主表
+            this.getMainTable(index, true);
+          } else { // 子表
+            let webactType = '';
+            if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
+              webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/'));
+            }
+            if (webactType !== 'ALL') {
+              if (this.tabPanel[index].tabrelation === '1:m') { // 有表格
+                const { tableName, itemId } = this.$route.params;
                 const {
-                  tableDefaultFixedcolumns
+                  tablename, refcolid, tableSearchData, tabinlinemode
                 } = this.tabPanel[index];
-                this.getObjectTableItemForTableData({
-                  table: tablename,
-                  objid: itemId,
-                  refcolid,
-                  searchdata: {
-                    column_include_uicontroller: true,
-                    startindex: (this.tabPanel[index].tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                    range: this.tabPanel[index].tablePageInfo.pageSize,
-                    fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : tableDefaultFixedcolumns
-                  },
-                  tabIndex: index
+                if (this.tabPanel[index].refcolid !== -1) {
+                  this.getInputForitemForChildTableForm({ table: this.tabPanel[index].tablename, tabIndex: index, tabinlinemode });
+                }
+                new Promise((resolve, reject) => {
+                  this.getObjectTabForChildTableButtons({
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                  });
+                }).then(() => {
+                  const {
+                    tableDefaultFixedcolumns
+                  } = this.tabPanel[index];
+                  this.getObjectTableItemForTableData({
+                    table: tablename,
+                    objid: itemId,
+                    refcolid,
+                    searchdata: {
+                      column_include_uicontroller: true,
+                      startindex: (this.tabPanel[index].tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                      range: this.tabPanel[index].tablePageInfo.pageSize,
+                      fixedcolumns: tableSearchData.selectedValue ? { [tableSearchData.selectedValue]: `${tableSearchData.inputValue}` } : tableDefaultFixedcolumns
+                    },
+                    tabIndex: index
+                  });
                 });
-              });
-            } else if (this.tabPanel[index].tabrelation === '1:1') { // 无表格只有面板
-              const { tableName, itemId } = this.$route.params;
-              const { tablename, refcolid } = this.tabPanel[index];
-              this.getObjectTabForChildTableButtons({
-                maintable: tableName, table: tablename, objid: itemId, tabIndex: index
-              });
-              this.getItemObjForChildTableForm({
-                table: tablename, objid: itemId, refcolid, tabIndex: index
-              });
+              } else if (this.tabPanel[index].tabrelation === '1:1') { // 无表格只有面板
+                const { tableName, itemId } = this.$route.params;
+                const { tablename, refcolid } = this.tabPanel[index];
+                this.getObjectTabForChildTableButtons({
+                  maintable: tableName, table: tablename, objid: itemId, tabIndex: index
+                });
+                this.getItemObjForChildTableForm({
+                  table: tablename, objid: itemId, refcolid, tabIndex: index
+                });
+              }
             }
           }
         }
