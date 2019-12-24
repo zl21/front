@@ -77,9 +77,16 @@ axios.interceptors.response.use(
     } else {
       data = config.data;
     }
-    
+
+    let isJsonObject = false;
+    try {
+      JSON.parse(data);
+      isJsonObject = true;
+    } catch (e) {
+      isJsonObject = false;
+    }
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(data) : data,
+      data: isJson && isJsonObject ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
