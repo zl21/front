@@ -447,7 +447,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -572,20 +572,25 @@
       },
       clickButtonsRefresh() { // 按钮刷新事件
         this.testUpdateData(this.itemName);
-        const itemNames = this.itemNameGroup.filter(c => c.tableName !== this.tableName);// 因左右结构itemNameGroup包含主表，上下结构不包括
-       if (itemNames.includes(this.itemName)) { // 子表
-          if (this.testData) {
-            this.refresh();
-          } else {
-            this.Warning('确定刷新？');
-          }
-        } else if (this.testData) {
+        if (!this.testData) {
           this.refresh();
         } else {
           this.Warning('确定刷新？');
         }
+      //   const itemNames = this.itemNameGroup.filter(c => c.tableName !== this.tableName);// 因左右结构itemNameGroup包含主表，上下结构不包括
+      //  if (itemNames.includes(this.itemName)) { // 子表
+      //     if (this.testData) {
+      //       this.refresh();
+      //     } else {
+      //       this.Warning('确定刷新？');
+      //     }
+      //   } else if (this.testData) {
+      //     this.refresh();
+      //   } else {
+      //     this.Warning('确定刷新？');
+      //   }
      
-     
+       
         // DispatchEvent('tabRefreshClick', {
         //   detail: {
         //     a: '刷新'
@@ -618,7 +623,7 @@
               }
             });
             this.upData();
-            // this.clearEditData();
+            this.clearEditData();
           }
         } else {
           this.clearEditData();
@@ -627,6 +632,7 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
+        this.emptyTestData();
         DispatchEvent('tabRefreshClick');
         // DispatchEvent('jflowPlugin', {
         //   detail: {
@@ -1359,6 +1365,7 @@
         this.$loading.show();
       },
       clickButtonsBack() { // 按钮返回事件   
+        this.emptyTestData();
         const { tableId, tableName } = this.$route.params;
         const routeMapRecord = getSeesionObject('routeMapRecord');
         const currentRoute = this.activeTab.routeFullPath;

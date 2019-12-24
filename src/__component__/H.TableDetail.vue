@@ -88,11 +88,14 @@
     },
     methods: {
       
-      ...mapMutations('global', ['isRequestUpdata']),
+      ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
 
       tabClick(index) {
-        this.isRequestUpdata({ tabPanel: this.tabPanels, index });
-        if (!this.isRequest[index]) {
+        let flag = false;
+        if (this.isRequest.length > 0) {
+          flag = this.isRequest.every(item => item === true);
+        }
+        if (!flag) {
           this.updateTabCurrentIndex(index);
           if (index === 0) { // 主表
             this.getMainTable(index, true);
@@ -144,6 +147,7 @@
             }
           }
         }
+        this.isRequestUpdata({ tabPanel: this.tabPanels, index });
       }, // tab切换触发的方法
       getMainTable(index, isNotFirstRequest) {
         const { tableName, itemId } = this.$route.params;
@@ -160,7 +164,7 @@
       this.getMainTable(this.tabCurrentIndex, false);
     },
     created() {
-     
+      this.emptyTestData();
     }
   };
 </script>

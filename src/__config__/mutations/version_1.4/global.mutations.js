@@ -301,6 +301,7 @@ export default {
       });
     }
     
+    state.isRequest = [];// 清空修改数据验证
 
     const { openedMenuLists } = state;
     const tabRouteFullPath = tab.routeFullPath;
@@ -488,6 +489,7 @@ export default {
   isRequestUpdata(state, { tabPanel, index }) {
     let arr = [];
     arr = tabPanel.map(item => item.isRequest);
+    arr[0] = true;
     arr[index] = true;
     const oldRequestData = state.isRequest;
     if (oldRequestData.length > 0) {
@@ -498,7 +500,10 @@ export default {
       }); 
     }
     state.isRequest = arr;
-  }
+  },
+  emptyTestData(state) { // 清空TestData
+    state.isRequest = [];
+  },
 
   
 };

@@ -371,21 +371,16 @@ export default {
     if (itemId === 'New') { // 单对象新增界面
       const addDataForItemTable = state.updateData[tableName].add[itemName];
       const addDataForMainTable = state.updateData[tableName].add[tableName];
-      if (JSON.stringify(addDataForItemTable) === '{}') {
+      if (JSON.stringify(addDataForItemTable) === '{}' && JSON.stringify(addDataForMainTable) === '{}') {
         this.state.global.testData = true;
       } 
-      if (JSON.stringify(addDataForMainTable) === '{}') {
-        this.state.global.testData = true;
-      }
     } // 单对象编辑界面
-    // const modifyDataForItemTable = state.updateData[tableName].modify[itemName];
+    const modifyDataForItemTable = state.updateData[tableName].modify[itemName];
     const modifyDataForMainTable = state.updateData[tableName].modify[tableName];
 
-    // if (JSON.stringify(modifyDataForItemTable) === '{}') {
-    //   return true;
-    // }
-    if (JSON.stringify(modifyDataForMainTable) === '{}') {
+    if (JSON.stringify(modifyDataForItemTable) === '{}' && JSON.stringify(modifyDataForMainTable) === '{}') {
       this.state.global.testData = true;
     }
-  }
+    this.state.global.testData = false;
+  },
 };
