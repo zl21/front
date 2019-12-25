@@ -34,7 +34,6 @@ export default () => ({
     exportTasks: {},
     taskMessageCount: 0, // 我的任务数量
     currentLoading: [], // 当前tabloading标记
-    testData: false, // 校验是否更改过值
     isRequest: [], // 记录当前tab是否点击过关系
     
   },

@@ -17,7 +17,8 @@ export default {
       default: {},
       defaultLabel: {},
       checkedInfo: {},
-      changeData: Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
+      changeData: {}
+      // Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
   },
   updateMainTabPanelsData(state, data, itemTabelPageInfo) { // 更新主表tab数据

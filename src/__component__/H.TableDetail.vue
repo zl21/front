@@ -50,7 +50,7 @@
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
-            obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
+            obj.componentAttribute.changeData =  this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -91,12 +91,12 @@
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
 
       tabClick(index) {
+        this.updateTabCurrentIndex(index);
         let flag = false;
-        if (this.isRequest.length > 0) {
-          flag = this.isRequest.every(item => item === true);
+        if (this.isRequest.length > 0&&this.isRequest[index]===true) {
+           flag = true
         }
         if (!flag) {
-          this.updateTabCurrentIndex(index);
           if (index === 0) { // 主表
             this.getMainTable(index, true);
           } else { // 子表
@@ -164,7 +164,7 @@
       this.getMainTable(this.tabCurrentIndex, false);
     },
     created() {
-      this.emptyTestData();
+      // this.emptyTestData();
     }
   };
 </script>

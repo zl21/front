@@ -45,13 +45,17 @@ module.exports = env => ({
       {
         context: proxyListForShangFei,
         target,
+        changeOrigin: true
+
       },
       {
         context: proxyLists,
-        target
+        target,
+        changeOrigin: true
       }, {
         context: proxyListsForGateway,
-        target
+        target,
+        changeOrigin: true
       }, {
         context: proxyListsForPalmCloud,
         target

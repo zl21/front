@@ -44,6 +44,7 @@ export default () => ({
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
+      testData: ({ testData }) => testData,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -93,7 +94,6 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
-        'testUpdateData'
       ]),
   },
   beforeDestroy() {

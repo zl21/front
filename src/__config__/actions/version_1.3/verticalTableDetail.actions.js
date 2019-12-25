@@ -51,7 +51,11 @@ export default {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
-        } else {
+        } else if(type==='refresh'){
+          resData.type = 'refresh';
+          commit('updateMainButtonsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
+        }else {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }

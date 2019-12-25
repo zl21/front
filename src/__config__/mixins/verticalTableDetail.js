@@ -46,6 +46,7 @@ export default () => ({
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
+      testData: ({ testData }) => testData,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -96,7 +97,6 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
-        'testUpdateData'
         // 'resetFormReadOnlyAttribute'
 
       ]),
