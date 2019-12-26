@@ -8,13 +8,15 @@ import store from './src/__config__/store.config';
 import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
+
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
+
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
@@ -27,13 +29,15 @@ import jflowplugin from './src/plugin/jflow-plugin';
 
 Vue.use(VueDND);
 
+
 if (enableJflow() && jflowRequestDomain()) {
   Vue.use(jflowplugin, {
     router,
     axios,
     store,
     jflowIp: jflowRequestDomain(),
-    closeJflowIcon: closeJflowIcon()
+    closeJflowIcon: closeJflowIcon(),
+    encryptionJflow: encryptionJflow()
   });
 }
 
@@ -115,9 +119,61 @@ const getGateWayServiceId = () => {
     });
   }
 };
+
+
 if (enableGateWay()) {
   getGateWayServiceId();
 } else {
   getSubSystems();
   init();
+}
+if (window.vm && window.vm.$Modal) {
+  window.R3message = (data) => {
+    window.vm.$Modal.fcError({
+      mask: true,
+      titleAlign: 'center',
+      title: '错误',
+      // content: formatJsonEmg
+      render: h => h('div', {
+        style: {
+          padding: '10px 20px 0',
+          display: 'flex',
+          // alignItems: 'center',
+          lineHeight: '16px'
+        }
+      }, [
+        
+        h('i', {
+          props: {
+          },
+          style: {
+            marginRight: '5px',
+            display: 'inline-block',
+            'font-size': '28px',
+            'margin-right': ' 10px',
+            'line-height': ' 1',
+            padding: ' 10px 0',
+            color: 'red'
+          },
+          class: 'iconfont iconbj_error fcError '
+        }),
+        h('div', {
+          attrs: {
+          },
+          domProps: {
+          },
+          style: `width: 80%;
+              margin: 1px;
+              margin-bottom: -8px;
+              box-sizing: border-box;
+              padding: 5px;
+              resize: none;
+              max-height: 100px;
+              max-width: 300px;
+              overflow: auto;
+              `
+        }, data)
+      ])
+    });
+  }; 
 }
