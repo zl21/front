@@ -8,7 +8,9 @@ import {
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
-import { getSeesionObject } from './sessionStorage';
+import {
+  updateSessionObject
+} from './sessionStorage';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
@@ -77,9 +79,16 @@ axios.interceptors.response.use(
     } else {
       data = config.data;
     }
-    
+
+    let isJsonObject = false;
+    try {
+      JSON.parse(data);
+      isJsonObject = true;
+    } catch (e) {
+      isJsonObject = false;
+    }
     const requestMd5 = md5(JSON.stringify({
-      data: isJson ? JSON.parse(data) : data,
+      data: isJson && isJsonObject ? JSON.parse(data) : data,
       url: config.url,
       method: config.method
     }));
@@ -162,6 +171,9 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
+    if (config.url.indexOf('/p/cs/getSubSystems') === -1) {
+      updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+    }
     return response;
   },
   (error) => {
