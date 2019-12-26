@@ -2609,10 +2609,10 @@
         return false;
       },
       hideLoading(value) {
-        const currentTableName = this.activeTab.tableName;
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (dom && (value.detail.hideCopyLoading || value.detail.hideLoadingForButton)) {
-          this.$loading.hide(this.tableName);
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        // const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+          this.$loading.hide(currentTableName);
         }
       }
     },  
@@ -2620,7 +2620,7 @@
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
       window.addEventListener('globalNoticeCopy', this.hideLoading);
-      window.removeEventListener('globaVerifyMessageClosed', this.hideLoading);
+      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
     },
     mounted() {
       this.hideBackButton();
@@ -2629,7 +2629,7 @@
       }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
+        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
         window.addEventListener('globalNoticeCopy', this.hideLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
@@ -2695,6 +2695,8 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
+    activated(){
+    }
   };
 </script>
 
