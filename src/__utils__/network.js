@@ -178,8 +178,13 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
-    if (config.url.indexOf('/p/cs/getSubSystems') === -1) {
-      updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+
+    if (config.url.indexOf('/p/cs/getSubSystems') !== -1) {
+      if (response.status === 200 && response.data.data.length > 0) {
+
+      } else {
+        updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+      }
     }
     return response;
   },
