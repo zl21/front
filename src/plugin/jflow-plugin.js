@@ -225,14 +225,14 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.submitErrorMsg) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
             });
           }
           if (res.data.data.businessStatus === -2) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
@@ -303,8 +303,9 @@ async function jflowsave(flag, request) {
           type: 'clearSubmit'
         }
       });
+      
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.notice,
           mask: true
@@ -313,7 +314,7 @@ async function jflowsave(flag, request) {
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.data.records[0].notice,
           mask: true
@@ -323,7 +324,7 @@ async function jflowsave(flag, request) {
       }
       if (res.data.resultCode === 0) {
         if (res.objids) {
-          window.vm.$Modal.fcWarning({
+          window.R3message({
             title: '提示',
             content: '请稍等,正在审批······',
             mask: true
@@ -410,7 +411,7 @@ async function checkProcess(request) { // check校验
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.businessCheckData.length === 0) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: '当前选中单据都在流程中,不允许操作!',
               mask: true
