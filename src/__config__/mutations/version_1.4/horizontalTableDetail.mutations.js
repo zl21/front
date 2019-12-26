@@ -61,13 +61,28 @@ export default {
       obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
-    if(data.type==='refresh'){
-      state.updateData[arr[0].tablename ]= {
-        add: Object.assign({}, { [arr[0].tablename]: {} }),
-        modify: Object.assign({}, { [arr[0].tablename]: {} }),
-        modifyLabel: Object.assign({}, { [arr[0].tablename]: {} }),
-        itemBeforeLabel: Object.assign({}, { [arr[0].tablename]: {} }), // 子表表格改以前的label
-        delete: Object.assign({}, { [arr[0].tablename]: {} }),
+    // if (data.type === 'refresh') {
+    //   state.updateData[arr[0].tablename] = {
+    //     add: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     modify: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     modifyLabel: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     itemBeforeLabel: Object.assign({}, { [arr[0].tablename]: {} }), // 子表表格改以前的label
+    //     delete: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     addDefault: {},
+    //     default: {},
+    //     defaultLabel: {},
+    //     checkedInfo: {},
+    //     changeData: {}
+    //     // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+    //   };
+    // } else {
+    arr.forEach((item) => {
+      state.updateData[item.tablename] = {
+        add: Object.assign({}, { [item.tablename]: {} }),
+        modify: Object.assign({}, { [item.tablename]: {} }),
+        modifyLabel: Object.assign({}, { [item.tablename]: {} }),
+        itemBeforeLabel: Object.assign({}, { [item.tablename]: {} }), // 子表表格改以前的label
+        delete: Object.assign({}, { [item.tablename]: {} }),
         addDefault: {},
         default: {},
         defaultLabel: {},
@@ -75,23 +90,8 @@ export default {
         changeData: {}
         // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
-    }else{
-      arr.forEach((item) => {
-        state.updateData[item.tablename] = {
-          add: Object.assign({}, { [item.tablename]: {} }),
-          modify: Object.assign({}, { [item.tablename]: {} }),
-          modifyLabel: Object.assign({}, { [item.tablename]: {} }),
-          itemBeforeLabel: Object.assign({}, { [item.tablename]: {} }), // 子表表格改以前的label
-          delete: Object.assign({}, { [item.tablename]: {} }),
-          addDefault: {},
-          default: {},
-          defaultLabel: {},
-          checkedInfo: {},
-          changeData: {}
-          // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
-        };
-      });
-    }
+    });
+    // }
 
     
     state.tabPanels = arr;

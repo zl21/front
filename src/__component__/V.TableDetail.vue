@@ -192,13 +192,13 @@
         // tab点击
         this.updateTabCurrentIndex(index);
         let flag = false;
-        if (this.isRequest.length > 0&&this.isRequest[index]===true) {
-           flag = true
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
         }
-          let webactType = '';
-          if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
-            webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
-          }
+        let webactType = '';
+        if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
+          webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
+        }
         if (!flag) {
           // if (index === this.tabCurrentIndex) {
           //   return;
@@ -239,8 +239,10 @@
               });
             } else if (refTab.tabrelation === '1:1') {
               getButtonDataPromise = new Promise((rec, rej) => {
-                this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index , rec, rej});
-              })
+                this.getObjectTabForRefTable({
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej 
+                });
+              });
               this.getItemObjForChildTableForm({
                 table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
               });

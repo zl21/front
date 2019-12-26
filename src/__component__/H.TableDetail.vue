@@ -50,7 +50,7 @@
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
-            obj.componentAttribute.changeData =  this.updateData[item.tablename].changeData;
+            obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;
             obj.componentAttribute.tooltipForItemTable = this.tooltipForItem;
@@ -93,8 +93,8 @@
       tabClick(index) {
         this.updateTabCurrentIndex(index);
         let flag = false;
-        if (this.isRequest.length > 0&&this.isRequest[index]===true) {
-           flag = true
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
         }
         if (!flag) {
           if (index === 0) { // 主表
