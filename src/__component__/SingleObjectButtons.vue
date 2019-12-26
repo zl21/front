@@ -748,7 +748,7 @@
         });
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
-        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
+        // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           const data = {
             title: '警告',
@@ -790,7 +790,7 @@
         this.$Modal.fcWarning(data);
       },
       objectTryVoid(obj) {
-        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
+        // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           const data = {
             title: '警告',
@@ -2146,11 +2146,11 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             add = Object.keys(this.updateData[itemName].add[itemName]);
           }
-          if (modify.length > 0 && add.length < 1) {
-            this.itemTableValidation = true;
-          } else if (modify.length > 0 && add.length > 0) {
-            this.itemTableValidation = false;
-          }
+          // if (modify.length > 0 && add.length < 1) {
+          //   this.itemTableValidation = true;
+          // } else if (modify.length > 0 && add.length > 0) {
+          //   this.itemTableValidation = false;
+          // }
           if (itemName === this.tableName) {
             if (this.verifyRequiredInformation()) { // 横向结构保存校验
               if (obj.requestUrlPath) { // 配置path
@@ -2202,7 +2202,6 @@
       verifyRequiredInformation() { // 验证表单必填项
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-
         if (checkedInfo) {
           const messageTip = checkedInfo.messageTip;
           if (messageTip) {
@@ -2214,7 +2213,6 @@
           }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
-
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -2276,18 +2274,6 @@
                   }
                 }
               }
-
-
-              // else if (itemCheckedInfo) {
-              //   const itemMessageTip = itemCheckedInfo.messageTip;
-              //   if (itemMessageTip) {
-              //     if (itemMessageTip.length > 0) {
-              //       this.$Message.warning(itemMessageTip[0]);
-              //       itemCheckedInfo.validateForm.focus();
-              //       return false;
-              //     }
-              //   }
-              // }
             }
           }
         }

@@ -230,8 +230,13 @@ export default (router) => {
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
       let tempInterval = -1;
       tempInterval = setInterval(() => {
-        // const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
-        const ready = getSeesionObject('saveNetwork').name;
+        let ready = null;
+        const saveNetwork = getSeesionObject('saveNetwork').name;
+        if (saveNetwork) {
+          ready = true;
+        } else {
+          ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+        }
         if (ready) {
           clearInterval(tempInterval);
           commit('global/increaseOpenedMenuLists', {
@@ -242,7 +247,7 @@ export default (router) => {
             routePrefix
           });
         }
-      }, 25);
+      }, 125);
     } else {
       // 目标路由所对应的[功能模块]已经存在与openedMenuList中，则将需要处理openedMenuList中相匹配的索引值的激活状态。
       // eslint-disable-next-line no-lonely-if
