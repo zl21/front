@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+                   >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -90,7 +90,6 @@
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
           @on-row-dblclick="tableRowDbclick"
-
         />
       </div>
       <div
@@ -521,7 +520,7 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(){
-debugger
+
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
