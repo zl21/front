@@ -89,6 +89,8 @@
           :total-data="totalDataNumber"
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
+          @on-row-dblclick="tableRowDbclick"
+
         />
       </div>
       <div
@@ -518,6 +520,9 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      tableRowDbclick(){
+debugger
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
