@@ -230,7 +230,8 @@ export default (router) => {
       // 目标路由所对应的[功能模块]没有存在于openedMenuLists中，则将目标路由应该对应的模块信息写入openedMenuLists
       let tempInterval = -1;
       tempInterval = setInterval(() => {
-        const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+        // const ready = JSON.stringify(store.state.global.keepAliveLabelMaps) !== '{}';
+        const ready = getSeesionObject('saveNetwork').name;
         if (ready) {
           clearInterval(tempInterval);
           commit('global/increaseOpenedMenuLists', {

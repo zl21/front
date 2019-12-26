@@ -8,7 +8,9 @@ import {
 } from '../constants/global';
 import { addNetwork } from './indexedDB';
 
-import { getSeesionObject } from './sessionStorage';
+import {
+  updateSessionObject
+} from './sessionStorage';
 
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
@@ -169,6 +171,9 @@ axios.interceptors.response.use(
       fulfilled: true,
       rejected: false,
     });
+    if (config.url.indexOf('/p/cs/getSubSystems') === -1) {
+      updateSessionObject('saveNetwork', { k: 'name', v: '/p/cs/getSubSystems' });
+    }
     return response;
   },
   (error) => {
