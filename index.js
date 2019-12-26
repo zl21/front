@@ -15,6 +15,8 @@ import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
+import Message from './src/__utils__/message';
+
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';
 import './src/assets/r3.iconfont/iconfont.css';
@@ -26,6 +28,8 @@ import './src/assets/css/custom-ext.less';
 import jflowplugin from './src/plugin/jflow-plugin';
 
 Vue.use(VueDND);
+Vue.use(Message);
+
 
 if (enableJflow() && jflowRequestDomain()) {
   Vue.use(jflowplugin, {
