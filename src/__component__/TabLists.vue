@@ -221,7 +221,7 @@
       color: #000;
 
       .openedMenuListsItem {
-        height: 28px;
+        height: 29px;
         width: 81px;
         display: block;
         padding-left: 20px;

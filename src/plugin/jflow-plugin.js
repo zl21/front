@@ -184,15 +184,33 @@ function thirdlogin() { // 三方登录  获取accessToken
   let data = {
     username: 'guest'
   };
+  const headers = {};
   if (encryptionJflow) {
-    // 加密处理
-    const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
-    data = `${randomKey}${window.btoa(encodeURIComponent(JSON.stringify({
-      username: 'guest'
-    })))}`;
+    const aesKey = uuidGenerator();// 秘钥
+    // 对传参进行aes加密
+    const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    data = encrypt.toString();// 加密后的数据
+        
+        
+    // uuid加密 设置请求头
+    const uuidEncrypt = new JSEncrypt();
+    const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
+    uuidEncrypt.setPublicKey(`
+        -----BEGIN PUBLIC KEY-----
+        ${PUBLIC_KEY}
+        -----END PUBLIC KEY-----`);
+    headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
+    headers.encrypt_type = 'RSA';
+    headers['Content-Type'] = 'application/json';
   }
   
-  axios.post('/jflow/p/c/thirdlogin', data).then(() => {
+  axios.post('/jflow/p/c/thirdlogin', data, {
+    headers
+  }).then(() => {
     getConfigMap();
   });
 }
@@ -207,14 +225,14 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.submitErrorMsg) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
             });
           }
           if (res.data.data.businessStatus === -2) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
@@ -285,8 +303,9 @@ async function jflowsave(flag, request) {
           type: 'clearSubmit'
         }
       });
+      
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.notice,
           mask: true
@@ -295,7 +314,7 @@ async function jflowsave(flag, request) {
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.data.records[0].notice,
           mask: true
@@ -305,7 +324,7 @@ async function jflowsave(flag, request) {
       }
       if (res.data.resultCode === 0) {
         if (res.objids) {
-          window.vm.$Modal.fcWarning({
+          window.R3message({
             title: '提示',
             content: '请稍等,正在审批······',
             mask: true
@@ -392,7 +411,7 @@ async function checkProcess(request) { // check校验
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.businessCheckData.length === 0) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: '当前选中单据都在流程中,不允许操作!',
               mask: true
@@ -480,22 +499,38 @@ async function checkProcess(request) { // check校验
   });
 }
 
+function uuidGenerator() {
+  const originStr = 'xxxxxxxxxxxxxxxx';
+  const originChar = '0123456789abcdef';
+  const len = originChar.length;
+  return originStr.replace(/x/g, match => originChar.charAt(Math.floor(Math.random() * len)));
+}
+
 function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
       if (encryptionJflow) {
         config.headers['Content-Type'] = 'application/json';
-        // 加密处理
-        // const encrypt = new JSEncrypt();
-        // encrypt.setPublicKey(`
-        // -----BEGIN PRIVATE KEY-----
-        // MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCEnS3uyErA1crP/WcmIviSjmRWR+8oY/C9mjA/YbobHw/F28I+U10VHSf5gyQMNSH9WJRPStCBVhlyKzZySc8tV30IsuMF8mp1fxqMJQojFYk0mL8s/DabCHFsGNV364RPiJP2e7ZPR2fyD2r6FgG+QbZPW0JkDAgNiuobc2zUcLpSwD4Q5VSFCnOnv+3JzZqYTNBYvDpCG1I6lVAlTjOjWjNsaTnVyj++vh+IAZuMYGeYFkTX8CXxtBm8RpFjLQyqpjm167FxLM0a06mQvSB9e/ytnBvMGsVWLx4o7EoPIlt4ruJ+GCASmZHjYmUWkJ78W0PAQbfjm1eFw+CL9TwbAgMBAAECggEAVWTFRCJziHLis0Xwmu0f9Xd9gtW1WePpDJ5x/Q5YAcjhpj3ZebrCkKsCp7fbiYTZS0Mz1U9Orkob/pl26OdAYmkY2XYfnB+6j8h19tKPEYJ3pIfLaxNJslEggEQJibv9qh0/chO9lJVdiNCGyV1MaA/2bmlMehIJSXcvQtfzt2OlFT95WyCHR00not7iZAymr1ZdAwQ6Gunb7JFHgk7sMlHlaPkr3+Nl39DQPDN0BiYyG7GWvCGoGfoA98QJ3nGCnoexFazX1EVyubP3BS2tYpGfbXZBQAlwlAaPaPaO5/i0/whYWOA1u/0T+hspe/LsIyHFv1E0tUOYyG5wIHNQeQKBgQDLUWMq7wCs+GJXHK+RpWlxcsHvfZs0P+ULsCXrvRmJmq6siUbXMl0+RmX1kjnN9ApIfQrfPRAecFd+7vBRdBGbdEbfMK9Em+F4qORcjL4SsVSitjhXNIA8egJfY+X86AO5h5PmyGpPUXJGeyKwC58t7vHZWMfOUepQ5znPaBcYZQKBgQCm+dBXVMPdOvdtcrR2HKsxCfJwQkDJD4PywHD7KS5oKNIDNwbETEJCNRWM8seTyVmbps/P396puuScAS296HNEteBOJ8GX8F9DcMi4sJ49aN45LAQX7ZBNogLa+vpHaTUPPotmXtZ8VHRLCsk00haShPJqZDsoRcubkZrWLWB6fwKBgQDIf3X/vLk52aeAqDUqt6gHzFcbSQ5otCm3IPoEQvKQFA3071sAlBYHd3zMcmq2gtYxLb4u7xSaL8bY0eADMya52iyZpHTyf5YVWtf3vIMkA+OmoXNl68wZ12fHkcgXYuVpbB2aFEFh/rtmbb+DQ7KxpVSyNS60c2tSZPNJaSh9UQKBgBP0/cLCXdqeRp5tPEZ1rLxivPhP4uBlG1czSw2p4WMPpfI+bG+f0beKErZS+imewjgJWwM0da+Bp/tBZM8y7jwDJPkSZWAcmbY8z7DLY05hr1XT/fVCLqIowACeSLWqTG4zAoRMx4P6sB+b/WpzxcDjZPn0WuG4XdqNL51ztPlPAoGAWX7W3Uz7eJ5jZJD9p3/0WoEDAYXrzQqPFt1lo0gU79v8dIiUrTbAYmi4p09i+wuI5XB02BTHdv1Nfkb/Wr2nB/SclFtkZxwofAzZVL1DvBdyvZ/e+QhxUEaYJzqdVNHr/c3uW4F5oHzxZomGDuTQ7WeZVTMDJ59YRQBoiAg8EHY=
-        // -----END PRIVATE KEY-----`);
-        // const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
-        // config.data = encrypt.encrypt(`${randomKey}${btoa(config.data)}`);
-        const randomKey = btoa(`${Math.random() * 10000000000}`).substring(0, 5);
-        config.data = `${randomKey}${window.btoa(encodeURIComponent(JSON.stringify(config.data)))}`;
+        const aesKey = uuidGenerator();// 秘钥
+        // 对传参进行aes加密
+        const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+        const encrypt = CryptoJS.AES.encrypt(JSON.stringify(config.data), key, {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7
+        });
+        config.data = encrypt.toString();// 加密后的数据
+        
+        
+        // uuid加密 设置请求头
+        const uuidEncrypt = new JSEncrypt();
+        const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
+        uuidEncrypt.setPublicKey(`
+        -----BEGIN PUBLIC KEY-----
+        ${PUBLIC_KEY}
+        -----END PUBLIC KEY-----`);
+        config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
+        config.headers.encrypt_type = 'RSA';
       }
     }
     if (configurationFlag) { // 配置了流程图并
