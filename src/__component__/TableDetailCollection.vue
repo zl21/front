@@ -1898,7 +1898,7 @@
                   return acc;
                 }, []).join(',');
                 this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, ids);
+                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -3134,9 +3134,9 @@
       },
       putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue) {
         // 组装数据 存入store
-
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+          oldIdValue = oldIdValue ? oldIdValue : '';
           if (currentValue.toString() !== oldIdValue.toString()) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
@@ -3155,7 +3155,9 @@
           this.afterSendDataLabel[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
+          if (currentValue.toString() !== oldIdValue.toString()) {
+            param[colname] = currentValue;
+          }
           this.afterSendDataLabel[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
@@ -3185,7 +3187,9 @@
           this.afterSendDataLabelBefore[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
+          if (currentValue.toString() !== oldIdValue.toString()) {
+            param[colname] = currentValue;
+          }
           this.afterSendDataLabelBefore[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL_BEFORE, this.afterSendDataLabelBefore);
