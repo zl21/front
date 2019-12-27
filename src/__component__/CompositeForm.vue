@@ -699,7 +699,10 @@
                 }
               }); 
             } else {
-              DispatchEvent('globaVerifyMessageClosed', {
+              if (this.tableGetName !== '') {
+                return false;
+              }
+              DispatchEvent(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, {
                 detail: {
                   hideLoadingForButton: true
                 }
