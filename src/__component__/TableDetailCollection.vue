@@ -3160,20 +3160,26 @@
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
 
-        this.putBeforeLabelDataFromCell(colname, IDValue);
+        this.putBeforeLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue);
       }, // 获取label
-      putBeforeLabelDataFromCell(colname, IDValue) {
+      putBeforeLabelDataFromCell(value, oldValue, colname, IDValue, oldIdValue) {
         const tableDataSource = JSON.parse(JSON.stringify(this.dataSource));
         const currentValue = tableDataSource.row.find(item => item[EXCEPT_COLUMN_NAME].val === IDValue)[colname].val;
         if (this.afterSendDataLabelBefore[this.tableName]) {
           const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (rowDatas.length > 0) {
-            rowDatas[0][colname] = currentValue;
+          if (value.toString() !== oldIdValue.toString()) {
+            if (rowDatas.length > 0) {
+              rowDatas[0][colname] = currentValue;
+            } else {
+              const param = {};
+              param[EXCEPT_COLUMN_NAME] = IDValue;
+              param[colname] = currentValue;
+              this.afterSendDataLabelBefore[this.tableName].push(param);
+            }
           } else {
-            const param = {};
-            param[EXCEPT_COLUMN_NAME] = IDValue;
-            param[colname] = currentValue;
-            this.afterSendDataLabelBefore[this.tableName].push(param);
+            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+              delete rowDatas[0][colname];
+            }
           }
         } else {
           this.afterSendDataLabelBefore[this.tableName] = [];

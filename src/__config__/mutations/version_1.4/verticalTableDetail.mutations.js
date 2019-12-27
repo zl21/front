@@ -388,5 +388,8 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
-  }
+  },
+  updatetooltipForItemTableData(state, data) { // 表格操作单条明细失败返回值
+    state.tooltipForItemTable = data;
+  },
 };
