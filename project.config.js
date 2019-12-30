@@ -23,7 +23,7 @@ module.exports = {
   enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: true, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
-  encryptionJflow: true, // 控制jflow传参是否加密
+  encryptionJflow: false, // 控制jflow传参是否加密
   jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
   // jflowRequestDomain: 'http://r3.burgeon.cn:32940', // jflow后台地址（乔丹）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
