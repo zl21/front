@@ -18,7 +18,7 @@ import standardTableListModule from './store/standardTableList.store';
 import verticalTableDetailModule from './store/verticalTableDetail';
 import horizontalTableDetailModule from './store/horizontalTableDetail';
 import PluginModule from './plugin.config';
-import { updateSessionObject, getSeesionObject } from '../__utils__/sessionStorage';
+import { updateSessionObject, getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
 
 const pluginModules = {};
@@ -266,6 +266,8 @@ export default (router) => {
   router.afterEach((to, from) => {
     // 记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
     const isFromStandardTable = from.meta.routePrefix === STANDARD_TABLE_LIST_PREFIX;
+
+   
     const isFromPlugin = from.meta.routePrefix === PLUGIN_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（插件类型路由））
 
     const isTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(to.meta.routePrefix) > -1;
@@ -275,44 +277,72 @@ export default (router) => {
     if (!isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
       window.sessionStorage.removeItem('isDynamicRoutingForHideBackButton');
+      window.sessionStorage.removeItem('dynamicRoutingForSinglePage');
     }
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
     const ignore = Boolean(window.sessionStorage.getItem('ignore'));
 
     const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
-    // console.log({
-    //   isFromStandardTable, isTableDetail, isNotFromSameTable, isDynamicRouting
-    // });
+    
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
+
+      
+      const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+      if (Object.keys(routeMapRecordForSingleObject).indexOf(to.fullPath) > -1) { // 如果在单对象配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
+        deleteFromSessionObject('routeMapRecordForSingleObject', to.fullPath);
+      }
+
       const routeMapRecord = getSeesionObject('routeMapRecord');
       updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       if (JSON.stringify(routeMapRecord) !== '{}' && routeMapRecord[getKeepAliveModuleName(to)] !== from.fullPath) {
         updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       }
     }
+
     // 记录规则二：不是从同表的列表跳转到单对象界面，如果目标界面与来源界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
     if (isDynamicRoutingForHideBackButton && isNotFromSameTable && !ignore && (to.path !== '/' && from.path !== '/')) {
       window.sessionStorage.removeItem('dynamicRoutingForHideBackButton');
       // 外键跳转类型，to-from与from-to一致时，不维护到路由记录
-      // const obj = {};
-      // obj[from.fullPath] = to.fullPath;
       updateSessionObject('routeMapRecordForHideBackButton', { k: to.fullPath, v: from.fullPath });
-      // const dynamicRoutingForHideBackButton = getSeesionObject('routeMapRecordForHideBackButton');
-      // Object.keys(obj).map((path) => {
-      //   if (JSON.stringify(dynamicRoutingForHideBackButton) !== '{}' && dynamicRoutingForHideBackButton !== null) {
-      //     if (dynamicRoutingForHideBackButton[path] !== obj[path]) {
-      //       updateSessionObject('routeMapRecordForHideBackButton', { k: to.fullPath, v: from.fullPath });
-      //     }
-      //   } else {
-      //     updateSessionObject('routeMapRecordForHideBackButton', { k: to.fullPath, v: from.fullPath });
-      //   }
-      // });
     }
+
     // 记录规则三：不是由列表跳转到单对象界面，由新增界面跳转到编辑界面（itemID不同），则将此种关系维护到路由记录“栈”。
     if (!(isFromStandardTable || isFromPlugin) && isNotFromSameTableForHideBackButton && (to.path !== '/' && from.path !== '/')) { // 非列表
       const toPath = to.path.substring(to.path.indexOf('/') + 1, to.path.lastIndexOf('/') + 1);
       updateSessionObject('addRouteToEditor', { k: from.path, v: toPath }); 
+    }
+
+    // 记录规则四：由单对象界面跳转到单对象界面，则将此种关系维护到路由记录“栈”。
+    const isSingleObjectTableDetail = [HORIZONTAL_TABLE_DETAIL_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX].indexOf(from.meta.routePrefix) > -1;
+    const dynamicRoutingForSinglePage = Boolean(window.sessionStorage.getItem('dynamicRoutingForSinglePage'));
+    if (dynamicRoutingForSinglePage && isSingleObjectTableDetail && isTableDetail) {
+      window.sessionStorage.removeItem('dynamicRoutingForSinglePage');
+
+
+      // routeMapRecordForSingleObject={
+      //   to:from
+      //   /SYSTEM/TABLE_DETAIL/H/AD_TABLE/992/24369: "/SYSTEM/TABLE_DETAIL/V/C_STORE/23796/2"
+      // }
+
+
+      // routeMapRecord={
+      //   to:from
+      //   H.AD_TABLE.992.24369: "/SYSTEM/TABLE/DL_B_PUR/23792"
+      // }   
+
+      const routeMapRecord = getSeesionObject('routeMapRecord');
+      const toPath = getKeepAliveModuleName(to);
+      if (Object.keys(routeMapRecord).indexOf(toPath) > -1) { // 如果在列表配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
+        deleteFromSessionObject('routeMapRecord', toPath);
+      }
+
+
+      const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+      updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
+      if (JSON.stringify(routeMapRecordForSingleObject) !== '{}' && to.fullPath !== from.fullPath) {
+        updateSessionObject('routeMapRecordForSingleObject', { k: to.fullPath, v: from.fullPath });
+      }
     }
   });
 };

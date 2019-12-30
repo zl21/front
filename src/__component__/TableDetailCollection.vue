@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -89,6 +89,7 @@
           :total-data="totalDataNumber"
           @on-selection-change="tableSelectedChange"
           @on-sort-change="tableSortChange"
+          @on-row-dblclick="tableRowDbclick"
         />
       </div>
       <div
@@ -318,6 +319,12 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      dynamicRoutingForSinglePage() {
+        if (this.itemInfo && this.itemInfo.componentAttribute && this.itemInfo.componentAttribute.buttonsData && this.itemInfo.componentAttribute.buttonsData.data && this.itemInfo.componentAttribute.buttonsData.data.webconf) {
+          return this.itemInfo.componentAttribute.buttonsData.data.webconf.dynamicRouting;
+        }
+        return null;
+      },
       objList() { // 返回克隆表定制弹框所需数据
         if (this.type === 'horizontal') { // 横向布局
           return this.itemInfo.componentAttribute.panelData.data.addcolums;
@@ -518,6 +525,43 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
+      tableRowDbclick(row) {
+// AD_TABLE/992/24369
+if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由 
+          window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
+          let type = '';
+          if (!row._TABLENAME || !row._TABLEID  || !row._OBJID) {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请维护表名或OBJID'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          } else if (row._OBJTYPE === 'object') {
+            // 单对象上下结构
+            type = 'tableDetailVertical';
+          } else if (row._OBJTYPE  === 'tabpanle') { // 左右结构
+            type = 'tableDetailHorizontal';
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置外键关联表的显示配置'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          }
+          this.tabHref({
+            type,
+            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
+            tableName: 'AD_TABLE',
+            tableId: '992',
+            id:'24369',
+            serviceId: row._SERVICEID ? row._SERVICEID : null
+          });
+        } 
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1898,7 +1942,7 @@
                   return acc;
                 }, []).join(',');
                 this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, ids);
+                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -3077,10 +3121,8 @@
               param[colname] = currentValue;
               this.afterSendData[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendData[this.tableName] = [];
@@ -3134,9 +3176,9 @@
       },
       putLabelDataFromCell(currentValue, oldValue, colname, IDValue, oldIdValue) {
         // 组装数据 存入store
-
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
+          oldIdValue = oldIdValue ? oldIdValue : '';
           if (currentValue.toString() !== oldIdValue.toString()) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
@@ -3146,16 +3188,16 @@
               param[colname] = currentValue;
               this.afterSendDataLabel[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
+          if (currentValue.toString() !== oldIdValue.toString()) {
+            param[colname] = currentValue;
+          }
           this.afterSendDataLabel[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL, this.afterSendDataLabel);
@@ -3176,16 +3218,16 @@
               param[colname] = currentValue;
               this.afterSendDataLabelBefore[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendDataLabelBefore[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
+          if (currentValue.toString() !== oldIdValue.toString()) {
+            param[colname] = currentValue;
+          }
           this.afterSendDataLabelBefore[this.tableName].push(param);
         }
         this.$emit(TABLE_DATA_CHANGE_LABEL_BEFORE, this.afterSendDataLabelBefore);

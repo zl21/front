@@ -325,6 +325,12 @@
       },
       onRowDoubleClick(colDef, row) {
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
+          // this.tabHref({
+          //   type: 'tableDetailHorizontal',
+          //   tableName: 'AD_TABLE',
+          //   tableId: '992',
+          //   id: '24369',
+          // });
           window.sessionStorage.setItem('dynamicRouting', true);
           let type = '';
           if (!row._TABLENAME || !row._TABLENAME.val || !row._TABLEID || !row._TABLEID.val || !row._OBJID || !row._OBJID.val) {
