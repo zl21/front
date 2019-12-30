@@ -1465,11 +1465,21 @@
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
-
+     
 
         // 单对象界面配置动态路由
         const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
         const currentPath = this.$router.currentRoute.path;
+       
+        const newSinglePage = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        let routeMapRecordForSingleObjectNew = '';
+        if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
+          Object.keys(routeMapRecordForSingleObject).map((item) => {
+            if (item.indexOf(newSinglePage) > -1) {
+              routeMapRecordForSingleObjectNew = item;
+            }
+          });
+        }
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
@@ -1487,6 +1497,11 @@
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else if (routeMapRecordForSingleObject[currentPath]) {
           router.push(routeMapRecordForSingleObject[currentPath]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.clickButtonsRefresh();
+        } else if (routeMapRecordForSingleObjectNew) {
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
           this.clickButtonsRefresh();
