@@ -222,6 +222,7 @@
         childFormData: [],    
         labelForm: {}, // label 值
         r3Form: {},
+        timeChange: 0,
         computdefaultData: [], // form
         setAttsetProps: {}, // 静态属性 映射
         pathArry: [], // path 数组
@@ -1196,8 +1197,11 @@
         fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
           serviceId: current.serviceId,
-          success: (res) => {
-            this.freshDropDownSelectFilterAutoData(res, index, current);
+          success: (res, time) => {
+            if (this.timeChange < time) {
+              this.timeChange = time;
+              this.freshDropDownSelectFilterAutoData(res, index, current);
+            }
           }
         });
         return true;

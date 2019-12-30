@@ -13,10 +13,11 @@ export const fkQueryList = function fkQueryList(params) {
 };
 
 export const fkFuzzyquerybyak = function fkFuzzyquerybyak(params) {
+  const timeOut = new Date().getTime();
   network.post('/p/cs/fuzzyquerybyak', urlSearchParams(params.searchObject), { serviceId: params.serviceId }).then((res) => {
     if (typeof params.success === 'function') {
       res.data.data = res.data && res.data.data;
-      params.success(res);
+      params.success(res, timeOut);
     }
   });
 };
