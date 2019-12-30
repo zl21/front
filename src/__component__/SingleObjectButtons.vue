@@ -768,7 +768,7 @@
         });
       },
       objectTrySubmit(obj) { // 按钮提交逻辑
-        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
+        // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           const data = {
             title: '警告',
@@ -810,7 +810,7 @@
         this.$Modal.fcWarning(data);
       },
       objectTryVoid(obj) {
-        this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
+        // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           const data = {
             title: '警告',
@@ -1460,11 +1460,26 @@
       },
       clickButtonsBack() { // 按钮返回事件   
         const { tableId, tableName } = this.$route.params;
+        // 列表界面配置动态路由
         const routeMapRecord = getSeesionObject('routeMapRecord');
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
-        // const currentRoute = this.$router.currentRoute.path;
+     
+
+        // 单对象界面配置动态路由
+        const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+        const currentPath = this.$router.currentRoute.path;
+       
+        const newSinglePage = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        let routeMapRecordForSingleObjectNew = '';
+        if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
+          Object.keys(routeMapRecordForSingleObject).map((item) => {
+            if (item.indexOf(newSinglePage) > -1) {
+              routeMapRecordForSingleObjectNew = item;
+            }
+          });
+        }
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
@@ -1480,6 +1495,16 @@
           // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+        } else if (routeMapRecordForSingleObject[currentPath]) {
+          router.push(routeMapRecordForSingleObject[currentPath]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.clickButtonsRefresh();
+        } else if (routeMapRecordForSingleObjectNew) {
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.clickButtonsRefresh();
         } else {
           const param = {
             tableId,
@@ -1626,9 +1651,11 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          this.webactButton(tabwebact.objbutton);
-        } else if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+        // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+        //   this.webactButton(tabwebact.objbutton);
+        // } else 
+        if 
+          (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
           this.webactButton(tabwebact.objtabbutton);
         }
       },
@@ -2175,11 +2202,11 @@
           if (this.updateData[itemName].add && this.updateData[itemName].add[itemName]) {
             add = Object.keys(this.updateData[itemName].add[itemName]);
           }
-          if (modify.length > 0 && add.length < 1) {
-            this.itemTableValidation = true;
-          } else if (modify.length > 0 && add.length > 0) {
-            this.itemTableValidation = false;
-          }
+          // if (modify.length > 0 && add.length < 1) {
+          //   this.itemTableValidation = true;
+          // } else if (modify.length > 0 && add.length > 0) {
+          //   this.itemTableValidation = false;
+          // }
           if (itemName === this.tableName) {
             if (this.verifyRequiredInformation()) { // 横向结构保存校验
               if (obj.requestUrlPath) { // 配置path
@@ -2235,7 +2262,6 @@
         }
         this.saveParameters();
         const checkedInfo = this.currentParameter.checkedInfo;// 主表校验信息
-
         if (checkedInfo) {
           const messageTip = checkedInfo.messageTip;
           if (messageTip) {
@@ -2247,7 +2273,6 @@
           }
         }
         // if (this.objectType === 'vertical') { // 纵向结构
-
         if (this.subtables()) { // 存在子表时
           let tabinlinemode = '';
           this.tabPanel.forEach((item) => {
@@ -2309,18 +2334,6 @@
                   }
                 }
               }
-
-
-              // else if (itemCheckedInfo) {
-              //   const itemMessageTip = itemCheckedInfo.messageTip;
-              //   if (itemMessageTip) {
-              //     if (itemMessageTip.length > 0) {
-              //       this.$Message.warning(itemMessageTip[0]);
-              //       itemCheckedInfo.validateForm.focus();
-              //       return false;
-              //     }
-              //   }
-              // }
             }
           }
         }
@@ -2623,10 +2636,10 @@
         return false;
       },
       hideLoading(value) {
-        const currentTableName = this.activeTab.tableName;
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (dom && (value.detail.hideCopyLoading || value.detail.hideLoadingForButton)) {
-          this.$loading.hide(this.tableName);
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        // const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+          this.$loading.hide(currentTableName);
         }
       }
     },  
@@ -2634,7 +2647,7 @@
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
       window.addEventListener('globalNoticeCopy', this.hideLoading);
-      window.removeEventListener('globaVerifyMessageClosed', this.hideLoading);
+      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
     },
     mounted() {
       this.hideBackButton();
@@ -2643,7 +2656,7 @@
       }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('globaVerifyMessageClosed', this.hideLoading);
+        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
         window.addEventListener('globalNoticeCopy', this.hideLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
@@ -2709,6 +2722,8 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
+    activated() {
+    }
   };
 </script>
 

@@ -35,25 +35,25 @@
   export default {
     name: 'DownComponent',
     props: {
-      index: {
+      index: {// 暂无用到
         type: Number,
         default() {
           return 0;
         }
       },
-      setHeight: {
+      setHeight: {// 每行表单组件高度
         type: Number,
         default() {
           return 0;
         }
       },
-      rowAll: {
+      rowAll: {// 所有行数
         type: [Number, String],
         default() {
           return 0;
         }
       },
-      searchFoldnum: {
+      searchFoldnum: {// 默认显示几行
         type: [Number, String],
         default() {
           return 0;

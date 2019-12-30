@@ -32,7 +32,7 @@ module.exports = env => ({
   },
   devServer: {
     compress: true,
-    port: 8190,
+    port: 8191,
     host: '127.0.0.1',
     open: true,
     historyApiFallback: {
@@ -45,28 +45,37 @@ module.exports = env => ({
       {
         context: proxyListForShangFei,
         target,
+        changeOrigin: true
       },
       {
         context: proxyLists,
-        target
+        target,
+        changeOrigin: true
       }, {
         context: proxyListsForGateway,
-        target
+        target,
+        changeOrigin: true
       }, {
         context: proxyListsForPalmCloud,
-        target
+        target,
+        changeOrigin: true
       }, {
         context: proxyListsForPalmZx,
-        target
+        target,
+        changeOrigin: true
       },
       {
         context: '/api',
         // target: 'http://47.99.229.124:9093' // 打印
-        target: 'http://106.15.24.156:19999' // 打印李宁环境
+        target: 'http://106.15.24.156:19999', // 打印李宁环境
+        changeOrigin: true
       },
       {
         context: '/jflow',
-        target: 'http://106.15.24.156:32940' // 重新占单
+        // target: 'http://106.15.24.156:32940', // 重新占单
+        // target: 'http://106.15.24.156:32940', // 李宁环境
+        target: 'http://jflow-zhixiao.dev.burgeononline.com', // 知晓环境
+        changeOrigin: true
       }]
   },
   target: 'web',

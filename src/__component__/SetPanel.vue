@@ -107,7 +107,7 @@
       this.setDefaultSearchFoldnum();
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite','emptyTabs']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'emptyTabs']),
       setDefaultSearchFoldnum() {
         if (enableInitializationRequest()) {
           network
@@ -171,9 +171,11 @@
           .then(() => {
             this.emptyTabs();
             router.push({ path: getTouristRoute() });
+            removeSessionObject('saveNetwork');
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
+            removeSessionObject('saveNetwork');
           });
       }
     }

@@ -91,11 +91,11 @@
       columns() {
         const defaultColumns = [{
           type: 'selection',
-          width: 40,
+          width: 22,
           align: 'right',
           fixed: 'left'
         }];
-        if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 0) {
+        if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 1) {
           return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
             if (cur.comment) {
               if (cur.name === 'ID') {
@@ -104,66 +104,89 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 60,
+                  width: 40,
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else if (cur.display === 'doc') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.docRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else if (cur.display === 'image') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.imageRender(cur.colname),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                    cur.sortType = this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc';
+                  }
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    sortable: cur.isorder ? 'custom' : false,
-                    sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                    // sortable: cur.isorder ? 'custom' : false,
+                    // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
                     render: this.fkIconRender(cur),
                     renderHeader: this.tooltipRenderHeader()
                   }, cur));
                 } else {
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    sortable: cur.isorder ? 'custom' : false,
+                    // sortable: cur.isorder ? 'custom' : false,
                     render: this.fkIconRender(cur),
                     renderHeader: this.tooltipRenderHeader()
                   }, cur));
                 }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                  cur.sortType = this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
-                  sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                  // sortable: cur.isorder ? 'custom' : false,
+                  // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else if (cur.customerurl) {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.customerUrlRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               } else {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
               }
@@ -174,59 +197,82 @@
                   align: 'left',
                   fixed: 'left',
                   key: 'ID',
-                  width: 60,
+                  width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
               } else if (cur.display === 'image') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.imageRender(cur.colname)
                 }, cur));
               } else if (cur.display === 'doc') {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.docRender()
                 }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                    cur.sortType = this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc';
+                  }
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    sortable: cur.isorder ? 'custom' : false,
-                    sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
+                    // sortable: cur.isorder ? 'custom' : false,
+                    // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc',
                     render: this.fkIconRender(cur)
                   }, cur));
                 } else {
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
                   acc.push(Object.assign({
                     title: cur.name,
                     key: cur.colname,
-                    sortable: cur.isorder ? 'custom' : false,
+                    // sortable: cur.isorder ? 'custom' : false,
                     render: this.fkIconRender(cur)
                   }, cur));
                 }
               } else if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                  cur.sortType = this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
-                  sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
+                  // sortable: cur.isorder ? 'custom' : false,
+                  // sortType: this.datas.ordids.find(item => item.colname === cur.colname).ordasc ? 'asc' : 'desc'
                 }, cur));
               } else if (cur.customerurl) {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false,
+                  // sortable: cur.isorder ? 'custom' : false,
                   render: this.customerUrlRender()
                 }, cur));
               } else {
+                if (cur.isorder) {
+                  cur.sortable = 'custom';
+                }
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  sortable: cur.isorder ? 'custom' : false
+                  // sortable: cur.isorder ? 'custom' : false
                 }, cur));
               }
             }

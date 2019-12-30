@@ -24,6 +24,7 @@ let modifiableFieldName = []; // jflow可修改字段名
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
+let encryptionJflow = false; // 传参是否加密
 
 function getQueryButtons(data) {
   const tabcmd = data.tabcmd;
@@ -180,8 +181,35 @@ function getConfigMap(tabcmd) { // 获取所有配置流程图的表集合
 }
 
 function thirdlogin() { // 三方登录  获取accessToken
-  axios.post('/jflow/p/c/thirdlogin', {
+  let data = {
     username: 'guest'
+  };
+  const headers = {};
+  if (encryptionJflow) {
+    const aesKey = uuidGenerator();// 秘钥
+    // 对传参进行aes加密
+    const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+    const encrypt = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    data = encrypt.toString();// 加密后的数据
+        
+        
+    // uuid加密 设置请求头
+    const uuidEncrypt = new JSEncrypt();
+    const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
+    uuidEncrypt.setPublicKey(`
+        -----BEGIN PUBLIC KEY-----
+        ${PUBLIC_KEY}
+        -----END PUBLIC KEY-----`);
+    headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
+    headers.encrypt_type = 'RSA';
+    headers['Content-Type'] = 'application/json';
+  }
+  
+  axios.post('/jflow/p/c/thirdlogin', data, {
+    headers
   }).then(() => {
     getConfigMap();
   });
@@ -197,14 +225,14 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.submitErrorMsg) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
             });
           }
           if (res.data.data.businessStatus === -2) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: res.data.data.submitErrorMsg,
               mask: true
@@ -275,8 +303,9 @@ async function jflowsave(flag, request) {
           type: 'clearSubmit'
         }
       });
+      
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.notice,
           mask: true
@@ -285,7 +314,7 @@ async function jflowsave(flag, request) {
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
-        window.vm.$Modal.fcError({
+        window.R3message({
           title: '错误',
           content: res.data.data.records[0].notice,
           mask: true
@@ -295,7 +324,7 @@ async function jflowsave(flag, request) {
       }
       if (res.data.resultCode === 0) {
         if (res.objids) {
-          window.vm.$Modal.fcWarning({
+          window.R3message({
             title: '提示',
             content: '请稍等,正在审批······',
             mask: true
@@ -382,7 +411,7 @@ async function checkProcess(request) { // check校验
       .then((res) => {
         if (res.data.resultCode === 0) {
           if (res.data.data.businessCheckData.length === 0) {
-            window.vm.$Modal.fcError({
+            window.R3message({
               title: '错误',
               content: '当前选中单据都在流程中,不允许操作!',
               mask: true
@@ -470,10 +499,39 @@ async function checkProcess(request) { // check校验
   });
 }
 
+function uuidGenerator() {
+  const originStr = 'xxxxxxxxxxxxxxxx';
+  const originChar = '0123456789abcdef';
+  const len = originChar.length;
+  return originStr.replace(/x/g, match => originChar.charAt(Math.floor(Math.random() * len)));
+}
+
 function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
+      if (encryptionJflow) {
+        config.headers['Content-Type'] = 'application/json';
+        const aesKey = uuidGenerator();// 秘钥
+        // 对传参进行aes加密
+        const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+        const encrypt = CryptoJS.AES.encrypt(JSON.stringify(config.data), key, {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7
+        });
+        config.data = encrypt.toString();// 加密后的数据
+        
+        
+        // uuid加密 设置请求头
+        const uuidEncrypt = new JSEncrypt();
+        const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
+        uuidEncrypt.setPublicKey(`
+        -----BEGIN PUBLIC KEY-----
+        ${PUBLIC_KEY}
+        -----END PUBLIC KEY-----`);
+        config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
+        config.headers.encrypt_type = 'RSA';
+      }
     }
     if (configurationFlag) { // 配置了流程图并
       // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
@@ -545,11 +603,13 @@ function AxiosGuard(axios) { // axios拦截
         window.localStorage.setItem('userInfo', JSON.stringify(response.data));
         userInfo = response.data;
         window.jflowPlugin.userInfo = userInfo;
+
+        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
       }
 
-      if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
-        !closeJflowIcon ? todoList(store, router) : null;
-      }
+      // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
+      //   !closeJflowIcon ? todoList(store, router) : null;
+      // }
     }
 
     return response;
@@ -604,6 +664,7 @@ function createComponent() { // 创建跟节点实例
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
+  encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
     axios = options.axios;
     router = options.router;
