@@ -324,57 +324,56 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
-          window.sessionStorage.setItem('dynamicRouting', true);
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
-          this.tabHref({
-            type: 'tableDetailHorizontal',
-            tableName: 'AD_TABLE',
-            tableId: '992',
-            id: '24369',
-          });
-          // window.sessionStorage.setItem('dynamicRouting', true);
-          // let type = '';
-          // if (!row._TABLENAME || !row._TABLENAME.val || !row._TABLEID || !row._TABLEID.val || !row._OBJID || !row._OBJID.val) {
-          //   const data = {
-          //     mask: true,
-          //     title: '警告',
-          //     content: '请维护表名或OBJID'
-          //   };
-          //   this.$Modal.fcWarning(data);
-          //   return;
-          // } if (row._OBJURL && row._OBJURL.val) {
-          //   const tableurl = row._OBJURL.val;
-          //   const id = row._OBJID.val;
-          //   const param = {
-          //     url: tableurl,
-          //     id,
-          //     lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
-          //     isMenu: true
-          //   };
-          //   this.directionalRouter(param);// 定向路由跳转方法
-          //   return;
-          // } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
-          //   // 单对象上下结构
-          //   type = 'tableDetailVertical';
-          // } else if (row._OBJTYPE && row._OBJTYPE.val === 'tabpanle') { // 左右结构
-          //   type = 'tableDetailHorizontal';
-          // } else {
-          //   const data = {
-          //     mask: true,
-          //     title: '警告',
-          //     content: '请设置外键关联表的显示配置'
-          //   };
-          //   this.$Modal.fcWarning(data);
-          //   return;
-          // }
           // this.tabHref({
-          //   type,
-          //   label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-          //   tableName: row._TABLENAME.val,
-          //   tableId: row._TABLEID.val,
-          //   id: row._OBJID.val,
-          //   serviceId: row.OWNERID ? row.OWNERID.serviceId : null
+          //   type: 'tableDetailHorizontal',
+          //   tableName: 'AD_TABLE',
+          //   tableId: '992',
+          //   id: '24369',
           // });
+          window.sessionStorage.setItem('dynamicRouting', true);
+          let type = '';
+          if (!row._TABLENAME || !row._TABLENAME.val || !row._TABLEID || !row._TABLEID.val || !row._OBJID || !row._OBJID.val) {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请维护表名或OBJID'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          } if (row._OBJURL && row._OBJURL.val) {
+            const tableurl = row._OBJURL.val;
+            const id = row._OBJID.val;
+            const param = {
+              url: tableurl,
+              id,
+              lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
+              isMenu: true
+            };
+            this.directionalRouter(param);// 定向路由跳转方法
+            return;
+          } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
+            // 单对象上下结构
+            type = 'tableDetailVertical';
+          } else if (row._OBJTYPE && row._OBJTYPE.val === 'tabpanle') { // 左右结构
+            type = 'tableDetailHorizontal';
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置外键关联表的显示配置'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          }
+          this.tabHref({
+            type,
+            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
+            tableName: row._TABLENAME.val,
+            tableId: row._TABLEID.val,
+            id: row._OBJID.val,
+            serviceId: row.OWNERID ? row.OWNERID.serviceId : null
+          });
         } else {
           const { tableName, tableId } = this.$route.params;
           const id = row.ID.val;
