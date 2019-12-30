@@ -627,6 +627,8 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   getObjectTryUnSubmit({
