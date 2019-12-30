@@ -526,22 +526,7 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
-//         BILLNO: "e"
-// _TABLEID: 23051
-// OWNERID: "系统管理员"
-// TABLENAME: "PS_C_BRAND"
-// _TABLENAME: "PS_C_BRAND"
-// _OBJTYPE: "tabpanle"
-// MODIFIERNAME: "root"
-// BILLDATE: "2019/12/01"
-// _OBJID: 2
-// OBJID: "2"
-// ISACTIVE: "是"
-// SUM_AMT: "20.34"
-// _SERVICEID: "ad-app"
-// SUM_QTY: "123"
-// ID: "2"
-// REMARK: "测试"
+// AD_TABLE/992/24369
 if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由 
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
@@ -570,9 +555,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.tabHref({
             type,
             label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-            tableName: row._TABLENAME,
-            tableId: row._TABLEID,
-            id: row._OBJID,
+            tableName: 'AD_TABLE',
+            tableId: '992',
+            id:'24369',
             serviceId: row._SERVICEID ? row._SERVICEID : null
           });
         } 
