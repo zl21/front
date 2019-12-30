@@ -1407,11 +1407,16 @@
       back() {
         this.emptyTestData();
         const { tableId, tableName } = this.$route.params;
+        // 列表界面配置动态路由
         const routeMapRecord = getSeesionObject('routeMapRecord');
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
-        // const currentRoute = this.$router.currentRoute.path;
+
+
+        // 单对象界面配置动态路由
+        const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+        const currentPath = this.$router.currentRoute.path;
         if (routeMapRecord[keepAliveModuleName]) {
           const param = {
             type: tabUrl,
@@ -1427,6 +1432,11 @@
           // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+        } else if (routeMapRecordForSingleObject[currentPath]) {
+          router.push(routeMapRecordForSingleObject[currentPath]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+          this.clickButtonsRefresh();
         } else {
           const param = {
             tableId,
@@ -1561,9 +1571,11 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          this.webactButton(tabwebact.objbutton);
-        } else if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+        // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+        //   this.webactButton(tabwebact.objbutton);
+        // } else 
+        if 
+          (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
           this.webactButton(tabwebact.objtabbutton);
         }
       },
@@ -2625,7 +2637,7 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
-    activated(){
+    activated() {
     }
   };
 </script>

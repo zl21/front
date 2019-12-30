@@ -253,6 +253,7 @@ export default {
     window.sessionStorage.removeItem('routeMapRecordForHideBackButton');
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
+    window.sessionStorage.removeItem('routeMapRecordForSingleObject');
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -267,6 +268,8 @@ export default {
   },
  
   tabCloseAppoint(state, tab) {
+    const tabRouteFullPath = tab.routeFullPath;
+
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
     const clickMenuAddSingleObjectData = getSeesionObject('clickMenuAddSingleObject');
     Object.values(clickMenuAddSingleObjectData).map((item) => {
@@ -298,10 +301,15 @@ export default {
         }
       });
     }
-    state.isRequest = [];// 清空修改数据验证
-
+    
+    // 删除规则四：关闭页签时，清除单对象动态路由跳转类型跳转的session中存储的对应关系。
+    const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+    Object.keys(routeMapRecordForSingleObject).map((item) => {
+      if (tabRouteFullPath === item) {
+        deleteFromSessionObject('routeMapRecordForSingleObject', tabRouteFullPath);
+      }
+    });
     const { openedMenuLists } = state;
-    const tabRouteFullPath = tab.routeFullPath;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
     state.keepAliveLists = state.keepAliveLists.filter(d => d.indexOf(tab.tableName) === -1);
     openedMenuLists.forEach((item, index) => {
