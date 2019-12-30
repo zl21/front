@@ -1412,7 +1412,11 @@
           let arr = [];
           try {
             if (this.defaultSetValue[item.colname]) {
-              arr = this.defaultSetValue[item.colname];
+              if (typeof this.defaultSetValue[item.colname] === 'string') {
+                arr = JSON.parse(this.defaultSetValue[item.colname]);
+              } else {
+                arr = this.defaultSetValue[item.colname];
+              }
             } else {
               arr = JSON.parse(item.valuedata);
             }
