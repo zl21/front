@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                   >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -319,6 +319,12 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      dynamicRoutingForSinglePage() {
+        if (this.itemInfo && this.itemInfo.componentAttribute && this.itemInfo.componentAttribute.buttonsData && this.itemInfo.componentAttribute.buttonsData.data && this.itemInfo.componentAttribute.buttonsData.data.webconf) {
+          return this.itemInfo.componentAttribute.buttonsData.data.webconf.dynamicRouting;
+        }
+        return null;
+      },
       objList() { // 返回克隆表定制弹框所需数据
         if (this.type === 'horizontal') { // 横向布局
           return this.itemInfo.componentAttribute.panelData.data.addcolums;
@@ -519,8 +525,57 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
-      tableRowDbclick(){
-
+      tableRowDbclick(row) {
+//         BILLNO: "e"
+// _TABLEID: 23051
+// OWNERID: "系统管理员"
+// TABLENAME: "PS_C_BRAND"
+// _TABLENAME: "PS_C_BRAND"
+// _OBJTYPE: "tabpanle"
+// MODIFIERNAME: "root"
+// BILLDATE: "2019/12/01"
+// _OBJID: 2
+// OBJID: "2"
+// ISACTIVE: "是"
+// SUM_AMT: "20.34"
+// _SERVICEID: "ad-app"
+// SUM_QTY: "123"
+// ID: "2"
+// REMARK: "测试"
+if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由 
+          window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
+          let type = '';
+          if (!row._TABLENAME || !row._TABLEID  || !row._OBJID) {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请维护表名或OBJID'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          } else if (row._OBJTYPE === 'object') {
+            // 单对象上下结构
+            type = 'tableDetailVertical';
+          } else if (row._OBJTYPE  === 'tabpanle') { // 左右结构
+            type = 'tableDetailHorizontal';
+          } else {
+            const data = {
+              mask: true,
+              title: '警告',
+              content: '请设置外键关联表的显示配置'
+            };
+            this.$Modal.fcWarning(data);
+            return;
+          }
+          this.tabHref({
+            type,
+            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
+            tableName: row._TABLENAME,
+            tableId: row._TABLEID,
+            id: row._OBJID,
+            serviceId: row._SERVICEID ? row._SERVICEID : null
+          });
+        } 
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -3081,10 +3136,8 @@
               param[colname] = currentValue;
               this.afterSendData[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendData[this.tableName] = [];
@@ -3150,10 +3203,8 @@
               param[colname] = currentValue;
               this.afterSendDataLabel[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendDataLabel[this.tableName] = [];
@@ -3180,10 +3231,8 @@
               param[colname] = currentValue;
               this.afterSendDataLabelBefore[this.tableName].push(param);
             }
-          } else {
-            if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
-              delete rowDatas[0][colname];
-            }
+          } else if (rowDatas.length > 0 && rowDatas[0][colname] !== undefined) {
+            delete rowDatas[0][colname];
           }
         } else {
           this.afterSendDataLabelBefore[this.tableName] = [];
