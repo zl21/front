@@ -553,8 +553,6 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
-      getObjdisType({ table: this.tableName }).then((res)=>{
-      })
         if (type === 'fix') {
           this.objectTabAction(obj);
         } else if (type === 'custom') {
