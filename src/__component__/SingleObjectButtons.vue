@@ -392,7 +392,7 @@
         return page;
       },
       tempStorage() {
-        return this.itemInfo.componentAttribute.buttonsData.data.webconf;
+        return this.WebConf;
       }
     },
     props: {
@@ -1539,7 +1539,7 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                           if (this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1568,7 +1568,7 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                           if (this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1604,7 +1604,7 @@
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
 
-                          if (this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1636,7 +1636,7 @@
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
 
-                        if (this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
@@ -1678,7 +1678,7 @@
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
-               if (this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                 this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
               }
               this.dynamic.eName = 'actionMODIFY';
