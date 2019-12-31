@@ -555,9 +555,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.tabHref({
             type,
             label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-            tableName: 'AD_TABLE',
-            tableId: '992',
-            id:'24369',
+            tableName: row._TABLENAME,
+            tableId: row._TABLEID ,
+            id: row._OBJID,
             serviceId: row._SERVICEID ? row._SERVICEID : null
           });
         } 
