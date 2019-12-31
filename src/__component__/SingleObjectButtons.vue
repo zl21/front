@@ -575,9 +575,12 @@
       },
       clickButtonsTemporaryStorage() { // 暂存事件
         this.temporaryStorage = true;
-        if (this.tempStorage && this.tempStorage.isenable) {
-          if (this.tempStorage.path) {
-            this.temporaryStoragePath = this.tempStorage.path;
+        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+          if (this.tempStorage.temp_storage.path) {
+            this.temporaryStoragePath = this.tempStorage.temp_storage.path;
+            const dom = document.getElementById('actionMODIFY');
+            const myEvent = new Event('click');
+            dom.dispatchEvent(myEvent);    
           } else {
             const data = {
               mask: true,
@@ -587,9 +590,6 @@
             this.$Modal.fcWarning(data);
           }
         }
-        const dom = document.getElementById('actionMODIFY');
-        const myEvent = new Event('click');
-        dom.dispatchEvent(myEvent);              
       },
       clickExtraposition(obj) { // jflow方法
         DispatchEvent('jflowPlugin', {
