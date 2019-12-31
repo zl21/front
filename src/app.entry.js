@@ -49,6 +49,54 @@ const init = () => {
     store,
     render: createElement => createElement(App)
   }).$mount(rootDom);
+  window.R3message = (data) => {
+    window.vm.$Modal.fcError({
+      mask: data.mask,
+      titleAlign: 'center',
+      title: data.title,
+      // content: formatJsonEmg
+      render: h => h('div', {
+        style: {
+          padding: '10px 20px 0',
+          display: 'flex',
+          // alignItems: 'center',
+          lineHeight: '16px'
+        }
+      }, [
+        
+        h('i', {
+          props: {
+          },
+          style: {
+            marginRight: '5px',
+            display: 'inline-block',
+            'font-size': '28px',
+            'margin-right': ' 10px',
+            'line-height': ' 1',
+            padding: ' 10px 0',
+            color: 'red'
+          },
+          class: 'iconfont iconbj_error fcError '
+        }),
+        h('div', {
+          attrs: {
+          },
+          domProps: {
+          },
+          style: `width: 80%;
+              margin: 1px;
+              margin-bottom: -8px;
+              box-sizing: border-box;
+              padding: 5px;
+              resize: none;
+              max-height: 100px;
+              max-width: 300px;
+              overflow: auto;
+              `
+        }, data.content)
+      ])
+    });
+  };
 };
 
 const getCategory = () => {

@@ -46,7 +46,7 @@ export default () => ({
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
-      tempStorage: ({ tempStorage }) => tempStorage,
+      WebConf: ({ WebConf }) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
