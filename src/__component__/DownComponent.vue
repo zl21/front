@@ -89,6 +89,8 @@
       toggle() {
         this.dowClass = !this.dowClass;
         // 调整ag表格高度
+        this.$emit('on-toggle', this.dowClass);
+
         setTimeout(() => {
           const detailTable = document.querySelector('.detailTable');
           if (detailTable && detailTable.agTable) {
