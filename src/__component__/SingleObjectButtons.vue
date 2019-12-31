@@ -96,6 +96,8 @@
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import getObjdisType from '../__utils__/getObjdisType';
+
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
 
@@ -391,6 +393,9 @@
         }
         return page;
       },
+      tempStorage() {
+        return this.WebConf;
+      }
     },
     props: {
       watermarkimg: {// 水印
@@ -569,7 +574,7 @@
       },
       clickButtonsTemporaryStorage() { // 暂存事件
         this.temporaryStorage = true;
-        if (this.tempStorage.isenable) {
+        if (this.tempStorage && this.tempStorage.isenable) {
           if (this.tempStorage.path) {
             this.temporaryStoragePath = this.tempStorage.path;
           } else {
@@ -1536,7 +1541,7 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1565,7 +1570,7 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1600,7 +1605,8 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage.isenable) {
+
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
@@ -1631,7 +1637,8 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
-                        if (this.tempStorage.isenable) {
+
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
@@ -1673,7 +1680,7 @@
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
-              if (this.tempStorage.isenable) {
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                 this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
               }
               this.dynamic.eName = 'actionMODIFY';
