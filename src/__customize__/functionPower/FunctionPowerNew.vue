@@ -51,13 +51,13 @@
                 </div>
                 <div class="right-list">
                     <div class="upper-part">
-                        <div class="upper-table">
+                        <div class="upper-table" id="upperTable">
                             <div class="upper-table-tabth">
                                 <table>
-                                    <tr>
-                                        <th>功能</th>
-                                        <th v-for="item in tableTabth">
-                                            <Checkbox v-model="item[`${item.key}ThValue`]">{{item.title}}</Checkbox>
+                                    <tr style="display: flex">
+                                        <th style="flex: 1" class="functionColumnClass" :style="{width: `${functionColumnWidth}px`}">功能</th>
+                                        <th v-for="item in tableTabth" :style="{'min-width': `${theadThMinWidth}px`}">
+                                            <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
                                 </table>
@@ -610,6 +610,8 @@
             extendThValue: false
           },
         ], // 表格表头
+        functionColumnWidth: 100, // 功能列的表头
+        theadThMinWidth: 62, // 表头th的最小宽度，单位px
       };
     },
     watch: {
@@ -630,6 +632,11 @@
     created() {
       this.refresh();
       this.getButtonData();
+    },
+    mounted() {
+      document.getElementById('upperTable').addEventListener('resize', () => {
+        console.log(8888);
+      });
     },
     methods: {
       refresh() {
@@ -1854,6 +1861,24 @@
                         border-bottom: solid 1px #d8d8d8;
                         .upper-table {
                             height: 100%;
+                            width: 100%;
+                            overflow: auto;
+                            .upper-table-tabth {
+                                display: block;
+                                width: 100%;
+                                table {
+                                    background-color: #f5f6fa;
+                                }
+                                table th {
+                                    padding: 3px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                }
+                                .functionColumnClass {
+                                    text-align: left;
+                                }
+                            }
                         }
                     }
                     .bottom-part {
