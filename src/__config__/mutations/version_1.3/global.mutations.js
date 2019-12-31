@@ -485,7 +485,25 @@ export default {
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
-  }
+  },
+  isRequestUpdata(state, { tabPanel, index }) {
+    let arr = [];
+    arr = tabPanel.map(item => item.isRequest);
+    arr[0] = true;
+    arr[index] = true;
+    const oldRequestData = state.isRequest;
+    if (oldRequestData.length > 0) {
+      arr.forEach((a, i) => {
+        if (arr[i] !== true) {
+          arr[i] = oldRequestData[i];
+        }
+      }); 
+    }
+    state.isRequest = arr;
+  },
+  emptyTestData(state) { // 清空TestData
+    state.isRequest = [];
+  },
   
   
 };

@@ -151,7 +151,7 @@
         objectButtonComponent: '', // 单对象按钮组件
         objectTableComponent: '', // 单对象表格组件
         customizeComponent: '', // 自定义组件
-
+        isRequest: false,
       };
     },
     components: {

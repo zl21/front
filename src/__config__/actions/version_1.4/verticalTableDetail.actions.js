@@ -40,6 +40,7 @@ export default {
     tabIndex,
     itemTabelPageInfo,
   }) {
+
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
@@ -52,7 +53,10 @@ export default {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
-        } else {
+        } else if(type==='refresh'){
+            resData.type = 'refresh';
+            commit('updateTabPanelsData', resData, itemTabelPageInfo);
+        }else {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
@@ -85,6 +89,7 @@ export default {
                 
                
                 if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                 
                   const formParam = {
                     table: firstReftab.tablename,
                     inlinemode: firstReftab.tabinlinemode,

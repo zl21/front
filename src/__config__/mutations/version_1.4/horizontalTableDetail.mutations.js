@@ -61,6 +61,21 @@ export default {
       obj.tableDefaultFixedcolumns = {}; // 单对象子表表格默认搜索条件
       arr.push(obj);
     });
+    // if (data.type === 'refresh') {
+    //   state.updateData[arr[0].tablename] = {
+    //     add: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     modify: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     modifyLabel: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     itemBeforeLabel: Object.assign({}, { [arr[0].tablename]: {} }), // 子表表格改以前的label
+    //     delete: Object.assign({}, { [arr[0].tablename]: {} }),
+    //     addDefault: {},
+    //     default: {},
+    //     defaultLabel: {},
+    //     checkedInfo: {},
+    //     changeData: {}
+    //     // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+    //   };
+    // } else {
     arr.forEach((item) => {
       state.updateData[item.tablename] = {
         add: Object.assign({}, { [item.tablename]: {} }),
@@ -72,9 +87,13 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
+    // }
+
+    
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateDefaultButton(state, data) {
@@ -169,6 +188,7 @@ export default {
   },
   updateChangeData(state, data) {
     data = JSON.parse(JSON.stringify(data));
+
     if (state.updateData[data.tableName]) {
       state.updateData[data.tableName].changeData = Object.assign(data.value, {});
       state.updateData = Object.assign({}, state.updateData);
@@ -371,6 +391,25 @@ export default {
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
   },
+  // testUpdateData(state, itemName) { // 检测数据变化
+  //   const { tableName, itemId } = router.currentRoute.params;
+  //   if (itemId === 'New') { // 单对象新增界面
+  //     const addDataForItemTable = state.updateData[tableName].add[itemName];
+  //     const addDataForMainTable = state.updateData[tableName].add[tableName];
+  //     if (JSON.stringify(addDataForItemTable) === '{}' && JSON.stringify(addDataForMainTable) === '{}') {
+  //       this.state.global.testData = true;
+  //     } 
+  //   } // 单对象编辑界面
+  //   const modifyDataForItemTable = state.updateData[tableName].modify[itemName];
+  //   const modifyDataForMainTable = state.updateData[tableName].modify[tableName];
+
+  //   if (JSON.stringify(modifyDataForItemTable) === '{}' && JSON.stringify(modifyDataForMainTable) === '{}') {
+  //     debugger;
+  //     this.state.global.testData = true;
+  //   }
+  //   this.state.global.testData = false;
+  // },
+ 
   updateWebConf(state, data) { // 更新主表配置WebConf
     state.WebConf = data;
   }

@@ -19,7 +19,12 @@ export default {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);
         } else if (!isNotFirstRequest) {
-          commit('updateTabPanelsData', resData);
+          if(type==='refresh'){
+            resData.type = 'refresh';
+            commit('updateTabPanelsData', resData);
+          }else{
+            commit('updateTabPanelsData', resData);
+          }
         }
         commit('updateWebConf', resData.webconf);
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {

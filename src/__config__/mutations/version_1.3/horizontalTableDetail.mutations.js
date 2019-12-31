@@ -69,7 +69,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData:{}
+        //  Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
@@ -365,5 +366,24 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
-  }
+  },
+  // testUpdateData(state, itemName) { // 检测数据变化
+  //   const { tableName, itemId } = router.currentRoute.params;
+  //   if (itemId === 'New') { // 单对象新增界面
+  //     const addDataForItemTable = state.updateData[itemName].add[itemName];
+  //     const addDataForMainTable = state.updateData[tableName].add[tableName];
+  //     if (JSON.stringify(addDataForItemTable) === '{}' && JSON.stringify(addDataForMainTable) === '{}') {
+  //       state.testData = false;
+  //     } else {
+  //       state.testData = true;
+  //     }
+  //   } // 单对象编辑界面
+  //   const modifyDataForItemTable = state.updateData[itemName].modify[itemName];
+  //   const modifyDataForMainTable = state.updateData[tableName].modify[tableName];
+  //   if (JSON.stringify(modifyDataForItemTable) === '{}' && JSON.stringify(modifyDataForMainTable) === '{}') {
+  //     state.testData = false;
+  //   } else {
+  //     state.testData = true;
+  //   }
+  // },
 };

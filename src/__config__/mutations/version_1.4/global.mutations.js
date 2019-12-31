@@ -312,6 +312,7 @@ export default {
       }
     });
     
+    state.isRequest = [];// 清空修改数据验证
 
     const { openedMenuLists } = state;
     // 如果关闭某个Tab，则清空所有该模块可能的对应的keepAlive信息。
@@ -493,7 +494,26 @@ export default {
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     // state.serviceIdMap[tableName] = `${gateWay}`;
-  }
+  },
+
+  isRequestUpdata(state, { tabPanel, index }) {
+    let arr = [];
+    arr = tabPanel.map(item => item.isRequest);
+    arr[0] = true;
+    arr[index] = true;
+    const oldRequestData = state.isRequest;
+    if (oldRequestData.length > 0) {
+      arr.forEach((a, i) => {
+        if (arr[i] !== true) {
+          arr[i] = oldRequestData[i];
+        }
+      }); 
+    }
+    state.isRequest = arr;
+  },
+  emptyTestData(state) { // 清空TestData
+    state.isRequest = [];
+  },
 
   
 };
