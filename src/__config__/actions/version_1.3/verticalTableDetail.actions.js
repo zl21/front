@@ -261,30 +261,8 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tableName
+      tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
     } = parame;
-    const {
-      add
-    } = parame;
-    const {
-      objId
-    } = parame;
-    const {
-      type
-    } = parame;
-    const {
-      itemName
-    } = parame;
-    const {
-      itemCurrentParameter
-    } = parame;
-    const {
-      isreftabs
-    } = parame;
-    const {
-      itemNameGroup
-    } = parame;
-    const { sataType } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
@@ -349,7 +327,7 @@ export default {
           }
         };
       }
-      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -565,7 +543,7 @@ export default {
           before: value,
         };
       }
-      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
