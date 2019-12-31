@@ -81,7 +81,7 @@ module.exports = env => ({
   target: 'web',
   devtool: env && env.production ? 'source-map' : 'cheap-module-eval-source-map',
   output: {
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     chunkFilename: '[name].js',
     path: path.join(__dirname, './dist'),
     publicPath: '/',
