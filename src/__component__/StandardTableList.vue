@@ -3,7 +3,7 @@
 <template>
   <div
     :id="buttons.tableName"
-    class="StandardTableListRootDiv"
+    class="StandardTableListRootDiv r398"
   >
     <ButtonGroup
       :data-array="buttons.dataArray"
