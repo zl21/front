@@ -27,6 +27,7 @@ export default {
             commit('updateTabPanelsData', resData);
           }
         }
+        commit('updateWebConf', resData.webconf);
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
@@ -160,7 +161,7 @@ export default {
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
-      tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType , temporaryStoragePath
+      tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};

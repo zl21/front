@@ -26,6 +26,7 @@ export default {
             commit('updateTabPanelsData', resData);
           }
         }
+        commit('updateWebConf', resData.webconf);
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,

@@ -46,6 +46,7 @@ export default () => ({
       globalLoading: ({ globalLoading }) => globalLoading,
       testData: ({ testData }) => testData,
       tempStorage: ({ tempStorage }) => tempStorage,
+      WebConf: ({ WebConf }) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });

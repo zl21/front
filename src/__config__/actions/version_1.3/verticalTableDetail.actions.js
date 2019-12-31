@@ -59,6 +59,7 @@ export default {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
+        commit('updateWebConf', resData.webconf);
 
         if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];

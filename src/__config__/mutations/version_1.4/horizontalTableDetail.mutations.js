@@ -410,4 +410,7 @@ export default {
   //   this.state.global.testData = false;
   // },
  
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
+  }
 };
