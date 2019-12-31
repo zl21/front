@@ -1,11 +1,20 @@
 <template>
-    <div class="searchFormContainer">
-        <DownComponent :searchFoldnum="searchFoldnum" :setHeight="setHeight" :rowAll="rowAll">
-            <FormLayout slot="dwonContent" class="formLayout"
-                        :defaultColumn="defaultColumn"
-                        :defaultconfig="defaultconfig" ref="FormLayout"></FormLayout>
-        </DownComponent>
-    </div>
+  <div class="searchFormContainer">
+    <DownComponent
+      :search-foldnum="searchFoldnum"
+      :set-height="setHeight"
+      :row-all="rowAll"
+      @on-toggle="toggle"
+    >
+      <FormLayout
+        slot="dwonContent"
+        ref="FormLayout"
+        class="formLayout"
+        :default-column="defaultColumn"
+        :defaultconfig="defaultconfig"
+      />
+    </DownComponent>
+  </div>
 </template>
 
 <script>
@@ -56,6 +65,9 @@
     methods: {
       verifyMessage() {
         return this.$refs.FormLayout.verifyMessage();
+      },
+      toggle(value) {
+        console.log(value);
       }
     }
   };
