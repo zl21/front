@@ -47,6 +47,7 @@ export default () => ({
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
       testData: ({ testData }) => testData,
+      tempStorage: ({ tempStorage }) => tempStorage,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
