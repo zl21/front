@@ -1567,7 +1567,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 },
                 'on-open-change': (state, data) => {
                   if (!state) {
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
                   }
                 }
               }
