@@ -56,7 +56,7 @@ export default {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
-
+        commit('updateWebConf', resData.webconf);
         if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
@@ -258,32 +258,9 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tableName
-    } = parame;
-    const {
-      objId
-    } = parame;
-    const {
-      path
-    } = parame;
-    const {
-      type
-    } = parame;
-    const {
-      itemName
-    } = parame;
-    const {
-      itemCurrentParameter
-    } = parame;
-    const {
-      isreftabs
-    } = parame;
-    const {
-      itemNameGroup
+      tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
     } = parame;
     let parames = {};
-    
-
     if (type === 'add') { // 新增保存参数
       const {
         add
@@ -517,7 +494,9 @@ export default {
         };
       }
     }
-    network.post(path || '/p/cs/objectSave', parames).then((res) => {
+
+    
+    network.post(temporaryStoragePath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
         resolve();

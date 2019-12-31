@@ -391,4 +391,7 @@ export default {
   updatetooltipForItemTableData(state, data) { // 表格操作单条明细失败返回值
     state.tooltipForItemTable = data;
   },
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
+  }
 };

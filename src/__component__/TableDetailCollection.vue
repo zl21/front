@@ -527,7 +527,7 @@
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
 // AD_TABLE/992/24369
-if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由 
+if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
           if (!row._TABLENAME || !row._TABLEID  || !row._OBJID) {
@@ -560,7 +560,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             id: row._OBJID,
             serviceId: row._SERVICEID ? row._SERVICEID : null
           });
-        } 
+        }
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -1481,8 +1481,8 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             on: {
               'on-change': (event, data) => {
                 this.copyDataSource.row[params.index][cellData.colname].val = event.target.value;
-                this.putDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, event.target.value);
+                this.putDataFromCell(event.target.value, this.dataSource.row[params.index][cellData.colname].val, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(event.target.value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               },
               'on-focus': (e, i) => {
               },
@@ -1567,7 +1567,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 },
                 'on-open-change': (state, data) => {
                   if (!state) {
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
                   }
                 }
               }
@@ -1941,7 +1943,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                   acc.push(cur.Label);
                   return acc;
                 }, []).join(',');
-                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid.toString() : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
                 this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               },
               'on-clear': (value) => {
@@ -1974,6 +1976,17 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               id: `${params.index}-${params.column._index - 1}`
             },
             props: {
+              // defaultSelected: this.dataSource.row[params.index][cellData.colname].refobjid === -1 ? [] : this.dataSource.row[params.index][cellData.colname].refobjid.split(',').reduce((acc, cur, idx) => {
+              //   this.dataSource.row[params.index][cellData.colname].val.split(',').forEach((item, ind) => {
+              //   if (idx === ind) {
+              //     acc.push({
+              //       ID: cur.toString(),
+              //       Label: item
+              //     });
+              //   }
+              // });
+              // return acc;
+              // }, []),
               defaultSelected: this.dropDefaultSelectedData(params, cellData),
               // defaultSelected: () =>{},
               single: cellData.fkdisplay === 'drp',
@@ -2239,6 +2252,12 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               'on-fkrp-selected': (data, value) => {
                 this.fkAutoData = [];
                 if (this.fkSelectedChangeData[params.index]) {
+                  if (data.length === 0) {
+                    data = [{
+                      Label: '',
+                      ID: ''
+                    }];
+                  }
                   this.fkSelectedChangeData[params.index] = Object.assign(this.fkSelectedChangeData[params.index], { [cellData.key]: data });
                 } else {
                   this.fkSelectedChangeData[params.index] = Object.assign({}, { [cellData.key]: data });
@@ -2254,9 +2273,12 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 const labelValue = data.reduce((acc, cur) => {
                   acc.push(cur.Label);
                   return acc;
-                }, []).join(',');
-                this.putDataFromCell(ids, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell(labelValue, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, ids);
+                }, []).sort().join(',');
+                const oldLabelValue = this.dataSource.row[params.index][cellData.colname].val.split(',').sort().join(',');
+                const idValues = ids ? ids.split(',').sort((a, b) => a - b).join(',') : null;
+                const oldIdValues = this.dataSource.row[params.index][cellData.colname].refobjid === -1 ? null : this.dataSource.row[params.index][cellData.colname].refobjid.split(',').sort((a, b) => a - b).join(',');
+                this.putDataFromCell(idValues, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell(labelValue, oldIdValues, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldLabelValue);
               },
               'on-clear': (value) => {
                 if (this.fkSelectedChangeData[params.index]) {
@@ -2271,8 +2293,8 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 }
                 this.copyDataSource.row[params.index][cellData.colname].val = '';
                 this.fkAutoData = [];
-                this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
-                this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, null);
+                this.putDataFromCell(null, this.dataSource.row[params.index][cellData.colname].refobjid !== -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type, cellData.fkdisplay);
+                this.putLabelDataFromCell('', this.dataSource.row[params.index][cellData.colname].refobjid > -1 ? this.dataSource.row[params.index][cellData.colname].refobjid : null, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
               }
             }
           })
@@ -2634,14 +2656,18 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             on: {
               'on-change': (event, dateType, data) => {
                 let value = event;
+                let oldIdValue = this.dataSource.row[params.index][cellData.colname].val;
                 if (cellData.display === 'OBJ_DATENUMBER') {
                   //  YYYYmmdd
                   if (value) {
                     value = value.replace(/\-/g, '');
                   }
+                  if (oldIdValue) {
+                    oldIdValue = oldIdValue.replace(/\-/g, '');
+                  }
                 }
-                this.putDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
-                this.putLabelDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, value);
+                this.putDataFromCell(value, oldIdValue, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                this.putLabelDataFromCell(value, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, oldIdValue);
               }
             }
           })
@@ -3109,6 +3135,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         if (Version() === '1.3' && !currentValue) {
           currentValue = null;
         }
+        if (Version() === '1.3' && !oldValue) {
+          oldValue = null;
+        }
 
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
@@ -3128,7 +3157,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.afterSendData[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          param[colname] = currentValue;
+          if (currentValue !== oldValue) {
+            param[colname] = currentValue;
+          }
           this.afterSendData[this.tableName].push(param);
         }
         // if (Version() === '1.3') {
@@ -3179,7 +3210,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
           oldIdValue = oldIdValue ? oldIdValue : '';
-          if (currentValue.toString() !== oldIdValue.toString()) {
+          if (currentValue !== oldIdValue) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3195,7 +3226,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.afterSendDataLabel[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          if (currentValue.toString() !== oldIdValue.toString()) {
+          if (currentValue !== oldIdValue) {
             param[colname] = currentValue;
           }
           this.afterSendDataLabel[this.tableName].push(param);
@@ -3209,7 +3240,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         const currentValue = tableDataSource.row.find(item => item[EXCEPT_COLUMN_NAME].val === IDValue)[colname].val;
         if (this.afterSendDataLabelBefore[this.tableName]) {
           const rowDatas = this.afterSendDataLabelBefore[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          if (value.toString() !== oldIdValue.toString()) {
+          if (value !== oldIdValue) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
             } else {
@@ -3225,7 +3256,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.afterSendDataLabelBefore[this.tableName] = [];
           const param = {};
           param[EXCEPT_COLUMN_NAME] = IDValue;
-          if (currentValue.toString() !== oldIdValue.toString()) {
+          if (value !== oldIdValue) {
             param[colname] = currentValue;
           }
           this.afterSendDataLabelBefore[this.tableName].push(param);

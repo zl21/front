@@ -36,6 +36,8 @@
   import ItemComponent from './ItemComponent';
   import StandardTable from './StandardTable';
   import { Version } from '../../constants/global';
+  import getObjdisType from '../../__utils__/getObjdisType';
+  
 
   export default {
     name: 'HistoricalProcess',
@@ -218,16 +220,24 @@
                       click: () => {
                         params.row.loadType = 0;
                         if (Version() === '1.4') {
-                          window.sessionStorage.setItem('dynamicRouting', true);
-                          window.jflowPlugin.router.push({
-                            path: params.row.formUrl
+                          getObjdisType({ table: params.row.formUrl.split('/')[4] }).then((res) => {
+                            const distype = res === 'tabpanle' ? 'H' : 'V';
+                            const arr = params.row.formUrl.split('/');
+                            arr[3] = distype;
+                            window.sessionStorage.setItem('dynamicRouting', true);
+                            window.jflowPlugin.router.push({
+                              path: arr.join('/')
+                            });
                           });
                         } else {
                           const query = this.urlParse(params.row.formUrl);
-                          const formUrl = `/SYSTEM/TABLE_DETAIL/V/${query.tableName}/${query.pid}/${query.id}`;
-                          window.sessionStorage.setItem('dynamicRouting', true);
-                          window.jflowPlugin.router.push({
-                            path: formUrl
+                          getObjdisType({ table: query.tableName }).then((res) => {
+                            const distype = res === 'tabpanle' ? 'H' : 'V';
+                            const formUrl = `/SYSTEM/TABLE_DETAIL/${distype}/${query.tableName}/${query.pid}/${query.id}`;
+                            window.sessionStorage.setItem('dynamicRouting', true);
+                            window.jflowPlugin.router.push({
+                              path: formUrl
+                            });
                           });
                         }
                       }

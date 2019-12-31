@@ -35,25 +35,25 @@
   export default {
     name: 'DownComponent',
     props: {
-      index: {
+      index: {// 暂无用到
         type: Number,
         default() {
           return 0;
         }
       },
-      setHeight: {
+      setHeight: {// 每行表单组件高度
         type: Number,
         default() {
           return 0;
         }
       },
-      rowAll: {
+      rowAll: {// 所有行数
         type: [Number, String],
         default() {
           return 0;
         }
       },
-      searchFoldnum: {
+      searchFoldnum: {// 默认显示几行
         type: [Number, String],
         default() {
           return 0;
@@ -89,6 +89,8 @@
       toggle() {
         this.dowClass = !this.dowClass;
         // 调整ag表格高度
+        this.$emit('on-toggle', this.dowClass);
+
         setTimeout(() => {
           const detailTable = document.querySelector('.detailTable');
           if (detailTable && detailTable.agTable) {

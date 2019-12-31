@@ -44,6 +44,7 @@ export default () => ({
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
+      WebConf: ({ WebConf }) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
