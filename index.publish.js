@@ -1,6 +1,8 @@
 import launchApp from './src/app.entry';
 import network, { urlSearchParams } from './src/__utils__/network';
 import getModuleName from './src/__utils__/getModuleName';
+import getObjdisType from './src/__utils__/getObjdisType';
+
 import store from './src/__config__/store.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
@@ -89,6 +91,7 @@ export default {
   getModuleName,
   menuClick,
   network,
+  getObjdisType,
   store,
   config: {
     extentionForColumn,

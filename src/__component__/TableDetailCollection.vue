@@ -3133,6 +3133,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         if (Version() === '1.3' && !currentValue) {
           currentValue = null;
         }
+        if (Version() === '1.3' && !oldValue) {
+          oldValue = null;
+        }
 
         if (this.afterSendData[this.tableName]) {
           const rowDatas = this.afterSendData[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);

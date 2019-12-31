@@ -96,6 +96,8 @@
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import getObjdisType from '../__utils__/getObjdisType';
+
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
 
@@ -572,9 +574,12 @@
       },
       clickButtonsTemporaryStorage() { // 暂存事件
         this.temporaryStorage = true;
-        if (this.tempStorage && this.tempStorage.isenable) {
-          if (this.tempStorage.path) {
-            this.temporaryStoragePath = this.tempStorage.path;
+        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+          if (this.tempStorage.temp_storage.path) {
+            this.temporaryStoragePath = this.tempStorage.temp_storage.path;
+            const dom = document.getElementById('actionMODIFY');
+            const myEvent = new Event('click');
+            dom.dispatchEvent(myEvent);    
           } else {
             const data = {
               mask: true,
@@ -584,9 +589,6 @@
             this.$Modal.fcWarning(data);
           }
         }
-        const dom = document.getElementById('actionMODIFY');
-        const myEvent = new Event('click');
-        dom.dispatchEvent(myEvent);              
       },
       clickExtraposition(obj) { // jflow方法
         DispatchEvent('jflowPlugin', {
