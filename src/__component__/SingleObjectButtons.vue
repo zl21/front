@@ -96,7 +96,6 @@
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
-  import getObjdisType from '../__utils__/getObjdisType';
 
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
@@ -2176,7 +2175,10 @@
             } else {
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
-                if (this.itemTableCheckFunc()) {
+               
+                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
               }
@@ -2185,7 +2187,9 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
-                if (this.itemTableCheckFunc()) {
+                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
@@ -2243,7 +2247,11 @@
             }
             if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
               // this.itemTableCheckFunc();// 校验子表表格必填项
-              if (this.itemTableCheckFunc()) {
+              
+
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+              } else if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 }
