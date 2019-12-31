@@ -96,6 +96,8 @@
     KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import getObjdisType from '../__utils__/getObjdisType';
+
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
 
@@ -551,6 +553,8 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
+      getObjdisType({ table: this.tableName }).then((res)=>{
+      })
         if (type === 'fix') {
           this.objectTabAction(obj);
         } else if (type === 'custom') {
