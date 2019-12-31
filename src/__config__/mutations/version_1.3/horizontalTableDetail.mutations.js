@@ -365,5 +365,8 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
+  },
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
   }
 };
