@@ -1635,12 +1635,24 @@
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
-            const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${
-              current.scale
-            }})?$`;
+            // 只能输入 正整数 
+            let string = '';
+
+            if (current.webconf && current.webconf.ispositive) {
+              string = `^\\d{0,${current.length}}(\\\.[0-9]{0,${
+                current.scale
+              }})?$`;
+            } else {
+              string = `^(-|\\+)?\\d{0,${current.length}}(\\\.[0-9]{0,${
+                current.scale
+              }})?$`;
+            }
+            
             const typeRegExp = new RegExp(string);
             if (current.scale > 0) {
               item.props.regx = typeRegExp;
+            } else if (current.webconf && current.webconf.ispositive) {
+              item.props.regx = regExp.Number;
             } else {
               item.props.regx = regExp.Digital;
             }
@@ -1891,6 +1903,7 @@
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
           let readonly = current.readonly;
+          console.log(getGateway('/p/cs/upload2'));
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,

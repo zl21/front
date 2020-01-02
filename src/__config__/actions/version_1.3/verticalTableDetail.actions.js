@@ -345,8 +345,13 @@ export default {
       let itemModifyLabel = {};// 子表修改的label
       let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) { // 子表取值
-        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
+        if (temporaryStoragePath) { // 开启暂存
+          itemModifyLabel = {};// 子表修改的label
+          itemBeforeLabel = {};// before值
+        } else {
+          itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+          itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
+        }
       }
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
@@ -365,18 +370,35 @@ export default {
       const labelregroupTableName = {// label修改过后的值
         [tableName]: labelregroup
       };
-      const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
-      const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      let itemModify = {};
+      let itemAdd = {};
+      if (temporaryStoragePath) { // 暂存
+        itemModify = {};// 子表修改
+        itemAdd = {};// 子表新增
+      } else {
+        itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
+        itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      }
+     
       const sataTypeName = sataType ? sataType.sataType : '';
+
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
+
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-        Object.assign(itemAdd[itemName], add);
+
+        if (itemAdd && itemAdd[itemName]) {
+          Object.assign(itemAdd[itemName], add);
+        }
+        
         const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
-        itemTableAdd[itemName] = [
-          itemTableAdd[itemName]
-        ];
+
+        if (itemTableAdd && itemTableAdd[itemName]) {
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+        }
        
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
@@ -435,34 +457,29 @@ export default {
       } else if (sataTypeName === 'addAndModify') {
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-        Object.assign(itemAdd[itemName], add);
-        const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
-        itemTableAdd[itemName] = [
-          itemTableAdd[itemName]
-        ];
         const itemAddAndModify = {};
-        itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
-        // 子表新增保存
-        // if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) {
-        //   parames = {
-        //     table: tableName, // 主表表名
-        //     objid: objId, // 明细id
-        //     data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        //       ...itemTableAdd
-        //     }
-        //   };
-        // } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemAdd[itemName]).length === 0) { // 子表修改保存
-        //   parames = {
-        //     table: tableName,
-        //     objid: objId,
-        //     data: { ...itemModify },
-        //     after: { ...itemModifyLabel },
-        //     before: itemBeforeLabel
 
-        //   };
-        // } else 
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
+        if (itemAdd && itemAdd[itemName]) {
+          Object.assign(itemAdd[itemName], add);
+        }
+
+        const itemTableAdd = Object.assign({}, itemAdd);
+        if (itemTableAdd && itemTableAdd[itemName]) {
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+        }
+        if (itemAddAndModify && itemAddAndModify[itemName]) {
+          itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
+        }
+        if (itemAdd[itemName]
+          && itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+          && modify[tableName]
+          && Object.values(modify[tableName]).length > 0 
+          && itemModify[itemName]
+          && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -478,7 +495,12 @@ export default {
               ...value,
             } 
           };
-        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
+        } else if (itemModify[itemName]
+          && Object.values(itemModify[itemName]).length > 0
+          && modify[tableName]
+           && Object.values(modify[tableName]).length > 0 
+           && itemAdd[itemName]
+           && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -497,7 +519,13 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
+        } else if (
+          itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+           && itemModify[itemName]
+          && Object.values(itemModify[itemName]).length > 0
+          && modify[tableName]
+           && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
           parames = {
             table: tableName,
             objid: objId,
@@ -512,9 +540,14 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
+        } else if (
+          itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+          && itemModify[itemName]
+           && Object.values(itemModify[itemName]).length > 0 
+           && modify[tableName]
+           && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
-        
           parames = {
             table: tableName,
             objid: objId,
@@ -532,6 +565,23 @@ export default {
               ...itemBeforeLabel
             } 
           };
+        } else if (temporaryStoragePath) {
+          if (Object.values(modify[tableName]).length > 0) {
+            const value = Object.assign({}, modify, labelregroupTableName);
+            parames = {
+              table: tableName,
+              objid: objId,
+              data: {
+                ...modify,
+              },
+              after: { 
+                ...modifyLabel,
+              },
+              before: {
+                ...value,
+              } 
+            };
+          } 
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);

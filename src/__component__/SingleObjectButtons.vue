@@ -1579,9 +1579,9 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                      // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                      // }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -2272,7 +2272,7 @@
               
 
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
@@ -2400,7 +2400,7 @@
           path,
           itemName,
           objectType,
-          isreftabs,
+          isreftabs: this.temporaryStoragePath ? false : isreftabs,
           sataType,
           itemNameGroup,
           temporaryStoragePath: this.temporaryStoragePath

@@ -2,6 +2,7 @@
   <div class="searchFormContainer">
     <DownComponent
       :search-foldnum="searchFoldnum"
+      :default-spread="defaultSpread"
       :set-height="setHeight"
       :row-all="rowAll"
       @on-toggle="toggle"
@@ -53,6 +54,11 @@
         //   form默认展示列
         type: Number,
         default: 4
+      },
+      defaultSpread: {
+        // 默认不展开
+        type: Boolean,
+        default: true
       },
       defaultconfig: {
         //   form默认配置
