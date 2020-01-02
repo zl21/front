@@ -61,7 +61,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
+  import { getTouristRoute, enableInitializationRequest, Version } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -121,7 +121,7 @@
                     } else if (param.name === 'queryDisNumber') {
                       this.num7 = Number(param.value);
                       if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                        this.$store.commit(`${moduleName()}/updateModifySearchFoldnum`, param.value);
+                        this.$store.commit('global/updateModifySearchFoldnum', param.value);
                       } 
                     }
                   });
