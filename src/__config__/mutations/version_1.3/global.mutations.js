@@ -12,6 +12,7 @@ import router from '../../router.config';
 import customize from '../../customize.config';
 import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
+import DispatchEvent from '../../../__utils__/dispatchEvent';
 
 
 export default {
@@ -94,6 +95,7 @@ export default {
       state.collapseHistoryAndFavorite = showFavorites;
     }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+    DispatchEvent('doCollapseHistoryAndFavorite');
   },
   updateHistoryAndFavorite(state, {
     history,
@@ -485,7 +487,10 @@ export default {
   },
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
-  }
+  },
+  updateModifySearchFoldnum({ formItems }, data) {
+    formItems.changeSearchFoldnum = data;
+  },
   
   
 };

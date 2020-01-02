@@ -12,6 +12,7 @@ import {
   updateSessionObject
 } from './sessionStorage';
 
+let tableNameForGet = '';
 const pendingRequestMap = {};
 window.pendingRequestMap = pendingRequestMap;
 
@@ -35,9 +36,9 @@ const matchGateWay = (url) => {
   if (globalGateWay.includes(url)) {
     return globalServiceId || undefined;
   }
-  if (tableName) {
-    if (serviceIdMap[tableName] !== 'undefined') {
-      const serviceIdMapApi = serviceIdMap[tableName];
+  if (tableName || tableNameForGet) {
+    if (serviceIdMap[tableName || tableNameForGet] !== 'undefined') {
+      const serviceIdMapApi = serviceIdMap[tableName || tableNameForGet];
       return serviceIdMapApi || undefined;
     }
   } else if (customizedModuleName) {
@@ -115,7 +116,7 @@ axios.interceptors.response.use(
       //   title: '错误',
       //   content: response.data.message || response.data.msg || 'No Error Message.'
       // });
-      const errorHTML = Array.isArray(response.data.error) && response.data.error.reduce((arr, x) => {
+      const errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
         arr.push(`<p>objid${x.objid}:${x.message}</p>`); return arr; 
       }, []).join('') || '';
       window.vm.$Modal.fcError({
@@ -293,10 +294,8 @@ axios.interceptors.response.use(
 export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
-  
   // const serviceName = store.state.global.activeTab.tableName;
-  const serviceName = router.currentRoute.params.tableName;
-
+  const serviceName = router.currentRoute.params.tableName ? router.currentRoute.params.tableName : tableNameForGet;
   if (!(enableGateWay())) {
     return url;
   }
@@ -406,6 +405,9 @@ function NetworkConstructor() {
   // make axios available
   this.axios = axios;
 }
+export const GetTableName = ({ tableName }) => {
+  tableNameForGet = tableName;
+};
 
 const network = new NetworkConstructor();
 

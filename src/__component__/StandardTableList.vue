@@ -16,7 +16,7 @@
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
       :default-column="4"
-      :search-foldnum="formItems.searchFoldnum"
+      :search-foldnum="changeSearchFoldnum || formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -163,8 +163,8 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
-        exportTasks: ({ exportTasks }) => exportTasks
-
+        exportTasks: ({ exportTasks }) => exportTasks,
+        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum
       }),
       formLists() {
         return this.refactoringData(
@@ -924,7 +924,10 @@
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }
-        this.formItemsLists = this.formItemsLists.concat([]);
+        // this.formItemsLists = this.formItemsLists.concat([]);
+        if (this.$refs.FormItemComponent) {
+          this.$refs.FormItemComponent.FormItemLists[index].item.props.AutoData = res.data.data;
+        }
       },
       lowercaseToUppercase(index) {
         // 将字符串转化为大写

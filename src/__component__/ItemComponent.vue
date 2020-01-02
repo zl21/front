@@ -528,24 +528,35 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
+        let valLength = this._items.props.length;
+
+        if (this._items.value.split('.').length > 1) {
+          valLength = this._items.props.length + 1;
+        } else if (this._items.value.split('-').length > 1) {
+          valLength = this._items.props.length + 1;
+        }
+        if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
+          valLength = this._items.props.length + 2;
+        }
+        let string = '';
+        let regxString = '';
+        if (this._items.props.webconf && this._items.props.webconf.ispositive) {
+          regxString = '';
+        } else {
+          regxString = '(-|\\+)?';
+        }
         if (this._items.props.scale > 0) {
-          if (this._items.value.split('.').length > 1) {
-            const string = `^\\\d{0,${this._items.props.length + 1}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-            const typeRegExp = new RegExp(string);
-            this._items.props.regx = typeRegExp;
-            this._items.props.maxlength = this._items.props.length + 1;
-          } else {
-            const stringII = `^\\\d{0,${this._items.props.length}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-            const typeRegExpII = new RegExp(stringII);
-            this._items.props.regx = typeRegExpII;
-            this._items.props.maxlength = this._items.props.length;
-          }
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
+            this._items.props.scale
+          }})?$`;
+        } else {
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
         }
         
+        const typeRegExp = new RegExp(string);
+        this._items.props.regx = typeRegExp;
+        this._items.props.maxlength = valLength;
+
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
           && typeof this._items.event.change === 'function'

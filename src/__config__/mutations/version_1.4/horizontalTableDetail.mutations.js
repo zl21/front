@@ -72,7 +72,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
@@ -264,7 +265,6 @@ export default {
     state.updateData = Object.assign({}, state.updateData);
     state.tabPanels[0].componentAttribute.panelData.data = copyDatas.data;// 替换panelData新增逻辑接口返回数据，将上一界面值重新赋值给form
     state.tabPanels[0].componentAttribute.panelData.data.copy = true;
-
   },
   emptyChangeData(state, tableName) {
     state.updateData[tableName].changeData = {};
@@ -371,5 +371,8 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
+  },
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
   }
 };

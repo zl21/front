@@ -21,6 +21,7 @@ export default {
         } else if (!isNotFirstRequest) {
           commit('updateTabPanelsData', resData);
         }
+        commit('updateWebConf', resData.webconf);
         if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
@@ -121,15 +122,12 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
-    const { tableName } = parame;
-    const { objId } = parame;
     // const { path } = parame;
-    const { type } = parame;
-    const { itemName } = parame;
-    const { itemCurrentParameter } = parame;
     // const { isreftabs } = parame;
     // const { itemNameGroup } = parame;
-    const { sataType } = parame;
+    const {
+      sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
+    } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -141,7 +139,7 @@ export default {
           ...add
         }
       };
-      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -370,7 +368,7 @@ export default {
       //     before: value
       //   };
       // }
-      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
