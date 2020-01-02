@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                  >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -526,7 +526,7 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
-// AD_TABLE/992/24369
+
 if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
@@ -552,13 +552,22 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             this.$Modal.fcWarning(data);
             return;
           }
+          // AD_TABLE/992/24369
+          // this.tabHref({
+          //   type,
+          //   label: row.reftabdesc,
+          //   tableName: 'AD_TABLE',
+          //   tableId: 992,
+          //   id:'New',
+          //   serviceId: 'ad-app'
+          // });
           this.tabHref({
             type,
-            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
+            label: row.reftabdesc,
             tableName: row._TABLENAME,
-            tableId: row._TABLEID ,
+            tableId: row._TABLEID,
             id: row._OBJID,
-            serviceId: row._SERVICEID ? row._SERVICEID : null
+            serviceId: row._SERVICEID
           });
         }
       },

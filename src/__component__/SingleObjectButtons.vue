@@ -1473,14 +1473,30 @@
 
         // 单对象界面配置动态路由
         const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+        const routeMapRecordForNew = getSeesionObject('routeMapRecord');
+
         const currentPath = this.$router.currentRoute.path;
+
        
-        const newSinglePage = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+        const newListPageRouteNew = keepAliveModuleName.substring(currentPath.indexOf('.') + 1, currentPath.lastIndexOf('.'));        
+
         let routeMapRecordForSingleObjectNew = '';
+        const routeMapRecordForListNew = {
+          to: '',
+          from: ''
+        };
+
         if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
           Object.keys(routeMapRecordForSingleObject).map((item) => {
-            if (item.indexOf(newSinglePage) > -1) {
+            if (item.indexOf(SinglePageRouteNew) > -1) {
               routeMapRecordForSingleObjectNew = item;
+            }
+          });
+          Object.keys(routeMapRecordForNew).map((item) => {
+            if (item.indexOf(newListPageRouteNew) > -1) {
+              routeMapRecordForListNew.to = item;
+              routeMapRecordForListNew.from = routeMapRecordForNew[item];
             }
           });
         }
@@ -1509,6 +1525,24 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
           this.clickButtonsRefresh();
+        } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
+          const param = {
+            type: tabUrl,
+            url: routeMapRecordForListNew.from
+          };
+          this.tabOpen(param);
+          if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
+            const deleteValue = {
+              k: 'keepAliveModuleName',
+              v: routeMapRecordForListNew.to
+            };
+            updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          } else {
+            deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
+          }
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else {
           const param = {
             tableId,
@@ -2185,7 +2219,7 @@
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
                 if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
@@ -2238,7 +2272,7 @@
               
 
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
