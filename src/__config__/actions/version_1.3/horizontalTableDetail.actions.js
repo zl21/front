@@ -130,6 +130,7 @@ export default {
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
+   
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       parames = {
@@ -183,7 +184,15 @@ export default {
           [tableName]: labelregroup
         };
       }
-      if (tableName === itemName) { // 主表修改
+      if (temporaryStoragePath) {
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: modify,
+          after: modifyLabel,
+          before: labelregroupTableName,
+        };
+      } else if (tableName === itemName) { // 主表修改
         parames = {
           table: tableName,
           objid: objId,
@@ -200,7 +209,7 @@ export default {
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
-
+  
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -239,7 +248,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -322,7 +331,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -341,7 +350,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -358,16 +367,7 @@ export default {
           before: labelregroupTableName,
         };
       }
-      // else { // 主表修改
-      //   const value = Object.assign({}, modify, labelregroupTableName);
-      //   parames = {
-      //     table: tableName,
-      //     objid: objId,
-      //     data: modify,
-      //     after: modifyLabel,
-      //     before: value
-      //   };
-      // }
+    
       network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;

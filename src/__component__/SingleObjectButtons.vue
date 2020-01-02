@@ -1579,9 +1579,9 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                      // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                      // }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
