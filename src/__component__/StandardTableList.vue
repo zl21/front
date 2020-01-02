@@ -16,7 +16,7 @@
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
       :default-column="4"
-      :search-foldnum="formItems.searchFoldnum"
+      :search-foldnum="changeSearchFoldnum || formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -163,8 +163,8 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         keepAliveLabelMaps: ({ keepAliveLabelMaps }) => keepAliveLabelMaps,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
-        exportTasks: ({ exportTasks }) => exportTasks
-
+        exportTasks: ({ exportTasks }) => exportTasks,
+        changeSearchFoldnum: ({ changeSearchFoldnum }) => changeSearchFoldnum
       }),
       formLists() {
         return this.refactoringData(

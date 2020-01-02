@@ -539,17 +539,23 @@
           valLength = this._items.props.length + 2;
         }
         let string = '';
+        let regxString = '';
+        if (this._items.props.webconf && this._items.props.webconf.ispositive) {
+          regxString = '';
+        } else {
+          regxString = '(-|\\+)?';
+        }
         if (this._items.props.scale > 0) {
-          string = `^(-|\\+)?\\d{0,${valLength}}(\\\.[0-9]{0,${
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
             this._items.props.scale
           }})?$`;
         } else {
-          string = `^(-|\\+)?\\d{0,${valLength}}(\\\.[0-9])?$`;
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
         }
+        
         const typeRegExp = new RegExp(string);
         this._items.props.regx = typeRegExp;
         this._items.props.maxlength = valLength;
-        console.log(valLength, 'valLength');
 
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
