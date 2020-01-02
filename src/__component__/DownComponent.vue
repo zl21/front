@@ -75,16 +75,29 @@
     data() {
       return {
         dowClass: false,
+        spread: true
       };
+    },
+    watch: {
+      defaultSpread(val) {
+        // 查看是否展开
+        this.spread = val;
+        if (this.spread === false) {
+          this.dowClass = true;
+        } else {
+          this.dowClass = false;
+        }
+      }
     },
     computed: {
       className() {
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       },
       downComponent() {
-        if (this.defaultSpread) {
+        if (this.spread) {
           return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
         }
+
         if (this.dowClass === true) {
           return 'max-height:30000px;transition:max-height 0.3s;';
         }
@@ -113,7 +126,7 @@
     },
     mounted() {
       if (this.defaultSpread === false) {
-        this.dowClass = true;
+        this.spread = this.defaultSpread;
       }
     }
 
