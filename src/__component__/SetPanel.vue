@@ -30,7 +30,7 @@
           <i-switch
             v-model="switchValue"
             class="switch"
-            @on-change="switchChange()"
+            @on-change="switchChange(switchValue)"
           />
         </p>
       </div>
@@ -135,11 +135,13 @@
       changePwd() {
         this.$emit('changePwdBox');
       },
-      switchChange() {
+      switchChange(switchValue) {
         const param = {
           name: 'isFoldCond',
           value: this.switchValue
         };
+        this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue });
+
         network
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then(() => {
@@ -161,7 +163,7 @@
             if (res.data.code === 0) {
               if (moduleName()) {
                 if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                  this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
                 }
               }
             }

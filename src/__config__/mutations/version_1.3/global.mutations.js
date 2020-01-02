@@ -488,8 +488,8 @@ export default {
   addServiceIdMap(state, { tableName, gateWay }) {
     state.serviceIdMap[tableName] = `${gateWay}`;
   },
-  updateModifySearchFoldnum({ formItems }, data) {
-    formItems.changeSearchFoldnum = data;
+  updateModifySearchFoldnum(state, data) {
+    state.changeSearchFoldnum = data;
   },
   
   

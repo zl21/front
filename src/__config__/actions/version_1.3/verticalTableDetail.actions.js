@@ -365,8 +365,16 @@ export default {
       const labelregroupTableName = {// label修改过后的值
         [tableName]: labelregroup
       };
-      const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
-      const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      let itemModify = {};
+      let itemAdd = {};
+      if (temporaryStoragePath) { // 暂存
+        itemModify = itemCurrentParameter ? itemCurrentParameter.modify = {} : {};// 子表修改
+        itemAdd = itemCurrentParameter ? itemCurrentParameter.add = {} : {};// 子表新增
+      } else {
+        itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
+        itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      }
+     
       const sataTypeName = sataType ? sataType.sataType : '';
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
