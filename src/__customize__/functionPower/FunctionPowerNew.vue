@@ -51,18 +51,27 @@
                 </div>
                 <div class="right-list">
                     <div class="upper-part">
-                        <div class="upper-table" id="upperTable">
+                        <div class="upper-table" ref="upperTable">
                             <div class="upper-table-tabth">
                                 <table>
-                                    <tr style="display: flex">
-                                        <th style="flex: 1" class="functionColumnClass" :style="{width: `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="item in tableTabth" :style="{'min-width': `${theadThMinWidth}px`}">
+                                    <tr>
+                                        <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
+                                        <th v-for="(item, index) in tableTabth" :key="index" :style="{width: theadThMinWidth}">
                                             <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
                                 </table>
                             </div>
-                            <div class="upper-table-tabtd"></div>
+                            <div class="upper-table-tabtd">
+                                <table>
+                                    <tr v-for="(item, index) in tableData" :key="index">
+                                        <td ref="functionColumnTd">{{item.description}}</td>
+                                        <td :style="{width: theadThMinWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
+                                            <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <div class="bottom-part">
@@ -611,7 +620,7 @@
           },
         ], // 表格表头
         functionColumnWidth: 100, // 功能列的表头
-        theadThMinWidth: 62, // 表头th的最小宽度，单位px
+        theadThMinWidth: '62px', // 表头th的最小宽度，单位px
       };
     },
     watch: {
@@ -634,11 +643,25 @@
       this.getButtonData();
     },
     mounted() {
-      document.getElementById('upperTable').addEventListener('resize', () => {
-        console.log(8888);
-      });
+
+    },
+    activated() {
+      this.fixTableColumnWidth();
     },
     methods: {
+      fixTableColumnWidth() {
+        const { upperTable, functionColumnTd } = this.$refs;
+        if (functionColumnTd) {
+          this.functionColumnWidth = functionColumnTd[0].offsetWidth;
+        }
+        const upperTableWidth = upperTable.offsetWidth;
+        const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
+        if (theadThWidth > 62) {
+          this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
+        } else {
+          this.theadThMinWidth = '62px';
+        }
+      }, // 计算表格的列宽
       refresh() {
         this.spinShow = true;
         const menuPromise = new Promise((resolve, reject) => { this.getMenuData(resolve, reject); });
@@ -893,6 +916,12 @@
                 this.tableDefaultSelectedRowIndex = 0;
 
                 this.allTabthSelected();
+                // setTimeout(() => {
+                //   this.fixTableColumnWidth();
+                // }, 1000);
+                this.$nextTick(() => {
+                  this.fixTableColumnWidth();
+                });
               } else {
                 this.$Modal.fcWarning({
                   title: '提示',
@@ -1859,24 +1888,52 @@
                         height: 60%;
                         padding: 10px;
                         border-bottom: solid 1px #d8d8d8;
+                        overflow-x: auto;
+                        overflow-y: hidden;
                         .upper-table {
                             height: 100%;
                             width: 100%;
-                            overflow: auto;
+                            position: relative;
+                            overflow-x: auto;
+                            overflow-y: hidden;
                             .upper-table-tabth {
-                                display: block;
                                 width: 100%;
                                 table {
+                                    border-collapse: collapse;
+                                    border-spacing: 0px;
+                                    border: 0;
+                                    box-sizing: border-box;
                                     background-color: #f5f6fa;
                                 }
                                 table th {
+                                    box-sizing: border-box;
                                     padding: 3px 8px;
                                     font-weight: 400 !important;
                                     white-space: nowrap;
                                     text-align: left;
+                                    min-width: 62px;
                                 }
                                 .functionColumnClass {
                                     text-align: left;
+                                }
+                            }
+                            .upper-table-tabtd {
+                                height: calc(100% - 22px) !important;
+                                overflow-y: auto;
+                                position: absolute;
+                                table {
+                                    border-spacing: 0px;
+                                }
+                                table td {
+                                    padding: 4px 8px 4px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    border-bottom: 1px solid #e8eaec;
+                                    min-width: 62px;
+                                }
+                                table tr:hover {
+                                    background-color: #ecf0f1;
                                 }
                             }
                         }
