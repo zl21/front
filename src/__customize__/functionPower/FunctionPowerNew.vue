@@ -56,7 +56,7 @@
                                 <table>
                                     <tr>
                                         <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in tableTabth" :key="index" :style="{width: theadThMinWidth}">
+                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
                                             <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
@@ -66,7 +66,7 @@
                                 <table>
                                     <tr v-for="(item, index) in tableData" :key="index">
                                         <td ref="functionColumnTd">{{item.description}}</td>
-                                        <td :style="{width: theadThMinWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
+                                        <td :style="{width: temIdx === 5 ? unCommitThMinWidth : theadThMinWidth, 'min-width': temIdx === 5 ? '74px' : '62px'}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
                                             <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
                                         </td>
                                     </tr>
@@ -621,6 +621,7 @@
         ], // 表格表头
         functionColumnWidth: 100, // 功能列的表头
         theadThMinWidth: '62px', // 表头th的最小宽度，单位px
+        unCommitThMinWidth: '74px', // 反提交的宽度
       };
     },
     watch: {
@@ -650,7 +651,7 @@
     },
     methods: {
       fixTableColumnWidth() {
-        const { upperTable, functionColumnTd } = this.$refs;
+        const { upperTable, functionColumnTd, tableTabth5 } = this.$refs;
         if (functionColumnTd) {
           this.functionColumnWidth = functionColumnTd[0].offsetWidth;
         }
@@ -660,6 +661,11 @@
           this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
         } else {
           this.theadThMinWidth = '62px';
+        }
+        if (theadThWidth > 74) {
+          this.unCommitThMinWidth = `${(tableTabth5.offsetWidth / upperTableWidth) * 100}%`;
+        } else {
+          this.unCommitThMinWidth = '74px';
         }
       }, // 计算表格的列宽
       refresh() {
