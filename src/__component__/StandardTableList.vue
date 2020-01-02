@@ -924,7 +924,10 @@
         } else {
           this.formItemsLists[index].item.props.AutoData = res.data.data;
         }
-        this.formItemsLists = this.formItemsLists.concat([]);
+        // this.formItemsLists = this.formItemsLists.concat([]);
+        if (this.$refs.FormItemComponent) {
+          this.$refs.FormItemComponent.FormItemLists[index].item.props.AutoData = res.data.data;
+        }
       },
       lowercaseToUppercase(index) {
         // 将字符串转化为大写
