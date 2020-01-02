@@ -2219,7 +2219,7 @@
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
                 if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
@@ -2272,7 +2272,7 @@
               
 
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
