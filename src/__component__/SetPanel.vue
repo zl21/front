@@ -116,15 +116,17 @@
               if (res.data.code === 0) {
                 if (res.data.data.length > 0) {
                   res.data.data.forEach((param) => {
-                    if (param.name === 'isFoldCond') {
-                      this.switchValue = JSON.parse(param.value);
+                    if (param.name === 'isFoldCond') { // 设置为false时，展开全部，为true时，展开设置的行数
+                      this.switchValue = JSON.parse(param.value);// 为true时展开收藏夹
                     } else if (param.name === 'queryDisNumber') {
-                      this.num7 = Number(param.value);
-                      if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                        this.$store.commit('global/updateModifySearchFoldnum', param.value);
-                      } 
+                      this.num7 = Number(param.value);// 设置折叠条件
                     }
+                    if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                      this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: this.num7, switchValue: this.switchValue });
+                    } 
                   });
+                } else { // 数组为空时，展示全部
+                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: null, switchValue: false });
                 }
               }
             });
