@@ -291,7 +291,7 @@ axios.interceptors.response.use(
   }
 );
 
-export const getGateway = ({ url }) => {
+export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   // const serviceName = store.state.global.activeTab.tableName;
