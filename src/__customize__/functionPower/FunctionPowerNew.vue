@@ -57,7 +57,7 @@
                                     <thead>
                                     <tr>
                                         <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
+                                        <th v-for="(item, index) in tableTabth" :key="index" :style="{width: theadThMinWidth}">
                                             <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
@@ -77,7 +77,7 @@
                                     <tbody>
                                     <tr v-for="(item, index) in tableData" :key="index">
                                         <td ref="functionColumnTd">{{item.description}}</td>
-                                        <td :style="{width: temIdx === 5 ? unCommitThMinWidth : theadThMinWidth, 'min-width': temIdx === 5 ? '74px' : '62px'}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
+                                        <td :style="{width: tem.tbodyWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
                                             <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
                                         </td>
                                     </tr>
@@ -588,47 +588,56 @@
           {
             title: '查看',
             key: 'see',
-            seeThValue: false
+            seeThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '编辑',
             key: 'edit',
-            editThValue: false
+            editThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '删除',
             key: 'delete',
-            deleteThValue: false
+            deleteThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '作废',
             key: 'toVoid',
-            toVoidThValue: false
+            toVoidThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '提交',
             key: 'commit',
-            commitThValue: false
+            commitThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '反提交',
             key: 'unCommit',
-            unCommitThValue: false
+            unCommitThValue: false,
+            tbodyWidth: '74px'
           },
           {
             title: '导出',
             key: 'export',
-            exportThValue: false
+            exportThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '打印',
             key: 'print',
-            printThValue: false
+            printThValue: false,
+            tbodyWidth: '62px'
           },
           {
             title: '扩展',
             key: 'extend',
-            extendThValue: false
+            extendThValue: false,
+            tbodyWidth: '62px'
           },
         ], // 表格表头
         functionColumnWidth: 100, // 功能列的表头
@@ -665,7 +674,7 @@
     },
     methods: {
       fixTableColumnWidth() {
-        const { upperTable, functionColumnTd, tableTabth5 } = this.$refs;
+        const { upperTable, functionColumnTd } = this.$refs;
         if (functionColumnTd) {
           this.functionColumnWidth = functionColumnTd[0].offsetWidth;
         }
@@ -1909,11 +1918,10 @@
                             height: 100%;
                             width: 100%;
                             position: relative;
+                            overflow: hidden;
                             overflow-x: auto;
-                            overflow-y: auto;
                             .upper-table-tabth {
-                                width: 100%;
-                                position: absolute;
+                                position: relative;
                                 z-index: 2;
                                 table {
                                     border-collapse: collapse;
@@ -1936,7 +1944,9 @@
                             }
                             .upper-table-tabtd {
                                 height: calc(100% - 22px) !important;
+                                overflow-y: auto;
                                 table {
+                                    margin-top: -22px;
                                     border-spacing: 0px;
                                 }
                                 table td {
@@ -1959,6 +1969,9 @@
                                     min-width: 62px;
                                 }
                             }
+                        }
+                        .upper-table:before {
+                            position: absolute;
                         }
                     }
                     .bottom-part {
