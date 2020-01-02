@@ -69,8 +69,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData:{}
-        //  Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
@@ -367,6 +367,7 @@ export default {
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
   },
+<<<<<<< HEAD
   // testUpdateData(state, itemName) { // 检测数据变化
   //   const { tableName, itemId } = router.currentRoute.params;
   //   if (itemId === 'New') { // 单对象新增界面
@@ -386,4 +387,9 @@ export default {
   //     state.testData = true;
   //   }
   // },
+=======
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
+  }
+>>>>>>> v1.4
 };

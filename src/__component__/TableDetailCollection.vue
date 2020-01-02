@@ -555,9 +555,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           this.tabHref({
             type,
             label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-            tableName: 'AD_TABLE',
-            tableId: '992',
-            id:'24369',
+            tableName: row._TABLENAME,
+            tableId: row._TABLEID ,
+            id: row._OBJID,
             serviceId: row._SERVICEID ? row._SERVICEID : null
           });
         }
@@ -1567,7 +1567,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 },
                 'on-open-change': (state, data) => {
                   if (!state) {
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
                   }
                 }
               }
@@ -3403,7 +3405,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               }
             }
           }
-        } else if (cellData.webconf&&cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
           cellData.webconf.refcolvalArray.forEach((cur) => {
             if (this.type === pageType.Horizontal) {
               const express = '=';
