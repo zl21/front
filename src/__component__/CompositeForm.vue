@@ -1631,7 +1631,7 @@
           item.props.number = true;
           // console.log(current.display);
           if (current.display === 'text' && !current.fkdisplay) {
-            const string = `^\\\d{0,${current.length}}(\\\.[0-9]{0,${
+            const string = `^(-|\\+)?\\d{0,${current.length}}(\\\.[0-9]{0,${
               current.scale
             }})?$`;
             const typeRegExp = new RegExp(string);
@@ -1887,6 +1887,7 @@
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
           let readonly = current.readonly;
+          console.log(getGateway('/p/cs/upload2'));
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
