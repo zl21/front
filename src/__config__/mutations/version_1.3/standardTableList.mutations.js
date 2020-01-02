@@ -33,6 +33,9 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
+  updateModifySearchFoldnum({ formItems }, data) {
+    formItems.changeSearchFoldnum = data;
+  },
 
   // 按钮组
   updateButtonsTabcmd({

@@ -121,7 +121,7 @@
                     } else if (param.name === 'queryDisNumber') {
                       this.num7 = Number(param.value);
                       if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                        this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
+                        this.$store.commit(`${moduleName()}/updateModifySearchFoldnum`, param.value);
                       } 
                     }
                   });
