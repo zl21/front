@@ -54,22 +54,34 @@
                         <div class="upper-table" ref="upperTable">
                             <div class="upper-table-tabth">
                                 <table>
+                                    <thead>
                                     <tr>
                                         <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
                                         <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
                                             <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
+                                    </thead>
                                 </table>
                             </div>
                             <div class="upper-table-tabtd">
                                 <table>
+                                    <thead>
+                                    <tr>
+                                        <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
+                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
+                                            <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     <tr v-for="(item, index) in tableData" :key="index">
                                         <td ref="functionColumnTd">{{item.description}}</td>
                                         <td :style="{width: temIdx === 5 ? unCommitThMinWidth : theadThMinWidth, 'min-width': temIdx === 5 ? '74px' : '62px'}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
                                             <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
                                         </td>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -644,7 +656,9 @@
       this.getButtonData();
     },
     mounted() {
-
+      window.addEventListener('resize', () => {
+        this.fixTableColumnWidth();
+      });
     },
     activated() {
       this.fixTableColumnWidth();
@@ -661,11 +675,6 @@
           this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
         } else {
           this.theadThMinWidth = '62px';
-        }
-        if (theadThWidth > 74) {
-          this.unCommitThMinWidth = `${(tableTabth5.offsetWidth / upperTableWidth) * 100}%`;
-        } else {
-          this.unCommitThMinWidth = '74px';
         }
       }, // 计算表格的列宽
       refresh() {
@@ -1894,16 +1903,18 @@
                         height: 60%;
                         padding: 10px;
                         border-bottom: solid 1px #d8d8d8;
-                        overflow-x: auto;
-                        overflow-y: hidden;
+                        /*overflow-x: auto;*/
+                        /*overflow-y: hidden;*/
                         .upper-table {
                             height: 100%;
                             width: 100%;
                             position: relative;
                             overflow-x: auto;
-                            overflow-y: hidden;
+                            overflow-y: auto;
                             .upper-table-tabth {
                                 width: 100%;
+                                position: absolute;
+                                z-index: 2;
                                 table {
                                     border-collapse: collapse;
                                     border-spacing: 0px;
@@ -1925,8 +1936,6 @@
                             }
                             .upper-table-tabtd {
                                 height: calc(100% - 22px) !important;
-                                overflow-y: auto;
-                                position: absolute;
                                 table {
                                     border-spacing: 0px;
                                 }
@@ -1940,6 +1949,14 @@
                                 }
                                 table tr:hover {
                                     background-color: #ecf0f1;
+                                }
+                                table th {
+                                    box-sizing: border-box;
+                                    padding: 3px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    min-width: 62px;
                                 }
                             }
                         }
