@@ -69,7 +69,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        // Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
     });
     state.tabPanels = arr;
@@ -365,5 +366,8 @@ export default {
   },
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
+  },
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
   }
 };
