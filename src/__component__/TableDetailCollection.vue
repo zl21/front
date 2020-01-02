@@ -3414,7 +3414,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               }
             }
           }
-        } else if (cellData.webconf && cellData.webconf.refcolvalArray.length > 0) { // webconf
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
           cellData.webconf.refcolvalArray.forEach((cur) => {
             if (this.type === pageType.Horizontal) {
               const express = '=';

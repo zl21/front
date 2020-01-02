@@ -1540,15 +1540,14 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                   
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                      }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1569,13 +1568,13 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
+                      }
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
@@ -1604,14 +1603,13 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-
-                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
+                      }
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
@@ -1636,14 +1634,13 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
-
-                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                        }
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                       this.updateRefreshButton(true);
+                    }
+                    if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                     }
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
@@ -2176,7 +2173,7 @@
               if (itemModify.length > 0 && itemAdd.length < 1) { // 子表表格编辑修改
                 // 校验子表表格必填项
                
-                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
@@ -2187,21 +2184,12 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'add' });
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
-                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
               }
-              // if (Version() === '1.3') {
-              //   let mainModify = [];
-              //   if (this.updateData && this.updateData[this.tableName] && this.updateData[this.tableName].modify) {
-              //     mainModify = Object.values(this.updateData[this.tableName].modify[this.tableName]);
-              //   }
-              //   if (mainModify.length > 0) {
-              //     this.savaNewTable(type, path, objId, itemName, itemCurrentParameter);
-              //   }
-              // }
             }
           }
         } else { // 横向结构
@@ -2249,7 +2237,7 @@
               // this.itemTableCheckFunc();// 校验子表表格必填项
               
 
-              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
                 if (this.verifyRequiredInformation()) { // 横向结构保存校验
