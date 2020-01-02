@@ -59,6 +59,12 @@
           return 0;
         }
       },
+      defaultSpread: { // 是否全部展开
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
       title: {
         type: String,
         default() {
@@ -76,7 +82,13 @@
         return `${this.dowClass === false ? ' iconfont  iconios-arrow-down' : 'iconfont  iconios-arrow-down icon-xiadown'}`;
       },
       downComponent() {
-        return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
+        if (this.defaultSpread) {
+          return `${this.dowClass === false ? `max-height: ${this.searchFoldnum * this.setHeight + 8}px; transition:max-height 0.3s;` : 'max-height:30000px;transition:max-height 0.3s;'}`;
+        }
+        if (this.dowClass === true) {
+          return 'max-height:30000px;transition:max-height 0.3s;';
+        }
+        return `max-height: ${this.searchFoldnum * this.setHeight + 8}px; `;
       },
       icon() {
         return `${this.dowClass === false ? 'iconfont icon-triangle-copy-copy-copy1 ' : 'iconfont icon-triangle-copy-copy-copy1 icon-xiadown'}`;
@@ -97,6 +109,11 @@
             detailTable.agTable.fixContainerHeight();
           }
         }, 300);
+      }
+    },
+    mounted() {
+      if (this.defaultSpread === false) {
+        this.dowClass = true;
       }
     }
 

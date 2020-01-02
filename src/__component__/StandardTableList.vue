@@ -15,8 +15,9 @@
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
+      :defaultSpread ="changeSearchFoldnum.switchValue"
       :default-column="4"
-      :search-foldnum="changeSearchFoldnum || formItems.searchFoldnum"
+      :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
