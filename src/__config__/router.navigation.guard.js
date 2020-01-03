@@ -243,7 +243,7 @@ export default (router) => {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
-            routeFullPath: to.path,
+            routeFullPath: to.fullPath,
             routePrefix
           });
         }
@@ -294,8 +294,9 @@ export default (router) => {
       }
 
       const routeMapRecord = getSeesionObject('routeMapRecord');
-      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       if (JSON.stringify(routeMapRecord) !== '{}' && routeMapRecord[getKeepAliveModuleName(to)] !== from.fullPath) {
+        console.log('888isDynamicRouting', isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable);
+
         updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       }
     }

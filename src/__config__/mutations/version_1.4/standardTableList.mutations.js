@@ -4,7 +4,7 @@ export default {
     ag.datas.deleteFailInfo = failInfo;
   },
   updateTableDataWithMerge({ ag }, data) {
-    ag.datas = Object.assign({}, ag.datas, data);
+    ag.datas = Object.assign({}, ag.datas);
   },
   updateTableData({
     ag
@@ -36,7 +36,6 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
-  
   
 
   // 按钮组
