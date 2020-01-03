@@ -1054,60 +1054,7 @@
         } 
       },
 
-      // // 判断跳转到哪个页面
-      // const url = tab.action;
-      // const index = url.lastIndexOf('/');
-      // const customizedModuleName = url.substring(index + 1, url.length);
-      // const label = tab.webdesc;
-      // const type = 'tableDetailAction';
-      // const name = Object.keys(this.keepAliveLabelMaps);
-      // let customizedModuleId = '';
-      // name.forEach((item) => {
-      //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-      //     customizedModuleId = item.split(/\./)[2];
-      //   }
-      // });
-      // // if (tab.actiontype === 'url') {
-      // //   this.objTabActionUrl(tab);
-      // // } else
-      // if (tab.action) {
-      //   this.tabOpen({
-      //     type,
-      //     customizedModuleName,
-      //     customizedModuleId,
-      //     label
-      //   });
-      // }
-      // objTabActionUrl(tab) { // 外链类型
-      //   // const linkUrl = tab.action;
-      //   // const linkId = tab.webid;
-      //   // this.increaseLinkUrl({ linkId, linkUrl });
-      //   // const label = `${tab.webdesc}`;
-      //   // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
-      //   // this.addKeepAliveLabelMaps({ name, label });
-      //   // const linkInfo = {
-      //   //   linkUrl: tab.action,
-      //   //   linkId: tab.webid,
-      //   //   label,
-      //   //   name
-      //   // };
-      //   // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
-      //   // setTimeout(() => {
-      //   //   this.tabOpen({
-      //   //     type: 'tableDetailUrl',
-      //   //     tableName: tab.webname.toUpperCase(),
-      //   //     tableId: tab.webid,
-      //   //     label: tab.webdesc,
-      //   //     url: tab.action
-      //   //   });
-      //   // }, 500);
-      //   const eleLink = document.createElement('a');
-      //   eleLink.href = tab.action;
-      //   eleLink.target = '_blank';
-      //   document.body.appendChild(eleLink);
-      //   eleLink.click();
-      //   document.body.removeChild(eleLink);
-      // },
+  
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
         // tab.confirm = true
@@ -2279,9 +2226,9 @@
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
-                if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                // if (this.verifyRequiredInformation()) { // 横向结构保存校验
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
+                // }
               }
             }
 
