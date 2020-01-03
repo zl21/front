@@ -1,5 +1,5 @@
 import { DispatchEvent } from '../__utils__/dispatchEvent';
-
+import { BacklogData } from './todoList';
 // 撤销/结束/详情
 function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
@@ -19,6 +19,7 @@ function mutipleOperate(url, instanceId, buttons, id) {
         const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       });
+      BacklogData(window.jflowPlugin.store);
     } else {
       window.vm.$Message.warning(res.data.resultMsg);
     }

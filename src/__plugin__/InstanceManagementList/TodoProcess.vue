@@ -189,6 +189,24 @@
               title: '开始时间',
               filed: 'createTime'
             }
+          },
+          {
+            row: 1,
+            col: 1,
+            component: ItemComponent,
+            item: {
+              type: 'input',
+              title: '节点名称',
+              filed: 'nodeName',
+              event: {
+                keydown: (event) => {
+                  if (event.keyCode === 13) {
+                    this.searchData.page = 1;
+                    this.queryLists();
+                  }
+                }
+              }
+            }
           }
         ],
         // 查询条件
@@ -223,6 +241,10 @@
           {
             title: '模板名称',
             key: 'moduleName'
+          },
+          {
+            title: '节点名称',
+            key: 'nodeName'
           },
           {
             title: '待审批人',

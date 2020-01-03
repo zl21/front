@@ -18,6 +18,7 @@
           type="textarea"
           :rows="4"
           placeholder="请输入审批意见"
+          maxlength="80"
         />
       </div>
       <div
@@ -40,6 +41,7 @@
           type="textarea"
           :rows="4"
           placeholder="请输入审批意见"
+          maxlength="80"
         />
       </div>
       <div
@@ -73,6 +75,7 @@
 </template>
 <script>
   import mutipleSelectPop from './MutipleSelectPop';
+  import { BacklogData } from '../../plugin/todoList';
 
   export default {
     name: 'ApprovelModel',
@@ -431,6 +434,8 @@
                 child.dispatchEvent(myEvent);
               }
             }
+
+            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -472,6 +477,7 @@
                 child.dispatchEvent(myEvent);
               }
             }
+            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -506,6 +512,7 @@
                 child.dispatchEvent(myEvent);
               }
             }
+            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
