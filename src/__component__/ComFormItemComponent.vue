@@ -929,9 +929,8 @@
         }
       },
       setJson(item, val) {
-
         if (item.props.tableGetName) {
-           // 子表明细联动
+          // 子表明细联动
           // eslint-disable-next-line no-const-assign
           return JSON.parse(JSON.stringify(this.formDataObject));
         } 
@@ -1013,6 +1012,7 @@
         } else if (checkout !== true && checkoutProps) {
           this.newFormItemLists[formindex].item.required = item.oldProps._required;
           this.newFormItemLists[formindex].item.props.disabled = item.oldProps.disabled;
+          this.newFormItemLists[formindex].item.props.readonly = item.oldProps.disabled;
           this.newFormItemLists[formindex].item.props.required = item.oldProps._required;
           if (item.oldProps.regx) {
             this.newFormItemLists[formindex].item.props.regx = item.oldProps.regx;
