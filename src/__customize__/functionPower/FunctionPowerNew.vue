@@ -57,20 +57,21 @@
                                     <thead>
                                     <tr>
                                         <th class="functionColumnClass" ref="functionColumnTh" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
-                                            <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
+                                        <th v-for="(item, index) in columns" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
+                                            <Checkbox v-model="item[`${item.key}Value`]" @on-change="(currentValue) => tabthCheckboxChange(currentValue, {index: index, column: item})"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
                                     </thead>
                                 </table>
                             </div>
-                            <div class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
+                            <div v-show="tableData.length === 0" class="upper-table-tabtd-empty">暂无数据</div>
+                            <div v-show="tableData.length > 0" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
                                 <table>
                                     <tbody>
-                                    <tr v-for="(item, index) in tableData" :key="index">
+                                    <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(index)">
                                         <td ref="functionColumnTd" :style="{'min-width': functionColumnTdWidth}">{{item.description}}</td>
-                                        <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
-                                            <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
+                                        <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in columns" :key="temIdx">
+                                            <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue, {row: item, index: index, column: tem})"></Checkbox>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -230,316 +231,44 @@
         tableData: [], // 表格数据
         backupsTableData: [], // 备份表格数据
         tableSaveData: [], // 表格修改后要保存的数据
-        columns: [
-          {
-            title: '功能',
-            key: 'description'
-          },
-          {
-            key: 'see',
-            seeValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.seeDisabled,
-                  value: params.row.seeValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => {
-                    this.rowCheckboxChange(currentValue, params);
-                  }
-                }
-
-              })
-            ]),
-            renderHeader: (h, params) => {
-              return h('div', [
-                h('Checkbox', {
-                  style: {},
-                  attrs: {
-                    dataChecked: params.column.seeValue
-                  },
-                  props: {
-                    value: params.column.seeValue
-                  },
-                  on: {
-                    'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                  }
-                }),
-                h('Span', '查看')
-              ]);
-            },
-          },
-          {
-            key: 'edit',
-            editValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.editDisabled,
-                  value: params.row.editValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.editValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '编辑')
-            ]),
-          },
-          {
-            key: 'delete',
-            deleteValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.deleteDisabled,
-                  value: params.row.deleteValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.deleteValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '删除')
-            ]),
-          },
-          {
-            key: 'toVoid',
-            toVoidValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.toVoidDisabled,
-                  value: params.row.toVoidValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.toVoidValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '作废')
-            ]),
-          },
-          {
-            key: 'commit',
-            commitValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.commitDisabled,
-                  value: params.row.commitValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.commitValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '提交')
-            ]),
-          },
-          {
-            key: 'unCommit',
-            unCommitValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.unCommitDisabled,
-                  value: params.row.unCommitValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.unCommitValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '反提交')
-            ]),
-          },
-          {
-            key: 'export',
-            exportValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.exportDisabled,
-                  value: params.row.exportValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.exportValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '导出')
-            ]),
-          },
-          {
-            key: 'print',
-            printValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.printDisabled,
-                  value: params.row.printValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.printValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '打印')
-            ]),
-          },
-          {
-            key: 'extend',
-            extendValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.extendDisabled,
-                  value: params.row.extendValue,
-                },
-                on: {
-                  'on-change': (currentValue) => {
-                    setTimeout(() => {
-                      this.extendRowCheckboxChange(currentValue, params);
-                    }, 100);
-                  }
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.extendValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '扩展')
-            ]),
-          }
-        ], // 表格头部,
+        // columns: [
+        //   {
+        //     key: 'see',
+        //     seeValue: false,
+        //   },
+        //   {
+        //     key: 'edit',
+        //     editValue: false,
+        //   },
+        //   {
+        //     key: 'delete',
+        //     deleteValue: false,
+        //   },
+        //   {
+        //     key: 'toVoid',
+        //     toVoidValue: false,
+        //   },
+        //   {
+        //     key: 'commit',
+        //     commitValue: false,
+        //   },
+        //   {
+        //     key: 'unCommit',
+        //     unCommitValue: false,
+        //   },
+        //   {
+        //     key: 'export',
+        //     exportValue: false,
+        //   },
+        //   {
+        //     key: 'print',
+        //     printValue: false,
+        //   },
+        //   {
+        //     key: 'extend',
+        //     extendValue: false,
+        //   }
+        // ], // 表格头部,
         extendTableData: [], // 扩展功能表格数据
         columnsBottom: [
           {
@@ -575,59 +304,59 @@
           }
         ], // 扩展功能表格头部
 
-        tableTabth: [
+        columns: [
           {
             title: '查看',
             key: 'see',
-            seeThValue: false,
+            seeValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '编辑',
             key: 'edit',
-            editThValue: false,
+            editValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '删除',
             key: 'delete',
-            deleteThValue: false,
+            deleteValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '作废',
             key: 'toVoid',
-            toVoidThValue: false,
+            toVoidValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '提交',
             key: 'commit',
-            commitThValue: false,
+            commitValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '反提交',
             key: 'unCommit',
-            unCommitThValue: false,
+            unCommitValue: false,
             tbodyWidth: '74px'
           },
           {
             title: '导出',
             key: 'export',
-            exportThValue: false,
+            exportValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '打印',
             key: 'print',
-            printThValue: false,
+            printValue: false,
             tbodyWidth: '62px'
           },
           {
             title: '扩展',
             key: 'extend',
-            extendThValue: false,
+            extendValue: false,
             tbodyWidth: '62px'
           },
         ], // 表格表头
@@ -636,6 +365,7 @@
         functionColumnTdWidth: '100px', // 功能列的表体的宽度
         theadThMinWidth: '62px', // 表头th的最小宽度，单位px
         unCommitThMinWidth: '74px', // 反提交的宽度
+        upperTableTbodyHighlightIndex: 0, // 上边表格高亮的下标
       };
     },
     watch: {
@@ -673,9 +403,12 @@
       this.fixTableColumnWidth();
     },
     methods: {
+      upperTableTbodyClick(index) {
+        this.upperTableTbodyHighlightIndex = index;
+      }, // 上边表格表体点击
       upperTableTbodyScroll(e) {
         this.upperTableTabthLeft = `${-e.target.scrollLeft}px`;
-      },
+      }, // 上边表格表体滚动
       fixTableColumnWidth() {
         this.$nextTick(() => {
           const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
@@ -691,7 +424,7 @@
           }
           this.$nextTick(() => {
             this.functionColumnTdWidth = `${functionColumnTh.offsetWidth}px`;
-            this.tableTabth.map((item, index) => {
+            this.columns.map((item, index) => {
               const tableTabth = `tableTabth${index}`;
               item.tbodyWidth = `${this.$refs[tableTabth][0].offsetWidth}px`;
               return item;
@@ -1953,11 +1686,23 @@
                                     text-align: left;
                                 }
                             }
+                            .upper-table-tabtd-empty {
+                                height: calc(100% - 22px) !important;
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #575757;
+                                font-size: 12px;
+                                overflow: auto;
+                            }
                             .upper-table-tabtd {
                                 overflow: auto;
                                 height: calc(100% - 22px) !important;
+                                .upper-table-tabtd-highlight {
+                                    background-color: rgb(196, 226, 255);
+                                }
                                 table {
-                                    margin-top: -22px;
                                     border-spacing: 0px;
                                 }
                                 table td {
