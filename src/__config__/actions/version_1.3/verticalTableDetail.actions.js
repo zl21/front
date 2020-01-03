@@ -265,6 +265,7 @@ export default {
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
+      debugger;
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
@@ -278,28 +279,48 @@ export default {
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objid: objId, // 固定传值-1 表示新增
-              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objid: objId, // 固定传值-1 表示新增
-              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else {
             parames = {
               table: tableName, // 主表表名
@@ -392,14 +413,12 @@ export default {
         }
         
         const itemTableAdd = Object.assign({}, itemAdd);
-
         if (itemTableAdd && itemTableAdd[itemName]) {
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
             itemTableAdd[itemName]
           ];
         }
-       
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -416,6 +435,15 @@ export default {
               ...value,
             } 
           };
+        } else if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         } else {
           parames = {
             table: tableName, // 主表表名
@@ -426,7 +454,16 @@ export default {
           };
         }
       } else if (sataTypeName === 'modify') {
-        if (Object.values(modify[tableName]).length > 0) {
+        if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
+        } else if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -438,7 +475,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -566,22 +603,14 @@ export default {
             } 
           };
         } else if (temporaryStoragePath) {
-          if (Object.values(modify[tableName]).length > 0) {
-            const value = Object.assign({}, modify, labelregroupTableName);
-            parames = {
-              table: tableName,
-              objid: objId,
-              data: {
-                ...modify,
-              },
-              after: { 
-                ...modifyLabel,
-              },
-              before: {
-                ...value,
-              } 
-            };
-          } 
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);

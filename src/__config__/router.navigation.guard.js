@@ -294,8 +294,9 @@ export default (router) => {
       }
 
       const routeMapRecord = getSeesionObject('routeMapRecord');
-      updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       if (JSON.stringify(routeMapRecord) !== '{}' && routeMapRecord[getKeepAliveModuleName(to)] !== from.fullPath) {
+        console.log('888isDynamicRouting', isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable);
+
         updateSessionObject('routeMapRecord', { k: getKeepAliveModuleName(to), v: from.fullPath });
       }
     }
