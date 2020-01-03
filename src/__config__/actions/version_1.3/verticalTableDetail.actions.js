@@ -399,7 +399,6 @@ export default {
             itemTableAdd[itemName]
           ];
         }
-       
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -416,6 +415,15 @@ export default {
               ...value,
             } 
           };
+        } else if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         } else {
           parames = {
             table: tableName, // 主表表名
@@ -426,7 +434,16 @@ export default {
           };
         }
       } else if (sataTypeName === 'modify') {
-        if (Object.values(modify[tableName]).length > 0) {
+        if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
+        } else if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -438,7 +455,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -566,22 +583,14 @@ export default {
             } 
           };
         } else if (temporaryStoragePath) {
-          if (Object.values(modify[tableName]).length > 0) {
-            const value = Object.assign({}, modify, labelregroupTableName);
-            parames = {
-              table: tableName,
-              objid: objId,
-              data: {
-                ...modify,
-              },
-              after: { 
-                ...modifyLabel,
-              },
-              before: {
-                ...value,
-              } 
-            };
-          } 
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);
