@@ -1519,12 +1519,12 @@
           router.push(routeMapRecordForSingleObject[currentPath]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const param = {
             type: tabUrl,
