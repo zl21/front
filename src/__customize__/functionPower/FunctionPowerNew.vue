@@ -68,7 +68,7 @@
                             <div v-show="tableData.length > 0" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
                                 <table>
                                     <tbody>
-                                    <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(index)">
+                                    <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(item, index)">
                                         <td ref="functionColumnTd" :style="{'min-width': functionColumnTdWidth}">{{item.description}}</td>
                                         <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in columns" :key="temIdx">
                                             <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue, {row: item, index: index, column: tem})"></Checkbox>
@@ -81,13 +81,38 @@
                     </div>
                     <div class="bottom-part">
                         <div class="bottom-table">
-                            <Table
-                                    class="table"
-                                    highlight-row
-                                    :height="true"
-                                    :data="extendTableData"
-                                    :columns="columnsBottom"
-                            />
+                            <!--<Table-->
+                                    <!--class="table"-->
+                                    <!--highlight-row-->
+                                    <!--:height="true"-->
+                                    <!--:data="extendTableData"-->
+                                    <!--:columns="columnsBottom"-->
+                            <!--/>-->
+                            <div class="bottom-table-tabth">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>扩展功能</th>
+                                        <th>功能</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div v-show="extendTableData.length === 0" class="bottom-table-tbody-empty">暂无数据</div>
+                            <div v-show="extendTableData.length > 0" class="bottom-table-tbody">
+                                <table>
+                                    <tbody>
+                                    <tr v-for="(item, index) in extendTableData" :key="index" :class="bottomTableTbodyHighlightIndex === index ? 'bottom-table-tbody-highlight' : ''" @click="bottomTableTbodyClick(index)">
+                                        <td style="width: 200px">
+                                            <Checkbox :value="item.permission === 128 ? true : false" @on-change="(currentValue) => extendFunctionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.description}}
+                                        </td>
+                                        <td>
+                                            <Checkbox v-show="item.children && item.children.length > 0" :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false" @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.children.length > 0 ? item.children[0].description : ''}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,6 +391,7 @@
         theadThMinWidth: '62px', // 表头th的最小宽度，单位px
         unCommitThMinWidth: '74px', // 反提交的宽度
         upperTableTbodyHighlightIndex: 0, // 上边表格高亮的下标
+        bottomTableTbodyHighlightIndex: null, // 下边表格高亮的下标
       };
     },
     watch: {
@@ -403,8 +429,13 @@
       this.fixTableColumnWidth();
     },
     methods: {
-      upperTableTbodyClick(index) {
+      bottomTableTbodyClick(index) {
+        this.bottomTableTbodyHighlightIndex = index;
+      }, // 下边表格行单击
+      upperTableTbodyClick(row, index) {
+        this.bottomTableTbodyHighlightIndex = null;
         this.upperTableTbodyHighlightIndex = index;
+        this.tableRowClick(row, index);
       }, // 上边表格表体点击
       upperTableTbodyScroll(e) {
         this.upperTableTabthLeft = `${-e.target.scrollLeft}px`;
@@ -636,6 +667,8 @@
           params: obj,
           success: (res) => {
             this.spinShow = false;
+            this.bottomTableTbodyHighlightIndex = null;
+            this.upperTableTbodyHighlightIndex = 0;
             if (res.data.code === 0) {
               if (res.data.data) {
                 const resData = res.data.data;
@@ -904,31 +937,35 @@
         //   });
       }, // 复制权限弹框确定按钮
       rowCheckboxChange(currentValue, params) {
-        // 选中该行数据
-        params.row[`${params.column.key}Value`] = currentValue;
-        this.tableData[params.index] = params.row;
-
-        // 修改要保存的数据
-        // this.editSaveData(currentValue, params);
-
-        // 判断该列是否全选
-        this.tabthCheckboxSelected(params.column, params.column.key);
-
-
-        if (params.column.key === 'see') {
-          // 如果该列是查看列，当取消选中的时候将该行都取消选中
-          if (!currentValue) {
-            this.cancelRowSelected(params);
-          }
+        if (params.column.key === 'extend') {
+          this.extendRowCheckboxChange(currentValue, params)
         } else {
-          // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
-          this.selectedSeeColumn(params, currentValue);
+          // 选中该行数据
+          params.row[`${params.column.key}Value`] = currentValue;
+          this.tableData[params.index] = params.row;
+
+          // 修改要保存的数据
+          // this.editSaveData(currentValue, params);
+
+          // 判断该列是否全选
+          this.tabthCheckboxSelected(params.column, params.column.key);
+
+
+          if (params.column.key === 'see') {
+            // 如果该列是查看列，当取消选中的时候将该行都取消选中
+            if (!currentValue) {
+              this.cancelRowSelected(params);
+            }
+          } else {
+            // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
+            this.selectedSeeColumn(params, currentValue);
+          }
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
+            if (idx > 0) {
               acc.push(cur.key);
             }
             return acc;
@@ -961,7 +998,7 @@
         if (currentValue) {
           this.tableData[params.index].seeValue = currentValue;
         }
-        this.tabthCheckboxSelected(this.columns[1], 'see');
+        this.tabthCheckboxSelected(this.columns[0], 'see');
       }, // 选中查看列
       editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
@@ -1018,7 +1055,7 @@
       }, // 下边表格功能数据修改
       getSavePermission(index) {
         const arr = this.columns.reduce((acc, cur, idx) => {
-          if (idx > 0 && idx !== 9) {
+          if (idx !== 8) {
             if (this.tableData[index][`${cur.key}Value`]) {
               acc.push('1');
             } else {
@@ -1074,7 +1111,7 @@
       tabthCheckboxChange(currentValue, params) {
         // 如果点击的不是查看列，将查看列选中
         if (params.column.key !== 'see') {
-          this.columns[1].seeValue = true;
+          this.columns[0].seeValue = true;
           this.tableData.map((item) => {
             if (!item.seeDisabled) {
               item.seeValue = true;
@@ -1086,14 +1123,14 @@
         }
         // 点击查看列的表头，并且是取消选中的状态
         if (params.column.key === 'see' && currentValue === false) {
-          this.columns[1].seeValue = false;
+          this.columns[0].seeValue = false;
           this.columns = [].concat(this.columns);
           this.cancelAllSelected();
         }
 
         // 点击查看列的表头，并且是选中的状态
         if (params.column.key === 'see' && currentValue === true) {
-          this.columns[1].seeValue = true;
+          this.columns[0].seeValue = true;
         }
 
         // 选中表头以及表体里的数据
@@ -1112,7 +1149,7 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
+            if (idx > 0) {
               acc.push(cur.key);
             }
             return acc;
@@ -1216,7 +1253,7 @@
         this.editExtendTableData(currentValue);
 
         // 将查看列选中
-        this.selectedSeeColumn(params.index, currentValue);
+        this.selectedSeeColumn(params, currentValue);
       }, // 扩展一列的checkbox点击的时候触发
       editExtendTableData(currentValue) {
         if (this.extendTableData.length > 0) {
@@ -1271,17 +1308,17 @@
         if (arr.length > 0) {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = false;
-            this.selectedSeeColumn(findIndex, false);
+            this.selectedSeeColumn({ index: findIndex}, false);
           }
         } else {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = true;
-            this.selectedSeeColumn(findIndex, true);
+            this.selectedSeeColumn({ index : findIndex }, true);
           }
         }
 
         // 判断扩展该列是否全选
-        this.tabthCheckboxSelected(this.columns[9], 'extend');
+        this.tabthCheckboxSelected(this.columns[8], 'extend');
 
         // 调保存修改数据的方法
         // this.getExtendTableSaveData(val, params.row);
@@ -1327,7 +1364,7 @@
         }
 
         // 判断扩展该列是否全选
-        this.tabthCheckboxSelected(this.columns[9], 'extend');
+        this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
         this.getSaveData();
@@ -1681,6 +1718,7 @@
                                     white-space: nowrap;
                                     text-align: left;
                                     min-width: 62px;
+                                    border-bottom: 1px solid #e8eaec;
                                 }
                                 .functionColumnClass {
                                     text-align: left;
@@ -1694,7 +1732,6 @@
                                 justify-content: center;
                                 color: #575757;
                                 font-size: 12px;
-                                overflow: auto;
                             }
                             .upper-table-tabtd {
                                 overflow: auto;
@@ -1716,18 +1753,7 @@
                                 table tr:hover {
                                     background-color: #ecf0f1;
                                 }
-                                table th {
-                                    box-sizing: border-box;
-                                    padding: 3px 8px;
-                                    font-weight: 400 !important;
-                                    white-space: nowrap;
-                                    text-align: left;
-                                    min-width: 62px;
-                                }
                             }
-                        }
-                        .upper-table:before {
-                            position: absolute;
                         }
                     }
                     .bottom-part {
@@ -1735,9 +1761,63 @@
                         padding: 10px;
                         .bottom-table {
                             height: 100%;
-                            .table {
-                                height: 100%;
-                                border: 0;
+                            width: 100%;
+                            .bottom-table-tabth {
+                                width: 100%;
+                                position: relative;
+                                background-color: #f5f6fa;
+                                border-bottom: 1px solid #e8eaec;
+                                table {
+                                    border-collapse: collapse;
+                                    border-spacing: 0px;
+                                    border: 0;
+                                    box-sizing: border-box;
+                                }
+                                table th {
+                                    box-sizing: border-box;
+                                    padding: 5px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    min-width: 200px;
+                                }
+                            }
+                            .bottom-table-tbody {
+                                overflow: auto;
+                                height: calc(100% - 22px) !important;
+                                .bottom-table-tbody-highlight {
+                                    background-color: rgb(196, 226, 255);
+                                }
+                                table {
+                                    width: 100%;
+                                    border-spacing: 0px;
+                                }
+                                table td {
+                                    padding: 4px 8px 4px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    border-bottom: 1px solid #e8eaec;
+                                    min-width: 200px;
+                                }
+                                table tr:hover {
+                                    background-color: #ecf0f1;
+                                }
+                                table tr {
+                                    width: 100%;
+                                }
+                                table tr:last-child {
+                                    width: calc(100% - 200px);
+                                }
+                            }
+                            .bottom-table-tbody-empty {
+                                height: calc(100% - 22px) !important;
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #575757;
+                                font-size: 12px;
                             }
                         }
                     }
