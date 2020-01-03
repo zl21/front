@@ -2400,7 +2400,7 @@
           path,
           itemName,
           objectType,
-          isreftabs: this.temporaryStoragePath ? false : isreftabs,
+          isreftabs,
           sataType,
           itemNameGroup,
           temporaryStoragePath: this.temporaryStoragePath

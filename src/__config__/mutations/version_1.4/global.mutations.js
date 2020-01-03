@@ -46,13 +46,6 @@ export default {
         );
       }
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-      // if (param.url.indexOf('?') !== -1) { 
-      //   const paramIndex = param.url.lastIndexOf('?');
-      //   const index = param.url.lastIndexOf('/');
-      //   customizedModuleName = param.url.substring(paramIndex, index + 1);
-      // } else {
-      //   customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
-      // }
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       router.push({
