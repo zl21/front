@@ -552,10 +552,12 @@
         } else {
           string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
         }
-        
-        const typeRegExp = new RegExp(string);
-        this._items.props.regx = typeRegExp;
-        this._items.props.maxlength = valLength;
+        if (this._items.props.number) {
+          const typeRegExp = new RegExp(string);
+          this._items.props.regx = typeRegExp;
+          this._items.props.maxlength = valLength;
+        }
+      
 
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
