@@ -1426,9 +1426,13 @@
 
        
         const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
-        const newListPageRouteNew = keepAliveModuleName.substring(currentPath.indexOf('.') + 1, currentPath.lastIndexOf('.'));        
+        const newListPageRouteNew = keepAliveModuleName.substring(currentPath.indexOf('.') + 1, currentPath.lastIndexOf('.'));
+        const modifyListAndSinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));        
+
 
         let routeMapRecordForSingleObjectNew = '';
+        let routeMapRecordForSingleObjectModify = '';
+
         const routeMapRecordForListNew = {
           to: '',
           from: ''
@@ -1444,6 +1448,12 @@
             if (item.indexOf(newListPageRouteNew) > -1) {
               routeMapRecordForListNew.to = item;
               routeMapRecordForListNew.from = routeMapRecordForNew[item];
+            }
+          });
+        } else {
+          Object.keys(routeMapRecordForSingleObject).map((item) => {
+            if (item.indexOf(modifyListAndSinglePageRouteNew) > -1) {
+              routeMapRecordForSingleObjectModify = item;
             }
           });
         }
@@ -1490,6 +1500,10 @@
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+        } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
         } else {
           const param = {
             tableId,
@@ -2227,7 +2241,7 @@
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
                 // if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
                 // }
               }
             }
