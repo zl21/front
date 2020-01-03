@@ -30,7 +30,7 @@
           <i-switch
             v-model="switchValue"
             class="switch"
-            @on-change="switchChange()"
+            @on-change="switchChange(switchValue)"
           />
         </p>
       </div>
@@ -61,7 +61,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
+  import { getTouristRoute, enableInitializationRequest, Version } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -116,15 +116,17 @@
               if (res.data.code === 0) {
                 if (res.data.data.length > 0) {
                   res.data.data.forEach((param) => {
-                    if (param.name === 'isFoldCond') {
-                      this.switchValue = JSON.parse(param.value);
+                    if (param.name === 'isFoldCond') { // 设置为false时，展开全部，为true时，展开设置的行数
+                      this.switchValue = JSON.parse(param.value);// 为true时展开收藏夹
                     } else if (param.name === 'queryDisNumber') {
-                      this.num7 = Number(param.value);
-                      if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                        this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, param.value);
-                      } 
+                      this.num7 = Number(param.value);// 设置折叠条件
                     }
+                    if (moduleName() && moduleName().indexOf('S', 0) === 0) {
+                      this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: this.num7, switchValue: this.switchValue });
+                    } 
                   });
+                } else { // 数组为空时，展示全部
+                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: null, switchValue: false });
                 }
               }
             });
@@ -133,11 +135,13 @@
       changePwd() {
         this.$emit('changePwdBox');
       },
-      switchChange() {
+      switchChange(switchValue) {
         const param = {
           name: 'isFoldCond',
           value: this.switchValue
         };
+        this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue });
+
         network
           .post('/p/cs/setUserParam', urlSearchParams(param))
           .then(() => {
@@ -159,7 +163,7 @@
             if (res.data.code === 0) {
               if (moduleName()) {
                 if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                  this.$store.commit(`${moduleName()}/updateDefaultSearchFoldnum`, Number(this.num7));
+                  this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: Number(this.num7), switchValue: this.switchValue });
                 }
               }
             }

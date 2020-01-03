@@ -286,24 +286,40 @@ export default {
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
-              parames = {
-                ...add,
-                ...itemTableAdd
-              };
+              if (temporaryStoragePath) {
+                parames = {
+                  ...add,
+                };
+              } else {
+                parames = {
+                  ...add,
+                  ...itemTableAdd
+                };
+              }
             } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
               const itemTableAdd = Object.assign({}, addDefault);
               itemTableAdd[itemName].ID = objId;
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
-              parames = {
-                table: tableName, // 主表表名
-                objId, // 固定传值-1 表示新增
-                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                  ...add,
-                  ...itemTableAdd,
-                }
-              };
+              if (temporaryStoragePath) {
+                parames = {
+                  table: tableName, // 主表表名
+                  objId, // 固定传值-1 表示新增
+                  fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                    ...add,
+                  }
+                };
+              } else {
+                parames = {
+                  table: tableName, // 主表表名
+                  objId, // 固定传值-1 表示新增
+                  fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                    ...add,
+                    ...itemTableAdd,
+                  }
+                };
+              }
             } else { // 子表没有form
               parames = {
                 ...add
@@ -315,28 +331,48 @@ export default {
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else {
             parames = {
               table: tableName, // 主表表名
@@ -399,9 +435,23 @@ export default {
           modify[tableName].ID = objId;
           if (path) { // 有path的参数
             modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              parames = {
+                ...modify,
+              };
+            } else {
+              parames = {
+                ...modify,
+                ...addAndModifyParames,
+              };
+            }
+          } else if (temporaryStoragePath) {
             parames = {
-              ...modify,
-              ...addAndModifyParames,
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify
+              }
             };
           } else {
             parames = {
@@ -415,10 +465,25 @@ export default {
           }
         } else if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              modify[tableName].ID = objId;
+              parames = {
+                ...modify,
+              };
+            } else {
+              modify[tableName].ID = objId;
+              parames = {
+                ...modify,
+                ...itemModify
+              };
+            }
+          } else if (temporaryStoragePath) {
             parames = {
-              ...modify,
-              ...itemModify
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
+              }
             };
           } else {
             parames = {
@@ -441,20 +506,38 @@ export default {
           ];
           if (path) {
             modify[tableName].ID = objId;
-            parames = {
-              ...modify,
-              ...addItemName
-            };
-          } else if (Object.values(modify[tableName]).length > 0) {
-            // modify[tableName].ID = objId;
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 明细id
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            if (temporaryStoragePath) {
+              parames = {
+                ...modify,
+              };
+            } else {
+              parames = {
                 ...modify,
                 ...addItemName
-              }
-            };
+              };
+            }
+          } else if (Object.values(modify[tableName]).length > 0) {
+            // modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 明细id
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...modify,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 明细id
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...modify,
+                  ...addItemName
+                }
+              };
+            }
+          } else if (temporaryStoragePath) {
+            console.log('暂存不支持子表编辑');
           } else {
             parames = {
               table: tableName, // 主表表名

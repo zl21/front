@@ -1121,6 +1121,62 @@
           );
         } 
       },
+
+  
+      objTabActionSlient(tab) { // 动作定义静默
+        this.objTabActionSlientConfirm(tab);
+        // tab.confirm = true
+        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
+        // if (!tab) tab = self.activeTabAction;
+        // if (tab.confirm) {
+        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
+        //     const data = {
+        //       title: '警告',
+        //       mask: true,
+        //       content: tab.confirm,
+        //       onOk: () => {
+        //         this.objTabActionSlientConfirm(tab);
+        //       }
+        //     };
+        //     this.$Modal.fcWarning(data);
+        //   } else if (JSON.parse(tab.confirm).desc) {
+        //     //            确定后执行下一步操作
+        //     //            判断是否先执行保存
+        //     if (JSON.parse(tab.confirm).isSave) {
+        //       console.log('暂时未处理配置isSave的相关逻辑');
+        //       // self.confirmAction = 'beforeObjectSubmit(this.objTabActionSlientConfirm)';
+        //     } else {
+        //       const data = {
+        //         title: '警告',
+        //         mask: true,
+        //         showCancel: true, 
+        //         content: JSON.parse(tab.confirm).desc,
+        //         onOk: () => {
+        //           this.objTabActionSlientConfirm(tab);
+        //         }
+        //       };
+        //       this.$Modal.fcWarning(data);
+        //     }
+        //     // self.confirmTips({
+        //     //   action: 'confirm',
+        //     //   title: tab.webdesc,
+        //     //   type: 'warning',
+        //     //   list: [],
+        //     //   isAction: true,
+        //     //   desc: JSON.parse(tab.confirm).desc,
+        //     // });
+        //     // 清除提示信息
+        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
+        //     self.beforeObjectSubmit(() => {
+        //       self.objTabActionSlientConfirm(tab);
+        //     });
+        //   } else { // 静默直接执行
+        //     self.objTabActionSlientConfirm(tab);
+        //   }
+        // } else {
+        //   self.objTabActionSlientConfirm(tab);
+        // }
+      },
       // 动作定义静默执行
       objTabActionSlient(tab) {
         let params = {};
@@ -1444,14 +1500,51 @@
 
         // 单对象界面配置动态路由
         const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
+        const routeMapRecordForNew = getSeesionObject('routeMapRecord');
+
         const currentPath = this.$router.currentRoute.path;
+
        
-        const newSinglePage = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));
+        const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+        const SinglePageRouteModify = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+
+        const newListPageRouteNew = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteMOdify = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));        
+
+
         let routeMapRecordForSingleObjectNew = '';
+        let routeMapRecordForSingleObjectModify = '';
+        const routeMapRecordForListModify = {
+          to: '',
+          from: ''
+        };
+        const routeMapRecordForListNew = {
+          to: '',
+          from: ''
+        };
+
         if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
           Object.keys(routeMapRecordForSingleObject).map((item) => {
-            if (item.indexOf(newSinglePage) > -1) {
+            if (item.indexOf(SinglePageRouteNew) > -1) {
               routeMapRecordForSingleObjectNew = item;
+            }
+          });
+          Object.keys(routeMapRecordForNew).map((item) => {
+            if (item.indexOf(newListPageRouteNew) > -1) {
+              routeMapRecordForListNew.to = item;
+              routeMapRecordForListNew.from = routeMapRecordForNew[item];
+            }
+          });
+        } else {
+          Object.keys(routeMapRecordForNew).map((item) => { // 列表界面
+            if (item.indexOf(newListPageRouteMOdify) > -1) {
+              routeMapRecordForListModify.to = item;
+              routeMapRecordForListModify.from = routeMapRecordForNew[item];
+            }
+          });
+          Object.keys(routeMapRecordForSingleObject).map((item) => { // 单对象界面
+            if (item.indexOf(SinglePageRouteModify) > -1) {
+              routeMapRecordForSingleObjectModify = item;
             }
           });
         }
@@ -1474,12 +1567,48 @@
           router.push(routeMapRecordForSingleObject[currentPath]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
+        } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
+          const param = {
+            type: tabUrl,
+            url: routeMapRecordForListNew.from
+          };
+          this.tabOpen(param);
+          if (routeMapRecordForListNew.from.indexOf('SYSTEM') > -1) { // 返回列表界面
+            const deleteValue = {
+              k: 'keepAliveModuleName',
+              v: routeMapRecordForListNew.to
+            };
+            updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          } else {
+            deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
+          }
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+        } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+        } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
+          const param = {
+            type: tabUrl,
+            url: routeMapRecord[routeMapRecordForListModify.to]
+          };
+          this.tabOpen(param);
+          const deleteValue = {
+            k: 'keepAliveModuleName',
+            v: routeMapRecordForListModify.to
+          };
+          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else {
           const param = {
             tableId,
@@ -1516,10 +1645,9 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                    
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                      // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                      // }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1575,14 +1703,15 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                          }
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                     
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1606,14 +1735,15 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                        }
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                       this.updateRefreshButton(true);
                     }
-                    if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                      this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                    }
+                   
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
@@ -1626,12 +1756,17 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-        //   this.webactButton(tabwebact.objbutton);
-        // } else 
-        if 
-          (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
-          this.webactButton(tabwebact.objtabbutton);
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.itemName === this.tableName) {
+            if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+              this.webactButton(tabwebact.objbutton);
+            }
+          } else if 
+            (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+            this.webactButton(tabwebact.objtabbutton);
+          }
+        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          this.webactButton(tabwebact.objbutton);
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
@@ -2153,7 +2288,7 @@
               }
               if (itemAdd.length > 0 && itemModify.length > 0) {
                 if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 } else if (this.itemTableCheckFunc()) {
                   this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
                 }
@@ -2208,9 +2343,9 @@
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
-                if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
+                // if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                // }
               }
             }
 
@@ -2597,15 +2732,13 @@
             flag = true;
           }
         });
-
-
         if (flag) {
           this.dataArray.back = false;
           deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
           return true;
         }
         let flagForRouteMapRecord = false;
-        const routeFullPath = this.activeTab.routeFullPath;
+        const routeFullPath = currentRoute;
         const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
           if (routeFullPath === item) {
