@@ -52,32 +52,24 @@
                 <div class="right-list">
                     <div class="upper-part">
                         <div class="upper-table" ref="upperTable">
-                            <div class="upper-table-tabth">
+                            <div class="upper-table-tabth" :style="{left: upperTableTabthLeft}">
                                 <table>
                                     <thead>
                                     <tr>
-                                        <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in tableTabth" :key="index" :style="{width: theadThMinWidth}">
+                                        <th class="functionColumnClass" ref="functionColumnTh" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
+                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
                                             <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
                                         </th>
                                     </tr>
                                     </thead>
                                 </table>
                             </div>
-                            <div class="upper-table-tabtd">
+                            <div class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
                                 <table>
-                                    <thead>
-                                    <tr>
-                                        <th class="functionColumnClass" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
-                                        <th v-for="(item, index) in tableTabth" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
-                                            <Checkbox v-model="item[`${item.key}ThValue`]"></Checkbox>{{item.title}}
-                                        </th>
-                                    </tr>
-                                    </thead>
                                     <tbody>
                                     <tr v-for="(item, index) in tableData" :key="index">
-                                        <td ref="functionColumnTd">{{item.description}}</td>
-                                        <td :style="{width: tem.tbodyWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
+                                        <td ref="functionColumnTd" :style="{'min-width': functionColumnTdWidth}">{{item.description}}</td>
+                                        <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in tableTabth" :key="temIdx">
                                             <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue)"></Checkbox>
                                         </td>
                                     </tr>
@@ -196,7 +188,6 @@
   /* eslint-disable arrow-parens,no-lonely-if,no-empty */
   // import network, { urlSearchParams } from '../../__utils__/network';
   import { Version } from '../../constants/global';
-  import Checkbox from "burgeon-ui/src/components/checkbox/checkbox";
 
   const functionPowerActions = () => require(`../../__config__/actions/version_${Version()}/functionPower.actions.js`);
 
@@ -640,7 +631,9 @@
             tbodyWidth: '62px'
           },
         ], // 表格表头
+        upperTableTabthLeft: '0px',
         functionColumnWidth: 100, // 功能列的表头
+        functionColumnTdWidth: '100px', // 功能列的表体的宽度
         theadThMinWidth: '62px', // 表头th的最小宽度，单位px
         unCommitThMinWidth: '74px', // 反提交的宽度
       };
@@ -668,23 +661,43 @@
       window.addEventListener('resize', () => {
         this.fixTableColumnWidth();
       });
+      window.addEventListener('doCollapseHistoryAndFavorite', () => {
+        this.fixTableColumnWidth();
+      });
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.fixTableColumnWidth);
+      window.removeEventListener('doCollapseHistoryAndFavorite', this.fixTableColumnWidth);
     },
     activated() {
       this.fixTableColumnWidth();
     },
     methods: {
+      upperTableTbodyScroll(e) {
+        this.upperTableTabthLeft = `${-e.target.scrollLeft}px`;
+      },
       fixTableColumnWidth() {
-        const { upperTable, functionColumnTd } = this.$refs;
-        if (functionColumnTd) {
-          this.functionColumnWidth = functionColumnTd[0].offsetWidth;
-        }
-        const upperTableWidth = upperTable.offsetWidth;
-        const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
-        if (theadThWidth > 62) {
-          this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
-        } else {
-          this.theadThMinWidth = '62px';
-        }
+        this.$nextTick(() => {
+          const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
+          if (functionColumnTd) {
+            this.functionColumnWidth = functionColumnTd[0].offsetWidth;
+          }
+          const upperTableWidth = upperTable.offsetWidth;
+          const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
+          if (theadThWidth > 62) {
+            this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
+          } else {
+            this.theadThMinWidth = '62px';
+          }
+          this.$nextTick(() => {
+            this.functionColumnTdWidth = `${functionColumnTh.offsetWidth}px`;
+            this.tableTabth.map((item, index) => {
+              const tableTabth = `tableTabth${index}`;
+              item.tbodyWidth = `${this.$refs[tableTabth][0].offsetWidth}px`;
+              return item;
+            });
+          });
+        });
       }, // 计算表格的列宽
       refresh() {
         this.spinShow = true;
@@ -1919,10 +1932,8 @@
                             width: 100%;
                             position: relative;
                             overflow: hidden;
-                            overflow-x: auto;
                             .upper-table-tabth {
                                 position: relative;
-                                z-index: 2;
                                 table {
                                     border-collapse: collapse;
                                     border-spacing: 0px;
@@ -1943,8 +1954,8 @@
                                 }
                             }
                             .upper-table-tabtd {
+                                overflow: auto;
                                 height: calc(100% - 22px) !important;
-                                overflow-y: auto;
                                 table {
                                     margin-top: -22px;
                                     border-spacing: 0px;
