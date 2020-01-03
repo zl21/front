@@ -1426,13 +1426,18 @@
 
        
         const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+        const SinglePageRouteModify = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+
         const newListPageRouteNew = keepAliveModuleName.substring(currentPath.indexOf('.') + 1, currentPath.lastIndexOf('.'));
         const modifyListAndSinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));        
 
 
         let routeMapRecordForSingleObjectNew = '';
         let routeMapRecordForSingleObjectModify = '';
-
+        let routeMapRecordForListModify = {
+          to: '',
+          from: ''
+        };
         const routeMapRecordForListNew = {
           to: '',
           from: ''
@@ -1451,7 +1456,14 @@
             }
           });
         } else {
-          Object.keys(routeMapRecordForSingleObject).map((item) => {
+          Object.keys(routeMapRecordForNew).map((item) => { // 列表界面
+            if (item.indexOf(SinglePageRouteModify) > -1) {
+              routeMapRecordForListModify = item;
+              routeMapRecordForListModify.to = item;
+              routeMapRecordForListModify.from = routeMapRecordForNew[item];
+            }
+          });
+          Object.keys(routeMapRecordForSingleObject).map((item) => { // 单对象界面
             if (item.indexOf(modifyListAndSinglePageRouteNew) > -1) {
               routeMapRecordForSingleObjectModify = item;
             }
@@ -1504,6 +1516,21 @@
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+        } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
+          const param = {
+            type: tabUrl,
+            url: routeMapRecord[keepAliveModuleName]
+          };
+          this.tabOpen(param);
+          const deleteValue = {
+            k: 'keepAliveModuleName',
+            v: keepAliveModuleName
+          };
+          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else {
           const param = {
             tableId,
