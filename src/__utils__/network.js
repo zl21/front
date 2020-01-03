@@ -116,7 +116,7 @@ axios.interceptors.response.use(
       //   title: '错误',
       //   content: response.data.message || response.data.msg || 'No Error Message.'
       // });
-      const errorHTML = Array.isArray(response.data.error) && response.data.error.reduce((arr, x) => {
+      const errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
         arr.push(`<p>objid${x.objid}:${x.message}</p>`); return arr; 
       }, []).join('') || '';
       window.vm.$Modal.fcError({
@@ -291,7 +291,7 @@ axios.interceptors.response.use(
   }
 );
 
-export const getGateway = ({ url }) => {
+export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   // const serviceName = store.state.global.activeTab.tableName;

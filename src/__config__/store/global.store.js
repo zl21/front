@@ -33,7 +33,11 @@ export default () => ({
     }, // 导出状态
     exportTasks: {},
     taskMessageCount: 0, // 我的任务数量
-    currentLoading: []// 当前tabloading标记
+    currentLoading: [], // 当前tabloading标记
+    changeSearchFoldnum: {
+      queryDisNumber: null,
+      switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
+    },
     
   },
   mutations: mutations(),

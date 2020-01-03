@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                  >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -526,7 +526,7 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
-// AD_TABLE/992/24369
+
 if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
@@ -552,13 +552,22 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             this.$Modal.fcWarning(data);
             return;
           }
+          // AD_TABLE/992/24369
+          // this.tabHref({
+          //   type,
+          //   label: row.reftabdesc,
+          //   tableName: 'AD_TABLE',
+          //   tableId: 992,
+          //   id:'New',
+          //   serviceId: 'ad-app'
+          // });
           this.tabHref({
             type,
-            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-            tableName: 'AD_TABLE',
-            tableId: '992',
-            id:'24369',
-            serviceId: row._SERVICEID ? row._SERVICEID : null
+            label: row.reftabdesc,
+            tableName: row._TABLENAME,
+            tableId: row._TABLEID,
+            id: row._OBJID,
+            serviceId: row._SERVICEID
           });
         }
       },
@@ -1567,7 +1576,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 },
                 'on-open-change': (state, data) => {
                   if (!state) {
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
                   }
                 }
               }
@@ -3403,7 +3414,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               }
             }
           }
-        } else if (cellData.webconf && cellData.webconf.refcolvalArray.length > 0) { // webconf
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
           cellData.webconf.refcolvalArray.forEach((cur) => {
             if (this.type === pageType.Horizontal) {
               const express = '=';

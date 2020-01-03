@@ -104,6 +104,7 @@
   import mutipleSelectPop from './MutipleSelectPop';
   import { Version } from '../../constants/global';
   import getObjdisType from '../../__utils__/getObjdisType';
+  import { BacklogData } from '../../plugin/todoList';
 
   export default {
     name: 'TodoProcess',
@@ -596,6 +597,7 @@
             // this.selectRow = {};
             this.$Message.success(data.resultMsg);
             this.queryLists();
+            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Message.warning(data.resultMsg);
           }
