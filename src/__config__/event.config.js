@@ -45,7 +45,7 @@ export const routeTo = ({ type, info }, cb) => {
         } else if (actionType === 'https:' || actionType === 'http:') {
           path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          path = getUrl({ url: info.url, id: info.tableId ,type: 'customized' });
+          path = getUrl({ url: info.url, id: info.tableId, type: 'customized' });
         } else {
           class Person {
             constructor(wrong, eg, url) {
