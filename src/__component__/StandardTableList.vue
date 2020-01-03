@@ -113,7 +113,7 @@
     Version,
     CUSTOMIZED_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
-    LINK_MODULE_COMPONENT_PREFIX,
+    LINK_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME,
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -123,6 +123,7 @@
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
+    inject: [MODULE_COMPONENT_NAME],
     components: {
       ButtonGroup,
       AgTable,
@@ -2026,6 +2027,12 @@
         if (event.detail.type === 'search') {
           this.searchClickData({ value: 'true' });
         }
+      },
+      // 监听update.ST.FailInfo事件
+      updateSTFailInfo(event) {
+        if (event.detail[MODULE_COMPONENT_NAME] === this[MODULE_COMPONENT_NAME]) {
+          this.updateFailInfo(event.detail.failInfo);
+        }
       }
     },
     mounted() {
@@ -2033,6 +2040,7 @@
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
+        window.addEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
@@ -2055,6 +2063,7 @@
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
       window.removeEventListener('jflowEvent', this.jflowEvent);
+      window.removeEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
     }
   };
 </script>

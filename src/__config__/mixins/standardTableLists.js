@@ -40,6 +40,7 @@ export default () => ({
       ]),
     ...mapMutations(getComponentName(),
       [
+        'updateFailInfo',
         'updateAgConfig',
         'updateFormData',
         'updateFormLists',
