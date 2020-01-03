@@ -265,7 +265,6 @@ export default {
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
-      debugger;
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
