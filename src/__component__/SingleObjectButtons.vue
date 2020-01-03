@@ -1688,12 +1688,17 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-        //   this.webactButton(tabwebact.objbutton);
-        // } else 
-        if 
-          (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
-          this.webactButton(tabwebact.objtabbutton);
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.itemName === this.tableName) {
+            if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+              this.webactButton(tabwebact.objbutton);
+            }
+          } else if 
+            (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+            this.webactButton(tabwebact.objtabbutton);
+          }
+        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          this.webactButton(tabwebact.objbutton);
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
@@ -2400,7 +2405,7 @@
           path,
           itemName,
           objectType,
-          isreftabs: this.temporaryStoragePath ? false : isreftabs,
+          isreftabs,
           sataType,
           itemNameGroup,
           temporaryStoragePath: this.temporaryStoragePath
