@@ -243,7 +243,7 @@ export default (router) => {
             label: routePrefix === PLUGIN_MODULE_PREFIX ? pluginModules[pluginModuleName].name : `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
             tableName: tableName || customizedModuleName || pluginModuleName || linkModuleName,
-            routeFullPath: to.path,
+            routeFullPath: to.fullPath,
             routePrefix
           });
         }

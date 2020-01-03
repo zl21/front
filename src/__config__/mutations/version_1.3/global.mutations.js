@@ -352,7 +352,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // gateWay:网关
-    
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
