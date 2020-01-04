@@ -431,24 +431,25 @@
             }
           } else if (Object.hasOwnProperty.call(item.validate, 'hidecolumn')) {
             //  联动隐藏
+            return false;
             
-            const _refcolumn = item.validate.hidecolumn.refcolumn;
+            // const _refcolumn = item.validate.hidecolumn.refcolumn;
 
-            const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
-            if (val[_refcolumn] === undefined) {
-              return false;
-            }
-            const refvalArr = _refval.split(',');
-            const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
-            const checkVal = arrIndex !== -1 ? 1 : 0;
-            const checkShow = items.show ? 1 : 0;
+            // const _refval = item.validate.hidecolumn.refval === 'object' ? 'object' : item.validate.hidecolumn.refval;
+            // if (val[_refcolumn] === undefined) {
+            //   return false;
+            // }
+            // const refvalArr = _refval.split(',');
+            // const arrIndex = refvalArr.findIndex(x => x.toString() === val[_refcolumn].toString());
+            // const checkVal = arrIndex !== -1 ? 1 : 0;
+            // const checkShow = items.show ? 1 : 0;
 
-            if (checkVal !== checkShow) {
-              this.hidecolumn(item, i, val, old);
-            }
+            // if (checkVal !== checkShow) {
+            //   this.hidecolumn(item, i, val, old);
+            // }
           } else if (Object.hasOwnProperty.call(item.validate, 'refcolval')) {
             // 来源字段
-            this.refcolval(item, val, i);
+            // this.refcolval(item, val, i);
           }
           if (old === 'mounted') {
             this.setformUrl(item, val, items);
@@ -896,21 +897,21 @@
         this.dataProcessing(this.newFormItemLists[index], index);
         return true;
       },
-      refcolval(items, json) {
-        if (interlocks() === true) {
-          const srccol = items.validate.refcolval.srccol;
+      refcolval() {
+        // if (interlocks() === true) {
+        //   const srccol = items.validate.refcolval.srccol;
           
-          const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
-          if (!jsonArr[srccol]) {
-            if (items.type === 'DropDownSelectFilter') {
-              // console.log(items.props.defaultSelected, index, items);
-              // this.newFormItemLists[index].item.value = '';
-              // this.newFormItemLists[index].item.props.defaultSelected = [];
-            } else {
-              // this.newFormItemLists[index].item.value = '';
-            }
-          }
-        }
+        //   const jsonArr = Object.assign(JSON.parse(JSON.stringify(json)), JSON.parse(JSON.stringify(this.getStateData())));
+        //   if (!jsonArr[srccol]) {
+        //     if (items.type === 'DropDownSelectFilter') {
+        //       // console.log(items.props.defaultSelected, index, items);
+        //       // this.newFormItemLists[index].item.value = '';
+        //       // this.newFormItemLists[index].item.props.defaultSelected = [];
+        //     } else {
+        //       // this.newFormItemLists[index].item.value = '';
+        //     }
+        //   }
+        // }
       },
       dynamicforcompute(items, json) {
         // 被计算 属性 加减乘除
@@ -1066,61 +1067,57 @@
       hidecolumn(items, index, json, type) {
         // 隐藏
         // 获取值
-        const jsonArr = this.setJson(items, json);
+        const jsonArr = JSON.parse(JSON.stringify(json));
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
         // 是否显示 隐藏字段
         // this.newFormItemLists[index].show = false;
-        this.newFormItemLists = this.newFormItemLists.map((option) => {
-          if (option.item.field === refcolumn) {
-            if (option.item) {
-              let value = jsonArr[refcolumn];
-              if (value !== undefined) {
-                value = value.toString();
-              } else {
-                value = '';
-              }
-              const refvalArr = refval.split(',');
-              const refIndex = refvalArr.findIndex(x => x.toString() === value);
+        // this.newFormItemLists = this.newFormItemLists.map((option) => {
+        // });
 
-              if (refIndex !== -1) {
-                this.newFormItemLists[index].show = true;
-                // 添加小组件的字段配置
-                this.newFormItemLists[index].item.props.showCol = true;
-              } else {
-                this.newFormItemLists[index].show = false;
-                this.newFormItemLists[index].item.props.showCol = false;
-              }
-              if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-                if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
-                  const data = {
-                    formList: [
-                      { 
-                        key: items.field,
-                        name: items.title,
-                        show: this.newFormItemLists[index].show,
-                        srccol: items.validate.refcolval && items.validate.refcolval.srccol,
-                        tableName: this.isMainTable ? '' : this.childTableName
-                      }
-                    ],
-                    formIndex: ''
-                  };
-                  this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
-                }  
-              }
-              if (items.props.webconf && items.props.webconf.clearWhenHidden) {
-                //   清除页面 联动的值
-                this.newFormItemLists[index].item.value = '';
-                this.newFormItemLists[index].item.props.defaultSelected = [];
-                this.dataProcessing(this.newFormItemLists[index], index);
-              }
-              if (type === 'mounted') {
-                this.VerificationFormInt('mounted');
-              }  
-            }
-          }
-          return option;
-        });
+        let value = jsonArr[refcolumn];
+        if (value !== undefined) {
+          value = value.toString();
+        } else {
+          value = '';
+        }
+        const refvalArr = refval.split(',');
+        const refIndex = refvalArr.findIndex(x => x.toString() === value);
+
+        if (refIndex !== -1) {
+          this.newFormItemLists[index].show = true;
+          // 添加小组件的字段配置
+          this.newFormItemLists[index].item.props.showCol = true;
+        } else {
+          this.newFormItemLists[index].show = false;
+          this.newFormItemLists[index].item.props.showCol = false;
+        }
+        if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+          if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
+            const data = {
+              formList: [
+                { 
+                  key: items.field,
+                  name: items.title,
+                  show: this.newFormItemLists[index].show,
+                  srccol: items.validate.refcolval && items.validate.refcolval.srccol,
+                  tableName: this.isMainTable ? '' : this.childTableName
+                }
+              ],
+              formIndex: ''
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
+          }  
+        }
+        if (items.props.webconf && items.props.webconf.clearWhenHidden) {
+          //   清除页面 联动的值
+          this.newFormItemLists[index].item.value = '';
+          this.newFormItemLists[index].item.props.defaultSelected = [];
+          this.dataProcessing(this.newFormItemLists[index], index);
+        }
+        if (type === 'mounted') {
+          this.VerificationFormInt('mounted');
+        }  
       }
     }
   };

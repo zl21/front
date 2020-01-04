@@ -1622,12 +1622,19 @@
             }
           }
         }
+      },
+      setListenerSetHideForm(e) {
+        const index = e.value.list.findIndex(x => x === this._items.field);
+        if (index !== -1) {
+          this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
+        }
       }
       
     },
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
-      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1635,6 +1642,7 @@
     mounted() {
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     }
   };
 </script>

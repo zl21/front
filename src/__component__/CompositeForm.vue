@@ -235,6 +235,7 @@
         setChangeTime: null,
         formDataSave: {}, // change
         LinkageForm: [], // 界面 所有表单组件配置
+        hidecolumnForm: {}, // 界面 隐藏字段
         expand: 'expand' // 面板是否展开
       };
     },
@@ -471,6 +472,17 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
+      setHideColms(data) {
+        const key = Object.keys(data)[0];
+        if (this.hidecolumnForm[key]) {
+          // 通知隐藏关系
+          const refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}setHideForm`, window, {
+            key, list: this.hidecolumnForm[key], data: refcolvaData, tableName: this.tableGetName 
+          });
+        }
+        return true;
+      },
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -498,6 +510,8 @@
 
         // 修改联动的值
         this.setChangeValue(data, current);
+        // 修改隐藏
+        this.setHideColms(data, current);
         if (Array.isArray(data)) {
           data = data[0];
         }
@@ -1016,7 +1030,16 @@
           srccol: `${this.tableGetName}${srccol}`,
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
-        });         
+        });       
+        //  隐藏字段的映射
+        const hideSrccol = obj.item.validate.hidecolumn && obj.item.validate.hidecolumn.refcolumn;
+        if (hideSrccol) {
+          if (!this.hidecolumnForm[hideSrccol]) {
+            this.hidecolumnForm[hideSrccol] = [obj.item.field];
+          } else {
+            this.hidecolumnForm[hideSrccol].push(obj.item.field);
+          }
+        }
         // 静态属性
         if (obj.item.props.webconf && obj.item.props.webconf.setAttributes) {
           obj.item.props.webconf.setAttributes.field.forEach((option) => {
@@ -1152,6 +1175,8 @@
             const arrIndex = refvalArr.findIndex(x => x.toString() === val);
             return option.item.field === refcolumn && arrIndex !== -1;
           });
+        
+
           return check;
         }
         return true;
