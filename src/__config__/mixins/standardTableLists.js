@@ -10,12 +10,12 @@ const getComponentName = () => {
   return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 };
 
-const getFullPath = () => router.currentRoute.fullPath;
+// const getFullPath = () => router.currentRoute.fullPath;
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: getFullPath(),
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
     [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
   },
   mounted() {
