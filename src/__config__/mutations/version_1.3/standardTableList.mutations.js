@@ -2,6 +2,7 @@
 export default {
   updateFailInfo({ ag }, failInfo) {
     ag.datas.deleteFailInfo = failInfo;
+    ag.datas = Object.assign({}, ag.datas);
   },
   updateTableDataWithMerge({ ag }, data) {
     ag.datas = Object.assign({}, ag.datas, data);
