@@ -2,13 +2,16 @@ import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 import router from '../router.config';
-import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE } from '../../constants/global';
+import {
+  MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
+} from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();

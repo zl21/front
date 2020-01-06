@@ -123,7 +123,6 @@ export default {
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-                console.log(99, c);
                 // 自定义界面的处理
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
