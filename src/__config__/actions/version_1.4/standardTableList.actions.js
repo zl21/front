@@ -125,8 +125,13 @@ export default {
         commit('updateButtonExeActionData', res.data.message);
       } else if (res.data.code === -1) {
         if (res.data.data.length > 0) {
-          // const deleteFailInfo = res.data.data;
-          // commit('updateTableData', deleteFailInfo);
+          const deleteFailInfo = res.data.data;
+          DispatchEvent('updateSTFailInfo', {
+            detail: {
+              failInfo: deleteFailInfo,
+              moduleComponentName: moduleName
+            }
+          });
         } else {
           commit('updateButtonExeActionData', res.data.message);
         }
