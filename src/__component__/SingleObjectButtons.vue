@@ -93,7 +93,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
 
@@ -450,7 +450,7 @@
         default: () => {}
       },
     },
-    inject: [MODULE_COMPONENT_NAME],
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
@@ -723,7 +723,7 @@
           if (this.tabCurrentIndex === 0) { // 主表
             this.emptyTestData();
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, type: 'refresh'
+              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
             });
           } else if (tabrelation === '1:m') { // 子表
             this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
@@ -758,7 +758,7 @@
             table: this.tableName, objid: this.itemId, tabIndex
           });
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page 
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page ,moduleName: this[MODULE_COMPONENT_NAME]
           });
         }
         setTimeout(() => {
@@ -1259,7 +1259,6 @@
           this.$loading.show();
         });
         promise.then(() => {
-          this.$loading.hide(this.tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -1269,6 +1268,9 @@
           this.$Modal.fcSuccess(data);
           if (tab.isrefrsh) {
             this.upData();
+            this.$loading.hide(this.tableName);
+          } else {
+            this.$loading.hide(this.tableName);
           }
         }, () => {
           this.$loading.hide(this.tableName);
@@ -1707,6 +1709,10 @@
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
+                      } else if (item === 'actionMODIFY') {
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                        }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
@@ -1735,9 +1741,14 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
+
                         if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
+                      }
+                    } else if (item === 'actionMODIFY') {
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
@@ -2834,7 +2845,7 @@
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
-      const { tableName, tableId, itemId } = router.currentRoute.params;
+      const { tableName, tableId, itemId } = this[INSTANCE_ROUTE_QUERY];
       this.tableName = tableName;
       this.tableId = tableId;
       this.itemId = itemId;
