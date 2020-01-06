@@ -1600,6 +1600,9 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
+          if (this._items.props.tableGetName !== e.value.tableName) {
+            return false;
+          }
           this._items.required = e.value.required;
           if (e.value.regx) {
             this._items.props.regx = e.value.regx;
@@ -1625,7 +1628,8 @@
       },
       setListenerSetHideForm(e) {
         const index = e.value.list.findIndex(x => x === this._items.field);
-        if (index !== -1) {
+        console.log(e.value.tableName, this._items.props.tableGetName);
+        if (index !== -1 && e.value.tableName === this._items.props.tableGetName) {
           this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
         }
       }
