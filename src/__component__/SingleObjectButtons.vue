@@ -639,6 +639,9 @@
           Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0)
           || (this.updateData[this.itemName]&&this.updateData[this.itemName].modify[this.itemName] && 
           Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0) 
+
+           || (this.updateData[this.itemName]&&this.updateData[this.itemName].add[this.itemName] && 
+          Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
           console.log('编辑时，修改时上下主或子表修改了值');
