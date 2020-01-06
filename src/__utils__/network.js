@@ -173,6 +173,7 @@ axios.interceptors.response.use(
          
       });
     }
+
     dispatchR3Event({
       url: config.url,
       response: JSON.parse(JSON.stringify(response)),
