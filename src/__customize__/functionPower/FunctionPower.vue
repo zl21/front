@@ -1218,13 +1218,15 @@
       tabthCheckboxChange(currentValue, params) {
         // 如果点击的不是查看列，将查看列选中
         if (params.column.key !== 'see') {
-          this.columns[1].seeValue = true;
-          this.tableData.map((item) => {
-            if (!item.seeDisabled) {
-              item.seeValue = true;
-            }
-            return item;
-          });
+          if (currentValue) {
+            this.columns[1].seeValue = true;
+            this.tableData.map((item) => {
+              if (!item.seeDisabled) {
+                item.seeValue = true;
+              }
+              return item;
+            });
+          }
           const findColumnIndex = this.columns.findIndex((item) => item.key === params.column.key);
           this.columns[findColumnIndex][`${params.column.key}Value`] = currentValue;
         }

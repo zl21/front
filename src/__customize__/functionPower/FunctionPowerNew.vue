@@ -1109,15 +1109,17 @@
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {
-        // 如果点击的不是查看列，将查看列选中
+        // 如果点击的不是查看列，并且是选中状态的时候，将查看列选中
         if (params.column.key !== 'see') {
-          this.columns[0].seeValue = true;
-          this.tableData.map((item) => {
-            if (!item.seeDisabled) {
-              item.seeValue = true;
-            }
-            return item;
-          });
+          if (currentValue) {
+            this.columns[0].seeValue = true;
+            this.tableData.map((item) => {
+              if (!item.seeDisabled) {
+                item.seeValue = true;
+              }
+              return item;
+            });
+          }
           const findColumnIndex = this.columns.findIndex((item) => item.key === params.column.key);
           this.columns[findColumnIndex][`${params.column.key}Value`] = currentValue;
         }
