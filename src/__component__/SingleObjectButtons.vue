@@ -612,14 +612,18 @@
               || (this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)) {
               // 新增时，属于中主子表add都有默认值
               if (this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && (Object.keys(this.updateData[this.itemName].default[this.itemName]).length) 
-                > (this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+                < (this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
                 || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
-                  > (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+                  < (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+                ||(!this.updateData[this.tableName].default[this.tableName]&&this.updateData[this.tableName] && this.updateData[this.tableName].add && 
+                this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)||
+                (!this.updateData[this.itemName].default[this.itemName]&&this.updateData[this.itemName] && this.updateData[this.itemName].add && 
+                this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
               ) {
                 // 新增时，属于中主子表add中的值多余default的值，说明除了默认值之外有新增的值
                 this.isValue = true;// 主表修改了值
                 console.log('新增时，上下主或子表修改了值');
-              }
+              } 
             }
           }
         } else if (this.objectType === 'horizontal') { // 横向布局
@@ -649,7 +653,14 @@
           console.log('编辑时，修改时上下主或子表修改了值');
         }
       },
-      
+      // testUpdataForReturn() { // 校验是否修改过值
+      //     Object.entries(this.updateData).forEach(([key, value]) =>{
+        
+
+      //    })
+
+      // },
+     
       clickButtonsRefresh() { // 按钮刷新事件
         this.testUpdata();
         if (this.isValue) {
