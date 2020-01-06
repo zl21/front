@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -526,11 +526,10 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
-
-if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
+        if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
-          if (!row._TABLENAME || !row._TABLEID  || !row._OBJID) {
+          if (!row._TABLENAME || !row._TABLEID || !row._OBJID) {
             const data = {
               mask: true,
               title: '警告',
@@ -541,7 +540,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           } else if (row._OBJTYPE === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
-          } else if (row._OBJTYPE  === 'tabpanle') { // 左右结构
+          } else if (row._OBJTYPE === 'tabpanle') { // 左右结构
             type = 'tableDetailHorizontal';
           } else {
             const data = {
@@ -3218,7 +3217,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         // 组装数据 存入store
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          oldIdValue = oldIdValue ? oldIdValue : '';
+          oldIdValue = oldIdValue || '';
           if (currentValue !== oldIdValue) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;

@@ -15,8 +15,9 @@
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
+      :default-spread="changeSearchFoldnum.switchValue"
       :default-column="4"
-      :search-foldnum="changeSearchFoldnum || formItems.searchFoldnum"
+      :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
       @formDataChange="formDataChange"
     />
     <AgTable
@@ -207,6 +208,7 @@
             const routeFullPath = this.$router.currentRoute.path;
             if (routeMapRecord && isDynamicRouting) { // 动态路由返回
               const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+
               Object.entries(routeMapRecord).forEach(([key, value]) => {
                 if (value === routeFullPath && dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === key) {
                   this.searchClickData({ value: 'true' });

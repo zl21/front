@@ -1054,60 +1054,7 @@
         } 
       },
 
-      // // 判断跳转到哪个页面
-      // const url = tab.action;
-      // const index = url.lastIndexOf('/');
-      // const customizedModuleName = url.substring(index + 1, url.length);
-      // const label = tab.webdesc;
-      // const type = 'tableDetailAction';
-      // const name = Object.keys(this.keepAliveLabelMaps);
-      // let customizedModuleId = '';
-      // name.forEach((item) => {
-      //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-      //     customizedModuleId = item.split(/\./)[2];
-      //   }
-      // });
-      // // if (tab.actiontype === 'url') {
-      // //   this.objTabActionUrl(tab);
-      // // } else
-      // if (tab.action) {
-      //   this.tabOpen({
-      //     type,
-      //     customizedModuleName,
-      //     customizedModuleId,
-      //     label
-      //   });
-      // }
-      // objTabActionUrl(tab) { // 外链类型
-      //   // const linkUrl = tab.action;
-      //   // const linkId = tab.webid;
-      //   // this.increaseLinkUrl({ linkId, linkUrl });
-      //   // const label = `${tab.webdesc}`;
-      //   // const name = `L.${tab.webname.toUpperCase()}.${linkId}`;
-      //   // this.addKeepAliveLabelMaps({ name, label });
-      //   // const linkInfo = {
-      //   //   linkUrl: tab.action,
-      //   //   linkId: tab.webid,
-      //   //   label,
-      //   //   name
-      //   // };
-      //   // window.sessionStorage.setItem('linkInfo', JSON.stringify(linkInfo));
-      //   // setTimeout(() => {
-      //   //   this.tabOpen({
-      //   //     type: 'tableDetailUrl',
-      //   //     tableName: tab.webname.toUpperCase(),
-      //   //     tableId: tab.webid,
-      //   //     label: tab.webdesc,
-      //   //     url: tab.action
-      //   //   });
-      //   // }, 500);
-      //   const eleLink = document.createElement('a');
-      //   eleLink.href = tab.action;
-      //   eleLink.target = '_blank';
-      //   document.body.appendChild(eleLink);
-      //   eleLink.click();
-      //   document.body.removeChild(eleLink);
-      // },
+  
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
         // tab.confirm = true
@@ -1479,9 +1426,18 @@
 
        
         const SinglePageRouteNew = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
-        const newListPageRouteNew = keepAliveModuleName.substring(currentPath.indexOf('.') + 1, currentPath.lastIndexOf('.'));        
+        const SinglePageRouteModify = currentPath.substring(currentPath.indexOf('/') + 1, currentPath.lastIndexOf('/'));  
+
+        const newListPageRouteNew = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));
+        const newListPageRouteMOdify = keepAliveModuleName.substring(keepAliveModuleName.indexOf('.') + 1, keepAliveModuleName.lastIndexOf('.'));        
+
 
         let routeMapRecordForSingleObjectNew = '';
+        let routeMapRecordForSingleObjectModify = '';
+        const routeMapRecordForListModify = {
+          to: '',
+          from: ''
+        };
         const routeMapRecordForListNew = {
           to: '',
           from: ''
@@ -1497,6 +1453,18 @@
             if (item.indexOf(newListPageRouteNew) > -1) {
               routeMapRecordForListNew.to = item;
               routeMapRecordForListNew.from = routeMapRecordForNew[item];
+            }
+          });
+        } else {
+          Object.keys(routeMapRecordForNew).map((item) => { // 列表界面
+            if (item.indexOf(newListPageRouteMOdify) > -1) {
+              routeMapRecordForListModify.to = item;
+              routeMapRecordForListModify.from = routeMapRecordForNew[item];
+            }
+          });
+          Object.keys(routeMapRecordForSingleObject).map((item) => { // 单对象界面
+            if (item.indexOf(SinglePageRouteModify) > -1) {
+              routeMapRecordForSingleObjectModify = item;
             }
           });
         }
@@ -1519,12 +1487,12 @@
           router.push(routeMapRecordForSingleObject[currentPath]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
         } else if (routeMapRecordForSingleObjectNew) {
           router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectNew]);
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
-          this.clickButtonsRefresh();
+          // this.clickButtonsRefresh();
         } else if (routeMapRecordForListNew.to) { // 动态路由（新增返回）
           const param = {
             type: tabUrl,
@@ -1540,6 +1508,24 @@
           } else {
             deleteFromSessionObject('routeMapRecord', routeMapRecordForListNew.to);// 清除动态路由对应关系
           }
+          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
+        } else if (routeMapRecordForSingleObjectModify) { // 单对象动态路由新增以及复制保存后跳转到编辑界面的返回需回到动态路由对应的界面
+          router.push(routeMapRecordForSingleObject[routeMapRecordForSingleObjectModify]);
+          this.decreasekeepAliveLists(keepAliveModuleName);
+          this.tabCloseAppoint({ routeFullPath: currentPath, stopRouterPush: true });
+        } else if (routeMapRecordForListModify.to) { // 列表动态路由（新增/复制保存成功后跳转到单对象界面执行返回操作）
+          const param = {
+            type: tabUrl,
+            url: routeMapRecord[routeMapRecordForListModify.to]
+          };
+          this.tabOpen(param);
+          const deleteValue = {
+            k: 'keepAliveModuleName',
+            v: routeMapRecordForListModify.to
+          };
+          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
           window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
@@ -1579,9 +1565,9 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                      // if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      //   this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                      // }
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1637,14 +1623,19 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                            this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                          }
+                        }
+                      } else if (item === 'actionMODIFY') {
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                      }
+                     
                       this.dataArray.refresh = this.refreshButtons;
                       this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                     }
@@ -1668,14 +1659,20 @@
                       buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
+
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
+                        }
+                      }
+                    } else if (item === 'actionMODIFY') {
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                     }
                     if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                       this.updateRefreshButton(true);
                     }
-                    if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
-                      this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
-                    }
+                   
                     this.dataArray.refresh = this.refreshButtons;
                     this.dataArray.buttonGroupShowConfig.buttonGroupShow.push(buttonConfigInfo);
                   }
@@ -1688,12 +1685,17 @@
         // }
       },
       waListButtons(tabwebact) { // 自定义按钮渲染逻辑
-        // if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-        //   this.webactButton(tabwebact.objbutton);
-        // } else 
-        if 
-          (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
-          this.webactButton(tabwebact.objtabbutton);
+        if (this.objectType === 'horizontal') { // 横向布局
+          if (this.itemName === this.tableName) {
+            if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+              this.webactButton(tabwebact.objbutton);
+            }
+          } else if 
+            (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
+            this.webactButton(tabwebact.objtabbutton);
+          }
+        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          this.webactButton(tabwebact.objbutton);
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
@@ -2274,9 +2276,9 @@
               if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && this.temporaryStoragePath) {
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
               } else if (this.itemTableCheckFunc()) {
-                if (this.verifyRequiredInformation()) { // 横向结构保存校验
-                  this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
-                }
+                // if (this.verifyRequiredInformation()) { // 横向结构保存校验
+                this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'modify' });
+                // }
               }
             }
 
@@ -2400,7 +2402,7 @@
           path,
           itemName,
           objectType,
-          isreftabs: this.temporaryStoragePath ? false : isreftabs,
+          isreftabs,
           sataType,
           itemNameGroup,
           temporaryStoragePath: this.temporaryStoragePath
@@ -2649,15 +2651,13 @@
             flag = true;
           }
         });
-
-
         if (flag) {
           this.dataArray.back = false;
           deleteFromSessionObject('clickMenuAddSingleObject', currentRoute);
           return true;
         }
         let flagForRouteMapRecord = false;
-        const routeFullPath = this.activeTab.routeFullPath;
+        const routeFullPath = currentRoute;
         const routeMapRecordForHideBackButtonData = getSeesionObject('routeMapRecordForHideBackButton');
         Object.keys(routeMapRecordForHideBackButtonData).map((item) => {
           if (routeFullPath === item) {
