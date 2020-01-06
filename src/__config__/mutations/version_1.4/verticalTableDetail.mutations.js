@@ -125,7 +125,7 @@ export default {
     const { tableName } = router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
-    } else {
+    } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
       delete state.updateData[tableName].add[tableName][data.key];
     }
   },

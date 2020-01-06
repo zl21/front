@@ -598,6 +598,7 @@
         });
       },
       testUpdata() { // 校验是否修改过值
+        this.isValue = null;
         const itemNames = this.itemNameGroup.map((c) => {
           if (c.tableName !== this.tableName) {
             return c.tableName;
@@ -1484,6 +1485,7 @@
         }
         this.updataGlobalLoading(true);
         this.changeCopy(true);
+        this.emptyTestData();
       },
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
@@ -2203,6 +2205,8 @@
             id
           });
         }
+        this.emptyTestData();
+
         // setTimeout(() => {
         //   // this.emptyChangeData(this.tableName);
         //   // this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/emptyChangeData`, this.tableName);
@@ -2545,6 +2549,8 @@
           this.saveEventAfter = '';
           return;
         }
+        this.emptyTestData();
+
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作

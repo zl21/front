@@ -494,9 +494,9 @@ export default {
   isRequestUpdata(state, { tabPanel, index }) {
     let arr = [];
     arr = tabPanel.map(item => item.isRequest);
-    // if (index === 0) {
-    arr[0] = true;
-    // }
+    if (index === 0) {
+      arr[0] = true;
+    }
     arr[index] = true;
     const oldRequestData = state.isRequest;
     if (oldRequestData.length > 0) {
