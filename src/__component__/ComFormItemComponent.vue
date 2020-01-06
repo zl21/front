@@ -457,7 +457,7 @@
           return items;
         });
       },
-      setformUrl(item, val, items) {
+      setformUrl(item, val) {
         if (item.props.webconf && item.props.webconf.formRequest) {
           const isCopyCheck = this.isCopy();
           if (this.actived && isCopyCheck) {
@@ -491,7 +491,11 @@
       formInit() {
         const val = this.getStateData();
         setTimeout(() => {
-          this.computFormLinkage(val, 'mounted');
+          if (this.actived === false) {
+            this.computFormLinkage(val, 'mounted');
+          } else {
+            this.computFormLinkage(val);
+          }
         }, 50);
       }, 
       mountdataFormInt() {
