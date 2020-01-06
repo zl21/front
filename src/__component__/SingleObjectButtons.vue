@@ -450,7 +450,7 @@
         default: () => {}
       },
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,INSTANCE_ROUTE],
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
@@ -611,8 +611,10 @@
             if ((this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
               || (this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)) {
               // 新增时，属于中主子表add都有默认值
-              if (Object.keys(this.updateData[this.itemName].default[this.itemName]).length > Object.keys(this.updateData[this.itemName].add[this.itemName]).length
-                || Object.keys(this.updateData[this.tableName].default[this.tableName]).length > Object.keys(this.updateData[this.tableName].add[this.tableName]).length
+              if (this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && (Object.keys(this.updateData[this.itemName].default[this.itemName]).length) 
+                > (this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+                || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
+                  > (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
               ) {
                 // 新增时，属于中主子表add中的值多余default的值，说明除了默认值之外有新增的值
                 this.isValue = true;// 主表修改了值
@@ -633,15 +635,15 @@
             this.isValue = true;// 主表修改了值
             console.log(' 左右主表修改了值');
           }
-        } else if ((this.updateData[this.tableName] && 
-          this.updateData[this.tableName].modify &&
-          this.updateData[this.tableName].modify[this.tableName] && 
-          Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0)
-          || (this.updateData[this.itemName]&&this.updateData[this.itemName].modify[this.itemName] && 
-          Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0) 
+        } else if ((this.updateData[this.tableName] 
+          && this.updateData[this.tableName].modify
+          && this.updateData[this.tableName].modify[this.tableName] 
+          && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0)
+          || (this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] 
+          && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0) 
 
-           || (this.updateData[this.itemName]&&this.updateData[this.itemName].add[this.itemName] && 
-          Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
+          || (this.updateData[this.itemName] && this.updateData[this.itemName].add[this.itemName] 
+          && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
           console.log('编辑时，修改时上下主或子表修改了值');
