@@ -1,6 +1,7 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { enableJflow } from '../../../constants/global';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
@@ -464,7 +465,8 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, isreftabs, resolve, reject
+    objId, table, path, isreftabs, resolve, reject, moduleName,
+    routeQuery, routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -494,6 +496,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -572,10 +586,11 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
-    tab,
     params,
     path,
-    resolve, reject
+    resolve, reject, moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
@@ -584,6 +599,18 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      DispatchEvent('exeActionForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'horizontalTable',
+          url: actionName || '/p/cs/exeAction',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();

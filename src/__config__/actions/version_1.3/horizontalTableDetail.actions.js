@@ -1,5 +1,6 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
@@ -443,7 +444,8 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path, resolve, reject, moduleName,
+    routeQuery, routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', urlSearchParams({ objid: objId, table })).then((res) => {
@@ -456,6 +458,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -503,7 +517,10 @@ export default {
     tab,
     params,
     path,
-    resolve, reject
+    resolve, reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') === -1) {
@@ -513,10 +530,21 @@ export default {
         webaction: null,
         param: JSON.stringify(params),
       })).then((res) => {
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
-  
           commit('updateObjTabActionSlientConfirm', invalidData);
         } else {
           reject();
@@ -526,8 +554,19 @@ export default {
       });
     } else {
       actionName = path;
-
       network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();

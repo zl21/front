@@ -93,7 +93,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
 
@@ -450,7 +450,7 @@
         default: () => {}
       },
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,INSTANCE_ROUTE],
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
@@ -758,7 +758,7 @@
             table: this.tableName, objid: this.itemId, tabIndex
           });
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page ,moduleName: this[MODULE_COMPONENT_NAME]
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
         }
         setTimeout(() => {
@@ -1254,7 +1254,7 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getObjTabActionSlientConfirm({
-            tab, params, path: tab.action, resolve, reject 
+            tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
           this.$loading.show();
         });
@@ -2627,7 +2627,8 @@
           if (this.saveEventAfter === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+          
+                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
               });
             });
             // let message = '';
@@ -2698,7 +2699,7 @@
           const promise = new Promise((resolve, reject) => {
             const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
             this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject
+              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
             });
           });
           // promise.then(() => {
@@ -2785,6 +2786,10 @@
       }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
+        window.addEventListener('exeActionForR3', (data) => {
+          this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
+        });
+
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
         window.addEventListener('globalNoticeCopy', this.hideLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
