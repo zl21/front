@@ -1542,6 +1542,9 @@
       setListenerSetProps(e) {
         if (e.value.type === 'equal') {
           // 表单赋值
+          if (!Array.isArray(e.value.list)) {
+            return false;
+          }
           e.value.list.forEach((item) => {
             if (this._items.props.tableGetName !== e.value.tableName) {
               return false;
@@ -1611,6 +1614,7 @@
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
         }
+        return true;
       },
       setListenerSetLinkForm(e) {
         // 设置表单联动清空
@@ -1628,7 +1632,6 @@
       },
       setListenerSetHideForm(e) {
         const index = e.value.list.findIndex(x => x === this._items.field);
-        console.log(e.value.tableName, this._items.props.tableGetName);
         if (index !== -1 && e.value.tableName === this._items.props.tableGetName) {
           this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
         }
