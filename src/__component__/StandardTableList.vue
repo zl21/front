@@ -123,7 +123,7 @@
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
   export default {
-    inject: [MODULE_COMPONENT_NAME],
+    // inject: [MODULE_COMPONENT_NAME],
     components: {
       ButtonGroup,
       AgTable,
@@ -2041,7 +2041,7 @@
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
-        window.addEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
+        // window.addEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
@@ -2064,7 +2064,7 @@
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
       window.removeEventListener('jflowEvent', this.jflowEvent);
-      window.removeEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
+      // window.removeEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
     }
   };
 </script>
