@@ -159,8 +159,6 @@
         }, // 弹框配置信息
       };
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,INSTANCE_ROUTE],
-
     computed: {
       ...mapState('global', {
         favorite: ({ favorite }) => favorite,
