@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import network, { urlSearchParams } from '../../../__utils__/network';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   setColHide(store, data) {
@@ -99,7 +100,7 @@ export default {
     });
   },
   getExeActionDataForButtons({ commit }, {
-    item, obj, resolve, reject 
+    item, obj, resolve, reject, moduleName, routeQuery, routePath
   }) {
     let actionName = '';
     if (item.action.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
@@ -112,6 +113,18 @@ export default {
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
+      DispatchEvent('exeActionForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'standardTable',
+          url: actionName || '/p/cs/exeAction',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonExeActionData', res.data.message);
@@ -187,12 +200,24 @@ export default {
     });
   },
   batchSubmitForButtons({ commit }, {
-    url, tableName, ids, resolve, reject 
+    url, tableName, ids, resolve, reject, moduleName, routeQuery, routePath
   }) { // 调用提交接口
     network.post(url || '/p/cs/batchSubmit', urlSearchParams({
       table: tableName, 
       objids: ids.join(',')
     })).then((res) => {
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: url || '/p/cs/batchSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
       if (res.data.code === 0) {
         resolve();
         commit('updateButtonbatchSubmitData', res.data);
