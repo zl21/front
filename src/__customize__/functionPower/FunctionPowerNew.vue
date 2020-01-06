@@ -1693,6 +1693,9 @@
                     flex: 1;
                     height: 100%;
                     width: 10px;
+                    .burgeon-checkbox-inner {
+                        transition: 0s !important;
+                    }
                     .upper-part {
                         height: 60%;
                         padding: 10px;
