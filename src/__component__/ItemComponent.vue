@@ -1542,6 +1542,9 @@
       setListenerSetProps(e) {
         if (e.value.type === 'equal') {
           // 表单赋值
+          if (!Array.isArray(e.value.list)) {
+            return false;
+          }
           e.value.list.forEach((item) => {
             if (this._items.props.tableGetName !== e.value.tableName) {
               return false;
@@ -1608,6 +1611,7 @@
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
         }
+        return true;
       },
       setListenerSetLinkForm(e) {
         // 设置表单联动清空
