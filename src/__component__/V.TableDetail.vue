@@ -124,7 +124,6 @@
       compositeForm
     },
     created() {
-      
     },
     mounted() {
       const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
@@ -132,6 +131,7 @@
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
+      console.log(777, this);
 
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
