@@ -447,9 +447,15 @@
               if (Array.isArray(item.childs)) {
                 item.childs.forEach((option) => {
                   option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option) : true;
+                  if (option.item.props.display === 'none') {
+                    option.show = false;
+                  }               
                 });
               } else {
                 item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item) : true;
+                if (item.item.props.display === 'none') {
+                  item.show = false;
+                } 
               }
             });
           }
@@ -581,8 +587,7 @@
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
         }, 100);
-       
-        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+        if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
           delete this.formDataSave[current.item.field];
           delete this.formDataDef[current.item.field];
@@ -593,17 +598,38 @@
             itemName: this.tableGetName
           };
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-        } else if (this.conditiontype !== 'list' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
-          // console.log(data, label, this.labelForm[current.item.field], this.r3Form[current.item.field]);
-          delete this.formDataSave[current.item.field];
-          delete this.formDataDef[current.item.field];
-          delete this.labelFormSave[current.item.field];
-          // eslint-disable-next-line no-shadow
-          const data = {
-            key: current.item.field,
-            itemName: this.tableGetName
-          };
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+        } else if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() !== 'NEW' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+          let form = this.formData[current.item.field];
+          let defaultFormData = this.defaultFormData[current.item.field];
+          try {
+            if (typeof form === 'object') {
+              form = JSON.String(form);
+            } else {
+              form = form.toString();
+            }
+          } catch (error) {
+            form = this.formData[current.item.field] || '';
+          }
+          try {
+            if (typeof defaultFormData === 'object') {
+              defaultFormData = JSON.String(defaultFormData);
+            } else {
+              defaultFormData = defaultFormData.toString();
+            }
+          } catch (error) {
+            defaultFormData = this.defaultFormData[current.item.field] || '';
+          }
+          if (form === defaultFormData) {
+            delete this.formDataSave[current.item.field];
+            delete this.formDataDef[current.item.field];
+            delete this.labelFormSave[current.item.field];
+            // eslint-disable-next-line no-shadow
+            const data = {
+              key: current.item.field,
+              itemName: this.tableGetName
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+          }
         } 
 
         this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave);
@@ -1056,10 +1082,7 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
-        //  display none
-        if (current.display === 'none') {
-          obj.show = false;
-        }
+       
        
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
@@ -1092,6 +1115,10 @@
               this.setAttsetProps[option.refcolumn].push(obj.item.field);
             }
           });
+        }
+        //  display none
+        if (current.display === 'none') {
+          obj.show = false;
         }
 
         
@@ -1199,6 +1226,7 @@
       },
       hidecolumn(current) {
         //  隐藏判断
+
         if (Object.hasOwnProperty.call(current.item.validate, 'hidecolumn')) {
           const refcolumn = current.item.validate.hidecolumn.refcolumn;
           const refval = current.item.validate.hidecolumn.refval;
@@ -1212,6 +1240,8 @@
           const arrIndex = refvalArr.findIndex(x => x.toString() === val);
           return arrIndex !== -1;
         }
+       
+        
         return true;
       },
       focusChange(value, current, index) {
