@@ -14,7 +14,7 @@
         <div class="content">
             <div class="contentLeft">
                 <Input
-                        placeholder="请输入用户名"
+                        placeholder="请输入角色"
                         clearable
                         @on-change="searchInputChange"
                         icon="ios-search"
@@ -545,6 +545,9 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        if (val.length === 0) {
+          this.$refs.menuTree.handleSelect(item.nodeKey);
+        }
         this.newGroupId = item.ID;
         if (this.checkNoSaveData()) {
         } else {
@@ -818,6 +821,9 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        if (val.length === 0) {
+          this.$refs.tree.handleSelect(obj.nodeKey);
+        }
         this.newAdSubsystemId = obj.ad_subsystem_id;
         this.newAdTableCateId = obj.ad_tablecategory_id;
         if (this.checkNoSaveData()) {
