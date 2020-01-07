@@ -2378,7 +2378,7 @@
               itemAdd = Object.values(this.updateData[itemName].add[itemName]);
             }
             if (itemAdd.length > 0 && itemModify.length > 0) {
-              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+              if (this.verifyRequiredInformation()&&this.itemTableCheckFunc()) { // 横向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               }
             }
