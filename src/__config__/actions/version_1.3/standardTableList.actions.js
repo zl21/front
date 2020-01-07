@@ -113,6 +113,13 @@ export default {
       webaction: null,
       param: JSON.stringify(obj),
     })).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonExeActionData', res.data.message);
+      } else {
+        commit('updateButtonExeActionData', res.data.message);
+        reject();
+      }
       DispatchEvent('exeActionForR3', {
         detail: {
           name: 'exeAction',
@@ -125,13 +132,6 @@ export default {
           routePath
         }
       });
-      if (res.data.code === 0) {
-        resolve();
-        commit('updateButtonExeActionData', res.data.message);
-      } else {
-        commit('updateButtonExeActionData', res.data.message);
-        reject();
-      }
     }).catch(() => {
       reject();
     });
@@ -206,6 +206,15 @@ export default {
       table: tableName, 
       objids: ids.join(',')
     })).then((res) => {
+      if (res.data.code === 0) {
+        resolve();
+        commit('updateButtonbatchSubmitData', res.data);
+        commit('onSelectionChangedAssignment', {});
+      } else {
+        reject();
+        commit('updateButtonbatchSubmitData', res.data.data);
+        commit('onSelectionChangedAssignment', {});
+      }
       DispatchEvent('batchSubmitForR3', {
         detail: {
           name: 'exeAction',
@@ -218,15 +227,6 @@ export default {
           routePath
         }
       });
-      if (res.data.code === 0) {
-        resolve();
-        commit('updateButtonbatchSubmitData', res.data);
-        commit('onSelectionChangedAssignment', {});
-      } else {
-        reject();
-        commit('updateButtonbatchSubmitData', res.data.data);
-        commit('onSelectionChangedAssignment', {});
-      }
     });
   },
  

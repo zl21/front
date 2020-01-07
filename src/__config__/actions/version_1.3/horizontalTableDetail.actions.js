@@ -530,18 +530,6 @@ export default {
         webaction: null,
         param: JSON.stringify(params),
       })).then((res) => {
-        DispatchEvent('exeActionForR3', {
-          detail: {
-            name: 'exeAction',
-            type: 'horizontalTable',
-            url: actionName || '/p/cs/exeAction',
-            res,
-            moduleName,
-            routeQuery,
-            tableName: routeQuery.tableName,
-            routePath
-          }
-        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
@@ -549,12 +537,6 @@ export default {
         } else {
           reject();
         }
-      }).catch(() => {
-        reject();
-      });
-    } else {
-      actionName = path;
-      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         DispatchEvent('exeActionForR3', {
           detail: {
             name: 'exeAction',
@@ -567,6 +549,12 @@ export default {
             routePath
           }
         });
+      }).catch(() => {
+        reject();
+      });
+    } else {
+      actionName = path;
+      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
@@ -575,6 +563,18 @@ export default {
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });
