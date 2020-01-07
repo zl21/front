@@ -411,7 +411,9 @@
 
           //  扩展属性 来源字段
           if (item.props.webconf && item.props.webconf.targetField) {
-            item.props.supportType = val[item.props.webconf.targetField];
+            const jsonArr = this.setJson(item, val);
+
+            item.props.supportType = jsonArr[item.props.webconf.targetField];
           }
            
 
@@ -1030,10 +1032,12 @@
       },
       filtercolumn(item, formindex, val, type) {
         // 过滤筛选
-        const filterValue = val[item.props.webconf.filtercolval.col];
+        const jsonArr = this.setJson(item, val);
+        const filterValue = jsonArr[item.props.webconf.filtercolval.col];
         if (!filterValue) {
           return false;
         }
+
         let itemValue = item.value;
         if (Array.isArray(itemValue)) {
           itemValue = itemValue.join('');
