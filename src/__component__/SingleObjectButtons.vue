@@ -606,20 +606,40 @@
         });// 因左右结构itemNameGroup包含主表，上下结构不包括
         const name = '';
         if (this.itemId === 'New') {
-          if ((this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) 
-            || (this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {
+          if ((this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) 
+            || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {
             // 新增时，属于中主子表add都有值
-            if ((this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
-              || (this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)) {
+            if ((this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
+              || (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)) {
               // 新增时，属于中主子表add都有默认值
-              if (this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && (Object.keys(this.updateData[this.itemName].default[this.itemName]).length) 
-                < (this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
-                || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
-                  < (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
-                ||(!this.updateData[this.tableName].default[this.tableName]&&this.updateData[this.tableName] && this.updateData[this.tableName].add && 
-                this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)||
-                (!this.updateData[this.itemName].default[this.itemName]&&this.updateData[this.itemName] && this.updateData[this.itemName].add && 
-                this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+              if (
+                this.updateData[this.itemName] 
+                && this.updateData[this.itemName].default 
+                && this.updateData[this.itemName].default[this.itemName]
+                && (Object.keys(this.updateData[this.itemName].default[this.itemName]).length) 
+                  < (this.updateData[this.itemName] 
+                    && this.updateData[this.itemName].add 
+                    && this.updateData[this.itemName].add[this.itemName]
+                    && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+                || (this.updateData[this.tableName] 
+                  && this.updateData[this.tableName].default 
+                  && this.updateData[this.tableName].default[this.tableName] 
+                  && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
+                  < (this.updateData[this.tableName] 
+                    && this.updateData[this.tableName].add 
+                    && this.updateData[this.tableName].add[this.tableName] 
+                    && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+                || (this.updateData[this.tableName] 
+                && (!this.updateData[this.tableName].default || !this.updateData[this.tableName].default[this.tableName])
+                && this.updateData[this.tableName].add 
+                && this.updateData[this.tableName].add[this.tableName]
+                && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+                || (
+                  this.updateData[this.itemName] &&
+                 (!this.updateData[this.itemName].default|| !this.updateData[this.itemName].default[this.itemName])
+                && this.updateData[this.itemName].add 
+                && this.updateData[this.itemName].add[this.itemName]
+                && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
               ) {
                 // 新增时，属于中主子表add中的值多余default的值，说明除了默认值之外有新增的值
                 this.isValue = true;// 主表修改了值
