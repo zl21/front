@@ -2696,9 +2696,9 @@
       }
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
-        window.addEventListener('exeActionForR3', (data) => {
-          // this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
-        });
+        // window.addEventListener('exeActionForR3', (data) => {
+        //   this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
+        // });
 
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
         window.addEventListener('globalNoticeCopy', this.hideLoading);
