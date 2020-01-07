@@ -232,6 +232,7 @@
         defaultColumnCol: this.defaultData.objviewcol || 4,
         tip: 'new',
         setVerifyMessageTime: null,
+        setVerifyMessageTimeII: null,
         setChangeTime: null,
         formDataSave: {}, // change
         LinkageForm: [], // 界面 所有表单组件配置
@@ -583,8 +584,9 @@
         this.labelForm = Object.assign(this.labelForm, label);
         this.labelFormSave = Object.assign(this.labelFormSave, label);
         // 必填校验
-        clearTimeout(this.setVerifyMessageTime);
-        this.setVerifyMessageTime = setTimeout(() => { 
+        clearTimeout(this.setVerifyMessageTimeII);
+        this.setVerifyMessageTimeII = setTimeout(() => { 
+          this.VerificationFormItem = [];
           this.setVerifyMessageForm();
         }, 100);
         if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
@@ -660,7 +662,6 @@
           if (data.messageTip.length > 0) {
             this.verifyMessItem = data;
           }
-          // console.log(data.messageTip);
           this.$emit('VerifyMessage', data);
         }, 100);
       },
