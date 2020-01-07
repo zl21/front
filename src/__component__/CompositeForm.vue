@@ -440,7 +440,7 @@
         clearTimeout(this.setChangeTime);
         this.setChangeTime = setTimeout(() => {
           this.computdefaultData = this.reorganizeFormInit();
-          
+
           // 隐藏判断
           if (Array.isArray(this.computdefaultData)) {
             this.computdefaultData.forEach((item) => {
@@ -448,6 +448,8 @@
                 item.childs.forEach((option) => {
                   option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option) : true;
                 });
+              } else {
+                item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item) : true;
               }
             });
           }
