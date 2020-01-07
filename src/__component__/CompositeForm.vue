@@ -235,6 +235,8 @@
         setChangeTime: null,
         formDataSave: {}, // change
         LinkageForm: [], // 界面 所有表单组件配置
+        hidecolumnForm: {}, // 界面 隐藏字段
+        defaultDataInt: {}, // 默认值的value
         expand: 'expand' // 面板是否展开
       };
     },
@@ -438,6 +440,25 @@
         clearTimeout(this.setChangeTime);
         this.setChangeTime = setTimeout(() => {
           this.computdefaultData = this.reorganizeFormInit();
+
+          // 隐藏判断
+          if (Array.isArray(this.computdefaultData)) {
+            this.computdefaultData.forEach((item) => {
+              if (Array.isArray(item.childs)) {
+                item.childs.forEach((option) => {
+                  option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option) : true;
+                  if (option.item.props.display === 'none') {
+                    option.show = false;
+                  }               
+                });
+              } else {
+                item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item) : true;
+                if (item.item.props.display === 'none') {
+                  item.show = false;
+                } 
+              }
+            });
+          }
         }, 80);
       },
       setChangeValue(data) {
@@ -471,6 +492,17 @@
         // return true;
       },
       // eslint-disable-next-line consistent-return
+      setHideColms(data) {
+        const key = Object.keys(data)[0];
+        if (this.hidecolumnForm[key]) {
+          // 通知隐藏关系
+          const refcolvaData = Object.assign(JSON.parse(JSON.stringify(this.defaultFormData)), data);
+          window.eventType(`${this[MODULE_COMPONENT_NAME]}setHideForm`, window, {
+            key, list: this.hidecolumnForm[key], data: refcolvaData, tableName: this.tableGetName 
+          });
+        }
+        return true;
+      },
       formDataChange(data, setdefval, current, label) {
         // 表单数据修改  判断vuex 里面是否有input name
         if (current.item.props.isuppercase && data[current.item.field]) {
@@ -498,6 +530,8 @@
 
         // 修改联动的值
         this.setChangeValue(data, current);
+        // 修改隐藏
+        this.setHideColms(data, current);
         if (Array.isArray(data)) {
           data = data[0];
         }
@@ -553,8 +587,7 @@
         this.setVerifyMessageTime = setTimeout(() => { 
           this.setVerifyMessageForm();
         }, 100);
-       
-        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+        if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
           delete this.formDataSave[current.item.field];
           delete this.formDataDef[current.item.field];
@@ -565,17 +598,38 @@
             itemName: this.tableGetName
           };
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-        } else if (this.conditiontype !== 'list' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
-          // console.log(data, label, this.labelForm[current.item.field], this.r3Form[current.item.field]);
-          delete this.formDataSave[current.item.field];
-          delete this.formDataDef[current.item.field];
-          delete this.labelFormSave[current.item.field];
-          // eslint-disable-next-line no-shadow
-          const data = {
-            key: current.item.field,
-            itemName: this.tableGetName
-          };
-          this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+        } else if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() !== 'NEW' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+          let form = this.formData[current.item.field];
+          let defaultFormData = this.defaultFormData[current.item.field];
+          try {
+            if (typeof form === 'object') {
+              form = JSON.String(form);
+            } else {
+              form = form.toString();
+            }
+          } catch (error) {
+            form = this.formData[current.item.field] || '';
+          }
+          try {
+            if (typeof defaultFormData === 'object') {
+              defaultFormData = JSON.String(defaultFormData);
+            } else {
+              defaultFormData = defaultFormData.toString();
+            }
+          } catch (error) {
+            defaultFormData = this.defaultFormData[current.item.field] || '';
+          }
+          if (form === defaultFormData) {
+            delete this.formDataSave[current.item.field];
+            delete this.formDataDef[current.item.field];
+            delete this.labelFormSave[current.item.field];
+            // eslint-disable-next-line no-shadow
+            const data = {
+              key: current.item.field,
+              itemName: this.tableGetName
+            };
+            this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
+          }
         } 
 
         this.$emit('formChange', this.formDataSave, this.formDataDef, this.labelFormSave);
@@ -619,6 +673,32 @@
             this.$refs[item].VerificationFormInt('change');
           }
         });
+      },
+      getValue(defaultSetValue) {
+        const defaultSetValueData = Object.keys(JSON.parse(JSON.stringify(defaultSetValue))).reduce((arr, option) => {
+          if (defaultSetValue[option]) {
+            if (Array.isArray(defaultSetValue[option])) {
+              if (defaultSetValue[option][0]) {
+                if (defaultSetValue[option][0].ID) {
+                  arr[option] = defaultSetValue[option][0].ID;
+                  if (defaultSetValue[option].length > 1) {
+                    arr[option] = defaultSetValue[option].reduce((curry, item) => {
+                      curry.push(item.ID);
+                      return curry;
+                    }, []);
+                  }
+                } else {
+                  arr[option] = defaultSetValue[option][0];
+                }
+              }
+            } else {
+              arr[option] = defaultSetValue[option];
+            }
+            // this.labelForm = Object.assign(,);
+          }
+          return arr;
+        }, {});
+        return defaultSetValueData;
       },
       mountdataForm(value, formItem) {
         // 获取表单默认值
@@ -732,7 +812,7 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
-        obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? this.hidecolumn(current, array) : true;
+        obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -1002,10 +1082,7 @@
         };
         this.propsType(current, obj.item);
         // ignoreDisableWhenEdit 去除不可编辑的状态 
-        //  display none
-        if (current.display === 'none') {
-          obj.show = false;
-        }
+       
        
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
@@ -1016,7 +1093,19 @@
           srccol: `${this.tableGetName}${srccol}`,
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
-        });         
+        }); 
+        //  表单 存值
+        this.defaultDataInt[obj.item.field] = obj.item.value;
+        
+        //  隐藏字段的映射
+        const hideSrccol = obj.item.validate.hidecolumn && obj.item.validate.hidecolumn.refcolumn;
+        if (hideSrccol) {
+          if (!this.hidecolumnForm[hideSrccol]) {
+            this.hidecolumnForm[hideSrccol] = [obj.item.field];
+          } else {
+            this.hidecolumnForm[hideSrccol].push(obj.item.field);
+          }
+        }
         // 静态属性
         if (obj.item.props.webconf && obj.item.props.webconf.setAttributes) {
           obj.item.props.webconf.setAttributes.field.forEach((option) => {
@@ -1026,6 +1115,10 @@
               this.setAttsetProps[option.refcolumn].push(obj.item.field);
             }
           });
+        }
+        //  display none
+        if (current.display === 'none') {
+          obj.show = false;
         }
 
         
@@ -1131,29 +1224,24 @@
         }
         return [true];
       },
-      hidecolumn(current, array) {
+      hidecolumn(current) {
         //  隐藏判断
-        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          const check = array.some((option) => {
-            const refcolumn = current.hidecolumn.refcolumn;
-            const refval = current.hidecolumn.refval;
-            let val = option.item.value;
-            if (Array.isArray(option.item.value) && option.item.value[0]) {
-              if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
-                val = option.item.value[0].ID;
-              } else {
-                val = option.item.value[0];
-              }
-            }
-            const refvalArr = refval.split(',');
-            if (val) {
-              val = val.toString();
-            }
-            const arrIndex = refvalArr.findIndex(x => x.toString() === val);
-            return option.item.field === refcolumn && arrIndex !== -1;
-          });
-          return check;
+
+        if (Object.hasOwnProperty.call(current.item.validate, 'hidecolumn')) {
+          const refcolumn = current.item.validate.hidecolumn.refcolumn;
+          const refval = current.item.validate.hidecolumn.refval;
+          const data = this.getValue(this.defaultDataInt);
+          const refvalArr = refval.split(',');
+          if (data[refcolumn]) {
+            data[refcolumn] = data[refcolumn].toString();
+          }
+          const val = data[refcolumn];
+
+          const arrIndex = refvalArr.findIndex(x => x.toString() === val);
+          return arrIndex !== -1;
         }
+       
+        
         return true;
       },
       focusChange(value, current, index) {
@@ -1639,7 +1727,7 @@
                 current.scale
               }})?$`;
             } else {
-              string = `^(-|\\+)?\\d{0,${current.length}}(\\\.[0-9]{0,${
+              string = `^(-|\\+)?\\d{0,${current.length - current.scale}}(\\\.[0-9]{0,${
                 current.scale
               }})?$`;
             }
@@ -1899,7 +1987,6 @@
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
           let readonly = current.readonly;
-          console.log(getGateway('/p/cs/upload2'));
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
