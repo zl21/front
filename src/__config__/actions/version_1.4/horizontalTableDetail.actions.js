@@ -594,6 +594,14 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
+
+        commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
+      }
       DispatchEvent('exeActionForR3', {
         detail: {
           name: 'exeAction',
@@ -606,14 +614,6 @@ export default {
           routePath
         }
       });
-      if (res.data.code === 0) {
-        const invalidData = res.data;
-        resolve();
-
-        commit('updateObjTabActionSlientConfirm', invalidData);
-      } else {
-        reject();
-      }
     }).catch(() => {
       reject();
     });
