@@ -147,6 +147,7 @@
       rowdblclick(parms) {
         this.parms = parms;
         this.$parent.ok();
+        this.$parent.cancel();
       },
       getData(searchObject) {
         //  form 请求
