@@ -17,6 +17,8 @@ export default () => ({
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   activated() {
     const currentTableName = this.$router.currentRoute.params.tableName;
