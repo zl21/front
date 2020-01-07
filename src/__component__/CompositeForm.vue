@@ -236,6 +236,7 @@
         formDataSave: {}, // change
         LinkageForm: [], // 界面 所有表单组件配置
         hidecolumnForm: {}, // 界面 隐藏字段
+        defaultDataInt: {}, // 默认值的value
         expand: 'expand' // 面板是否展开
       };
     },
@@ -439,6 +440,17 @@
         clearTimeout(this.setChangeTime);
         this.setChangeTime = setTimeout(() => {
           this.computdefaultData = this.reorganizeFormInit();
+          
+          // 隐藏判断
+          if (Array.isArray(this.computdefaultData)) {
+            this.computdefaultData.forEach((item) => {
+              if (Array.isArray(item.childs)) {
+                item.childs.forEach((option) => {
+                  option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option) : true;
+                });
+              }
+            });
+          }
         }, 80);
       },
       setChangeValue(data) {
@@ -634,6 +646,32 @@
           }
         });
       },
+      getValue(defaultSetValue) {
+        const defaultSetValueData = Object.keys(JSON.parse(JSON.stringify(defaultSetValue))).reduce((arr, option) => {
+          if (defaultSetValue[option]) {
+            if (Array.isArray(defaultSetValue[option])) {
+              if (defaultSetValue[option][0]) {
+                if (defaultSetValue[option][0].ID) {
+                  arr[option] = defaultSetValue[option][0].ID;
+                  if (defaultSetValue[option].length > 1) {
+                    arr[option] = defaultSetValue[option].reduce((curry, item) => {
+                      curry.push(item.ID);
+                      return curry;
+                    }, []);
+                  }
+                } else {
+                  arr[option] = defaultSetValue[option][0];
+                }
+              }
+            } else {
+              arr[option] = defaultSetValue[option];
+            }
+            // this.labelForm = Object.assign(,);
+          }
+          return arr;
+        }, {});
+        return defaultSetValueData;
+      },
       mountdataForm(value, formItem) {
         // 获取表单默认值
         setTimeout(() => {
@@ -746,7 +784,7 @@
         obj.row = current.row ? current.row : 1;
         obj.col = current.col ? current.col : 1;
         obj.component = ItemComponent;
-        obj.show = Object.hasOwnProperty.call(current, 'hidecolumn') ? this.hidecolumn(current, array) : true;
+        obj.show = true;
         obj.item = {
           type: this.checkDisplay(current),
           title: current.name,
@@ -1030,7 +1068,10 @@
           srccol: `${this.tableGetName}${srccol}`,
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
-        });       
+        }); 
+        //  表单 存值
+        this.defaultDataInt[obj.item.field] = obj.item.value;
+        
         //  隐藏字段的映射
         const hideSrccol = obj.item.validate.hidecolumn && obj.item.validate.hidecolumn.refcolumn;
         if (hideSrccol) {
@@ -1154,30 +1195,20 @@
         }
         return [true];
       },
-      hidecolumn(current, array) {
+      hidecolumn(current) {
         //  隐藏判断
-        if (Object.hasOwnProperty.call(current, 'hidecolumn')) {
-          const check = array.some((option) => {
-            const refcolumn = current.hidecolumn.refcolumn;
-            const refval = current.hidecolumn.refval;
-            let val = option.item.value;
-            if (Array.isArray(option.item.value) && option.item.value[0]) {
-              if (Object.hasOwnProperty.call(option.item.value[0], 'ID')) {
-                val = option.item.value[0].ID;
-              } else {
-                val = option.item.value[0];
-              }
-            }
-            const refvalArr = refval.split(',');
-            if (val) {
-              val = val.toString();
-            }
-            const arrIndex = refvalArr.findIndex(x => x.toString() === val);
-            return option.item.field === refcolumn && arrIndex !== -1;
-          });
-        
+        if (Object.hasOwnProperty.call(current.item.validate, 'hidecolumn')) {
+          const refcolumn = current.item.validate.hidecolumn.refcolumn;
+          const refval = current.item.validate.hidecolumn.refval;
+          const data = this.getValue(this.defaultDataInt);
+          const refvalArr = refval.split(',');
+          if (data[refcolumn]) {
+            data[refcolumn] = data[refcolumn].toString();
+          }
+          const val = data[refcolumn];
 
-          return check;
+          const arrIndex = refvalArr.findIndex(x => x.toString() === val);
+          return arrIndex !== -1;
         }
         return true;
       },
@@ -1924,7 +1955,6 @@
           const ImageSize = Number(current.webconf && current.webconf.ImageSize);
 
           let readonly = current.readonly;
-          console.log(getGateway('/p/cs/upload2'));
           readonly = checkIsReadonly;
           item.props.itemdata = {
             colname: current.colname,
