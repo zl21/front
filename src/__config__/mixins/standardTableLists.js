@@ -1,6 +1,8 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
-import { STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE } from '../../constants/global';
+import {
+  STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
+} from '../../constants/global';
 import store from '../store.config';
 
 const getComponentName = () => {
@@ -8,14 +10,19 @@ const getComponentName = () => {
   return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
 };
 
+const getFullPath = () => router.currentRoute.fullPath;
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+    [INSTANCE_ROUTE]: getFullPath(),
+    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+
   },
   mounted() {
-    this.moduleComponentName = getComponentName();
+    this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   methods: {
     ...mapActions(getComponentName(),
@@ -40,6 +47,7 @@ export default () => ({
       ]),
     ...mapMutations(getComponentName(),
       [
+        'updateFailInfo',
         'updateAgConfig',
         'updateFormData',
         'updateFormLists',

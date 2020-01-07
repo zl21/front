@@ -127,7 +127,7 @@ export default {
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              // 自定义界面的处理
+                // 自定义界面的处理
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
@@ -165,7 +165,6 @@ export default {
           return a;
         }, {});
     }
-
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -288,7 +287,7 @@ export default {
       const routeFullPath = state.activeTab.routeFullPath;
       if (routeFullPath === item) {
         deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
-        window.sessionStorage.setItem('ignore', true);
+        // window.sessionStorage.setItem('ignore', true);
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
@@ -352,7 +351,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // gateWay:网关
-    
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;

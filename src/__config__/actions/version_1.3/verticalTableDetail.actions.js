@@ -3,6 +3,7 @@ import network, {
   urlSearchParams
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectForMainTableForm({
@@ -37,7 +38,8 @@ export default {
     objid,
     type,
     tabIndex,
-    itemTabelPageInfo
+    itemTabelPageInfo,
+    moduleName
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -67,7 +69,7 @@ export default {
             }
             if (webactType !== 'ALL') {
               const getObjectTabPromise = new Promise((rec, rej) => {
-                if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
                     table: firstReftab.tablename,
                     objid,
@@ -75,24 +77,24 @@ export default {
                     rec,
                     rej
                   };
-                  this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+                  this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
               if (resData.reftabs[0].refcolid !== -1) {
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 // 获取第一个tab的子表表单
-                if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                   const formParam = {
                     table: firstReftab.tablename,
                     inlinemode: firstReftab.tabinlinemode,
                     tabIndex
                   };
-                  this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
+                  this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0](formParam);
                 }
                 // 获取第一个tab的子表列表数据
                 if (resData.reftabs[0].tabrelation === '1:m') {
                   getObjectTabPromise.then(() => {
-                    if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    if (this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                       const tableParam = {
                         table: firstReftab.tablename,
                         objid,
@@ -104,19 +106,19 @@ export default {
                         },
                         tabIndex
                       };
-                      this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                      this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                     }
                   });
                 } else if (resData.reftabs[0].tabrelation === '1:1') {
                   // 获取子表面板数据
-                  if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
+                  if (this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
                       tabIndex
                     };
-                    this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+                    this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                   }
                 }
               }
@@ -265,7 +267,6 @@ export default {
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
-      debugger;
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
@@ -641,7 +642,10 @@ export default {
     table,
     path,
     resolve,
-    reject
+    reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', urlSearchParams({
@@ -657,6 +661,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -738,7 +754,10 @@ export default {
     tab,
     params,
     path,
-    resolve, reject
+    resolve, reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') === -1) {
@@ -748,6 +767,18 @@ export default {
         webaction: null,
         param: JSON.stringify(params),
       })).then((res) => {
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'verticalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
@@ -763,6 +794,18 @@ export default {
       actionName = path;
 
       network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'verticalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();

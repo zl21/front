@@ -15,7 +15,7 @@
       ref="FormItemComponent"
       :form-items-data="formItems.data"
       :form-item-lists="formItemsLists"
-      :defaultSpread ="changeSearchFoldnum.switchValue"
+      :default-spread="changeSearchFoldnum.switchValue"
       :default-column="4"
       :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
       @formDataChange="formDataChange"
@@ -113,12 +113,14 @@
     Version,
     CUSTOMIZED_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
-    LINK_MODULE_COMPONENT_PREFIX,
+    LINK_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME,
+    INSTANCE_ROUTE_QUERY,
+    INSTANCE_ROUTE
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-  import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -208,6 +210,7 @@
             const routeFullPath = this.$router.currentRoute.path;
             if (routeMapRecord && isDynamicRouting) { // 动态路由返回
               const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
+
               Object.entries(routeMapRecord).forEach(([key, value]) => {
                 if (value === routeFullPath && dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === key) {
                   this.searchClickData({ value: 'true' });
@@ -1229,7 +1232,7 @@
         let promise = new Promise((resolve, reject) => {
           this.$loading.show();
           this.getExeActionDataForButtons({
-            item, obj, resolve, reject
+            item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
         });
         if (this.buttons.activeTabAction.cuscomponent) { // 如果接口cuscomponent有值，逻辑为自定义调自定义
@@ -1720,7 +1723,7 @@
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         const promise = new Promise((resolve, reject) => {
           this.batchSubmitForButtons({
-            url, tableName, ids, resolve, reject
+            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY],routePath: this[INSTANCE_ROUTE]
           });
         });
         promise.then(() => {
@@ -2026,6 +2029,12 @@
         if (event.detail.type === 'search') {
           this.searchClickData({ value: 'true' });
         }
+      },
+      // 监听update.ST.FailInfo事件
+      updateSTFailInfo(event) {
+        if (event.detail[MODULE_COMPONENT_NAME] === this[MODULE_COMPONENT_NAME]) {
+          this.updateFailInfo(event.detail.failInfo);
+        }
       }
     },
     mounted() {
@@ -2033,6 +2042,7 @@
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
+        // window.addEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
       }
       this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
       const promise = new Promise((resolve, reject) => {
@@ -2055,6 +2065,7 @@
       window.removeEventListener('network', this.networkEventListener);
       window.removeEventListener('network', this.networkGetTableQuery);
       window.removeEventListener('jflowEvent', this.jflowEvent);
+      // window.removeEventListener(MODULE_COMPONENT_NAME, this.updateSTFailInfo);
     }
   };
 </script>

@@ -1,10 +1,11 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
 import { enableJflow } from '../../../constants/global';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
-    table, objid, type, tabIndex, isNotFirstRequest
+    table, objid, type, tabIndex, isNotFirstRequest, moduleName
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -23,13 +24,13 @@ export default {
           commit('updateTabPanelsData', resData);
         }
         commit('updateWebConf', resData.webconf);
-        if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
+        if (this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`] && this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
             objid,
             tabIndex
           };
-          this._actions[`${getComponentName()}/getObjectForMainTableForm`][0](param);
+          this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }
     });
@@ -317,9 +318,9 @@ export default {
           }
         } else {
           const itemValue = itemModify;
-          if (temporaryStoragePath) {
-            console.log('子表不支持暂存');
-          } else {
+        
+
+          if (Object.keys(itemValue[tableName]).length > 0) {
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
@@ -327,7 +328,17 @@ export default {
                 ...itemValue
               }
             };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                [tableName]: {}
+              }
+            };
           }
+         
+          // }
         }
       } else if (path) { // 没有子表 ,有path的参数
         const { modify } = parame;
@@ -449,7 +460,8 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, isreftabs, resolve, reject
+    objId, table, path, isreftabs, resolve, reject, moduleName,
+    routeQuery, routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -479,6 +491,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -557,10 +581,11 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
-    tab,
     params,
     path,
-    resolve, reject
+    resolve, reject, moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
@@ -569,6 +594,18 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      DispatchEvent('exeActionForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'horizontalTable',
+          url: actionName || '/p/cs/exeAction',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
