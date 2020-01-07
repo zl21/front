@@ -207,14 +207,14 @@ axios.interceptors.response.use(
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message;
-        let formatJsonEmg = null;
-        try {
-          formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
-        } catch (e) {
-          if (typeof emg === 'string') {
-            formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
-          }
-        }
+        // let formatJsonEmg = null;
+        // try {
+        //   formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+        // } catch (e) {
+        //   if (typeof emg === 'string') {
+        //     formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
+        //   }
+        // }
         window.vm.$Modal.fcError({
           mask: true,
           titleAlign: 'center',
@@ -249,7 +249,7 @@ axios.interceptors.response.use(
                 // readonly: 'readonly',
               },
               domProps: {
-                // value: formatJsonEmg,
+                innerHTML: emg,
               },
               style: `width: 80%;
                   margin: 1px;
@@ -261,7 +261,7 @@ axios.interceptors.response.use(
                   max-width: 300px;
                   overflow: auto;
                   `
-            }, formatJsonEmg)
+            })
           ])
           // render: createElement => createElement('textarea', {
           //   domProps: {
