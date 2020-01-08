@@ -109,7 +109,7 @@ export default () => ({
     try {
       if (this.$options.isKeepAliveModel) {
         store.unregisterModule(this.moduleComponentName);
-        // delete this.$el;
+        console.log('已被移除', this);
       }
       const components = window.Vue.options.components;
       // Object.keys(components).forEach((compontent) => {
@@ -117,14 +117,8 @@ export default () => ({
       //     delete components[compontent];
       //   }
       // });
-      this.hackReset = false;
-      this.$nextTick(() => {
-        this.hackReset = true;
-      });
-
-      console.log(666, this);
-      console.log(1, window);
-      console.log('tag', this[MODULE_COMPONENT_NAME]);
+      delete this.$el;
+      console.log(888, this.$route.params, components);
     } catch (e) {
       console.log(e);
     }
@@ -136,7 +130,7 @@ export default () => ({
         this.$destroy();
       }
     }
-    this.$destroy(`${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`);
+    this.$destroy(this.$options._componentTag);
   },
  
 });

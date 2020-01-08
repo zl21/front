@@ -987,23 +987,22 @@
             if (this.itemName === this.tableName) { // 主表
               this.routingHop(tab, this.itemId);// 主表使用明细ID
             } else { // 子表  
-             if(actionType === ('CUSTOMIZED'||"https:"||"http:")) {
-               this.routingHop(tab, id);// 主表使用明细ID
-             }else{
- let id = [];
-              if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
-                id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+              if (actionType === ('CUSTOMIZED' || 'https:' || 'http:')) {
+                this.routingHop(tab, id);// 主表使用明细ID
+              } else {
+                let id = [];
+                if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
+                  id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
+                }
+                if (id.length === 0) {
+                  this.$Message.warning('请勾选ID');
+                  return;
+                } if (id.length > 1) {
+                  this.$Message.warning('只能勾选单个ID');
+                  return;
+                }
+                this.routingHop(tab, id);// 主表使用明细ID
               }
-              if (id.length === 0) {
-                this.$Message.warning('请勾选ID');
-                return;
-              } if (id.length > 1) {
-                this.$Message.warning('只能勾选单个ID');
-                return;
-              }
-              this.routingHop(tab, id);// 主表使用明细ID
-             }
-             
             }
           } else { // 上下结构主表
             this.routingHop(tab, this.itemId);
