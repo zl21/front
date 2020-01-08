@@ -1,172 +1,213 @@
 <template>
-  <div class="functionPower">
-    <div class="buttonGroup">
-      <Button
-              v-for="(item, index) in buttonsData"
-              :key="index"
-              type="fcdefault"
-              class="Button"
-              @click="btnClick(item)"
-      >
-        {{ item.webdesc }}
-      </Button>
-    </div>
-    <div class="content">
-      <div class="contentLeft">
-        <Input
-                placeholder="请输入用户名"
-                clearable
-                @on-change="searchInputChange"
-                icon="ios-search"
+    <div class="functionPower">
+        <div class="buttonGroup">
+            <Button
+                    v-for="(item, index) in buttonsData"
+                    :key="index"
+                    type="fcdefault"
+                    class="Button"
+                    @click="btnClick(item)"
+            >
+                {{ item.webdesc }}
+            </Button>
+        </div>
+        <div class="content">
+            <div class="contentLeft">
+                <Input
+                        placeholder="请输入角色"
+                        clearable
+                        @on-change="searchInputChange"
+                        icon="ios-search"
+                >
+                <span slot="prepend">检索</span>
+                </Input>
+                <div class="menuContainer">
+                    <Tree
+                            ref="menuTree"
+                            :data="menuTreeData"
+                            :query="menuTreeQuery"
+                            @on-select-change="menuTreeChange"
+                    />
+                </div>
+                <!--<ul class="menuContainer">-->
+                <!--<li-->
+                <!--v-for="(item, index) in menuList"-->
+                <!--:key="index"-->
+                <!--class="menuList"-->
+                <!--:class="index === menuHighlightIndex? 'menuHighlight':''"-->
+                <!--@click="menuClick(index, item)"-->
+                <!--&gt;-->
+                <!--{{ item.NAME }}-->
+                <!--</li>-->
+                <!--</ul>-->
+            </div>
+            <div class="contentRight">
+                <div class="left-tree">
+                    <Tree
+                            ref="tree"
+                            :data="treeData"
+                            @on-select-change="treeChange"
+                    />
+                </div>
+                <div class="right-list">
+                    <div class="upper-part">
+                        <div class="upper-table" ref="upperTable">
+                            <div class="upper-table-tabth" :style="{left: upperTableTabthLeft}">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th class="functionColumnClass" ref="functionColumnTh" :style="{'min-width': `${functionColumnWidth}px`}">功能</th>
+                                        <th v-for="(item, index) in columns" :key="index" :ref="`tableTabth${index}`" :style="{width: theadThMinWidth}">
+                                            <Checkbox v-model="item[`${item.key}Value`]" @on-change="(currentValue) => tabthCheckboxChange(currentValue, {index: index, column: item})"></Checkbox>{{item.title}}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div v-show="tableData.length === 0" class="upper-table-tabtd-empty">暂无数据</div>
+                            <div v-show="tableData.length > 0" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
+                                <table>
+                                    <tbody>
+                                    <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(item, index)">
+                                        <td ref="functionColumnTd" :style="{'min-width': functionColumnTdWidth}">{{item.description}}</td>
+                                        <td :style="{'min-width': tem.tbodyWidth}" v-for="(tem, temIdx) in columns" :key="temIdx">
+                                            <Checkbox v-model="item[`${tem.key}Value`]" :disabled="item[`${tem.key}Disabled`]" @on-change="(currentValue) => rowCheckboxChange(currentValue, {row: item, index: index, column: tem})"></Checkbox>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-part">
+                        <div class="bottom-table">
+                            <!--<Table-->
+                                    <!--class="table"-->
+                                    <!--highlight-row-->
+                                    <!--:height="true"-->
+                                    <!--:data="extendTableData"-->
+                                    <!--:columns="columnsBottom"-->
+                            <!--/>-->
+                            <div class="bottom-table-tabth">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>扩展功能</th>
+                                        <th>功能</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div v-show="extendTableData.length === 0" class="bottom-table-tbody-empty">暂无数据</div>
+                            <div v-show="extendTableData.length > 0" class="bottom-table-tbody">
+                                <table>
+                                    <tbody>
+                                    <tr v-for="(item, index) in extendTableData" :key="index" :class="bottomTableTbodyHighlightIndex === index ? 'bottom-table-tbody-highlight' : ''" @click="bottomTableTbodyClick(index)">
+                                        <td style="width: 200px">
+                                            <Checkbox :value="item.permission === 128 ? true : false" @on-change="(currentValue) => extendFunctionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.description}}
+                                        </td>
+                                        <td>
+                                            <Checkbox v-show="item.children && item.children.length > 0" :value="item.children && item.children.length > 0 ? item.children[0].permission === 128 : false" @on-change="(currentValue) => functionCheckboxChange(currentValue, {row: item, index: index})"></Checkbox>{{item.children.length > 0 ? item.children[0].description : ''}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <Modal
+                v-model="copyPermission"
+                closable
+                :width="420"
+                mask
+                footer-hide
+                title="复制权限"
         >
-        <span slot="prepend">检索</span>
-        </Input>
-        <div class="menuContainer">
-          <Tree
-                  ref="menuTree"
-                  :data="menuTreeData"
-                  :query="menuTreeQuery"
-                  @on-select-change="menuTreeChange"
-          />
-        </div>
-        <!--<ul class="menuContainer">-->
-        <!--<li-->
-        <!--v-for="(item, index) in menuList"-->
-        <!--:key="index"-->
-        <!--class="menuList"-->
-        <!--:class="index === menuHighlightIndex? 'menuHighlight':''"-->
-        <!--@click="menuClick(index, item)"-->
-        <!--&gt;-->
-        <!--{{ item.NAME }}-->
-        <!--</li>-->
-        <!--</ul>-->
-      </div>
-      <div class="contentRight">
-        <div class="left-tree">
-          <Tree
-                  ref="tree"
-                  :data="treeData"
-                  @on-select-change="treeChange"
-          />
-        </div>
-        <div class="right-list">
-          <div class="upper-part">
-            <div class="upper-table">
-              <Table
-                      class="table"
-                      :columns="columns"
-                      :index="tableDefaultSelectedRowIndex"
-                      highlight-row
-                      :height="true"
-                      :data="tableData"
-                      @on-row-click="tableRowClick"
-              />
+            <div class="modalContent">
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>原角色:</div>
+                    </div>
+                    <DropDownSelectFilter class="itemCom"
+                                          :totalRowCount="totalRowCount"
+                                          :pageSize="dropPageSize"
+                                          :AutoData="singleAutoData"
+                                          :columnsKey="['NAME']"
+                                          :hidecolumns="['ID']"
+                                          :defaultSelected="singleDefaultSelected"
+                                          @on-fkrp-selected="singleDropSelected"
+                                          @on-page-change="singleDropPageChange"
+                                          @on-popper-hide="singlePopperHide"
+                                          @on-clear="singleDropClear"
+                                          @on-input-value-change="singleInputChange"
+                                          :data="singleDropDownSelectFilterData">
+                    </DropDownSelectFilter>
+                </div>
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>目的角色:</div>
+                    </div>
+                    <DropDownSelectFilter :single="false"
+                                          class="itemCom"
+                                          :totalRowCount="totalRowCount"
+                                          :pageSize="dropPageSize"
+                                          :columnsKey="['NAME']"
+                                          :hidecolumns="['ID']"
+                                          :defaultSelected="multipleDefaultSelected"
+                                          :AutoData="multipleAutoData"
+                                          @on-fkrp-selected="multipleDropSelected"
+                                          @on-page-change="multipleDropPageChange"
+                                          @on-popper-hide="multiplePopperHide"
+                                          @on-clear="multipleDropClear"
+                                          @on-input-value-change="multipleInputChange"
+                                          :data="multipleDropDownSelectFilterData">
+                    </DropDownSelectFilter>
+                </div>
+                <div class="itemContent">
+                    <div class="labelContent">
+                        <div class="labelTip">*</div>
+                        <div>复制方式:</div>
+                    </div>
+                    <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
+                        <Option value="cover">覆盖原有权限</Option>
+                        <Option value="copy">保留原有权限</Option>
+                    </Select>
+                </div>
+                <div class="modalButton">
+                    <Button
+                            type="fcdefault"
+                            class="Button"
+                            @click="modalConfirm"
+                    >
+                        确定
+                    </Button>
+                    <Button
+                            type="fcdefault"
+                            class="Button"
+                            @click="modalCancel"
+                    >
+                        取消
+                    </Button>
+                </div>
             </div>
-          </div>
-          <div class="bottom-part">
-            <div class="bottom-table">
-              <Table
-                      class="table"
-                      highlight-row
-                      :height="true"
-                      :data="extendTableData"
-                      :columns="columnsBottom"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+        </Modal>
+        <Spin
+                v-show="spinShow"
+                fix
+        >
+            <Icon
+                    type="ios-loading"
+                    size="48"
+                    class="demo-spin-icon-load"
+            />
+            <div>Loading</div>
+        </Spin>
     </div>
-    <Modal
-            v-model="copyPermission"
-            closable
-            :width="420"
-            mask
-            footer-hide
-            title="复制权限"
-    >
-      <div class="modalContent">
-        <div class="itemContent">
-          <div class="labelContent">
-            <div class="labelTip">*</div>
-            <div>原角色:</div>
-          </div>
-          <DropDownSelectFilter class="itemCom"
-                                :totalRowCount="totalRowCount"
-                                :pageSize="dropPageSize"
-                                :AutoData="singleAutoData"
-                                :columnsKey="['NAME']"
-                                :hidecolumns="['ID']"
-                                :defaultSelected="singleDefaultSelected"
-                                @on-fkrp-selected="singleDropSelected"
-                                @on-page-change="singleDropPageChange"
-                                @on-popper-hide="singlePopperHide"
-                                @on-clear="singleDropClear"
-                                @on-input-value-change="singleInputChange"
-                                :data="singleDropDownSelectFilterData">
-          </DropDownSelectFilter>
-        </div>
-        <div class="itemContent">
-          <div class="labelContent">
-            <div class="labelTip">*</div>
-            <div>目的角色:</div>
-          </div>
-          <DropDownSelectFilter :single="false"
-                                class="itemCom"
-                                :totalRowCount="totalRowCount"
-                                :pageSize="dropPageSize"
-                                :columnsKey="['NAME']"
-                                :hidecolumns="['ID']"
-                                :defaultSelected="multipleDefaultSelected"
-                                :AutoData="multipleAutoData"
-                                @on-fkrp-selected="multipleDropSelected"
-                                @on-page-change="multipleDropPageChange"
-                                @on-popper-hide="multiplePopperHide"
-                                @on-clear="multipleDropClear"
-                                @on-input-value-change="multipleInputChange"
-                                :data="multipleDropDownSelectFilterData">
-          </DropDownSelectFilter>
-        </div>
-        <div class="itemContent">
-          <div class="labelContent">
-            <div class="labelTip">*</div>
-            <div>复制方式:</div>
-          </div>
-          <Select v-model="copyType" class="itemCom" placeholder="请选择复制方式">
-            <Option value="cover">覆盖原有权限</Option>
-            <Option value="copy">保留原有权限</Option>
-          </Select>
-        </div>
-        <div class="modalButton">
-          <Button
-                  type="fcdefault"
-                  class="Button"
-                  @click="modalConfirm"
-          >
-            确定
-          </Button>
-          <Button
-                  type="fcdefault"
-                  class="Button"
-                  @click="modalCancel"
-          >
-            取消
-          </Button>
-        </div>
-      </div>
-    </Modal>
-    <Spin
-            v-show="spinShow"
-            fix
-    >
-      <Icon
-              type="ios-loading"
-              size="48"
-              class="demo-spin-icon-load"
-      />
-      <div>Loading</div>
-    </Spin>
-  </div>
 </template>
 
 <script>
@@ -215,316 +256,44 @@
         tableData: [], // 表格数据
         backupsTableData: [], // 备份表格数据
         tableSaveData: [], // 表格修改后要保存的数据
-        columns: [
-          {
-            title: '功能',
-            key: 'description'
-          },
-          {
-            key: 'see',
-            seeValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.seeDisabled,
-                  value: params.row.seeValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => {
-                    this.rowCheckboxChange(currentValue, params);
-                  }
-                }
-
-              })
-            ]),
-            renderHeader: (h, params) => {
-              return h('div', [
-                h('Checkbox', {
-                  style: {},
-                  attrs: {
-                    dataChecked: params.column.seeValue
-                  },
-                  props: {
-                    value: params.column.seeValue
-                  },
-                  on: {
-                    'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                  }
-                }),
-                h('Span', '查看')
-              ]);
-            },
-          },
-          {
-            key: 'edit',
-            editValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.editDisabled,
-                  value: params.row.editValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.editValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '编辑')
-            ]),
-          },
-          {
-            key: 'delete',
-            deleteValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.deleteDisabled,
-                  value: params.row.deleteValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.deleteValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '删除')
-            ]),
-          },
-          {
-            key: 'toVoid',
-            toVoidValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.toVoidDisabled,
-                  value: params.row.toVoidValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.toVoidValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '作废')
-            ]),
-          },
-          {
-            key: 'commit',
-            commitValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.commitDisabled,
-                  value: params.row.commitValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.commitValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '提交')
-            ]),
-          },
-          {
-            key: 'unCommit',
-            unCommitValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.unCommitDisabled,
-                  value: params.row.unCommitValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.unCommitValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '反提交')
-            ]),
-          },
-          {
-            key: 'export',
-            exportValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.exportDisabled,
-                  value: params.row.exportValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.exportValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '导出')
-            ]),
-          },
-          {
-            key: 'print',
-            printValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.printDisabled,
-                  value: params.row.printValue,
-                },
-                // nativeOn: {
-                //   click: (e) => {
-                //     e.stopPropagation();
-                //   }
-                // },
-                on: {
-                  'on-change': (currentValue) => this.rowCheckboxChange(currentValue, params)
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.printValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '打印')
-            ]),
-          },
-          {
-            key: 'extend',
-            extendValue: false,
-            render: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  disabled: params.row.extendDisabled,
-                  value: params.row.extendValue,
-                },
-                on: {
-                  'on-change': (currentValue) => {
-                    setTimeout(() => {
-                      this.extendRowCheckboxChange(currentValue, params);
-                    }, 100);
-                  }
-                }
-              })
-            ]),
-            renderHeader: (h, params) => h('div', [
-              h('Checkbox', {
-                style: {},
-                props: {
-                  value: params.column.extendValue
-                },
-                on: {
-                  'on-change': (currentValue) => this.tabthCheckboxChange(currentValue, params)
-                }
-              }),
-              h('Span', '扩展')
-            ]),
-          }
-        ], // 表格头部,
+        // columns: [
+        //   {
+        //     key: 'see',
+        //     seeValue: false,
+        //   },
+        //   {
+        //     key: 'edit',
+        //     editValue: false,
+        //   },
+        //   {
+        //     key: 'delete',
+        //     deleteValue: false,
+        //   },
+        //   {
+        //     key: 'toVoid',
+        //     toVoidValue: false,
+        //   },
+        //   {
+        //     key: 'commit',
+        //     commitValue: false,
+        //   },
+        //   {
+        //     key: 'unCommit',
+        //     unCommitValue: false,
+        //   },
+        //   {
+        //     key: 'export',
+        //     exportValue: false,
+        //   },
+        //   {
+        //     key: 'print',
+        //     printValue: false,
+        //   },
+        //   {
+        //     key: 'extend',
+        //     extendValue: false,
+        //   }
+        // ], // 表格头部,
         extendTableData: [], // 扩展功能表格数据
         columnsBottom: [
           {
@@ -559,9 +328,72 @@
             ]),
           }
         ], // 扩展功能表格头部
+
+        columns: [
+          {
+            title: '查看',
+            key: 'see',
+            seeValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '编辑',
+            key: 'edit',
+            editValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '删除',
+            key: 'delete',
+            deleteValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '作废',
+            key: 'toVoid',
+            toVoidValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '提交',
+            key: 'commit',
+            commitValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '反提交',
+            key: 'unCommit',
+            unCommitValue: false,
+            tbodyWidth: '74px'
+          },
+          {
+            title: '导出',
+            key: 'export',
+            exportValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '打印',
+            key: 'print',
+            printValue: false,
+            tbodyWidth: '62px'
+          },
+          {
+            title: '扩展',
+            key: 'extend',
+            extendValue: false,
+            tbodyWidth: '62px'
+          },
+        ], // 表格表头
+        upperTableTabthLeft: '0px',
+        functionColumnWidth: 100, // 功能列的表头
+        functionColumnTdWidth: '100px', // 功能列的表体的宽度
+        theadThMinWidth: '62px', // 表头th的最小宽度，单位px
+        unCommitThMinWidth: '74px', // 反提交的宽度
+        upperTableTbodyHighlightIndex: 0, // 上边表格高亮的下标
+        bottomTableTbodyHighlightIndex: null, // 下边表格高亮的下标
       };
     },
-    components: {},
     watch: {
       copyPermission(val) {
         if (val) {
@@ -581,7 +413,56 @@
       this.refresh();
       this.getButtonData();
     },
+    mounted() {
+      window.addEventListener('resize', () => {
+        this.fixTableColumnWidth();
+      });
+      window.addEventListener('doCollapseHistoryAndFavorite', () => {
+        this.fixTableColumnWidth();
+      });
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.fixTableColumnWidth);
+      window.removeEventListener('doCollapseHistoryAndFavorite', this.fixTableColumnWidth);
+    },
+    activated() {
+      this.fixTableColumnWidth();
+    },
     methods: {
+      bottomTableTbodyClick(index) {
+        this.bottomTableTbodyHighlightIndex = index;
+      }, // 下边表格行单击
+      upperTableTbodyClick(row, index) {
+        this.bottomTableTbodyHighlightIndex = null;
+        this.upperTableTbodyHighlightIndex = index;
+        this.tableRowClick(row, index);
+      }, // 上边表格表体点击
+      upperTableTbodyScroll(e) {
+        this.upperTableTabthLeft = `${-e.target.scrollLeft}px`;
+      }, // 上边表格表体滚动
+      fixTableColumnWidth() {
+        this.$nextTick(() => {
+          const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
+          if (functionColumnTd) {
+            this.functionColumnWidth = functionColumnTd[0].offsetWidth;
+          }
+          const upperTableWidth = upperTable.offsetWidth;
+          const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
+          if (theadThWidth > 62) {
+            this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
+          } else {
+            this.theadThMinWidth = '62px';
+          }
+          this.$nextTick(() => {
+            this.functionColumnTdWidth = `${functionColumnTh.offsetWidth}px`;
+            this.columns.map((item, index) => {
+              const tableTabth = `tableTabth${index}`;
+              item.tbodyWidth = `${this.$refs[tableTabth][0].offsetWidth}px`;
+              return item;
+            });
+          });
+        });
+      }, // 计算表格的列宽
       refresh() {
         this.spinShow = true;
         const menuPromise = new Promise((resolve, reject) => { this.getMenuData(resolve, reject); });
@@ -664,6 +545,9 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        if (val.length === 0) {
+          this.$refs.menuTree.handleSelect(item.nodeKey);
+        }
         this.newGroupId = item.ID;
         if (this.checkNoSaveData()) {
         } else {
@@ -786,6 +670,8 @@
           params: obj,
           success: (res) => {
             this.spinShow = false;
+            this.bottomTableTbodyHighlightIndex = null;
+            this.upperTableTbodyHighlightIndex = 0;
             if (res.data.code === 0) {
               if (res.data.data) {
                 const resData = res.data.data;
@@ -836,6 +722,12 @@
                 this.tableDefaultSelectedRowIndex = 0;
 
                 this.allTabthSelected();
+                // setTimeout(() => {
+                //   this.fixTableColumnWidth();
+                // }, 1000);
+                this.$nextTick(() => {
+                  this.fixTableColumnWidth();
+                });
               } else {
                 this.$Modal.fcWarning({
                   title: '提示',
@@ -929,6 +821,9 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        if (val.length === 0) {
+          this.$refs.tree.handleSelect(obj.nodeKey);
+        }
         this.newAdSubsystemId = obj.ad_subsystem_id;
         this.newAdTableCateId = obj.ad_tablecategory_id;
         if (this.checkNoSaveData()) {
@@ -1048,31 +943,35 @@
         //   });
       }, // 复制权限弹框确定按钮
       rowCheckboxChange(currentValue, params) {
-        // 选中该行数据
-        params.row[`${params.column.key}Value`] = currentValue;
-        this.tableData[params.index] = params.row;
-
-        // 修改要保存的数据
-        // this.editSaveData(currentValue, params);
-
-        // 判断该列是否全选
-        this.tabthCheckboxSelected(params.column, params.column.key);
-
-
-        if (params.column.key === 'see') {
-          // 如果该列是查看列，当取消选中的时候将该行都取消选中
-          if (!currentValue) {
-            this.cancelRowSelected(params);
-          }
+        if (params.column.key === 'extend') {
+          this.extendRowCheckboxChange(currentValue, params)
         } else {
-          // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
-          this.selectedSeeColumn(params, currentValue);
+          // 选中该行数据
+          params.row[`${params.column.key}Value`] = currentValue;
+          this.tableData[params.index] = params.row;
+
+          // 修改要保存的数据
+          // this.editSaveData(currentValue, params);
+
+          // 判断该列是否全选
+          this.tabthCheckboxSelected(params.column, params.column.key);
+
+
+          if (params.column.key === 'see') {
+            // 如果该列是查看列，当取消选中的时候将该行都取消选中
+            if (!currentValue) {
+              this.cancelRowSelected(params);
+            }
+          } else {
+            // 如果该列不是查看列，并且查看列的没有选中，将查看列选中
+            this.selectedSeeColumn(params, currentValue);
+          }
         }
       }, // 表格单元格的checkbox改变时触发
       cancelRowSelected(params) {
         // 取消上边表格整行的选中状态
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
+            if (idx > 0) {
               acc.push(cur.key);
             }
             return acc;
@@ -1105,7 +1004,7 @@
         if (currentValue) {
           this.tableData[params.index].seeValue = currentValue;
         }
-        this.tabthCheckboxSelected(this.columns[1], 'see');
+        this.tabthCheckboxSelected(this.columns[0], 'see');
       }, // 选中查看列
       editSaveData(currentValue, params) {
         if (currentValue === this.backupsTableData[params.index][`${params.column.key}Value`]) {
@@ -1162,7 +1061,7 @@
       }, // 下边表格功能数据修改
       getSavePermission(index) {
         const arr = this.columns.reduce((acc, cur, idx) => {
-          if (idx > 0 && idx !== 9) {
+          if (idx !== 8) {
             if (this.tableData[index][`${cur.key}Value`]) {
               acc.push('1');
             } else {
@@ -1216,10 +1115,10 @@
         }
       }, // 判断是否将表头选中
       tabthCheckboxChange(currentValue, params) {
-        // 如果点击的不是查看列，将查看列选中
+        // 如果点击的不是查看列，并且是选中状态的时候，将查看列选中
         if (params.column.key !== 'see') {
           if (currentValue) {
-            this.columns[1].seeValue = true;
+            this.columns[0].seeValue = true;
             this.tableData.map((item) => {
               if (!item.seeDisabled) {
                 item.seeValue = true;
@@ -1232,14 +1131,14 @@
         }
         // 点击查看列的表头，并且是取消选中的状态
         if (params.column.key === 'see' && currentValue === false) {
-          this.columns[1].seeValue = false;
+          this.columns[0].seeValue = false;
           this.columns = [].concat(this.columns);
           this.cancelAllSelected();
         }
 
         // 点击查看列的表头，并且是选中的状态
         if (params.column.key === 'see' && currentValue === true) {
-          this.columns[1].seeValue = true;
+          this.columns[0].seeValue = true;
         }
 
         // 选中表头以及表体里的数据
@@ -1258,7 +1157,7 @@
       }, // 表格表头的checkbox改变时触发
       cancelAllSelected() {
         this.columns.reduce((acc, cur, idx) => {
-            if (idx > 1) {
+            if (idx > 0) {
               acc.push(cur.key);
             }
             return acc;
@@ -1362,7 +1261,7 @@
         this.editExtendTableData(currentValue);
 
         // 将查看列选中
-        this.selectedSeeColumn(params.index, currentValue);
+        this.selectedSeeColumn(params, currentValue);
       }, // 扩展一列的checkbox点击的时候触发
       editExtendTableData(currentValue) {
         if (this.extendTableData.length > 0) {
@@ -1417,17 +1316,17 @@
         if (arr.length > 0) {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = false;
-            this.selectedSeeColumn(findIndex, false);
+            this.selectedSeeColumn({ index: findIndex}, false);
           }
         } else {
           if (findIndex > -1) {
             this.tableData[findIndex].extendValue = true;
-            this.selectedSeeColumn(findIndex, true);
+            this.selectedSeeColumn({ index : findIndex }, true);
           }
         }
 
         // 判断扩展该列是否全选
-        this.tabthCheckboxSelected(this.columns[9], 'extend');
+        this.tabthCheckboxSelected(this.columns[8], 'extend');
 
         // 调保存修改数据的方法
         // this.getExtendTableSaveData(val, params.row);
@@ -1473,7 +1372,7 @@
         }
 
         // 判断扩展该列是否全选
-        this.tabthCheckboxSelected(this.columns[9], 'extend');
+        this.tabthCheckboxSelected(this.columns[8], 'extend');
       }, // 下边表格功能列checkbox改变时触发
       savePermission(type) {
         this.getSaveData();
@@ -1707,170 +1606,275 @@
 </script>
 
 <style lang="less">
-  .burgeon-spin-fix{
-    z-index: 999;
-    .demo-spin-icon-load{
-      animation: ani-demo-spin 1s linear infinite;
-    }
-    @keyframes ani-demo-spin {
-      from { transform: rotate(0deg);}
-      50%  { transform: rotate(180deg);}
-      to   { transform: rotate(360deg);}
-    }
-  }
-
-  .functionPower {
-    position: relative;
-    height: 100%;
-    padding: 10px 0;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    .buttonGroup {
-      display: flex;
-      .Button {
-        min-width: 0;
-        padding: 0 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-weight:400;
-        box-sizing: border-box;
-        margin-right: 10px;
-        height: 22px;
-        span {
-          vertical-align: initial;
+    .burgeon-spin-fix{
+        z-index: 999;
+        .demo-spin-icon-load{
+            animation: ani-demo-spin 1s linear infinite;
         }
-      }
+        @keyframes ani-demo-spin {
+            from { transform: rotate(0deg);}
+            50%  { transform: rotate(180deg);}
+            to   { transform: rotate(360deg);}
+        }
     }
-    .content {
-      flex: 1;
-      margin-top: 10px;
-      display: flex;
-      overflow-y: hidden;
-      .contentLeft {
-        width: 240px;
+
+    .functionPower {
+        position: relative;
         height: 100%;
-        padding: 10px;
-        border: solid 1px #d8d8d8;
-        border-radius: 6px;
-        margin-right: 10px;
+        padding: 10px 0;
         display: flex;
         flex-direction: column;
-        .menuContainer {
-          flex: 1;
-          margin-top: 10px;
-          overflow-y: auto;
-
-          .burgeon-tree-title {
-            width: 100%;
-            font-size: 12px;
-            line-height: 26px;
-          }
-          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-            background-color: rgb(196, 226, 255);
-          }
-
-          .menuList {
-            cursor: pointer;
-            font-size: 12px;
-            line-height: 26px;
-          }
-          .menuHighlight {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-      }
-      .contentRight {
-        height: 100%;
-        flex: 1;
-        border: solid 1px #d8d8d8;
-        border-radius: 6px;
-        display: flex;
-        width: 100%;
-        .left-tree {
-          width: 200px;
-          padding: 10px;
-          border-right: solid 1px #d8d8d8;
-          overflow: auto;
-          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
-            background-color: rgb(196, 226, 255);
-          }
-        }
-        .right-list {
-          flex: 1;
-          height: 100%;
-          width: 10px;
-          .upper-part {
-            height: 60%;
-            padding: 10px;
-            border-bottom: solid 1px #d8d8d8;
-            .upper-table {
-              height: 100%;
-              .table {
-                border: 0;
-                tbody tr.burgeon-table-row-hover td{
-                  background-color: #ecf0f1;
-                }
-                .burgeon-table-row-highlight {
-                  background-color: rgb(196, 226, 255);
-                }
-              }
-            }
-          }
-          .bottom-part {
-            height: 40%;
-            padding: 10px;
-            .bottom-table {
-              height: 100%;
-              .table {
-                height: 100%;
-                border: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .modalContent {
-    .itemContent {
-      display: flex;
-      margin-bottom: 10px;
-      overflow: hidden;
-      .labelContent {
-        margin-right: 4px;
-        width: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        .labelTip {
-          font-size: 16px;
-          height: 10px;
-          color: red;
-          margin-right: 4px;
-        }
-      }
-      .itemCom {
-        width: 220px;
-      }
-    }
-    .modalButton {
-      width: 324px;
-      display: flex;
-      justify-content: flex-end;
-      .Button {
-        margin-left: 10px;
-        min-width: 0;
-        padding: 0 8px;
-        border-radius:2px;
-        font-size:12px;
-        font-weight:400;
         box-sizing: border-box;
-        height: 22px;
-        span {
-          vertical-align: initial;
+        .buttonGroup {
+            display: flex;
+            .Button {
+                min-width: 0;
+                padding: 0 8px;
+                border-radius:2px;
+                font-size:12px;
+                font-weight:400;
+                box-sizing: border-box;
+                margin-right: 10px;
+                height: 22px;
+                span {
+                    vertical-align: initial;
+                }
+            }
         }
-      }
+        .content {
+            flex: 1;
+            margin-top: 10px;
+            display: flex;
+            overflow-y: hidden;
+            .contentLeft {
+                width: 240px;
+                height: 100%;
+                padding: 10px;
+                border: solid 1px #d8d8d8;
+                border-radius: 6px;
+                margin-right: 10px;
+                display: flex;
+                flex-direction: column;
+                .menuContainer {
+                    flex: 1;
+                    margin-top: 10px;
+                    overflow-y: auto;
+
+                    .burgeon-tree-title {
+                        width: 100%;
+                        font-size: 12px;
+                        line-height: 26px;
+                    }
+                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                        background-color: rgb(196, 226, 255);
+                    }
+
+                    .menuList {
+                        cursor: pointer;
+                        font-size: 12px;
+                        line-height: 26px;
+                    }
+                    .menuHighlight {
+                        background-color: rgb(196, 226, 255);
+                    }
+                }
+            }
+            .contentRight {
+                height: 100%;
+                flex: 1;
+                border: solid 1px #d8d8d8;
+                border-radius: 6px;
+                display: flex;
+                width: 100%;
+                .left-tree {
+                    width: 200px;
+                    padding: 10px;
+                    border-right: solid 1px #d8d8d8;
+                    overflow: auto;
+                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                        background-color: rgb(196, 226, 255);
+                    }
+                }
+                .right-list {
+                    flex: 1;
+                    height: 100%;
+                    width: 10px;
+                    .burgeon-checkbox-inner {
+                        transition: 0s !important;
+                    }
+                    .upper-part {
+                        height: 60%;
+                        padding: 10px;
+                        border-bottom: solid 1px #d8d8d8;
+                        /*overflow-x: auto;*/
+                        /*overflow-y: hidden;*/
+                        .upper-table {
+                            height: 100%;
+                            width: 100%;
+                            position: relative;
+                            overflow: hidden;
+                            .upper-table-tabth {
+                                position: relative;
+                                table {
+                                    border-collapse: collapse;
+                                    border-spacing: 0px;
+                                    border: 0;
+                                    box-sizing: border-box;
+                                    background-color: #f5f6fa;
+                                }
+                                table th {
+                                    box-sizing: border-box;
+                                    padding: 3px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    min-width: 62px;
+                                    border-bottom: 1px solid #e8eaec;
+                                }
+                                .functionColumnClass {
+                                    text-align: left;
+                                }
+                            }
+                            .upper-table-tabtd-empty {
+                                height: calc(100% - 22px) !important;
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #575757;
+                                font-size: 12px;
+                            }
+                            .upper-table-tabtd {
+                                overflow: auto;
+                                height: calc(100% - 22px) !important;
+                                .upper-table-tabtd-highlight {
+                                    background-color: rgb(196, 226, 255);
+                                }
+                                table {
+                                    border-spacing: 0px;
+                                }
+                                table td {
+                                    padding: 4px 8px 4px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    border-bottom: 1px solid #e8eaec;
+                                    min-width: 62px;
+                                }
+                                table tr:hover {
+                                    background-color: #ecf0f1;
+                                }
+                            }
+                        }
+                    }
+                    .bottom-part {
+                        height: 40%;
+                        padding: 10px;
+                        .bottom-table {
+                            height: 100%;
+                            width: 100%;
+                            .bottom-table-tabth {
+                                width: 100%;
+                                position: relative;
+                                background-color: #f5f6fa;
+                                border-bottom: 1px solid #e8eaec;
+                                table {
+                                    border-collapse: collapse;
+                                    border-spacing: 0px;
+                                    border: 0;
+                                    box-sizing: border-box;
+                                }
+                                table th {
+                                    box-sizing: border-box;
+                                    padding: 5px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    min-width: 200px;
+                                }
+                            }
+                            .bottom-table-tbody {
+                                overflow: auto;
+                                height: calc(100% - 22px) !important;
+                                .bottom-table-tbody-highlight {
+                                    background-color: rgb(196, 226, 255);
+                                }
+                                table {
+                                    width: 100%;
+                                    border-spacing: 0px;
+                                }
+                                table td {
+                                    padding: 4px 8px 4px 8px;
+                                    font-weight: 400 !important;
+                                    white-space: nowrap;
+                                    text-align: left;
+                                    border-bottom: 1px solid #e8eaec;
+                                    min-width: 200px;
+                                }
+                                table tr:hover {
+                                    background-color: #ecf0f1;
+                                }
+                                table tr {
+                                    width: 100%;
+                                }
+                                table tr:last-child {
+                                    width: calc(100% - 200px);
+                                }
+                            }
+                            .bottom-table-tbody-empty {
+                                height: calc(100% - 22px) !important;
+                                width: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: #575757;
+                                font-size: 12px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
+    .modalContent {
+        .itemContent {
+            display: flex;
+            margin-bottom: 10px;
+            overflow: hidden;
+            .labelContent {
+                margin-right: 4px;
+                width: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                .labelTip {
+                    font-size: 16px;
+                    height: 10px;
+                    color: red;
+                    margin-right: 4px;
+                }
+            }
+            .itemCom {
+                width: 220px;
+            }
+        }
+        .modalButton {
+            width: 324px;
+            display: flex;
+            justify-content: flex-end;
+            .Button {
+                margin-left: 10px;
+                min-width: 0;
+                padding: 0 8px;
+                border-radius:2px;
+                font-size:12px;
+                font-weight:400;
+                box-sizing: border-box;
+                height: 22px;
+                span {
+                    vertical-align: initial;
+                }
+            }
+        }
+    }
 </style>

@@ -229,7 +229,7 @@ export default {
                       if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
                         delete (modifyData[b.colname]);
                       }
-                      if (c.display === 'select') {
+                      if (c.display === 'select' || c.display === 'check') {
                         copySaveDataForParam[b.colname] = c.defval;
                       } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
                         copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];

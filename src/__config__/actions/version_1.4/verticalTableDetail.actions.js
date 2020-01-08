@@ -2,6 +2,7 @@ import network, {
   urlSearchParams
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 let childTableFixedcolumns = {};
 
@@ -39,6 +40,7 @@ export default {
     type,
     tabIndex,
     itemTabelPageInfo,
+    moduleName
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -68,7 +70,7 @@ export default {
             }
             if (webactType !== 'ALL') {
               const getObjectTabPromise = new Promise((rec, rej) => {
-                if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
                     table: firstReftab.tablename,
                     objid,
@@ -76,7 +78,7 @@ export default {
                     rec,
                     rej
                   };
-                  this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+                  this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
               if (resData.reftabs[0].refcolid !== -1) { // 以下请求是上下结构获取子表信息（当配置自定义tab时，没有子表，不请求子表信息）
@@ -84,18 +86,18 @@ export default {
                 // 获取第一个tab的子表表单
                 
                
-                if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                   const formParam = {
                     table: firstReftab.tablename,
                     inlinemode: firstReftab.tabinlinemode,
                     tabIndex
                   };
-                  this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
+                  this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0](formParam);
                 }
                 // 获取第一个tab的子表列表数据
                 if (resData.reftabs[tabIndex].tabrelation === '1:m') {
                   getObjectTabPromise.then(() => {
-                    if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    if (this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                       const tableParam = {
                         table: firstReftab.tablename,
                         objid,
@@ -108,20 +110,20 @@ export default {
                         },
                         tabIndex
                       };
-                      this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                      this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                       childTableFixedcolumns = {};
                     }
                   });
                 } else if (resData.reftabs[tabIndex].tabrelation === '1:1') {
                   // 获取子表面板数据
-                  if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
+                  if (this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
                       tabIndex
                     };
-                    this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+                    this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                   }
                 }
               }
@@ -281,24 +283,40 @@ export default {
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
-              parames = {
-                ...add,
-                ...itemTableAdd
-              };
+              if (temporaryStoragePath) {
+                parames = {
+                  ...add,
+                };
+              } else {
+                parames = {
+                  ...add,
+                  ...itemTableAdd
+                };
+              }
             } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
               const itemTableAdd = Object.assign({}, addDefault);
               itemTableAdd[itemName].ID = objId;
               itemTableAdd[itemName] = [
                 itemTableAdd[itemName]
               ];
-              parames = {
-                table: tableName, // 主表表名
-                objId, // 固定传值-1 表示新增
-                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                  ...add,
-                  ...itemTableAdd,
-                }
-              };
+              if (temporaryStoragePath) {
+                parames = {
+                  table: tableName, // 主表表名
+                  objId, // 固定传值-1 表示新增
+                  fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                    ...add,
+                  }
+                };
+              } else {
+                parames = {
+                  table: tableName, // 主表表名
+                  objId, // 固定传值-1 表示新增
+                  fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                    ...add,
+                    ...itemTableAdd,
+                  }
+                };
+              }
             } else { // 子表没有form
               parames = {
                 ...add
@@ -310,28 +328,48 @@ export default {
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 固定传值-1 表示新增
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 固定传值-1 表示新增
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else {
             parames = {
               table: tableName, // 主表表名
@@ -394,9 +432,23 @@ export default {
           modify[tableName].ID = objId;
           if (path) { // 有path的参数
             modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              parames = {
+                ...modify,
+              };
+            } else {
+              parames = {
+                ...modify,
+                ...addAndModifyParames,
+              };
+            }
+          } else if (temporaryStoragePath) {
             parames = {
-              ...modify,
-              ...addAndModifyParames,
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify
+              }
             };
           } else {
             parames = {
@@ -410,10 +462,25 @@ export default {
           }
         } else if (sataTypeName === 'modify') { // 子表修改保存
           if (path) { // 有path的参数
-            modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              modify[tableName].ID = objId;
+              parames = {
+                ...modify,
+              };
+            } else {
+              modify[tableName].ID = objId;
+              parames = {
+                ...modify,
+                ...itemModify
+              };
+            }
+          } else if (temporaryStoragePath) {
             parames = {
-              ...modify,
-              ...itemModify
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
+              }
             };
           } else {
             parames = {
@@ -436,20 +503,38 @@ export default {
           ];
           if (path) {
             modify[tableName].ID = objId;
-            parames = {
-              ...modify,
-              ...addItemName
-            };
-          } else if (Object.values(modify[tableName]).length > 0) {
-            // modify[tableName].ID = objId;
-            parames = {
-              table: tableName, // 主表表名
-              objId, // 明细id
-              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+            if (temporaryStoragePath) {
+              parames = {
+                ...modify,
+              };
+            } else {
+              parames = {
                 ...modify,
                 ...addItemName
-              }
-            };
+              };
+            }
+          } else if (Object.values(modify[tableName]).length > 0) {
+            // modify[tableName].ID = objId;
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 明细id
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...modify,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objId, // 明细id
+                fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...modify,
+                  ...addItemName
+                }
+              };
+            }
+          } else if (temporaryStoragePath) {
+            console.log('暂存不支持子表编辑');
           } else {
             parames = {
               table: tableName, // 主表表名
@@ -571,7 +656,8 @@ export default {
     path,
     isreftabs,
     resolve,
-    reject
+    reject,
+    moduleName, routeQuery, routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     let param = {};
@@ -601,6 +687,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -709,10 +807,11 @@ export default {
   getObjTabActionSlientConfirm({
     commit
   }, {
-    tab,
     params,
     path,
-    resolve, reject
+    resolve, reject, moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') !== -1) { // 兼容1.3版本action配置为包名时，请求默认接口
@@ -721,6 +820,18 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      DispatchEvent('exeActionForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: actionName || '/p/cs/exeAction',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
       if (res.data.code === 0) {
         const invalidData = res.data;
         resolve();
