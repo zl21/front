@@ -494,6 +494,8 @@ async function checkProcess(request) { // check校验
           }
 
           resolve();
+        } else {
+          resolve();
         }
       });
   });
@@ -510,67 +512,69 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.request.use(async (config) => {
     if (config.url.indexOf('jflow') >= 0) { // 所有jflow接口都添加accessToken
       config.headers.accountName = 'guest';
-      if (encryptionJflow) {
-        config.headers['Content-Type'] = 'application/json';
-        const aesKey = uuidGenerator();// 秘钥
-        // 对传参进行aes加密
-        const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
-        const encrypt = CryptoJS.AES.encrypt(JSON.stringify(config.data), key, {
-          mode: CryptoJS.mode.ECB,
-          padding: CryptoJS.pad.Pkcs7
-        });
-        config.data = encrypt.toString();// 加密后的数据
+      // if (encryptionJflow) {
+      //   config.headers['Content-Type'] = 'application/json';
+      //   const aesKey = uuidGenerator();// 秘钥
+      //   // 对传参进行aes加密
+      //   const key = CryptoJS.enc.Utf8.parse(aesKey);// 将秘钥转换成Utf8字节数组
+      //   const encrypt = CryptoJS.AES.encrypt(JSON.stringify(config.data), key, {
+      //     mode: CryptoJS.mode.ECB,
+      //     padding: CryptoJS.pad.Pkcs7
+      //   });
+      //   config.data = encrypt.toString();// 加密后的数据
         
         
-        // uuid加密 设置请求头
-        const uuidEncrypt = new JSEncrypt();
-        const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
-        uuidEncrypt.setPublicKey(`
-        -----BEGIN PUBLIC KEY-----
-        ${PUBLIC_KEY}
-        -----END PUBLIC KEY-----`);
-        config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
-        config.headers.encrypt_type = 'RSA';
-      }
+      //   // uuid加密 设置请求头
+      //   const uuidEncrypt = new JSEncrypt();
+      //   const PUBLIC_KEY = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDACe1nZlA5AXo1D1PnHNVbeBThNfN6zM+ydWyOUHwQFahHiifeR91mCjrbkMWiqDqB5N+xz6UXCXGRlTRUYJchhGxhUlOhCA53T/F5ZlXrOoyKTdVgB7+HWmQOITwKcgThRFO2GCPCQB/bPYn5FVR7hqmxHBo7L6MONC9aXnL6PQIDAQAB';
+      //   uuidEncrypt.setPublicKey(`
+      //   -----BEGIN PUBLIC KEY-----
+      //   ${PUBLIC_KEY}
+      //   -----END PUBLIC KEY-----`);
+      //   config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
+      //   config.headers.encrypt_type = 'RSA';
+      // }
     }
-    if (configurationFlag) { // 配置了流程图并
-      // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
-      let launchConfig = [];
-      if (window.localStorage.getItem('businessTypes')) {
-        JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
-          if (item.businessType === router.currentRoute.params.tableId) {
-            launchConfig = item.action;
-          }
-          return item;
-        });
-        // jflow流程发起
-        const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-        for (let i = 0; i < launchConfig.length; i++) {
-          if (serviceId ? `/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0 : launchConfig[i].indexOf(config.url) >= 0) {
-            await jflowsave(true, config);
-          }
-        }
-      }
+    // if (configurationFlag) { // 配置了流程图并
+    //   // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
+      
+    //   let launchConfig = [];
+    //   if (window.localStorage.getItem('businessTypes')) {
+    //     JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
+    //       if (item.businessType === router.currentRoute.params.tableId) {
+    //         launchConfig = item.action;
+    //       }
+    //       return item;
+    //     });
+    //     // jflow流程发起
+    //     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
+    //     for (let i = 0; i < launchConfig.length; i++) {
+    //       if (serviceId ? `/${serviceId}${launchConfig[i]}`.indexOf(config.url) >= 0 : launchConfig[i].indexOf(config.url) >= 0) {
+    //         await jflowsave(true, config);
+    //       }
+    //     }
+    //   }
+      
 
+    //   // 判断是否点击了列表配置按钮，是的话在执行前先调用check接口
+    //   if (window.localStorage.getItem('checkUrls')) {
+    //     let checkUrls = [];
+    //     JSON.parse(window.localStorage.getItem('checkUrls')).map((item) => {
+    //       if (item.businessType === router.currentRoute.params.tableId) {
+    //         checkUrls = item.checkUrls;
+    //       }
+    //       return item;
+    //     });
 
-      // 判断是否点击了列表配置按钮，是的话在执行前先调用check接口
-      if (window.localStorage.getItem('checkUrls')) {
-        let checkUrls = [];
-        JSON.parse(window.localStorage.getItem('checkUrls')).map((item) => {
-          if (item.businessType === router.currentRoute.params.tableId) {
-            checkUrls = item.checkUrls;
-          }
-          return item;
-        });
-        const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
-        for (let i = 0; i < checkUrls.length; i++) {
-          if (serviceId ? `/${serviceId}${checkUrls[i]}`.indexOf(config.url) >= 0 : checkUrls[i].indexOf(config.url) >= 0) {
-            await checkProcess(config);
-          }
-        }
-      }
-    }
-
+    //     const serviceId = store.state.global.serviceIdMap[router.currentRoute.params.tableName];
+    //     for (let i = 0; i < checkUrls.length; i++) {
+    //       if (serviceId ? `/${serviceId}${checkUrls[i]}`.indexOf(config.url) >= 0 : checkUrls[i].indexOf(config.url) >= 0) {
+    //         await checkProcess(config);
+    //       }
+    //     }
+    //   }
+    // }
+    
     return config;
   });
   axios.interceptors.response.use(async (response) => {
