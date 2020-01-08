@@ -12,6 +12,9 @@ import '../__plugin__/InstanceManagementList/utils/dateApi';
 import network from '../__utils__/network';
 import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
 import InstanceManagementList from '../__plugin__/InstanceManagementList/InstanceManagementList';
+import decryptionJflow from './decryptionJflow';
+
+window.conversionJflow = decryptionJflow;
 
 
 let axios = {}; // axios请求
