@@ -125,6 +125,8 @@
     },
     created() {
     },
+    activated() {
+    },
     mounted() {
       const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {

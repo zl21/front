@@ -96,6 +96,7 @@
     INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
+  import { getUrl, getLabel } from '../__utils__/url';
 
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import { getKeepAliveModuleName } from '../__config__/router.navigation.guard';
@@ -449,7 +450,7 @@
         default: () => {}
       },
     },
-    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY,INSTANCE_ROUTE],
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
@@ -979,12 +980,17 @@
         document.body.removeChild(eleLink);
       },
       objTabActionNavbar(tab) {
+        const actionType = tab.action.substring(0, tab.action.indexOf('/'));
+
         if (tab.action) {
           if (this.objectType === 'horizontal') { // 左右结构
             if (this.itemName === this.tableName) { // 主表
               this.routingHop(tab, this.itemId);// 主表使用明细ID
-            } else { // 子表   
-              let id = [];
+            } else { // 子表  
+             if(actionType === ('CUSTOMIZED'||"https:"||"http:")) {
+               this.routingHop(tab, id);// 主表使用明细ID
+             }else{
+ let id = [];
               if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
                 id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
               }
@@ -996,6 +1002,8 @@
                 return;
               }
               this.routingHop(tab, id);// 主表使用明细ID
+             }
+             
             }
           } else { // 上下结构主表
             this.routingHop(tab, this.itemId);
@@ -1039,15 +1047,14 @@
             linkId: tab.webid
           });
         } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-          const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-          const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;     
+          const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
           this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-          const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-          const obj = {
-            customizedName: name,
-            customizedLabel: tab.webdesc
+          const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+          const keepAliveLabelMapsObj = {
+            k: name,
+            v: tab.webdesc
           };
-          window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+          updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
           router.push(
             path
           );
@@ -2262,7 +2269,7 @@
               itemAdd = Object.values(this.updateData[itemName].add[itemName]);
             }
             if (itemAdd.length > 0 && itemModify.length > 0) {
-              if (this.verifyRequiredInformation()&&this.itemTableCheckFunc()) { // 横向结构保存校验
+              if (this.verifyRequiredInformation() && this.itemTableCheckFunc()) { // 横向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               }
             }

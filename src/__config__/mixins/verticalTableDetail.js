@@ -109,7 +109,22 @@ export default () => ({
     try {
       if (this.$options.isKeepAliveModel) {
         store.unregisterModule(this.moduleComponentName);
+        // delete this.$el;
       }
+      const components = window.Vue.options.components;
+      // Object.keys(components).forEach((compontent) => {
+      //   if (compontent.indexOf(this.moduleComponentName) > -1) {
+      //     delete components[compontent];
+      //   }
+      // });
+      this.hackReset = false;
+      this.$nextTick(() => {
+        this.hackReset = true;
+      });
+
+      console.log(666, this);
+      console.log(1, window);
+      console.log('tag', this[MODULE_COMPONENT_NAME]);
     } catch (e) {
       console.log(e);
     }
@@ -121,5 +136,7 @@ export default () => ({
         this.$destroy();
       }
     }
+    this.$destroy(`${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`);
   },
+ 
 });
