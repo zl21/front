@@ -36,6 +36,12 @@ function restartProcess() {
   });
 }
 
+// 确认按钮
+function confirm(url, instanceId, buttons, id) {
+
+}
+
+
 let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
@@ -68,6 +74,7 @@ function clickFunction(e) {
   if (item.button !== '4') {
     switch (item.button) {
       case '-1':
+      case '7':
       case '2': mutipleOperate(item.url, obj.instanceId, buttons, id); break;
       case '1': window.jflowPlugin.open({
         control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
@@ -82,6 +89,9 @@ function clickFunction(e) {
         break;
       case '6': // 重启流程
         restartProcess();
+        break;
+      case '8': // 确认按钮
+        confirm(item.url, obj.instanceId, buttons, id);
         break;
       default: break;
     }
@@ -106,6 +116,8 @@ function CreateButton(obj, buttons, id) {
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
   window.jflowPlugin.nodeId = obj.nodeId;
+  window.jflowPlugin.assignNext = 0; // 是否动态指派流转节点
+  window.jflowPlugin.assignArree = obj.assignArree; // 是否动态指派流转节点
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;

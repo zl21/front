@@ -14,8 +14,6 @@ import mainComponent from '../__plugin__/InstanceManagementList/mainComponent';
 import InstanceManagementList from '../__plugin__/InstanceManagementList/InstanceManagementList';
 import decryptionJflow from './decryptionJflow';
 
-window.conversionJflow = decryptionJflow;
-
 
 let axios = {}; // axios请求
 let router = {}; // 路由
@@ -673,6 +671,7 @@ const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
   encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
+    window.conversionJflow = decryptionJflow;
     axios = options.axios;
     router = options.router;
     store = options.store;
