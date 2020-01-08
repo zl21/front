@@ -47,5 +47,10 @@ export default () => ({
     } catch (e) {
       console.log(e);
     }
+  },
+  destroyed() {
+    if (window.Vue) {
+      delete window.Vue.options.components[this.$options._componentTag];
+    }
   }
 });
