@@ -60,8 +60,11 @@
 
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
-  import getComponentName from '../__utils__/getModuleName';
+  // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
+  import {
+    MODULE_COMPONENT_NAME
+  } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
@@ -130,7 +133,7 @@
       // this.emptyTestData();
     },
     mounted() {
-      const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
+      const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       }

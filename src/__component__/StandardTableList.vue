@@ -120,7 +120,8 @@
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-  import { getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
+  import { getUrl, getLabel } from '../__utils__/url';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1723,7 +1724,7 @@
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         const promise = new Promise((resolve, reject) => {
           this.batchSubmitForButtons({
-            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY],routePath: this[INSTANCE_ROUTE]
+            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
         });
         promise.then(() => {
@@ -1901,6 +1902,7 @@
         this.setErrorModalValue({ errorDialogvalue });
       },
       objTabActionNavbar(tab) {
+        tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?23222323232';
         if (tab.action) {
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
           const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
@@ -1947,43 +1949,19 @@
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
+            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            const obj = {
-              customizedName: name,
-              customizedLabel: tab.webdesc
+            const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+            const keepAliveLabelMapsObj = {
+              k: name,
+              v: tab.webdesc
             };
-            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             router.push(
               path
             );
           }
         }
-
-
-        // 判断跳转到哪个页面
-        // const url = tab.action;
-        // const index = url.lastIndexOf('\/');
-        // const customizedModuleName = url.substring(index + 1, url.length);
-        // const label = tab.webdesc;
-        // const type = 'tableDetailAction';
-        // const name = Object.keys(this.keepAliveLabelMaps);
-        // let customizedModuleId = '';
-        // name.forEach((item) => {
-        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-        //     customizedModuleId = item.split(/\./)[2];
-        //   }
-        // });
-        // if (tab.action) {
-        //   this.tabOpen({
-        //     type,
-        //     customizedModuleName,
-        //     customizedModuleId,
-        //     label
-        //   });
-        // }
       },
 
       // network 监听函数
