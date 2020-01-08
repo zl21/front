@@ -131,7 +131,7 @@ export default {
     const { tableName } = router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
-    } else {
+    } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
       delete state.updateData[tableName].add[tableName][data.key];
     }
   },
@@ -367,6 +367,25 @@ export default {
   updataGlobalLoading(state, value) { // 更新全局loading
     state.globalLoading = value;
   },
+  // testUpdateData(state, itemName) { // 检测数据变化
+  //   const { tableName, itemId } = router.currentRoute.params;
+  //   if (itemId === 'New') { // 单对象新增界面
+  //     const addDataForItemTable = state.updateData[itemName].add[itemName];
+  //     const addDataForMainTable = state.updateData[tableName].add[tableName];
+  //     if (JSON.stringify(addDataForItemTable) === '{}' && JSON.stringify(addDataForMainTable) === '{}') {
+  //       state.testData = false;
+  //     } else {
+  //       state.testData = true;
+  //     }
+  //   } // 单对象编辑界面
+  //   const modifyDataForItemTable = state.updateData[itemName].modify[itemName];
+  //   const modifyDataForMainTable = state.updateData[tableName].modify[tableName];
+  //   if (JSON.stringify(modifyDataForItemTable) === '{}' && JSON.stringify(modifyDataForMainTable) === '{}') {
+  //     state.testData = false;
+  //   } else {
+  //     state.testData = true;
+  //   }
+  // },
   updateWebConf(state, data) { // 更新主表配置WebConf
     state.WebConf = data;
   }

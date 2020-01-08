@@ -2038,6 +2038,8 @@
       }
     },
     mounted() {
+    console.log('MODULE_COMPONENT_NAME',);
+
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('jflowEvent', this.jflowEvent);

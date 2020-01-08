@@ -17,6 +17,8 @@ export default () => ({
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   activated() {
     const currentTableName = this.$router.currentRoute.params.tableName;
@@ -48,6 +50,8 @@ export default () => ({
       jflowWaterMark: ({ jflowWaterMark }) => jflowWaterMark,
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
+      testData: ({ testData }) => testData,
+      tempStorage: ({ tempStorage }) => tempStorage,
       WebConf: ({ WebConf }) => WebConf,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
