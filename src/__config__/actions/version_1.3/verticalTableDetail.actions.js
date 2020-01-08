@@ -413,7 +413,10 @@ export default {
           Object.assign(itemAdd[itemName], add);
         }
         
-        const itemTableAdd = Object.assign({}, itemAdd);
+        // const itemTableAdd = Object.assign({}, itemAdd);
+
+        const originProto = Object.getPrototypeOf(itemAdd);
+        const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
         if (itemTableAdd && itemTableAdd[itemName]) {
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
@@ -454,7 +457,7 @@ export default {
             }
           };
         }
-      } else if (sataTypeName === 'modify') {
+      } if (sataTypeName === 'modify') {
         if (temporaryStoragePath) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
