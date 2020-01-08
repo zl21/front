@@ -1,17 +1,15 @@
-/* eslint-disable vue/no-side-effects-in-computed-properties */
 <template>
   <div>
     <Modal
       v-model="modalConfig.control"
-      :title="title"
+      :title="type==='3'?'选择转派人':'审批意见'"
       :mask="true"
-      :width="modalWidth"
+      :width="type==='3'?835:520"
       @on-ok="ok"
       @on-cancel="cancel"
     >
-      <!-- 同意 -->
       <div
-        v-if="type==='0' && assignNext === 1 && assignArree === 1"
+        v-if="type==='0'"
         class="ApprovelModel"
       >
         <!-- 同意 -->
@@ -20,25 +18,8 @@
           type="textarea"
           :rows="4"
           placeholder="请输入审批意见"
-          :maxlength="80"
         />
       </div>
-
-      <!-- 指派流转节点 -->
-      <div
-        v-if="type==='0' && assignNext === 0"
-      >
-        <TransferNode />
-      </div>
-
-      <!-- 指派操作人 -->
-      <div
-        v-if="type==='0' && assignNext === 1 && assignArree === 0"
-      >
-        指派操作人
-      </div>
-
-      <!-- 驳回 -->
       <div
         v-if="type==='1'"
         class="ApprovelModel"
@@ -59,11 +40,8 @@
           type="textarea"
           :rows="4"
           placeholder="请输入审批意见"
-          :maxlength="80"
         />
       </div>
-
-      <!-- 转派 -->
       <div
         v-if="type==='3'"
         class="ApprovelModel"
@@ -95,12 +73,10 @@
 </template>
 <script>
   import mutipleSelectPop from './MutipleSelectPop';
-  import TransferNode from './TransferNode';
-  import { BacklogData } from '../../plugin/todoList';
 
   export default {
     name: 'ApprovelModel',
-    components: { mutipleSelectPop, TransferNode },
+    components: { mutipleSelectPop },
     props: {
       config: {
         type: Object,
@@ -108,28 +84,6 @@
       }
     },
     computed: {
-      title() {
-        let title = this.type === '3' ? '选择转派人' : '审批意见';
-        if (this.assignNext === 0 && this.type === '0') { // 设置流转节点
-          title = '流转节点设置';
-        }
-
-        if (this.assignNext === 1 && this.assignArree === 0 && this.type === '0') { // 设置流转节点
-          title = '指派下一节点审批人';
-        }
-        return title;
-      },
-      modalWidth() {
-        let width = this.type === '3' ? 835 : 520;
-        if (this.assignNext === 0 && this.type === '0') { // 设置流转节点
-          width = 432;
-        }
-
-        if (this.assignNext === 1 && this.assignArree === 0 && this.type === '0') { // 设置流转节点
-          width = 440;
-        }
-        return width;
-      },
       modalConfig() {
         return this.config;
       },
@@ -149,12 +103,9 @@
         return [];
       }
     },
-    mounted() {
-      this.assignNext = window.jflowPlugin.assignNext;
-      this.assignArree = window.jflowPlugin.assignArree;
-    },
     data() {
       return {
+        title: '审批意见',
         agreecontent: '',
         returnOption: '',
         returnContent: '', // 驳回审批意见
@@ -179,10 +130,7 @@
         ],
         resultData: {}, // 选中结果
         selectRow: {}, // 选中的行
-        obj: {}, //
-
-        assignNext: 1, // 默认不能指派流转节点
-        assignArree: 1, // 默认不可以进行节点操作人的动态指派
+        obj: {} //
       };
     },
     methods: {
@@ -483,8 +431,6 @@
                 child.dispatchEvent(myEvent);
               }
             }
-
-            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -526,7 +472,6 @@
                 child.dispatchEvent(myEvent);
               }
             }
-            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
@@ -561,7 +506,6 @@
                 child.dispatchEvent(myEvent);
               }
             }
-            BacklogData(window.jflowPlugin.store);
           } else {
             this.$Modal.fcWarning({
               title: '警告',
