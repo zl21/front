@@ -509,11 +509,23 @@
           params,
           success: (res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data;
+              let buttonsData = res.data.data;
               if (Version() === '1.4') {
-                this.buttonsData.push({
+                buttonsData.push({
                   webdesc: '刷新'
                 });
+              }
+              const saveObj = buttonsData.find(item => item.webdesc === '保存');
+              const copyObj = buttonsData.find(item => item.webdesc === '复制权限');
+              const refreshObj = buttonsData.find(item => item.webdesc === '刷新');
+              if (saveObj) {
+                this.buttonsData.push(saveObj);
+              }
+              if (copyObj) {
+                this.buttonsData.push(copyObj);
+              }
+              if (refreshObj) {
+                this.buttonsData.push(refreshObj);
               }
             }
           }
