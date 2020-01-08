@@ -34,7 +34,6 @@
         const componentName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
         const hasBeenDestroyed = getSeesionObject(HAS_BEEN_DESTROYED_MODULE)[componentName];
         if (Vue.component(componentName) === undefined || hasBeenDestroyed) {
-          console.log('被触发');
           Vue.component(componentName, Vue.extend(Object.assign({}, { mixins: [mixins()], isKeepAliveModel: true }, VerticalTableDetail)));
           deleteFromSessionObject(HAS_BEEN_DESTROYED_MODULE, componentName);
         }
@@ -49,8 +48,6 @@
         this.generateComponent();
       },
     },
-    deactivated() { // 清除keep-alive的缓存
-      this.$destroy(true);
-    }
+ 
   };
 </script>
