@@ -564,8 +564,8 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
-        this.oldMenuTreeObj = this.newMenuTreeObj;
-        this.newMenuTreeObj = item;
+        this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
+        this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         if (val.length === 0) {
           this.$refs.menuTree.handleSelect(item.nodeKey);
         }
@@ -640,8 +640,8 @@
               resolve();
               this.groupId = res.data.data[0].ID;
               this.newGroupId = res.data.data[0].ID;
-              this.oldMenuTreeObj = res.data.data[0];
-              this.newMenuTreeObj = res.data.data[0];
+              this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+              this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
