@@ -67,7 +67,9 @@
 
               obj.componentAttribute.itemInfo = item;
             } else {
-              Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
+                Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+              }
             }
            
             if (webactType === 'HALF') { // 如果是自定义tab全定制界面时，不需要引入公共组件

@@ -52,7 +52,9 @@ export default () => ({
   },
   destroyed() {
     if (window.Vue) {
-      delete window.Vue.options.components[this.$options._componentTag];
+      if (this.$options.isKeepAliveModel) {
+        delete window.Vue.options.components[this.$options._componentTag];
+      }
     }
   }
 });
