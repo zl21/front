@@ -67,11 +67,12 @@ const routes = [
         meta: { routePrefix: PLUGIN_MODULE_PREFIX }
       }, {
         path: `${LINK_MODULE_PREFIX}/:linkModuleName/:linkModuleId`,
-        component: () => import(
-          /* webpackChunkName: 'P.KeepAlive' */
-          /* webpackMode: 'eager' */
-          '../__component__/L.KeepAlive'
-        ), // 外链界面
+        component: KeepAliveContainer,
+        // component: () => import(
+        //   /* webpackChunkName: 'P.KeepAlive' */
+        //   /* webpackMode: 'eager' */
+        //   '../__component__/L.KeepAlive'
+        // ), // 外链界面
         meta: { routePrefix: LINK_MODULE_PREFIX },
       }]
   },

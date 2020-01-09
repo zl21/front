@@ -9,8 +9,8 @@
       class="urlName"
     />
     <component
-      :is="currentModule"
-      v-if="currentModule&&urlName===''"
+      :is="PageNotFound"
+      v-if="PageNotFound&&urlName===''"
     />
   </keep-alive>
 </template>
@@ -19,21 +19,15 @@
   import Vue from 'vue';
   import { mapState, mapActions, mapMutations } from 'vuex';
   import PageNotFound from './PageNotFound';
-  import PluginModule from '../__config__/plugin.config';
   import { LINK_MODULE_PREFIX, LINK_MODULE_COMPONENT_PREFIX } from '../constants/global';
   
-  
-  const pluginModules = {};
-  Object.keys(PluginModule).forEach((key) => {
-    pluginModules[key.toUpperCase()] = PluginModule[key];
-  });
   
   export default {
     name: `${LINK_MODULE_COMPONENT_PREFIX}.Table.KeepAlive`,
     data() {
       return {
         urlName: '',
-        currentModule: null
+        PageNotFound: null
       };
     },
     computed: {
@@ -55,18 +49,11 @@
         if (routePrefix !== LINK_MODULE_PREFIX) { return; }
         if (this.urlName === '') {
           Vue.component(linkModuleName, Vue.extend(Object.assign({}, PageNotFound)));
-          this.currentModule = linkModuleName;
+          this.PageNotFound = linkModuleName;
         }
       },
     },
     mounted() {
-      // if (window.sessionStorage.getItem('linkInfo')) {
-      //   const linkInfo = JSON.parse(window.sessionStorage.getItem('linkInfo') || null);
-      //   if (Object.values(linkInfo).length > 0) {
-      //     this.increaseLinkUrl({ linkId: linkInfo.linkId, linkUrl: linkInfo.linkUrl });
-      //     this.addKeepAliveLabelMaps({ name: linkInfo.name, label: linkInfo.label });
-      //   }
-      // }
       this.generateComponent();
     },
     watch: {
@@ -88,6 +75,7 @@
             iFrameForLinkPage.style.width = '100%';
             iFrameForLinkPage.style.height = '100%';
             iFrameForLinkPage.style.zIndex = '10';
+            iFrameForLinkPage.style.background = 'red';
             iFrameForLinkPage.style.position = 'absolute';
             iFrameForLinkPage.style.top = '0';
             iFrameForLinkPage.style.left = '0';
