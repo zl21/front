@@ -49,7 +49,7 @@
   import CopyPersonList from './CopyPersonList';
 
   export default {
-    name: 'InstanceManagementList',
+    // name: 'InstanceManagementList',
     components: {
       todoProcess, HistoricalProcess, launchList, CopyPersonList 
     },
