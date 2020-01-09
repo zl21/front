@@ -99,7 +99,10 @@
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
           } else {
+            if( Vue.component(`tapComponent.${item.tablename}`)===undefined){
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+
+            }
           }
           obj.component = `tapComponent.${item.tablename}`;
           obj.cilckCallback = this.tabClick;
