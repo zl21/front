@@ -1035,8 +1035,8 @@
           });
           this.cancelExtendTableAllSelected();
         }
-        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
-        this.tableData[findIndex] = params.row;
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        this.tableData[params.index] = params.row;
       }, // 取消整行的选中
       selectedSeeColumn(params, currentValue) {
         if (currentValue) {
