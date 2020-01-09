@@ -403,7 +403,6 @@ export default {
       }
      
       const sataTypeName = sataType ? sataType.sataType : '';
-
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
 
@@ -413,7 +412,10 @@ export default {
           Object.assign(itemAdd[itemName], add);
         }
         
-        const itemTableAdd = Object.assign({}, itemAdd);
+        // const itemTableAdd = Object.assign({}, itemAdd);
+
+        const originProto = Object.getPrototypeOf(itemAdd);
+        const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
         if (itemTableAdd && itemTableAdd[itemName]) {
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [

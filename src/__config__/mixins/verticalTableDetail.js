@@ -110,6 +110,12 @@ export default () => ({
       if (this.$options.isKeepAliveModel) {
         store.unregisterModule(this.moduleComponentName);
       }
+      // const components = window.Vue.options.components;
+      // Object.keys(components).forEach((compontent) => {
+      //   if (compontent.indexOf(this.moduleComponentName) > -1) {
+      //     delete components[compontent];
+      //   }
+      // });
     } catch (e) {
       console.log(e);
     }
@@ -122,4 +128,5 @@ export default () => ({
       }
     }
   },
+ 
 });
