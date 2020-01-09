@@ -57,5 +57,6 @@ function pollBacklogData(store) {
   });
 }
 
+export const BacklogData = pollBacklogData;
 
 export default todoList;
