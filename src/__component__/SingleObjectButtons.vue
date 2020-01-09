@@ -686,7 +686,7 @@
       clickButtonsRefresh() { // 按钮刷新事件
         this.testUpdata();
         if (this.isValue) {
-          this.Warning('确定刷新？', () => {
+          this.Warning('修改的数据未保存,确定刷新？', () => {
             this.refresh();
           });
         } else {
@@ -1526,7 +1526,7 @@
       clickButtonsBack() { // 按钮返回事件   
         this.testUpdata();
         if (this.isValue) {
-          this.Warning('确定返回？', () => {
+          this.Warning('修改的数据未保存,确定返回？', () => {
             this.back();
           });
         } else {
