@@ -74,7 +74,9 @@ export const emptyRecord = (interval = new Date(new Date().toDateString()).getTi
       reject(event);
     };
   } else {
-    reject(new Error(`DataBase is not available at this moment. ENABLE_NETWORK_MONITOR = ${ENABLE_NETWORK_MONITOR()}, db = ${db}`));
+    console.warn(`DataBase is not available at this moment. ENABLE_NETWORK_MONITOR = ${ENABLE_NETWORK_MONITOR()}, db = ${db}`);
+    resolve();
+    // reject(new Error(`DataBase is not available at this moment. ENABLE_NETWORK_MONITOR = ${ENABLE_NETWORK_MONITOR()}, db = ${db}`));
   }
 }) : () => {});
 
