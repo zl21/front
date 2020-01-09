@@ -407,7 +407,6 @@ export default {
       }
      
       const sataTypeName = sataType ? sataType.sataType : '';
-
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
 
@@ -461,7 +460,7 @@ export default {
             }
           };
         }
-      } if (sataTypeName === 'modify') {
+      } else if (sataTypeName === 'modify') {
         if (temporaryStoragePath) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {

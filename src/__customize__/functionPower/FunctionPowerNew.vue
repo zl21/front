@@ -221,6 +221,7 @@
   export default {
     data() {
       return {
+        isSaveError: false, // 是否保存失败
         spinShow: false, // loading是否显示
 
         copyPermission: false, // 复制权限弹框
@@ -245,12 +246,16 @@
 
         menuTreeData: [], // 菜单树数据
         menuTreeQuery: '', // 菜单树检索的值
+        oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
+        newMenuTreeObj: null, // 当前选中的菜单节点的数据
 
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
         adTableCateId: null, // 树子节点ID
         newAdSubsystemId: '', // 树节点ID
         newAdTableCateId: null, // 树子节点ID
+        oldTreeObj: null, // 上一次选中的树节点的数据
+        newTreeObj: null, // 当前选中的树节点的数据
 
         tableDefaultSelectedRowIndex: 0, // 表格默认选中的行的index
         tableData: [], // 表格数据
@@ -559,20 +564,24 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
+        this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         if (val.length === 0) {
           this.$refs.menuTree.handleSelect(item.nodeKey);
         }
         this.newGroupId = item.ID;
-        if (this.checkNoSaveData()) {
-        } else {
-          this.spinShow = true;
-          this.groupId = item.ID;
-          const treePromise = new Promise((resolve, reject) => {
-            this.getTreeData(resolve, reject);
-          });
-          treePromise.then(() => {
-            this.getTableData();
-          });
+        if (!this.isSaveError) {
+          if (this.checkNoSaveData('menuTree')) {
+          } else {
+            this.spinShow = true;
+            this.groupId = item.ID;
+            const treePromise = new Promise((resolve, reject) => {
+              this.getTreeData(resolve, reject);
+            });
+            treePromise.then(() => {
+              this.getTableData();
+            });
+          }
         }
       }, // 左侧树点击
       getTreeData(resolve, reject) {
@@ -609,6 +618,8 @@
           if (item.nodeType === 'ROOT') {
             item.expand = true;
             item.selected = true;
+            this.oldTreeObj = item;
+            this.newTreeObj = item;
             this.adSubsystemId = item.ad_subsystem_id;
             this.newAdSubsystemId = item.ad_subsystem_id;
             this.adTableCateId = item.ad_tablecategory_id;
@@ -629,6 +640,8 @@
               resolve();
               this.groupId = res.data.data[0].ID;
               this.newGroupId = res.data.data[0].ID;
+              this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+              this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
@@ -681,6 +694,7 @@
             GROUP_ID: this.groupId
           };
         }
+        this.spinShow = true;
         functionPowerActions().queryMenuPermission({
           params: obj,
           success: (res) => {
@@ -839,17 +853,21 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        this.oldTreeObj = this.newTreeObj;
+        this.newTreeObj = obj;
         if (val.length === 0) {
           this.$refs.tree.handleSelect(obj.nodeKey);
         }
         this.newAdSubsystemId = obj.ad_subsystem_id;
         this.newAdTableCateId = obj.ad_tablecategory_id;
-        if (this.checkNoSaveData()) {
-        } else {
-          this.spinShow = true;
-          this.adSubsystemId = obj.ad_subsystem_id;
-          this.adTableCateId = obj.ad_tablecategory_id;
-          this.getTableData();
+        if (!this.isSaveError) {
+          if (this.checkNoSaveData('tree')) {
+          } else {
+            this.spinShow = true;
+            this.adSubsystemId = obj.ad_subsystem_id;
+            this.adTableCateId = obj.ad_tablecategory_id;
+            this.getTableData();
+          }
         }
       }, // 树选中改变触发
       btnClick(item) {
@@ -1416,8 +1434,10 @@
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {
+              console.log(res);
               this.spinShow = false;
               if (res.data.code === 0) {
+                this.isSaveError = false;
                 if (type === 'refresh') {
                   this.refresh();
                 } else {
@@ -1429,6 +1449,17 @@
                 this.$Message.success({
                   content: res.data.message
                 });
+              } else {
+                this.isSaveError = true;
+                if (type === 'menuTree') {
+                  this.$refs.menuTree.handleSelect(this.oldMenuTreeObj.nodeKey);
+                }
+                if (type === 'tree') {
+                  this.$refs.tree.handleSelect(this.oldTreeObj.nodeKey);
+                }
+                setTimeout(() => {
+                  this.isSaveError = false;
+                }, 0);
               }
             }
           });
