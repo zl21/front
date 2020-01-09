@@ -412,10 +412,14 @@ export default {
           Object.assign(itemAdd[itemName], add);
         }
         
-        // const itemTableAdd = Object.assign({}, itemAdd);
+        const itemTableAddOld = Object.assign({}, itemAdd);
 
-        const originProto = Object.getPrototypeOf(itemAdd);
-        const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
+        // const originProto = Object.getPrototypeOf(itemAdd);
+        // const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
+        const addAssign = JSON.stringify(itemTableAddOld);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        const itemTableAdd = JSON.parse(addAssign);
+
+
         if (itemTableAdd && itemTableAdd[itemName]) {
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
