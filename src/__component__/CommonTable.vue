@@ -344,13 +344,24 @@
       }, // 取消表格全部选中
       rowClassName(row) {
         let cssStr = '';
-        this.cssStatus.forEach((item) => {
+        // let cssColorStr = '';
+        const cssStatus = JSON.parse(JSON.stringify(this.cssStatus))
+        cssStatus.sort((a, b) => {
+          return a.priority - b.priority;
+        });
+        cssStatus.forEach((item) => {
           const columnKey = this.columns.find(tem => tem.title === item.desc).key;
           const cssFindindex = item.value.findIndex(cur => cur === row[columnKey]);
           if (cssFindindex > -1) {
+            // if (item.css[cssFindindex].indexOf('color') > -1) {
+            //   cssColorStr = item.css[cssFindindex];
+            // } else {
+            //   cssStr = `${cssStr + item.css[cssFindindex]} `;
+            // }
             cssStr = `${cssStr + item.css[cssFindindex]} `;
           }
         });
+        // cssStr = `${cssStr} ` + cssColorStr;
         return cssStr;
       }, // 行样式
       customerUrlRender() {
@@ -659,6 +670,9 @@
             }
             tfoot tr {
                 height: 28px;
+            }
+            .burgeon-table td {
+              background-color: rgba(255, 255, 255, 0);
             }
             .burgeon-table-fixed tfoot td {
                 border-bottom: 1px solid #e8eaec;
