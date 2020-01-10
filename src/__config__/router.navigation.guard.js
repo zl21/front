@@ -282,7 +282,6 @@ export default (router) => {
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRouting'));
     // const ignore = Boolean(window.sessionStorage.getItem('ignore'));
 
-    const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
 
@@ -300,7 +299,7 @@ export default (router) => {
     }
 
     // 记录规则二：不是从同表的列表跳转到单对象界面，如果目标界面与来源界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
-
+    const isDynamicRoutingForHideBackButton = Boolean(window.sessionStorage.getItem('dynamicRoutingForHideBackButton'));
     if (isDynamicRoutingForHideBackButton && isNotFromSameTable && (to.path !== '/' && from.path !== '/')) {
       window.sessionStorage.removeItem('dynamicRoutingForHideBackButton');
       // 外键跳转类型，to-from与from-to一致时，不维护到路由记录
