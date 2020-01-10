@@ -2532,12 +2532,16 @@
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {
+          if (this.itemId === 'New') {
+            this.$loading.show();
+          }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
         promise.then(() => {
+          this.$loading.hide(this.tableName);
           this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
@@ -2561,6 +2565,7 @@
             });
           }
         }, () => {
+          this.$loading.hide(this.tableName);
           stop = true;
           removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
