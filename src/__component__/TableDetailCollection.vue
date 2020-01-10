@@ -2774,30 +2774,32 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-              const data = this.dataSource.row[params.index][cellData.colname];
-              let type = '';
-              if (cellData.objdistype === 'object') {
-                type = 'V';
-              } else if (cellData.objdistype === 'tabpanle') {
-                type = 'H';
-              } else {
-                const datas = {
-                  mask: true,
-                  title: '警告',
-                  content: '请设置外键关联表的显示配置'
-                };
-                this.$Modal.fcWarning(datas);
-                return;
+              if (event.target.className) {
+                const data = this.dataSource.row[params.index][cellData.colname];
+                let type = '';
+                if (cellData.objdistype === 'object') {
+                  type = 'V';
+                } else if (cellData.objdistype === 'tabpanle') {
+                  type = 'H';
+                } else {
+                  const datas = {
+                    mask: true,
+                    title: '警告',
+                    content: '请设置外键关联表的显示配置'
+                  };
+                  this.$Modal.fcWarning(datas);
+                  return;
+                }
+                window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+                this.tabOpen({
+                  type,
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  id: data.refobjid,
+                  serviceId: data.serviceId,
+                  label: data.reftabdesc
+                });
               }
-              window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-              this.tabOpen({
-                type,
-                tableName: data.reftablename,
-                tableId: data.reftableid,
-                id: data.refobjid,
-                serviceId: data.serviceId,
-                label: data.reftabdesc
-              });
               // event.stopPropagation();
             }
           }
