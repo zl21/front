@@ -117,4 +117,11 @@ export default () => ({
       }
     }
   },
+  destroyed() {
+    if (window.Vue) {
+      if (this.$options.isKeepAliveModel) {
+        delete window.Vue.options.components[this.$options._componentTag];
+      }
+    }
+  }
 });
