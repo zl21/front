@@ -2583,7 +2583,7 @@
         let stop = false;
         let removeMessage = false;
         promise.then(() => {
-          // this.$loading.hide(this.tableName);
+          this.closeCurrentLoading();
           this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
@@ -2607,7 +2607,7 @@
             });
           }
         }, () => {
-          this.$loading.hide(this.tableName);
+          this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
@@ -2863,6 +2863,7 @@
       closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
+        console.log(333, currentTableName, dom);
         if (dom) {
           this.$loading.hide(currentTableName);
         }
