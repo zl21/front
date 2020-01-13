@@ -2686,10 +2686,17 @@
 
         return false;
       },
-      hideLoading(value) {
+      closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        // const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (dom) {
+          this.$loading.hide(currentTableName);
+        }
+      },
+      hideListenerLoading(value) { // 根据监听关闭loading
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if ((value.detail.hideCopyLoading || value.detail.hideLoadingForButton) && dom) {
           this.$loading.hide(currentTableName);
         }
       }
@@ -2697,8 +2704,8 @@
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.addEventListener('globalNoticeCopy', this.hideLoading);
-      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
+      window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
+      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
       this.hideBackButton();
@@ -2711,8 +2718,8 @@
         //   this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
         // });
 
-        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
-        window.addEventListener('globalNoticeCopy', this.hideLoading);
+        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
+        window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
       if (this.objectType === 'horizontal') { // 横向布局
