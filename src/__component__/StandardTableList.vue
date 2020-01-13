@@ -658,13 +658,15 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
+
                   fkHttpRequest().fkQueryList({
-                    searchObject: {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      startindex: 0,
-                      range: $this.pageSize
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
@@ -677,12 +679,14 @@
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
+                  const searchObject = {
+                    ak: value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  };
+
                   fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: {
-                      ak: value,
-                      colid: current.colid,
-                      fixedcolumns: {}
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterAutoData(res, itemIndex);
@@ -691,13 +695,14 @@
                 },
                 pageChange: (currentPage, $this) => {
                   // 外键的分页查询
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                    range: $this.pageSize
+                  };
                   fkHttpRequest().fkQueryList({
-                    searchObject: {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      startindex: $this.data.defaultrange * ($this.currentPage - 1),
-                      range: $this.pageSize
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
@@ -824,6 +829,18 @@
         // }
         this.resetType = false;
         return items;
+      },
+      setSeachObject(obj, current) {
+        // precolnameslist
+        if (current.precolnameslist) {
+          if (Object.hasOwnProperty.call(obj, 'ak')) {
+            obj.fixedcolumns.precolnameslist = current.precolnameslist;
+          } else {
+            obj.precolnameslist = current.precolnameslist;
+          }
+          return obj;
+        }
+        return obj;
       },
       resetForm() {
         // 列表查询重置
