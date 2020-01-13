@@ -2863,7 +2863,6 @@
       closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
-        console.log(333, currentTableName, dom);
         if (dom) {
           this.$loading.hide(currentTableName);
         }
