@@ -394,9 +394,12 @@ export default {
           };
         }
       } else if (path) { // 没有子表    有path的参数
-        add[tableName].ID = objId;
+        // add[tableName].ID = objId;
+        const addData = Object.assign({}, add);
+        addData[tableName].ID = objId;
         parames = {
-          ...add[tableName]
+          // ...add[tableName]
+          ...addData[tableName]
         };
       } else {
         parames = {
