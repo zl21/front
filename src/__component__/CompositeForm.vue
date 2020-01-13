@@ -1146,11 +1146,10 @@
           }
           const val = this.formData[current.refcolprem.srccol];
           if (Object.hasOwnProperty.call(obj, 'ak')) {
-            obj.fixedcolumns.precolnameslist = current.refcolprem;
-            obj.fixedcolumns.refcolval = val;
+            obj.fixedcolumns.precolnameslist = [current.refcolprem];
+            obj.fixedcolumns.precolnameslist[0].refcolval = val;
           } else {
-            obj.precolnameslist = current.refcolprem;
-            obj.precolnameslist.refcolval = val;
+            obj.precolnameslist = [current.refcolprem];
           }
         }
         return JSON.parse(JSON.stringify(obj));
