@@ -968,6 +968,8 @@
                   searchObject.fixedcolumns = refArray[1];
                 }
               }
+              // 权限查询
+              searchObject = this.setSeachObject(searchObject, current);
               fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
@@ -1068,7 +1070,8 @@
                   searchObject.fixedcolumns = refArray[1];
                 }
               }              
-              
+              // 权限查询
+              searchObject = this.setSeachObject(searchObject, current);
               fkHttpRequest().fkQueryList({
                 searchObject,
                 serviceId: current.serviceId,
@@ -1086,11 +1089,12 @@
        
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
+        const prmsrccol = current.refcolprem && current.refcolprem.srccol;
         this.LinkageForm.push({
           key: `${this.tableGetName}${obj.item.field}`,
           name: obj.item.title,
           show: obj.show,
-          srccol: `${this.tableGetName}${srccol}`,
+          srccol: `${this.tableGetName}${srccol || prmsrccol}`,
           maintable: (obj.item.validate.refcolval && obj.item.validate.refcolval.maintable) || false,
           tableName: this.tableGetName
         }); 
@@ -1124,6 +1128,23 @@
         
         return obj;
       },
+      setSeachObject(obj, current) {
+        // precolnameslist 权限
+        obj = JSON.parse(JSON.stringify(obj));
+        if (current.precolnameslist) {
+          obj.precolnameslist = current.precolnameslist;
+          return obj;
+        }
+        if (current.refcolprem) {
+          if (!obj.fixedcolumns) {
+            obj.fixedcolumns = {};
+          }
+          const val = this.formData[current.refcolprem.srccol];
+          obj.precolnameslist = current.refcolprem;
+          obj.precolnameslist.refcolval = val;
+        }
+        return JSON.parse(JSON.stringify(obj));
+      },
       getsetAttsetProps() {
         return this.setAttsetProps;
       },
@@ -1151,7 +1172,29 @@
       },
       getLinkData(current) {
         // 获取表信息
-       
+        if (current.refcolprem) {
+          // 数据权限功能
+          const premValue = this.formData[current.refcolprem.srccol];
+          const premLinkageForm = this.$store.state[this[MODULE_COMPONENT_NAME]].LinkageForm || {};
+          const premLinkageFormInput = premLinkageForm[this.tableGetName + current.refcolprem.srccol];
+          if (premLinkageFormInput && premLinkageFormInput.item.show && !premValue) {
+            this.$Message.info(`请先选择${premLinkageFormInput.item.name}`);
+          }
+          let pretableName = document.querySelector('.compositeAllform');
+          if (this.tableGetName) {  
+            pretableName = document.querySelector(`.${premLinkageFormInput.item.tableName}`);
+          }
+          if (pretableName && pretableName.querySelector(`#${current.refcolprem.srccol}`)) {
+            setTimeout(() => {
+              pretableName.querySelector(`#${current.refcolprem.srccol}`).querySelector('input').focus();
+            }, 100);
+          }
+
+          if (!premValue) {
+            return [false];
+          }
+        }
+
         if (Object.hasOwnProperty.call(current, 'refcolval')) {
           let refcolval = {};
           const checkGetObjId = this.getObjId(current);
@@ -1181,7 +1224,6 @@
           } else {
             LinkageFormInput = LinkageForm[current.refcolval.srccol];
           }
-
           if (!refcolval) {
             if (LinkageFormInput && LinkageFormInput.item.show) {
               if (current.refcolval.maintable) {
@@ -1282,6 +1324,7 @@
         if (!check[0]) {
           return false;
         }
+        sendData = this.setSeachObject(sendData, current);
         fkHttpRequest().fkFuzzyquerybyak({
           searchObject: sendData,
           serviceId: current.serviceId,
