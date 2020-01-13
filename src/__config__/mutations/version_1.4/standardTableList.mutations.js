@@ -78,6 +78,7 @@ export default {
     // 双击条状判断
     buttons.objTableUrl = data.tableurl;
   },
+
   setActiveTabActionValue({
     buttons
   }, obj) {
