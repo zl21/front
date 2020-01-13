@@ -1132,7 +1132,11 @@
         // precolnameslist 权限
         obj = JSON.parse(JSON.stringify(obj));
         if (current.precolnameslist) {
-          obj.precolnameslist = current.precolnameslist;
+          if (Object.hasOwnProperty.call(obj, 'ak')) {
+            obj.fixedcolumns.precolnameslist = current.precolnameslist;
+          } else {
+            obj.precolnameslist = current.precolnameslist;
+          }
           return obj;
         }
         if (current.refcolprem) {
@@ -1140,8 +1144,13 @@
             obj.fixedcolumns = {};
           }
           const val = this.formData[current.refcolprem.srccol];
-          obj.precolnameslist = current.refcolprem;
-          obj.precolnameslist.refcolval = val;
+          if (Object.hasOwnProperty.call(obj, 'ak')) {
+            obj.fixedcolumns.precolnameslist = current.refcolprem;
+            obj.fixedcolumns.refcolval = val;
+          } else {
+            obj.precolnameslist = current.refcolprem;
+            obj.precolnameslist.refcolval = val;
+          }
         }
         return JSON.parse(JSON.stringify(obj));
       },
@@ -1180,17 +1189,16 @@
           if (premLinkageFormInput && premLinkageFormInput.item.show && !premValue) {
             this.$Message.info(`请先选择${premLinkageFormInput.item.name}`);
           }
-          let pretableName = document.querySelector('.compositeAllform');
-          if (this.tableGetName) {  
-            pretableName = document.querySelector(`.${premLinkageFormInput.item.tableName}`);
-          }
-          if (pretableName && pretableName.querySelector(`#${current.refcolprem.srccol}`)) {
-            setTimeout(() => {
-              pretableName.querySelector(`#${current.refcolprem.srccol}`).querySelector('input').focus();
-            }, 100);
-          }
-
           if (!premValue) {
+            let pretableName = document.querySelector('.compositeAllform');
+            if (this.tableGetName) {  
+              pretableName = document.querySelector(`.${premLinkageFormInput.item.tableName}`);
+            }
+            if (pretableName && pretableName.querySelector(`#${current.refcolprem.srccol}`)) {
+              setTimeout(() => {
+                pretableName.querySelector(`#${current.refcolprem.srccol}`).querySelector('input').focus();
+              }, 100);
+            }
             return [false];
           }
         }

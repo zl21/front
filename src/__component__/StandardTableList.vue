@@ -832,9 +832,12 @@
       },
       setSeachObject(obj, current) {
         // precolnameslist
-        console.log(current.precolnameslist);
         if (current.precolnameslist) {
-          obj.precolnameslist = current.precolnameslist;
+          if (Object.hasOwnProperty.call(obj, 'ak')) {
+            obj.fixedcolumns.precolnameslist = current.precolnameslist;
+          } else {
+            obj.precolnameslist = current.precolnameslist;
+          }
           return obj;
         }
         return obj;
