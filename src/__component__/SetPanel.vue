@@ -65,6 +65,7 @@
   import router from '../__config__/router.config';
   import network, { urlSearchParams } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
+  import { removeSessionObject } from '../__utils__/sessionStorage';
 
 
   export default {
@@ -121,9 +122,7 @@
                     } else if (param.name === 'queryDisNumber') {
                       this.num7 = Number(param.value);// 设置折叠条件
                     }
-                    if (moduleName() && moduleName().indexOf('S', 0) === 0) {
-                      this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: this.num7, switchValue: this.switchValue });
-                    } 
+                    this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: this.num7, switchValue: this.switchValue });
                   });
                 } else { // 数组为空时，展示全部
                   this.$store.commit('global/updateModifySearchFoldnum', { queryDisNumber: null, switchValue: false });
@@ -182,7 +181,7 @@
             removeSessionObject('saveNetwork');
           });
       }
-    }
+    },
   };
 </script>
 

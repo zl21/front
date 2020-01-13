@@ -350,6 +350,7 @@
   .detailTable {
     border: 1px solid #d8d8d8;
     margin-top: 10px;
+    height: 100%;
   }
 
  .queryDesc {

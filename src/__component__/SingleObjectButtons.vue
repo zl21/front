@@ -2262,7 +2262,7 @@
               itemAdd = Object.values(this.updateData[itemName].add[itemName]);
             }
             if (itemAdd.length > 0 && itemModify.length > 0) {
-              if (this.verifyRequiredInformation()) { // 横向结构保存校验
+              if (this.verifyRequiredInformation()&&this.itemTableCheckFunc()) { // 横向结构保存校验
                 this.savaNewTable(type, path, objId, itemName, itemCurrentParameter, { sataType: 'addAndModify' });
               }
             }
@@ -2697,7 +2697,7 @@
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener('exeActionForR3', (data) => {
-          this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
+          // this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
         });
 
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
