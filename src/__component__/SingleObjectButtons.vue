@@ -607,47 +607,87 @@
         });// 因左右结构itemNameGroup包含主表，上下结构不包括
         const name = '';
         if (this.itemId === 'New') {
-          if ((this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) 
-            || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {
-            // 新增时，属于中主子表add都有值
-            if ((this.updateData[this.itemName] && this.updateData[this.itemName].add && this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
-              || (this.updateData[this.tableName] && this.updateData[this.tableName].add && this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)) {
-              // 新增时，属于中主子表add都有默认值
-              if (
-                this.updateData[this.itemName] 
-                && this.updateData[this.itemName].default 
-                && this.updateData[this.itemName].default[this.itemName]
-                && (Object.keys(this.updateData[this.itemName].default[this.itemName]).length) 
-                  < (this.updateData[this.itemName] 
-                    && this.updateData[this.itemName].add 
-                    && this.updateData[this.itemName].add[this.itemName]
-                    && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
-                || (this.updateData[this.tableName] 
-                  && this.updateData[this.tableName].default 
-                  && this.updateData[this.tableName].default[this.tableName] 
-                  && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
-                  < (this.updateData[this.tableName] 
-                    && this.updateData[this.tableName].add 
-                    && this.updateData[this.tableName].add[this.tableName] 
-                    && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
-                || (this.updateData[this.tableName] 
-                && (!this.updateData[this.tableName].default || !this.updateData[this.tableName].default[this.tableName])
-                && this.updateData[this.tableName].add 
-                && this.updateData[this.tableName].add[this.tableName]
-                && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
-                || (
-                  this.updateData[this.itemName] &&
-                 (!this.updateData[this.itemName].default|| !this.updateData[this.itemName].default[this.itemName])
-                && this.updateData[this.itemName].add 
-                && this.updateData[this.itemName].add[this.itemName]
-                && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+          // if ((this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) //子表有默认值
+          //   || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {//主表有默认值
+          // 新增时，属于中主子表add都有值
+          // if ((this.updateData[this.itemName] 
+          //   && this.updateData[this.itemName].add 
+          //   && this.updateData[this.itemName].add[this.itemName] 
+          //   && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0//主表新增有值
+          // ) 
+          //   ||
+          //    (this.updateData[this.tableName] 
+          //   && this.updateData[this.tableName].add 
+          //   && this.updateData[this.tableName].add[this.tableName] 
+          //   && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)//子表新增有值
+          // ) {
+          //   // 新增时，属于中主子表add都有默认值
+          if (
+            (itemNames.includes(this.itemName) && this.updateData[this.itemName] 
+            && this.updateData[this.itemName].default 
+            && this.updateData[this.itemName].default[this.itemName] 
+            && Object.keys(this.updateData[this.itemName].default[this.itemName]).length)
+            || (itemNames.includes(this.itemName) && this.updateData[this.itemName] 
+            && this.updateData[this.itemName].add 
+            && this.updateData[this.itemName].add[this.itemName]
+            && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+            || (this.updateData[this.tableName] 
+            && this.updateData[this.tableName].default 
+            && this.updateData[this.tableName].default[this.tableName] 
+            && Object.keys(this.updateData[this.tableName].default[this.tableName]).length)
+            || (this.updateData[this.tableName] 
+            && this.updateData[this.tableName].add 
+            && this.updateData[this.tableName].add[this.tableName] 
+            && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+            || (this.updateData[this.tableName] 
+            && (!this.updateData[this.tableName].default || !this.updateData[this.tableName].default[this.tableName])
+            && this.updateData[this.tableName].add 
+            && this.updateData[this.tableName].add[this.tableName]
+            && Object.keys(this.updateData[this.tableName].add[this.tableName]).length)
+            || (
+              itemNames.includes(this.itemName) && this.updateData[this.itemName]
+            && (!this.updateData[this.itemName].default || !this.updateData[this.itemName].default[this.itemName])
+            && this.updateData[this.itemName].add 
+            && this.updateData[this.itemName].add[this.itemName]
+            && Object.keys(this.updateData[this.itemName].add[this.itemName]).length)
+          ) {
+            // 新增时，主子表add中的值>default的值，说明除了默认值之外有新增的值
+            // 新增时，主子表add中的值=default的值,说明修改了默认值
+            const defaultItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].default[this.itemName];
+            const addItemDataLength = itemNames.includes(this.itemName) && this.updateData[this.itemName].add[this.itemName];
+            const defaultMainDataLength = this.updateData[this.tableName].default[this.tableName];
+            const addMainDataLength = this.updateData[this.tableName].add[this.tableName];
+            if (defaultItemDataLength && Object.keys(defaultItemDataLength).length > 0) {
+              if (Object.keys(defaultItemDataLength).length
+                < Object.keys(addItemDataLength).length// 子表add>default
               ) {
-                // 新增时，属于中主子表add中的值多余default的值，说明除了默认值之外有新增的值
+                this.isValue = true;// 子表修改了值
+                console.log('新增时，子表add>default,修改了值');
+              } else if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
+                this.isValue = true;// 左右结构，主表或子表修改了值
+                console.log('新增时，主表或子表add=default,修改了默认值');
+              }
+            } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
+              if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
-                console.log('新增时，上下主或子表修改了值');
-              } 
+                console.log('新增时，主表add>default,修改了值');
+              } else if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+                this.isValue = true;// 主表修改了值
+                console.log('新增时，主表add=default,修改了默认值');
+              } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
+                this.isValue = true;// 主表修改了值
+                console.log('新增时，子表修改了值');
+              }
+            } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
+              this.isValue = true;// 子表修改了值
+              console.log('新增时，子表修改了值');
+            } else if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
+              this.isValue = true;// 主表修改了值
+              console.log('新增时，主表修改了值');
             }
-          }
+          } 
+          // }
+          // }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
@@ -799,6 +839,7 @@
             table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
         }
+        this.closeCurrentLoading();
         setTimeout(() => {
           if (message) {
             this.$Message.success(message);
@@ -2244,6 +2285,7 @@
         // }, 2000);
       },
       objectSave(obj) { // 保存按钮事件逻辑
+        this.$loading.show();
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2532,16 +2574,16 @@
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {
-          if (this.itemId === 'New') {
-            this.$loading.show();
-          }
+          // if (this.itemId === 'New') {
+          //   this.$loading.show();
+          // }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
         promise.then(() => {
-          this.$loading.hide(this.tableName);
+          // this.$loading.hide(this.tableName);
           this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
@@ -2818,10 +2860,17 @@
 
         return false;
       },
-      hideLoading(value) {
+      closeCurrentLoading() { // 关闭当前tab loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        // const dom = document.querySelector(`#${currentTableName}-loading`);
-        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (dom) {
+          this.$loading.hide(currentTableName);
+        }
+      },
+      hideListenerLoading(value) { // 根据监听关闭loading
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if ((value.detail.hideCopyLoading || value.detail.hideLoadingForButton) && dom) {
           this.$loading.hide(currentTableName);
         }
       }
@@ -2829,8 +2878,8 @@
     beforeDestroy() {
       window.removeEventListener('jflowClick', this.jflowClick);
       window.removeEventListener('network', this.networkEventListener);
-      window.addEventListener('globalNoticeCopy', this.hideLoading);
-      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
+      window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
+      window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
       this.hideBackButton();
@@ -2843,8 +2892,8 @@
         //   this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
         // });
 
-        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideLoading);
-        window.addEventListener('globalNoticeCopy', this.hideLoading);
+        window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
+        window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
       }
       if (this.objectType === 'horizontal') { // 横向布局
