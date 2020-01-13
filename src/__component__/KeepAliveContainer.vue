@@ -165,7 +165,10 @@
       LinkUrl: {
         handler(val) {
           if (val && val.length > 0) {
-            this.generateComponent();
+            const { routePrefix } = this.$route.meta;
+            if (routePrefix === LINK_MODULE_PREFIX) {
+              this.generateComponent();
+            }
           }
         }
       },
