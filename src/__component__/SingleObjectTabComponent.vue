@@ -13,9 +13,10 @@
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
       :isactive="isactive"
-      :watermarkimg="watermarkimg"
+      :watermarkimg="resetWaterMark"
       :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
+      :is-main-form="tabPanelsAll"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm
@@ -158,6 +159,18 @@
       compositeForm
     },
     props: {
+      tabPanelsAll: {
+        type: Array,
+        default() {
+          return [];
+        }
+      },
+      tabPanel: {
+        type: Array,
+        default() {
+          return [];
+        }
+      },
       mainFormPaths: {
         type: Array,
         default() {
@@ -229,6 +242,10 @@
         type: String,
         default: ''
       }, // 水印数据
+      jflowWaterMark: {
+        type: String,
+        default: ''
+      }, // jflow水印数据
       tooltipForItemTable: {
         type: Array,
         default: () => []
@@ -244,6 +261,18 @@
     },
     inject: [MODULE_COMPONENT_NAME],  
     computed: {
+      resetWaterMark() {
+        if (this.watermarkimg) {
+          if (this.jflowWaterMark) {
+            return this.jflowWaterMark;
+          }
+          return this.watermarkimg;
+        }
+        if (this.jflowWaterMark) {
+          return this.jflowWaterMark;
+        }
+        return '';
+      },
       getActionModify() {
         if (this.itemInfo.componentAttribute.buttonsData.data.tabcmd) {
           return this.itemInfo.componentAttribute.buttonsData.data.tabcmd.cmds.every((cur, idx) => {
@@ -265,6 +294,7 @@
 
         return [];
       },
+    
       // ...mapState(moduleName(), {
       //   activeTab: ({ updateData }) => updateData,
       // }),

@@ -273,6 +273,7 @@
         },
         deep: true
       },
+      upDataMainForm() {}
     },
     computed: {
       ...mapState('global', {
@@ -285,6 +286,19 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
       }),
+      upDataMainForm() {
+        // 当前主表存在form,开启loading
+        if (this.objectType === 'horizontal') {
+          if (this.isMainForm[0].componentAttribute.panelData.isShow) {
+            if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+              this.$loading.show();
+            }     
+          }
+        } else if (this.isMainForm.formData.isShow) { 
+          this.$loading.show();
+        }
+        return this.isMainForm;
+      },
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
         //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
@@ -399,6 +413,10 @@
       }
     },
     props: {
+      isMainForm: {// 当前主表是否存在表单组件
+        type: [Array, Object],
+        default: () => {}
+      },
       watermarkimg: {// 水印
         type: String,
         default: ''
@@ -450,6 +468,7 @@
         type: Function,
         default: () => {}
       },
+    
     },
     inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     methods: {
@@ -1133,10 +1152,10 @@
             if (this.itemName === this.tableName) { // 主表
               this.routingHop(tab, this.itemId);// 主表使用明细ID
             } else { // 子表  
+              let id = [];
               if (actionType === ('CUSTOMIZED' || 'https:' || 'http:')) {
                 this.routingHop(tab, id);// 主表使用明细ID
               } else {
-                let id = [];
                 if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
                   id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
                 }
@@ -1564,15 +1583,20 @@
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
         this.$loading.show();
       },
-      clickButtonsBack() { // 按钮返回事件   
-        this.testUpdata();
-        if (this.isValue) {
-          this.Warning('修改的数据未保存,确定返回？', () => {
-            this.back();
-          });
-        } else {
+      clickButtonsBack(verify) { // 按钮返回事件  
+        if (!verify) {
           this.back();
           this.isValue = null;
+        } else {
+          this.testUpdata();
+          if (this.isValue) {
+            this.Warning('修改的数据未保存,确定返回？', () => {
+              this.back();
+            });
+          } else {
+            this.back();
+            this.isValue = null;
+          }
         }
       },
       back() {
@@ -2247,7 +2271,8 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
         } else {
-          this.clickButtonsBack();
+          const verify = false;
+          this.clickButtonsBack(verify);
         }
       },
       objectAdd() { // 新增
@@ -2883,9 +2908,7 @@
     },
     mounted() {
       this.hideBackButton();
-      if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-        this.$loading.show();
-      }
+         
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         // window.addEventListener('exeActionForR3', (data) => {

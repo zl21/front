@@ -10,7 +10,7 @@ export default {
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
-    state.mainFormInfo.formData.isShow = data.addcolums && data.addcolums.length > 0;
+    state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     state.mainFormInfo.formData.data = Object.assign({}, data);
     state.updateData[tableName] = {
       add: Object.assign({}, { [tableName]: {} }),

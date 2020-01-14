@@ -267,9 +267,15 @@ export default [
         name: '本表对应字段',
         key: 'refcol',
         type: 'input'
+      },
+      {
+        name: '是否获取编辑权限',
+        key: 'iswrite',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
       }
     ],
-    description: '控制列表界面过滤的数据，以及列表界面查询条件可以选到的数据'
+    description: '控制列表界面过滤的数据，以及列表界面查询条件可以选到的数据（只检查读权限）'
   },
   {
     name: '单对象数据权限配置',
@@ -287,8 +293,14 @@ export default [
         name: '本表对应字段',
         key: 'refcol',
         type: 'input'
+      },
+      {
+        name: '是否获取编辑权限',
+        key: 'iswrite',
+        type: 'radio',
+        enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }]
       }
     ],
-    description: '控制单对象界面可以选到的数据'
+    description: '控制单对象界面是否可编辑（只检查写权限）'
   },
 ];
