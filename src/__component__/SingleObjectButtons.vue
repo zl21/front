@@ -2598,9 +2598,9 @@
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {
-          // if (this.itemId === 'New') {
-          //   this.$loading.show();
-          // }
+          if (this.itemId === 'New') {
+            this.$loading.show();
+          }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
         this.temporaryStoragePath = '';
