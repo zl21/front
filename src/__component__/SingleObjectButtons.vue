@@ -288,14 +288,20 @@
       }),
       upDataMainForm() {
         // 当前主表存在form,开启loading
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        const dom = document.querySelector(`#${currentTableName}-loading`);
         if (this.objectType === 'horizontal') {
           if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
             if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-              this.$loading.show(this.tableName);
+             if (!dom) {
+                this.$loading.show(this.tableName);
+              }
             }     
           }
         } else if (this.isMainForm.formData.isShow) { 
-          this.$loading.show(this.tableName);
+          if (!dom) {
+            this.$loading.show(this.tableName);
+          }
         }
         return this.isMainForm;
       },

@@ -1,5 +1,7 @@
 <template>
-  <div class="R3-buttonList">
+  <div
+    class="R3-buttonList"
+  >
     <div class="R3-button-group">
       <!-- //查找 -->
       <Button
@@ -138,11 +140,11 @@
   import { mapState } from 'vuex';
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
-  import { MODULE_COMPONENT_NAME } from '../constants/global';
+  import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY } from '../constants/global';
 
   export default {
     name: 'ButtonList',
-    inject: [MODULE_COMPONENT_NAME],
+    inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY],
     props: {
       dataArray: {
         type: Object,
@@ -259,7 +261,6 @@
       ...mapState('global', {
         userInfo: ({ userInfo }) => userInfo,
       }),
-     
     },
     methods: {
       childTableClickSaveFile() { // 手动触发保存
