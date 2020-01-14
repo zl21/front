@@ -10,11 +10,12 @@
       :item-table-check-func="itemTableCheckFunc"
       :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
       :isactive="mainFormInfo.buttonsData.data.isactive"
-      :watermarkimg="mainFormInfo.buttonsData.data.watermarkimg?mainFormInfo.buttonsData.data.watermarkimg:jflowWaterMark"
+      :watermarkimg="resetWaterMark"
       :item-name-group="childTableNames"
       :item-info="tabPanel[tabCurrentIndex]"
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
+      :is-main-form="mainFormInfo"
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
@@ -78,6 +79,18 @@
       };
     },
     computed: {
+      resetWaterMark() {
+        if (this.mainFormInfo.buttonsData.data.watermarkimg) {
+          if (this.jflowWaterMark) {
+            return this.jflowWaterMark;
+          }
+          return this.mainFormInfo.buttonsData.data.watermarkimg;
+        }
+        if (this.jflowWaterMark) {
+          return this.jflowWaterMark;
+        }
+        return '';
+      },
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item) => {

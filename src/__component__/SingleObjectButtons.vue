@@ -272,6 +272,7 @@
         },
         deep: true
       },
+      upDataMainForm() {}
     },
     computed: {
       ...mapState('global', {
@@ -284,6 +285,19 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks
       }),
+      upDataMainForm() {
+        // 当前主表存在form,开启loading
+        if (this.objectType === 'horizontal') {
+          if (this.isMainForm[0].componentAttribute.panelData.isShow) {
+            if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+              this.$loading.show();
+            }     
+          }
+        } else if (this.isMainForm.formData.isShow) { 
+          this.$loading.show();
+        }
+        return this.isMainForm;
+      },
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
         //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
@@ -398,6 +412,10 @@
       }
     },
     props: {
+      isMainForm: {// 当前主表是否存在表单组件
+        type: [Array, Object],
+        default: () => {}
+      },
       watermarkimg: {// 水印
         type: String,
         default: ''
@@ -449,6 +467,7 @@
         type: Function,
         default: () => {}
       },
+    
     },
     inject: [MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, INSTANCE_ROUTE],
     methods: {
@@ -2709,9 +2728,7 @@
     },
     mounted() {
       this.hideBackButton();
-      if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-        this.$loading.show();
-      }
+         
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         // window.addEventListener('exeActionForR3', (data) => {

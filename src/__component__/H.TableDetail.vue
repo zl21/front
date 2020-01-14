@@ -27,6 +27,18 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab
       }),
+      resetWaterMark() {
+        if (this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg) {
+          if (this.jflowWaterMark) {
+            return this.jflowWaterMark;
+          }
+          return this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
+        }
+        if (this.jflowWaterMark) {
+          return this.jflowWaterMark;
+        }
+        return '';
+      },
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
@@ -37,14 +49,13 @@
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
-              obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg ? this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg : this.jflowWaterMark;
-              
+              obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
+              obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
               obj.componentAttribute.isMainTable = true;
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
             } else {
               obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
             }
-
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
@@ -67,6 +78,7 @@
             } else {
               if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
+                obj.componentAttribute.tabPanelsAll = this.tabPanel.concat([]);
               }
             }
            
@@ -79,6 +91,7 @@
             arr.push(obj);
           });
         }
+
         return arr;
       },
       currentTableName() {

@@ -17,7 +17,7 @@ export default {
           data: {}
         },
         panelData: {
-          isShow: true,
+          isShow: false,
           data: {}
         },
         tableData: {
