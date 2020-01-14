@@ -5,6 +5,8 @@ module.exports = {
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
