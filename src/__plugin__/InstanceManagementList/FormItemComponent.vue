@@ -72,13 +72,32 @@
       },
       // 计算属性的 div 的坐标起始点
       setDiv() {
-        return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${item.y}/${item.y + item.row};`;
+        const { userAgent } = navigator;
+        const rMsie = /(msie\s|trident.*rv:)([\w.]+)/;
+        const match = rMsie.exec(userAgent.toLowerCase());
+
+        if (match === null) {
+          return item => ` grid-column:${item.x}/${item.col + item.x};grid-row:${
+            item.y
+          }/${item.y + item.row};`;
+        } 
+        return item => ` 
+        grid-column:${item.x};
+        -ms-grid-columns:${item.x};
+        grid-column-span:${item.col};
+        -ms-grid-column-span:${item.col};
+        -ms-grid-row:${item.y};
+        -ms-grid-row-span:${item.row};
+        grid-row-span:${item.row};
+          grid-row:${item.y};`;
       },
       // 计算属性的 div的排列格式
       setWidth() {
         // `this` 指向 vm 实例
         const columns = Number(this.defaultColumn) || 4;
-        return `grid-template-columns: repeat(${columns},${100 / columns}%`;
+        const width = (100 / columns).toFixed(2);
+        const fr = new Array(columns).fill('1fr').join(' ');
+        return `display: -ms-grid; grid-columns: ${fr};grid-template-columns: repeat(${columns}, ${width}%);`;
       }
     },
     watch: {
@@ -139,7 +158,10 @@
 }
 .FormItemComponent {
   display: grid;
+  display: -ms-grid;
+  -ms-grid-columns: 1fr 1fr 1fr 1fr;
   grid-template-columns: repeat(4, 25%);
+  -ms-grid-template-columns: repeat(4, 25%);
   grid-auto-rows: minmax(auto);
 }
 </style>
