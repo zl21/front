@@ -3,6 +3,7 @@ import network, {
   urlSearchParams
 } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectForMainTableForm({
@@ -37,7 +38,8 @@ export default {
     objid,
     type,
     tabIndex,
-    itemTabelPageInfo
+    itemTabelPageInfo,
+    moduleName
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -51,11 +53,11 @@ export default {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
-        } else if(type==='refresh'){
+        } else if (type === 'refresh') {
           resData.type = 'refresh';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
-        }else {
+        } else {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
@@ -71,7 +73,7 @@ export default {
             }
             if (webactType !== 'ALL') {
               const getObjectTabPromise = new Promise((rec, rej) => {
-                if (this._actions[`${getComponentName()}/getObjectTabForRefTable`] && this._actions[`${getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
                     table: firstReftab.tablename,
                     objid,
@@ -79,24 +81,24 @@ export default {
                     rec,
                     rej
                   };
-                  this._actions[`${getComponentName()}/getObjectTabForRefTable`][0](param);
+                  this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0](param);
                 }
               });
               if (resData.reftabs[0].refcolid !== -1) {
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
                 // 获取第一个tab的子表表单
-                if (this._actions[`${getComponentName()}/getFormDataForRefTable`] && this._actions[`${getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
                   const formParam = {
                     table: firstReftab.tablename,
                     inlinemode: firstReftab.tabinlinemode,
                     tabIndex
                   };
-                  this._actions[`${getComponentName()}/getFormDataForRefTable`][0](formParam);
+                  this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0](formParam);
                 }
                 // 获取第一个tab的子表列表数据
                 if (resData.reftabs[0].tabrelation === '1:m') {
                   getObjectTabPromise.then(() => {
-                    if (this._actions[`${getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
+                    if (this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                       const tableParam = {
                         table: firstReftab.tablename,
                         objid,
@@ -108,19 +110,19 @@ export default {
                         },
                         tabIndex
                       };
-                      this._actions[`${getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
+                      this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0](tableParam);
                     }
                   });
                 } else if (resData.reftabs[0].tabrelation === '1:1') {
                   // 获取子表面板数据
-                  if (this._actions[`${getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
+                  if (this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`] && this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0] === 'function') {
                     const tableParam = {
                       table: firstReftab.tablename,
                       objid,
                       refcolid: firstReftab.refcolid,
                       tabIndex
                     };
-                    this._actions[`${getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
+                    this._actions[`${moduleName || getComponentName()}/getItemObjForChildTableForm`][0](tableParam);
                   }
                 }
               }
@@ -265,30 +267,8 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tableName
+      tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
     } = parame;
-    const {
-      add
-    } = parame;
-    const {
-      objId
-    } = parame;
-    const {
-      type
-    } = parame;
-    const {
-      itemName
-    } = parame;
-    const {
-      itemCurrentParameter
-    } = parame;
-    const {
-      isreftabs
-    } = parame;
-    const {
-      itemNameGroup
-    } = parame;
-    const { sataType } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
       if (isreftabs) { // 存在子表
@@ -304,28 +284,48 @@ export default {
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objid: objId, // 固定传值-1 表示新增
-              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else if (Object.values(addDefault[itemName]).length > 0) { // 如果子表有默认值
             const itemTableAdd = Object.assign({}, addDefault);
             itemTableAdd[itemName].ID = objId;
             itemTableAdd[itemName] = [
               itemTableAdd[itemName]
             ];
-            parames = {
-              table: tableName, // 主表表名
-              objid: objId, // 固定传值-1 表示新增
-              data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...add,
-                ...itemTableAdd,
-              }
-            };
+            if (temporaryStoragePath) {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                }
+              };
+            } else {
+              parames = {
+                table: tableName, // 主表表名
+                objid: objId, // 固定传值-1 表示新增
+                data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                  ...add,
+                  ...itemTableAdd,
+                }
+              };
+            }
           } else {
             parames = {
               table: tableName, // 主表表名
@@ -353,7 +353,7 @@ export default {
           }
         };
       }
-      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -371,8 +371,13 @@ export default {
       let itemModifyLabel = {};// 子表修改的label
       let itemBeforeLabel = {};
       if (parame.itemCurrentParameter) { // 子表取值
-        itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
-        itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
+        if (temporaryStoragePath) { // 开启暂存
+          itemModifyLabel = {};// 子表修改的label
+          itemBeforeLabel = {};// before值
+        } else {
+          itemModifyLabel = parame.itemCurrentParameter.modifyLabel;// 子表修改的label
+          itemBeforeLabel = parame.itemCurrentParameter.itemBeforeLabel;// before值
+        }
       }
       const modifyLabelregroup = parame.modifyLabel[tableName];// 用于begore after字段翻译修改过后的中文label
       const defaultLabelregroup = parame.defaultLabel[tableName];// 用于begore after字段翻译修改过后的中文默认label(包含所有接口返回值)
@@ -391,19 +396,40 @@ export default {
       const labelregroupTableName = {// label修改过后的值
         [tableName]: labelregroup
       };
-      const itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
-      const itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      let itemModify = {};
+      let itemAdd = {};
+      if (temporaryStoragePath) { // 暂存
+        itemModify = {};// 子表修改
+        itemAdd = {};// 子表新增
+      } else {
+        itemModify = itemCurrentParameter ? itemCurrentParameter.modify : {};// 子表修改
+        itemAdd = itemCurrentParameter ? itemCurrentParameter.add : {};// 子表新增
+      }
+     
       const sataTypeName = sataType ? sataType.sataType : '';
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
+
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-        Object.assign(itemAdd[itemName], add);
-        const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
-        itemTableAdd[itemName] = [
-          itemTableAdd[itemName]
-        ];
-       
+
+        if (itemAdd && itemAdd[itemName]) {
+          Object.assign(itemAdd[itemName], add);
+        }
+        
+        const itemTableAddOld = Object.assign({}, itemAdd);
+
+        // const originProto = Object.getPrototypeOf(itemAdd);
+        // const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
+        const addAssign = JSON.stringify(itemTableAddOld);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        const itemTableAdd = JSON.parse(addAssign);
+
+
+        if (itemTableAdd && itemTableAdd[itemName]) {
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+        }
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -420,6 +446,15 @@ export default {
               ...value,
             } 
           };
+        } else if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         } else {
           parames = {
             table: tableName, // 主表表名
@@ -430,7 +465,16 @@ export default {
           };
         }
       } else if (sataTypeName === 'modify') {
-        if (Object.values(modify[tableName]).length > 0) {
+        if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
+        } else if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -442,7 +486,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -461,34 +505,29 @@ export default {
       } else if (sataTypeName === 'addAndModify') {
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
         const add = Object.assign({}, addDefault[itemName], itemAdd[itemName]);// 整合子表新增和默认值数据
-        Object.assign(itemAdd[itemName], add);
-        const itemTableAdd = Object.assign({}, itemAdd);
-        itemTableAdd[itemName].ID = -1;
-        itemTableAdd[itemName] = [
-          itemTableAdd[itemName]
-        ];
         const itemAddAndModify = {};
-        itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
-        // 子表新增保存
-        // if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length === 0 && Object.values(modify[tableName]).length === 0) {
-        //   parames = {
-        //     table: tableName, // 主表表名
-        //     objid: objId, // 明细id
-        //     data: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-        //       ...itemTableAdd
-        //     }
-        //   };
-        // } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0 && Object.values(itemAdd[itemName]).length === 0) { // 子表修改保存
-        //   parames = {
-        //     table: tableName,
-        //     objid: objId,
-        //     data: { ...itemModify },
-        //     after: { ...itemModifyLabel },
-        //     before: itemBeforeLabel
 
-        //   };
-        // } else 
-        if (Object.values(itemAdd[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
+        if (itemAdd && itemAdd[itemName]) {
+          Object.assign(itemAdd[itemName], add);
+        }
+
+        const itemTableAdd = Object.assign({}, itemAdd);
+        if (itemTableAdd && itemTableAdd[itemName]) {
+          itemTableAdd[itemName].ID = -1;
+          itemTableAdd[itemName] = [
+            itemTableAdd[itemName]
+          ];
+        }
+        if (itemAddAndModify && itemAddAndModify[itemName]) {
+          itemAddAndModify[itemName] = itemTableAdd[itemName].concat(itemModify[itemName]);
+        }
+        if (itemAdd[itemName]
+          && itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+          && modify[tableName]
+          && Object.values(modify[tableName]).length > 0 
+          && itemModify[itemName]
+          && Object.values(itemModify[itemName]).length === 0) { // 2种保存合并（主表修改，子表新增）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -504,7 +543,12 @@ export default {
               ...value,
             } 
           };
-        } else if (Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0 && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
+        } else if (itemModify[itemName]
+          && Object.values(itemModify[itemName]).length > 0
+          && modify[tableName]
+           && Object.values(modify[tableName]).length > 0 
+           && itemAdd[itemName]
+           && Object.values(itemAdd[itemName]).length === 0) { // 2种保存合并（主表修改，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
             table: tableName,
@@ -523,7 +567,13 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
+        } else if (
+          itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+           && itemModify[itemName]
+          && Object.values(itemModify[itemName]).length > 0
+          && modify[tableName]
+           && Object.values(modify[tableName]).length === 0) { // 2种保存合并（子表修改，子表新增）
           parames = {
             table: tableName,
             objid: objId,
@@ -538,9 +588,14 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else if (Object.values(itemAdd[itemName]).length > 0 && Object.values(itemModify[itemName]).length > 0 && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
+        } else if (
+          itemAdd[itemName]
+          && Object.values(itemAdd[itemName]).length > 0
+          && itemModify[itemName]
+           && Object.values(itemModify[itemName]).length > 0 
+           && modify[tableName]
+           && Object.values(modify[tableName]).length > 0) { // 3种保存合并（主表修改，子表新增，子表修改）
           const value = Object.assign({}, modify, labelregroupTableName);
-        
           parames = {
             table: tableName,
             objid: objId,
@@ -558,6 +613,15 @@ export default {
               ...itemBeforeLabel
             } 
           };
+        } else if (temporaryStoragePath) {
+          const value = Object.assign({}, modify, labelregroupTableName);
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: { ...modify },
+            after: { ...modifyLabel },
+            before: value,
+          };
         }
       } else { // 主表修改
         const value = Object.assign({}, modify, labelregroupTableName);
@@ -569,7 +633,7 @@ export default {
           before: value,
         };
       }
-      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -577,6 +641,8 @@ export default {
         } else {
           reject();
         }
+      }).catch(() => {
+        reject();
       });
     }
   },
@@ -588,7 +654,10 @@ export default {
     table,
     path,
     resolve,
-    reject
+    reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', urlSearchParams({
@@ -604,6 +673,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -685,7 +766,10 @@ export default {
     tab,
     params,
     path,
-    resolve, reject
+    resolve, reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') === -1) {
@@ -703,6 +787,18 @@ export default {
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'verticalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });
@@ -718,6 +814,18 @@ export default {
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'verticalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });

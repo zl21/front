@@ -1,9 +1,10 @@
 import network, { urlSearchParams } from '../../../__utils__/network';
 import getComponentName from '../../../__utils__/getModuleName';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
-    table, objid, type, tabIndex, isNotFirstRequest
+    table, objid, type, tabIndex, isNotFirstRequest, moduleName
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -27,13 +28,13 @@ export default {
           }
         }
         commit('updateWebConf', resData.webconf);
-        if (this._actions[`${getComponentName()}/getObjectForMainTableForm`] && this._actions[`${getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
+        if (this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`] && this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
           const param = {
             table,
             objid,
             tabIndex
           };
-          this._actions[`${getComponentName()}/getObjectForMainTableForm`][0](param);
+          this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }
     });
@@ -127,17 +128,15 @@ export default {
   },
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
-    const { tableName } = parame;
-    const { objId } = parame;
     // const { path } = parame;
-    const { type } = parame;
-    const { itemName } = parame;
-    const { itemCurrentParameter } = parame;
     // const { isreftabs } = parame;
     // const { itemNameGroup } = parame;
-    const { sataType } = parame;
+    const {
+      sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
+    } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
+   
     if (type === 'add') { // 新增保存参数
       const { add } = parame;
       parames = {
@@ -147,7 +146,7 @@ export default {
           ...add
         }
       };
-      network.post('/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
+      network.post(temporaryStoragePath || '/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -191,7 +190,15 @@ export default {
           [tableName]: labelregroup
         };
       }
-      if (tableName === itemName) { // 主表修改
+      if (temporaryStoragePath) {
+        parames = {
+          table: tableName,
+          objid: objId,
+          data: modify,
+          after: modifyLabel,
+          before: labelregroupTableName,
+        };
+      } else if (tableName === itemName) { // 主表修改
         parames = {
           table: tableName,
           objid: objId,
@@ -208,7 +215,7 @@ export default {
         itemTableAdd[itemName] = [
           itemTableAdd[itemName]
         ];
-
+  
         if (Object.values(modify[tableName]).length > 0) {
           const value = Object.assign({}, modify, labelregroupTableName);
           parames = {
@@ -247,7 +254,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -330,7 +337,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -349,7 +356,7 @@ export default {
             after: { 
               ...modifyLabel,
               ...itemModifyLabel 
-              
+                
             },
             before: {
               ...value,
@@ -366,17 +373,8 @@ export default {
           before: labelregroupTableName,
         };
       }
-      // else { // 主表修改
-      //   const value = Object.assign({}, modify, labelregroupTableName);
-      //   parames = {
-      //     table: tableName,
-      //     objid: objId,
-      //     data: modify,
-      //     after: modifyLabel,
-      //     before: value
-      //   };
-      // }
-      network.post('/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
+    
+      network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
           resolve();
@@ -384,6 +382,8 @@ export default {
         } else {
           reject();
         }
+      }).catch(() => {
+        reject();
       });
     }
   },
@@ -446,7 +446,8 @@ export default {
     });
   },
   getObjectTrySubmit({ commit }, {
-    objId, table, path, resolve, reject
+    objId, table, path, resolve, reject, moduleName,
+    routeQuery, routePath
   }) { // 获取提交数据
     objId = objId === 'New' ? '-1' : objId;
     network.post(path || '/p/cs/objectSubmit', urlSearchParams({ objid: objId, table })).then((res) => {
@@ -459,6 +460,18 @@ export default {
         commit('updatetooltipForItemTableData', data);
         reject();
       }
+      DispatchEvent('batchSubmitForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'verticalTable',
+          url: path || '/p/cs/objectSubmit',
+          res,
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath
+        }
+      });
     }).catch(() => {
       reject();
     });
@@ -506,7 +519,10 @@ export default {
     tab,
     params,
     path,
-    resolve, reject
+    resolve, reject,
+    moduleName,
+    routeQuery,
+    routePath
   }) {
     let actionName = '';
     if (path.search('/') === -1) {
@@ -519,17 +535,27 @@ export default {
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
-  
           commit('updateObjTabActionSlientConfirm', invalidData);
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });
     } else {
       actionName = path;
-
       network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
@@ -539,6 +565,18 @@ export default {
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });

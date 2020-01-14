@@ -1,7 +1,11 @@
 
 export default {
+  updateFailInfo({ ag }, failInfo) {
+    ag.datas.deleteFailInfo = failInfo;
+    ag.datas = Object.assign({}, ag.datas);
+  },
   updateTableDataWithMerge({ ag }, data) {
-    ag.datas = Object.assign({}, ag.datas, data);
+    ag.datas = Object.assign({}, ag.datas);
   },
   updateTableData({
     ag
@@ -33,6 +37,7 @@ export default {
   updateDefaultSearchFoldnum({ formItems }, data) {
     formItems.searchFoldnum = data;
   },
+  
 
   // 按钮组
   updateButtonsTabcmd({
@@ -73,6 +78,7 @@ export default {
     // 双击条状判断
     buttons.objTableUrl = data.tableurl;
   },
+
   setActiveTabActionValue({
     buttons
   }, obj) {

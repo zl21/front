@@ -12,6 +12,7 @@ import router from '../../router.config';
 import customize from '../../customize.config';
 import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
+import DispatchEvent from '../../../__utils__/dispatchEvent';
 
 
 export default {
@@ -45,13 +46,6 @@ export default {
         );
       }
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-      // if (param.url.indexOf('?') !== -1) { 
-      //   const paramIndex = param.url.lastIndexOf('?');
-      //   const index = param.url.lastIndexOf('/');
-      //   customizedModuleName = param.url.substring(paramIndex, index + 1);
-      // } else {
-      //   customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
-      // }
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
       const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
       router.push({
@@ -96,6 +90,7 @@ export default {
       state.collapseHistoryAndFavorite = showFavorites;
     }
     state.collapseHistoryAndFavorite = !state.collapseHistoryAndFavorite;
+    DispatchEvent('doCollapseHistoryAndFavorite');
   },
   updateHistoryAndFavorite(state, {
     history,
@@ -128,7 +123,7 @@ export default {
                 state.LinkUrl.push(linkUrl); // 方便记录外部链接的跳转URL
                 a[`${LINK_MODULE_COMPONENT_PREFIX}.${c.value.toUpperCase()}.${c.id}`] = c.label;
               } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              // 自定义界面的处理
+                // 自定义界面的处理
                 a[`${getLabel({ url: c.url, id: c.id, type: 'customized' })}`] = c.label;
               } else if (actionType === 'SYSTEM') {
                 const i = c.url.substring(c.url.indexOf('/') + 1, c.url.lastIndexOf('/'));
@@ -288,7 +283,7 @@ export default {
       const routeFullPath = state.activeTab.routeFullPath;
       if (routeFullPath === item) {
         deleteFromSessionObject('routeMapRecordForHideBackButton', routeFullPath);
-        window.sessionStorage.setItem('ignore', true);
+        // window.sessionStorage.setItem('ignore', true);
       }
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
@@ -499,7 +494,9 @@ export default {
   isRequestUpdata(state, { tabPanel, index }) {
     let arr = [];
     arr = tabPanel.map(item => item.isRequest);
-    arr[0] = true;
+    if (index === 0) {
+      arr[0] = true;
+    }
     arr[index] = true;
     const oldRequestData = state.isRequest;
     if (oldRequestData.length > 0) {
@@ -513,6 +510,9 @@ export default {
   },
   emptyTestData(state) { // 清空TestData
     state.isRequest = [];
+  },
+  updateModifySearchFoldnum(state, data) {
+    state.changeSearchFoldnum = data;
   },
 
   

@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -150,6 +150,7 @@
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
+  import { getUrl, getLabel } from '../__utils__/url';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -526,11 +527,10 @@
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
       ...mapMutations('global', ['copyDataForSingleObject', 'tabHref', 'tabOpen', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'updateExportedState']),
       tableRowDbclick(row) {
-// AD_TABLE/992/24369
-if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
+        if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格走动态路由
           window.sessionStorage.setItem('dynamicRoutingForSinglePage', true);
           let type = '';
-          if (!row._TABLENAME || !row._TABLEID  || !row._OBJID) {
+          if (!row._TABLENAME || !row._TABLEID || !row._OBJID) {
             const data = {
               mask: true,
               title: '警告',
@@ -541,7 +541,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           } else if (row._OBJTYPE === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
-          } else if (row._OBJTYPE  === 'tabpanle') { // 左右结构
+          } else if (row._OBJTYPE === 'tabpanle') { // 左右结构
             type = 'tableDetailHorizontal';
           } else {
             const data = {
@@ -552,13 +552,22 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
             this.$Modal.fcWarning(data);
             return;
           }
+          // AD_TABLE/992/24369
+          // this.tabHref({
+          //   type,
+          //   label: row.reftabdesc,
+          //   tableName: 'AD_TABLE',
+          //   tableId: 992,
+          //   id:'New',
+          //   serviceId: 'ad-app'
+          // });
           this.tabHref({
             type,
-            label: row.OWNERID ? row.OWNERID.reftabdesc : null,
-            tableName: 'AD_TABLE',
-            tableId: '992',
-            id:'24369',
-            serviceId: row._SERVICEID ? row._SERVICEID : null
+            label: row.reftabdesc,
+            tableName: row._TABLENAME,
+            tableId: row._TABLEID,
+            id: row._OBJID,
+            serviceId: row._SERVICEID
           });
         }
       },
@@ -1027,18 +1036,29 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               linkId: tab.webid
             });
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
-            this.addKeepAliveLabelMaps({ name, label: tab.name });
-            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            const obj = {
-              customizedName: name,
-              customizedLabel: tab.name
-            };
-            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
-            router.push(
-              path
-            );
+            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+          const keepAliveLabelMapsObj = {
+            k: name,
+            v: tab.webdesc
+          };
+          updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+          router.push(
+            path
+          );
+            // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
+            // this.addKeepAliveLabelMaps({ name, label: tab.name });
+            // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            // const obj = {
+            //   customizedName: name,
+            //   customizedLabel: tab.name
+            // };
+            // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            // router.push(
+            //   path
+            // );
           }
         }
 
@@ -1567,7 +1587,9 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
                 },
                 'on-open-change': (state, data) => {
                   if (!state) {
+                    const labelValue = data.values.length > 0 ? data.values[0].label : '';
                     this.putDataFromCell(data.publicValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
+                    this.putLabelDataFromCell(labelValue, data.value, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, this.dataSource.row[params.index][cellData.colname].val);
                   }
                 }
               }
@@ -2752,30 +2774,32 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-              const data = this.dataSource.row[params.index][cellData.colname];
-              let type = '';
-              if (cellData.objdistype === 'object') {
-                type = 'V';
-              } else if (cellData.objdistype === 'tabpanle') {
-                type = 'H';
-              } else {
-                const datas = {
-                  mask: true,
-                  title: '警告',
-                  content: '请设置外键关联表的显示配置'
-                };
-                this.$Modal.fcWarning(datas);
-                return;
+              if (event.target.className) {
+                const data = this.dataSource.row[params.index][cellData.colname];
+                let type = '';
+                if (cellData.objdistype === 'object') {
+                  type = 'V';
+                } else if (cellData.objdistype === 'tabpanle') {
+                  type = 'H';
+                } else {
+                  const datas = {
+                    mask: true,
+                    title: '警告',
+                    content: '请设置外键关联表的显示配置'
+                  };
+                  this.$Modal.fcWarning(datas);
+                  return;
+                }
+                window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+                this.tabOpen({
+                  type,
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  id: data.refobjid,
+                  serviceId: data.serviceId,
+                  label: data.reftabdesc
+                });
               }
-              window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-              this.tabOpen({
-                type,
-                tableName: data.reftablename,
-                tableId: data.reftableid,
-                id: data.refobjid,
-                serviceId: data.serviceId,
-                label: data.reftabdesc
-              });
               // event.stopPropagation();
             }
           }
@@ -3207,7 +3231,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
         // 组装数据 存入store
         if (this.afterSendDataLabel[this.tableName]) {
           const rowDatas = this.afterSendDataLabel[this.tableName].filter(ele => ele[EXCEPT_COLUMN_NAME] === IDValue);
-          oldIdValue = oldIdValue ? oldIdValue : '';
+          oldIdValue = oldIdValue || '';
           if (currentValue !== oldIdValue) {
             if (rowDatas.length > 0) {
               rowDatas[0][colname] = currentValue;
@@ -3403,7 +3427,7 @@ if (this.dynamicRoutingForSinglePage) { // 配置了动态路由，双击表格�
               }
             }
           }
-        } else if (cellData.webconf&&cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
+        } else if (cellData.webconf && cellData.webconf.refcolvalArray && cellData.webconf.refcolvalArray.length > 0) { // webconf
           cellData.webconf.refcolvalArray.forEach((cur) => {
             if (this.type === pageType.Horizontal) {
               const express = '=';

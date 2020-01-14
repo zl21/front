@@ -60,8 +60,11 @@
 
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
-  import getComponentName from '../__utils__/getModuleName';
+  // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
+  import {
+    MODULE_COMPONENT_NAME
+  } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
@@ -98,7 +101,7 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
-          } else {
+          } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
           obj.component = `tapComponent.${item.tablename}`;
@@ -130,12 +133,11 @@
       // this.emptyTestData();
     },
     mounted() {
-      const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
+      const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
-
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       

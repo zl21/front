@@ -18,7 +18,7 @@ export default {
       defaultLabel: {},
       checkedInfo: {},
       changeData: {}
-      // Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
+      //  Object.assign({}, state.updateData[tableName] ? state.updateData[tableName].changeData : {}) // 表单修改的值，第二次回显用
     };
   },
   updateMainTabPanelsData(state, data, itemTabelPageInfo) { // 更新主表tab数据
@@ -55,7 +55,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        //  Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
       obj.tableSearchData = {
         selectedValue: '',
@@ -122,7 +123,7 @@ export default {
     const { tableName } = router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
-    } else {
+    } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
       delete state.updateData[tableName].add[tableName][data.key];
     }
   },
@@ -215,7 +216,7 @@ export default {
                       if (JSON.stringify(modifyData) !== '{}') { // 修改新增时不可编辑且有默认值，将修改后的值删除
                         delete (modifyData[b.colname]);
                       }
-                      if (c.display === 'select') {
+                      if (c.display === 'select' || c.display === 'check') {
                         copySaveDataForParam[b.colname] = c.defval;
                       } else if (c.fkdisplay === 'drp' || c.fkdisplay === 'mrp' || c.fkdisplay === 'pop' || c.fkdisplay === 'mop') {
                         copySaveDataForParam[b.colname] = [{ ID: c.refobjid, Label: c.defval }];
@@ -391,4 +392,7 @@ export default {
   updatetooltipForItemTableData(state, data) { // 表格操作单条明细失败返回值
     state.tooltipForItemTable = data;
   },
+  updateWebConf(state, data) { // 更新主表配置WebConf
+    state.WebConf = data;
+  }
 };

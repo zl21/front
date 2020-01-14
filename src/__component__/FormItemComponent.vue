@@ -7,6 +7,7 @@
       :title="title"
       :set-height="setHeight"
       :row-all="rowAll"
+      :default-spread="defaultSpread"
       :search-foldnum="searchFoldnum"
     >
       <div
@@ -137,6 +138,12 @@
         default() {
           return '';
         }
+      },
+      defaultSpread: {
+        type: Boolean,
+        default() {
+          return true;
+        }
       }
     },
     data() {
@@ -265,7 +272,6 @@
           } else {
             this.newFormItemLists[index].item.value = new Date().setNewFormt(value, '/', '');
           }
-          
         } else {
           this.newFormItemLists[index].item.value = value;
         }

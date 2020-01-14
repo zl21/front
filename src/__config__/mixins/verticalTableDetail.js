@@ -2,16 +2,21 @@ import { mapState, mapActions, mapMutations } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 import router from '../router.config';
-import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE } from '../../constants/global';
+import {
+  MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
+} from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   activated() {
     const currentTableName = this.$router.currentRoute.params.tableName;
@@ -107,18 +112,31 @@ export default () => ({
   beforeDestroy() {
     try {
       if (this.$options.isKeepAliveModel) {
+        // this.$el = null;
         store.unregisterModule(this.moduleComponentName);
       }
+      // const components = window.Vue.options.components;
+      // Object.keys(components).forEach((compontent) => {
+      //   if (compontent.indexOf(this.moduleComponentName) > -1) {
+      //     delete components[compontent];
+      //   }
+      // });
     } catch (e) {
       console.log(e);
     }
   },
-  deactivated() {
-    if (this.keepAliveLists && this.keepAliveLists.length > 0 && this.keepAliveLists.indexOf(this[MODULE_COMPONENT_NAME]) === -1) {
+  destroyed() {
+    if (window.Vue) {
       if (this.$options.isKeepAliveModel) {
-        updateSessionObject(HAS_BEEN_DESTROYED_MODULE, { k: this[MODULE_COMPONENT_NAME], v: true });
-        this.$destroy();
+        delete window.Vue.options.components[this.$options._componentTag];
       }
     }
+    // if (this.keepAliveLists && this.keepAliveLists.length > 0 && this.keepAliveLists.indexOf(this[MODULE_COMPONENT_NAME]) === -1) {
+    //   if (this.$options.isKeepAliveModel) {
+    //     updateSessionObject(HAS_BEEN_DESTROYED_MODULE, { k: this[MODULE_COMPONENT_NAME], v: true });
+    //     this.$destroy();
+    //   }
+    // }
   },
+ 
 });

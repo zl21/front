@@ -116,7 +116,7 @@ axios.interceptors.response.use(
       //   title: '错误',
       //   content: response.data.message || response.data.msg || 'No Error Message.'
       // });
-      const errorHTML = Array.isArray(response.data.error) && response.data.error.reduce((arr, x) => {
+      const errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
         arr.push(`<p>objid${x.objid}:${x.message}</p>`); return arr; 
       }, []).join('') || '';
       window.vm.$Modal.fcError({
@@ -173,6 +173,7 @@ axios.interceptors.response.use(
          
       });
     }
+
     dispatchR3Event({
       url: config.url,
       response: JSON.parse(JSON.stringify(response)),
@@ -206,14 +207,14 @@ axios.interceptors.response.use(
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
         const emg = error.response.data.message;
-        let formatJsonEmg = null;
-        try {
-          formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
-        } catch (e) {
-          if (typeof emg === 'string') {
-            formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
-          }
-        }
+        // let formatJsonEmg = null;
+        // try {
+        //   formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);
+        // } catch (e) {
+        //   if (typeof emg === 'string') {
+        //     formatJsonEmg = emg.replace(/<br\/>/g, '\r\n');
+        //   }
+        // }
         window.vm.$Modal.fcError({
           mask: true,
           titleAlign: 'center',
@@ -248,7 +249,7 @@ axios.interceptors.response.use(
                 // readonly: 'readonly',
               },
               domProps: {
-                // value: formatJsonEmg,
+                innerHTML: emg,
               },
               style: `width: 80%;
                   margin: 1px;
@@ -260,7 +261,7 @@ axios.interceptors.response.use(
                   max-width: 300px;
                   overflow: auto;
                   `
-            }, formatJsonEmg)
+            })
           ])
           // render: createElement => createElement('textarea', {
           //   domProps: {
@@ -291,7 +292,7 @@ axios.interceptors.response.use(
   }
 );
 
-export const getGateway = ({ url }) => {
+export const getGateway = (url) => {
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceId = store.state.global.serviceIdMap;
   // const serviceName = store.state.global.activeTab.tableName;

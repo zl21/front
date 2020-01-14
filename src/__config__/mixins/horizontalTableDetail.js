@@ -3,16 +3,22 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 import getComponentName from '../../__utils__/getModuleName';
 import store from '../store.config';
 import router from '../router.config';
-import { MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE } from '../../constants/global';
+import {
+  MODULE_COMPONENT_NAME, INSTANCE_ROUTE, HAS_BEEN_DESTROYED_MODULE, INSTANCE_ROUTE_QUERY 
+} from '../../constants/global';
 import { updateSessionObject } from '../../__utils__/sessionStorage';
 
 export default () => ({
   provide: {
     [MODULE_COMPONENT_NAME]: getComponentName(),
-    [INSTANCE_ROUTE]: router.currentRoute.fullPath
+    [INSTANCE_ROUTE]: router.currentRoute.fullPath,
+    [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
+
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   activated() {
     const currentTableName = this.$router.currentRoute.params.tableName;
@@ -115,4 +121,11 @@ export default () => ({
       }
     }
   },
+  destroyed() {
+    if (window.Vue) {
+      if (this.$options.isKeepAliveModel) {
+        delete window.Vue.options.components[this.$options._componentTag];
+      }
+    }
+  }
 });

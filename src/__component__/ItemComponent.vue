@@ -528,24 +528,37 @@
       // input event
       inputChange(event, $this) {
         this.valueChange();
-        if (this._items.props.scale > 0) {
-          if (this._items.value.split('.').length > 1) {
-            const string = `^\\\d{0,${this._items.props.length + 1}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-            const typeRegExp = new RegExp(string);
-            this._items.props.regx = typeRegExp;
-            this._items.props.maxlength = this._items.props.length + 1;
-          } else {
-            const stringII = `^\\\d{0,${this._items.props.length}}(\\\.[0-9]{0,${
-              this._items.props.scale
-            }})?$`;
-            const typeRegExpII = new RegExp(stringII);
-            this._items.props.regx = typeRegExpII;
-            this._items.props.maxlength = this._items.props.length;
-          }
+        let valLength = this._items.props.length;
+
+        if (this._items.value.split('.').length > 1) {
+          valLength = this._items.props.length + 1;
+        } else if (this._items.value.split('-').length > 1) {
+          valLength = this._items.props.length + 1;
         }
-        
+        if (this._items.value.split('.').length > 1 && this._items.value.split('-').length > 1) {
+          valLength = this._items.props.length + 2;
+        }
+        let string = '';
+        let regxString = '';
+        if (this._items.props.webconf && this._items.props.webconf.ispositive) {
+          regxString = '';
+        } else {
+          regxString = '(-|\\+)?';
+        }
+        if (this._items.props.scale > 0) {
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9]{0,${
+            this._items.props.scale
+          }})?$`;
+        } else {
+          string = `^${regxString}\\d{0,${valLength}}(\\\.[0-9])?$`;
+        }
+        if (this._items.props.number) {
+          const typeRegExp = new RegExp(string);
+          this._items.props.regx = typeRegExp;
+          this._items.props.maxlength = valLength;
+        }
+      
+
         if (
           Object.prototype.hasOwnProperty.call(this._items.event, 'change')
           && typeof this._items.event.change === 'function'
@@ -1529,6 +1542,9 @@
       setListenerSetProps(e) {
         if (e.value.type === 'equal') {
           // 表单赋值
+          if (!Array.isArray(e.value.list)) {
+            return false;
+          }
           e.value.list.forEach((item) => {
             if (this._items.props.tableGetName !== e.value.tableName) {
               return false;
@@ -1587,6 +1603,9 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
+          if (this._items.props.tableGetName !== e.value.tableName) {
+            return false;
+          }
           this._items.required = e.value.required;
           if (e.value.regx) {
             this._items.props.regx = e.value.regx;
@@ -1595,6 +1614,7 @@
           this._items.props.disabled = e.value.props.disabled;
           this._items.props.readonly = e.value.props.disabled;
         }
+        return true;
       },
       setListenerSetLinkForm(e) {
         // 设置表单联动清空
@@ -1609,12 +1629,20 @@
             }
           }
         }
+      },
+      setListenerSetHideForm(e) {
+        const index = e.value.list.findIndex(x => x === this._items.field);
+
+        if (index !== -1 && e.value.tableName === this._items.props.tableGetName) {
+          this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
+        }
       }
       
     },
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
-      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1622,6 +1650,7 @@
     mounted() {
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     }
   };
 </script>
