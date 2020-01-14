@@ -1438,8 +1438,8 @@
 
 
         const promise = new Promise((resolve, reject) => {
-          this.$loading.show();
           this.getExportQueryForButtons({ OBJ, resolve, reject });
+          this.$loading.show();
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
@@ -2310,7 +2310,6 @@
         // }, 2000);
       },
       objectSave(obj) { // 保存按钮事件逻辑
-        this.$loading.show();
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2914,7 +2913,6 @@
         // window.addEventListener('exeActionForR3', (data) => {
         //   this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
         // });
-
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
         window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
