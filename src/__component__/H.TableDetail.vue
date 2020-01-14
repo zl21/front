@@ -75,12 +75,10 @@
               Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
               obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);// 自定义组件名称
               obj.componentAttribute.componentType = webactType;// 自定义组件类型ALL/HALF
-
               obj.componentAttribute.itemInfo = item;
             } else {
               if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
                 Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
-                obj.componentAttribute.tabPanelsAll = this.tabPanel.concat([]);
               }
             }
            

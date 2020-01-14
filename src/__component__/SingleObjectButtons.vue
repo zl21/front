@@ -289,13 +289,13 @@
       upDataMainForm() {
         // 当前主表存在form,开启loading
         if (this.objectType === 'horizontal') {
-          if (this.isMainForm[0].componentAttribute.panelData.isShow) {
+          if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
             if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-              this.$loading.show();
+              this.$loading.show(this.tableName);
             }     
           }
         } else if (this.isMainForm.formData.isShow) { 
-          this.$loading.show();
+          this.$loading.show(this.tableName);
         }
         return this.isMainForm;
       },
@@ -1359,7 +1359,7 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
-          this.$loading.show();
+          this.$loading.show(this.tableName);
         });
         promise.then(() => {
           const message = this.objTabActionSlientConfirmData.message;
@@ -1439,7 +1439,7 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
-          this.$loading.show();
+          this.$loading.show(this.tableName);
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
@@ -1576,15 +1576,15 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show();
+        this.$loading.show(this.tableName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show();
+        this.$loading.show(this.tableName);
       },
-      clickButtonsBack(verify) { // 按钮返回事件  
-        if (!verify) {
+      clickButtonsBack(stop) { // 按钮返回事件  
+        if (stop) {
           this.back();
           this.isValue = null;
         } else {
@@ -2271,8 +2271,8 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
         } else {
-          const verify = false;
-          this.clickButtonsBack(verify);
+          const stop = true;
+          this.clickButtonsBack(stop);
         }
       },
       objectAdd() { // 新增
@@ -2599,7 +2599,7 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
-            this.$loading.show();
+            this.$loading.show(this.tableName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
@@ -2893,8 +2893,8 @@
       },
       hideListenerLoading(value) { // 根据监听关闭loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if ((value.detail.hideCopyLoading || value.detail.hideLoadingForButton) && dom) {
+        // const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
           this.$loading.hide(currentTableName);
         }
       }

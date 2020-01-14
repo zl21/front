@@ -11,11 +11,11 @@ Loading.install = ((Vue) => {
   if (Loading.installed) return;
   Vue.prototype.$loading = {};
 
-  Vue.prototype.$loading.show = () => {
+  Vue.prototype.$loading.show = (tableName) => {
     // 如果页面有loading则不继续执行{
-    const currentTableName = router.currentRoute.params.tableName;
+    const currentTableName = tableName || router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
-    if (document.querySelector(currentTableName)) return;
+    if (document.querySelector(`#${currentTableName}-loading`)) return;
 
     // 1、创建构造器，定义loading模板
 

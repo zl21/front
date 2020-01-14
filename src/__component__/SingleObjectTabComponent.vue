@@ -159,12 +159,6 @@
       compositeForm
     },
     props: {
-      tabPanelsAll: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
       tabPanel: {
         type: Array,
         default() {
@@ -260,7 +254,10 @@
       }// 定制界面自定义组件类型，为ALL时不显示单对象按钮组件
     },
     inject: [MODULE_COMPONENT_NAME],  
-    computed: {
+    computed: { 
+      tabPanelsAll() {
+        return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
+      },
       resetWaterMark() {
         if (this.watermarkimg) {
           if (this.jflowWaterMark) {
