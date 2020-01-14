@@ -1006,10 +1006,10 @@
             if (this.itemName === this.tableName) { // 主表
               this.routingHop(tab, this.itemId);// 主表使用明细ID
             } else { // 子表  
+              let id = [];
               if (actionType === ('CUSTOMIZED' || 'https:' || 'http:')) {
                 this.routingHop(tab, id);// 主表使用明细ID
               } else {
-                let id = [];
                 if (this.updateData && this.updateData[this.itemName] && this.updateData[this.itemName].delete && this.updateData[this.itemName].delete[this.itemName] && this.updateData[this.itemName].delete[this.itemName].length > 0) {
                   id = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
                 }
