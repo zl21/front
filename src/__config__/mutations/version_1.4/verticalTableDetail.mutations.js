@@ -58,7 +58,8 @@ export default {
         default: {},
         defaultLabel: {},
         checkedInfo: {},
-        changeData: Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
+        changeData: {}
+        //  Object.assign({}, state.updateData[item.tablename] ? state.updateData[item.tablename].changeData : {}) // 表单修改的值，第二次回显用
       };
       obj.tableSearchData = {
         selectedValue: '',
@@ -124,7 +125,7 @@ export default {
     const { tableName } = router.currentRoute.params;
     if (data.itemName) {
       delete state.updateData[data.itemName].add[data.itemName][data.key];
-    } else {
+    } else if (state.updateData[tableName] && state.updateData[tableName].add && state.updateData[tableName].add[tableName]) {
       delete state.updateData[tableName].add[tableName][data.key];
     }
   },

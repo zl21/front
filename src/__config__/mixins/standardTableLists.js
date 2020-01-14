@@ -91,6 +91,7 @@ export default () => ({
     const tpl = document.querySelector(`#${currentTableName}-loading`);
     if (tpl) {
       if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+        tpl.remove();
         store.commit('global/deleteLoading', currentTableName);
       }
     }
@@ -102,6 +103,13 @@ export default () => ({
       }
     } catch (e) {
       console.log(e);
+    }
+  },
+  destroyed() {
+    if (window.Vue) {
+      if (this.$options.isKeepAliveModel) {
+        delete window.Vue.options.components[this.$options._componentTag];
+      }
     }
   }
 });

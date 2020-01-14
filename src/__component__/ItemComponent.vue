@@ -1603,6 +1603,9 @@
           });
         } else if (this._items.field === e.value.field) {
           // 表单修改属性
+          if (this._items.props.tableGetName !== e.value.tableName) {
+            return false;
+          }
           this._items.required = e.value.required;
           if (e.value.regx) {
             this._items.props.regx = e.value.regx;
@@ -1626,12 +1629,20 @@
             }
           }
         }
+      },
+      setListenerSetHideForm(e) {
+        const index = e.value.list.findIndex(x => x === this._items.field);
+
+        if (index !== -1 && e.value.tableName === this._items.props.tableGetName) {
+          this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
+        }
       }
       
     },
     beforeDestroy() {
       window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
-      window.removeEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.removeEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     },
     created() {
     // console.log(this.type,this.formIndex);
@@ -1639,6 +1650,7 @@
     mounted() {
       window.addEventListener(`${this.moduleComponentName}setProps`, this.setListenerSetProps);
       window.addEventListener(`${this.moduleComponentName}setLinkForm`, this.setListenerSetLinkForm);
+      window.addEventListener(`${this.moduleComponentName}setHideForm`, this.setListenerSetHideForm);
     }
   };
 </script>

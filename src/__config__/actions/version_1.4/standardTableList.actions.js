@@ -107,18 +107,6 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
-      DispatchEvent('exeActionForR3', {
-        detail: {
-          name: 'exeAction',
-          type: 'standardTable',
-          url: actionName || '/p/cs/exeAction',
-          moduleName,
-          routeQuery,
-          tableName: routeQuery.tableName,
-          routePath,
-          res,
-        }
-      });
       if (res.data.code === 0) {
         resolve();
        
@@ -138,6 +126,18 @@ export default {
        
         reject();
       }
+      DispatchEvent('exeActionForR3', {
+        detail: {
+          name: 'exeAction',
+          type: 'standardTable',
+          url: actionName || '/p/cs/exeAction',
+          moduleName,
+          routeQuery,
+          tableName: routeQuery.tableName,
+          routePath,
+          res,
+        }
+      });
     }).catch(() => {
       reject();
     });

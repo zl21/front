@@ -58,10 +58,13 @@
 <script>
   /* eslint-disable consistent-return */
 
-
+  import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
-  import getComponentName from '../__utils__/getModuleName';
+  // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
+  import {
+    MODULE_COMPONENT_NAME
+  } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
@@ -75,6 +78,9 @@
       };
     },
     computed: {
+      ...mapState('global', {
+        isRequest: ({ isRequest }) => isRequest,
+      }),
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item) => {
@@ -95,7 +101,7 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
-          } else {
+          } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
           obj.component = `tapComponent.${item.tablename}`;
@@ -124,15 +130,14 @@
       compositeForm
     },
     created() {
+      // this.emptyTestData();
     },
     mounted() {
-      const singleButtonComponentName = `${getComponentName()}.SingleObjectButtons`;
+      const singleButtonComponentName = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
       if (Vue.component(singleButtonComponentName) === undefined) {
         Vue.component(singleButtonComponentName, Vue.extend(Object.assign({ mixins: [verticalMixins()] }, singleObjectButtons)));
       }
       this.currentSingleButtonComponentName = singleButtonComponentName;
-      console.log(777, this);
-
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
       
@@ -142,6 +147,8 @@
       });
     },
     methods: {
+      ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
+
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
           return this.$refs.tabPanel.$children[3].itemTableCheckFunc();
@@ -185,54 +192,66 @@
       },
       tabClick(index) {
         // tab点击
-        if (index === this.tabCurrentIndex) {
-          return;
+        this.updateTabCurrentIndex(index);
+        let flag = false;
+        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+          flag = true;
         }
         let webactType = '';
         if (this.tabPanel[index].webact) { // 自定义tab全定制，tab切换时不需要请求
           webactType = this.tabPanel[index].webact.substring(0, this.tabPanel[index].webact.lastIndexOf('/')).toUpperCase();
         }
-        if (webactType !== 'ALL') {
-          this.updateTabCurrentIndex(index);
-          const { itemId } = this.$route.params;
-          const refTab = this.tabPanel[index];
-          let getButtonDataPromise = null;
-          if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
-            // 获取子表表单
-            getButtonDataPromise = new Promise((rec, rej) => {
-              this.getObjectTabForRefTable({
-                table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+        if (!flag) {
+          // if (index === this.tabCurrentIndex) {
+          //   return;
+          // }
+        
+          if (webactType !== 'ALL') {
+            const { itemId } = this.$route.params;
+            const refTab = this.tabPanel[index];
+            let getButtonDataPromise = null;
+            if (this.tabPanels[index].componentAttribute.refcolid !== -1) {
+              // 获取子表表单
+              getButtonDataPromise = new Promise((rec, rej) => {
+                this.getObjectTabForRefTable({
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
+                });
               });
-            });
-            const formParam = {
-              table: refTab.tablename,
-              inlinemode: refTab.tabinlinemode,
-              tabIndex: index
-            };
-            this.getFormDataForRefTable(formParam);
-          }
-          if (refTab.tabrelation === '1:m') {
-            getButtonDataPromise.then(() => {
-              this.getObjectTableItemForTableData({
+              const formParam = {
                 table: refTab.tablename,
-                objid: itemId,
-                refcolid: refTab.refcolid,
-                searchdata: {
-                  column_include_uicontroller: true,
-                  startindex: (this.tabPanel[index].tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
-                  range: this.tabPanel[index].tablePageInfo.pageSize,
-                  fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
-                },
+                inlinemode: refTab.tabinlinemode,
                 tabIndex: index
+              };
+              this.getFormDataForRefTable(formParam);
+            }
+            if (refTab.tabrelation === '1:m') {
+              getButtonDataPromise.then(() => {
+                this.getObjectTableItemForTableData({
+                  table: refTab.tablename,
+                  objid: itemId,
+                  refcolid: refTab.refcolid,
+                  searchdata: {
+                    column_include_uicontroller: true,
+                    startindex: (this.tabPanel[index].tablePageInfo.currentPageIndex - 1) * this.tablePageInfo.pageSize,
+                    range: this.tabPanel[index].tablePageInfo.pageSize,
+                    fixedcolumns: refTab.tableSearchData.selectedValue ? { [refTab.tableSearchData.selectedValue]: `${refTab.tableSearchData.inputValue}` } : refTab.tableDefaultFixedcolumns
+                  },
+                  tabIndex: index
+                });
               });
-            });
-          } else if (refTab.tabrelation === '1:1') {
-            this.getObjectTabForRefTable({ table: refTab.tablename, objid: itemId, tabIndex: index });
-            this.getItemObjForChildTableForm({
-              table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
-            });
+            } else if (refTab.tabrelation === '1:1') {
+              getButtonDataPromise = new Promise((rec, rej) => {
+                this.getObjectTabForRefTable({
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej 
+                });
+              });
+              this.getItemObjForChildTableForm({
+                table: refTab.tablename, objid: itemId, refcolid: refTab.refcolid, tabIndex: index
+              });
+            }
           }
         }
+        this.isRequestUpdata({ tabPanel: this.tabPanels, index });
       },
     },
   };

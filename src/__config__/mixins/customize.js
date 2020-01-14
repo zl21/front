@@ -18,6 +18,8 @@ export default () => ({
   },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
+    this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
+    this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   mounted() {
   },
@@ -46,6 +48,13 @@ export default () => ({
       }
     } catch (e) {
       console.log(e);
+    }
+  },
+  destroyed() {
+    if (window.Vue) {
+      if (this.$options.isKeepAliveModel) {
+        delete window.Vue.options.components[this.$options._componentTag];
+      }
     }
   }
 });

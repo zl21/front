@@ -53,6 +53,10 @@ export default {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
+        } else if (type === 'refresh') {
+          resData.type = 'refresh';
+          commit('updateMainButtonsData', resData);
+          commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         } else {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
@@ -403,7 +407,6 @@ export default {
       }
      
       const sataTypeName = sataType ? sataType.sataType : '';
-
       if (sataTypeName === 'add') { // 子表新增
         const addDefault = itemCurrentParameter ? itemCurrentParameter.addDefault : {};
 
@@ -413,7 +416,14 @@ export default {
           Object.assign(itemAdd[itemName], add);
         }
         
-        const itemTableAdd = Object.assign({}, itemAdd);
+        const itemTableAddOld = Object.assign({}, itemAdd);
+
+        // const originProto = Object.getPrototypeOf(itemAdd);
+        // const itemTableAdd = Object.assign(Object.create(originProto), itemAdd);
+        const addAssign = JSON.stringify(itemTableAddOld);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
+        const itemTableAdd = JSON.parse(addAssign);
+
+
         if (itemTableAdd && itemTableAdd[itemName]) {
           itemTableAdd[itemName].ID = -1;
           itemTableAdd[itemName] = [
@@ -631,6 +641,8 @@ export default {
         } else {
           reject();
         }
+      }).catch(() => {
+        reject();
       });
     }
   },
@@ -767,6 +779,14 @@ export default {
         webaction: null,
         param: JSON.stringify(params),
       })).then((res) => {
+        if (res.data.code === 0) {
+          const invalidData = res.data;
+          resolve();
+  
+          commit('updateObjTabActionSlientConfirm', invalidData);
+        } else {
+          reject();
+        }
         DispatchEvent('exeActionForR3', {
           detail: {
             name: 'exeAction',
@@ -779,14 +799,6 @@ export default {
             routePath
           }
         });
-        if (res.data.code === 0) {
-          const invalidData = res.data;
-          resolve();
-  
-          commit('updateObjTabActionSlientConfirm', invalidData);
-        } else {
-          reject();
-        }
       }).catch(() => {
         reject();
       });
@@ -794,6 +806,14 @@ export default {
       actionName = path;
 
       network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+        if (res.data.code === 0) {
+          const invalidData = res.data;
+          resolve();
+  
+          commit('updateObjTabActionSlientConfirm', invalidData);
+        } else {
+          reject();
+        }
         DispatchEvent('exeActionForR3', {
           detail: {
             name: 'exeAction',
@@ -806,14 +826,6 @@ export default {
             routePath
           }
         });
-        if (res.data.code === 0) {
-          const invalidData = res.data;
-          resolve();
-  
-          commit('updateObjTabActionSlientConfirm', invalidData);
-        } else {
-          reject();
-        }
       }).catch(() => {
         reject();
       });

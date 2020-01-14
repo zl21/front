@@ -3,7 +3,7 @@
 <template>
   <div
     :id="buttons.tableName"
-    class="StandardTableListRootDiv"
+    class="StandardTableListRootDiv r398"
   >
     <ButtonGroup
       :data-array="buttons.dataArray"
@@ -111,7 +111,6 @@
   import modifyDialog from './ModifyModal';
   import {
     Version,
-    CUSTOMIZED_MODULE_COMPONENT_PREFIX,
     CUSTOMIZED_MODULE_PREFIX,
     LINK_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME,
     INSTANCE_ROUTE_QUERY,
@@ -120,7 +119,8 @@
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
   import router from '../__config__/router.config';
-  import { getSeesionObject, deleteFromSessionObject } from '../__utils__/sessionStorage';
+  import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
+  import { getUrl, getLabel } from '../__utils__/url';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -140,7 +140,7 @@
         resetType: false, // 是否是重置的功能
         dialogComponent: null,
         searchData: {
-          table: this.$route.params.tableName,
+          table: '',
           startIndex: 0,
           range: 10,
           orderby: undefined
@@ -242,7 +242,7 @@
             });
             promises.then(() => {          
               this.setImportDialogTitle(false);
-              this.$loading.hide(this.buttons.tableName);
+              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               if (this.exportTasks.dialog) {
                 const message = {
                   mask: true,
@@ -280,12 +280,12 @@
               //   };
               //   this.$Modal.fcError(data);
               // }
-              this.$loading.hide(this.buttons.tableName);
+              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               this.setImportDialogTitle(false);
             });
           }
         } else {
-          this.$loading.hide(this.buttons.tableName);
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         }
       },
       commonTableCustomizedDialog(params) {
@@ -379,7 +379,7 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-          const { tableName, tableId } = this.$route.params;
+          const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
@@ -413,7 +413,7 @@
         }
       }, // ag表格行双击回调
       onSortChange(sortArr) {
-        const { tableName } = this.$route.params;
+        const { tableName } = this[INSTANCE_ROUTE_QUERY];
         this.searchData.orderby = sortArr.map((d) => {
           if (d.sort === 'normal') {
             return {
@@ -429,7 +429,7 @@
         this.getQueryList();
       },
       onColumnMoved(cols) {
-        const { tableId } = this.$route.params;
+        const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPosition({
           tableid: tableId,
           colposition: cols
@@ -437,7 +437,7 @@
         this.updateAgConfig({ key: 'colPosition', value: cols });
       },
       onColumnPinned(pinnedCols) {
-        const { tableId } = this.$route.params;
+        const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColPin({
           tableid: tableId,
           fixedcolumn: pinnedCols
@@ -445,7 +445,7 @@
         this.updateAgConfig({ key: 'fixedColumn', value: pinnedCols });
       },
       onColumnVisibleChanged(hideCols) {
-        const { tableId } = this.$route.params;
+        const { tableId } = this[INSTANCE_ROUTE_QUERY];
         this.setColHide({
           tableid: tableId,
           hidecolumns: hideCols
@@ -453,7 +453,7 @@
         this.updateAgConfig({ key: 'hideColumn', value: hideCols });
       },
       onCellSingleClick(colDef, rowData, target) {
-        const { tableId } = this.$route.params;
+        const { tableId } = this[INSTANCE_ROUTE_QUERY];
         if (target.getAttribute('data-target-tag') === 'fkIcon') {
           window.sessionStorage.setItem('dynamicRouting', true);
           const {
@@ -658,13 +658,15 @@
                 },
                 'on-show': ($this) => {
                   // 当外键下拉站开始去请求数据
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: 0,
+                    range: $this.pageSize
+                  };
+
                   fkHttpRequest().fkQueryList({
-                    searchObject: {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      startindex: 0,
-                      range: $this.pageSize
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
@@ -677,12 +679,14 @@
                     // this.freshDropDownSelectFilterAutoData({}, itemIndex, 'empty');
                     return false;
                   }
+                  const searchObject = {
+                    ak: value,
+                    colid: current.colid,
+                    fixedcolumns: {}
+                  };
+
                   fkHttpRequest().fkFuzzyquerybyak({
-                    searchObject: {
-                      ak: value,
-                      colid: current.colid,
-                      fixedcolumns: {}
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterAutoData(res, itemIndex);
@@ -691,13 +695,14 @@
                 },
                 pageChange: (currentPage, $this) => {
                   // 外键的分页查询
+                  const searchObject = {
+                    isdroplistsearch: true,
+                    refcolid: current.colid,
+                    startindex: $this.data.defaultrange * ($this.currentPage - 1),
+                    range: $this.pageSize
+                  };
                   fkHttpRequest().fkQueryList({
-                    searchObject: {
-                      isdroplistsearch: true,
-                      refcolid: current.colid,
-                      startindex: $this.data.defaultrange * ($this.currentPage - 1),
-                      range: $this.pageSize
-                    },
+                    searchObject: this.setSeachObject(searchObject, current),
                     serviceId: current.fkobj.serviceId,
                     success: (res) => {
                       this.freshDropDownSelectFilterData(res, itemIndex);
@@ -824,6 +829,18 @@
         // }
         this.resetType = false;
         return items;
+      },
+      setSeachObject(obj, current) {
+        // precolnameslist
+        if (current.precolnameslist) {
+          if (Object.hasOwnProperty.call(obj, 'ak')) {
+            obj.fixedcolumns.precolnameslist = current.precolnameslist;
+          } else {
+            obj.precolnameslist = current.precolnameslist;
+          }
+          return obj;
+        }
+        return obj;
       },
       resetForm() {
         // 列表查询重置
@@ -1240,7 +1257,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$loading.hide(this.buttons.tableName);
+            this.$loading.hide(this[MODULE_COMPONENT_NAME].tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1267,7 +1284,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide(this.buttons.tableName);
+            this.$loading.hide(this[MODULE_COMPONENT_NAME].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};
@@ -1288,7 +1305,7 @@
           });
         } else { // 没有配置动作定义调动作定义逻辑
           promise.then(() => {
-            this.$loading.hide(this.buttons.tableName);
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
@@ -1300,7 +1317,7 @@
               this.searchClickData();
             }
           }, () => {
-            this.$loading.hide(this.buttons.tableName);
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           });
         }
       },
@@ -1401,7 +1418,7 @@
         // this.$refs.dialogRefs.open();
       },
       AddDetailClick(obj) {
-        const { tableName, tableId, } = this.$route.params;
+        const { tableName, tableId, } = this[INSTANCE_ROUTE_QUERY];
         if (obj.name === this.buttonMap.CMD_ADD.name) {
           // 新增
           if (this.ag.tableurl) {
@@ -1560,7 +1577,7 @@
             this.modifyDialogshow = true;
             setTimeout(() => {
               this.$refs.dialogmodify.open(
-                this.$route.params, this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
+                this[INSTANCE_ROUTE_QUERY], this.buttons.selectIdArr.length, this.searchData.fixedcolumns, this.buttons.selectIdArr
               );
             }, 200);
           } else {
@@ -1575,7 +1592,7 @@
                 this.modifyDialogshow = true;
                 setTimeout(() => {
                   this.$refs.dialogmodify.open(
-                    this.$route.params, this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
+                    this[INSTANCE_ROUTE_QUERY], this.ag.datas.totalRowCount, this.searchData.fixedcolumns, 'all'
                   );
                 }, 200);
               },
@@ -1590,7 +1607,7 @@
       batchExport() {
         this.$loading.show();
         let searchData = {};
-        const { tableName } = this.$route.params;
+        const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
         searchData = {
           table: tableName,
@@ -1615,7 +1632,7 @@
         promise.then(() => {
           if (this.buttons.exportdata) {
             if (Version() === '1.4') {
-              this.$loading.hide(this.buttons.tableName);
+              this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
               const eleLink = document.createElement('a');
               const path = getGateway(`/p/cs/download?filename=${this.buttons.exportdata}`);
               eleLink.setAttribute('href', path);
@@ -1630,7 +1647,7 @@
                 });
               });
               promises.then(() => {
-                this.$loading.hide(this.buttons.tableName);
+                this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
                 if (this.exportTasks.dialog) {
                   const message = {
                     mask: true,
@@ -1661,7 +1678,7 @@
                 }
               }, () => {
                 if (this.exportTasks.warningMsg) {
-                  this.$loading.hide(this.buttons.tableName);
+                  this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
                   const data = {
                     mask: true,
                     title: '错误',
@@ -1672,10 +1689,10 @@
               });
             }
           } else {
-            this.$loading.hide(this.buttons.tableName);
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
           }
         }, () => {
-          this.$loading.hide(this.buttons.tableName);
+          this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
         });
       },
       deleteTableList() { // 删除方法
@@ -1706,7 +1723,7 @@
           });
         });
         promise.then(() => {
-          // this.$loading.hide(this.buttons.tableName);
+          // this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName)
           const message = this.buttons.batchVoidForButtonsData.message;
           const data = {
             mask: true,
@@ -1723,7 +1740,7 @@
         const ids = this.buttons.selectIdArr.map(d => parseInt(d));
         const promise = new Promise((resolve, reject) => {
           this.batchSubmitForButtons({
-            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY],routePath: this[INSTANCE_ROUTE]
+            url, tableName, ids, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
         });
         promise.then(() => {
@@ -1901,6 +1918,7 @@
         this.setErrorModalValue({ errorDialogvalue });
       },
       objTabActionNavbar(tab) {
+        tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?23222323232';
         if (tab.action) {
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
           const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
@@ -1947,43 +1965,19 @@
             };
             window.sessionStorage.setItem('tableDetailUrlMessage', JSON.stringify(obj));
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
+            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            const obj = {
-              customizedName: name,
-              customizedLabel: tab.webdesc
+            const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+            const keepAliveLabelMapsObj = {
+              k: name,
+              v: tab.webdesc
             };
-            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             router.push(
               path
             );
           }
         }
-
-
-        // 判断跳转到哪个页面
-        // const url = tab.action;
-        // const index = url.lastIndexOf('\/');
-        // const customizedModuleName = url.substring(index + 1, url.length);
-        // const label = tab.webdesc;
-        // const type = 'tableDetailAction';
-        // const name = Object.keys(this.keepAliveLabelMaps);
-        // let customizedModuleId = '';
-        // name.forEach((item) => {
-        //   if (item.includes(`${customizedModuleName.toUpperCase()}`)) {
-        //     customizedModuleId = item.split(/\./)[2];
-        //   }
-        // });
-        // if (tab.action) {
-        //   this.tabOpen({
-        //     type,
-        //     customizedModuleName,
-        //     customizedModuleId,
-        //     label
-        //   });
-        // }
       },
 
       // network 监听函数
@@ -2038,13 +2032,14 @@
       }
     },
     mounted() {
+      this.searchData.table = this[INSTANCE_ROUTE_QUERY].tableName;
       if (!this._inactive) {
         window.addEventListener('network', this.networkEventListener);
         window.addEventListener('jflowEvent', this.jflowEvent);
         window.addEventListener('network', this.networkGetTableQuery);
         window.addEventListener('updateSTFailInfo', this.updateSTFailInfo);
       }
-      this.updateUserConfig({ type: 'table', id: this.$route.params.tableId });
+      this.updateUserConfig({ type: 'table', id: this[INSTANCE_ROUTE_QUERY].tableId });
       const promise = new Promise((resolve, reject) => {
         const searchData = this.searchData;
         this.getTableQueryForForm({ searchData, resolve, reject });
@@ -2054,7 +2049,7 @@
       });
     },
     activated() {
-      const { tableId } = this.$route.params;
+      const { tableId } = this[INSTANCE_ROUTE_QUERY];
       this.updateAccessHistory({ type: 'table', id: tableId });
     },
     created() {

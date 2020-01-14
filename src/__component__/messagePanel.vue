@@ -18,6 +18,7 @@
       <div
         ref="messageBox"
         class="panel-content"
+        @scroll="handleScroll"
       >
         <div
           v-if="panel.list.length == 0"
@@ -91,13 +92,10 @@
       };
     },
     mounted() {
-      this.$refs.messageBox.scroll(() => {
-        this.handleScroll();
-      });
     },
     methods: {
       handleScroll() {
-        if (this.$refs.messageBox.scrollTop / this.$refs.messageBox.scrollHeight > 0.5) {
+        if (this.$refs.messageBox.scrollTop / this.$refs.messageBox.scrollHeight > 0.1) {
           this.$emit('nextPage');
         }
       },

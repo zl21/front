@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -150,6 +150,7 @@
   import Docfile from './docfile/DocFileComponent';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
+  import { getUrl, getLabel } from '../__utils__/url';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -1035,18 +1036,29 @@
               linkId: tab.webid
             });
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-            const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
-            const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
-            this.addKeepAliveLabelMaps({ name, label: tab.name });
-            const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
-            const obj = {
-              customizedName: name,
-              customizedLabel: tab.name
-            };
-            window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
-            router.push(
-              path
-            );
+            const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
+          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+          const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+          const keepAliveLabelMapsObj = {
+            k: name,
+            v: tab.webdesc
+          };
+          updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+          router.push(
+            path
+          );
+            // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
+            // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
+            // this.addKeepAliveLabelMaps({ name, label: tab.name });
+            // const path = `/${tab.action.toUpperCase()}/${tab.webid}`;
+            // const obj = {
+            //   customizedName: name,
+            //   customizedLabel: tab.name
+            // };
+            // window.sessionStorage.setItem('customizedMessageForbutton', JSON.stringify(obj));
+            // router.push(
+            //   path
+            // );
           }
         }
 
@@ -2762,30 +2774,32 @@
           on: {
             click: (event) => {
               // TODO 外键关联跳转
-              const data = this.dataSource.row[params.index][cellData.colname];
-              let type = '';
-              if (cellData.objdistype === 'object') {
-                type = 'V';
-              } else if (cellData.objdistype === 'tabpanle') {
-                type = 'H';
-              } else {
-                const datas = {
-                  mask: true,
-                  title: '警告',
-                  content: '请设置外键关联表的显示配置'
-                };
-                this.$Modal.fcWarning(datas);
-                return;
+              if (event.target.className) {
+                const data = this.dataSource.row[params.index][cellData.colname];
+                let type = '';
+                if (cellData.objdistype === 'object') {
+                  type = 'V';
+                } else if (cellData.objdistype === 'tabpanle') {
+                  type = 'H';
+                } else {
+                  const datas = {
+                    mask: true,
+                    title: '警告',
+                    content: '请设置外键关联表的显示配置'
+                  };
+                  this.$Modal.fcWarning(datas);
+                  return;
+                }
+                window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
+                this.tabOpen({
+                  type,
+                  tableName: data.reftablename,
+                  tableId: data.reftableid,
+                  id: data.refobjid,
+                  serviceId: data.serviceId,
+                  label: data.reftabdesc
+                });
               }
-              window.sessionStorage.setItem('dynamicRoutingForHideBackButton', true);
-              this.tabOpen({
-                type,
-                tableName: data.reftablename,
-                tableId: data.reftableid,
-                id: data.refobjid,
-                serviceId: data.serviceId,
-                label: data.reftabdesc
-              });
               // event.stopPropagation();
             }
           }

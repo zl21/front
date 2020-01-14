@@ -161,7 +161,7 @@
       },
       getModalWidth() {
         const self = this;
-        if (this.$refs.modalComponent) {
+        if (this.$refs.modalComponent && this.$refs.modalComponent.$el && this.$refs.modalComponent.$el.clientWidth) {
           this.modalWidth = this.$refs.modalComponent.$el.clientWidth + 32;
         } else {
           setTimeout(() => { // 释放资源

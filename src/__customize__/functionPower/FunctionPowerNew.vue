@@ -65,7 +65,7 @@
                                 </table>
                             </div>
                             <div v-show="tableData.length === 0" class="upper-table-tabtd-empty">暂无数据</div>
-                            <div v-show="tableData.length > 0" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
+                            <div v-show="tableData.length > 0" ref="upperTableTabtd" class="upper-table-tabtd" @scroll="upperTableTbodyScroll">
                                 <table>
                                     <tbody>
                                     <tr v-for="(item, index) in tableData" :key="index" :class="upperTableTbodyHighlightIndex === index ? 'upper-table-tabtd-highlight' : ''" @click="upperTableTbodyClick(item, index)">
@@ -221,6 +221,7 @@
   export default {
     data() {
       return {
+        isSaveError: false, // 是否保存失败
         spinShow: false, // loading是否显示
 
         copyPermission: false, // 复制权限弹框
@@ -245,12 +246,16 @@
 
         menuTreeData: [], // 菜单树数据
         menuTreeQuery: '', // 菜单树检索的值
+        oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
+        newMenuTreeObj: null, // 当前选中的菜单节点的数据
 
         treeData: [], // 树数据
         adSubsystemId: '', // 树节点ID
         adTableCateId: null, // 树子节点ID
         newAdSubsystemId: '', // 树节点ID
         newAdTableCateId: null, // 树子节点ID
+        oldTreeObj: null, // 上一次选中的树节点的数据
+        newTreeObj: null, // 当前选中的树节点的数据
 
         tableDefaultSelectedRowIndex: 0, // 表格默认选中的行的index
         tableData: [], // 表格数据
@@ -441,27 +446,29 @@
         this.upperTableTabthLeft = `${-e.target.scrollLeft}px`;
       }, // 上边表格表体滚动
       fixTableColumnWidth() {
-        this.$nextTick(() => {
-          const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
-          if (functionColumnTd) {
-            this.functionColumnWidth = functionColumnTd[0].offsetWidth;
-          }
-          const upperTableWidth = upperTable.offsetWidth;
-          const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
-          if (theadThWidth > 62) {
-            this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
-          } else {
-            this.theadThMinWidth = '62px';
-          }
+        if (this.tableData.length > 0) {
           this.$nextTick(() => {
-            this.functionColumnTdWidth = `${functionColumnTh.offsetWidth}px`;
-            this.columns.map((item, index) => {
-              const tableTabth = `tableTabth${index}`;
-              item.tbodyWidth = `${this.$refs[tableTabth][0].offsetWidth}px`;
-              return item;
+            const { upperTable, functionColumnTd, functionColumnTh } = this.$refs;
+            if (functionColumnTd) {
+              this.functionColumnWidth = functionColumnTd[0].offsetWidth;
+            }
+            const upperTableWidth = upperTable.offsetWidth;
+            const theadThWidth = (upperTableWidth - this.functionColumnWidth) / 9;
+            if (theadThWidth > 62) {
+              this.theadThMinWidth = `${(theadThWidth / upperTableWidth) * 100}%`;
+            } else {
+              this.theadThMinWidth = '62px';
+            }
+            this.$nextTick(() => {
+              this.functionColumnTdWidth = `${functionColumnTh.offsetWidth}px`;
+              this.columns.map((item, index) => {
+                const tableTabth = `tableTabth${index}`;
+                item.tbodyWidth = `${this.$refs[tableTabth][0].offsetWidth}px`;
+                return item;
+              });
             });
           });
-        });
+        }
       }, // 计算表格的列宽
       refresh() {
         this.spinShow = true;
@@ -509,11 +516,23 @@
           params,
           success: (res) => {
             if (res.data.code === 0) {
-              this.buttonsData = res.data.data;
+              let buttonsData = res.data.data;
               if (Version() === '1.4') {
-                this.buttonsData.push({
+                buttonsData.push({
                   webdesc: '刷新'
                 });
+              }
+              const saveObj = buttonsData.find(item => item.webdesc === '保存');
+              const copyObj = buttonsData.find(item => item.webdesc === '复制权限');
+              const refreshObj = buttonsData.find(item => item.webdesc === '刷新');
+              if (saveObj) {
+                this.buttonsData.push(saveObj);
+              }
+              if (copyObj) {
+                this.buttonsData.push(copyObj);
+              }
+              if (refreshObj) {
+                this.buttonsData.push(refreshObj);
               }
             }
           }
@@ -545,20 +564,24 @@
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
       menuTreeChange(val, item) {
+        this.oldMenuTreeObj = JSON.parse(JSON.stringify(this.newMenuTreeObj));
+        this.newMenuTreeObj = JSON.parse(JSON.stringify(item));
         if (val.length === 0) {
           this.$refs.menuTree.handleSelect(item.nodeKey);
         }
         this.newGroupId = item.ID;
-        if (this.checkNoSaveData()) {
-        } else {
-          this.spinShow = true;
-          this.groupId = item.ID;
-          const treePromise = new Promise((resolve, reject) => {
-            this.getTreeData(resolve, reject);
-          });
-          treePromise.then(() => {
-            this.getTableData();
-          });
+        if (!this.isSaveError) {
+          if (this.checkNoSaveData('menuTree')) {
+          } else {
+            this.spinShow = true;
+            this.groupId = item.ID;
+            const treePromise = new Promise((resolve, reject) => {
+              this.getTreeData(resolve, reject);
+            });
+            treePromise.then(() => {
+              this.getTableData();
+            });
+          }
         }
       }, // 左侧树点击
       getTreeData(resolve, reject) {
@@ -595,7 +618,10 @@
           if (item.nodeType === 'ROOT') {
             item.expand = true;
             item.selected = true;
+            this.oldTreeObj = item;
+            this.newTreeObj = item;
             this.adSubsystemId = item.ad_subsystem_id;
+            this.newAdSubsystemId = item.ad_subsystem_id;
             this.adTableCateId = item.ad_tablecategory_id;
           }
           item.title = item.description;
@@ -614,6 +640,8 @@
               resolve();
               this.groupId = res.data.data[0].ID;
               this.newGroupId = res.data.data[0].ID;
+              this.oldMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
+              this.newMenuTreeObj = JSON.parse(JSON.stringify(res.data.data[0]));
               this.menuTreeData = this.restructureMenuTreeData(res.data.data, true);
             } else {
               reject();
@@ -666,12 +694,16 @@
             GROUP_ID: this.groupId
           };
         }
+        this.spinShow = true;
         functionPowerActions().queryMenuPermission({
           params: obj,
           success: (res) => {
             this.spinShow = false;
             this.bottomTableTbodyHighlightIndex = null;
             this.upperTableTbodyHighlightIndex = 0;
+            if (this.$refs.upperTableTabtd) {
+              this.$refs.upperTableTabtd.scrollTo(0, 0);
+            }
             if (res.data.code === 0) {
               if (res.data.data) {
                 const resData = res.data.data;
@@ -821,17 +853,21 @@
         return true;
       }, // 获取表格里的扩展是否选中
       treeChange(val, obj) {
+        this.oldTreeObj = this.newTreeObj;
+        this.newTreeObj = obj;
         if (val.length === 0) {
           this.$refs.tree.handleSelect(obj.nodeKey);
         }
         this.newAdSubsystemId = obj.ad_subsystem_id;
         this.newAdTableCateId = obj.ad_tablecategory_id;
-        if (this.checkNoSaveData()) {
-        } else {
-          this.spinShow = true;
-          this.adSubsystemId = obj.ad_subsystem_id;
-          this.adTableCateId = obj.ad_tablecategory_id;
-          this.getTableData();
+        if (!this.isSaveError) {
+          if (this.checkNoSaveData('tree')) {
+          } else {
+            this.spinShow = true;
+            this.adSubsystemId = obj.ad_subsystem_id;
+            this.adTableCateId = obj.ad_tablecategory_id;
+            this.getTableData();
+          }
         }
       }, // 树选中改变触发
       btnClick(item) {
@@ -896,7 +932,7 @@
         }
         if (this.multiplePermissionId.indexOf(this.singlePermissionId.toString()) !== -1) {
           this.$Message.warning({
-            content: '目的角色不能包含源角色，请重新选择！'
+            content: '目的角色不能包含原角色，请重新选择！'
           });
           return;
         }
@@ -912,9 +948,11 @@
           targetids: this.multiplePermissionId,
           type: this.copyType
         };
+        this.spinShow = true;
         functionPowerActions().copyPermission({
           params: obj,
           success: (res) => {
+            this.spinShow = false;
             if (res.data.code === 0) {
               this.singlePermissionId = null;
               this.multiplePermissionId = null;
@@ -997,8 +1035,8 @@
           });
           this.cancelExtendTableAllSelected();
         }
-        const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
-        this.tableData[findIndex] = params.row;
+        // const findIndex = this.tableData.findIndex(item => item.ad_table_id === params.row.ad_table_id);
+        this.tableData[params.index] = params.row;
       }, // 取消整行的选中
       selectedSeeColumn(params, currentValue) {
         if (currentValue) {
@@ -1073,12 +1111,19 @@
         return arr.join('');
       }, // 获取保存数据的权限的二进制数据
       allTabthSelected() {
-        this.columns.forEach((item) => {
-          this.tabthCheckboxSelected(item, item.key);
-          // if (item.key !== 'see') {  // 注释掉的这个代码是默认的查看列没有选中
-          //   this.tabthCheckboxSelected(item, item.key);
-          // }
-        });
+        if (this.tableData.length > 0) {
+          this.columns.forEach((item) => {
+            this.tabthCheckboxSelected(item, item.key);
+            // if (item.key !== 'see') {  // 注释掉的这个代码是默认的查看列没有选中
+            //   this.tabthCheckboxSelected(item, item.key);
+            // }
+          });
+        } else {
+          this.columns.map((item) => {
+            item[`${item.key}Value`] = false;
+            return item;
+          });
+        }
       }, // 判断所有表头是不是应该选中
       tabthCheckboxSelected(column, columnKey) {
         if (this.tableData.length > 0) {
@@ -1381,6 +1426,7 @@
             content: '没有更改'
           });
         } else {
+          this.spinShow = true;
           const obj = {
             GROUPID: this.groupId,
             CP_C_GROUPPERM: this.tableSaveData
@@ -1388,7 +1434,10 @@
           functionPowerActions().savePermission({
             params: obj,
             success: (res) => {
+              console.log(res);
+              this.spinShow = false;
               if (res.data.code === 0) {
+                this.isSaveError = false;
                 if (type === 'refresh') {
                   this.refresh();
                 } else {
@@ -1400,6 +1449,17 @@
                 this.$Message.success({
                   content: res.data.message
                 });
+              } else {
+                this.isSaveError = true;
+                if (type === 'menuTree') {
+                  this.$refs.menuTree.handleSelect(this.oldMenuTreeObj.nodeKey);
+                }
+                if (type === 'tree') {
+                  this.$refs.tree.handleSelect(this.oldTreeObj.nodeKey);
+                }
+                setTimeout(() => {
+                  this.isSaveError = false;
+                }, 0);
               }
             }
           });

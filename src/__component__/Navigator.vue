@@ -311,7 +311,7 @@
         this.tabOpen(tab);
       },
       nextPage() {
-        if (this.panel.start < this.panel.total) {
+        if (this.messagePanel.start < this.messagePanel.total) {
           this.getMessages();
         }
       },
@@ -339,6 +339,8 @@
           const result = res.data;
           if (result.code === 0) {
             self.messagePanel.list = self.messagePanel.list.concat(result.datas.row);
+            console.log(99, self.messagePanel.list);
+
             self.messagePanel.start = result.datas.start + result.datas.rowCount;
             self.messagePanel.total = result.datas.totalRowCount;
           //            self.panel.start = result.start

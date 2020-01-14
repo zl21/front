@@ -54,6 +54,9 @@ export default {
           resData.type = 'copy';
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
+        } else if (type === 'refresh') {
+          resData.type = 'refresh';
+          commit('updateTabPanelsData', resData, itemTabelPageInfo);
         } else {
           commit('updateMainButtonsData', resData);
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
@@ -267,6 +270,7 @@ export default {
       const {
         add
       } = parame;
+
       if (isreftabs) { // 存在子表
         if (itemNameGroup.length > 0) {
           const itemAdd = itemCurrentParameter.add;
@@ -394,9 +398,10 @@ export default {
           };
         }
       } else if (path) { // 没有子表    有path的参数
-        add[tableName].ID = objId;
+        const addData = Object.assign({}, add);
+        addData[tableName].ID = objId;
         parames = {
-          ...add[tableName]
+          ...addData[tableName]
         };
       } else {
         parames = {
@@ -592,6 +597,8 @@ export default {
       } else {
         reject();
       }
+    }).catch(() => {
+      reject();
     });
   },
   performMainTableDeleteAction({
@@ -820,6 +827,14 @@ export default {
       actionName = '';
     }
     network.post(actionName || '/p/cs/exeAction', params).then((res) => {
+      if (res.data.code === 0) {
+        const invalidData = res.data;
+        resolve();
+
+        commit('updateObjTabActionSlientConfirm', invalidData);
+      } else {
+        reject();
+      }
       DispatchEvent('exeActionForR3', {
         detail: {
           name: 'exeAction',
@@ -832,14 +847,6 @@ export default {
           routePath
         }
       });
-      if (res.data.code === 0) {
-        const invalidData = res.data;
-        resolve();
-
-        commit('updateObjTabActionSlientConfirm', invalidData);
-      } else {
-        reject();
-      }
     }).catch(() => {
       reject();
     });

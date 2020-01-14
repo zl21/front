@@ -34,7 +34,7 @@
         const componentName = `${VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX}.${tableName}.${tableId}.${itemId}`;
         const hasBeenDestroyed = getSeesionObject(HAS_BEEN_DESTROYED_MODULE)[componentName];
         if (Vue.component(componentName) === undefined || hasBeenDestroyed) {
-          Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins()], isKeepAliveModel: true }, VerticalTableDetail)));
+          Vue.component(componentName, Vue.extend(Object.assign({}, { mixins: [mixins()], isKeepAliveModel: true }, VerticalTableDetail)));
           deleteFromSessionObject(HAS_BEEN_DESTROYED_MODULE, componentName);
         }
         this.currentTable = componentName;
@@ -47,6 +47,7 @@
       $route() {
         this.generateComponent();
       },
-    }
+    },
+ 
   };
 </script>

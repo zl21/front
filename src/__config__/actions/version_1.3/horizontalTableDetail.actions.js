@@ -20,7 +20,12 @@ export default {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);
         } else if (!isNotFirstRequest) {
-          commit('updateTabPanelsData', resData);
+          if(type==='refresh'){
+            resData.type = 'refresh';
+            commit('updateTabPanelsData', resData);
+          }else{
+            commit('updateTabPanelsData', resData);
+          }
         }
         commit('updateWebConf', resData.webconf);
         if (this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`] && this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0] === 'function') {
@@ -377,6 +382,8 @@ export default {
         } else {
           reject();
         }
+      }).catch(() => {
+        reject();
       });
     }
   },
@@ -525,18 +532,6 @@ export default {
         webaction: null,
         param: JSON.stringify(params),
       })).then((res) => {
-        DispatchEvent('exeActionForR3', {
-          detail: {
-            name: 'exeAction',
-            type: 'horizontalTable',
-            url: actionName || '/p/cs/exeAction',
-            res,
-            moduleName,
-            routeQuery,
-            tableName: routeQuery.tableName,
-            routePath
-          }
-        });
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
@@ -544,12 +539,6 @@ export default {
         } else {
           reject();
         }
-      }).catch(() => {
-        reject();
-      });
-    } else {
-      actionName = path;
-      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         DispatchEvent('exeActionForR3', {
           detail: {
             name: 'exeAction',
@@ -562,6 +551,12 @@ export default {
             routePath
           }
         });
+      }).catch(() => {
+        reject();
+      });
+    } else {
+      actionName = path;
+      network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
           resolve();
@@ -570,6 +565,18 @@ export default {
         } else {
           reject();
         }
+        DispatchEvent('exeActionForR3', {
+          detail: {
+            name: 'exeAction',
+            type: 'horizontalTable',
+            url: actionName || '/p/cs/exeAction',
+            res,
+            moduleName,
+            routeQuery,
+            tableName: routeQuery.tableName,
+            routePath
+          }
+        });
       }).catch(() => {
         reject();
       });
