@@ -13,7 +13,7 @@ Loading.install = ((Vue) => {
 
   Vue.prototype.$loading.show = (tableName) => {
     // 如果页面有loading则不继续执行{
-    const currentTableName = tableName || router.currentRoute.params.tableName;
+    const currentTableName = router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
     const doms = document.querySelector(`#${currentTableName}-loading`);
     if (doms) return;
@@ -44,14 +44,15 @@ Loading.install = ((Vue) => {
     const dom = document.querySelector(`#${currentTableName}`);
 
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
+    console.log('生成loading');
     dom.appendChild(tpl);
 
     // 阻止遮罩滑动
-    document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
-      e.stopPropagation();
+    // document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
+    //   e.stopPropagation();
 
-      e.preventDefault();
-    });
+    //   e.preventDefault();
+    // });
     Loading.installed = true;
   };
 
@@ -63,6 +64,8 @@ Loading.install = ((Vue) => {
     if (tpl) {
       if (currentLoading.indexOf(currentTableName) === -1) {
         tpl.remove();
+        console.log('销毁loading');
+
         store.commit('global/deleteLoading', currentTableName);
       }
     }

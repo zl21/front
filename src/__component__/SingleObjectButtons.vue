@@ -285,6 +285,9 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
+        currentLoading: ({ currentLoading }) => currentLoading,
+
+        
       }),
       upDataMainForm() {
         // 当前主表存在form,开启loading
@@ -293,13 +296,15 @@
         if (this.objectType === 'horizontal') {
           if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
             if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-              if (!dom) {
+              if (!dom && this.tableName === this.$route.params.tableName) {
+                console.log(1);
                 this.$loading.show(this.tableName);
               }
             }     
           }
         } else if (this.isMainForm.formData.isShow) { 
-          if (!dom) {
+          if (!dom && this.tableName === this.$route.params.tableName) {
+            console.log(2);
             this.$loading.show(this.tableName);
           }
         }
@@ -480,7 +485,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -1365,6 +1370,8 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
+          console.log(3);
+
           this.$loading.show(this.tableName);
         });
         promise.then(() => {
@@ -1445,6 +1452,8 @@
 
         const promise = new Promise((resolve, reject) => {
           this.getExportQueryForButtons({ OBJ, resolve, reject });
+          console.log(4);
+
           this.$loading.show(this.tableName);
         });
         promise.then(() => {
@@ -1582,11 +1591,15 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        console.log(5);
+
         this.$loading.show(this.tableName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
+        console.log(6);
+
         this.$loading.show(this.tableName);
       },
       clickButtonsBack(stop) { // 按钮返回事件  
@@ -2605,6 +2618,8 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
+            console.log(7);
+
             this.$loading.show(this.tableName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
@@ -2988,8 +3003,7 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
-    activated() {
-    }
+   
   };
 </script>
 
