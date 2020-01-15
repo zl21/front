@@ -16,7 +16,7 @@ Loading.install = ((Vue) => {
     const currentTableName = tableName || router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
     const doms = document.querySelector(`#${currentTableName}-loading`);
-    // if (doms) return;
+    if (doms) return;
 
     // 1、创建构造器，定义loading模板
 
@@ -29,19 +29,23 @@ Loading.install = ((Vue) => {
 
     });
 
-    // 2、创建实例
+    // // 2、创建实例
     const tpl = new LoadingTip().$mount().$el;
-    tpl.innerHTML = `
-    <div  class="vue-loading">
-       <div class="R3-Loading loader "></div>
-    </div>`;
+    // const tpl = document.createElement('div');
+    // tpl.innerHTML = `
+    // <div  class="vue-loading">
+    //    <div class="R3-Loading loader "></div>
+    // </div>`;
     tpl.setAttribute('id', `${currentTableName}-loading`);
+    // tpl.setAttribute('class', 'vue-loading');
+
 
     // 3、把创建的实例添加到容器中
     const dom = document.querySelector(`#${currentTableName}`);
 
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
     dom.appendChild(tpl);
+
     // 阻止遮罩滑动
     document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
       e.stopPropagation();
@@ -56,11 +60,9 @@ Loading.install = ((Vue) => {
     const currentTableName = router.currentRoute.params.tableName;
     const currentLoading = store.state.global.currentLoading;
     const tpl = document.querySelector(`#${currentTableName}-loading`);
-    // dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
     if (tpl) {
-      if (currentLoading.indexOf(currentTableName) !== -1) {
+      if (currentLoading.indexOf(currentTableName) === -1) {
         tpl.remove();
-        console.log('清除');
         store.commit('global/deleteLoading', currentTableName);
       }
     }

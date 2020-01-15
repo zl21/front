@@ -293,7 +293,7 @@
         if (this.objectType === 'horizontal') {
           if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
             if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-             if (!dom) {
+              if (!dom) {
                 this.$loading.show(this.tableName);
               }
             }     
@@ -2912,6 +2912,9 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      // if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+      //   this.$loading.show(this.tableName);
+      // }     
       this.hideBackButton();
          
       if (!this._inactive) {
