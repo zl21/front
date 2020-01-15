@@ -204,7 +204,7 @@
         // tab点击
         this.updateTabCurrentIndex(index);
         let flag = false;
-        if (this.isRequest.length > 0 && this.isRequest[index] === true) {
+        if (this.isRequest && this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
         let webactType = '';

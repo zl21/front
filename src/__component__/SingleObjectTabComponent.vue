@@ -325,7 +325,7 @@
           }
         }
         if(this.componentName) { // 定制tab自定义组件
-          const customizedModuleName = this.componentName;
+          const customizedModuleName = this.componentName.toUpperCase();
           if (Vue.component(customizedModuleName) === undefined) {
             const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
             if (target) {

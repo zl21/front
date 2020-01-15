@@ -1,3 +1,4 @@
+
 <template>
   <div class="functionPower">
     <div class="buttonGroup">
