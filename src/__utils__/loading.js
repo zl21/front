@@ -13,7 +13,7 @@ Loading.install = ((Vue) => {
 
   Vue.prototype.$loading.show = (tableName) => {
     // 如果页面有loading则不继续执行{
-    const currentTableName = router.currentRoute.params.tableName;
+    const currentTableName = tableName || router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
     const doms = document.querySelector(`#${currentTableName}-loading`);
     if (doms) return;
