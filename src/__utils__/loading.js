@@ -58,12 +58,11 @@ Loading.install = ((Vue) => {
   Vue.prototype.$loading.hide = (tableName) => {
     const currentLoading = store.state.global.currentLoading;
     const currentTableName = tableName || router.currentRoute.params.tableName;
+
     if (!currentLoading.includes(currentTableName)) { // 没有则添加
       store.commit('global/updataLoading', tableName);
     }
     const tpl = document.querySelector(`#${currentTableName}-loading`);
-    console.log(4, tpl, currentLoading.includes(currentTableName));
-
     if (tpl) { // 需要有dom节点才能删除，否则无法确认激活的是正在loading的表，此时会在actived周期内关闭当前loading,清除标记
       if (currentLoading.includes(currentTableName)) {
         tpl.remove();

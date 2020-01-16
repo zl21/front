@@ -2303,19 +2303,19 @@
       }
     },
     mounted() {
-      const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-      const dom = document.querySelector(`#${currentTableName}-loading`);
-      if (this.moduleFormType === 'horizontal') {
-        if (this.masterName === this.childTableName) { // 子表不添加loading
+      if (!this.tableGetName) { // 子表不添加loading
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (this.moduleFormType === 'horizontal') {
           if (!dom) {
             this.$loading.show(this.tableName);
           }
+        } else if (!dom) {
+          this.$loading.show(this.tableName);
         }
-      } else if (!dom) {
-        this.$loading.show(this.tableName);
       }
-     
-     
+
+      
       this.Comparison();
      
       setTimeout(() => {
