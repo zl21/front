@@ -17,13 +17,16 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   updataLoading(state, tableName) {
-    if (state.currentLoading.indexOf(tableName) !== -1) { state.currentLoading.push(tableName); }
+    if (state.currentLoading.indexOf(tableName) === -1) {
+      state.currentLoading.push(tableName); 
+    }
   },
   deleteLoading(state, tableName) {
     const index = state.currentLoading.indexOf(tableName);
     if (index > -1) {
       state.currentLoading.splice(index, 1);
     }
+
     // state.currentLoading.splice(tableName, 1);
   },
   directionalRouter(state, param) {

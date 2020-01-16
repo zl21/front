@@ -97,7 +97,7 @@ export default () => ({
       const currentTableName = this.$router.currentRoute.params.tableName;
       const tpl = document.querySelector(`#${currentTableName}-loading`);
       if (tpl) {
-        if (store.state.global.currentLoading.indexOf(currentTableName) === -1) {
+        if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
           tpl.remove();
           store.commit('global/deleteLoading', currentTableName);
         }

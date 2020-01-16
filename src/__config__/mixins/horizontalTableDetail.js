@@ -33,7 +33,7 @@ export default () => ({
       const currentTableName = this.$router.currentRoute.params.tableName;
       const tpl = document.querySelector(`#${currentTableName}-loading`);
       if (tpl) {
-        if (this.currentLoading.indexOf(currentTableName) === -1) {
+        if (this.currentLoading && this.currentLoading.indexOf(currentTableName) !== -1) {
           tpl.remove();
           this.deleteLoading(currentTableName);
         }

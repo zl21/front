@@ -44,7 +44,6 @@ Loading.install = ((Vue) => {
     const dom = document.querySelector(`#${currentTableName}`);
 
     // dom.style = 'height: 100%; padding: 0px 15px; overflow: none; position: relative;';
-    console.log('生成loading');
     dom.appendChild(tpl);
 
     // 阻止遮罩滑动
@@ -57,18 +56,22 @@ Loading.install = ((Vue) => {
   };
 
   Vue.prototype.$loading.hide = (tableName) => {
-    store.commit('global/updataLoading', tableName);
-    const currentTableName = router.currentRoute.params.tableName;
     const currentLoading = store.state.global.currentLoading;
-    const tpl = document.querySelector(`#${currentTableName}-loading`);
-    if (tpl) {
-      if (currentLoading.indexOf(currentTableName) === -1) {
-        tpl.remove();
-        console.log('销毁loading');
-
-        store.commit('global/deleteLoading', currentTableName);
-      }
+    const currentTableName = tableName || router.currentRoute.params.tableName;
+    if (!currentLoading.includes(currentTableName)) { // 没有则添加
+      store.commit('global/updataLoading', tableName);
     }
+    const tpl = document.querySelector(`#${currentTableName}-loading`);
+    // if (tpl) {
+    try {
+      tpl.remove();
+    } catch {
+      console.log('未找到dom节点');
+    }
+    if (currentLoading.includes(currentTableName)) {
+      store.commit('global/deleteLoading', currentTableName);
+    }
+    // }
   };
 });
  
