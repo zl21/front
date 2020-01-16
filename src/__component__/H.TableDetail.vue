@@ -175,6 +175,7 @@
     },
     mounted() {
       this.getMainTable(this.tabCurrentIndex, false);
+      this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
     },
     created() {
       // this.emptyTestData();

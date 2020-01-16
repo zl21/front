@@ -160,6 +160,7 @@
       this.getObjectTabForMainTable({
         table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
       });
+      this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
     },
     methods: {
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
