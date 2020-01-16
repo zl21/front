@@ -89,6 +89,7 @@
       :paths="formPaths"
       :isreftabs="isreftabs"
       :child-table-name="tableName"
+      :from="from"
       @formChange="formPanelChange"
       @InitializationForm="initFormPanel"
       @VerifyMessage="verifyFormPanel"

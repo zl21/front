@@ -2312,7 +2312,6 @@
       if (!this.tableGetName) { // 子表不添加loading
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
-
         if (!dom && this.from === 'singlePage') {
           this.$loading.show(this.tableName);
         }
