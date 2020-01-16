@@ -81,6 +81,9 @@
       };
     },
     computed: {
+      ...mapState('global', {
+        isRequest: ({ isRequest }) => isRequest,
+      }),
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
           if (this.jflowWaterMark) {
