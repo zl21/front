@@ -93,7 +93,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -1396,15 +1396,15 @@
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
-            title: '成功44444',
+            title: '成功',
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
           console.log('tab.isrefrsh', tab.isrefrsh);
           if (tab.isrefrsh) {
             this.upData();
-            this.$loading.hide(this.tableName);
-            console.log('关闭静默');
+            // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
+            // console.log('关闭静默');
           } else {
             this.$loading.hide(this.tableName);
             console.log('关闭静默');
@@ -2576,7 +2576,7 @@
                     } else if (itemCheckedInfo) {
                       const itemMessageTip = itemCheckedInfo.messageTip;
                       if (itemMessageTip) {
-                        if (itemMessageTip.length > 0) {
+                        if (isItemTableNewValidation() && itemMessageTip.length > 0) {
                           this.$Message.warning(itemMessageTip[0]);
                           itemCheckedInfo.validateForm.focus();
                           return false;

@@ -135,7 +135,6 @@
 
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
-  const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
     customizeModules[key.toUpperCase()] = CustomizeModule[key];
@@ -307,6 +306,7 @@
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         if (this.type === 'vertical') {

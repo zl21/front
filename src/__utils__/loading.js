@@ -62,16 +62,14 @@ Loading.install = ((Vue) => {
       store.commit('global/updataLoading', tableName);
     }
     const tpl = document.querySelector(`#${currentTableName}-loading`);
-    // if (tpl) {
-    try {
-      tpl.remove();
-    } catch {
-      console.log('未找到dom节点');
+    console.log(4, tpl, currentLoading.includes(currentTableName));
+
+    if (tpl) { // 需要有dom节点才能删除，否则无法确认激活的是正在loading的表，此时会在actived周期内关闭当前loading,清除标记
+      if (currentLoading.includes(currentTableName)) {
+        tpl.remove();
+        store.commit('global/deleteLoading', currentTableName);
+      }
     }
-    if (currentLoading.includes(currentTableName)) {
-      store.commit('global/deleteLoading', currentTableName);
-    }
-    // }
   };
 });
  
