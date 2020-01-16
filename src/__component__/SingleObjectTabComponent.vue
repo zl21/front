@@ -35,6 +35,7 @@
       :paths="formPaths"
       :isreftabs="isreftabs"
       :child-table-name="tableName"
+      :from="from"
       @on-formEnter="enterClick"
       @formChange="formChange"
       @InitializationForm="initForm"
@@ -145,6 +146,7 @@
 
     data() {
       return {
+        from: 'singlePage',
         currentParameter: {},
         itemCurrentParameter: {},
         isclick: true,

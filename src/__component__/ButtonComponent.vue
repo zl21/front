@@ -172,16 +172,6 @@
     },
     data() {
       return {
-        // a: {
-        //   action: 'com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi',
-        //   actiontype: 'rpc',
-        //   ishide: false,
-        //   isrefrsh: false,
-        //   vuedisplay: 'slient',
-        //   webdesc: '财务审核',
-        //   webid: 3146003333,
-        //   webname: 'V_CUST_OPEN_FINANCE_EXAMINE',
-        // },
         dialogComponentName: null,
         dialogConfig: {
           title: '提示',
@@ -211,43 +201,13 @@
         printList: [
           // 打印列表
           {
-            vuedisplay: 'dialog',
-            /* "confirm":"{\"isselect\":true,\"nodesc\":\"请先选择需要打印的记录！\"}", */
-            actiontype: 'url',
-            isrefrsh: false,
             webid: 2527,
-            webdesc: '直接打印',
-            webname: 'OutPrint',
-            webicon: null,
-            action: 'custompage/redirect?print',
-            cuscomponent: null,
-            ishide: false,
           },
           {
-            vuedisplay: 'dialog',
-            confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
-            actiontype: 'url',
-            isrefrsh: false,
             webid: 2530,
-            webdesc: '打印预览',
-            webname: 'OutPreview',
-            webicon: null,
-            action: 'custompage/redirect?preview',
-            cuscomponent: 'printPreview',
-            ishide: false
           },
           {
-            vuedisplay: 'dialog',
-            confirm: null,
-            actiontype: 'url',
-            isrefrsh: false,
             webid: 2533,
-            webdesc: '设置模板',
-            webname: 'OutSetTemplate',
-            webicon: null,
-            action: 'custompage/Konad',
-            cuscomponent: 'printTemplate',
-            ishide: false
           }
         ], // 打印选择列表
         searchData: {

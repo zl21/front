@@ -793,8 +793,6 @@
               }
             });
             this.upData();
-            this.$loading.show(this.tableName);// 表单组件触发时需加loading
-
             this.clearEditData();
           }
         } else {
@@ -802,7 +800,6 @@
           const message = '刷新成功';
           this.clearItemEditData();
           this.upData(`${message}`);
-          this.$loading.show(this.tableName);// 表单组件触发时需加loading
         }
       },
       upData(message) { // 页面刷新判断逻辑

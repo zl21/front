@@ -9,8 +9,8 @@
       :width="width"
       :loading="loading"
       :title-align="titleAlign"
-      @on-cancle="oncancle"
       :footer-hide="true"
+      @on-cancle="oncancle"
     >
       <div
         slot="Modalsolt"
