@@ -135,7 +135,6 @@
 
   import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
 
-  const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
     customizeModules[key.toUpperCase()] = CustomizeModule[key];
@@ -159,12 +158,6 @@
       compositeForm
     },
     props: {
-      tabPanelsAll: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
       tabPanel: {
         type: Array,
         default() {
@@ -260,7 +253,10 @@
       }// 定制界面自定义组件类型，为ALL时不显示单对象按钮组件
     },
     inject: [MODULE_COMPONENT_NAME],  
-    computed: {
+    computed: { 
+      tabPanelsAll() {
+        return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
+      },
       resetWaterMark() {
         if (this.watermarkimg) {
           if (this.jflowWaterMark) {
@@ -310,6 +306,7 @@
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const tableComponent = `${this[MODULE_COMPONENT_NAME]}.TableDetailCollection`;
         const buttonComponent = `${this[MODULE_COMPONENT_NAME]}.SingleObjectButtons`;
         if (this.type === 'vertical') {
@@ -328,7 +325,7 @@
           }
         }
         if(this.componentName) { // 定制tab自定义组件
-          const customizedModuleName = this.componentName;
+          const customizedModuleName = this.componentName.toUpperCase();
           if (Vue.component(customizedModuleName) === undefined) {
             const target = externalModules[customizedModuleName] || customizeModules[customizedModuleName];
             if (target) {

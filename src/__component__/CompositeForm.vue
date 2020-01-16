@@ -238,6 +238,7 @@
         LinkageForm: [], // 界面 所有表单组件配置
         hidecolumnForm: {}, // 界面 隐藏字段
         defaultDataInt: {}, // 默认值的value
+        watchTime: null,
         expand: 'expand' // 面板是否展开
       };
     },
@@ -252,17 +253,19 @@
       defaultData: {
         handler() {
           // 开启  默认值(刷新界面))
-          this.mountChecked = false;
-          // 清空界面的 默认值
-          this.defaultFormData = {};
+          clearTimeout(this.watchTime);
+          this.watchTime = setTimeout(() => {
+            this.mountChecked = false;
+            // 清空界面的 默认值
+            this.defaultFormData = {};
+            // 开启 (刷新界面))
+            this.mountNumber = (Math.random() * 1000).toFixed(0);
+            // 组件重组
+            this.reorganizeForm();
 
-          // 开启 (刷新界面))
-          this.mountNumber = (Math.random() * 1000).toFixed(0);
-          // 组件重组
-          this.reorganizeForm();
-
-          this.defaultColumnCol = this.defaultData.objviewcol || 4;
-          this.Comparison();
+            this.defaultColumnCol = this.defaultData.objviewcol || 4;
+            this.Comparison();
+          }, 200);
         },
         deep: true
       },
@@ -589,7 +592,7 @@
           this.VerificationFormItem = [];
           this.setVerifyMessageForm();
         }, 100);
-        if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
+        if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() === 'NEW' && this.labelForm[current.item.field] === '') {
           // eslint-disable-next-line no-shadow
           delete this.formDataSave[current.item.field];
           delete this.formDataDef[current.item.field];
@@ -600,7 +603,7 @@
             itemName: this.tableGetName
           };
           this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/seleteAddData`, data);
-        } else if (this.conditiontype !== 'list' && this.$route.params.itemId.toLocaleUpperCase() !== 'NEW' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
+        } else if (this.conditiontype !== 'list' && this.$route.params.itemId && this.$route.params.itemId.toLocaleUpperCase() !== 'NEW' && this.labelForm[current.item.field] === this.r3Form[current.item.field]) {
           let form = this.formData[current.item.field];
           let defaultFormData = this.defaultFormData[current.item.field];
           try {
@@ -784,6 +787,7 @@
               if (this.tableGetName !== '') {
                 return false;
               }
+              console.log('-------');
               DispatchEvent(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, {
                 detail: {
                   hideLoadingForButton: true
@@ -2299,6 +2303,19 @@
       }
     },
     mounted() {
+      const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+      const dom = document.querySelector(`#${currentTableName}-loading`);
+      if (this.moduleFormType === 'horizontal') {
+        if (this.masterName === this.childTableName) { // 子表不添加loading
+          if (!dom) {
+            this.$loading.show(this.tableName);
+          }
+        }
+      } else if (!dom) {
+        this.$loading.show(this.tableName);
+      }
+     
+     
       this.Comparison();
      
       setTimeout(() => {

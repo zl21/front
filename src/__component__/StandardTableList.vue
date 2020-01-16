@@ -1437,7 +1437,6 @@
                 );
               }
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              const url = 'CUSTOMIZED/FUNCTIONPERMISSION/';
               const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
               const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
               router.push({
@@ -1918,7 +1917,6 @@
         this.setErrorModalValue({ errorDialogvalue });
       },
       objTabActionNavbar(tab) {
-        tab.action = 'CUSTOMIZED/FUNCTIONPERMISSION?23222323232';
         if (tab.action) {
           const actionType = tab.action.substring(0, tab.action.indexOf('/'));
           const singleEditType = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);

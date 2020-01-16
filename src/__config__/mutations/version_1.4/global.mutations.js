@@ -12,18 +12,21 @@ import router from '../../router.config';
 import customize from '../../customize.config';
 import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
-import DispatchEvent from '../../../__utils__/dispatchEvent';
+import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
   updataLoading(state, tableName) {
-    state.currentLoading.push(tableName);
+    if (state.currentLoading.indexOf(tableName) === -1) {
+      state.currentLoading.push(tableName); 
+    }
   },
   deleteLoading(state, tableName) {
     const index = state.currentLoading.indexOf(tableName);
     if (index > -1) {
       state.currentLoading.splice(index, 1);
     }
+
     // state.currentLoading.splice(tableName, 1);
   },
   directionalRouter(state, param) {

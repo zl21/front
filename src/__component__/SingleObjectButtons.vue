@@ -93,7 +93,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -273,7 +273,20 @@
         },
         deep: true
       },
-      upDataMainForm() {}
+      // upDataMainForm: {
+      //   handler(val) {
+      //     if (val) {
+      //       const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+      //       const dom = document.querySelector(`#${currentTableName}-loading`);
+      //       if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+      //         if (!dom && this.tableName === this.$route.params.tableName) {
+      //           console.log(1);
+      //           this.$loading.show(this.tableName);
+      //         }
+      //       }    
+      //     }
+      //   }
+      // }
     },
     computed: {
       ...mapState('global', {
@@ -285,20 +298,23 @@
         serviceIdMap: ({ serviceIdMap }) => serviceIdMap,
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
+        currentLoading: ({ currentLoading }) => currentLoading,
+
+        
       }),
-      upDataMainForm() {
-        // 当前主表存在form,开启loading
-        if (this.objectType === 'horizontal') {
-          if (this.isMainForm[0].componentAttribute.panelData.isShow) {
-            if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
-              this.$loading.show();
-            }     
-          }
-        } else if (this.isMainForm.formData.isShow) { 
-          this.$loading.show();
-        }
-        return this.isMainForm;
-      },
+      // upDataMainForm() {
+      //   // 当前主表存在form,开启loading
+      //   let flag = null;
+       
+      //   if (this.objectType === 'horizontal') {
+      //     if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
+      //       flag = true;
+      //     }
+      //   } else if (this.isMainForm.formData.isShow) { 
+      //     flag = true;
+      //   }
+      //   return flag;
+      // },
       watermarkImg() { // 匹配水印图片路径
         // if (this.watermarkimg.includes('/static/img/')) {
         //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
@@ -474,7 +490,7 @@
     methods: {
       ...mapActions('global', ['getExportedState', 'updataTaskMessageCount']),
 
-      ...mapMutations('global', ['emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
+      ...mapMutations('global', ['deleteLoading', 'emptyTestData', 'tabCloseAppoint', 'decreasekeepAliveLists', 'copyDataForSingleObject', 'tabHref', 'tabOpen', 'copyModifyDataForSingleObject', 'increaseLinkUrl', 'addKeepAliveLabelMaps', 'addServiceIdMap']),
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -777,6 +793,8 @@
               }
             });
             this.upData();
+            this.$loading.show(this.tableName);// 表单组件触发时需加loading
+
             this.clearEditData();
           }
         } else {
@@ -784,6 +802,7 @@
           const message = '刷新成功';
           this.clearItemEditData();
           this.upData(`${message}`);
+          this.$loading.show(this.tableName);// 表单组件触发时需加loading
         }
       },
       upData(message) { // 页面刷新判断逻辑
@@ -858,7 +877,7 @@
             table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
         }
-        this.closeCurrentLoading();
+        // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听
         setTimeout(() => {
           if (message) {
             this.$Message.success(message);
@@ -1081,6 +1100,9 @@
         case 'slient':
           this.objTabActionSlient(obj);
           break;
+        case 'jflow_trigger':
+          this.jflowLaunch(obj);
+          break;
         case 'download':
           this.objTabActiondDownload(obj);
           break;
@@ -1099,6 +1121,13 @@
         default:
           break;
         }
+      },
+      jflowLaunch(obj) {
+        DispatchEvent('jflowLaunch', {
+          detail: {
+            data: obj
+          }
+        });
       },
       objTabActionEdit(tab) {
         const editTableId = tab.action.lastIndexOf('/');
@@ -1359,7 +1388,9 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
-          this.$loading.show();
+          console.log(3);
+
+          this.$loading.show(this.tableName);
         });
         promise.then(() => {
           const message = this.objTabActionSlientConfirmData.message;
@@ -1369,14 +1400,18 @@
             content: `${message}`
           };
           this.$Modal.fcSuccess(data);
+          console.log('tab.isrefrsh', tab.isrefrsh);
           if (tab.isrefrsh) {
             this.upData();
-            this.$loading.hide(this.tableName);
+            // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
+            // console.log('关闭静默');
           } else {
             this.$loading.hide(this.tableName);
+            console.log('关闭静默');
           }
         }, () => {
           this.$loading.hide(this.tableName);
+          console.log('关闭静默');
         });
       },
       objTabActionDialog(tab) { // 动作定义弹出框
@@ -1438,8 +1473,10 @@
 
 
         const promise = new Promise((resolve, reject) => {
-          this.$loading.show();
           this.getExportQueryForButtons({ OBJ, resolve, reject });
+          console.log(4);
+
+          this.$loading.show(this.tableName);
         });
         promise.then(() => {
           if (this.buttonsData.exportdata) {
@@ -1576,15 +1613,19 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show();
+        console.log(5);
+
+        this.$loading.show(this.tableName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        this.$loading.show();
+        console.log(6);
+
+        this.$loading.show(this.tableName);
       },
-      clickButtonsBack(verify) { // 按钮返回事件  
-        if (!verify) {
+      clickButtonsBack(stop) { // 按钮返回事件  
+        if (stop) {
           this.back();
           this.isValue = null;
         } else {
@@ -2271,8 +2312,8 @@
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ tableName: this.tableName, routeFullPath: currentRoute });
         } else {
-          const verify = false;
-          this.clickButtonsBack(verify);
+          const stop = true;
+          this.clickButtonsBack(stop);
         }
       },
       objectAdd() { // 新增
@@ -2310,7 +2351,6 @@
         // }, 2000);
       },
       objectSave(obj) { // 保存按钮事件逻辑
-        this.$loading.show();
         if (this.itemId === 'New') { // 主表新增保存和编辑新增保存
           if (this.verifyRequiredInformation()) {
             this.mainTableNewSaveAndEditorNewSave();
@@ -2536,7 +2576,7 @@
                     } else if (itemCheckedInfo) {
                       const itemMessageTip = itemCheckedInfo.messageTip;
                       if (itemMessageTip) {
-                        if (itemMessageTip.length > 0) {
+                        if (isItemTableNewValidation() && itemMessageTip.length > 0) {
                           this.$Message.warning(itemMessageTip[0]);
                           itemCheckedInfo.validateForm.focus();
                           return false;
@@ -2599,16 +2639,19 @@
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {
-          // if (this.itemId === 'New') {
-          //   this.$loading.show();
-          // }
+          if (this.itemId === 'New') {
+            console.log(7);
+
+            this.$loading.show(this.tableName);
+          }
           this.performMainTableSaveAction({ parame, resolve, reject });
         });
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
         promise.then(() => {
-          this.closeCurrentLoading();
+          // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
+          console.log('保存后关闭loading');
           this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
@@ -2633,6 +2676,7 @@
           }
         }, () => {
           this.closeCurrentLoading();
+          console.log('保存关闭');
           stop = true;
           removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
@@ -2889,13 +2933,15 @@
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
         if (dom) {
+          console.log('手动关闭loading');
           this.$loading.hide(currentTableName);
         }
       },
       hideListenerLoading(value) { // 根据监听关闭loading
+        console.log('关闭监听loading');
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-        const dom = document.querySelector(`#${currentTableName}-loading`);
-        if ((value.detail.hideCopyLoading || value.detail.hideLoadingForButton) && dom) {
+        // const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {
           this.$loading.hide(currentTableName);
         }
       }
@@ -2907,6 +2953,9 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      // if (!this.itemNameGroup.map(c => c.tableName).includes(this.itemName)) { // 子表不添加loading
+      //   this.$loading.show(this.tableName);
+      // }     
       this.hideBackButton();
          
       if (!this._inactive) {
@@ -2914,7 +2963,6 @@
         // window.addEventListener('exeActionForR3', (data) => {
         //   this.tabCloseAppoint({ tableName: data.detail.tableName, routeFullPath: data.detail.routePath });
         // });
-
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
         window.addEventListener('globalNoticeCopy', this.hideListenerLoading);
         window.addEventListener('network', this.networkEventListener);// 监听接口
@@ -2981,8 +3029,7 @@
       this.itemId = itemId;
       this.buttonMap = buttonmap;
     },
-    activated() {
-    }
+   
   };
 </script>
 

@@ -13,20 +13,31 @@ export default () => ({
     [INSTANCE_ROUTE]: router.currentRoute.fullPath,
     [INSTANCE_ROUTE_QUERY]: router.currentRoute.params,
   },
+  data() {
+    return {
+      noMounted: true, // 进入单对象会同时触发mounted与actived两个生命周期，因此无法判断是否在切换tab
+    };
+  },
+  mounted() {
+    this.noMounted = false;
+  },
   created() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
     this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
     this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
   },
   activated() {
-    const currentTableName = this.$router.currentRoute.params.tableName;
-    const tpl = document.querySelector(`#${currentTableName}-loading`);
-    if (tpl) {
-      if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
-        tpl.remove();
-        store.commit('global/deleteLoading', currentTableName);
+    if (this.noMounted) { // 因进入单对象界面会触发activated生命周期，以下操作为切换tab时的处理逻辑，第一次加载组件不需要执行以下操作，故在mounted里加标示区分
+      const currentTableName = this.$router.currentRoute.params.tableName;
+      const tpl = document.querySelector(`#${currentTableName}-loading`);
+      if (tpl) {
+        if (store.state.global.currentLoading.indexOf(currentTableName) !== -1) {
+          tpl.remove();
+          store.commit('global/deleteLoading', currentTableName);
+        }
       }
     }
+    this.noMounted = true;
   },
   computed: {
     ...mapState('global', {

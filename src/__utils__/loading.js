@@ -11,11 +11,12 @@ Loading.install = ((Vue) => {
   if (Loading.installed) return;
   Vue.prototype.$loading = {};
 
-  Vue.prototype.$loading.show = () => {
+  Vue.prototype.$loading.show = (tableName) => {
     // 如果页面有loading则不继续执行{
-    const currentTableName = router.currentRoute.params.tableName;
+    const currentTableName = tableName || router.currentRoute.params.tableName;
     //   currentTableName = store.state.global.activeTab.tableName;
-    if (document.querySelector(currentTableName)) return;
+    const doms = document.querySelector(`#${currentTableName}-loading`);
+    if (doms) return;
 
     // 1、创建构造器，定义loading模板
 
@@ -28,9 +29,16 @@ Loading.install = ((Vue) => {
 
     });
 
-    // 2、创建实例，挂载到文档以后的地方
+    // // 2、创建实例
     const tpl = new LoadingTip().$mount().$el;
+    // const tpl = document.createElement('div');
+    // tpl.innerHTML = `
+    // <div  class="vue-loading">
+    //    <div class="R3-Loading loader "></div>
+    // </div>`;
     tpl.setAttribute('id', `${currentTableName}-loading`);
+    // tpl.setAttribute('class', 'vue-loading');
+
 
     // 3、把创建的实例添加到容器中
     const dom = document.querySelector(`#${currentTableName}`);
@@ -39,22 +47,25 @@ Loading.install = ((Vue) => {
     dom.appendChild(tpl);
 
     // 阻止遮罩滑动
-    document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
-      e.stopPropagation();
+    // document.querySelector(`#${currentTableName}-loading`).addEventListener('touchmove', (e) => {
+    //   e.stopPropagation();
 
-      e.preventDefault();
-    });
+    //   e.preventDefault();
+    // });
     Loading.installed = true;
   };
 
   Vue.prototype.$loading.hide = (tableName) => {
-    store.commit('global/updataLoading', tableName);
-    const currentTableName = router.currentRoute.params.tableName;
     const currentLoading = store.state.global.currentLoading;
+    const currentTableName = tableName || router.currentRoute.params.tableName;
+    if (!currentLoading.includes(currentTableName)) { // 没有则添加
+      store.commit('global/updataLoading', tableName);
+    }
     const tpl = document.querySelector(`#${currentTableName}-loading`);
-    // dom.style = 'height: 100%; padding: 0px 15px; overflow: auto; position: relative;';
-    if (tpl) {
-      if (currentLoading.indexOf(currentTableName) !== -1) {
+    console.log(4, tpl, currentLoading.includes(currentTableName));
+
+    if (tpl) { // 需要有dom节点才能删除，否则无法确认激活的是正在loading的表，此时会在actived周期内关闭当前loading,清除标记
+      if (currentLoading.includes(currentTableName)) {
         tpl.remove();
         store.commit('global/deleteLoading', currentTableName);
       }
