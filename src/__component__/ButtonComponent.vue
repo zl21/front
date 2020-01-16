@@ -201,12 +201,15 @@
         printList: [
           // 打印列表
           {
+            webdesc: '直接打印',
             webid: 2527,
           },
           {
+            webdesc: '打印预览',
             webid: 2530,
           },
           {
+            webdesc: '设置模版',
             webid: 2533,
           }
         ], // 打印选择列表
