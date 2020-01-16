@@ -177,6 +177,7 @@
           :ref="_items.field"
           :data="_items.props.data"
           :single="_items.props.single"
+          :placeholder="_items.props.placeholder"
           :total-row-count="_items.props.totalRowCount"
           :page-size="_items.props.pageSize"
           :auto-data="_items.props.AutoData"
