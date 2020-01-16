@@ -201,16 +201,43 @@
         printList: [
           // 打印列表
           {
-            webdesc: '直接打印',
+            vuedisplay: 'dialog',
+            /* "confirm":"{\"isselect\":true,\"nodesc\":\"请先选择需要打印的记录！\"}", */
+            actiontype: 'url',
+            isrefrsh: false,
             webid: 2527,
+            webdesc: '直接打印',
+            webname: 'OutPrint',
+            webicon: null,
+            action: 'custompage/redirect?print',
+            cuscomponent: null,
+            ishide: false,
           },
           {
-            webdesc: '打印预览',
+            vuedisplay: 'dialog',
+            confirm: '{"isselect":true,"nodesc":"请先选择需要打印预览的记录！"}',
+            actiontype: 'url',
+            isrefrsh: false,
             webid: 2530,
+            webdesc: '打印预览',
+            webname: 'OutPreview',
+            webicon: null,
+            action: 'custompage/redirect?preview',
+            cuscomponent: 'printPreview',
+            ishide: false
           },
           {
-            webdesc: '设置模版',
+            vuedisplay: 'dialog',
+            confirm: null,
+            actiontype: 'url',
+            isrefrsh: false,
             webid: 2533,
+            webdesc: '设置模板',
+            webname: 'OutSetTemplate',
+            webicon: null,
+            action: 'custompage/Konad',
+            cuscomponent: 'printTemplate',
+            ishide: false
           }
         ], // 打印选择列表
         searchData: {
