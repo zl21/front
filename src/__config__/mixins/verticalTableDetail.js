@@ -142,12 +142,5 @@ export default () => ({
         delete window.Vue.options.components[this.$options._componentTag];
       }
     }
-    // if (this.keepAliveLists && this.keepAliveLists.length > 0 && this.keepAliveLists.indexOf(this[MODULE_COMPONENT_NAME]) === -1) {
-    //   if (this.$options.isKeepAliveModel) {
-    //     updateSessionObject(HAS_BEEN_DESTROYED_MODULE, { k: this[MODULE_COMPONENT_NAME], v: true });
-    //     this.$destroy();
-    //   }
-    // }
-  },
- 
+  }
 });

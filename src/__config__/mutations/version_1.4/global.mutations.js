@@ -17,7 +17,7 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   updataLoading(state, tableName) {
-    if (state.currentLoading.indexOf(tableName) === -1) {
+    if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
     }
   },

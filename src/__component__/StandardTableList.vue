@@ -3,7 +3,7 @@
 <template>
   <div
     :id="buttons.tableName"
-    class="StandardTableListRootDiv r398"
+    class="StandardTableListRootDiv"
   >
     <ButtonGroup
       :data-array="buttons.dataArray"
@@ -1248,6 +1248,7 @@
 
         let promise = new Promise((resolve, reject) => {
           this.$loading.show();
+          console.log('静默');
           this.getExeActionDataForButtons({
             item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
@@ -1605,6 +1606,7 @@
       },
       batchExport() {
         this.$loading.show();
+        console.log('导出');
         let searchData = {};
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         // 导出
@@ -1754,7 +1756,6 @@
       },
       batchUnSubmit() {
         // 批量反提交
-        this.actionLoading = true;
         const obj = {
           tableName: this.buttons.tableName,
           ids: this.buttons.selectIdArr.map(d => parseInt(d))

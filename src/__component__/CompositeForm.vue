@@ -102,6 +102,13 @@
     name: 'CompositeForm',
     components: {},
     props: {
+      from: {
+        // 引入此组件的来源
+        type: String,
+        default() {
+          return '';
+        }
+      },
       isMainTable: {
         // 是否 主表
         type: Boolean,
@@ -787,7 +794,6 @@
               if (this.tableGetName !== '') {
                 return false;
               }
-              console.log('-------');
               DispatchEvent(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, {
                 detail: {
                   hideLoadingForButton: true
@@ -2303,19 +2309,15 @@
       }
     },
     mounted() {
-      const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
-      const dom = document.querySelector(`#${currentTableName}-loading`);
-      if (this.moduleFormType === 'horizontal') {
-        if (this.masterName === this.childTableName) { // 子表不添加loading
-          if (!dom) {
-            this.$loading.show(this.tableName);
-          }
+      if (!this.tableGetName) { // 子表不添加loading
+        const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
+        const dom = document.querySelector(`#${currentTableName}-loading`);
+        if (!dom && this.from === 'singlePage') {
+          this.$loading.show(this.tableName);
         }
-      } else if (!dom) {
-        this.$loading.show(this.tableName);
       }
-     
-     
+
+      
       this.Comparison();
      
       setTimeout(() => {

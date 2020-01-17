@@ -34,6 +34,7 @@
         :paths="formPaths"
         :isreftabs="mainFormInfo.buttonsData.data.isreftabs"
         :child-table-name="getItemName"
+        :from="from"
         type="PanelForm"
         @formChange="formChange"
         @InitializationForm="InitializationForm"
@@ -75,10 +76,14 @@
     // name: 'VTableDetail',
     data() {
       return {
-        currentSingleButtonComponentName: null
+        currentSingleButtonComponentName: null,
+        from: 'singlePage',
       };
     },
     computed: {
+      ...mapState('global', {
+        isRequest: ({ isRequest }) => isRequest,
+      }),
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
           if (this.jflowWaterMark) {
@@ -155,6 +160,7 @@
       this.getObjectTabForMainTable({
         table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
       });
+      this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
     },
     methods: {
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
