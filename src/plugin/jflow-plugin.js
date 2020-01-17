@@ -666,6 +666,10 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.jflowIp = jflowIp;
 }
 
+function jflowLaunch(event) {
+  console.log(event);
+}
+
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
@@ -683,6 +687,9 @@ const install = function install(Vue, options = {}) {
     createComponent();
 
     Vue.prototype.$network = network;
+
+    // 监听jflow触发按钮响应
+    window.addEventListener('jflowLaunch', jflowLaunch, this);
   }
 };
 
