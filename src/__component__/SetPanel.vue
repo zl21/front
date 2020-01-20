@@ -61,9 +61,9 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute, enableInitializationRequest, Version } from '../constants/global';
+  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
   import router from '../__config__/router.config';
-  import network, { urlSearchParams } from '../__utils__/network';
+  import network, { urlSearchParams, GetTableName } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
   import { removeSessionObject } from '../__utils__/sessionStorage';
 
@@ -175,6 +175,7 @@
             this.emptyTabs();
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');
+            GetTableName('');
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
