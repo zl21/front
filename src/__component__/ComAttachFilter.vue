@@ -255,6 +255,10 @@
           this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
             res
           );
+        } else {
+          this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
+            []
+          );
         }
       },
       attachFilterClear() {

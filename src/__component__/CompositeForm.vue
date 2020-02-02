@@ -9,7 +9,7 @@
       <Collapse
         v-for="(item,index) in computdefaultData"
         :key="index"
-        v-model="item.hrdisplay "
+        v-model="item.showHrdisplay "
         active-key="index"
         @on-change="CollapseClose(index,item.hrdisplay)"
       >
@@ -360,7 +360,8 @@
         const childs = {
           list: [],
           parentdesc: '',
-          hrdisplay: ''
+          hrdisplay: '',
+          showHrdisplay: ''
         };
         const hrdata = [];
         const defaultData = JSON.parse(JSON.stringify(this.defaultData));
@@ -384,7 +385,8 @@
                 hrdata.push({
                   childs: [],
                   parentdesc: current.child.name,
-                  hrdisplay: ''
+                  hrdisplay: '',
+                  showHrdisplay: ''
                 });
               }
             } else if (current.inpubobj) {
@@ -402,7 +404,8 @@
               childs: childs.list,
               parentdesc: childs.parentdesc,
               isTitleShow: childs.isTitleShow,
-              hrdisplay: 'expand'
+              hrdisplay: 'expand',
+              showHrdisplay: 'expand'
             });
           }
           defaultData.addcolums = [...data];
@@ -424,6 +427,7 @@
                 array.push({
                   childs: tem.concat([]),
                   hrdisplay: current.hrdisplay,
+                  showHrdisplay: current.hrdisplay,
                   parentdesc: current.parentdesc,
                   parentname: current.parentname,
                   isTitleShow: !current.isTitleShow
