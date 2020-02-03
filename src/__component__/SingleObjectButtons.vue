@@ -1398,6 +1398,17 @@
           this.$Modal.fcSuccess(data);
           console.log('tab.isrefrsh', tab.isrefrsh);
           if (tab.isrefrsh) {
+            // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
+            if (this.objectType === 'horizontal') {
+              const itemNames = this.itemNameGroup.map((c) => {
+                if (c.tableName !== this.tableName) {
+                  return c.tableName;
+                }
+              });// 因左右结构itemNameGroup包含主表，上下结构不包括
+              if (itemNames.includes(this.itemName)) {
+                this.$loading.hide(this.tableName);
+              }
+            }
             this.upData();
             // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
             // console.log('关闭静默');
