@@ -782,6 +782,7 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
+        // 查询表
         multipleComple().multipleSelectionTable({
           searchObject: {
             param: {
@@ -886,7 +887,6 @@
     },
     created() {
       this.loading = true;
-     
       this.init();
     }
 

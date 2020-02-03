@@ -300,7 +300,8 @@
           const data = JSON.parse(this.selected[0].ID);
           setTimeout(() => {
             if (this.$refs.complex && typeof data === 'object') {
-              this.$refs.complex.setvalueData(data, 1);
+              // this.$refs.complex.setvalueData(data, 1);
+              this.$refs.complex.init();
             }
           }, 500);
         } else {
