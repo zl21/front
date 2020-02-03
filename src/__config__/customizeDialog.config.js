@@ -41,4 +41,11 @@ export default {
       '../__customizeDialog__/printTemplate/printTemplate.vue'
     )
   },
+  report: {
+    component: () => import(
+      /* webpackChunkName: 'PublishPrintTemplate' */
+      /* webpackMode: 'eager' */
+      '../__customizeDialog__/Report/report.vue'
+    )
+  },
 };
