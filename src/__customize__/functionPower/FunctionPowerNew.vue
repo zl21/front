@@ -689,6 +689,9 @@
             AD_TABLECATE_ID: this.adTableCateId,
             GROUP_ID: this.groupId
           };
+          if (this.newTreeObj.dataSource) {
+            obj.DATA_SOURCE = this.newTreeObj.dataSource;
+          }
         } else {
           obj = {
             GROUP_ID: this.groupId
