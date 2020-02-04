@@ -114,6 +114,8 @@ const getCategory = () => {
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
       }
+    }).catch(() => {
+      router.push({ path: getTouristRoute() });
     });
   }
 };
