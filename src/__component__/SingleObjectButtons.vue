@@ -299,28 +299,8 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
-
-        
       }),
-      // upDataMainForm() {
-      //   // 当前主表存在form,开启loading
-      //   let flag = null;
-       
-      //   if (this.objectType === 'horizontal') {
-      //     if (this.isMainForm[0] && this.isMainForm[0].componentAttribute && this.isMainForm[0].componentAttribute.panelData.isShow) {
-      //       flag = true;
-      //     }
-      //   } else if (this.isMainForm.formData.isShow) { 
-      //     flag = true;
-      //   }
-      //   return flag;
-      // },
       watermarkImg() { // 匹配水印图片路径
-        // if (this.watermarkimg.includes('/static/img/')) {
-        //   // const src = this.watermarkimg.replace('/static/img/', '../assets/image/watermark/');
-        //   const src = this.watermarkimg.split('/')[3];
-        //   return require(`../assets/image/watermark/${src}`);
-        // }
         return this.watermarkimg;
       },
       waterMarkText() {
@@ -1306,7 +1286,7 @@
         // }
       },
       // 动作定义静默执行
-      objTabActionSlient(tab) {
+      objTabActionSlientConfirm(tab) {
         let params = {};
         const label = `${this.activeTab.label.replace('编辑', '')}`;
         let ids = [];// 子表勾选1.4ID格式
@@ -2750,7 +2730,8 @@
                 objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
               });
             });
-            // let message = '';
+            this.temporaryStorage = false;
+            this.dataArray.temporaryStorage = false;
             promise.then(() => {
                            const message = this.buttonsData.submitData.message;
                            if (message) {
@@ -2770,7 +2751,9 @@
                 objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
               });
             });
-            // let message = '';
+            this.temporaryStorage = false;
+            this.dataArray.temporaryStorage = false;
+            this.saveEventAfter = '';
             promise.then(() => {
               const message = this.buttonsData.invalidData.message;
               if (message) {
@@ -2778,10 +2761,8 @@
               } else {
                 this.upData();
               }
-              this.saveEventAfter = '';
             }, () => { // 状态为rejected时执行
               this.upData();
-              this.saveEventAfter = '';
             });
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
@@ -2794,6 +2775,8 @@
             }
           }
         } else {
+          this.temporaryStorage = false;
+          this.dataArray.temporaryStorage = false;
           this.upData();
         }
       },
