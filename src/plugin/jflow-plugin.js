@@ -204,8 +204,8 @@ function thirdlogin() { // 三方登录  获取accessToken
         -----BEGIN PUBLIC KEY-----
         ${PUBLIC_KEY}
         -----END PUBLIC KEY-----`);
-    headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
-    headers.encrypt_type = 'RSA';
+    headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
+    headers['encrypt-type'] = 'RSA';
     headers['Content-Type'] = 'application/json';
   }
   
@@ -532,8 +532,8 @@ function AxiosGuard(axios) { // axios拦截
         -----BEGIN PUBLIC KEY-----
         ${PUBLIC_KEY}
         -----END PUBLIC KEY-----`);
-        config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
-        config.headers.encrypt_type = 'RSA';
+        config.headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
+        config.headers['encrypt-type'] = 'RSA';
       }
     }
     if (configurationFlag) { // 配置了流程图并
@@ -666,8 +666,89 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.jflowIp = jflowIp;
 }
 
+function jflowRefresh() { // 刷新业务系统
+  DispatchEvent('jflowClick', {
+    detail: {
+      type: 'refresh'
+    }
+  });
+}
+
+function initiateLaunch(data) { // 业务系统流程发起
+  return new Promise((resolve, reject) => {
+    axios.post('/jflow/p/cs/process/launch',
+      {
+        // eslint-disable-next-line no-nested-ternary
+        businessCodes: router.currentRoute.params.itemId,
+        businessType: router.currentRoute.params.tableId,
+        businessTypeName: router.currentRoute.params.tableName,
+        initiator: userInfo.id,
+        userName: userInfo.name,
+        instanceId,
+        initiatorName: userInfo.name,
+        changeUser: userInfo.id
+      }).then((res) => {
+      DispatchEvent('jflowClick', {
+        detail: {
+          type: 'clearSubmit'
+        }
+      });
+      
+      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.notice,
+          mask: true
+        });
+        reject(res);
+        return; 
+      }
+      if (res.data.data.records && res.data.data.records[0].notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.data.records[0].notice,
+          mask: true
+        });
+        reject(res);
+        return;
+      }
+      if (res.data.resultCode === 0) {
+        if (res.objids) {
+          window.R3message({
+            title: '提示',
+            content: '请稍等,正在审批······',
+            mask: true
+          });
+        }
+        instanceId = res.data.data.instanceId;
+
+        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
+        if (type === 'H' || type === 'V') {
+          jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 流程发起成功刷新界面
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
+              }
+            });
+          });
+        }
+
+        DispatchEvent('jflowEvent', {
+          detail: {
+            type: 'search'
+          }
+        });
+        reject(res);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 function jflowLaunch(event) {
-  console.log(event);
+  initiateLaunch(event.detail.data);
 }
 
 
@@ -690,6 +771,9 @@ const install = function install(Vue, options = {}) {
 
     // 监听jflow触发按钮响应
     window.addEventListener('jflowLaunch', jflowLaunch, this);
+    
+    window.initiateLaunch = initiateLaunch;
+    window.jflowRefresh = jflowRefresh;
   }
 };
 
