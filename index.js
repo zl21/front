@@ -10,7 +10,7 @@ import './src/constants/dateApi';
 import network from './src/__utils__/network';
 
 import {
-  enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -121,7 +121,9 @@ const init = () => {
 const getCategory = () => {
   if (enableInitializationRequest()) {
     network.post('/p/cs/getSubSystems').then((res) => {
-      if (res.data.data) {
+      if (res.data.code === '-1') {
+        router.push({ path: getTouristRoute() });
+      } else if (res.data.data) {
         store.commit('global/updateMenuLists', res.data.data);
         const serviceIdMaps = res.data.data.map(d => d.children)
           .reduce((a, c) => a.concat(c))
