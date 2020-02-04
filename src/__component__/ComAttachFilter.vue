@@ -255,6 +255,10 @@
           this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
             res
           );
+        } else {
+          this.propsData.datalist = dataProp.AttachFilter.props.datalist.concat(
+            []
+          );
         }
       },
       attachFilterClear() {
@@ -296,7 +300,8 @@
           const data = JSON.parse(this.selected[0].ID);
           setTimeout(() => {
             if (this.$refs.complex && typeof data === 'object') {
-              this.$refs.complex.setvalueData(data, 1);
+              // this.$refs.complex.setvalueData(data, 1);
+              this.$refs.complex.init();
             }
           }, 500);
         } else {

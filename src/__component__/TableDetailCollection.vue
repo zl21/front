@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -907,7 +907,7 @@
         });
 
         promise.then(() => {
-          this.$loading.hide(this.rouuterParams.tableName);
+          this.$loading.hide(this.routerParams.tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -1037,16 +1037,16 @@
             });
           } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
             const name = getLabel({ url: tab.action, id: tab.webid, type: 'customized' });
-          this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-          const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
-          const keepAliveLabelMapsObj = {
-            k: name,
-            v: tab.webdesc
-          };
-          updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
-          router.push(
-            path
-          );
+            this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
+            const path = getUrl({ url: tab.action, id: tab.webid, type: 'customized' });
+            const keepAliveLabelMapsObj = {
+              k: name,
+              v: tab.webdesc
+            };
+            updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+            router.push(
+              path
+            );
             // const customizedName = tab.action.substring(tab.action.lastIndexOf('/') + 1, tab.action.length);
             // const name = `${CUSTOMIZED_MODULE_COMPONENT_PREFIX}.${customizedName.toUpperCase()}.${tab.webid}`;
             // this.addKeepAliveLabelMaps({ name, label: tab.name });

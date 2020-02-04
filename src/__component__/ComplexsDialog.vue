@@ -252,7 +252,7 @@
         }
         // console.log(this.IN,'this.INthis.IN');
       },
-      columnsDate(columns) {
+      columnsDate(columns, index) {
         // 表格头部 数据重组
         return Object.keys(columns).reduce((item, option) => {
           if (option.toUpperCase() === 'ID') {
@@ -262,7 +262,7 @@
               render: (h, params) => h('div',
                                        {
                                          domProps: {
-                                           innerHTML: this.sendMessage.PAGESIZE * (this.sendMessage.PAGENUM - 1) + params.index + 1
+                                           innerHTML: `${(this.componentData[index].pageNum - 1) * this.componentData[index].pageSize + params.index + 1}`
                                          }
                                        })
             });
@@ -521,6 +521,11 @@
       transfertwo() {
         // console.log(this.treeSelectData.findIndex((item)=>{ return item.nodeKey === 1}));
         // this.sendMessage = 
+        if (this.chooseTreeData.length < 1) {
+          return false;
+        }
+      
+
         this.setConDitions();
 
         this.chooseTreeData = [];
@@ -570,9 +575,10 @@
         if (this.tdData.id !== '') {
           this.tdresultdata('tip');
         }
-        if (this.listData.id !== '') {
+        if (JSON.stringify(this.listData.id) !== '' && JSON.stringify(this.listData.id) !== '[]') {
           this.listtdata('tip');
         }
+        // this.$Message.info('请选择');
       },
       listtdata() {
         if (this.checkbox) {
@@ -776,6 +782,7 @@
         });
       },
       multipleSelectionTable(obj, index, name) {
+        // 查询表
         multipleComple().multipleSelectionTable({
           searchObject: {
             param: {
@@ -880,7 +887,6 @@
     },
     created() {
       this.loading = true;
-     
       this.init();
     }
 
