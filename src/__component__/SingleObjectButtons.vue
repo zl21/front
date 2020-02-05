@@ -2334,11 +2334,11 @@
           this.mainTableEditorSave(obj);
         }
       },
-      mainTableNewSaveAndEditorNewSave() { // 主表新增保存和编辑新增保存
+      mainTableNewSaveAndEditorNewSave() { // 新增保存
         this.saveParameters();// 调用获取参数方法
         const itemName = this.itemName;// 子表表名
         const itemCurrentParameter = this.itemCurrentParameter;// 当前子表保存所需参数
-        // console.log('主表新增保存和编辑新增保存');
+        // console.log('新增保存');
         const type = 'add';
         const path = this.dynamic.requestUrlPath;
         const objId = -1;
@@ -2519,7 +2519,19 @@
                           this.$Message.warning(itemMessageTip[0]);
                           itemCheckedInfo.validateForm.focus();
                           return false;
-                        }
+                        } if (!isItemTableNewValidation()) {
+                          const itemName = this.itemName;// 子表表名
+                          let itemAdd = [];
+                          if (this.updateData[itemName] && this.updateData[itemName].add[itemName]) {
+                            itemAdd = Object.values(this.updateData[itemName].add[itemName]);// 子表新增的值
+                          }
+
+                          if (itemAdd.length > 0 && itemMessageTip.length > 0) {
+                            this.$Message.warning(itemMessageTip[0]);
+                            itemCheckedInfo.validateForm.focus();
+                            return false;
+                          }     
+                        }                             
                       }
                     }
                   }
