@@ -72,7 +72,7 @@
             list: [],
             search: '',
             pageOptions: [10, 20, 50, 100],
-            pageSize: 10,
+            pageSize: 50,
             total: 0,
             tableprops: {
               tabindex: true,
@@ -372,15 +372,16 @@
       },
       changePage(index) {
         // 点击页面
-
         this.tableLoading = true;
         if (!this.sendMessage.PAGENUM) {
           this.sendMessage.PAGENUM = 1;
         }
         if (index === this.sendMessage.PAGENUM) {
+          this.tableLoading = false;
           return false;
         }
         this.componentData[this.index].pageNum = index;
+        this.sendMessage.PAGESIZE = this.componentData[this.index].pageSize;
         this.sendMessage.PAGENUM = index;
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -395,6 +396,8 @@
           return false;
         }
         this.componentData[this.index].pageSize = index;
+        this.sendMessage.PAGENUM = this.componentData[this.index].pageNum;
+
         this.sendMessage.PAGESIZE = index;
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -864,8 +867,15 @@
         this.multipleSelectionTree(this.fkobj);
         this.sendMessage.reftable = this.fkobj.reftable;
         const tableData = Object.assign(this.sendMessage, this.fkobj);
-
-        this.sendMessage = tableData;
+        // tableData.PAGENUM = 1;
+        // tableData.PAGESIZE = 50;
+        // this.sendMessage = tableData;
+        // this.componentData[0].pageSize = 50;
+        // this.componentData[0].pageNum = 1;
+        // this.componentData[1].pageSize = 50;
+        // this.componentData[1].pageNum = 1;
+        // this.index = 0;
+        
         this.multipleSelectionTable(tableData, 0);
         if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
           if (this.filter.text) {
@@ -873,9 +883,9 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = { ...this.filter.value };  
+          this.sendMessage = { ...JSON.parse(JSON.stringify(this.filter.value)) };  
           this.sendMessage.PAGENUM = 1;
-          this.sendMessage.PAGESIZE = 10;
+          this.sendMessage.PAGESIZE = 50;
           this.sendMessage.TABLENAME = this.fkobj.reftable;
           this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
