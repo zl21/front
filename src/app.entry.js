@@ -115,7 +115,7 @@ const getCategory = () => {
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
       }
     }).catch(() => {
-      router.push({ path: getTouristRoute() });
+      // router.push({ path: getTouristRoute() });
     });
   }
 };
