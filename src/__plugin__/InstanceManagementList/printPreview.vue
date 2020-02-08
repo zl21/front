@@ -39,7 +39,7 @@
               this.searchDatas = event.data.print.searchDatas;
               if (this.userId && this.tableName && this.objIds) {
                 this.src = `/api/rpt/preview?tableName=${this.tableName}&objIds=${this.objIds}&userId=${this.userId}`;
-              } else if (Object.keys(event.data.print.searchDatas).length > 0) {
+              } else if (event.data.print.searchDatas && Object.keys(event.data.print.searchDatas).length > 0) {
                 this.src = `/api/rpt/preview?tableName=${this.tableName}&objIds=${this.objIds}&userId=${this.userId}&searchData=${JSON.stringify(this.searchDatas)}`;
               }
             }
