@@ -674,6 +674,18 @@ function jflowRefresh() { // 刷新业务系统
   });
 }
 
+/* data为对象,为了动作定义类型数据处理
+{
+  webid:动作定义id,
+  moduleId:'',
+  startNodeId: '',
+  customizeBody: '',
+  assignedNodes: ''
+}
+
+
+*/
+
 function initiateLaunch(data) { // 业务系统流程发起
   return new Promise((resolve, reject) => {
     axios.post('/jflow/p/cs/process/launch',
@@ -686,14 +698,9 @@ function initiateLaunch(data) { // 业务系统流程发起
         userName: userInfo.name,
         instanceId,
         initiatorName: userInfo.name,
-        changeUser: userInfo.id
+        changeUser: userInfo.id,
+        webActionId: data.webid
       }).then((res) => {
-      DispatchEvent('jflowClick', {
-        detail: {
-          type: 'clearSubmit'
-        }
-      });
-      
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
           title: '错误',

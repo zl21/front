@@ -418,6 +418,9 @@
         param.userId = window.jflowPlugin.userInfo.id;
         param.nodeId = window.jflowPlugin.nodeId;
         param.description = this.agreecontent; // 审批意见
+        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
         this.$network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
@@ -432,8 +435,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });
@@ -452,6 +455,9 @@
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
         param.nodeId = window.jflowPlugin.nodeId;
+        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
         // if (this.returnOption === "") {
         //   this.$Message.warning("驳回节点不能为空");
         //   window.jflowPlugin.open({ control: false });
@@ -473,8 +479,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });
@@ -507,8 +513,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });
