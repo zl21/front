@@ -1091,8 +1091,18 @@
         }
         const refvalArr = refval.split(',');
         const refIndex = refvalArr.findIndex(x => x.toString() === value);
-
-        if (refIndex !== -1) {
+        let expression = '=';
+        if (items.validate.hidecolumn.expression) {
+          expression = items.validate.hidecolumn.expression;
+        }
+        if (expression !== '=') {
+          // eslint-disable-next-line use-isnan
+          if (value === '' || parseFloat(value) === NaN || parseFloat(value) === 0) {
+            value = 0;
+          }
+          this.newFormItemLists[index].show = eval(parseFloat(value) + expression + refval);
+          this.newFormItemLists[index].item.props.showCol = eval(parseFloat(value) + expression + refval);
+        } else if (refIndex !== -1) {
           this.newFormItemLists[index].show = true;
           // 添加小组件的字段配置
           this.newFormItemLists[index].item.props.showCol = true;
@@ -1100,6 +1110,8 @@
           this.newFormItemLists[index].show = false;
           this.newFormItemLists[index].item.props.showCol = false;
         }
+
+
         if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
           if (this.$store._mutations[`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`]) {
             const data = {
@@ -1117,6 +1129,7 @@
             this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/updateLinkageForm`, data);
           }  
         }
+
         if (items.props.webconf && items.props.webconf.clearWhenHidden) {
           //   清除页面 联动的值
           this.newFormItemLists[index].item.value = '';
