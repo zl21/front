@@ -319,7 +319,7 @@
           if (printIdArray.length === 0) { // 直接打印 新增需求，如列表界面不勾选则传参加上筛选值
             api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}&searchData=${JSON.stringify(this.searchDatas)}`;
           } else {
-            api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}}`;
+            api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}`;
           }
 
           network.get(api).then((res) => {
