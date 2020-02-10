@@ -150,6 +150,10 @@
         type: Object,
         default: () => ({})
       },
+      searchDatas: {// 列表界面筛选值
+        type: Object,
+        default: () => ({})
+      },
       idArray: {
         type: [Array, Object],
         default: () => ({})
@@ -287,31 +291,38 @@
         let printIdArray = [] || '';
         if (this[MODULE_COMPONENT_NAME][0] === 'S') { // 只有列表界面需要勾选明细
           printIdArray = this.idArray;
-          if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
-            const data = {
-              mask: true,
-              title: '警告',
-              content: '请先选择需要打印预览的记录！'
-            };
-            this.$Modal.fcWarning(data);
-            return;
-          } if (printIdArray.length === 0 && id === 2527) { // 直接打印
-            const data = {
-              mask: true,
-              title: '警告',
-              content: '请先选择需要直接打印的记录！'
-            };
-            this.$Modal.fcWarning(data);
-            return;
-          }
+          // if (printIdArray.length === 0 && id === 2530) { // 没有勾选且为打印预览
+          //   // const data = {
+          //   //   mask: true,
+          //   //   title: '警告',
+          //   //   content: '请先选择需要打印预览的记录！'
+          //   // };
+          //   // this.$Modal.fcWarning(data);
+          //   // return;
+          // } if (printIdArray.length === 0 && id === 2527) { // 直接打印
+          //   // const data = {
+          //   //   mask: true,
+          //   //   title: '警告',
+          //   //   content: '请先选择需要直接打印的记录！'
+          //   // };
+          //   // this.$Modal.fcWarning(data);
+          //   // return;
+          // }
         } else {
           printIdArray = itemId;
         }
+
         if (id === 2527 || id === 2530) { // 直接打印
           let src = '';
           this.$loading.show();
+          let api = '';
+          if (printIdArray.length === 0) { // 直接打印 新增需求，如列表界面不勾选则传参加上筛选值
+            api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}&searchData=${JSON.stringify(this.searchDatas)}`;
+          } else {
+            api = `/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}}`;
+          }
 
-          network.get(`/api/rpt/preview?tableName=${this.$route.params.tableName}&objIds=${printIdArray}&userId=${this.userInfo.id}`).then((res) => {
+          network.get(api).then((res) => {
             if (res.status === 200) {
               if (this[MODULE_COMPONENT_NAME][0] === 'S') {
                 if (id === 2530) {

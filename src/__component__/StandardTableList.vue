@@ -8,6 +8,7 @@
     <ButtonGroup
       :data-array="buttons.dataArray"
       :id-array="idArray"
+      :search-datas="dataProcessing()"
       @buttonClick="buttonClick"
       @clearSelectIdArray="clearSelectIdArray"
     />
@@ -184,7 +185,7 @@
       },
       idArray() {
         return this.buttons.selectIdArr;
-      }
+      },
     },
     watch: {
       formLists() {

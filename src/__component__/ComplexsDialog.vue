@@ -72,7 +72,7 @@
             list: [],
             search: '',
             pageOptions: [10, 20, 50, 100],
-            pageSize: 10,
+            pageSize: 50,
             total: 0,
             tableprops: {
               tabindex: true,
@@ -116,7 +116,7 @@
             tab: '查看选中结果',
             columns: [],
             list: [],
-            pageSize: 10,
+            pageSize: 50,
             total: 0,
             pageNum: 1,
             tableprops: {
@@ -377,8 +377,11 @@
           this.sendMessage.PAGENUM = 1;
         }
         if (index === this.sendMessage.PAGENUM) {
+          this.tableLoading = false;
           return false;
         }
+        this.componentData[this.index].pageNum = index;
+        this.sendMessage.PAGESIZE = this.componentData[this.index].pageSize;
         this.sendMessage.PAGENUM = index;
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -392,6 +395,9 @@
         if (index === this.sendMessage.PAGESIZE) {
           return false;
         }
+        this.componentData[this.index].pageSize = index;
+        this.sendMessage.PAGENUM = this.componentData[this.index].pageNum;
+
         this.sendMessage.PAGESIZE = index;
         if (this.index === 0) {
           this.multipleSelectionTable(this.sendMessage, this.index, 'search');
@@ -821,8 +827,8 @@
               TABLENAME: this.sendMessage.reftable,
               CONDITION,
               GLOBAL: obj.GLOBAL,
-              PAGENUM: obj.PAGENUM,
-              PAGESIZE: obj.PAGESIZE,
+              PAGENUM: this.index === 0 ? 1 : obj.PAGENUM,
+              PAGESIZE: this.componentData[1].pageSize,
               EXCLUDE: this.EXCLUDE,
               IN: this.IN,
               NOTIN: this.NOTIN
@@ -861,8 +867,15 @@
         this.multipleSelectionTree(this.fkobj);
         this.sendMessage.reftable = this.fkobj.reftable;
         const tableData = Object.assign(this.sendMessage, this.fkobj);
-
-        this.sendMessage = tableData;
+        // tableData.PAGENUM = 1;
+        // tableData.PAGESIZE = 50;
+        // this.sendMessage = tableData;
+        // this.componentData[0].pageSize = 50;
+        // this.componentData[0].pageNum = 1;
+        // this.componentData[1].pageSize = 50;
+        // this.componentData[1].pageNum = 1;
+        // this.index = 0;
+        
         this.multipleSelectionTable(tableData, 0);
         if (Object.prototype.hasOwnProperty.call(this.filter, 'value')) {
           if (this.filter.text) {
@@ -870,9 +883,9 @@
             this.text.result = JSON.parse(this.filter.text).result;
           }
           //  有默认值
-          this.sendMessage = { ...this.filter.value };  
+          this.sendMessage = { ...JSON.parse(JSON.stringify(this.filter.value)) };  
           this.sendMessage.PAGENUM = 1;
-          this.sendMessage.PAGESIZE = 10;
+          this.sendMessage.PAGESIZE = 50;
           this.sendMessage.TABLENAME = this.fkobj.reftable;
           this.multipleScreenResultCheckFiter(this.sendMessage, 1);
         }
@@ -895,6 +908,16 @@
 </script>
 <style lang="less">
 .burgeon--dialog {
+    .iconbj_delete2{
+        cursor: pointer;
+        &:hover{
+        color: #fff;
+        background: #e6502f;
+        border-radius: 100%;
+        width: 16px;
+        height: 16px;
+      }
+  }
     .dialog_center .dialog_p10{
       padding:0px 0 6px 0px
     }
@@ -943,6 +966,7 @@
 
 
   .burgeon--dialog {
+    
     .dialog_center .dialog_p10{
       padding:0px 0 6px 0px
     }
@@ -971,6 +995,7 @@
       }
   }
   .burgeon-poptip-body{
+      
       padding: 0px;
       .icon-bj_delete2{
           position: absolute;
