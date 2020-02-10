@@ -178,9 +178,15 @@ function CreateButton(obj, buttons, id) {
           url: ''
         });
         const newButtons = obj.buttons;
+        let tabwebact = [];
+        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
+          if (obj.visibleBt.includes(String(item.webid))) {
+            return item;
+          }
+        });
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId 
+          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
         });
         buttonAddEventListener(buttons, obj, id);
         // 修改水印
