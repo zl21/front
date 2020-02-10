@@ -138,7 +138,7 @@ function CreateButton(obj, buttons, id) {
         // 更新按钮
         let tabwebact = [];
         tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
-          if (obj.visibleBt.includes(String(item.webid))) {
+          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
             return item;
           }
         });
@@ -186,7 +186,7 @@ function CreateButton(obj, buttons, id) {
         const newButtons = obj.buttons;
         let tabwebact = [];
         tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
-          if (obj.visibleBt.includes(String(item.webid))) {
+          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
             return item;
           }
         });
