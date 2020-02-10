@@ -239,7 +239,7 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
               mask: true
             });
           }
-          modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
+          modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
           instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
           businessStatus = res.data.data.businessStatus;
           if (!flag) {
@@ -623,27 +623,52 @@ function AxiosGuard(axios) { // axios拦截
 
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
+  console.log(modifiableFieldName);
   if (instanceId || businessStatus === -2) {
-    data.addcolums.map((item) => {
-      if (item.childs) {
-        item.childs.map((temp) => {
-          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
-            temp.readonly = false;
-          } else {
-            temp.readonly = true;
-          }
-          return temp;
-        });
-      } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
-        item.child.readonly = false;
-      } else {
-        item.child.readonly = true;
-      }
+    // data.addcolums.map((item) => {
+    //   if (item.childs) {
+    //     item.childs.map((temp) => {
+    //       if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
+    //         temp.readonly = false;
+    //       } else {
+    //         temp.readonly = true;
+    //       }
+    //       return temp;
+    //     });
+    //   } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
+    //     item.child.readonly = false;
+    //   } else {
+    //     item.child.readonly = true;
+    //   }
       
-      return item;
+    //   return item;
+    // });
+
+    data.addcolums = data.addcolums.filter((item) => {
+      if (item.childs) {
+        item.childs = item.childs.filter((temp) => {
+          if (fieldCheck(temp.colid).length > 0) {
+            temp.readonly = fieldCheck(temp.colid)[0].readonly;
+            return temp;
+          }
+        });
+        return item;
+      } if (fieldCheck(item.child.colid).length > 0) {
+        item.child.readonly = fieldCheck(item.child.colid)[0].readonly;
+        return item;
+      }
     });
+    console.log(data);
   }
   return data;
+}
+
+function fieldCheck(colid) {
+  return modifiableFieldName.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
 }
 
 

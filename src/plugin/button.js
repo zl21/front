@@ -136,8 +136,14 @@ function CreateButton(obj, buttons, id) {
         // 刷新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         // 更新按钮
+        let tabwebact = [];
+        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
+          if (obj.visibleBt.includes(String(item.webid))) {
+            return item;
+          }
+        });
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1
+          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1, tabwebact
         });
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
@@ -214,8 +220,9 @@ function CreateButton(obj, buttons, id) {
         clearInterval(stateTimeout);
         const newButtons = [];
         const defaultButtonData = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabcmd.prem;
+        const tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton;
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: defaultButtonData, newButtons, instanceId: null
+          buttonsData: defaultButtonData, newButtons, instanceId: null, tabwebact
         });
 
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);

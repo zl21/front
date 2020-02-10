@@ -371,7 +371,6 @@ export default {
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
-    console.log(tabwebact);
     if (instanceId) {
       // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
       state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
