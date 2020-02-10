@@ -116,9 +116,12 @@ axios.interceptors.response.use(
       //   title: '错误',
       //   content: response.data.message || response.data.msg || 'No Error Message.'
       // });
-      const errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
+      let errorHTML = Array.isArray(response.data.error || response.data.data) && (response.data.error || response.data.data).reduce((arr, x) => {
         arr.push(`<p>objid${x.objid}:${x.message}</p>`); return arr; 
       }, []).join('') || '';
+      if (config.url !== '/ad-app/p/cs/batchSave') {
+        errorHTML = '';
+      }
       window.vm.$Modal.fcError({
         mask: true,
         titleAlign: 'center',
