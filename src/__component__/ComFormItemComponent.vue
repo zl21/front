@@ -1097,11 +1097,14 @@
         }
         if (expression !== '=') {
           // eslint-disable-next-line use-isnan
-          if (value === '' || parseFloat(value) === NaN || parseFloat(value) === 0) {
+          if (parseFloat(value) === 0) {
             value = 0;
+          // eslint-disable-next-line use-isnan
+          } else if (value === '') {
+            value = undefined;
           }
-          this.newFormItemLists[index].show = eval(parseFloat(value) + expression + refval);
-          this.newFormItemLists[index].item.props.showCol = eval(parseFloat(value) + expression + refval);
+          this.newFormItemLists[index].show = eval(Number(value) + expression + refval);
+          this.newFormItemLists[index].item.props.showCol = eval(Number(value) + expression + refval);
         } else if (refIndex !== -1) {
           this.newFormItemLists[index].show = true;
           // 添加小组件的字段配置
