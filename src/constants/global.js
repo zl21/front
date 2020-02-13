@@ -20,6 +20,7 @@ export const getTouristRoute = () => (window.ProjectConfig && window.ProjectConf
 export const getCustomizeWaterMark = () => (window.ProjectConfig && window.ProjectConfig.customizeWaterMark ? window.ProjectConfig.customizeWaterMark : project.customizeWaterMark);
 export const encryptedPassword = () => (window.ProjectConfig && window.ProjectConfig.encryptedPassword ? window.ProjectConfig.encryptedPassword : project.encryptedPassword);
 export const isItemTableNewValidation = () => (window.ProjectConfig && typeof window.ProjectConfig.isItemTableNewValidation === 'boolean' ? window.ProjectConfig.isItemTableNewValidation : project.isItemTableNewValidation);
+export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
 
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';

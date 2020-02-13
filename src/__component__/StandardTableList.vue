@@ -38,7 +38,7 @@
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
-      :is-common-table="webconf.commonTable"
+      :is-common-table="isCommonTable||webconf.commonTable"
       @CommonTableCustomizedDialog="commonTableCustomizedDialog"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
@@ -115,7 +115,8 @@
     CUSTOMIZED_MODULE_PREFIX,
     LINK_MODULE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME,
     INSTANCE_ROUTE_QUERY,
-    INSTANCE_ROUTE
+    INSTANCE_ROUTE,
+    isCommonTable
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import customize from '../__config__/customize.config';
@@ -175,6 +176,11 @@
           this.formItems.defaultFormItemsLists.concat([])
         );
       },
+      isCommonTable() {
+        return isCommonTable();
+      },
+
+      
       agTableElementStyles() {
         if (this.formItemsLists.length === 0) {
           return {
