@@ -73,6 +73,7 @@ function clickFunction(e) {
       });
         break;
       case '0':
+      case '8':
       case '3': window.jflowPlugin.open({// 同意和转派
         control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
       });

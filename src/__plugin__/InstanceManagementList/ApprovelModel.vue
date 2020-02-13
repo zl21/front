@@ -9,7 +9,7 @@
       @on-cancel="cancel"
     >
       <div
-        v-if="type==='0'"
+        v-if="type==='0' || type === '8'"
         class="ApprovelModel"
       >
         <!-- 同意 -->
@@ -393,7 +393,7 @@
         this.resultData.list = [];
       },
       ok() {
-        if (this.type === '0') {
+        if (this.type === '0' || this.type === '8') {
           this.Agree(); // 同意
         }
         if (this.type === '1') {
