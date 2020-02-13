@@ -1368,12 +1368,26 @@
 
           this.$loading.show(this.tableName);
         });
-        promise.then(() => {
+        promise.then((res, actionName) => {
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
             title: '成功',
-            content: `${message}`
+            content: `${message}`,
+            onOk: () => {
+              DispatchEvent('exeActionSuccessForR3', {
+                detail: {
+                  name: 'exeAction',
+                  type: 'horizontalTable',
+                  url: actionName || '/p/cs/exeAction',
+                  res,
+                  moduleName: this[MODULE_COMPONENT_NAME],
+                  routeQuery: this[INSTANCE_ROUTE_QUERY],
+                  tableName: this[INSTANCE_ROUTE_QUERY].tableName,
+                  routePath: this[INSTANCE_ROUTE]
+                }
+              });
+            },
           };
           this.$Modal.fcSuccess(data);
           console.log('tab.isrefrsh', tab.isrefrsh);

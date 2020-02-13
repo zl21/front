@@ -20,10 +20,10 @@ export default {
           resData.type = 'copy';
           commit('updateTabPanelsData', resData);
         } else if (!isNotFirstRequest) {
-          if(type==='refresh'){
+          if (type === 'refresh') {
             resData.type = 'refresh';
             commit('updateTabPanelsData', resData);
-          }else{
+          } else {
             commit('updateTabPanelsData', resData);
           }
         }
@@ -534,10 +534,10 @@ export default {
       })).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
-          resolve();
+          resolve(res, actionName);
           commit('updateObjTabActionSlientConfirm', invalidData);
         } else {
-          reject();
+          reject(res, actionName);
         }
         DispatchEvent('exeActionForR3', {
           detail: {
@@ -551,8 +551,8 @@ export default {
             routePath
           }
         });
-      }).catch(() => {
-        reject();
+      }).catch((res) => {
+        reject(res, actionName);
       });
     } else {
       actionName = path;

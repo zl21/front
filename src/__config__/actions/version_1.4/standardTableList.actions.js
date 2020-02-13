@@ -108,7 +108,7 @@ export default {
     }
     network.post(actionName || '/p/cs/exeAction', obj).then((res) => {
       if (res.data.code === 0) {
-        resolve();
+        resolve(res, actionName);
        
         commit('updateButtonExeActionData', res.data.message);
       } else if (res.data.code === -1) {
@@ -124,7 +124,7 @@ export default {
           commit('updateButtonExeActionData', res.data.message);
         }
        
-        reject();
+        reject(res, actionName);
       }
       DispatchEvent('exeActionForR3', {
         detail: {
@@ -138,8 +138,8 @@ export default {
           res,
         }
       });
-    }).catch(() => {
-      reject();
+    }).catch((res) => {
+      reject(res, actionName);
     });
   },
   getActionDataForButtons({ commit }, { param, resolve }) {

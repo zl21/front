@@ -123,6 +123,7 @@
   import router from '../__config__/router.config';
   import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -1312,13 +1313,27 @@
             }
           });
         } else { // 没有配置动作定义调动作定义逻辑
-          promise.then(() => {
+          promise.then((res, actionName) => {
             this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             const message = this.buttons.ExeActionData;
             const data = {
               mask: true,
               title: '成功',
-              content: `${message}`
+              content: `${message}`,
+              onOk: () => {
+                DispatchEvent('exeActionSuccessForR3', {
+                  detail: {
+                    name: 'exeAction',
+                    type: 'horizontalTable',
+                    url: actionName || '/p/cs/exeAction',
+                    res,
+                    moduleName: this[MODULE_COMPONENT_NAME],
+                    routeQuery: this[INSTANCE_ROUTE_QUERY],
+                    tableName: this[INSTANCE_ROUTE_QUERY].tableName,
+                    routePath: this[INSTANCE_ROUTE]
+                  }
+                });
+              },
             };
             this.$Modal.fcSuccess(data);
             if (this.buttons.isrefrsh) {
