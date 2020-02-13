@@ -297,7 +297,8 @@ async function jflowsave(flag, request) {
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
         businessUrl: request.url,
-        ruleField: 'V'
+        ruleField: 'V',
+        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2)
       }).then((res) => {
       DispatchEvent('jflowClick', {
         detail: {
@@ -724,7 +725,8 @@ function initiateLaunch(data) { // 业务系统流程发起
         instanceId,
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
-        webActionId: data.webid
+        webActionId: data.webid,
+        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2)
       }).then((res) => {
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
