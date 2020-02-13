@@ -1296,11 +1296,20 @@
           const refcolumn = current.item.validate.hidecolumn.refcolumn;
           const refval = current.item.validate.hidecolumn.refval;
           const data = this.getValue(this.defaultDataInt);
+          // 添加查询条件
+         
           const refvalArr = refval.split(',');
           if (data[refcolumn]) {
             data[refcolumn] = data[refcolumn].toString();
           }
           const val = data[refcolumn];
+          let expression = '=';
+          if (current.item.validate.hidecolumn.expression) {
+            expression = current.item.validate.hidecolumn.expression;
+          }
+          if (expression !== '=') {
+            return eval(val + expression + refval);
+          }
 
           const arrIndex = refvalArr.findIndex(x => x.toString() === val);
           return arrIndex !== -1;
