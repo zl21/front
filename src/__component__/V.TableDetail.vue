@@ -161,6 +161,17 @@
         table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
       });
       this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
+      setTimeout(() => {
+        const query = this.$route.query.ACTIVE;
+        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        if (query && oUl) {
+          for (let i = 0; i < oUl.children.length; i++) {
+            if (query === oUl.children[i].innerText) {
+              oUl.children[i].click();
+            }
+          }
+        }
+      }, 1000);
     },
     methods: {
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),

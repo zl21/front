@@ -26,7 +26,7 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.1',
-  temporaryVersion: '1.10.9',                              
+  temporaryVersion: '2.0.0',                              
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
