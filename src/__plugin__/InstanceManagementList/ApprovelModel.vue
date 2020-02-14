@@ -458,6 +458,8 @@
         param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
         param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
         param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
+        param.pid = window.jflowPlugin.pid;
+        param.moduleId = window.jflowPlugin.moduleId;
         // if (this.returnOption === "") {
         //   this.$Message.warning("驳回节点不能为空");
         //   window.jflowPlugin.open({ control: false });

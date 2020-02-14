@@ -106,6 +106,8 @@ function CreateButton(obj, buttons, id) {
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
   window.jflowPlugin.nodeId = obj.nodeId;
+  window.jflowPlugin.moduleId = obj.moduleId;
+  window.jflowPlugin.pid = obj.pid;
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
