@@ -781,11 +781,11 @@ export default {
       })).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
-          resolve();
+          resolve(res, actionName);
   
           commit('updateObjTabActionSlientConfirm', invalidData);
         } else {
-          reject();
+          reject(res, actionName);
         }
         DispatchEvent('exeActionForR3', {
           detail: {
@@ -799,8 +799,8 @@ export default {
             routePath
           }
         });
-      }).catch(() => {
-        reject();
+      }).catch((res) => {
+        reject(res, actionName);
       });
     } else {
       actionName = path;
@@ -808,11 +808,11 @@ export default {
       network.post(actionName || '/p/cs/exeAction', params).then((res) => {
         if (res.data.code === 0) {
           const invalidData = res.data;
-          resolve();
+          resolve(res, actionName);
   
           commit('updateObjTabActionSlientConfirm', invalidData);
         } else {
-          reject();
+          reject(res, actionName);
         }
         DispatchEvent('exeActionForR3', {
           detail: {
@@ -826,8 +826,8 @@ export default {
             routePath
           }
         });
-      }).catch(() => {
-        reject();
+      }).catch((res) => {
+        reject(res, actionName);
       });
     }
   },

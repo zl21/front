@@ -114,11 +114,11 @@ export default {
       param: JSON.stringify(obj),
     })).then((res) => {
       if (res.data.code === 0) {
-        resolve();
+        resolve(res, actionName);
         commit('updateButtonExeActionData', res.data.message);
       } else {
         commit('updateButtonExeActionData', res.data.message);
-        reject();
+        reject(res, actionName);
       }
       DispatchEvent('exeActionForR3', {
         detail: {
@@ -132,8 +132,8 @@ export default {
           routePath
         }
       });
-    }).catch(() => {
-      reject();
+    }).catch((res) => {
+      reject(res, actionName);
     });
   },
   getActionDataForButtons({ commit }, { param, resolve }) {
