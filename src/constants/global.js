@@ -24,6 +24,7 @@ export const isCommonTable = () => (window.ProjectConfig && typeof window.Projec
 
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
+export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
 export const HORIZONTAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/H';
 export const VERTICAL_TABLE_DETAIL_PREFIX = '/SYSTEM/TABLE_DETAIL/V';
 export const CUSTOMIZED_MODULE_PREFIX = '/CUSTOMIZED';

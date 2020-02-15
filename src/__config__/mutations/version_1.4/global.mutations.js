@@ -377,7 +377,7 @@ export default {
     if (type === 'tableDetailHorizontal') {
       path = `${HORIZONTAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;
      
-      router.push({ path });
+      router.push({ path, query: { ACTIVE: 'AD_REFBYTABLE' } });
     }
     if (type === 'tableDetailVertical') {
       path = `${VERTICAL_TABLE_DETAIL_PREFIX}/${tableName}/${tableId}/${id}`;

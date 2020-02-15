@@ -7,6 +7,7 @@ import {
   CUSTOMIZED_MODULE_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
+  STANDARD_COMMONTABLE_LIST_PREFIX,
   VERTICAL_TABLE_DETAIL_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
@@ -29,6 +30,15 @@ const routes = [
         //   '../__component__/StandardTableKeepAlive'
         // ), // 标准界面
         meta: { routePrefix: STANDARD_TABLE_LIST_PREFIX }
+      }, {
+        path: `${STANDARD_COMMONTABLE_LIST_PREFIX}/:tableName/:tableId`, //
+        component: KeepAliveContainer,
+        // component: () => import(
+        //   /* webpackChunkName: 'StandardTableKeepAlive' */
+        //   /* webpackMode: 'eager' */
+        //   '../__component__/StandardTableKeepAlive'
+        // ), // 标准界面(普通表格)
+        meta: { routePrefix: STANDARD_COMMONTABLE_LIST_PREFIX }
       }, {
         path: `${HORIZONTAL_TABLE_DETAIL_PREFIX}/:tableName/:tableId/:itemId`,
         component: KeepAliveContainer,

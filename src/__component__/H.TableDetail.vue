@@ -181,9 +181,9 @@
         const oUl = document.querySelector('.burgeon-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
-            if (query === oUl.children[i].innerText) {
-              oUl.children[i].click();
-            }
+            this.tabPanels.forEach((item) => {
+              if (query === item.tablename && item.tabledesc === oUl.children[i].innerText) { oUl.children[i].click(); }
+            });
           }
         }
       }, 1000);

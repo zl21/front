@@ -7,6 +7,7 @@ import {
   STANDARD_TABLE_LIST_PREFIX,
   PLUGIN_MODULE_PREFIX,
   LINK_MODULE_PREFIX,
+  STANDARD_COMMONTABLE_LIST_PREFIX
 } from '../constants/global';
 
 export const hideMenu = () => {
@@ -62,6 +63,10 @@ export const routeTo = ({ type, info }, cb) => {
     case 'table':
       path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
+    case 'commonTable':
+      path = `${STANDARD_COMMONTABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
+      break; 
+
     // case 'external':
     //   path = `${LINK_MODULE_PREFIX}/${info.tableName.toUpperCase()}/${info.tableId}`;
     //   break;
