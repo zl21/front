@@ -5,7 +5,11 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
-    <tree @menuTreeChange="menuTreeChange"  v-if="isTreeList"/>
+    <tree
+      v-if="isTreeList.isShow"
+      :tree-data="treeConfigData"
+      @menuTreeChange="menuTreeChange"
+    />
     <div class="StandardTableListRootDiv">
       <ButtonGroup
         :data-array="buttons.dataArray"
@@ -130,6 +134,7 @@
   import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import treeData from '../__config__/treeData.config';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -146,7 +151,10 @@
     },
     data() {
       return {
-        isTreeList:false,
+        isTreeList: {
+          isShow: false,
+          name: 'cp_c_inorg'
+        },
         actionModal: false,
         resetType: false, // 是否是重置的功能
         dialogComponent: null,
@@ -207,6 +215,15 @@
       idArray() {
         return this.buttons.selectIdArr;
       },
+      treeConfigData() {
+        if (this.isTreeList.isShow) {
+          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
+            return window.ProjectConfig.externalTreeDatas[this.isTreeList.name]();
+          }
+          // return treeData[this.isTreeList.name]();
+        }
+        return [];
+      }
     },
     watch: {
       formLists() {

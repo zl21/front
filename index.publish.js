@@ -43,6 +43,11 @@ export default {
    *      keyTwo: VueComponentTwo,
    *      ...
    *   }, // 如无自定义界面，此配置项可不传参。
+   *   externalTreeDatas: { // 树形结构列表配置数据信息入口
+   *      keyOne: ()=>{},
+   *      keyTwo: ()=>{},
+   *      ...
+   *   }, // 如无自定义界面，此配置项可不传参。
    *   externalModals: {  // 项目自定义弹框（模态框）组件
    *     keyOne: VueComponentOne,
    *     keyTwo: VueComponentTwo,
