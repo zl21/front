@@ -5,7 +5,7 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
-    <tree @menuTreeChange="menuTreeChange" />
+    <tree @menuTreeChange="menuTreeChange"  v-if="isTreeList"/>
     <div class="StandardTableListRootDiv">
       <ButtonGroup
         :data-array="buttons.dataArray"
@@ -146,6 +146,7 @@
     },
     data() {
       return {
+        isTreeList:false,
         actionModal: false,
         resetType: false, // 是否是重置的功能
         dialogComponent: null,
