@@ -115,6 +115,7 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
+        'changeFormData'
         // 'resetFormReadOnlyAttribute'
 
       ]),

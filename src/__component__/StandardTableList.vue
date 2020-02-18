@@ -38,7 +38,7 @@
       :on-column-pinned="onColumnPinned"
       :on-column-visible-changed="onColumnVisibleChanged"
       :on-cell-single-click="onCellSingleClick"
-      :is-common-table="isCommonTable||webconf.commonTable"
+      :is-common-table="commonTable"
       @CommonTableCustomizedDialog="commonTableCustomizedDialog"
     />
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
@@ -180,8 +180,14 @@
       isCommonTable() {
         return isCommonTable();
       },
-
-      
+      commonTable() {
+        if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
+          return true;
+        } if (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
+          return this.isCommonTable || this.webconf.commonTable;
+        }
+        return null;
+      },
       agTableElementStyles() {
         if (this.formItemsLists.length === 0) {
           return {

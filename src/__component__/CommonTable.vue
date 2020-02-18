@@ -25,22 +25,41 @@
       />
       <div>Loading</div>
     </Spin>
-  </div>
+    <Dialog
+      ref="dialogRef"
+      :title="dialogConfig.title"
+      :mask="dialogConfig.mask"
+      :content-text="dialogConfig.contentText"
+      :footer-hide="dialogConfig.footerHide"
+      :confirm="dialogConfig.confirm"
+      :dialog-component-name="dialogComponentName"
+    />
+  </div></dialog>
 </template>
 
 <script>
   /* eslint-disable no-lonely-if */
 
   import { mapMutations } from 'vuex';
+  import Dialog from './Dialog.vue';
 
   export default {
     data() {
       return {
-        spinShow: false
+        spinShow: false,
+        dialogComponentName: null,
+        dialogConfig: {
+          title: '提示',
+          mask: true,
+          footerHide: false,
+          contentText: '',
+          confirm: () => {
+          }
+        }, // 弹框配置信息
       };
     },
     name: 'CommonTable',
-    components: {},
+    components: { Dialog },
     props: {
       cssStatus: {
         type: Array,
@@ -200,6 +219,18 @@
                   width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
+              } else if (cur.display === 'switch') { // 开关选择器
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.switchRender(cur.colname)
+                }, cur));
+              } else if (cur.display === 'command') { // 操作列
+                acc.push(Object.assign({
+                  title: cur.name,
+                  key: cur.colname,
+                  render: this.commandRender(cur)
+                }, cur));
               } else if (cur.display === 'image') {
                 if (cur.isorder) {
                   cur.sortable = 'custom';
@@ -345,10 +376,8 @@
       rowClassName(row) {
         let cssStr = '';
         // let cssColorStr = '';
-        const cssStatus = JSON.parse(JSON.stringify(this.cssStatus))
-        cssStatus.sort((a, b) => {
-          return a.priority - b.priority;
-        });
+        const cssStatus = JSON.parse(JSON.stringify(this.cssStatus));
+        cssStatus.sort((a, b) => a.priority - b.priority);
         cssStatus.forEach((item) => {
           const columnKey = this.columns.find(tem => tem.title === item.desc).key;
           const cssFindindex = item.value.findIndex(cur => cur === row[columnKey]);
@@ -627,6 +656,96 @@
           self.onSortChanged(arrayOfSortInfo);
         }
       }, // 表格排序触发
+      switchRender(data) {
+        // 开关选择器
+        return (h, data) => h('div', 
+                              [
+                                h('i-switch', {
+                                  on: {
+                                    'on-change': (status) => {
+                                      this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                    }
+                                  },
+
+                                  props: {
+                                    value: true,
+                                    size: 'small',
+                                    // disabled: true
+                                  },
+
+                                  // class: `iconfont  ${
+                                  //   params.row.status === 1 || params.row.status === 3
+                                  //     ? 'icon-jmc_error'
+                                  //     : 'icon-jmc_right'
+                                  // }`,
+                                  style: {
+                                    // background: `${
+                                    //   // params.row.status == 1 ? '#5b85e4' : '#ccc'
+                                    // }`,
+                                    // marginRight: '2px'
+                                  }
+                                })
+                              ]);
+      },
+      commandRender(data) {
+        const params = [
+          {
+            label: '编辑',
+            type: 'fcdefault',
+            display: 'dialog',
+            component: 'commonTable/componentName',
+            disabled: false,
+            dialogTitle: '弹出框'
+          },
+          {
+            label: '删除',
+            type: 'fcdefault',
+            display: 'delete',
+            disabled: false
+
+          },
+          {
+            label: '跳转',
+            type: 'fcdefault',
+            display: 'url',
+            url: '',
+            disabled: false
+
+          }
+        ];
+        // display按钮操作类型（3种）
+        // 跳转/弹出框/删除/
+        return (h, param) => params.map(item => h('ButtonGroup', 
+                                                  [
+                                                    h('i-Button', {
+                                                      on: {
+                                                        click: () => {
+                                                          if (item.display === 'dialog') {
+                                                            this.$refs.dialogRef.open();
+                                                            const title = `${item.dialogTitle}`;
+                                                            this.dialogConfig = {
+                                                              title,
+                                                            };
+                                                            this.dialogConfig.footerHide = true;
+                                                            const url = item.component;
+                                                            const index = url.lastIndexOf('/');
+                                                            const filePath = url.substring(index + 1, url.length);
+                                                            this.dialogComponentName = filePath;
+                                                          }
+                                                        }
+                                                      },
+
+                                                      props: {
+                                                        type: item.type,
+                                                        disabled: item.disabled,
+                                                        size: 'small'
+                                                      },
+                                                      style: {
+                                                        marginRight: '10px'
+                                                      }
+                                                    }, item.label)
+                                                  ]));
+      }
     }
   };
 </script>

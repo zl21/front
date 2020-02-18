@@ -1,13 +1,18 @@
 import { mapState, mapActions, mapMutations } from 'vuex';
 import router from '../router.config';
 import {
-  STANDARD_TABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
+  STANDARD_TABLE_COMPONENT_PREFIX, STANDARD_COMMONTABLE_COMPONENT_PREFIX, MODULE_COMPONENT_NAME, INSTANCE_ROUTE, INSTANCE_ROUTE_QUERY 
 } from '../../constants/global';
 import store from '../store.config';
 
 const getComponentName = () => {
   const { tableName, tableId } = router.currentRoute.params;
-  return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+  if (router.currentRoute.meta.routePrefix === '/SYSTEM/COMMONTABLE') {
+    return `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+  } if (router.currentRoute.meta.routePrefix === '/SYSTEM/TABLE') {
+    return `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+  }
+  return null;
 };
 
 // const getFullPath = () => router.currentRoute.fullPath;
