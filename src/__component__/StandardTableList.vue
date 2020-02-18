@@ -3,44 +3,48 @@
 <template>
   <div
     :id="buttons.tableName"
-    class="StandardTableListRootDiv"
+    class="standarTableListContent"
   >
-    <ButtonGroup
-      :data-array="buttons.dataArray"
-      :id-array="idArray"
-      :search-datas="dataProcessing()"
-      @buttonClick="buttonClick"
-      @clearSelectIdArray="clearSelectIdArray"
-    />
-    <FormItemComponent
-      ref="FormItemComponent"
-      :form-items-data="formItems.data"
-      :form-item-lists="formItemsLists"
-      :default-spread="changeSearchFoldnum.switchValue"
-      :default-column="4"
-      :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
-      @formDataChange="formDataChange"
-    />
-    <AgTable
-      ref="agTableElement"
-      :style="agTableElementStyles"
-      :page-attribute="pageAttribute"
-      :datas="ag.datas"
-      :css-status="ag.status4css"
-      :legend="ag.status4css"
-      :user-config-for-ag-table="userConfigForAgTable"
-      :on-page-change="onPageChange"
-      :on-page-size-change="onPageSizeChange"
-      :on-selection-changed="onSelectionChanged"
-      :on-row-double-click="onRowDoubleClick"
-      :on-sort-changed="onSortChange"
-      :on-column-moved="onColumnMoved"
-      :on-column-pinned="onColumnPinned"
-      :on-column-visible-changed="onColumnVisibleChanged"
-      :on-cell-single-click="onCellSingleClick"
-      :is-common-table="commonTable"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-    />
+    <tree @menuTreeChange="menuTreeChange" />
+    <div class="StandardTableListRootDiv">
+      <ButtonGroup
+        :data-array="buttons.dataArray"
+        :id-array="idArray"
+        :search-datas="dataProcessing()"
+        @buttonClick="buttonClick"
+        @clearSelectIdArray="clearSelectIdArray"
+      />
+      <FormItemComponent
+        ref="FormItemComponent"
+        :form-items-data="formItems.data"
+        :form-item-lists="formItemsLists"
+        :default-spread="changeSearchFoldnum.switchValue"
+        :default-column="4"
+        :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
+        @formDataChange="formDataChange"
+      />
+      <AgTable
+        ref="agTableElement"
+        :style="agTableElementStyles"
+        :page-attribute="pageAttribute"
+        :datas="ag.datas"
+        :css-status="ag.status4css"
+        :legend="ag.status4css"
+        :user-config-for-ag-table="userConfigForAgTable"
+        :on-page-change="onPageChange"
+        :on-page-size-change="onPageSizeChange"
+        :on-selection-changed="onSelectionChanged"
+        :on-row-double-click="onRowDoubleClick"
+        :on-sort-changed="onSortChange"
+        :on-column-moved="onColumnMoved"
+        :on-column-pinned="onColumnPinned"
+        :on-column-visible-changed="onColumnVisibleChanged"
+        :on-cell-single-click="onCellSingleClick"
+        :is-common-table="commonTable"
+        @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+      />
+    </div>
+   
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
@@ -110,6 +114,8 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
+  import tree from './tree';
+
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -129,6 +135,7 @@
 
   export default {
     components: {
+      tree,
       ButtonGroup,
       AgTable,
       FormItemComponent,
@@ -246,6 +253,15 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      menuTreeChange(val, item) {
+        // 按钮查找 查询第一页数据
+        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.reffixedcolumns = {
+          ID: `in (${item.ID})` 
+        };
+        this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -2093,15 +2109,19 @@
 </script>
 
 <style lang="less">
-.StandardTableList{
+.standarTableListContent{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   display: flex;
-  .tree{
-    width:240px;
+  flex-direction: row;
+ .tree{
+    width:300px;
     padding:10px;
     margin-right:15px;
     border-right:1px solid #d2d2d2;
+    
   }
-}
 .StandardTableListRootDiv {
   width: 100%;
   height: 100%;
@@ -2109,4 +2129,6 @@
   display: flex;
   flex-direction: column;
 }
+}
+
 </style>
