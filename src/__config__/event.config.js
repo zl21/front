@@ -37,7 +37,7 @@ export const launchNetworkMonitor = () => {
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
   let path = '/';
-  type = 'commonTable';
+  // type = 'commonTable';
   switch (type) {
     case 'action':
       if (info.url) {
