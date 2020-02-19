@@ -245,6 +245,7 @@
         LinkageForm: [], // 界面 所有表单组件配置
         hidecolumnForm: {}, // 界面 隐藏字段
         defaultDataInt: {}, // 默认值的value
+        formItem: {},
         watchTime: null,
         expand: 'expand' // 面板是否展开
       };
@@ -458,16 +459,16 @@
 
           // 隐藏判断
           if (Array.isArray(this.computdefaultData)) {
-            this.computdefaultData.forEach((item) => {
+            this.computdefaultData.forEach((item, i) => {
               if (Array.isArray(item.childs)) {
-                item.childs.forEach((option) => {
-                  option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option) : true;
+                item.childs.forEach((option, j) => {
+                  option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option, i, j) : true;
                   if (option.item.props.display === 'none') {
                     option.show = false;
                   }               
                 });
               } else {
-                item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item) : true;
+                item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item, i) : true;
                 if (item.item.props.display === 'none') {
                   item.show = false;
                 } 
@@ -1105,6 +1106,7 @@
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
         const prmsrccol = current.refcolprem && current.refcolprem.srccol;
+        this.formItem[`${this.tableGetName}${obj.item.field}`] = current.valuedata || current.defval || '';
         this.LinkageForm.push({
           key: `${this.tableGetName}${obj.item.field}`,
           name: obj.item.title,
@@ -1302,7 +1304,11 @@
           if (data[refcolumn]) {
             data[refcolumn] = data[refcolumn].toString();
           }
-          const val = data[refcolumn];
+          let val = data[refcolumn];
+
+          if (current.item.validate.hidecolumn.match && current.item.validate.hidecolumn.match === 'label') {
+            val = this.formItem[refcolumn];
+          }
           let expression = '=';
           if (current.item.validate.hidecolumn.expression) {
             expression = current.item.validate.hidecolumn.expression;
@@ -1310,6 +1316,7 @@
           if (expression !== '=') {
             return eval(val + expression + refval);
           }
+         
 
           const arrIndex = refvalArr.findIndex(x => x.toString() === val);
           return arrIndex !== -1;

@@ -298,6 +298,7 @@
         oldformData: {}, // 老的change
         setHeight: 34,
         setVerficaTime: '', // 校验时间
+        formLabel: {}, // 当前字段的label
         timerSet: '',
         fkHttpRequestTime: '',
         formRequestJson: { }, // 表单传参比较
@@ -336,6 +337,7 @@
       mountedType() {
         // 监听刷新、切换
         this.formRequestJson = {};
+        this.formLabel = {};
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -735,6 +737,7 @@
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         const setLabel = this.getLable(current);
+        this.formLabel = Object.assign(JSON.parse(JSON.stringify(this.formLabel)), JSON.parse(JSON.stringify(setLabel)));
 
         this.$emit('formDataChange', obj, valueItem, current, setLabel, this);
         //  change 值 走后台接口赋值
@@ -1088,6 +1091,9 @@
           value = value.toString();
         } else {
           value = '';
+        }
+        if (items.validate.hidecolumn.match && items.validate.hidecolumn.match === 'label') {
+          value = this.formLabel[refcolumn];
         }
         const refvalArr = refval.split(',');
         const refIndex = refvalArr.findIndex(x => x.toString() === value);
