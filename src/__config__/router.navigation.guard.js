@@ -301,8 +301,6 @@ export default (router) => {
 
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
-
-      
       const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
       if (Object.keys(routeMapRecordForSingleObject).indexOf(to.fullPath) > -1) { // 如果在单对象配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
         deleteFromSessionObject('routeMapRecordForSingleObject', to.fullPath);

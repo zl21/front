@@ -76,7 +76,9 @@ module.exports = env => ({
         // target: 'http://106.15.24.156:32940', // 李宁环境
         // target: 'http://jflow-zhixiao.dev.burgeononline.com', // 知晓环境
 
-        target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
+        // target: ' http://zhixiao-jflow.pro.burgeononline.com/', // 知晓环境
+
+        target: ' http://jflow-shangfei.dev.burgeononline.com/', // 商飞环境
 
        
         // target: 'http://jflow-qiaodan.dev.burgeononline.com', // 乔丹测试环境
