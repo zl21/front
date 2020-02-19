@@ -133,8 +133,20 @@ export default [
       name: '影响值',
       key: 'refval',
       type: 'input'
-    }],
-    description: '根据A字段的值决定B字段是否显示',
+    },{
+      name: '运算符',
+      key: 'expression',
+      type: 'input'
+    },{
+      name: '匹配值',
+      key: 'match',
+      type: 'radio',
+      enumerateValue: [
+      { text: '显示值', value: 'label' },
+      { text: '值', value: 'value' }]
+    }
+    ],
+    description: '根据A字段的值决定B字段是否显示(若A字段为外键类型需根据显示值匹配，则match配置为label，不配置默认为value)',
     supportType:["sheetNo","byPage","select","object","computed","trigger"]
   },
   {
