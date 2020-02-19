@@ -159,53 +159,53 @@
       }
     },
     props: {
-      defaultColumn: {
+      defaultColumn: { // 默认列数
         type: Number,
         default: 4
       },
-      formItemLists: {
+      formItemLists: { // 表单配置
         type: Array,
         default() {
           return [];
         }
       },
-      searchFoldnum: {
+      searchFoldnum: { // 超出行数
         type: [Number, String],
         default() {
           return 0;
         }
       },
-      formIndex: {
+      formIndex: { // 表单位置
         type: Number,
         default() {
           return 0;
         }
       },
-      type: {
+      type: { 
         type: String,
         default() {
           return '';
         }
       },
-      mountdataForm: {
+      mountdataForm: { // 表单初始化
         type: Function,
         default() {
           return function () {};
         }
       },
-      isCopy: {
+      isCopy: { // 是否复制
         type: Function,
         default() {
           return function () {};
         }
       },
-      getsetAttsetProps: {
+      getsetAttsetProps: { // 获取静态值
         type: Function,
         default() {
           return function () {};
         }
       },
-      verifymessageform: {
+      verifymessageform: { // 校验
         type: Function,
         default() {
           return function () {};
@@ -230,13 +230,13 @@
           return false;
         }
       },
-      path: {
+      path: { // 是否有path
         type: String,
         default() {
           return '';
         }
       },
-      isreftabs: {
+      isreftabs: { // 是否主子表
         type: Boolean,
         default() {
           return false;
@@ -248,19 +248,19 @@
           return '';
         }
       },
-      condition: {
+      condition: { // 是条件查询还是保存
         type: String,
         default() {
           return '';
         }
       },
-      mountedType: {
+      mountedType: { // 监听数据
         type: String,
         default() {
           return '';
         }
       },
-      refcolvalData: {
+      refcolvalData: { // 父级数据
         type: Object,
         default() {
           return {};
@@ -276,6 +276,12 @@
         type: Boolean,
         default() {
           return false;
+        }
+      },
+      partentVue: { // 返回父级实例
+        type: Function,
+        default() {
+          return function () {};
         }
       }
     },
@@ -298,7 +304,7 @@
         oldformData: {}, // 老的change
         setHeight: 34,
         setVerficaTime: '', // 校验时间
-        formLabel: {}, // 当前字段的label
+        formLabels: {}, // 当前字段的label
         timerSet: '',
         fkHttpRequestTime: '',
         formRequestJson: { }, // 表单传参比较
@@ -337,7 +343,6 @@
       mountedType() {
         // 监听刷新、切换
         this.formRequestJson = {};
-        this.formLabel = {};
         setTimeout(() => {
           this.VerificationFormInt();
           this.mountdataFormInt();
@@ -737,8 +742,6 @@
 
         // 向父组件抛出整个数据对象以及当前修改的字段
         const setLabel = this.getLable(current);
-        this.formLabel = Object.assign(JSON.parse(JSON.stringify(this.formLabel)), JSON.parse(JSON.stringify(setLabel)));
-
         this.$emit('formDataChange', obj, valueItem, current, setLabel, this);
         //  change 值 走后台接口赋值
         if (current.item.field) {
@@ -1078,6 +1081,7 @@
       hidecolumn(items, index, json, type) {
         // 隐藏
         // 获取值
+        const labelForm = this.partentVue().labelForm;
         const jsonArr = JSON.parse(JSON.stringify(json));
         const refcolumn = items.validate.hidecolumn.refcolumn;
         const refval = items.validate.hidecolumn.refval;
@@ -1093,7 +1097,7 @@
           value = '';
         }
         if (items.validate.hidecolumn.match && items.validate.hidecolumn.match === 'label') {
-          value = this.formLabel[refcolumn];
+          value = labelForm[refcolumn];
         }
         const refvalArr = refval.split(',');
         const refIndex = refvalArr.findIndex(x => x.toString() === value);

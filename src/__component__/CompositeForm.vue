@@ -38,6 +38,7 @@
                 :refcolval-data="refcolvaData"
                 :mapp-status="setMapping"
                 :is-main-table="isMainTableForm"
+                :partent-vue="partentVue"
                 :condition="conditiontype"
                 :module-form-type="moduleFormType"
                 :get-state-data="getStateData"
@@ -69,6 +70,7 @@
           :verifymessageform="VerifyMessageForm"
           :set-objreadonly="setObjreadonly"
           :mapp-status="setMapping"
+          :partent-vue="partentVue"
           :module-form-type="moduleFormType"
           :default-column="defaultColumnCol"
           :condition="conditiontype"
@@ -716,6 +718,10 @@
         }, {});
         return defaultSetValueData;
       },
+      partentVue() {
+        // 返回当前实例
+        return this;
+      },
       mountdataForm(value, formItem) {
         // 获取表单默认值
         setTimeout(() => {
@@ -1106,7 +1112,18 @@
         // 获取全部
         const srccol = obj.item.validate.refcolval && obj.item.validate.refcolval.srccol;
         const prmsrccol = current.refcolprem && current.refcolprem.srccol;
-        this.formItem[`${this.tableGetName}${obj.item.field}`] = current.valuedata || current.defval || '';
+        let _valuedata = current.valuedata || current.defval || '';
+        this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
+        if (current.display === 'select' || current.display === 'check') {
+          const optionIndex = current.combobox.findIndex(x => x.limitval === _valuedata);
+          if (optionIndex !== -1) {
+            _valuedata = current.combobox[optionIndex].limitdesc;
+          } else {
+            _valuedata = '';
+          }
+        }
+        this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
+   
         this.LinkageForm.push({
           key: `${this.tableGetName}${obj.item.field}`,
           name: obj.item.title,
