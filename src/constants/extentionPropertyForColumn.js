@@ -5,7 +5,7 @@ export default [
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '加密后字段值即显示***',
-    supportType: ['byPage']
+    supportType:["byPage"]
   },
   {
     name: '字段值过滤',
@@ -30,7 +30,7 @@ export default [
       }      
     ],
     description: 'B字段根据A字段选择的值过滤出对应条件下的数据',
-    supportType: ['object']
+    supportType:["object"]
   },
   {
     name: 'HR折叠',
@@ -38,7 +38,7 @@ export default [
     type: 'radio',
     enumerateValue: [{ text: '展开', value: 'expand' }, { text: '折叠', value: 'fold' }],
     description: '根据配置决定hr字段默认是展开还是合拢，没配置则默认为【展开】',
-    supportType: ['trigger']
+    supportType:["trigger"]
   },
   {
     name: '日期类型',
@@ -52,7 +52,7 @@ export default [
       { text: '之后（不含今天）', value: 'aftertoday' }
     ],
     description: '控制日期型字段可选范围',
-    supportType: ['byPage']
+    supportType:["byPage"]
   },
   {
     name: '字段链接定制界面',
@@ -84,7 +84,7 @@ export default [
       type: 'input'
     }],
     description: '列表界面指定字段显示链接，点击可进入对应界面',
-    supportType: ['byPage', 'sheetNo', 'select', 'object']
+    supportType:["byPage","sheetNo","select","object"]
   },
   {
     name: '虚拟字段-计算列',
@@ -105,21 +105,21 @@ export default [
       type: 'input'
     }],
     description: '赋值方式为计算列，通过其他字段及计算公式所得',
-    supportType: ['computed']
+    supportType:["computed"]
   },
   {
     name: '外键、虚拟字段列表翻译',
     key: 'refhsfval',
     type: 'input',
     description: '填写转换显示格式的path',
-    supportType: ['object', 'trigger']
+    supportType:["object","trigger"]
   },
   {
     name: '外键、虚拟字段单对象翻译',
     key: 'refhsfobjval',
     type: 'input',
     description: '填写转换显示格式的path',
-    supportType: ['object', 'trigger']
+    supportType:["object","trigger"]
   },
   {
     name: '字段隐藏显示',
@@ -133,29 +133,29 @@ export default [
       name: '影响值',
       key: 'refval',
       type: 'input'
-    }, {
+    },{
       name: '运算符',
       key: 'expression',
       type: 'select',
       selectOptions: [
-        { text: '-- 请选择 --', value: '' },
-        { text: '=', value: '=' },
-        { text: '>', value: '>' },
-        { text: '>=', value: '>=' },
-        { text: '<', value: '<' },
-        { text: '<=', value: '<=' },
-        { text: '!=', value: '!=' }]
-    }, {
-      name: '匹配值(若外键类型需根据显示值匹配，则配置为label，不配置默认为value)',
+          { text: '-- 请选择 --', value: '' },
+          { text: '=', value: '=' },
+          { text: '>', value: '>' },
+          { text: '>=', value: '>=' },
+          { text: '<', value: '<' },
+          { text: '<=', value: '<=' },
+          { text: '!=', value: '!=' }]
+    },{
+      name: '匹配值',
       key: 'match',
       type: 'radio',
       enumerateValue: [
-        { text: '显示值', value: 'label' },
-        { text: '值', value: 'value' }]
+      { text: '显示值', value: 'label' },
+      { text: '值', value: 'value' }]
     }
     ],
-    description: '根据A字段的值决定B字段是否显示',
-    supportType: ['sheetNo', 'byPage', 'select', 'object', 'computed', 'trigger']
+    description: '根据A字段的值决定B字段是否显示(若A字段为外键类型需根据显示值匹配，则match配置为label，不配置默认为value)',
+    supportType:["sheetNo","byPage","select","object","computed","trigger"]
   },
   {
     name: '界面联动计算',
@@ -176,7 +176,7 @@ export default [
       key: 'computecolumn'
     }],
     description: '随着A字段、B字段输入的值，即时变化显示C字段的值，C为联动字段',
-    supportType: ['byPage']
+    supportType:["byPage"]
   },
   {
     name: '区间配置',
@@ -192,7 +192,7 @@ export default [
       key: 'lowerlimit'
     }],
     description: '区间字段为虚拟字段，仅支持单对象',
-    supportType: ['trigger']
+    supportType:["trigger"]
   },
   {
     name: '是否过滤不可用数据',
@@ -200,7 +200,7 @@ export default [
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '只针对关联表中ISACTIVE字段可编辑，或不可编辑但该表有作废这两种情况',
-    supportType: ['object']
+    supportType:["object"]
   },
   {
     name: '前端自定义参数',
@@ -208,7 +208,7 @@ export default [
     type: 'input',
     outputValueType: 'JSON',
     description: '自定义参数格式及内容',
-    supportType: ['sheetNo', 'byPage', 'select', 'object', 'computed', 'trigger']
+    supportType:["sheetNo","byPage","select","object","computed","trigger"]
   },
   {
     name: '字段翻译内容是否缓存',
@@ -216,7 +216,7 @@ export default [
     type: 'radio',
     enumerateValue: [{ text: '是', value: true }, { text: '否', value: false }],
     description: '不配置默认为true，配置为false则不进行缓存',
-    supportType: ['object', 'computed', 'trigger']
+    supportType:["object","computed","trigger"]
   },
   {
     name: '字段缓存时间配置',
@@ -224,9 +224,9 @@ export default [
     type: 'input',
     inputType: 'Number',
     description: '字段缓存时间设置，单位为秒',
-    supportType: ['object', 'computed', 'trigger']
+    supportType:["object","computed","trigger"]
   },
-  {
+    {
     name: '列表查询条件区域字段下拉列表数据权限配置',
     key: 'precollist',
     type: 'object-group',
@@ -250,7 +250,7 @@ export default [
       }
     ],
     description: '列表界面查询条件区域外键字段下拉列表的数据权限',
-    supportType: ['object']
+    supportType:["object"]
   },
   {
     name: '单对象界面字段下拉列表数据权限配置',
@@ -276,7 +276,7 @@ export default [
       }
     ],
     description: '单对象界面外键字段下拉列表的数据权限',
-    supportType: ['object']
+    supportType:["object"]
   },
   {
     name: '单对象关联(店仓)下拉列表数据权限配置',
@@ -307,6 +307,6 @@ export default [
       }
     ],
     description: '控制单对象界面关联(店仓)外键字段下拉列表的数据权限',
-    supportType: ['object']
+    supportType:["object"]
   },
 ];
