@@ -133,7 +133,28 @@ export default [
       name: '影响值',
       key: 'refval',
       type: 'input'
-    }],
+    },{
+      name: '运算符',
+      key: 'expression',
+      type: 'input'
+      type: 'select',
+      selectOptions: [
+          { text: '-- 请选择 --', value: '' },
+          { text: '=', value: '=' },
+          { text: '>', value: '>' },
+          { text: '>=', value: '>=' },
+          { text: '<', value: '<' },
+          { text: '<=', value: '<=' },
+          { text: '!=', value: '!=' }]
+    },{
+      name: '匹配值(若外键类型需根据显示值匹配，则配置为label，不配置默认为value)',
+      key: 'match',
+      type: 'radio',
+      enumerateValue: [
+      { text: '显示值', value: 'label' },
+      { text: '值', value: 'value' }]
+    }
+    ],
     description: '根据A字段的值决定B字段是否显示',
     supportType:["sheetNo","byPage","select","object","computed","trigger"]
   },
