@@ -161,6 +161,7 @@
         itemTableValidation: false, // 控制提交按钮操作时子表form必填项不进行验证
         saveButtonPath: '', // 类型为保存的按钮path
         saveEventAfter: '', // 保存事件执行完成后的操作
+        objTabActionSlientData: {}, // 静默程序配置字段
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
         savaCopy: false,
         isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
@@ -932,6 +933,7 @@
           table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
         });
       },
+
       objectTrySubmit(obj) { // 按钮提交逻辑
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
@@ -941,11 +943,13 @@
             showCancel: true,
             content: '确认执行提交?',
             onOk: () => {
-              this.saveButtonPath = obj.requestUrlPath;
-              const dom = document.getElementById('actionMODIFY');
-              const myEvent = new Event('click');
-              dom.dispatchEvent(myEvent);
-              this.saveEventAfter = 'submit';
+              // this.saveButtonPath = obj.requestUrlPath;
+              // const dom = document.getElementById('actionMODIFY');
+              // const myEvent = new Event('click');
+              // dom.dispatchEvent(myEvent);
+              // this.saveEventAfter = 'submit';
+
+              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
           this.$Modal.fcWarning(data);
@@ -983,10 +987,11 @@
             showCancel: true,
             content: '确认执行作废?',
             onOk: () => {
-              this.saveButtonPath = obj.requestUrlPath;
-              const dom = document.getElementById('actionMODIFY');
-              dom.click();
-              this.saveEventAfter = 'invalid';
+              // this.saveButtonPath = obj.requestUrlPath;
+              // const dom = document.getElementById('actionMODIFY');
+              // dom.click();
+              // this.saveEventAfter = 'invalid';
+              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
             }
           };
           this.$Modal.fcWarning(data);
@@ -1045,6 +1050,10 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
+            } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -1230,12 +1239,17 @@
         } 
       },
 
-  
+      clickSave(data) {
+        this.saveButtonPath = data.requestUrlPath;
+        const dom = document.getElementById('actionMODIFY');
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);
+        this.saveEventAfter = data.type;
+      },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
-        // tab.confirm = true
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // if (!tab) tab = self.activeTabAction;
+        // debugger;
         // if (tab.confirm) {
         //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
         //     const data = {
@@ -1275,14 +1289,16 @@
         //     // });
         //     // 清除提示信息
         //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-        //     self.beforeObjectSubmit(() => {
-        //       self.objTabActionSlientConfirm(tab);
+        //     this.beforeObjectSubmit(() => {
+        //       const type = 'objTabActionSlient';
+        //       this.clickSave(type);
+        //       this.objTabActionSlientConfirm(tab);
         //     });
         //   } else { // 静默直接执行
-        //     self.objTabActionSlientConfirm(tab);
+        //     this.objTabActionSlientConfirm(tab);
         //   }
         // } else {
-        //   self.objTabActionSlientConfirm(tab);
+        //   this.objTabActionSlientConfirm(tab);
         // }
       },
       // 动作定义静默执行
@@ -1364,8 +1380,6 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
-          console.log(3);
-
           this.$loading.show(this.tableName);
         });
         promise.then((res, actionName) => {
@@ -1713,7 +1727,7 @@
           if (keepAliveModuleName.indexOf('PLUGIN') !== -1) { // 从插件界面双击进入单对象界面时，无需执行以下操作
             updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
             window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          }else{//从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
+          } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
           this.decreasekeepAliveLists(keepAliveModuleName);
@@ -2639,11 +2653,21 @@
               }
             });
           }
+          DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
+            detail: {
+              type: 'resolve',
+            }
+          });
         }, () => {
           this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
+          DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存失败后执行相对应逻辑
+            detail: {
+              type: 'reject',
+            }
+          });
         }).then(() => {
 
         });
@@ -2792,6 +2816,9 @@
             }, () => { // 状态为rejected时执行
               this.upData();
             });
+          } else if (this.saveEventAfter === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
+            this.objTabActionSlientConfirm(this.objTabActionSlientData);
+            this.this.objTabActionSlientData = {};
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             if (message) {
