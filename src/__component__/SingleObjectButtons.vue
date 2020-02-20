@@ -997,7 +997,7 @@
           this.$Modal.fcWarning(data);
         }
       },
-      webactionClick(obj) { // 动作定义执行
+      webactionClick(obj, type) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
           let selete = [];
@@ -1313,7 +1313,6 @@
           ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
           idsOldTypeNumber = this.updateData[this.itemName].delete[this.itemName].map(item => Number(item.ID));
           idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
-
           // ids = this.updateData[this.itemName].delete[this.itemName];
         }
         if (Version() === '1.3') { // 1.3类型
@@ -1382,52 +1381,103 @@
           });
           this.$loading.show(this.tableName);
         });
-        promise.then((res, actionName) => {
-          const message = this.objTabActionSlientConfirmData.message;
-          const data = {
-            mask: true,
-            title: '成功',
-            content: `${message}`,
-            onOk: () => {
-              DispatchEvent('exeActionSuccessForR3', {
-                detail: {
-                  name: 'exeAction',
-                  type: 'horizontalTable',
-                  url: actionName || '/p/cs/exeAction',
-                  res,
-                  moduleName: this[MODULE_COMPONENT_NAME],
-                  routeQuery: this[INSTANCE_ROUTE_QUERY],
-                  tableName: this[INSTANCE_ROUTE_QUERY].tableName,
-                  routePath: this[INSTANCE_ROUTE]
-                }
+        if (tab.cuscomponent) {
+          const nextOperate = JSON.parse(// 配置信息
+            tab.cuscomponent
+          );
+
+          promise.then(() => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.success) {
+              let successAction = null;
+              let successActionParam = {};
+              successAction = nextOperate.success;
+              successActionParam = {
+                actionid: 0,
+                webaction: successAction
+              };
+              const promiseForSuccess = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: successActionParam, resolve });
               });
-            },
-          };
-          this.$Modal.fcSuccess(data);
-          console.log('tab.isrefrsh', tab.isrefrsh);
-          if (tab.isrefrsh) {
-            // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
-            if (this.objectType === 'horizontal') {
-              const itemNames = this.itemNameGroup.map((c) => {
-                if (c.tableName !== this.tableName) {
-                  return c.tableName;
-                }
-              });// 因左右结构itemNameGroup包含主表，上下结构不包括
-              if (itemNames.includes(this.itemName)) {
-                this.$loading.hide(this.tableName);
-              }
+              promiseForSuccess.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.webactionClick(exeActionDataForComponent);
+              });
+            } else {
+              const message = this.ExeActionData;
+              const data = {
+                mask: true,
+                title: '成功',
+                content: `${message}`
+              };
+              this.$Modal.fcSuccess(data);
             }
-            this.upData();
+          }, () => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.failure) {
+              let errorAction = null;
+              let errorActionParam = {};
+              errorAction = nextOperate.failure;
+              errorActionParam = {
+                actionid: 0,
+                webaction: errorAction
+              };
+              const promises = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: errorActionParam, resolve });
+              });
+              promises.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.webactionClick(exeActionDataForComponent);
+              });
+            }
+          });
+        } else {
+          promise.then((res, actionName) => {
+            const message = this.objTabActionSlientConfirmData.message;
+            const data = {
+              mask: true,
+              title: '成功',
+              content: `${message}`,
+              onOk: () => {
+                DispatchEvent('exeActionSuccessForR3', {
+                  detail: {
+                    name: 'exeAction',
+                    type: 'horizontalTable',
+                    url: actionName || '/p/cs/exeAction',
+                    res,
+                    moduleName: this[MODULE_COMPONENT_NAME],
+                    routeQuery: this[INSTANCE_ROUTE_QUERY],
+                    tableName: this[INSTANCE_ROUTE_QUERY].tableName,
+                    routePath: this[INSTANCE_ROUTE]
+                  }
+                });
+              },
+            };
+            this.$Modal.fcSuccess(data);
+            if (tab.isrefrsh) {
+              // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
+              if (this.objectType === 'horizontal') {
+                const itemNames = this.itemNameGroup.map((c) => {
+                  if (c.tableName !== this.tableName) {
+                    return c.tableName;
+                  }
+                });// 因左右结构itemNameGroup包含主表，上下结构不包括
+                if (itemNames.includes(this.itemName)) {
+                  this.$loading.hide(this.tableName);
+                }
+              }
+              this.upData();
             // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
             // console.log('关闭静默');
-          } else {
+            } else {
+              this.$loading.hide(this.tableName);
+              console.log('关闭静默');
+            }
+          }, () => {
             this.$loading.hide(this.tableName);
             console.log('关闭静默');
-          }
-        }, () => {
-          this.$loading.hide(this.tableName);
-          console.log('关闭静默');
-        });
+          });
+        }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();

@@ -422,5 +422,8 @@ export default {
         });
       });
     }
-  }
+  },
+  updateButtonGetActionData(state, data) {
+    state.ExeActionDataForComponent = data;
+  },
 };
