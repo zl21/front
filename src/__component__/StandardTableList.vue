@@ -152,7 +152,7 @@
     data() {
       return {
         isTreeList: {
-          isShow: false,
+          isShow: true,
           name: 'cp_c_inorg'
         },
         actionModal: false,
