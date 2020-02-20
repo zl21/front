@@ -18,6 +18,7 @@
   import CMixins from '../__config__/mixins/customize';
   import {
     STANDARD_TABLE_LIST_PREFIX,
+    STANDARD_COMMONTABLE_LIST_PREFIX,
     VERTICAL_TABLE_DETAIL_PREFIX,
     HORIZONTAL_TABLE_DETAIL_PREFIX,
     CUSTOMIZED_MODULE_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX, PLUGIN_MODULE_PREFIX, PLUGIN_MODULE_COMPONENT_PREFIX,
@@ -61,7 +62,7 @@
       ...mapMutations('global', ['increaseLinkUrl', 'addKeepAliveLabelMaps']),
       generateComponent() {
         const { routePrefix } = this.$route.meta;
-        if ([STANDARD_TABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) !== -1) {
+        if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) !== -1) {
           this.generateFrameComponent();
         } else if (routePrefix === CUSTOMIZED_MODULE_PREFIX) {
           this.generateCustomizedComponent();
@@ -81,6 +82,10 @@
           mixins = SMixins();
           component = StandardTableList;
           break;
+        case STANDARD_COMMONTABLE_LIST_PREFIX:
+          mixins = SMixins();
+          component = StandardTableList;
+          break;
         case VERTICAL_TABLE_DETAIL_PREFIX:
           mixins = VMixins();
           component = VerticalTableDetail;
@@ -92,7 +97,7 @@
         default:
           break;
         }
-        if ([STANDARD_TABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
+        if ([STANDARD_TABLE_LIST_PREFIX, STANDARD_COMMONTABLE_LIST_PREFIX, VERTICAL_TABLE_DETAIL_PREFIX, HORIZONTAL_TABLE_DETAIL_PREFIX].indexOf(routePrefix) === -1) { return; }
         if (Vue.component(componentName) === undefined) {
           Vue.component(componentName, Vue.extend(Object.assign({ mixins: [mixins], isKeepAliveModel: true }, component)));
         }
@@ -128,6 +133,7 @@
       generatePluginComponent() {
         const { pluginModuleName } = this.$route.params;
         const { routePrefix } = this.$route.meta;
+        
         if (routePrefix !== PLUGIN_MODULE_PREFIX) { return; }
         const componentName = `${PLUGIN_MODULE_COMPONENT_PREFIX}.${pluginModuleName}`;
         if (Vue.component(componentName) === undefined) {

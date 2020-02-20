@@ -2,9 +2,11 @@ import store from './store.config';
 import {
   CUSTOMIZED_MODULE_PREFIX,
   STANDARD_TABLE_LIST_PREFIX,
+  STANDARD_COMMONTABLE_LIST_PREFIX,
   VERTICAL_TABLE_DETAIL_PREFIX,
   HORIZONTAL_TABLE_DETAIL_PREFIX,
   STANDARD_TABLE_COMPONENT_PREFIX,
+  STANDARD_COMMONTABLE_COMPONENT_PREFIX,
   CUSTOMIZED_MODULE_COMPONENT_PREFIX,
   VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX,
   HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX,
@@ -35,6 +37,11 @@ const getKeepAliveModuleName = (routeInfo) => {
     case STANDARD_TABLE_LIST_PREFIX:
       keepAliveModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
       break;
+      // Condition One: 路由到标准列表界面名称(普通表格)
+    case STANDARD_COMMONTABLE_LIST_PREFIX:
+      keepAliveModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+      break;
+      
 
     // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
     case VERTICAL_TABLE_DETAIL_PREFIX:
@@ -75,7 +82,11 @@ const getDynamicModuleTag = (to) => {
     case STANDARD_TABLE_LIST_PREFIX:
       dynamicModuleTag = STANDARD_TABLE_COMPONENT_PREFIX;
       break;
-
+    // Condition One: 路由到标准列表界面名称（普通表格）
+    case STANDARD_COMMONTABLE_LIST_PREFIX:
+      dynamicModuleTag = STANDARD_COMMONTABLE_COMPONENT_PREFIX;
+      break;
+     
     // Condition Two: 路由到左右Tab页签切换（纵向布局）的列表明细界面
     case VERTICAL_TABLE_DETAIL_PREFIX:
       dynamicModuleTag = VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX;
@@ -122,6 +133,10 @@ const getOriginModuleName = (to) => {
       originModuleName = `${LINK_MODULE_COMPONENT_PREFIX}.${linkModuleName}.${linkModuleId}`;
       break;
 
+    case STANDARD_COMMONTABLE_LIST_PREFIX:
+      originModuleName = `${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
+      break;
+       
     default:
       originModuleName = `${STANDARD_TABLE_COMPONENT_PREFIX}.${tableName}.${tableId}`;
   }
@@ -147,6 +162,7 @@ export default (router) => {
     const { isBack } = to.query;
     const moduleGenerator = {
       [STANDARD_TABLE_COMPONENT_PREFIX]: standardTableListModule,
+      [STANDARD_COMMONTABLE_COMPONENT_PREFIX]: standardTableListModule,
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: verticalTableDetailModule,
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: horizontalTableDetailModule,
     };
@@ -154,6 +170,7 @@ export default (router) => {
       [CUSTOMIZED_MODULE_COMPONENT_PREFIX]: '',
       [LINK_MODULE_COMPONENT_PREFIX]: '',
       [STANDARD_TABLE_COMPONENT_PREFIX]: '',
+      [STANDARD_COMMONTABLE_COMPONENT_PREFIX]: '',
       [VERTICAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
       [HORIZONTAL_TABLE_DETAIL_COMPONENT_PREFIX]: itemId === 'New' ? '新增' : '编辑',
     };
@@ -192,7 +209,7 @@ export default (router) => {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
       // 则都应该显示其当前对应的状态页。
-      if (routePrefix === STANDARD_TABLE_LIST_PREFIX && existModule.routePrefix !== STANDARD_TABLE_LIST_PREFIX && !isBack) {
+      if (routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && existModule.routePrefix !== (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX) && !isBack) {
         // 非返回逻辑
         // Step One: 处理菜单Tab页签的显示逻辑。
         commit('global/forceUpdateOpenedMenuLists', {
@@ -265,7 +282,7 @@ export default (router) => {
   // 增加后置路由守卫
   router.afterEach((to, from) => {
     // 记录规则一：由列表界面跳转到单对象界面，如果目标单对象界面和列表界面属于不同的表（Table不同），则将此种关系维护到路由记录“栈”。
-    const isFromStandardTable = from.meta.routePrefix === STANDARD_TABLE_LIST_PREFIX;
+    const isFromStandardTable = from.meta.routePrefix === (STANDARD_TABLE_LIST_PREFIX || STANDARD_COMMONTABLE_LIST_PREFIX);
 
    
     const isFromPlugin = from.meta.routePrefix === PLUGIN_MODULE_PREFIX;// 目标单对象界面和列表界面属于不同的表（路由类型不同（插件类型路由））
@@ -284,8 +301,6 @@ export default (router) => {
 
     if (isDynamicRouting && (isFromStandardTable || isFromPlugin) && isTableDetail && isNotFromSameTable) {
       window.sessionStorage.removeItem('dynamicRouting');
-
-      
       const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
       if (Object.keys(routeMapRecordForSingleObject).indexOf(to.fullPath) > -1) { // 如果在单对象配置的动态路由维护关系里存在，当前要跳转的单对象界面，则不记录当前的
         deleteFromSessionObject('routeMapRecordForSingleObject', to.fullPath);

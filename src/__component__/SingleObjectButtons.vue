@@ -1675,7 +1675,6 @@
           to: '',
           from: ''
         };
-
         if (this.itemId === 'New') { // 单对象界面配置动态路由时，由动态路由界面跳转的新增单对象界面，点击返回时需回到维护的关系中对应的路由
           Object.keys(routeMapRecordForSingleObject).map((item) => {
             if (item.indexOf(SinglePageRouteNew) > -1) {
@@ -1711,9 +1710,12 @@
             k: 'keepAliveModuleName',
             v: keepAliveModuleName
           };
-          updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
-          window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          // deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+          if (keepAliveModuleName.indexOf('PLUGIN') !== -1) { // 从插件界面双击进入单对象界面时，无需执行以下操作
+            updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
+            window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
+          }else{//从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
+            deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
+          }
           this.decreasekeepAliveLists(keepAliveModuleName);
           this.tabCloseAppoint({ routeFullPath: currentRoute, stopRouterPush: true });
         } else if (routeMapRecordForSingleObject[currentPath]) {

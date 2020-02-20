@@ -1635,7 +1635,9 @@
         const index = e.value.list.findIndex(x => x === this._items.field);
 
         if (index !== -1 && e.value.tableName === this._items.props.tableGetName) {
-          this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
+          setTimeout(() => {
+            this.$parent.hidecolumn(this._items, this.index, e.value.data, 'mounted');
+          }, 10);
         }
       }
       

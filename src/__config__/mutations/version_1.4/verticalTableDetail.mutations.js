@@ -396,5 +396,32 @@ export default {
   },
   updateWebConf(state, data) { // 更新主表配置WebConf
     state.WebConf = data;
+  },
+  changeFormData(state, data) {
+    // [
+    //   { colname:'333',
+    //   readonly: true   不可编辑，false 可编辑，
+    //      isnotnull：true 必填，false 不必填 
+    //      display:'none'是不显示}
+    // ];
+    if (state.mainFormInfo && state.mainFormInfo.formData && state.mainFormInfo.formData.data && state.mainFormInfo.formData.data.addcolums) {
+      state.mainFormInfo.formData.data.addcolums.map((a) => {
+        a.childs.map((b) => {
+          data.map((c) => {
+            if (c.colname === b.colname) {
+              if (c.readonly) {
+                b.readonly = c.readonly;
+              }
+              if (c.isnotnull) {
+                b.isnotnull = c.isnotnull;
+              }
+              if (c.display) {
+                b.display = c.display;
+              }
+            }
+          });
+        });
+      });
+    }
   }
 };
