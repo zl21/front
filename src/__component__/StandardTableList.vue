@@ -1296,7 +1296,6 @@
 
         let promise = new Promise((resolve, reject) => {
           this.$loading.show();
-          console.log('静默');
           this.getExeActionDataForButtons({
             item, obj, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
@@ -1306,7 +1305,7 @@
             this.buttons.activeTabAction.cuscomponent
           );
           promise.then(() => {
-            this.$loading.hide(this[MODULE_COMPONENT_NAME].tableName);
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
               let successActionParam = {};
@@ -1333,7 +1332,7 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
-            this.$loading.hide(this[MODULE_COMPONENT_NAME].tableName);
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
               let errorActionParam = {};

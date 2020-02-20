@@ -65,6 +65,7 @@ export default () => ({
       testData: ({ testData }) => testData,
       tempStorage: ({ tempStorage }) => tempStorage,
       WebConf: ({ WebConf }) => WebConf,
+      ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;
@@ -87,7 +88,8 @@ export default () => ({
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
         'getExportQueryForButtons',
-        'getObjTabActionSlientConfirm'
+        'getObjTabActionSlientConfirm',
+        'getActionDataForButtons'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -115,7 +117,9 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
-        'changeFormData'
+        'changeFormData',
+        'updateButtonGetActionData'
+
         // 'resetFormReadOnlyAttribute'
 
       ]),
