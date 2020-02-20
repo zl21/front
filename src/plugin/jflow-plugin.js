@@ -204,8 +204,8 @@ function thirdlogin() { // 三方登录  获取accessToken
         -----BEGIN PUBLIC KEY-----
         ${PUBLIC_KEY}
         -----END PUBLIC KEY-----`);
-    headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
-    headers.encrypt_type = 'RSA';
+    headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
+    headers['encrypt-type'] = 'RSA';
     headers['Content-Type'] = 'application/json';
   }
   
@@ -532,8 +532,8 @@ function AxiosGuard(axios) { // axios拦截
         -----BEGIN PUBLIC KEY-----
         ${PUBLIC_KEY}
         -----END PUBLIC KEY-----`);
-        config.headers.encrypt_key = uuidEncrypt.encrypt(aesKey);
-        config.headers.encrypt_type = 'RSA';
+        config.headers['encrypt-key'] = uuidEncrypt.encrypt(aesKey);
+        config.headers['encrypt-type'] = 'RSA';
       }
     }
     if (configurationFlag) { // 配置了流程图并
