@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -179,6 +179,9 @@
     },
     data() {
       return {
+        saveButtonPath: '', // 类型为保存的按钮path
+        saveEventAfter: '', // 保存事件执行完成后的操作
+        objTabActionSlientData: {}, // 静默程序配置字段
         isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
         dialogComponentName: null,
         buttonData: [],
@@ -767,6 +770,10 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
+            } else if (obj.confirm.isSave) { // 静默执行保存
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -775,6 +782,18 @@
           }
         } else {
           this.buttonEvent(obj);
+        }
+      },
+      clickSave(data) {
+        this.saveButtonPath = data.requestUrlPath;
+        const dom = document.getElementById('actionMODIFY');
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);
+        this.saveEventAfter = data.type;
+      },
+      objTabActionSlientForItemTable(data) {
+        if (data.detail.type === 'resolve') {
+          this.objTabActionSlientConfirm(this.objTabActionSlientData); 
         }
       },
       dialogMessage(title, contentText, obj) {
@@ -867,10 +886,10 @@
       objTabActionSlientConfirm(tab) {
         let obj = {};
         let params = {};
+          const { tableName } = router.currentRoute.params;
         if (Version() === '1.3') {
           const label = `${this.activeTab.label.replace('编辑', '')}`;
           const ids = this.tableRowSelectedIds.map(item => item.ID);
-          const { tableName } = router.currentRoute.params;
           if (tab.action.search('/') === -1) {
             const param = {// param层动态参数
               // objid: itemId,
@@ -907,7 +926,7 @@
         });
 
         promise.then(() => {
-          this.$loading.hide(this.routerParams.tableName);
+          this.$loading.hide(tableName);
           const message = this.objTabActionSlientConfirmData.message;
           const data = {
             mask: true,
@@ -3804,6 +3823,7 @@
         }
       });
       if (!this._inactive) {
+        window.addEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
         window.addEventListener('changePageForSelete', this.changePageForSeleteData);
       }
       const { itemId, tableName, tableId } = this.$route.params;
@@ -3820,6 +3840,7 @@
         }
       });
       window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
+      window.removeEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
     },
     activated() {
       this.isRefreshClick = false;
