@@ -303,6 +303,7 @@ async function jflowsave(flag, request) {
         changeUser: userInfo.id,
         businessUrl: request.url,
         ruleField: 'V',
+        webActionId: 0,
         businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2)
       }).then((res) => {
       DispatchEvent('jflowClick', {
