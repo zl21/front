@@ -21,7 +21,8 @@ let store = {};
 let userInfo = {}; // 用户信息
 let configurationFlag = false; // 是否是直接访问但对象界面  为true时按照配置了流程图的逻辑处理
 let jflowIp = ''; // jflow项目的ip
-let modifiableFieldName = []; // jflow可修改字段名
+let modifiableFieldName = []; // jflow可显示字段名
+let editFeild = []; // 可编辑字段
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
@@ -240,6 +241,7 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
             });
           }
           modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
+          editFeild = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild) : [];
           instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
           businessStatus = res.data.data.businessStatus;
           if (!flag) {
@@ -259,6 +261,9 @@ function RoutingGuard(router) { // 路由守卫
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
         jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
+          console.log(store.state.global);
+          //  todo
+          // 设置global里面的可编辑字段和可见字段的控制
           next();
           setTimeout(() => {
             if (res.data.resultCode === 0) {
@@ -624,48 +629,43 @@ function AxiosGuard(axios) { // axios拦截
 
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
-  console.log(modifiableFieldName);
   if (instanceId || businessStatus === -2) {
-    // data.addcolums.map((item) => {
-    //   if (item.childs) {
-    //     item.childs.map((temp) => {
-    //       if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
-    //         temp.readonly = false;
-    //       } else {
-    //         temp.readonly = true;
-    //       }
-    //       return temp;
-    //     });
-    //   } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
-    //     item.child.readonly = false;
-    //   } else {
-    //     item.child.readonly = true;
-    //   }
-      
-    //   return item;
-    // });
-
     data.addcolums = data.addcolums.filter((item) => {
       if (item.childs) {
         item.childs = item.childs.filter((temp) => {
           if (fieldCheck(temp.colid).length > 0) {
-            temp.readonly = fieldCheck(temp.colid)[0].readonly;
+            if (editFeild.length === 0) {
+              temp.readonly = true;
+            } else if (editFeildCheck(temp.colid).length > 0) {
+              temp.readonly = false;
+            }
             return temp;
           }
         });
         return item;
       } if (fieldCheck(item.child.colid).length > 0) {
-        item.child.readonly = fieldCheck(item.child.colid)[0].readonly;
+        if (editFeild.length === 0) {
+          item.child.readonly = true;
+        } else if (editFeildCheck(item.child.colid).length > 0) {
+          item.child.readonly = false;
+        }
         return item;
       }
     });
-    console.log(data);
   }
   return data;
 }
 
-function fieldCheck(colid) {
+function fieldCheck(colid) { // 可见字段判断
   return modifiableFieldName.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
+}
+
+function editFeildCheck(colid) { // 可编辑字段判断
+  return editFeild.filter((item) => {
     if (String(colid) === String(item.ID)) {
       return item;
     }

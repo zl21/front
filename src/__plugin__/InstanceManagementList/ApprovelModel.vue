@@ -73,6 +73,7 @@
 </template>
 <script>
   import mutipleSelectPop from './MutipleSelectPop';
+  import { BacklogData } from '../../plugin/todoList';
 
   export default {
     name: 'ApprovelModel',
@@ -426,7 +427,7 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
-
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
@@ -473,6 +474,7 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
@@ -507,6 +509,7 @@
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
