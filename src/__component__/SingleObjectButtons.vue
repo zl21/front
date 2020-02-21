@@ -1064,14 +1064,20 @@
           this.buttonEvent(obj);
         }
       },
-      dialogMessage(title, contentText, obj) {
+      dialogMessage(title, contentText, obj) { // 配置提示信息时点击确认按钮执行的动作
         const data = {
           mask: true,
           title,
           content: contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog(obj);
+            if (JSON.parse(obj.confirm).isSave) {
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
+            } else {
+              this.errorconfirmDialog(obj);
+            }
           }
         };
         this.$Modal.fcWarning(data);
@@ -1475,7 +1481,6 @@
             }
           }, () => {
             this.$loading.hide(this.tableName);
-            console.log('关闭静默');
           });
         }
       },
@@ -2867,8 +2872,9 @@
               this.upData();
             });
           } else if (this.saveEventAfter === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
-            this.objTabActionSlientConfirm(this.objTabActionSlientData);
-            this.this.objTabActionSlientData = {};
+            this.buttonEvent(this.objTabActionSlientData);
+            // this.objTabActionSlientConfirm(this.objTabActionSlientData);
+            this.objTabActionSlientData = {};
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             if (message) {

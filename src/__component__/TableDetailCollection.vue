@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                   >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -803,7 +803,13 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog(obj);
+            if (JSON.parse(obj.confirm).isSave) {
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
+            } else {
+              this.errorconfirmDialog(obj);
+            }
           }
         };
         this.$Modal.fcWarning(data);
