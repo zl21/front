@@ -64,6 +64,7 @@ export default () => ({
       testData: ({ testData }) => testData,
       tempStorage: ({ tempStorage }) => tempStorage,
       WebConf: ({ WebConf }) => WebConf,
+      ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -87,7 +88,9 @@ export default () => ({
         'getObjTabActionSlientConfirm',
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
-        'getObjectTryInvalid'
+        'getObjectTryInvalid',
+        'getActionDataForButtons'
+
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -113,6 +116,7 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
+        'updateButtonGetActionData'
       ]),
   },
   beforeDestroy() {

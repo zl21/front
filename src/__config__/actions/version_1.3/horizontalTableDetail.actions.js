@@ -582,5 +582,11 @@ export default {
       });
     }
   },
+  getActionDataForButtons({ commit }, { param, resolve }) {
+    network.post('/p/cs/getAction', urlSearchParams(param)).then((res) => {
+      commit('updateButtonGetActionData', res.data);
+      resolve();
+    });
+  },
  
 };
