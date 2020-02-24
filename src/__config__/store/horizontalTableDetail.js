@@ -32,8 +32,8 @@ export default () => ({
     refreshButton: true, // 为方便jflow控制，改为全局状态调用
     jflowWaterMark: null, // jflow水印
     globalLoading: false,
-    WebConf: {}
-
+    WebConf: {},
+    ExeActionDataForComponent: {}
   },
   actions: actions(),
   mutations: mutations()
