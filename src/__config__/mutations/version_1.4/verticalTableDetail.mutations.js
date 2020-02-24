@@ -169,9 +169,104 @@ export default {
     }
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.panelData.isShow = true;
-    componentAttribute.panelData.data = data;
+    // readonly: true   不可编辑，false 可编辑，   
+    // isnotnull：true 必填，false 不必填  ，
+    // display:'none'是不显示
+    const JflowControlField = {
+      itemTableName: 'BCP_CUSTOMER_CONTACT',
+      data: [
+        {
+          colname: 'ISACTIVE',
+          display: 'none',
+          readonly: true,
+        },
+        {
+          colname: 'CONTACT_TABLE_ID',
+          display: 'none',
+          readonly: true,
+        },
+        // {
+        //   colname: 'OWNERID',
+        //   display: 'none',
+        //   // readonly: true,
+        // },
+        // {
+        //   colname: 'CREATIONDATE',
+        //   display: 'none',
+        //   // readonly: true,
+        // },
+           
+      ]
+    };
+
+    let flag = false;
+    let changeData = [];
+    if (JflowControlField) {
+      state.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+        if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
+          flag = true;
+        }
+        return item;
+      });
+      if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        changeData = data.addcolums.map((addcolum) => {
+          if (addcolum.childs) {
+            addcolum.childs.map((child) => {
+              JflowControlField.data.map((field) => {
+                if (child.colname === field.colname) {
+                  Object.keys(field).map((key) => {
+                    if (key === 'display') {
+                      child.display = field.display;
+                      return child;
+                    }
+                    if (key === 'readonly') {
+                      child.readonly = field.readonly;
+                      return child;
+                    }
+                    return child;
+                  });
+                }
+                return child;
+              });
+            });
+            return addcolum;
+          }
+          JflowControlField.data.map((field) => {
+            if (addcolum.child.colname === field.colname) {
+              Object.keys(field).map((key) => {
+                if (key === 'display') {
+                  addcolum.child.display = field.display;
+                  return addcolum.child;
+                }
+                if (key === 'readonly') {
+                  addcolum.child.readonly = field.readonly;
+                  return addcolum.child;
+                }
+                return addcolum.child;
+              });
+              // addcolum.child.display = field.display;
+              // addcolum.child.readonly = field.readonly;
+              return addcolum.child;
+            }
+            return addcolum.child;
+          });
+          
+          return addcolum;
+        });
+      } else {
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        componentAttribute.panelData.data = data;
+      }
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.panelData.isShow = true;
+      data.addcolums = changeData;
+      componentAttribute.panelData.data = data;
+    } else {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.panelData.isShow = true;
+      componentAttribute.panelData.data = data;
+    }
   },
 
   updateNewMainTableAddSaveData(state, { data }) { // 主表新增保存返回信息
