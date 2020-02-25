@@ -75,9 +75,9 @@
     
         // state.instanceId = '1';
 
-
+        console.log(4444, this);
         if (this.tabPanel) {
-          //      if (enableJflow()&&this.instanceId && JflowControlField ) {
+          //  if (enableJflow()&&this.instanceId && JflowControlField ) {
           // this.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
           //   if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
           //     objreadonly = true;
