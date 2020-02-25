@@ -46,7 +46,8 @@ export default () => ({
     jflowWaterMark: null, // jflow水印
     globalLoading: false,
     testData: false, // 校验是否更改过值
-    WebConf: {}
+    WebConf: {},
+    ExeActionDataForComponent: {}
 
   },
   actions: actions(),

@@ -161,6 +161,7 @@
         itemTableValidation: false, // 控制提交按钮操作时子表form必填项不进行验证
         saveButtonPath: '', // 类型为保存的按钮path
         saveEventAfter: '', // 保存事件执行完成后的操作
+        objTabActionSlientData: {}, // 静默程序配置字段
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
         savaCopy: false,
         isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
@@ -932,6 +933,7 @@
           table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
         });
       },
+
       objectTrySubmit(obj) { // 按钮提交逻辑
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
         if (this.verifyRequiredInformation()) { // 验证表单必填项
@@ -941,11 +943,13 @@
             showCancel: true,
             content: '确认执行提交?',
             onOk: () => {
-              this.saveButtonPath = obj.requestUrlPath;
-              const dom = document.getElementById('actionMODIFY');
-              const myEvent = new Event('click');
-              dom.dispatchEvent(myEvent);
-              this.saveEventAfter = 'submit';
+              // this.saveButtonPath = obj.requestUrlPath;
+              // const dom = document.getElementById('actionMODIFY');
+              // const myEvent = new Event('click');
+              // dom.dispatchEvent(myEvent);
+              // this.saveEventAfter = 'submit';
+
+              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'submit' });
             }
           };
           this.$Modal.fcWarning(data);
@@ -983,16 +987,17 @@
             showCancel: true,
             content: '确认执行作废?',
             onOk: () => {
-              this.saveButtonPath = obj.requestUrlPath;
-              const dom = document.getElementById('actionMODIFY');
-              dom.click();
-              this.saveEventAfter = 'invalid';
+              // this.saveButtonPath = obj.requestUrlPath;
+              // const dom = document.getElementById('actionMODIFY');
+              // dom.click();
+              // this.saveEventAfter = 'invalid';
+              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
             }
           };
           this.$Modal.fcWarning(data);
         }
       },
-      webactionClick(obj) { // 动作定义执行
+      webactionClick(obj, type) { // 动作定义执行
         if (obj.confirm) {
           // 有提示
           let selete = [];
@@ -1045,6 +1050,10 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
+            } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -1055,14 +1064,20 @@
           this.buttonEvent(obj);
         }
       },
-      dialogMessage(title, contentText, obj) {
+      dialogMessage(title, contentText, obj) { // 配置提示信息时点击确认按钮执行的动作
         const data = {
           mask: true,
           title,
           content: contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog(obj);
+            if (JSON.parse(obj.confirm).isSave) {
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
+            } else {
+              this.errorconfirmDialog(obj);
+            }
           }
         };
         this.$Modal.fcWarning(data);
@@ -1230,12 +1245,17 @@
         } 
       },
 
-  
+      clickSave(data) {
+        this.saveButtonPath = data.requestUrlPath;
+        const dom = document.getElementById('actionMODIFY');
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);
+        this.saveEventAfter = data.type;
+      },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
-        // tab.confirm = true
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // if (!tab) tab = self.activeTabAction;
+        // debugger;
         // if (tab.confirm) {
         //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
         //     const data = {
@@ -1275,14 +1295,16 @@
         //     // });
         //     // 清除提示信息
         //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-        //     self.beforeObjectSubmit(() => {
-        //       self.objTabActionSlientConfirm(tab);
+        //     this.beforeObjectSubmit(() => {
+        //       const type = 'objTabActionSlient';
+        //       this.clickSave(type);
+        //       this.objTabActionSlientConfirm(tab);
         //     });
         //   } else { // 静默直接执行
-        //     self.objTabActionSlientConfirm(tab);
+        //     this.objTabActionSlientConfirm(tab);
         //   }
         // } else {
-        //   self.objTabActionSlientConfirm(tab);
+        //   this.objTabActionSlientConfirm(tab);
         // }
       },
       // 动作定义静默执行
@@ -1297,7 +1319,6 @@
           ids = this.updateData[this.itemName].delete[this.itemName].map(item => parseInt(item.ID));
           idsOldTypeNumber = this.updateData[this.itemName].delete[this.itemName].map(item => Number(item.ID));
           idsOld = this.updateData[this.itemName].delete[this.itemName].map(item => item.ID);
-
           // ids = this.updateData[this.itemName].delete[this.itemName];
         }
         if (Version() === '1.3') { // 1.3类型
@@ -1364,56 +1385,104 @@
           this.getObjTabActionSlientConfirm({
             tab, params, path: tab.action, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
           });
-          console.log(3);
-
           this.$loading.show(this.tableName);
         });
-        promise.then((res, actionName) => {
-          const message = this.objTabActionSlientConfirmData.message;
-          const data = {
-            mask: true,
-            title: '成功',
-            content: `${message}`,
-            onOk: () => {
-              DispatchEvent('exeActionSuccessForR3', {
-                detail: {
-                  name: 'exeAction',
-                  type: 'horizontalTable',
-                  url: actionName || '/p/cs/exeAction',
-                  res,
-                  moduleName: this[MODULE_COMPONENT_NAME],
-                  routeQuery: this[INSTANCE_ROUTE_QUERY],
-                  tableName: this[INSTANCE_ROUTE_QUERY].tableName,
-                  routePath: this[INSTANCE_ROUTE]
-                }
+        if (tab.cuscomponent) {
+          const nextOperate = JSON.parse(// 配置信息
+            tab.cuscomponent
+          );
+
+          promise.then(() => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.success) {
+              let successAction = null;
+              let successActionParam = {};
+              successAction = nextOperate.success;
+              successActionParam = {
+                actionid: 0,
+                webaction: successAction
+              };
+              const promiseForSuccess = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: successActionParam, resolve });
               });
-            },
-          };
-          this.$Modal.fcSuccess(data);
-          console.log('tab.isrefrsh', tab.isrefrsh);
-          if (tab.isrefrsh) {
-            // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
-            if (this.objectType === 'horizontal') {
-              const itemNames = this.itemNameGroup.map((c) => {
-                if (c.tableName !== this.tableName) {
-                  return c.tableName;
-                }
-              });// 因左右结构itemNameGroup包含主表，上下结构不包括
-              if (itemNames.includes(this.itemName)) {
-                this.$loading.hide(this.tableName);
-              }
+              promiseForSuccess.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.webactionClick(exeActionDataForComponent);
+              });
+            } else {
+              const message = this.ExeActionData;
+              const data = {
+                mask: true,
+                title: '成功',
+                content: `${message}`
+              };
+              this.$Modal.fcSuccess(data);
             }
-            this.upData();
+          }, () => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.failure) {
+              let errorAction = null;
+              let errorActionParam = {};
+              errorAction = nextOperate.failure;
+              errorActionParam = {
+                actionid: 0,
+                webaction: errorAction
+              };
+              const promises = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: errorActionParam, resolve });
+              });
+              promises.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.webactionClick(exeActionDataForComponent);
+              });
+            }
+          });
+        } else {
+          promise.then((res, actionName) => {
+            const message = this.objTabActionSlientConfirmData.message;
+            const data = {
+              mask: true,
+              title: '成功',
+              content: `${message}`,
+              onOk: () => {
+                DispatchEvent('exeActionSuccessForR3', {
+                  detail: {
+                    name: 'exeAction',
+                    type: 'horizontalTable',
+                    url: actionName || '/p/cs/exeAction',
+                    res,
+                    moduleName: this[MODULE_COMPONENT_NAME],
+                    routeQuery: this[INSTANCE_ROUTE_QUERY],
+                    tableName: this[INSTANCE_ROUTE_QUERY].tableName,
+                    routePath: this[INSTANCE_ROUTE]
+                  }
+                });
+              },
+            };
+            this.$Modal.fcSuccess(data);
+            if (tab.isrefrsh) {
+              // 左右结构子表时，接收不到主表的表单监听，需要关闭loading
+              if (this.objectType === 'horizontal') {
+                const itemNames = this.itemNameGroup.map((c) => {
+                  if (c.tableName !== this.tableName) {
+                    return c.tableName;
+                  }
+                });// 因左右结构itemNameGroup包含主表，上下结构不包括
+                if (itemNames.includes(this.itemName)) {
+                  this.$loading.hide(this.tableName);
+                }
+              }
+              this.upData();
             // this.$loading.hide(this.tableName);//此时会调取刷新，刷新会触发表单渲染，组件会接收监听，关闭loading
             // console.log('关闭静默');
-          } else {
+            } else {
+              this.$loading.hide(this.tableName);
+              console.log('关闭静默');
+            }
+          }, () => {
             this.$loading.hide(this.tableName);
-            console.log('关闭静默');
-          }
-        }, () => {
-          this.$loading.hide(this.tableName);
-          console.log('关闭静默');
-        });
+          });
+        }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
         this.$refs.dialogRef.open();
@@ -1713,7 +1782,7 @@
           if (keepAliveModuleName.indexOf('PLUGIN') !== -1) { // 从插件界面双击进入单对象界面时，无需执行以下操作
             updateSessionObject('dynamicRoutingIsBackForDelete', deleteValue);
             window.sessionStorage.setItem('dynamicRoutingIsBack', true);// 添加是动态路由返回列表界面标记
-          }else{//从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
+          } else { // 从插件界面双击进入单对象界面时，返回时需清除routeMapRecord对应关系
             deleteFromSessionObject('routeMapRecord', keepAliveModuleName);
           }
           this.decreasekeepAliveLists(keepAliveModuleName);
@@ -2639,11 +2708,21 @@
               }
             });
           }
+          DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
+            detail: {
+              type: 'resolve',
+            }
+          });
         }, () => {
           this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
           this.saveAfter(type, tableName, stop, removeMessage);
+          DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存失败后执行相对应逻辑
+            detail: {
+              type: 'reject',
+            }
+          });
         }).then(() => {
 
         });
@@ -2792,6 +2871,10 @@
             }, () => { // 状态为rejected时执行
               this.upData();
             });
+          } else if (this.saveEventAfter === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
+            this.buttonEvent(this.objTabActionSlientData);
+            // this.objTabActionSlientConfirm(this.objTabActionSlientData);
+            this.objTabActionSlientData = {};
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             if (message) {

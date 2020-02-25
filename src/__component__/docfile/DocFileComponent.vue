@@ -6,6 +6,7 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
+          v-dragging="{ item: option, list: docList.valuedata, group: 'option' }"
         >
           <a :href="option.url">{{ option.name }}</a>
           <i

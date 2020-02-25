@@ -412,5 +412,8 @@ export default {
  
   updateWebConf(state, data) { // 更新主表配置WebConf
     state.WebConf = data;
-  }
+  },
+  updateButtonGetActionData(state, data) {
+    state.ExeActionDataForComponent = data;
+  },
 };

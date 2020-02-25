@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                  >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -138,7 +138,7 @@
   // import { setTimeout } from 'timers';
   import regExp from '../constants/regExp';
   import {
-    Version, LINK_MODULE_COMPONENT_PREFIX, CUSTOMIZED_MODULE_COMPONENT_PREFIX,
+    Version, LINK_MODULE_COMPONENT_PREFIX, INSTANCE_ROUTE_QUERY,
   } from '../constants/global';
   import buttonmap from '../assets/js/buttonmap';
   import ComplexsDialog from './ComplexsDialog'; // emit 选中的行
@@ -151,6 +151,7 @@
   import { DispatchEvent } from '../__utils__/dispatchEvent';
   import ChineseDictionary from '../assets/js/ChineseDictionary';
   import { getUrl, getLabel } from '../__utils__/url';
+  import { updateSessionObject } from '../__utils__/sessionStorage';
 
 
   Vue.component('ComAttachFilter', ComAttachFilter);
@@ -173,12 +174,16 @@
   const TABLE_SELECTED_ROW = 'tableSelectedRow';
 
   export default {
+    inject: [INSTANCE_ROUTE_QUERY],
     components: {
       Dialog,
       ImportDialog, // 导入弹框
     },
     data() {
       return {
+        saveButtonPath: '', // 类型为保存的按钮path
+        saveEventAfter: '', // 保存事件执行完成后的操作
+        objTabActionSlientData: {}, // 静默程序配置字段
         isrefrsh: '', // 控制自定义类型按钮执行后是否刷新
         dialogComponentName: null,
         buttonData: [],
@@ -369,7 +374,7 @@
         }
         const buttonGroupShow = [];
         if (!this.objreadonly && this.itemInfo.tabinlinemode !== 'N') {
-          if (tabcmd.cmds) {
+          if (tabcmd.cmds && tabcmd.cmds.length > 0) {
             // 取主表path用于子表
             if (this.mainFormInfo && this.mainFormInfo.buttonsData && this.mainFormInfo.buttonsData.data && this.mainFormInfo.buttonsData.data.tabcmd) {
               this.mainFormInfo.buttonsData.data.tabcmd.cmds.forEach((cmd, index) => {
@@ -383,8 +388,7 @@
                 }
               });
             }
-
-            tabcmd.cmds.length > 0 && tabcmd.cmds.map((item, index) => {
+            tabcmd.cmds.map((item, index) => {
               if (this.status === 2) {
                 tabcmd.prem[index] = false;
               } else if (tabcmd.prem[index]) {
@@ -393,8 +397,7 @@
                 if (str !== 'CMD_MODIFY') { // 保存不显示
                   const buttonConfig = JSON.stringify(buttonmap[str]);// 因此操作会改变store状态值，所以对象字符串之间互转，生成新对象
                   let buttonConfigInfo = JSON.parse(buttonConfig);
-                  if (this.buttonsData.submitData) {
-                  } else if (str === 'CMD_DELETE') { // 删除 -> 删除明细
+                  if (str === 'CMD_DELETE') { // 删除 -> 删除明细
                     buttonConfigInfo = buttonmap.CMD_REF_DELETE;
                   }
                   if (tabcmd.paths) {
@@ -767,6 +770,10 @@
               const title = this.ChineseDictionary.WARNING;
               const contentText = `${JSON.parse(obj.confirm).desc}`;
               this.dialogMessage(title, contentText, obj);
+            } else if (obj.confirm.isSave) { // 静默执行保存
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
             }
           } else {
             const title = this.ChineseDictionary.WARNING;
@@ -777,6 +784,18 @@
           this.buttonEvent(obj);
         }
       },
+      clickSave(data) {
+        this.saveButtonPath = data.requestUrlPath;
+        const dom = document.getElementById('actionMODIFY');
+        const myEvent = new Event('click');
+        dom.dispatchEvent(myEvent);
+        this.saveEventAfter = data.type;
+      },
+      objTabActionSlientForItemTable(data) {
+        if (data.detail.type === 'resolve') {
+          this.objTabActionSlientConfirm(this.objTabActionSlientData); 
+        }
+      },
       dialogMessage(title, contentText, obj) {
         const data = {
           mask: true,
@@ -784,7 +803,14 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            this.errorconfirmDialog(obj);
+            if (JSON.parse(obj.confirm).isSave) {
+              const type = 'objTabActionSlient';
+              this.objTabActionSlientData = obj;
+              this.clickSave({ type });
+            } else {
+              console.log(333, obj);
+              this.errorconfirmDialog(obj);
+            }
           }
         };
         this.$Modal.fcWarning(data);
@@ -793,7 +819,7 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
-        switch (obj.eName) {
+        switch (obj.eName || obj.vuedisplay) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
           break;
@@ -821,56 +847,15 @@
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
-        // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // if (!tab) tab = this.activeTabAction;
-        // if (tab.confirm) {
-        //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
-        //     const data = {
-        //       title: '警告',
-        //       mask: true,
-        //       content: tab.confirm,
-        //       onOk: () => {
-        //         this.objTabActionSlientConfirm(tab);
-        //       }
-        //     };
-        //     this.$Modal.fcWarning(data);
-        //   } else if (JSON.parse(tab.confirm).desc) {
-        //     //            确定后执行下一步操作
-        //     //            判断是否先执行保存
-        //     if (JSON.parse(tab.confirm).isSave) {
-        //       console.log('暂时未处理配置isSave的相关逻辑');
-        //     } else {
-        //       const data = {
-        //         title: '警告',
-        //         mask: true,
-        //         showCancel: true,
-        //         content: JSON.parse(tab.confirm).desc,
-        //         onOk: () => {
-        //           this.objTabActionSlientConfirm(tab);
-        //         }
-        //       };
-        //       this.$Modal.fcWarning(data);
-        //     }
-        //     // 清除提示信息
-        //   } else if (JSON.parse(tab.confirm).isSave) { // 静默执行保存
-        //     this.beforeObjectSubmit(() => {
-        //       this.objTabActionSlientConfirm(tab);
-        //     });
-        //   } else { // 静默直接执行
-        //     this.objTabActionSlientConfirm(tab);
-        //   }
-        // } else {
-        //   this.objTabActionSlientConfirm(tab);
-        // }
       },
       // 动作定义静默执行
       objTabActionSlientConfirm(tab) {
         let obj = {};
         let params = {};
+        const { tableName } = router.currentRoute.params;
         if (Version() === '1.3') {
           const label = `${this.activeTab.label.replace('编辑', '')}`;
           const ids = this.tableRowSelectedIds.map(item => item.ID);
-          const { tableName } = router.currentRoute.params;
           if (tab.action.search('/') === -1) {
             const param = {// param层动态参数
               // objid: itemId,
@@ -878,14 +863,6 @@
               menu: label,
               ids, // 子表勾选ID
             };
-            // if (this.type === 'vertical') { // 上下结构
-            //   if (ids.length > 0) { // 勾选了明细传subparam
-            //     param.subparam = {// 上下结构主表参数结构
-            //       idArr: ids, // 子表勾选ID
-            //       table: this.tableName // 子表表名
-            //     };
-            //   }
-            // }
             params = param;
           } else {
             // console.log('请检查子表静默类型按钮action配置，例如:action: com.jackrain.nea.oc.oms.api.OcbOrderMergeMenuCmd:1.0:oms-fi');
@@ -905,25 +882,73 @@
           });
           this.$loading.show();
         });
+        if (tab.cuscomponent) {
+          const nextOperate = JSON.parse(// 配置信息
+            tab.cuscomponent
+          );
 
-        promise.then(() => {
-          this.$loading.hide(this.routerParams.tableName);
-          const message = this.objTabActionSlientConfirmData.message;
-          const data = {
-            mask: true,
-            title: '成功',
-            content: `${message}`
-          };
-          this.$Modal.fcSuccess(data);
-          if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
-            // const dom = document.getElementById('hideRefresh');
-            // const myEvent = new Event('click');
-            // dom.dispatchEvent(myEvent);
-            this.refresh();
-          }
-        }, () => {
-          this.$loading.hide(this.rouuterParams.tableName);
-        });
+          promise.then(() => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.success) {
+              let successAction = null;
+              let successActionParam = {};
+              successAction = nextOperate.success;
+              successActionParam = {
+                actionid: 0,
+                webaction: successAction
+              };
+              const promiseForSuccess = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: successActionParam, resolve });
+              });
+              promiseForSuccess.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.buttonEvent(exeActionDataForComponent);
+              });
+            } else {
+              const message = this.ExeActionData;
+              const data = {
+                mask: true,
+                title: '成功',
+                content: `${message}`
+              };
+              this.$Modal.fcSuccess(data);
+            }
+          }, () => {
+            this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
+            if (nextOperate.failure) {
+              let errorAction = null;
+              let errorActionParam = {};
+              errorAction = nextOperate.failure;
+              errorActionParam = {
+                actionid: 0,
+                webaction: errorAction
+              };
+              const promises = new Promise((resolve) => {
+                this.getActionDataForButtons({ param: errorActionParam, resolve });
+              });
+              promises.then(() => {
+                const exeActionDataForComponent = this.ExeActionDataForComponent.data;
+                this.buttonEvent(exeActionDataForComponent);
+              });
+            }
+          });
+        } else {
+          promise.then(() => {
+            this.$loading.hide(tableName);
+            const message = this.objTabActionSlientConfirmData.message;
+            const data = {
+              mask: true,
+              title: '成功',
+              content: `${message}`
+            };
+            this.$Modal.fcSuccess(data);
+            if (tab.isrefrsh) { // 如果配置isrefrsh则静默执行成功刷新界面
+              this.refresh();
+            }
+          }, () => {
+            this.$loading.hide(this.rouuterParams.tableName);
+          });
+        }
       },
       objTabActiondDownload(tab) {
         const downloadId = this.tableRowSelectedIds.map(item => item.ID).toString();
@@ -3804,6 +3829,7 @@
         }
       });
       if (!this._inactive) {
+        window.addEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
         window.addEventListener('changePageForSelete', this.changePageForSeleteData);
       }
       const { itemId, tableName, tableId } = this.$route.params;
@@ -3820,6 +3846,7 @@
         }
       });
       window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
+      window.removeEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
     },
     activated() {
       this.isRefreshClick = false;

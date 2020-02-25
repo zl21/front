@@ -136,15 +136,7 @@ export default [
     },{
       name: '运算符',
       key: 'expression',
-      type: 'select',
-      selectOptions: [
-          { text: '-- 请选择 --', value: '' },
-          { text: '=', value: '=' },
-          { text: '>', value: '>' },
-          { text: '>=', value: '>=' },
-          { text: '<', value: '<' },
-          { text: '<=', value: '<=' },
-          { text: '!=', value: '!=' }]
+      type: 'input'
     },{
       name: '匹配值',
       key: 'match',
