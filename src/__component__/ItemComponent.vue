@@ -46,7 +46,7 @@
       </template>
       <template v-if=" _items.props.fkdisplay === 'drp' && type==='PanelForm'">
         <!-- 路由跳转 -->
-        <template v-if="!!_items.value && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
+        <template v-if="!!_items.value && _items.props.defaultSelected && _items.props.defaultSelected[0] && !!_items.props.defaultSelected[0].ID && _items.props.defaultSelected[0].ID !=='-1'&& _items.props.defaultSelected[0].ID !=='0'&& _items.props.defaultSelected[0].ID !==0">
           <i
             class="iconfont iconbj_link"
             data-target-tag="fkIcon"
