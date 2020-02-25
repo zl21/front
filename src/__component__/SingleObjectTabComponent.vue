@@ -299,6 +299,7 @@
       // }),
     },
     mounted() {
+      console.log(555, this.objreadonly);
       // this.generateComponent();
     },
     created() {

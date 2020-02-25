@@ -3,6 +3,7 @@ import { cpus } from 'os';
 import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import { enableJflow } from '../../../constants/global';
 
 
 export default {
@@ -171,40 +172,50 @@ export default {
   updatePanelData(state, data) { // 更新子表面板数据
     // readonly: true   不可编辑，false 可编辑，   
     // isnotnull：true 必填，false 不必填  ，
-    // display:'none'是不显示
+    // display:'none'是不显示，
+    // colid：'字段id'，
+    // itemTableName:子表表名
     const JflowControlField = {
       itemTableName: 'BCP_CUSTOMER_CONTACT',
       data: [
         {
-          colname: 'ISACTIVE',
+          colid: 'ISACTIVE',
           display: 'none',
           readonly: true,
         },
         {
-          colname: 'CONTACT_TABLE_ID',
+          colid: 'CONTACT_TABLE_ID',
           display: 'none',
           readonly: true,
         },
-        // {
-        //   colname: 'OWNERID',
-        //   display: 'none',
-        //   // readonly: true,
-        // },
-        // {
-        //   colname: 'CREATIONDATE',
-        //   display: 'none',
-        //   // readonly: true,
-        // },
+        {
+          colid: 'OWNERID',
+          display: 'none',
+          readonly: true,
+        },
+        {
+          colid: 'CREATIONDATE',
+          display: 'none',
+          readonly: true,
+        },
            
       ]
     };
 
+
+    state.instanceId = '1';
+
+
+
+
+
     let flag = false;
     let changeData = [];
-    if (JflowControlField) {
+    if (enableJflow() && state.instanceId && JflowControlField) {
       state.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
         if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
           flag = true;
+          
         }
         return item;
       });
@@ -213,7 +224,7 @@ export default {
           if (addcolum.childs) {
             addcolum.childs.map((child) => {
               JflowControlField.data.map((field) => {
-                if (child.colname === field.colname) {
+                if (child.colid === field.colid) {
                   Object.keys(field).map((key) => {
                     if (key === 'display') {
                       child.display = field.display;
@@ -232,7 +243,7 @@ export default {
             return addcolum;
           }
           JflowControlField.data.map((field) => {
-            if (addcolum.child.colname === field.colname) {
+            if (addcolum.child.colid === field.colid) {
               Object.keys(field).map((key) => {
                 if (key === 'display') {
                   addcolum.child.display = field.display;
