@@ -78,8 +78,8 @@
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
-      :objreadonly="objreadonly"
-      :readonly="formReadonly"
+      :objreadonly="itemReadOnlyForJflow"
+      :readonly="itemReadOnlyForJflow"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -125,7 +125,8 @@
   /* eslint-disable keyword-spacing */
 
   import Vue from 'vue';
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState, mapActions } from 'vuex';
+
   import router from '../__config__/router.config';
   import tableDetailCollection from './TableDetailCollection';
   import singleObjectButtons from './SingleObjectButtons';
@@ -258,12 +259,18 @@
     },
     inject: [MODULE_COMPONENT_NAME],  
     computed: { 
-      // itemReadOnlyForJflow() {
-      //   if(this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
-      //     return this.objreadonlyForJflow.readonly;
-      //   }
-      //   return this.objreadonly;
-      // }, 
+      ...mapState('global', {
+        objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
+      }),
+
+
+      itemReadOnlyForJflow() {
+        console.log(99, this.objreadonlyForJflow.itemTableName, this.tableName);
+        if(this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
+          return this.objreadonlyForJflow.readonly;
+        }
+        return this.objreadonly;
+      }, 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
@@ -306,6 +313,7 @@
       // }),
     },
     mounted() {
+      console.log('🍍', this.itemReadOnlyForJflow);
       // this.generateComponent();
     },
     created() {

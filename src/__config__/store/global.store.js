@@ -39,6 +39,24 @@ export default () => ({
       queryDisNumber: null,
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
+    objreadonlyForJflow: {
+      readonly: false,
+      itemTableName: ''
+    }, 
+    JflowControlField: {
+      // data:[
+      //   {
+      // readonly: true   不可编辑，false 可编辑，   
+      // isnotnull：true 必填，false 不必填  ，
+      // display:'none'是不显示，
+      // colid：'字段id'，
+      // itemTableName:子表表名
+      //   }
+      // ]
+     
+      itemTableName: '',
+      data: []
+    },
     
   },
   mutations: mutations(),

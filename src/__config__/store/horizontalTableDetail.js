@@ -34,10 +34,7 @@ export default () => ({
     globalLoading: false,
     WebConf: {},
     ExeActionDataForComponent: {},
-    objreadonlyForJflow: {
-      readonly: false,
-      itemTableName: ''
-    }, 
+   
   },
   actions: actions(),
   mutations: mutations()

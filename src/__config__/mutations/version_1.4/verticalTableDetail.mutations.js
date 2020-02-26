@@ -175,55 +175,39 @@ export default {
     // display:'none'是不显示，
     // colid：'字段id'，
     // itemTableName:子表表名
-    const JflowControlField = {
-      itemTableName: 'BCP_CUSTOMER_CONTACT',
-      data: [
-        {
-          colid: 'ISACTIVE',
-          display: 'none',
-          readonly: true,
-        },
-        {
-          colid: 'CONTACT_TABLE_ID',
-          display: 'none',
-          readonly: true,
-        },
-        {
-          colid: 'OWNERID',
-          display: 'none',
-          readonly: true,
-        },
-        {
-          colid: 'CREATIONDATE',
-          display: 'none',
-          readonly: true,
-        },
-           
-      ]
+    
+    // const JflowControlField = {
+    //   itemTableName: 'BCP_BIZ_CHANCE',
+    //   data: [
+    //     {
+    //       colid: 166364,
+    //       // display: 'none',
+    //       readonly: true,
+    //     },
+    //   ]
+    // };
+    this.state.global.objreadonlyForJflow = {
+      readonly: false,
+      itemTableName: ''
     };
-
-
-    state.instanceId = '1';
-
-
-
-
-
     let flag = false;
     let changeData = [];
-    if (enableJflow() && state.instanceId && JflowControlField) {
-      state.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-        if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
+    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+      // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
+        if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
           flag = true;
-          
-        }
-        return item;
-      });
+          this.state.global.objreadonlyForJflow = {
+            readonly: false,
+            itemTableName: this.state.global.JflowControlField.itemTableName
+          };
+        } 
+      } 
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
         changeData = data.addcolums.map((addcolum) => {
           if (addcolum.childs) {
             addcolum.childs.map((child) => {
-              JflowControlField.data.map((field) => {
+              this.state.global.JflowControlField.data.map((field) => {
                 if (child.colid === field.colid) {
                   Object.keys(field).map((key) => {
                     if (key === 'display') {
@@ -239,10 +223,11 @@ export default {
                 }
                 return child;
               });
+              return child;
             });
             return addcolum;
           }
-          JflowControlField.data.map((field) => {
+          this.state.global.JflowControlField.data.map((field) => {
             if (addcolum.child.colid === field.colid) {
               Object.keys(field).map((key) => {
                 if (key === 'display') {
@@ -264,15 +249,15 @@ export default {
           
           return addcolum;
         });
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        data.addcolums = changeData;
+        componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
         componentAttribute.panelData.data = data;
       }
-      const { componentAttribute } = state.tabPanels[data.tabIndex];
-      componentAttribute.panelData.isShow = true;
-      data.addcolums = changeData;
-      componentAttribute.panelData.data = data;
     } else {
       const { componentAttribute } = state.tabPanels[data.tabIndex];
       componentAttribute.panelData.isShow = true;
