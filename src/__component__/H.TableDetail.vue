@@ -42,64 +42,70 @@
         }
         return '';
       },
-      tabPanels() {
-        const arr = [];
-        const objreadonly = false;
+      objReadonlyForJflow() {
         const JflowControlField = {
           itemTableName: 'BCP_CUSTOMER_CONTACT',
           data: [
             {
-              colid: 'ISACTIVE',
+              colid: 167623,
               display: 'none',
-              readonly: true,
+              // readonly: true,
             },
             {
               colid: 'CONTACT_TABLE_ID',
               display: 'none',
-              readonly: true,
+              // readonly: true,
             },
             {
               colid: 'OWNERID',
               display: 'none',
-              readonly: true,
+              // readonly: true,
             },
             {
               colid: 'CREATIONDATE',
               display: 'none',
-              readonly: true,
+              // readonly: true,
             },
            
           ]
         };
-
-    
-        // state.instanceId = '1';
-
-        console.log(4444, this);
+        let flag = false;
+        this.tabPanel.map((item) => {
+          if (JflowControlField) {
+            // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+            if (item.tablename === JflowControlField.itemTableName && item.tabrelation === '1:1') {
+              flag = true;
+            } 
+          }
+        });
+        return flag;
+      },
+      tabPanels() {
+        const arr = [];
         if (this.tabPanel) {
-          //  if (enableJflow()&&this.instanceId && JflowControlField ) {
-          // this.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-          //   if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
-          //     objreadonly = true;
-          //   }
-          // });
           this.tabPanel.forEach((item, index) => {
-            //             vuedisplay: "TabItem"
-            // webact: "manage/pro_desc"
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
-              obj.componentAttribute.isMainTable = true;
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || objreadonly;
+              obj.componentAttribute.isMainTable = true;           
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || this.objReadonlyForJflow;
             } else {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || objreadonly;
+              console.log('🍓', this.objreadonlyForJflow);
+
+              if (this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
+                console.log('🍓', this.objreadonlyForJflow.readonly);
+                obj.componentAttribute.objreadonly = this.objreadonlyForJflow.readonly; 
+              } else {
+                obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
+              }
             }
+
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
-            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || objreadonly;
+            obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;
             obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
             obj.componentAttribute.itemInfo = item;
             obj.componentAttribute.childTableNames = this.childTableNames;

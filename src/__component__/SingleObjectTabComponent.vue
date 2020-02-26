@@ -73,6 +73,7 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
+    
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -257,6 +258,12 @@
     },
     inject: [MODULE_COMPONENT_NAME],  
     computed: { 
+      // itemReadOnlyForJflow() {
+      //   if(this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
+      //     return this.objreadonlyForJflow.readonly;
+      //   }
+      //   return this.objreadonly;
+      // }, 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
@@ -299,7 +306,6 @@
       // }),
     },
     mounted() {
-      console.log(555, this.objreadonly);
       // this.generateComponent();
     },
     created() {

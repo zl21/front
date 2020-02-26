@@ -63,6 +63,7 @@ export default () => ({
       globalLoading: ({ globalLoading }) => globalLoading,
       testData: ({ testData }) => testData,
       tempStorage: ({ tempStorage }) => tempStorage,
+      objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
       WebConf: ({ WebConf }) => WebConf,
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {

@@ -1,7 +1,5 @@
 import router from '../../router.config';
-import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 import { enableJflow } from '../../../constants/global';
-
 
 
 export default {
@@ -127,28 +125,29 @@ export default {
     // display:'none'是不显示，
     // colid：'字段id'，
     // itemTableName:子表表名
+    
     const JflowControlField = {
       itemTableName: 'BCP_CUSTOMER_CONTACT',
       data: [
         {
-          colid: 'ISACTIVE',
+          colid: 167623,
           display: 'none',
-          readonly: true,
+          // readonly: true,
         },
         {
           colid: 'CONTACT_TABLE_ID',
           display: 'none',
-          readonly: true,
+          // readonly: true,
         },
         {
           colid: 'OWNERID',
           display: 'none',
-          readonly: true,
+          // readonly: true,
         },
         {
           colid: 'CREATIONDATE',
           display: 'none',
-          readonly: true,
+          // readonly: true,
         },
            
       ]
@@ -160,13 +159,30 @@ export default {
 
     let flag = false;
     let changeData = [];
-    if (enableJflow()&&state.instanceId && JflowControlField && data.tabIndex !== 0) {
-      state.tabPanels.map((item) => { // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-        if (item.tabrelation === '1:1' && item.tablename === JflowControlField.itemTableName) {
+    // enableJflow() &&
+    if (state.instanceId && JflowControlField) {
+      // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      if (state.tabPanels[data.tabIndex].tablename === JflowControlField.itemTableName) {
+        if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
+          console.log(11, JflowControlField.itemTableName);
           flag = true;
+          state.objreadonlyForJflow = {
+            readonly: false,
+            itemTableName: JflowControlField.itemTableName
+          };
+        } else {
+          state.objreadonlyForJflow = {
+            readonly: false,
+            itemTableName: ''
+          };
         }
-        return item;
-      });
+      } else {
+        state.objreadonlyForJflow = {
+          readonly: false,
+          itemTableName: ''
+        };
+      }
+      
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
         changeData = data.addcolums.map((addcolum) => {
           if (addcolum.childs) {
@@ -211,16 +227,20 @@ export default {
           
           return addcolum;
         });
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        data.addcolums = changeData;
+        componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
         componentAttribute.panelData.data = data;
       }
-      const { componentAttribute } = state.tabPanels[data.tabIndex];
-      componentAttribute.panelData.isShow = true;
-      data.addcolums = changeData;
-      componentAttribute.panelData.data = data;
     } else {
+      state.objreadonlyForJflow = {
+        readonly: false,
+        itemTableName: ''
+      };
       const { componentAttribute } = state.tabPanels[data.tabIndex];
       componentAttribute.panelData.isShow = true;
       componentAttribute.panelData.data = data;
