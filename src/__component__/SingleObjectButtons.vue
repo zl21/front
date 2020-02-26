@@ -595,8 +595,10 @@
           if (this.tempStorage.temp_storage.path) {
             this.temporaryStoragePath = this.tempStorage.temp_storage.path;
             const dom = document.getElementById('actionMODIFY');
-            const myEvent = new Event('click');
-            dom.dispatchEvent(myEvent);    
+            if (dom) {
+              const myEvent = new Event('click');
+              dom.dispatchEvent(myEvent);    
+            }
           } else {
             const data = {
               mask: true,
@@ -1248,9 +1250,11 @@
       clickSave(data) {
         this.saveButtonPath = data.requestUrlPath;
         const dom = document.getElementById('actionMODIFY');
-        const myEvent = new Event('click');
-        dom.dispatchEvent(myEvent);
-        this.saveEventAfter = data.type;
+        if (dom) {
+          const myEvent = new Event('click');
+          dom.dispatchEvent(myEvent);
+          this.saveEventAfter = data.type;
+        }
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
