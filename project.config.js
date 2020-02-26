@@ -15,7 +15,7 @@ module.exports = {
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
-  target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
+  // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
 
   
   Version: '1.4', // 版本号
@@ -31,7 +31,7 @@ module.exports = {
   // jflowRequestDomain: 'http://jflow-zhixiao.dev.burgeononline.com', // jflow后台地址(知晓)
   jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
-  jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
+  // jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用
   touristRoute: '/login', // 游客路由：等用户未登录的时候，需要跳转的页面
   enableInitializationRequest: true, // 是否开启初始化请求
