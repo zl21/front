@@ -119,88 +119,87 @@ export default {
     componentAttribute.formData.data = data;
   }, //
 
-  updatePanelData(state, data) {
-    // readonly: true   不可编辑，false 可编辑，   
-    // isnotnull：true 必填，false 不必填  ，
-    // display:'none'是不显示，
-    // colid：'字段id'，
-    // itemTableName:子表表名
-    
-    // const JflowControlField = {
-    //   itemTableName: 'BCP_BIZ_CHANCE',
-    //   data: [
-    //     {
-    //       colid: 166364,
-    //       // display: 'none',
-    //       readonly: true,
-    //     },
-    //   ]
-    // };
-
+  updatePanelData(state, data) { // 更新子表面板数据
+    state.instanceId = '1';
     this.state.global.objreadonlyForJflow = {
       readonly: false,
       itemTableName: ''
     };
     let flag = false;
-    let changeData = [];
-    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) {
+    if (!enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
         if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
-          flag = true;
           this.state.global.objreadonlyForJflow = {
             readonly: false,
             itemTableName: this.state.global.JflowControlField.itemTableName
           };
+          flag = true;
         } 
       } 
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        changeData = data.addcolums.map((addcolum) => {
-          if (addcolum.childs) {
-            addcolum.childs.map((child) => {
-              this.state.global.JflowControlField.data.map((field) => {
-                if (child.colid === field.colid) {
-                  Object.keys(field).map((key) => {
-                    if (key === 'display') {
-                      child.display = field.display;
-                      return child;
-                    }
-                    if (key === 'readonly') {
-                      child.readonly = field.readonly;
-                      return child;
-                    }
-                    return child;
-                  });
-                  return child;
+        data.addcolums.reduce((a, c) => {
+          const u = [];
+          if (c.childs) {
+            c.childs.map((d) => {
+              if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+                if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
+                  if (this.state.global.JflowControlField.readonly.length > 0) {
+                    d.readonly = false;
+                    u.push(d);
+                  } else {
+                    d.readonly = true;
+                    u.push(d);
+                  }
                 }
-                return child;
-              });
-              return child;
+              } else if (this.state.global.JflowControlField.readonly.length > 0) {
+                // 未配置jflowisShow字段，则显示全部元数据字段，由readonly控制字段是否可编辑
+                if (this.state.global.JflowControlField.readonly.includes(d.colid)) {
+                  // 未配置可见字段，只配置了可编辑字段时，所有元数据返回的字段可见，readonly内配置的可编辑
+                  d.readonly = false;
+                  u.push(d);
+                } else { // 不可编辑
+                  d.readonly = true;
+                  u.push(d);
+                }
+              } else { // 未配置可编辑字段，则所有元数据字段不可编辑
+                d.readonly = true;
+                u.push(d);
+              }
             });
-            return addcolum;
+
+            c.childs = u;
+          } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+            if (this.state.global.JflowControlField.isShow.includes(c.colid)) {
+              if (this.state.global.JflowControlField.readonly.length > 0) {
+                c.child.readonly = true;
+                u.push(c.child);
+              } 
+              u.push(c.child);
+            } 
+            // });
+          } else { // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
+            if (this.state.global.JflowControlField.readonly.length > 0) {
+              // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
+              if (this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+                c.child.readonly = false;
+                u.push(c.child);
+              }
+              // jflow未配置可编辑字段时，则元数据所有字段全部不可编辑
+              c.child.readonly = true;
+              u.push(c.child);
+            } 
+            // jflow未配置显示字段以及未配置可编辑字段时，则所有元数据字段为不可编辑状态
+            c.child.readonly = false;
+            u.push(c.child);
           }
-          this.state.global.JflowControlField.data.map((field) => {
-            if (addcolum.child.colid === field.colid) {
-              Object.keys(field).map((key) => {
-                if (key === 'display') {
-                  addcolum.child.display = field.display;
-                  return addcolum.child;
-                }
-                if (key === 'readonly') {
-                  addcolum.child.readonly = field.readonly;
-                  return addcolum.child;
-                }
-                return addcolum.child;
-              });
-            }
-            return addcolum.child;
-          });
-          
-          return addcolum;
-        });
+          a.push(c);
+          return a;
+        }, []);
+        console.log('🍓', data);
+
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
-        data.addcolums = changeData;
         componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
@@ -212,7 +211,7 @@ export default {
       componentAttribute.panelData.isShow = true;
       componentAttribute.panelData.data = data;
     }
-  }, // 更新form数据
+  },
   updateTableData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = true;

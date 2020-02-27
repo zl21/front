@@ -53,17 +53,23 @@ export default () => ({
       // itemTableName:子表表名
       //   }
       // ]
-     
-      itemTableName: '',
-      display: [// 所有可见字段
-        {
-          colid: 166364
-        }
+      itemTableName: 'BCP_CUSTOMER_CONTACT',
+      isShow: [// 所有可见字段
+        // 167623,
+        // 167624
+        // {
+        //   colid: 167623,
+        // },{
+        //   colid: 167624
+
+        // }
       ],
       readonly: [// 所有可编辑字段
-        {
-          colid: 166364,
-        },
+        166364, // 可用
+        167624// 联系人
+        // {
+        //   colid: 166364,
+        // },
       ]
     },
     
