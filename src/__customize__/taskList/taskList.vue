@@ -27,7 +27,13 @@
       <Page
         ref="page"
         size="small"
-        v-bind="pageAttribute"
+        show-total
+        show-sizer
+        show-elevator
+        transfer
+        :current="page.current"
+        :page-size="page.pageSize"
+        :page-size-opts="page.pageSizeOpts"
         @on-change="pageChange"
         @on-page-size-change="pageSizeChange"
       />
@@ -75,7 +81,10 @@
                 placeholder: '请输入'
               },
               event: {
-                keydown: (event) => {}
+                input: (event) => {
+                  console.log(event, '输入事件');
+                  // this.formItems.EMPLOYEE=
+                }
               }
             }
           },
@@ -91,7 +100,7 @@
                 placeholder: '请输入'
               },
               event: {
-                keydown: (event) => {
+                input: (event) => {
                 // if(event.keyCode === 13){
                 //   this.queryLists()
                 // }
@@ -140,9 +149,55 @@
           BEGIN_TIME: '',
           TABLE_NAME: ''
         },
-        columns: [], // 表头
+        columns: [
+          {
+            title: 'Task-id',
+            key: 'OBJ_ID'
+          },
+          {
+            title: '任务来源',
+            key: 'TABLE_NAME'
+          }, {
+            title: '任务名称',
+            key: 'NAME'
+          }, {
+            title: '指派人',
+            key: 'EMPLOYEE_ID'
+          }, {
+            title: '发起时间',
+            key: 'BEGIN_TIME'
+          }, {
+            title: '任务明细(URL)',
+            key: 'URL',
+            render: (h, params) => h('a', {
+              style: {
+                'text-align': 'center'
+              },
+              on: {
+                click: () => {
+                  // 跳转到对应的路劲
+                }
+              }
+            }, params.row.URL)
+          }, {
+            title: '状态(已读/未读)',
+            key: 'READSTATE'
+          }, {
+            title: '状态',
+            key: 'STATUS'
+          }, {
+            title: '更多操作',
+            render: (h, params) => {
+
+            }
+          }
+        ], // 表头
         tableData: [], // 表体数据
-        pageAttribute: {}
+        page: {
+          pageSize: 10,
+          current: 1,
+          pageSizeOpts: []
+        }
       };
     },
     computed: {
@@ -191,6 +246,14 @@
       //   this.getQueryListForAg(this.searchData);
       //   this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] }); // 查询成功后清除表格选中项
       },
+      getQueryList() {
+        post('/p/cs/getQueryList', urlSearchParams(this.searchData)).then(res=>{
+          if(res.data.code===0){
+
+          }
+        })
+
+      }, // 请求表格数据
       formDataChange(data, item, index) {
         // 表单数据修改
         if (JSON.stringify(this.formItems) !== JSON.stringify(data)) {
@@ -263,6 +326,12 @@
           border: none;
         }
       }
+    }
+  }
+  .table-area{
+    padding-top:20px;
+    .table-wrap{
+      margin-top:10px;
     }
   }
 }
