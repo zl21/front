@@ -200,8 +200,7 @@ export default {
       itemTableName: ''
     };
     let flag = false;
-    const changeData = [];
-    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+    if (!enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
         if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
@@ -216,46 +215,38 @@ export default {
         } 
       } 
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        data.addcolums
-          .reduce((a, c) => {
-            // a空对象
-            // c包含面板信息
-            // d每个字段信息
-            const u = [];
-            if (c.childs) {
-              c.childs.map((d) => {
-                if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-                  if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
-                    u.push(d);
-                  }
+        data.addcolums.reduce((a, c) => {
+          // a空对象
+          // c包含面板信息
+          // d每个字段信息
+          const u = [];
+          if (c.childs) {
+            c.childs.map((d) => {
+              if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+                if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
+                  u.push(d);
                 }
-              });
-              c.childs = u;
-            } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-              console.log(333, c.child.colid, this.state.global.JflowControlField.isShow, this.state.global.JflowControlField.isShow.includes(c.child.colid));
-             
-              if (this.state.global.JflowControlField.isShow.includes(c.child.colid)) {
-                return c.child;
               }
-
-              // this.state.global.JflowControlField.isShow.map((item) => {
-              //   if (item.colid === c.child.colid) {
-              //     return c.child;
-              //   } 
-              // });
-            } else { // display无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
-              u.push(c.child);
-              c.childs = u;
-            }
+            });
+            c.childs = u;
+          } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+            this.state.global.JflowControlField.isShow.map((item) => {
+              if (item.colid === c.child.colid) {
+                return c.child;
+              } 
+            });
+          } else { // display无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
+            u.push(c.child);
+            c.childs = u;
+          }
            
-            a.push(c);
-            return a;
-          }, []);
+          a.push(c);
+          return a;
+        }, []);
         console.log('🍓', data);
 
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
-        // console.log(999, changeData);
         // data.addcolums = changeData;
         componentAttribute.panelData.data = data;
       } else {

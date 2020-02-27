@@ -45,7 +45,7 @@
         return '';
       },
       objReadonlyForJflow() {
-        if (enableJflow()) {
+        if (!enableJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
             if (this.JflowControlField) {
