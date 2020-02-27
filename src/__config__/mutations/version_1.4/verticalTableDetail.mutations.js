@@ -225,25 +225,24 @@ export default {
             if (c.childs) {
               c.childs.map((d) => {
                 if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-                  console.log(333, this.state.global.JflowControlField.isShow[d.colid]);
-                  if (this.state.global.JflowControlField.isShow[d.colid]) {
+                  if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
                     u.push(d);
                   }
-                  // this.state.global.JflowControlField.isShow.map((item) => {
-
-                  //   if (item.colid === d.colid) {
-                  //     u.push(d);
-                  //   } 
-                  // });
                 }
               });
               c.childs = u;
             } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-              this.state.global.JflowControlField.isShow.map((item) => {
-                if (item.colid === c.child.colid) {
-                  return c.child;
-                } 
-              });
+              console.log(333, c.child.colid, this.state.global.JflowControlField.isShow, this.state.global.JflowControlField.isShow.includes(c.child.colid));
+             
+              if (this.state.global.JflowControlField.isShow.includes(c.child.colid)) {
+                return c.child;
+              }
+
+              // this.state.global.JflowControlField.isShow.map((item) => {
+              //   if (item.colid === c.child.colid) {
+              //     return c.child;
+              //   } 
+              // });
             } else { // display无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
               u.push(c.child);
               c.childs = u;
