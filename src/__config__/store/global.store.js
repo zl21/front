@@ -55,7 +55,16 @@ export default () => ({
       // ]
      
       itemTableName: '',
-      data: []
+      display: [// 所有可见字段
+        {
+          colid: 166364
+        }
+      ],
+      readonly: [// 所有可编辑字段
+        {
+          colid: 166364,
+        },
+      ]
     },
     
   },

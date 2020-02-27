@@ -84,6 +84,8 @@
     computed: {
       ...mapState('global', {
         isRequest: ({ isRequest }) => isRequest,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
+        
       }),
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
@@ -101,9 +103,9 @@
         if (enableJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
-            if (this.state.global.JflowControlField) {
+            if (this.JflowControlField) {
               // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-              if (enableJflow() && item.tablename === this.state.global.JflowControlField.itemTableName && item.tabrelation === '1:1') {
+              if (enableJflow() && item.tablename === this.JflowControlField.itemTableName && item.tabrelation === '1:1') {
                 flag = true;
               } 
             }

@@ -175,83 +175,89 @@ export default {
     // display:'none'是不显示，
     // colid：'字段id'，
     // itemTableName:子表表名
-    
-    // const JflowControlField = {
-    //   itemTableName: 'BCP_BIZ_CHANCE',
-    //   data: [
-    //     {
-    //       colid: 166364,
-    //       // display: 'none',
-    //       readonly: true,
-    //     },
-    //   ]
-    // };
+    state.instanceId = '1';
+    this.state.global.JflowControlField = {
+      itemTableName: 'BCP_CUSTOMER_CONTACT',
+      isShow: [// 所有可见字段
+        167623,
+        167624
+        // {
+        //   colid: 167623,
+        // },{
+        //   colid: 167624
+
+        // }
+      ],
+      readonly: [// 所有可编辑字段
+        166364
+        // {
+        //   colid: 166364,
+        // },
+      ]
+    };
     this.state.global.objreadonlyForJflow = {
       readonly: false,
       itemTableName: ''
     };
     let flag = false;
-    let changeData = [];
+    const changeData = [];
     if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
         if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
-          flag = true;
           this.state.global.objreadonlyForJflow = {
             readonly: false,
             itemTableName: this.state.global.JflowControlField.itemTableName
           };
+          if (this.state.global.JflowControlField.isShow.length === 0) {
+            this.state.global.objreadonlyForJflow.readonly = true;
+          }
+          flag = true;
         } 
       } 
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        changeData = data.addcolums.map((addcolum) => {
-          if (addcolum.childs) {
-            addcolum.childs.map((child) => {
-              this.state.global.JflowControlField.data.map((field) => {
-                if (child.colid === field.colid) {
-                  Object.keys(field).map((key) => {
-                    if (key === 'display') {
-                      child.display = field.display;
-                      return child;
-                    }
-                    if (key === 'readonly') {
-                      child.readonly = field.readonly;
-                      return child;
-                    }
-                    return child;
-                  });
+        data.addcolums
+          .reduce((a, c) => {
+            // a空对象
+            // c包含面板信息
+            // d每个字段信息
+            const u = [];
+            if (c.childs) {
+              c.childs.map((d) => {
+                if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+                  console.log(333, this.state.global.JflowControlField.isShow[d.colid]);
+                  if (this.state.global.JflowControlField.isShow[d.colid]) {
+                    u.push(d);
+                  }
+                  // this.state.global.JflowControlField.isShow.map((item) => {
+
+                  //   if (item.colid === d.colid) {
+                  //     u.push(d);
+                  //   } 
+                  // });
                 }
-                return child;
               });
-              return child;
-            });
-            return addcolum;
-          }
-          this.state.global.JflowControlField.data.map((field) => {
-            if (addcolum.child.colid === field.colid) {
-              Object.keys(field).map((key) => {
-                if (key === 'display') {
-                  addcolum.child.display = field.display;
-                  return addcolum.child;
-                }
-                if (key === 'readonly') {
-                  addcolum.child.readonly = field.readonly;
-                  return addcolum.child;
-                }
-                return addcolum.child;
+              c.childs = u;
+            } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+              this.state.global.JflowControlField.isShow.map((item) => {
+                if (item.colid === c.child.colid) {
+                  return c.child;
+                } 
               });
-              // addcolum.child.display = field.display;
-              // addcolum.child.readonly = field.readonly;
-              return addcolum.child;
+            } else { // display无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
+              u.push(c.child);
+              c.childs = u;
             }
-            return addcolum.child;
-          });
-          
-          return addcolum;
-        });
+           
+            a.push(c);
+            return a;
+          }, []);
+        console.log('🍓', data);
+
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
-        data.addcolums = changeData;
+        // console.log(999, changeData);
+        // data.addcolums = changeData;
         componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
