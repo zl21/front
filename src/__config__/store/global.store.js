@@ -44,23 +44,15 @@ export default () => ({
       itemTableName: ''
     }, 
     JflowControlField: {
-      // data:[
-      //   {
-      // readonly: true   不可编辑，false 可编辑，   
-      // isnotnull：true 必填，false 不必填  ，
-      // display:'none'是不显示，
-      // colid：'字段id'，
-      // itemTableName:子表表名
-      //   }
-      // ]
-      itemTableName: 'BCP_CUSTOMER_CONTACT_JFLOW',
+      itemTableName: '',
+      // BCP_CUSTOMER_CONTACT_JFLOW
       isShow: [// 所有可见字段
-        169143, // 联系人
+        // 169143, // 联系人
         // 169132, // 可用
       ],
       readonly: [// 所有可编辑字段
-        169143, // 联系人
-        169132, // 可用
+        // 169143, // 联系人
+        // 169132, // 可用
       ]
     },
     
