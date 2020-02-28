@@ -170,9 +170,8 @@ export default {
     }
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    state.instanceId = '1';
     let flag = false;
-    if (!enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
         if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
