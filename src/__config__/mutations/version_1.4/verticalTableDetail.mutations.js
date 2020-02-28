@@ -191,7 +191,6 @@ export default {
               if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
                 if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
                   if (this.state.global.JflowControlField.readonly.length > 0) {
-                    console.log(777, d);
                     d.readonly = false;
                     u.push(d);
                   } else {

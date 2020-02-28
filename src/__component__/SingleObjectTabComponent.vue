@@ -312,7 +312,6 @@
       // }),
     },
     mounted() {
-      console.log('🍍', this.itemReadOnlyForJflow);
       // this.generateComponent();
     },
     created() {
