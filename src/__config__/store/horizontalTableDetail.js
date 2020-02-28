@@ -33,7 +33,8 @@ export default () => ({
     jflowWaterMark: null, // jflow水印
     globalLoading: false,
     WebConf: {},
-    ExeActionDataForComponent: {}
+    ExeActionDataForComponent: {},
+   
   },
   actions: actions(),
   mutations: mutations()

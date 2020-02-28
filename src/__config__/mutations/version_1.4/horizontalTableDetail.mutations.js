@@ -1,5 +1,5 @@
 import router from '../../router.config';
-import { DispatchEvent } from '../../../__utils__/dispatchEvent';
+import { enableJflow } from '../../../constants/global';
 
 
 export default {
@@ -119,11 +119,94 @@ export default {
     componentAttribute.formData.data = data;
   }, //
 
-  updatePanelData(state, data) {
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.panelData.isShow = true;
-    componentAttribute.panelData.data = data;
-  }, // 更新form数据
+  updatePanelData(state, data) { // 更新子表面板数据
+    let flag = false;
+    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+      // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
+        if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
+          this.state.global.objreadonlyForJflow = {
+            readonly: false,
+            itemTableName: this.state.global.JflowControlField.itemTableName
+          };
+          flag = true;
+        } 
+      } 
+      if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        const addcolumsData = data.addcolums.reduce((a, c) => {
+          const u = [];
+          if (c.childs) {
+            c.childs.map((d) => {
+              if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+                if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
+                  if (this.state.global.JflowControlField.readonly.length > 0) {
+                    d.readonly = false;
+                    u.push(d);
+                  } else {
+                    d.readonly = true;
+                    u.push(d);
+                  }
+                }
+              } else if (this.state.global.JflowControlField.readonly.length > 0) {
+                // 未配置jflowisShow字段，则显示全部元数据字段，由readonly控制字段是否可编辑
+                if (this.state.global.JflowControlField.readonly.includes(d.colid)) {
+                  // 未配置可见字段，只配置了可编辑字段时，所有元数据返回的字段可见，readonly内配置的可编辑
+                  d.readonly = false;
+                  u.push(d);
+                } else { // 不可编辑
+                  d.readonly = true;
+                  u.push(d);
+                }
+              } else { // 未配置可编辑字段，则所有元数据字段不可编辑
+                d.readonly = true;
+                u.push(d);
+              }
+            });
+            c.childs = u;
+            a.push(c);
+          } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
+            if (this.state.global.JflowControlField.isShow.includes(c.child.colid)) {
+              if (this.state.global.JflowControlField.readonly.length > 0 && this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+                c.child.readonly = false;
+                a.push(c);
+              } else {
+                c.child.readonly = true;
+                a.push(c);
+              } 
+            } 
+          } else if (this.state.global.JflowControlField.readonly.length > 0) {
+            // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
+            // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
+            if (this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+              c.child.readonly = false;
+              a.push(c);
+            } else {
+              // jflow未配置可编辑字段时，则元数据所有字段全部不可编辑
+              c.child.readonly = true;
+              a.push(c);
+            }
+          } else {
+            // jflow未配置显示字段以及未配置可编辑字段时，则所有元数据字段为不可编辑状态
+            c.child.readonly = true;
+            a.push(c);
+          }
+          return a;
+        }, []);
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        data.addcolums = addcolumsData;
+        componentAttribute.panelData.data = data;
+      } else {
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        componentAttribute.panelData.data = data;
+      }
+    } else {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.panelData.isShow = true;
+      componentAttribute.panelData.data = data;
+    }
+  },
   updateTableData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = true;

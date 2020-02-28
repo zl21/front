@@ -10,7 +10,7 @@ const projectConfig = require('./project.config');
 
 const target = projectConfig.target; // 框架研发网关开启环境
 const proxyLists = ['/p/c'];
-const proxyListsForGateway = ['/ad-app/p/c'];
+const proxyListsForGateway = ['/ad-app/p/c', '/asynctask/p/cs'];
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei'];
