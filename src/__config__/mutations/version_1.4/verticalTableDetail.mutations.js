@@ -171,10 +171,6 @@ export default {
   },
   updatePanelData(state, data) { // 更新子表面板数据
     state.instanceId = '1';
-    this.state.global.objreadonlyForJflow = {
-      readonly: false,
-      itemTableName: ''
-    };
     let flag = false;
     if (!enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
@@ -188,13 +184,14 @@ export default {
         } 
       } 
       if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        data.addcolums.reduce((a, c) => {
+        const addcolumsData = data.addcolums.reduce((a, c) => {
           const u = [];
           if (c.childs) {
             c.childs.map((d) => {
               if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
                 if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
                   if (this.state.global.JflowControlField.readonly.length > 0) {
+                    console.log(777, d);
                     d.readonly = false;
                     u.push(d);
                   } else {
@@ -217,39 +214,39 @@ export default {
                 u.push(d);
               }
             });
-
             c.childs = u;
+            a.push(c);
           } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-            if (this.state.global.JflowControlField.isShow.includes(c.colid)) {
-              if (this.state.global.JflowControlField.readonly.length > 0) {
-                c.child.readonly = true;
-                u.push(c.child);
-              } 
-              u.push(c.child);
-            } 
-            // });
-          } else { // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
-            if (this.state.global.JflowControlField.readonly.length > 0) {
-              // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
-              if (this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+            if (this.state.global.JflowControlField.isShow.includes(c.child.colid)) {
+              if (this.state.global.JflowControlField.readonly.length > 0 && this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
                 c.child.readonly = false;
-                u.push(c.child);
-              }
+                a.push(c);
+              } else {
+                c.child.readonly = true;
+                a.push(c);
+              } 
+            } 
+          } else if (this.state.global.JflowControlField.readonly.length > 0) {
+            // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
+            // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
+            if (this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+              c.child.readonly = false;
+              a.push(c);
+            } else {
               // jflow未配置可编辑字段时，则元数据所有字段全部不可编辑
               c.child.readonly = true;
-              u.push(c.child);
-            } 
+              a.push(c);
+            }
+          } else {
             // jflow未配置显示字段以及未配置可编辑字段时，则所有元数据字段为不可编辑状态
-            c.child.readonly = false;
-            u.push(c.child);
+            c.child.readonly = true;
+            a.push(c);
           }
-          a.push(c);
           return a;
         }, []);
-        console.log('🍓', data);
-
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
+        data.addcolums = addcolumsData;
         componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];

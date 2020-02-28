@@ -125,7 +125,7 @@
   /* eslint-disable keyword-spacing */
 
   import Vue from 'vue';
-  import { mapMutations, mapState, mapActions } from 'vuex';
+  import { mapMutations, mapState, } from 'vuex';
 
   import router from '../__config__/router.config';
   import tableDetailCollection from './TableDetailCollection';
@@ -137,7 +137,9 @@
   import CustomizeModule from '../__config__/customize.config';
 
 
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import {
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow 
+  } from '../constants/global';
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -262,11 +264,8 @@
       ...mapState('global', {
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
       }),
-
-
       itemReadOnlyForJflow() {
-        console.log(99, this.objreadonlyForJflow.itemTableName, this.tableName);
-        if(this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
+        if(!enableJflow() && this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
           return this.objreadonlyForJflow.readonly;
         }
         return this.objreadonly;
