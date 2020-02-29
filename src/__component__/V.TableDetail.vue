@@ -178,9 +178,13 @@
 
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
-          const index = this.tabCurrentIndex + 3;
-          return this.$refs.tabPanel.$children[index].itemTableCheckFunc();
+          const index = this.$refs.tabPanel.$children.findIndex(item => item.tableName === this.tabPanel[this.tabCurrentIndex].tablename);
+          if (index > -1) {
+            return this.$refs.tabPanel.$children[index].itemTableCheckFunc();
+          }
+          return true;
         }
+        return true;
       }, // 按钮点击保存的回调
       InitializationForm(val, val2, valLabel) {
         const { tableName, itemId } = this.$route.params;
