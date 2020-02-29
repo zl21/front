@@ -54,6 +54,7 @@
 
   export default {
     name: 'Docfile',
+    
     props: {
       dataitem: {
         type: Object,
@@ -61,6 +62,13 @@
           return {};
         }
       }
+    },
+    mounted() {
+      // this.$dragging.$on('dragged', ({ value }) => {
+      // });
+      this.$dragging.$on('dragend', () => {
+        this.filechange();
+      });
     },
     data() {
       return {
@@ -78,8 +86,16 @@
           this.setvaluedata();
         },
         deep: true
-      }
+      },
+
     },
+    // updated() {
+    //   this.$nextTick(() => {
+    //     console.log(333, this.docList.valuedata);
+    //     const valuedata = this.docList.valuedata;
+    //     // this.$emit('filechange', valuedata);
+    //   });
+    // },
     methods: {
       filechange() {
         const valuedata = this.docList.valuedata;
