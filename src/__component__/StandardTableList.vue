@@ -427,6 +427,7 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
+
           const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
@@ -1499,7 +1500,7 @@
                 );
               }
             } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
-              const customizedModuleName = url.substring(url.indexOf('/') + 1, url.lastIndexOf('/'));
+              const customizedModuleName = this.ag.tableurl.substring(this.ag.tableurl.indexOf('/') + 1, this.ag.tableurl.lastIndexOf('/'));
               const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/New`;
               router.push({
                 path
