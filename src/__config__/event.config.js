@@ -37,6 +37,7 @@ export const launchNetworkMonitor = () => {
 export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
   let path = '/';
+  let query = {};
   // type = 'commonTable';
   switch (type) {
     case 'action':
@@ -64,6 +65,12 @@ export const routeTo = ({ type, info }, cb) => {
     case 'table':
       path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
+    case 'treeTable':
+      path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
+      query = {
+        isTreeTable: true
+      };
+      break;
     case 'commonTable':
       path = `${STANDARD_COMMONTABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break; 
@@ -75,7 +82,7 @@ export const routeTo = ({ type, info }, cb) => {
       break;
   }
   if (router.currentRoute.fullPath !== path) {
-    router.push({ path }).catch((e) => { console.error(e); });
+    router.push({ path, query }).catch((e) => { console.error(e); });
   }
 };
 

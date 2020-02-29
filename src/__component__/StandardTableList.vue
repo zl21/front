@@ -5,8 +5,22 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
+    <div
+      class="treeSwitch"
+      :style="{ left: !treeShow ? '5px' : '212px' }"
+      @click="treeShow = !treeShow"
+    >
+      <i
+        v-if="!treeShow"
+        class="iconfont iconbj_left"
+      />
+      <i
+        v-if="treeShow"
+        class="iconfont iconbj_right"
+      />
+    </div>
     <tree
-      v-if="isTreeList.isShow"
+      v-if="isTreeList"
       :tree-data="treeConfigData"
       @menuTreeChange="menuTreeChange"
     />
@@ -151,10 +165,7 @@
     },
     data() {
       return {
-        isTreeList: {
-          isShow: true,
-          name: 'cp_c_inorg'
-        },
+        treeShow: true,
         actionModal: false,
         resetType: false, // 是否是重置的功能
         dialogComponent: null,
@@ -215,12 +226,21 @@
       idArray() {
         return this.buttons.selectIdArr;
       },
+      isTreeList() {
+        const treeQuery = this.$router.currentRoute.query;
+        treeQuery.isShow = this.treeShow;
+        if (treeQuery.isShow) {
+          return true;
+        }
+        return false;
+      },
       treeConfigData() {
-        if (this.isTreeList.isShow) {
+        const treeQuery = this.$router.currentRoute.query;
+        console.log(treeQuery);
+        if (treeQuery.isTreeTable) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            return window.ProjectConfig.externalTreeDatas[this.isTreeList.name]();
+            return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
           }
-          // return treeData[this.isTreeList.name]();
         }
         return [];
       }
@@ -427,7 +447,6 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-
           const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
@@ -2133,6 +2152,29 @@
   overflow: hidden;
   display: flex;
   flex-direction: row;
+  .treeSwitch{
+    position: absolute;
+    user-select: none;
+    width: 11px;
+    height: 83px;
+    line-height: 84px;
+    cursor: pointer;
+    top: 49%;
+    text-align: center;
+    border-top-left-radius: 46px;
+    border-bottom-left-radius: 46px;
+    border: 1px solid #d2d2d2;
+    // transform-origin: right;
+    // transform: translateY(-50px) perspective(50px) rotateY(-30deg);
+      &:hover{
+      background: #d2d2d2;
+      opacity: 0.5;
+      }
+    i{
+        margin-left: -2px;
+      }
+}
+
  .tree{
     width:300px;
     padding:10px;

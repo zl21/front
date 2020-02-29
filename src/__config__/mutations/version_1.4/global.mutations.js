@@ -117,6 +117,7 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
+          c.type = 'treeTable';
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
@@ -137,7 +138,7 @@ export default {
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
-          } else if (c.type === 'table') {
+          } else if (c.type === ('table'||'treeTable')) {
           // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'commonTable') {

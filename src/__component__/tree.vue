@@ -1,5 +1,7 @@
 <template>
-  <div class="tree">
+  <div
+    class="tree"
+  >
     <Input
       placeholder="请输入角色"
       class="input"
@@ -23,8 +25,6 @@
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
-
-      
         treeDatas: [
           {
             title: 'parent 1',
@@ -66,7 +66,6 @@
       },
     },
     mounted() {
-      console.log(555, this.treeData);
     },
     methods: {
       searchInputChange(e) {
@@ -79,6 +78,7 @@
   };
 </script>
 <style scoped>
+
 .input{
   margin-bottom:10px
 }
