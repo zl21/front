@@ -2555,7 +2555,6 @@
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
-
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;
@@ -2689,7 +2688,7 @@
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
-        promise.then(() => {
+        promise.then((res) => {
           // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
           this.clearEditData();// 清空store update数据
           stop = false;

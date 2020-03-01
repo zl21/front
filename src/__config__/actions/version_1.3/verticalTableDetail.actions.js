@@ -356,7 +356,7 @@ export default {
       network.post(temporaryStoragePath || '/p/cs/objectAdd', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
-          resolve();
+          resolve(res);
           commit('updateNewMainTableAddSaveData', {
             data,
             itemName
@@ -636,7 +636,7 @@ export default {
       network.post(temporaryStoragePath || '/p/cs/objectSave', urlSearchParams(parames)).then((res) => {
         if (res.data.code === 0) {
           const data = res.data;
-          resolve();
+          resolve(res);
           commit('updateNewMainTableAddSaveData', { data, itemName });
         } else {
           reject();
