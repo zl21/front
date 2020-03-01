@@ -2555,6 +2555,7 @@
         }
       },
       verifyRequiredInformation() { // 验证表单必填项
+
         if (this.temporaryStorage) { // 配置了暂存则不校验
           this.temporaryStorage = false;
           return true;

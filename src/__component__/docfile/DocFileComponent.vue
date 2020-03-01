@@ -6,7 +6,7 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, group: 'option' }"
+          v-dragging="{ item: option, list: docList.valuedata, group: `${JSON.stringify( docList.valuedata)}` }"
         >
           <a :href="option.url">{{ option.name }}</a>
           <i
@@ -64,10 +64,12 @@
       }
     },
     mounted() {
-      // this.$dragging.$on('dragged', ({ value }) => {
-      // });
-      this.$dragging.$on('dragend', () => {
-        this.filechange();
+      this.$dragging.$on('dragend', (res) => {
+        // const data = JSON.parse(res.group);
+        const valuedata = this.docList.valuedata;
+        if (valuedata.length > 0) {
+          this.$emit('filechange', valuedata);
+        }
       });
     },
     data() {
@@ -99,8 +101,7 @@
     methods: {
       filechange() {
         const valuedata = this.docList.valuedata;
-       
-
+        console.log(77, valuedata);
         this.$emit('filechange', valuedata);
       }, 
       checkFile(files) {
