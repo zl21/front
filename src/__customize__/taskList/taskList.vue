@@ -721,7 +721,7 @@ export default {
         label: "任务记录编辑",
         id: row.OBJ_ID.val
       };
-      this.editTaskStatus(row.OBJ_ID.val);
+      this.editTaskStatus(row.ID.val);
       this.tabOpen(tab);
      
     }, // 双击行
@@ -735,7 +735,7 @@ export default {
       // this.dialogComponentName = params.column.customerurl.tableurl;
     }, // 表格弹框console.log();
     onSingleCellClick(row) {
-      this.editTaskStatus(row.OBJ_ID);
+      this.editTaskStatus(row.ID);
     } // 单击超链接
   },
   created() {
