@@ -31,7 +31,7 @@ export default {
   },
   metricsDefinition: {
     component: metricsDefinition
-  }
+  },
   // AD_TABLE: {
   //   component: AD_TABLE
   // },
