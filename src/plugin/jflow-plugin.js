@@ -727,7 +727,11 @@ function initiateLaunch(data) { // 业务系统流程发起
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
         webActionId: data.webid,
-        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2)
+        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
+        moduleId: data.moduleId,
+        startNodeId: data.startNodeId,
+        customizeBody: data.customizeBody,
+        assignedNodes: data.assignedNodes
       }).then((res) => {
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
