@@ -2679,8 +2679,6 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
-            console.log(7);
-
             this.$loading.show(this.tableName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
@@ -2699,7 +2697,8 @@
               detail: {
                 type: 'save',
                 mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter
+                itemTableParame: this.itemCurrentParameter,
+                res
               }
             });
           }
