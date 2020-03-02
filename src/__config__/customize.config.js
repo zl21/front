@@ -13,7 +13,7 @@ import functionPermission from '../__customize__/functionPower/FunctionPowerNew.
 import proDesc from '../__customize__/pro_desc/pro_desc.vue';
 import standard from '../__customize__/colorSize/Standard.vue';
 // import AD_TABLE from '../__customize__/queryStandardTableList/queryStandardTableList.vue';
-import report from '../__customize__/report/report.vue';
+import metricsDefinition from '../__customize__/metricsDefinition/metricsDefinition.vue';
 
 
 export default {
@@ -28,9 +28,8 @@ export default {
   standard: {
     component: standard
   },
-  report: {
-    component: report
-
+  metricsDefinition: {
+    component: metricsDefinition
   }
   // AD_TABLE: {
   //   component: AD_TABLE
