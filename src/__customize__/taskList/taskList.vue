@@ -697,32 +697,33 @@ export default {
     editTaskStatus(ID) {
       network.post("/p/cs/taskrecord/read", { ID }).then(res => {
         if (res.data.code === 0) {
-          this.$Modal.fcSuccess({
-            mask: true,
-            title: "成功",
-            content: res.data.message
-          });
+          // this.$Modal.fcSuccess({
+          //   mask: true,
+          //   title: "成功",
+          //   content: res.data.message
+          // });
         }
       });
     },
     onRowDoubleClick(obj, row, e) {
       let type = "";
-      if (row._OBJTYPE && row._OBJTYPE.val === "object") {
+      if (row.OBJDISTYPE && row.OBJDISTYPE.val === "object") {
         // 单对象上下结构
         type = "tableDetailVertical";
-      } else if (row._OBJTYPE && row._OBJTYPE.val === "tabpanle") {
+      } else if (row.OBJDISTYPE && row.OBJDISTYPE.val === "tabpanle") {
         // 左右结构
         type = "tableDetailHorizontal";
       }
       const tab = {
         type,
-        tableName: "TASK_RECORD",
-        tableId: row.AD_TABLE_ID.val,
+        tableName: row.AD_TABLE_ID.reftablename,
+        tableId:row.AD_TABLE_ID.reftableid,
         label: "任务记录编辑",
         id: row.OBJ_ID.val
       };
-      this.tabOpen(tab);
       this.editTaskStatus(row.OBJ_ID.val);
+      this.tabOpen(tab);
+     
     }, // 双击行
     onSortChanged(arr) {}, // 排序事件触发回调
     onSelectionChanged(row, select) {}, // 表格行选中事件

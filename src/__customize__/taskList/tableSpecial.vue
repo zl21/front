@@ -315,9 +315,9 @@
             }
             return acc;
           }, []));
-          temColumn = temColumn.map((item) => {
-            if (item.key === 'URL') {
-              item.render = (h, params) => h('a', {
+          temColumn = temColumn.reduce((arr, cur) => {
+            if (cur.key === 'URL') {
+              cur.render = (h, params) => h('a', {
                 on: {
                   click: () => {
                     if (typeof this.onSingleCellClick === 'function') {
@@ -328,8 +328,11 @@
                 }
               }, params.row.URL);
             }
-            return item;
-          });
+            if (cur.key !== 'OBJDISTYPE') {
+              arr.push(cur);
+            }
+            return arr
+          }, []);
           return temColumn;
         }
         return [];
