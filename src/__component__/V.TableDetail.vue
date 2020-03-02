@@ -155,8 +155,8 @@
       this.currentSingleButtonComponentName = singleButtonComponentName;
       const { tableName, itemId } = this.$route.params;
       this.getObjectForMainTableForm({ table: tableName, objid: itemId });
-      
-     
+
+
       this.getObjectTabForMainTable({
         table: tableName, objid: itemId, tabIndex: this.tabCurrentIndex
       });
@@ -178,8 +178,13 @@
 
       itemTableCheckFunc() {
         if (this.$refs.tabPanel) {
-          return this.$refs.tabPanel.$children[3].itemTableCheckFunc();
+          const index = this.$refs.tabPanel.$children.findIndex(item => item.tableName === this.tabPanel[this.tabCurrentIndex].tablename);
+          if (index > -1) {
+            return this.$refs.tabPanel.$children[index].itemTableCheckFunc();
+          }
+          return true;
         }
+        return true;
       }, // 按钮点击保存的回调
       InitializationForm(val, val2, valLabel) {
         const { tableName, itemId } = this.$route.params;
@@ -232,7 +237,7 @@
           // if (index === this.tabCurrentIndex) {
           //   return;
           // }
-        
+
           if (webactType !== 'ALL') {
             const { itemId } = this.$route.params;
             const refTab = this.tabPanel[index];
@@ -269,7 +274,7 @@
             } else if (refTab.tabrelation === '1:1') {
               getButtonDataPromise = new Promise((rec, rej) => {
                 this.getObjectTabForRefTable({
-                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej 
+                  table: refTab.tablename, objid: itemId, tabIndex: index, rec, rej
                 });
               });
               this.getItemObjForChildTableForm({

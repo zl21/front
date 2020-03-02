@@ -364,7 +364,7 @@ export default {
     network.post(temporaryStoragePath || path || '/p/cs/objectSave', parames).then((res) => {
       if (res.data.code === 0) {
         const data = res.data;
-        resolve();
+        resolve(res);
         commit('updateNewMainTableAddSaveData', { data, itemName });
       } else {
         reject();
