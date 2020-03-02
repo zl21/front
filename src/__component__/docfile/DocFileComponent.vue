@@ -6,9 +6,9 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, group: 'option' }"
+          v-dragging="{ item: option, list: docList.valuedata, }"
         >
-          <a :href="option.url">{{ option.name }}</a>
+          <a :href="option.url">3333{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
@@ -54,6 +54,7 @@
 
   export default {
     name: 'Docfile',
+    
     props: {
       dataitem: {
         type: Object,
@@ -61,6 +62,15 @@
           return {};
         }
       }
+    },
+    mounted() {
+      // this.$dragging.$on('dragend', (res) => {
+      //   // const data = JSON.parse(res.group);
+      //   const valuedata = this.docList.valuedata;
+      //   if (valuedata.length > 0) {
+      //     this.$emit('filechange', valuedata);
+      //   }
+      // });
     },
     data() {
       return {
@@ -78,13 +88,19 @@
           this.setvaluedata();
         },
         deep: true
-      }
+      },
+
     },
+    // updated() {
+    //   this.$nextTick(() => {
+    //     console.log(333, this.docList.valuedata);
+    //     const valuedata = this.docList.valuedata;
+    //     // this.$emit('filechange', valuedata);
+    //   });
+    // },
     methods: {
       filechange() {
         const valuedata = this.docList.valuedata;
-       
-
         this.$emit('filechange', valuedata);
       }, 
       checkFile(files) {
