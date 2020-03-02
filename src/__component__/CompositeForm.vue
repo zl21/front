@@ -1128,11 +1128,13 @@
         let _valuedata = current.valuedata || current.defval || '';
         this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
         if (current.display === 'select' || current.display === 'check') {
-          const optionIndex = current.combobox.findIndex(x => x.limitval === _valuedata);
-          if (optionIndex !== -1) {
-            _valuedata = current.combobox[optionIndex].limitdesc;
-          } else {
-            _valuedata = '';
+          if (current.combobox) {
+            const optionIndex = current.combobox.findIndex(x => x.limitval === _valuedata);
+            if (optionIndex !== -1) {
+              _valuedata = current.combobox[optionIndex].limitdesc;
+            } else {
+              _valuedata = '';
+            }
           }
         }
         this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;

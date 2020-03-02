@@ -6,9 +6,9 @@
         <li
           v-for="(option,index) in docList.valuedata"
           :key="index"
-          v-dragging="{ item: option, list: docList.valuedata, group: `${JSON.stringify( docList.valuedata)}` }"
+          v-dragging="{ item: option, list: docList.valuedata, }"
         >
-          <a :href="option.url">{{ option.name }}</a>
+          <a :href="option.url">3333{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
@@ -64,13 +64,13 @@
       }
     },
     mounted() {
-      this.$dragging.$on('dragend', (res) => {
-        // const data = JSON.parse(res.group);
-        const valuedata = this.docList.valuedata;
-        if (valuedata.length > 0) {
-          this.$emit('filechange', valuedata);
-        }
-      });
+      // this.$dragging.$on('dragend', (res) => {
+      //   // const data = JSON.parse(res.group);
+      //   const valuedata = this.docList.valuedata;
+      //   if (valuedata.length > 0) {
+      //     this.$emit('filechange', valuedata);
+      //   }
+      // });
     },
     data() {
       return {
@@ -101,7 +101,6 @@
     methods: {
       filechange() {
         const valuedata = this.docList.valuedata;
-        console.log(77, valuedata);
         this.$emit('filechange', valuedata);
       }, 
       checkFile(files) {
