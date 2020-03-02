@@ -464,16 +464,29 @@
             this.computdefaultData.forEach((item, i) => {
               if (Array.isArray(item.childs)) {
                 item.childs.forEach((option, j) => {
-                  option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option, i, j) : true;
+                  let show = true;
+                  if (Object.hasOwnProperty.call(option.item.validate, 'hidecolumn')) {
+                    const showHide = this.hidecolumn(option, i, j);
+                    if (option.item.validate.hidecolumn.ishide) {
+                      show = !showHide;
+                    }
+                  }
+
+                  // option.show = Object.hasOwnProperty.call(option.item.validate, 'hidecolumn') ? this.hidecolumn(option, i, j) : true;
                   if (option.item.props.display === 'none') {
-                    option.show = false;
-                  }               
+                    show = false;
+                  }  
+                  option.show = show;
                 });
               } else {
-                item.show = Object.hasOwnProperty.call(item.item.validate, 'hidecolumn') ? this.hidecolumn(item, i) : true;
-                if (item.item.props.display === 'none') {
-                  item.show = false;
-                } 
+                let show = true;
+                if (Object.hasOwnProperty.call(item.item.validate, 'hidecolumn')) {
+                  const showHide = this.hidecolumn(item, i);
+                  if (item.item.validate.hidecolumn.ishide) {
+                    show = !showHide;
+                  }
+                }
+                item.show = show;
               }
             });
           }
@@ -1584,7 +1597,17 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
-          return item.valuedata || item.defval || 'N';
+          let check = '';
+          if (Array.isArray(item.combobox)) {
+            item.combobox.forEach((option) => {
+              if (option.limitdis) {
+                check = option.limitval;
+              } else {
+                check = option.limitval;
+              }
+            });
+          }
+          return item.valuedata || item.defval || check;
         }
         // console.log(item, this.defaultSetValue);
 
