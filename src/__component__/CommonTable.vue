@@ -334,17 +334,28 @@
           const cell = {
             ID: '合计'
           };
-          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          needSubtotalList.map((ele) => {
-            const needSubtotalDatas = [];
-            this.tableData.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-            if (typeof totalNumber === 'number') {
-              totalNumber = totalNumber.toFixed(2);
-            }
-            cell[ele.colname] = `${totalNumber}`;
-            return ele;
-          });
+          // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          // needSubtotalList.map((ele) => {
+          //   const needSubtotalDatas = [];
+          //   this.tableData.reduce((a, c) => {
+          //     let str = c[ele.colname];
+          //     if (str.indexOf(',') > -1 || str.indexOf('，') > -1) {
+          //       str = str.replace(/,/g, '');
+          //     }
+          //     return needSubtotalDatas.push(str);
+          //   }, []); //
+          //   let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+          //   if (typeof totalNumber === 'number') {
+          //     totalNumber = totalNumber.toFixed(2);
+          //   }
+          //   cell[ele.colname] = `${totalNumber}`;
+          //   return ele;
+          // });
+          if (this.datas.subtotalRow && Object.keys(this.datas.subtotalRow).length > 0) {
+            Object.keys(this.datas.subtotalRow).forEach((key) => {
+              cell[key] = this.datas.subtotalRow[key];
+            });
+          }
           total.push(cell);
         }
         // if (this.isHorizontal) {
@@ -353,17 +364,22 @@
           const cell = {
             ID: '总计',
           };
-          if (this.datas.fullRangeSubTotalRow) {
-            for (const key in this.datas.fullRangeSubTotalRow) {
-              if (Object.prototype.hasOwnProperty.call(this.datas.fullRangeSubTotalRow, key)) {
-                const element = this.datas.fullRangeSubTotalRow[key];
-                cell[key] = element.val;
-              }
-            }
+          // if (this.datas.fullRangeSubTotalRow) {
+          //   for (const key in this.datas.fullRangeSubTotalRow) {
+          //     if (Object.prototype.hasOwnProperty.call(this.datas.fullRangeSubTotalRow, key)) {
+          //       const element = this.datas.fullRangeSubTotalRow[key];
+          //       cell[key] = element.val;
+          //     }
+          //   }
+          // }
+          if (this.datas.fullRangeSubTotalRow && Object.keys(this.datas.fullRangeSubTotalRow).length > 0) {
+            Object.keys(this.datas.fullRangeSubTotalRow).forEach((key) => {
+              const element = this.datas.fullRangeSubTotalRow[key];
+              cell[key] = element.val;
+            });
           }
           total.push(cell);
         }
-        // }
         return total;
       }, // 总计和合计
     },
@@ -658,7 +674,7 @@
       }, // 表格排序触发
       switchRender(data) {
         // 开关选择器
-        return (h, data) => h('div', 
+        return (h, data) => h('div',
                               [
                                 h('i-switch', {
                                   on: {
@@ -715,7 +731,7 @@
         ];
         // display按钮操作类型（3种）
         // 跳转/弹出框/删除/
-        return (h, param) => params.map(item => h('ButtonGroup', 
+        return (h, param) => params.map(item => h('ButtonGroup',
                                                   [
                                                     h('i-Button', {
                                                       on: {
@@ -789,6 +805,7 @@
             }
             tfoot tr {
                 height: 28px;
+                background-color: #fff;
             }
             .burgeon-table td {
               background-color: rgba(255, 255, 255, 0);
