@@ -465,10 +465,13 @@
               if (Array.isArray(item.childs)) {
                 item.childs.forEach((option, j) => {
                   let show = true;
-                  if (Object.hasOwnProperty.call(option.item.validate, 'hidecolumn')) {
+                 
+                  if (option.item && Object.hasOwnProperty.call(option.item.validate, 'hidecolumn')) {
                     const showHide = this.hidecolumn(option, i, j);
                     if (option.item.validate.hidecolumn.ishide) {
                       show = !showHide;
+                    } else {
+                      show = showHide;
                     }
                   }
 
@@ -1128,13 +1131,14 @@
         let _valuedata = current.valuedata || current.defval || '';
         this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
         if (current.display === 'select' || current.display === 'check') {
-          if (current.combobox) {
-            const optionIndex = current.combobox.findIndex(x => x.limitval === _valuedata);
-            if (optionIndex !== -1) {
-              _valuedata = current.combobox[optionIndex].limitdesc;
-            } else {
-              _valuedata = '';
-            }
+          if (!Array.isArray(current.combobox)) {
+            return false;
+          }
+          const optionIndex = current.combobox.findIndex(x => x.limitval === _valuedata);
+          if (optionIndex !== -1) {
+            _valuedata = current.combobox[optionIndex].limitdesc;
+          } else {
+            _valuedata = '';
           }
         }
         this.formItem[`${this.tableGetName}${obj.item.field}`] = _valuedata;
@@ -1507,45 +1511,46 @@
       },
       setLabel(key, value, item) {
         return false;
-        const valueLabel = {};
-        if (item.display === 'checkbox') {
-          const optionIndex = item.combobox.findIndex(x => x.limitval === value);
-          if (optionIndex !== -1) {
-            valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
-          } else {
-            valueLabel[item.colname] = '';
-          }
-        } else if (item.display === 'select') {
-          if (value !== undefined) {
-            if (Array.isArray(value)) {
-              value = value[0];
-            }
-            const optionIndex = item.combobox.findIndex(x => x.value === value);
-            if (optionIndex !== -1) {
-              valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
-            } else {
-              valueLabel[item.colname] = '';
-            }
-          } else {
-            valueLabel[item.colname] = '';
-          }
-        }
-        if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop' || item.fkdisplay === 'drp') {
-          if (Array.isArray(value)) {
-            valueLabel[item.colname] = value[0].Label;
-          }
-        } else if (item.fkdisplay === 'mrp') {
-          if (Array.isArray(value)) {
-            valueLabel[item.colname] = value.reduce((arr, option, i) => {
-              arr.push(option.Label);
-              return arr;
-            }, [])
-              .join(',');
-          }
-        } else {
-          valueLabel[item.colname] = value;
-        }
-        this.labelForm = Object.assign(this.labelForm, valueLabel);
+        // const valueLabel = {};
+        // if (item.display === 'checkbox') {
+        //   const optionIndex = item.combobox.findIndex(x => x.limitval === value);
+        //   if (optionIndex !== -1) {
+        //     valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
+        //   } else {
+        //     console.log(item.combobox);
+        //     valueLabel[item.colname] = '';
+        //   }
+        // } else if (item.display === 'select') {
+        //   if (value !== undefined) {
+        //     if (Array.isArray(value)) {
+        //       value = value[0];
+        //     }
+        //     const optionIndex = item.combobox.findIndex(x => x.value === value);
+        //     if (optionIndex !== -1) {
+        //       valueLabel[item.colname] = item.combobox[optionIndex].limitdesc;
+        //     } else {
+        //       valueLabel[item.colname] = '';
+        //     }
+        //   } else {
+        //     valueLabel[item.colname] = '';
+        //   }
+        // }
+        // if (item.fkdisplay === 'pop' || item.fkdisplay === 'mop' || item.fkdisplay === 'drp') {
+        //   if (Array.isArray(value)) {
+        //     valueLabel[item.colname] = value[0].Label;
+        //   }
+        // } else if (item.fkdisplay === 'mrp') {
+        //   if (Array.isArray(value)) {
+        //     valueLabel[item.colname] = value.reduce((arr, option, i) => {
+        //       arr.push(option.Label);
+        //       return arr;
+        //     }, [])
+        //       .join(',');
+        //   }
+        // } else {
+        //   valueLabel[item.colname] = value;
+        // }
+        // this.labelForm = Object.assign(this.labelForm, valueLabel);
       },
       defaultValue(item) {
         // 组件的默认值  
@@ -1599,7 +1604,9 @@
           if (this.defaultSetValue[item.colname] !== undefined) {
             return this.defaultSetValue[item.colname];
           }
+          // eslint-disable-next-line no-unused-vars
           let check = '';
+          
           if (Array.isArray(item.combobox)) {
             item.combobox.forEach((option) => {
               if (option.limitdis) {
@@ -1609,7 +1616,7 @@
               }
             });
           }
-          return item.valuedata || item.defval || check;
+          return item.valuedata || item.defval;
         }
         // console.log(item, this.defaultSetValue);
 
@@ -1828,8 +1835,10 @@
             item.props.combobox.forEach((option) => {
               if (option.limitdis) {
                 item.props.trueValue = option.limitval;
+                item.props.trueLabel = option.limitdesc;
               } else {
                 item.props.falseValue = option.limitval;
+                item.props.falseLabel = option.limitdesc;
               }
             });
           }
