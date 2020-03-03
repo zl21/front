@@ -281,19 +281,30 @@ function RoutingGuard(router) { // 路由守卫
     }
   });
 }
-
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
+    // const params = new URLSearchParams(request.data);
+    // console.log(request.data.ids);
+    // const changeDetail = {};
+    // for (const pair in params.entries()) {
+    //   changeDetail[pair[0]] = pair[1];
+    // }
+    // const response = changeDetail;
+    // console.log(response);
+    let id = null;
+    if (Version() === '1.3') {
+      id = request.data.ids ? request.data.ids.join(',') : request.data.objids;
     }
-    const response = changeDetail;
+
+    if (Version() === '1.4') {
+      id = request.data.ids instanceof Array ? request.data.ids.join(',') : request.data.ids;
+    }
+
+    id = id || router.currentRoute.params.itemId;
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,
+        businessCodes: id,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
@@ -302,10 +313,16 @@ async function jflowsave(flag, request) {
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
         businessUrl: request.url,
-        ruleField: 'V',
-        webActionId: 0,
-        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2)
+        ruleField: 'V'
       }).then((res) => {
+      if (res.data.resultCode !== 0) {
+        window.R3message({
+          title: '错误',
+          content: res.data.resultCode,
+          mask: true
+        });
+        return; 
+      }
       DispatchEvent('jflowClick', {
         detail: {
           type: 'clearSubmit'
@@ -318,7 +335,7 @@ async function jflowsave(flag, request) {
           content: res.data.notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
@@ -327,7 +344,7 @@ async function jflowsave(flag, request) {
           content: res.data.data.records[0].notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return;
       }
       if (res.data.resultCode === 0) {
@@ -367,12 +384,18 @@ async function jflowsave(flag, request) {
 
 async function checkProcess(request) { // check校验
   await new Promise((resolve, reject) => {
-    console.log(request);
     const params = new URLSearchParams(request.data);
     const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
+    if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+      for (const pair in params.entries()) {
+        changeDetail[pair[0]] = pair[1];
+      }
+    } else {
+      for (const pair of params.entries()) {
+        changeDetail[pair[0]] = pair[1];
+      }
     }
+    
     const response = changeDetail;
     let bodyObj = {};
     if (Version() === '1.4') {
