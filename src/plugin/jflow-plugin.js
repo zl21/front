@@ -283,23 +283,24 @@ function RoutingGuard(router) { // 路由守卫
 }
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
-      for (const pair in params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-    } else {
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-    }
-    const response = changeDetail;
+    // console.log(request.data.ids);
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
+    const response = request.data;
 
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,,
+        businessCodes: (response.ids || response.objids) ? (response.ids.join(',') || response.objids) : router.currentRoute.params.itemId,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
@@ -379,19 +380,19 @@ async function jflowsave(flag, request) {
 
 async function checkProcess(request) { // check校验
   await new Promise((resolve, reject) => {
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
-      for (const pair in params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-    } else {
-      for (const pair of params.entries()) {
-        changeDetail[pair[0]] = pair[1];
-      }
-    }
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
     
-    const response = changeDetail;
+    const response = request.data;
     let bodyObj = {};
     if (Version() === '1.4') {
       // 判断是否为动作定义
@@ -408,7 +409,7 @@ async function checkProcess(request) { // check校验
       } else {
         bodyObj = {
           businessType: router.currentRoute.params.tableId,
-          businessCheckData: response.ids.split(',')
+          businessCheckData: response.ids
         };
       }
     } 
