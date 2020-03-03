@@ -43,18 +43,25 @@ export default () => ({
       readonly: false,
       itemTableName: ''
     }, 
-    JflowControlField: {
-      itemTableName: '',
-      // BCP_CUSTOMER_CONTACT_JFLOW
-      isShow: [// 所有可见字段
+    JflowControlField: [
+      {
+        tableName: '',
+        itemTableName: '',
+        // BCP_CUSTOMER_CONTACT_JFLOW
+        isShow: [// 所有可见字段
         // 169143, // 联系人
         // 169132, // 可用
-      ],
-      readonly: [// 所有可编辑字段
+        ],
+        readonly: [// 所有可编辑字段
         // 169143, // 联系人
         // 169132, // 可用
-      ]
-    },
+        ],
+        exeActionButton: {
+
+        }
+      }
+    ]
+      
     
   },
   mutations: mutations(),
