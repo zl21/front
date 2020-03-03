@@ -716,8 +716,8 @@ export default {
       }
       const tab = {
         type,
-        tableName: row.AD_TABLE_ID.reftablename,
-        tableId:row.AD_TABLE_ID.reftableid,
+        tableName: row.AD_TABLE_ID.val,
+        tableId:row.AD_TABLE_ID.refobjid,
         label: "任务记录编辑",
         id: row.OBJ_ID.val
       };
