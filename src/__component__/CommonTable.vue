@@ -676,16 +676,24 @@
           self.onSortChanged(arrayOfSortInfo);
         }
       }, // 表格排序触发
-      switchRender(data) {
-        console.log('switchRender data = ', data);
+      switchRender() {
         // 开关选择器
         return (h, info) => h('div',
                               [
                                 h('i-switch', {
                                   on: {
                                     'on-change': (status) => {
-                                      console.log(info);
-                                      this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                      const conf = info.column.combobox;
+                                      const valObj = conf.reduce((a, c) => {
+                                        if (c.limitdis === 'true') {
+                                          a.Y = c.limitval;
+                                        } else {
+                                          a.N = c.limitval;
+                                        }
+                                        return a;
+                                      }, {});
+                                      // console.log('conf = ', valObj);
+                                      this.$Message.info(`开关状态：${status ? '开' : '关'}`);
                                     }
                                   },
 
