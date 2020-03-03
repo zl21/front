@@ -393,7 +393,6 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-
           const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
@@ -1970,6 +1969,19 @@
               );
             }
           } else if (actionType === 'https:' || actionType === 'http:') {
+            let linkUrl = '';
+            if (tab.action.indexOf(':itemId') !== -1) {
+              if (this.buttons.selectIdArr.length === 0) {
+                this.$Message.warning('请勾选ID');
+                return;
+              } if (this.buttons.selectIdArr.length > 1) {
+                this.$Message.warning('只能勾选单个ID');
+                return;
+              }
+              linkUrl = `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
+            } else {
+              linkUrl = tab.action;
+            }
             const type = 'tableDetailUrl';
             this.tabOpen({
               type,
@@ -1978,7 +1990,6 @@
             });
             const name = `${LINK_MODULE_COMPONENT_PREFIX}.${tab.webname.toUpperCase()}.${tab.webid}`;
             this.addKeepAliveLabelMaps({ name, label: tab.webdesc });
-            const linkUrl = tab.action;
             const linkId = tab.webid;
 
             if (!this.LinkUrl[linkId]) {
