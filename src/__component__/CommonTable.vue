@@ -596,8 +596,11 @@
         };
       }, // 图片render
       isJsonString(str) {
-        if (typeof JSON.parse(str) === 'object') {
-          return true;
+        try {
+          if (typeof JSON.parse(str) === 'object') {
+            return true;
+          }
+        } catch (e) {
         }
         return false;
       },
