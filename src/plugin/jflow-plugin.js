@@ -283,28 +283,23 @@ function RoutingGuard(router) { // 路由守卫
 }
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    // const params = new URLSearchParams(request.data);
-    // console.log(request.data.ids);
-    // const changeDetail = {};
-    // for (const pair in params.entries()) {
-    //   changeDetail[pair[0]] = pair[1];
-    // }
-    // const response = changeDetail;
-    // console.log(response);
-    let id = null;
-    if (Version() === '1.3') {
-      id = request.data.ids ? request.data.ids.join(',') : request.data.objids;
+    const params = new URLSearchParams(request.data);
+    const changeDetail = {};
+    if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+      for (const pair in params.entries()) {
+        changeDetail[pair[0]] = pair[1];
+      }
+    } else {
+      for (const pair of params.entries()) {
+        changeDetail[pair[0]] = pair[1];
+      }
     }
+    const response = changeDetail;
 
-    if (Version() === '1.4') {
-      id = request.data.ids instanceof Array ? request.data.ids.join(',') : request.data.ids;
-    }
-
-    id = id || router.currentRoute.params.itemId;
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: id,
+        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
