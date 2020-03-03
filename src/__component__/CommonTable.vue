@@ -42,6 +42,8 @@
 
   import { mapMutations } from 'vuex';
   import Dialog from './Dialog.vue';
+  import network from '../__utils__/network';
+  import store from '../__config__/store.config';
 
   export default {
     data() {
@@ -684,21 +686,34 @@
                                   on: {
                                     'on-change': (status) => {
                                       const conf = info.column.combobox;
-                                      const valObj = conf.reduce((a, c) => {
-                                        if (c.limitdis === 'true') {
+                                      const valPool = conf.reduce((a, c) => {
+                                        if (c.limitdis) {
                                           a.Y = c.limitval;
                                         } else {
                                           a.N = c.limitval;
                                         }
                                         return a;
                                       }, {});
-                                      // console.log('conf = ', valObj);
-                                      this.$Message.info(`开关状态：${status ? '开' : '关'}`);
+                                      const currentTableName = store.state.global.activeTab.tableName;
+                                      const webconf = info.column.webconf;
+                                      if (webconf && !webconf.disable) {
+                                        network.post(webconf && webconf.switchurl ? webconf.switchurl : '/p/cs/objectSave', {
+                                          table: currentTableName,
+                                          objId: info.row.ID,
+                                          fixedData: {
+                                            [currentTableName]: {
+                                              [info.column.colname]: status ? valPool.Y : valPool.N
+                                            }
+                                          }
+                                        }).then(() => {
+                                        }, (err) => {
+                                          console.log('err', err);
+                                        });
+                                      }
                                     }
                                   },
-
                                   props: {
-                                    value: true,
+                                    value: info.row[info.column.colname] === 'true',
                                     size: 'small',
                                     // disabled: true
                                   },
