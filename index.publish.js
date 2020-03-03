@@ -26,7 +26,7 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.1',
-  temporaryVersion: '2020.03.03.15.23',
+  temporaryVersion: '2020.03.03.16.11',
   user: '临时测试包-上海',                     
   /**
    * @param projectConfig 项目配置
@@ -42,6 +42,11 @@ export default {
    *   externalModules: { // 项目自定义界面组件入口
    *      keyOne: VueComponentOne,
    *      keyTwo: VueComponentTwo,
+   *      ...
+   *   }, // 如无自定义界面，此配置项可不传参。
+   *   externalTreeDatas: { // 树形结构列表配置数据信息入口
+   *      keyOne: ()=>{},
+   *      keyTwo: ()=>{},
    *      ...
    *   }, // 如无自定义界面，此配置项可不传参。
    *   externalModals: {  // 项目自定义弹框（模态框）组件
