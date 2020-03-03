@@ -56,9 +56,7 @@ export default () => ({
         // 169143, // 联系人
         // 169132, // 可用
         ],
-        exeActionButton: {
-
-        }
+        exeActionButton: []
       }
     ]
       
