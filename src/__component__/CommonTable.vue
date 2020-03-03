@@ -34,7 +34,7 @@
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
     />
-  </div></dialog>
+  </div>
 </template>
 
 <script>
@@ -219,11 +219,12 @@
                   width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
-              } else if (cur.display === 'switch') { // 开关选择器
+              }
+              else if (cur.display === 'switch') { // 开关选择器
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  render: this.switchRender(cur.colname)
+                  render: this.switchRender(cur)
                 }, cur));
               } else if (cur.display === 'command') { // 操作列
                 acc.push(Object.assign({
@@ -673,12 +674,14 @@
         }
       }, // 表格排序触发
       switchRender(data) {
+        console.log('switchRender data = ', data);
         // 开关选择器
-        return (h, data) => h('div',
+        return (h, info) => h('div',
                               [
                                 h('i-switch', {
                                   on: {
                                     'on-change': (status) => {
+                                      console.log(info);
                                       this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
                                     }
                                   },
