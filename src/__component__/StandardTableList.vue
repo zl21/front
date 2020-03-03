@@ -6,8 +6,9 @@
     class="standarTableListContent"
   >
     <div
+      v-if="isTreeList"
       class="treeSwitch"
-      :style="{ left: !treeShow ? '5px' : '212px' }"
+      :style="{ left: !treeShow ? '5px' : '245px' }"
       @click="treeShow = !treeShow"
     >
       <i
@@ -228,15 +229,13 @@
       },
       isTreeList() {
         const treeQuery = this.$router.currentRoute.query;
-        treeQuery.isShow = this.treeShow;
-        if (treeQuery.isShow) {
+        if (treeQuery.isTreeTable) {
           return true;
         }
         return false;
       },
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
-        console.log(treeQuery);
         if (treeQuery.isTreeTable) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
@@ -2032,7 +2031,7 @@
                 this.$Message.warning('只能勾选单个ID');
                 return;
               }
-              linkUrl =  `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
+              linkUrl = `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
             } else {
               linkUrl = tab.action;
             }
@@ -2171,7 +2170,7 @@
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    top: 49%;
+    top: 65%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;

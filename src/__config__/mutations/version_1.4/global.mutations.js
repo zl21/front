@@ -117,7 +117,6 @@ export default {
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
         .reduce((a, c) => {
-          c.type = 'treeTable';
           if (c.type === 'action') {
           // 外部跳转链接URL的处理
             if (c.url) {
@@ -152,7 +151,7 @@ export default {
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
+        .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
         .reduce((a, c) => {
           let menuType = '';
           if (c.url) {
@@ -169,7 +168,6 @@ export default {
           return a;
         }, {});
     }
-
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label

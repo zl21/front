@@ -39,6 +39,7 @@ export const routeTo = ({ type, info }, cb) => {
   let path = '/';
   let query = {};
   // type = 'commonTable';
+  // type = 'tree';
   switch (type) {
     case 'action':
       if (info.url) {
@@ -82,6 +83,7 @@ export const routeTo = ({ type, info }, cb) => {
       break;
   }
   if (router.currentRoute.fullPath !== path) {
+    console.log(999, path);
     router.push({ path, query }).catch((e) => { console.error(e); });
   }
 };
