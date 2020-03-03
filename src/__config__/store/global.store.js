@@ -39,6 +39,22 @@ export default () => ({
       queryDisNumber: null,
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
+    objreadonlyForJflow: {
+      readonly: false,
+      itemTableName: ''
+    }, 
+    JflowControlField: {
+      itemTableName: '',
+      // BCP_CUSTOMER_CONTACT_JFLOW
+      isShow: [// 所有可见字段
+        // 169143, // 联系人
+        // 169132, // 可用
+      ],
+      readonly: [// 所有可编辑字段
+        // 169143, // 联系人
+        // 169132, // 可用
+      ]
+    },
     
   },
   mutations: mutations(),

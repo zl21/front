@@ -21,7 +21,8 @@ let store = {};
 let userInfo = {}; // 用户信息
 let configurationFlag = false; // 是否是直接访问但对象界面  为true时按照配置了流程图的逻辑处理
 let jflowIp = ''; // jflow项目的ip
-let modifiableFieldName = []; // jflow可修改字段名
+let modifiableFieldName = []; // jflow可显示字段名
+let editFeild = []; // 可编辑字段
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
@@ -239,7 +240,8 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
               mask: true
             });
           }
-          modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
+          modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
+          editFeild = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild) : [];
           instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
           businessStatus = res.data.data.businessStatus;
           if (!flag) {
@@ -259,6 +261,9 @@ function RoutingGuard(router) { // 路由守卫
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
         jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
+          console.log(store.state.global);
+          //  todo
+          // 设置global里面的可编辑字段和可见字段的控制
           next();
           setTimeout(() => {
             if (res.data.resultCode === 0) {
@@ -276,19 +281,26 @@ function RoutingGuard(router) { // 路由守卫
     }
   });
 }
-
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
-    }
-    const response = changeDetail;
+    // console.log(request.data.ids);
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
+    const response = request.data;
+
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,
+        businessCodes: (response.ids || response.objids) ? (response.ids.join(',') || response.objids) : router.currentRoute.params.itemId,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
@@ -299,6 +311,14 @@ async function jflowsave(flag, request) {
         businessUrl: request.url,
         ruleField: 'V'
       }).then((res) => {
+      if (res.data.resultCode !== 0) {
+        window.R3message({
+          title: '错误',
+          content: res.data.resultCode,
+          mask: true
+        });
+        return; 
+      }
       DispatchEvent('jflowClick', {
         detail: {
           type: 'clearSubmit'
@@ -311,7 +331,7 @@ async function jflowsave(flag, request) {
           content: res.data.notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
@@ -320,7 +340,7 @@ async function jflowsave(flag, request) {
           content: res.data.data.records[0].notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return;
       }
       if (res.data.resultCode === 0) {
@@ -360,13 +380,19 @@ async function jflowsave(flag, request) {
 
 async function checkProcess(request) { // check校验
   await new Promise((resolve, reject) => {
-    console.log(request);
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
-    }
-    const response = changeDetail;
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
+    
+    const response = request.data;
     let bodyObj = {};
     if (Version() === '1.4') {
       // 判断是否为动作定义
@@ -383,7 +409,7 @@ async function checkProcess(request) { // check校验
       } else {
         bodyObj = {
           businessType: router.currentRoute.params.tableId,
-          businessCheckData: response.ids.split(',')
+          businessCheckData: response.ids
         };
       }
     } 
@@ -624,26 +650,46 @@ function AxiosGuard(axios) { // axios拦截
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
   if (instanceId || businessStatus === -2) {
-    data.addcolums.map((item) => {
+    data.addcolums = data.addcolums.filter((item) => {
       if (item.childs) {
-        item.childs.map((temp) => {
-          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
-            temp.readonly = false;
-          } else {
-            temp.readonly = true;
+        item.childs = item.childs.filter((temp) => {
+          if (fieldCheck(temp.colid).length > 0) {
+            if (editFeild.length === 0) {
+              temp.readonly = true;
+            } else if (editFeildCheck(temp.colid).length > 0) {
+              temp.readonly = false;
+            }
+            return temp;
           }
-          return temp;
         });
-      } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
-        item.child.readonly = false;
-      } else {
-        item.child.readonly = true;
+        return item;
+      } if (fieldCheck(item.child.colid).length > 0) {
+        if (editFeild.length === 0) {
+          item.child.readonly = true;
+        } else if (editFeildCheck(item.child.colid).length > 0) {
+          item.child.readonly = false;
+        }
+        return item;
       }
-      
-      return item;
     });
   }
   return data;
+}
+
+function fieldCheck(colid) { // 可见字段判断
+  return modifiableFieldName.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
+}
+
+function editFeildCheck(colid) { // 可编辑字段判断
+  return editFeild.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
 }
 
 
@@ -666,6 +712,103 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.jflowIp = jflowIp;
 }
 
+function jflowRefresh() { // 刷新业务系统
+  DispatchEvent('jflowClick', {
+    detail: {
+      type: 'refresh'
+    }
+  });
+}
+
+/* data为对象,为了动作定义类型数据处理
+{
+  webid:动作定义id,
+  moduleId:'',
+  startNodeId: '',
+  customizeBody: '',
+  assignedNodes: ''
+}
+
+
+*/
+
+function initiateLaunch(data) { // 业务系统流程发起
+  return new Promise((resolve, reject) => {
+    axios.post('/jflow/p/cs/process/launch',
+      {
+        // eslint-disable-next-line no-nested-ternary
+        businessCodes: router.currentRoute.params.itemId,
+        businessType: router.currentRoute.params.tableId,
+        businessTypeName: router.currentRoute.params.tableName,
+        initiator: userInfo.id,
+        userName: userInfo.name,
+        instanceId,
+        initiatorName: userInfo.name,
+        changeUser: userInfo.id,
+        webActionId: data.webid,
+        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
+        moduleId: data.moduleId,
+        startNodeId: data.startNodeId,
+        customizeBody: data.customizeBody,
+        assignedNodes: data.assignedNodes
+      }).then((res) => {
+      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.notice,
+          mask: true
+        });
+        reject(res);
+        return; 
+      }
+      if (res.data.data.records && res.data.data.records[0].notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.data.records[0].notice,
+          mask: true
+        });
+        reject(res);
+        return;
+      }
+      if (res.data.resultCode === 0) {
+        if (res.objids) {
+          window.R3message({
+            title: '提示',
+            content: '请稍等,正在审批······',
+            mask: true
+          });
+        }
+        instanceId = res.data.data.instanceId;
+
+        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
+        if (type === 'H' || type === 'V') {
+          jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 流程发起成功刷新界面
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
+              }
+            });
+          });
+        }
+
+        DispatchEvent('jflowEvent', {
+          detail: {
+            type: 'search'
+          }
+        });
+        reject(res);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function jflowLaunch(event) {
+  initiateLaunch(event.detail.data);
+}
+
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
@@ -683,6 +826,12 @@ const install = function install(Vue, options = {}) {
     createComponent();
 
     Vue.prototype.$network = network;
+
+    // 监听jflow触发按钮响应
+    window.addEventListener('jflowLaunch', jflowLaunch, this);
+    
+    window.initiateLaunch = initiateLaunch;
+    window.jflowRefresh = jflowRefresh;
   }
 };
 

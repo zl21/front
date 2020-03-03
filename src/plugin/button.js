@@ -73,6 +73,7 @@ function clickFunction(e) {
       });
         break;
       case '0':
+      case '8':
       case '3': window.jflowPlugin.open({// 同意和转派
         control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
       });
@@ -105,6 +106,8 @@ function CreateButton(obj, buttons, id) {
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
   window.jflowPlugin.nodeId = obj.nodeId;
+  window.jflowPlugin.moduleId = obj.moduleId;
+  window.jflowPlugin.pid = obj.pid;
 
   const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
   const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
@@ -136,8 +139,14 @@ function CreateButton(obj, buttons, id) {
         // 刷新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         // 更新按钮
+        let tabwebact = [];
+        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
+          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
+            return item;
+          }
+        });
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1
+          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: 1, tabwebact
         });
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, true);
@@ -178,9 +187,15 @@ function CreateButton(obj, buttons, id) {
           url: ''
         });
         const newButtons = obj.buttons;
+        let tabwebact = [];
+        tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
+          if ((obj.visibleBt ? obj.visibleBt : []).includes(String(item.webid))) {
+            return item;
+          }
+        });
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId 
+          buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
         });
         buttonAddEventListener(buttons, obj, id);
         // 修改水印
@@ -208,8 +223,9 @@ function CreateButton(obj, buttons, id) {
         clearInterval(stateTimeout);
         const newButtons = [];
         const defaultButtonData = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabcmd.prem;
+        const tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton;
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
-          buttonsData: defaultButtonData, newButtons, instanceId: null
+          buttonsData: defaultButtonData, newButtons, instanceId: null, tabwebact
         });
 
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
