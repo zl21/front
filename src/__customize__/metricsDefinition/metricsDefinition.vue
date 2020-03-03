@@ -1,5 +1,5 @@
 <template>
-  <div class="report">
+  <div class="metricsDefinition">
     报表界面
   </div>
 </template>
