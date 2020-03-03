@@ -8,7 +8,7 @@
           :key="index"
           v-dragging="{ item: option, list: docList.valuedata, }"
         >
-          <a :href="option.url">3333{{ option.name }}</a>
+          <a :href="option.url">{{ option.name }}</a>
           <i
             v-if="docList.readonly!== true && option.name"
             class="iconfont iconios-close-circle-outline"
