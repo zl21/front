@@ -2679,8 +2679,6 @@
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {
-            console.log(7);
-
             this.$loading.show(this.tableName);
           }
           this.performMainTableSaveAction({ parame, resolve, reject });
@@ -2688,7 +2686,7 @@
         this.temporaryStoragePath = '';
         let stop = false;
         let removeMessage = false;
-        promise.then(() => {
+        promise.then((res) => {
           // this.closeCurrentLoading();//保存成功后不需要清除loading,调刷新时会触发表单，表单会触发监听，监听会关闭loading
           this.clearEditData();// 清空store update数据
           stop = false;
@@ -2699,7 +2697,8 @@
               detail: {
                 type: 'save',
                 mainTableParame: this.currentParameter,
-                itemTableParame: this.itemCurrentParameter
+                itemTableParame: this.itemCurrentParameter,
+                res
               }
             });
           }

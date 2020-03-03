@@ -808,7 +808,7 @@
           if (optionIndex !== -1) {
             valueLabel[current.item.field] = current.item.props.combobox[optionIndex].limitdesc;
           } else {
-            valueLabel[current.item.field] = '';
+            valueLabel[current.item.field] = current.item.props.falseLabel;
           }
         } else if (current.item.type === 'select') {
           if (current.item.value !== undefined) {
@@ -1113,14 +1113,26 @@
           } else if (value === '') {
             value = undefined;
           }
-          this.newFormItemLists[index].show = eval(Number(value) + expression + refval);
+          if (items.validate.hidecolumn.ishide) {
+            this.newFormItemLists[index].show = !eval(Number(value) + expression + refval);
+          } else {
+            this.newFormItemLists[index].show = eval(Number(value) + expression + refval);
+          }
           this.newFormItemLists[index].item.props.showCol = eval(Number(value) + expression + refval);
         } else if (refIndex !== -1) {
-          this.newFormItemLists[index].show = true;
+          if (items.validate.hidecolumn.ishide) {
+            this.newFormItemLists[index].show = false;
+          } else {
+            this.newFormItemLists[index].show = true;
+          }
           // 添加小组件的字段配置
           this.newFormItemLists[index].item.props.showCol = true;
         } else {
-          this.newFormItemLists[index].show = false;
+          if (items.validate.hidecolumn.ishide) {
+            this.newFormItemLists[index].show = true;
+          } else {
+            this.newFormItemLists[index].show = false;
+          }
           this.newFormItemLists[index].item.props.showCol = false;
         }
 
