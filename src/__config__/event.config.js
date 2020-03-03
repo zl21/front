@@ -65,12 +65,12 @@ export const routeTo = ({ type, info }, cb) => {
     case 'table':
       path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break;
-    case 'treeTable':
+    case 'tree':
       path = `${STANDARD_TABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       query = {
         isTreeTable: true
       };
-      break;
+      break; 
     case 'commonTable':
       path = `${STANDARD_COMMONTABLE_LIST_PREFIX}/${info.tableName}/${info.tableId}`;
       break; 

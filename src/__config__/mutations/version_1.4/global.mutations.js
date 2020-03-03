@@ -138,7 +138,7 @@ export default {
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
-          } else if (c.type === ('table'||'treeTable')) {
+          } else if (c.type === ('table' || 'tree')) {
           // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'commonTable') {

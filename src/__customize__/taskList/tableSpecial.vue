@@ -41,7 +41,7 @@
   /* eslint-disable no-lonely-if */
 
   import { mapMutations } from 'vuex';
-  import Dialog from './Dialog.vue';
+  import Dialog from '../../__component__/Dialog';
 
   export default {
     data() {
@@ -105,6 +105,12 @@
           // 参数 rowIdArray选中的数据id数组 rowArray选中的数据数组
         }
       }, // 行选中事件
+      onSingleCellClick: {
+        type: Function,
+        default: () => {
+          
+        }
+      }
     },
     computed: {
       columns() {
@@ -115,7 +121,7 @@
           fixed: 'left'
         }];
         if (Object.keys(this.datas).length > 0 && this.datas.tabth.length > 1) {
-          return defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
+          let temColumn = defaultColumns.concat(this.datas.tabth.reduce((acc, cur) => {
             if (cur.comment) {
               if (cur.name === 'ID') {
                 acc.push(Object.assign({
@@ -309,6 +315,25 @@
             }
             return acc;
           }, []));
+          temColumn = temColumn.reduce((arr, cur) => {
+            if (cur.key === 'URL') {
+              cur.render = (h, params) => h('a', {
+                on: {
+                  click: () => {
+                    if (typeof this.onSingleCellClick === 'function') {
+                      this.onSingleCellClick(params.row);
+                    }
+                    window.open(params.row.URL);
+                  }
+                }
+              }, params.row.URL);
+            }
+            if (cur.key !== 'OBJDISTYPE') {
+              arr.push(cur);
+            }
+            return arr
+          }, []);
+          return temColumn;
         }
         return [];
       }, // 表头
@@ -334,28 +359,17 @@
           const cell = {
             ID: '合计'
           };
-          // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          // needSubtotalList.map((ele) => {
-          //   const needSubtotalDatas = [];
-          //   this.tableData.reduce((a, c) => {
-          //     let str = c[ele.colname];
-          //     if (str.indexOf(',') > -1 || str.indexOf('，') > -1) {
-          //       str = str.replace(/,/g, '');
-          //     }
-          //     return needSubtotalDatas.push(str);
-          //   }, []); //
-          //   let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-          //   if (typeof totalNumber === 'number') {
-          //     totalNumber = totalNumber.toFixed(2);
-          //   }
-          //   cell[ele.colname] = `${totalNumber}`;
-          //   return ele;
-          // });
-          if (this.datas.subtotalRow && Object.keys(this.datas.subtotalRow).length > 0) {
-            Object.keys(this.datas.subtotalRow).forEach((key) => {
-              cell[key] = this.datas.subtotalRow[key];
-            });
-          }
+          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          needSubtotalList.map((ele) => {
+            const needSubtotalDatas = [];
+            this.tableData.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+            let totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+            if (typeof totalNumber === 'number') {
+              totalNumber = totalNumber.toFixed(2);
+            }
+            cell[ele.colname] = `${totalNumber}`;
+            return ele;
+          });
           total.push(cell);
         }
         // if (this.isHorizontal) {
@@ -364,22 +378,17 @@
           const cell = {
             ID: '总计',
           };
-          // if (this.datas.fullRangeSubTotalRow) {
-          //   for (const key in this.datas.fullRangeSubTotalRow) {
-          //     if (Object.prototype.hasOwnProperty.call(this.datas.fullRangeSubTotalRow, key)) {
-          //       const element = this.datas.fullRangeSubTotalRow[key];
-          //       cell[key] = element.val;
-          //     }
-          //   }
-          // }
-          if (this.datas.fullRangeSubTotalRow && Object.keys(this.datas.fullRangeSubTotalRow).length > 0) {
-            Object.keys(this.datas.fullRangeSubTotalRow).forEach((key) => {
-              const element = this.datas.fullRangeSubTotalRow[key];
-              cell[key] = element.val;
-            });
+          if (this.datas.fullRangeSubTotalRow) {
+            for (const key in this.datas.fullRangeSubTotalRow) {
+              if (Object.prototype.hasOwnProperty.call(this.datas.fullRangeSubTotalRow, key)) {
+                const element = this.datas.fullRangeSubTotalRow[key];
+                cell[key] = element.val;
+              }
+            }
           }
           total.push(cell);
         }
+        // }
         return total;
       }, // 总计和合计
     },
@@ -674,7 +683,7 @@
       }, // 表格排序触发
       switchRender(data) {
         // 开关选择器
-        return (h, data) => h('div',
+        return (h, data) => h('div', 
                               [
                                 h('i-switch', {
                                   on: {
@@ -731,7 +740,7 @@
         ];
         // display按钮操作类型（3种）
         // 跳转/弹出框/删除/
-        return (h, param) => params.map(item => h('ButtonGroup',
+        return (h, param) => params.map(item => h('ButtonGroup', 
                                                   [
                                                     h('i-Button', {
                                                       on: {
@@ -805,7 +814,6 @@
             }
             tfoot tr {
                 height: 28px;
-                background-color: #fff;
             }
             .burgeon-table td {
               background-color: rgba(255, 255, 255, 0);
