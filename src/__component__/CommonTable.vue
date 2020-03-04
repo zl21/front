@@ -706,6 +706,7 @@
                                             }
                                           }
                                         }).then(() => {
+                                          this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
                                         }, (err) => {
                                           console.log('err', err);
                                         });
@@ -715,6 +716,7 @@
                                   props: {
                                     value: info.row[info.column.colname] === 'true',
                                     size: 'small',
+                                    loading: false
                                     // disabled: true
                                   },
 
