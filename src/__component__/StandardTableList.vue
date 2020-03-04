@@ -149,7 +149,6 @@
   import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
-  import treeData from '../__config__/treeData.config';
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 

@@ -26,22 +26,22 @@ import { data } from '../treeData/cp_c_inorg';
 
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
-  cp_c_inorg: () => {
-    // 接口报错提示框
-    window.R3message({
-      title: '错误',
-      content: '接口错误信息',
-      mask: true
-    });
-    // return  调用接口，返回整理好的数据，可直接复制原1.3框架接口请求逻辑
-  },
-  CP_C_HRUSERS: () => {
-    // 接口报错提示框
-    window.R3message({
-      title: '错误',
-      content: '接口错误信息',
-      mask: true
-    });
-    // return  调用接口，返回整理好的数据，可直接复制原1.3框架接口请求逻辑
-  }
+  // cp_c_inorg: () => {
+  //   // 接口报错提示框
+  //   window.R3message({
+  //     title: '错误',
+  //     content: '接口错误信息',
+  //     mask: true
+  //   });
+  //   // return  调用接口，返回整理好的数据，可直接复制原1.3框架接口请求逻辑
+  // },
+  // CP_C_HRUSERS: () => {
+  //   // 接口报错提示框
+  //   window.R3message({
+  //     title: '错误',
+  //     content: '接口错误信息',
+  //     mask: true
+  //   });
+  //   // return  调用接口，返回整理好的数据，可直接复制原1.3框架接口请求逻辑
+  // }
 };
