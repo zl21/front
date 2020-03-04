@@ -4,8 +4,7 @@ module.exports = {
   projectsTitle: 'Burgeon R3 Erp Frame', // 项目title
   projectIconPath: path.join(__dirname, './favicon.ico'), // 项目icon,
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
-  target: 'http://r3-ishop.dev.burgeononline.com/', // 框架研发网关开启环境
-  // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
+  target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
   // // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com', // 知晓测试环境(启用网关)
@@ -17,6 +16,7 @@ module.exports = {
   // target: 'http://10.14.5.196', // 商飞开发环境
   // target: 'http://10.14.3.71', // 商飞预发环境
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
+  // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
 
   
   Version: '1.4', // 版本号
@@ -41,5 +41,5 @@ module.exports = {
   specifiedGlobalGateWay: undefined,
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
-  isCommonTable: true, // 是否开启普通表格，默认关闭
+  isCommonTable: false, // 是否开启普通表格，默认关闭
 };
