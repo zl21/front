@@ -83,7 +83,6 @@ export const routeTo = ({ type, info }, cb) => {
       break;
   }
   if (router.currentRoute.fullPath !== path) {
-    console.log(999, path);
     router.push({ path, query }).catch((e) => { console.error(e); });
   }
 };
