@@ -67,7 +67,11 @@
       objList: {
         type: Array,
         default: () => []
-      }
+      },
+      actionId: {// 获取自定按钮ID
+        type: [Number, String],
+        default: () => ''
+      },
     },
     data() {
       return {

@@ -1,6 +1,7 @@
 import { stringify } from 'querystring';
 import { cpus } from 'os';
 import router from '../../router.config';
+import { enableJflow } from '../../../constants/global';
 
 export default {
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
@@ -167,9 +168,99 @@ export default {
     }
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    const { componentAttribute } = state.tabPanels[data.tabIndex];
-    componentAttribute.panelData.isShow = true;
-    componentAttribute.panelData.data = data;
+    // readonly: true   不可编辑，false 可编辑，   
+    // isnotnull：true 必填，false 不必填  ，
+    // display:'none'是不显示，
+    // colid：'字段id'，
+    // itemTableName:子表表名
+    
+    // const JflowControlField = {
+    //   itemTableName: 'BCP_BIZ_CHANCE',
+    //   data: [
+    //     {
+    //       colid: 166364,
+    //       // display: 'none',
+    //       readonly: true,
+    //     },
+    //   ]
+    // };
+    this.state.global.objreadonlyForJflow = {
+      readonly: false,
+      itemTableName: ''
+    };
+    let flag = false;
+    let changeData = [];
+    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+      // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+      if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
+        if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
+          flag = true;
+          this.state.global.objreadonlyForJflow = {
+            readonly: false,
+            itemTableName: this.state.global.JflowControlField.itemTableName
+          };
+        } 
+      } 
+      if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        changeData = data.addcolums.map((addcolum) => {
+          if (addcolum.childs) {
+            addcolum.childs.map((child) => {
+              this.state.global.JflowControlField.data.map((field) => {
+                if (child.colid === field.colid) {
+                  Object.keys(field).map((key) => {
+                    if (key === 'display') {
+                      child.display = field.display;
+                      return child;
+                    }
+                    if (key === 'readonly') {
+                      child.readonly = field.readonly;
+                      return child;
+                    }
+                    return child;
+                  });
+                }
+                return child;
+              });
+              return child;
+            });
+            return addcolum;
+          }
+          this.state.global.JflowControlField.data.map((field) => {
+            if (addcolum.child.colid === field.colid) {
+              Object.keys(field).map((key) => {
+                if (key === 'display') {
+                  addcolum.child.display = field.display;
+                  return addcolum.child;
+                }
+                if (key === 'readonly') {
+                  addcolum.child.readonly = field.readonly;
+                  return addcolum.child;
+                }
+                return addcolum.child;
+              });
+              // addcolum.child.display = field.display;
+              // addcolum.child.readonly = field.readonly;
+              return addcolum.child;
+            }
+            return addcolum.child;
+          });
+          
+          return addcolum;
+        });
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        data.addcolums = changeData;
+        componentAttribute.panelData.data = data;
+      } else {
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        componentAttribute.panelData.data = data;
+      }
+    } else {
+      const { componentAttribute } = state.tabPanels[data.tabIndex];
+      componentAttribute.panelData.isShow = true;
+      componentAttribute.panelData.data = data;
+    }
   },
 
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
@@ -366,12 +457,12 @@ export default {
   // }
 
   jflowPlugin(state, {
-    buttonsData, newButtons, instanceId
+    buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
     if (instanceId) {
-      state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
+      state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
     } else {
       state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
     }

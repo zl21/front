@@ -143,6 +143,9 @@ export default {
           } else if (c.type === 'table') {
           // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          } else if (c.type === 'tree') {
+            // 树形结构列表的处理
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -154,7 +157,7 @@ export default {
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
+        .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
         .reduce((a, c) => {
           let menuType = '';
           if (c.url) {
@@ -515,6 +518,9 @@ export default {
 
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
+  },
+  updateJflowControlField(state, data) {
+    state.JflowControlField = data;
   }
   
 };

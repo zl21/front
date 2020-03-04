@@ -34,7 +34,7 @@
       :confirm="dialogConfig.confirm"
       :dialog-component-name="dialogComponentName"
     />
-  </div></dialog>
+  </div>
 </template>
 
 <script>
@@ -42,6 +42,8 @@
 
   import { mapMutations } from 'vuex';
   import Dialog from './Dialog.vue';
+  import network from '../__utils__/network';
+  import store from '../__config__/store.config';
 
   export default {
     data() {
@@ -219,11 +221,12 @@
                   width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
-              } else if (cur.display === 'switch') { // 开关选择器
+              }
+              else if (cur.display === 'switch') { // 开关选择器
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  render: this.switchRender(cur.colname)
+                  render: this.switchRender(cur)
                 }, cur));
               } else if (cur.display === 'command') { // 操作列
                 acc.push(Object.assign({
@@ -596,8 +599,11 @@
         };
       }, // 图片render
       isJsonString(str) {
-        if (typeof JSON.parse(str) === 'object') {
-          return true;
+        try {
+          if (typeof JSON.parse(str) === 'object') {
+            return true;
+          }
+        } catch (e) {
         }
         return false;
       },
@@ -672,20 +678,45 @@
           self.onSortChanged(arrayOfSortInfo);
         }
       }, // 表格排序触发
-      switchRender(data) {
+      switchRender() {
         // 开关选择器
-        return (h, data) => h('div',
+        return (h, info) => h('div',
                               [
                                 h('i-switch', {
                                   on: {
                                     'on-change': (status) => {
-                                      this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                      const conf = info.column.combobox;
+                                      const valPool = conf.reduce((a, c) => {
+                                        if (c.limitdis) {
+                                          a.Y = c.limitval;
+                                        } else {
+                                          a.N = c.limitval;
+                                        }
+                                        return a;
+                                      }, {});
+                                      const currentTableName = store.state.global.activeTab.tableName;
+                                      const webconf = info.column.webconf;
+                                      if (webconf && !webconf.disable) {
+                                        network.post(webconf && webconf.switchurl ? webconf.switchurl : '/p/cs/objectSave', {
+                                          table: currentTableName,
+                                          objId: info.row.ID,
+                                          fixedData: {
+                                            [currentTableName]: {
+                                              [info.column.colname]: status ? valPool.Y : valPool.N
+                                            }
+                                          }
+                                        }).then(() => {
+                                          this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                        }, (err) => {
+                                          console.log('err', err);
+                                        });
+                                      }
                                     }
                                   },
-
                                   props: {
-                                    value: true,
+                                    value: info.row[info.column.colname] === 'true',
                                     size: 'small',
+                                    loading: false
                                     // disabled: true
                                   },
 

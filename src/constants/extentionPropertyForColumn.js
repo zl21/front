@@ -144,6 +144,13 @@ export default [
       enumerateValue: [
       { text: '显示值', value: 'label' },
       { text: '值', value: 'value' }]
+    },{
+      name: '是否走隐藏逻辑',
+      key: 'ishide',
+      type: 'radio',
+      enumerateValue: [
+      { text: '是', value: true },
+      { text: '否', value: false }]
     }
     ],
     description: '根据A字段的值决定B字段是否显示(若A字段为外键类型需根据显示值匹配，则match配置为label，不配置默认为value)',

@@ -137,8 +137,11 @@ export default {
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
-          } else if (c.type === ('table' || 'tree')) {
-          // 标准列表的处理
+          } else if (c.type === 'table') {
+            // 标准列表的处理
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          } else if (c.type === 'tree') {
+            // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
@@ -151,7 +154,7 @@ export default {
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
+        .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
         .reduce((a, c) => {
           let menuType = '';
           if (c.url) {
@@ -168,7 +171,6 @@ export default {
           return a;
         }, {});
     }
-
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -521,6 +523,9 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
+  updateJflowControlField(state, data) {
+    state.JflowControlField = data;
+  }
 
   
 };

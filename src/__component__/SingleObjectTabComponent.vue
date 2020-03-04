@@ -73,12 +73,13 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
+    
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
-      :objreadonly="objreadonly"
-      :readonly="formReadonly"
+      :objreadonly="itemReadOnlyForJflow"
+      :readonly="itemReadOnlyForJflow"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -124,7 +125,8 @@
   /* eslint-disable keyword-spacing */
 
   import Vue from 'vue';
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState, } from 'vuex';
+
   import router from '../__config__/router.config';
   import tableDetailCollection from './TableDetailCollection';
   import singleObjectButtons from './SingleObjectButtons';
@@ -135,7 +137,9 @@
   import CustomizeModule from '../__config__/customize.config';
 
 
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import {
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow 
+  } from '../constants/global';
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -257,6 +261,15 @@
     },
     inject: [MODULE_COMPONENT_NAME],  
     computed: { 
+      ...mapState('global', {
+        objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
+      }),
+      itemReadOnlyForJflow() {
+        if(!enableJflow() && this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
+          return this.objreadonlyForJflow.readonly;
+        }
+        return this.objreadonly;
+      }, 
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
