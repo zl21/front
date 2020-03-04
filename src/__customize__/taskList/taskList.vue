@@ -569,7 +569,7 @@ export default {
     },
     getQueryList(data) {
       network
-        .post("/p/cs/QueryList", urlSearchParams({ searchdata: data }))
+        .post("/p/cs/taskrecord/query", urlSearchParams({ searchdata: data }))
         .then(res => {
           if (res.data.code === 0) {
             this.datas = res.data.data;
@@ -718,11 +718,11 @@ export default {
         type,
         tableName: row.AD_TABLE_ID.val,
         tableId:row.AD_TABLE_ID.refobjid,
-        label: "任务记录编辑",
+        // label: "任务记录编辑",
         id: row.OBJ_ID.val
       };
-      this.editTaskStatus(row.ID.val);
-      this.tabOpen(tab);
+      //this.editTaskStatus(row.ID.val);
+      //this.tabOpen(tab);
      
     }, // 双击行
     onSortChanged(arr) {}, // 排序事件触发回调
