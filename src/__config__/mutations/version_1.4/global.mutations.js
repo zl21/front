@@ -391,7 +391,6 @@ export default {
       router.push({ path });
     }
     if (back) {
-      console.log('🍓', router);
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       const routeInfo = {
         path,
