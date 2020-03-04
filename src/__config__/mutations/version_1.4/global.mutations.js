@@ -137,8 +137,11 @@ export default {
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
-          } else if (c.type === ('table' || 'tree')) {
-          // 标准列表的处理
+          } else if (c.type === 'table') {
+            // 标准列表的处理
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          } else if (c.type === 'tree') {
+            // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
@@ -200,6 +203,7 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    console.log(777, openedMenuInfo);
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
@@ -392,6 +396,7 @@ export default {
         path,
         query: { isBack: true }
       };
+
       router.push(routeInfo);
     }
   },
