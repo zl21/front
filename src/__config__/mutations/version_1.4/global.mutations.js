@@ -203,6 +203,7 @@ export default {
     state.openedMenuLists[index].isActive = true;
   },
   forceUpdateOpenedMenuLists(state, { openedMenuInfo, index }) {
+    console.log(777, openedMenuInfo);
     state.openedMenuLists.forEach((d) => { d.isActive = false; });
     state.openedMenuLists[index] = openedMenuInfo;
     state.openedMenuLists = state.openedMenuLists.concat([]);
@@ -390,11 +391,13 @@ export default {
       router.push({ path });
     }
     if (back) {
+      console.log('🍓', router);
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
       const routeInfo = {
         path,
         query: { isBack: true }
       };
+
       router.push(routeInfo);
     }
   },

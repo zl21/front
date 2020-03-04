@@ -38,7 +38,7 @@ export const routeTo = ({ type, info }, cb) => {
   if (typeof cb === 'function') { cb(); }
   let path = '/';
   let query = {};
-  // type = 'commonTable';
+  type = 'commonTable';
   // type = 'tree';
   switch (type) {
     case 'action':
