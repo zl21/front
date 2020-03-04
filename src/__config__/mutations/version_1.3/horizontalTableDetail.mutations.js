@@ -437,12 +437,12 @@ export default {
     tablePageInfo.pageSize = data.pageSize;
   }, // 修改单对象表格页码
   jflowPlugin(state, {
-    buttonsData, newButtons, instanceId
+    buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
     state.jflowPluginDataArray = newButtons;
     state.instanceId = instanceId;
     if (instanceId) {
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = tabwebact;
     } else {
       state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
     }
