@@ -226,7 +226,7 @@
                 acc.push(Object.assign({
                   title: cur.name,
                   key: cur.colname,
-                  render: this.switchRender(cur)
+                  render: this.switchRender()
                 }, cur));
               } else if (cur.display === 'command') { // 操作列
                 acc.push(Object.assign({
@@ -706,31 +706,24 @@
                                             }
                                           }
                                         }).then(() => {
-                                          this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                          this.$Message.info(`${info.column.name}：${`${status}`.toUpperCase()}`);
                                         }, (err) => {
                                           console.log('err', err);
                                         });
                                       }
                                     }
                                   },
+                                  nativeOn: {
+                                    click(e) {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }
+                                  },
                                   props: {
                                     value: info.row[info.column.colname] === 'true',
                                     size: 'small',
                                     loading: false
-                                    // disabled: true
                                   },
-
-                                  // class: `iconfont  ${
-                                  //   params.row.status === 1 || params.row.status === 3
-                                  //     ? 'icon-jmc_error'
-                                  //     : 'icon-jmc_right'
-                                  // }`,
-                                  style: {
-                                    // background: `${
-                                    //   // params.row.status == 1 ? '#5b85e4' : '#ccc'
-                                    // }`,
-                                    // marginRight: '2px'
-                                  }
                                 })
                               ]);
       },
