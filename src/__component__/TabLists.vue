@@ -127,9 +127,6 @@
         'switchTabForActiveTab'
       ]),
       switchTab(item, index) {
-        console.log(1, item);
-        console.log(2, this.openedMenuLists);
-
         const tag = this.openedMenuLists[index];
         if (router.currentRoute.fullPath !== tag.routeFullPath) {
           router.push({ path: tag.routeFullPath });

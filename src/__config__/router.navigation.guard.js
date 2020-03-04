@@ -205,7 +205,6 @@ export default (router) => {
       }
       return false;
     })[0];
-    console.log(111, existModule);
     if (existModuleIndex !== -1 && KEEP_MODULE_STATE_WHEN_CLICK_MENU) {
       // Condition One:
       // 如果目标路由界面所对应的[表]已经存在于已经打开的菜单列表中(不论其当前是列表状态还是编辑状态)
@@ -224,7 +223,6 @@ export default (router) => {
         if (isBack || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
-        console.log(2222, to);
         // Step One: 处理菜单Tab页签的显示逻辑。
         commit('global/forceUpdateOpenedMenuLists', {
           openedMenuInfo: {
