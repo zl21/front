@@ -17,6 +17,8 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
+  import { enableJflow } from '../constants/global';
+
 
   export default {
     data() {
@@ -27,6 +29,8 @@
       ...mapState('global', {
         activeTab: ({ activeTab }) => activeTab,
         isRequest: ({ isRequest }) => isRequest,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
+
       }),
       resetWaterMark() {
         if (this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg) {
@@ -40,24 +44,37 @@
         }
         return '';
       },
+      objReadonlyForJflow() {
+        if (enableJflow()) {
+          let flag = false;
+          this.tabPanel.map((item) => {
+            if (this.JflowControlField) {
+              // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+              if (item.tablename === this.JflowControlField.itemTableName && item.tabrelation === '1:1') {
+                flag = true;
+              } 
+            }
+          });
+          return flag;
+        }
+        return false;
+      },
       tabPanels() {
         const arr = [];
-
         if (this.tabPanel) {
           this.tabPanel.forEach((item, index) => {
-            //             vuedisplay: "TabItem"
-            // webact: "manage/pro_desc"
             const obj = { ...item };
             if (index === 0) {
               obj.label = this.activeTab.label;
               obj.componentAttribute.isactive = this.tabPanel[0].componentAttribute.buttonsData.data.isactive;
               obj.componentAttribute.watermarkimg = this.tabPanel[0].componentAttribute.buttonsData.data.watermarkimg;
               obj.componentAttribute.jflowWaterMark = this.jflowWaterMark;
-              obj.componentAttribute.isMainTable = true;
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault;
+              obj.componentAttribute.isMainTable = true;           
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.tabPanel[0].componentAttribute.panelData.data.isdefault || this.objReadonlyForJflow;
             } else {
-              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly;
+              obj.componentAttribute.objreadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
             }
+
             obj.componentAttribute.isreftabs = this.tabPanel[0].componentAttribute.buttonsData.data.isreftabs;
             obj.componentAttribute.tableName = item.tablename;
             obj.componentAttribute.formReadonly = this.tabPanel[0].componentAttribute.buttonsData.data.objreadonly;

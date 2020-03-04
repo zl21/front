@@ -188,7 +188,8 @@
             item: {
               type: 'DatePicker',
               title: '开始时间',
-              filed: 'createTime'
+              filed: 'createTime',
+              value: [new Date(new Date(new Date().toLocaleDateString()).getTime()).minusDays(29).setNewFormt('yyyy-MM-dd hh:mm'), new Date().setNewFormt('yyyy-MM-dd hh:mm')]
             }
           },
           {
@@ -217,7 +218,7 @@
           searchType: '0,1',
           excuStatus: 0,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: []
+          createTime: [new Date(new Date(new Date().toLocaleDateString()).getTime()).minusDays(29), new Date()]
         },
         // 表格数据
         total: 0,

@@ -63,6 +63,7 @@ export default () => ({
       defaultButtonData: ({ defaultButtonData }) => defaultButtonData,
       globalLoading: ({ globalLoading }) => globalLoading,
       testData: ({ testData }) => testData,
+      objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
       tempStorage: ({ tempStorage }) => tempStorage,
       WebConf: ({ WebConf }) => WebConf,
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,

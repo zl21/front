@@ -520,6 +520,9 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
+  updateJflowControlField(state, data) {
+    state.JflowControlField = data;
+  }
 
   
 };
