@@ -1088,6 +1088,11 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
+        DispatchEvent('objTabAction', {
+          detail: {
+            data: obj
+          }
+        });
         this.activeTabAction = obj;
         switch (obj.vuedisplay) {
         case 'slient':

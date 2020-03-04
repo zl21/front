@@ -39,25 +39,49 @@ export default () => ({
       queryDisNumber: null,
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
-    objreadonlyForJflow: {
-      readonly: false,
-      itemTableName: ''
-    }, 
-    JflowControlField: [
+    objreadonlyForJflow: [
       {
         tableName: '',
-        itemTableName: '',
+        readonly: false,
+        itemTableName: ''
+      }, 
+    ],
+    // objreadonlyForJflow: {
+    //   readonly: false,
+    //   itemTableName: ''
+    // }, 
+    JflowControlField: [
+      {
+        tableName: 'BCP_CUSTOMER_JFLOW',
+        itemTableName: 'BCP_CUSTOMER_CONTACT_JFLOW',
         // BCP_CUSTOMER_CONTACT_JFLOW
         isShow: [// 所有可见字段
-        // 169143, // 联系人
-        // 169132, // 可用
+          169143, // 联系人
+          169132, // 可用
         ],
         readonly: [// 所有可编辑字段
-        // 169143, // 联系人
-        // 169132, // 可用
+          169143, // 联系人
+          169132, // 可用
+        ],
+        exeActionButton: [
+          2305
+        ]
+      },
+      {
+        tableName: 'BCP_BIZ_CHANCE_JFLOW',
+        itemTableName: 'BCP_BIZ_CHANCE_USER',
+        // BCP_CUSTOMER_CONTACT_JFLOW
+        isShow: [// 所有可见字段
+          166416, // 联系人
+          // 169132, // 可用
+        ],
+        readonly: [// 所有可编辑字段
+          166416, // 联系人
+          // 169132, // 可用
         ],
         exeActionButton: []
-      }
+      },
+      
     ]
       
     
