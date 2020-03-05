@@ -240,6 +240,24 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
               mask: true
             });
           }
+
+          // 更新子表的数据字段以及按钮控制
+          const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
+          const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
+          const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
+          const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
+          JflowControlField.push(
+            {
+              tableName: pid || router.currentRoute.params.tableId,
+              itemTableName: pid || router.currentRoute.params.tableId,
+              isShow: modifiField,
+              readonly: edit,
+              exeActionButton
+            }
+          );
+          window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+
+          
           modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
           editFeild = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild) : [];
           instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
@@ -261,7 +279,6 @@ function RoutingGuard(router) { // 路由守卫
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
         jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
-          console.log(store.state.global);
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
@@ -653,7 +670,8 @@ function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配
     data.addcolums = data.addcolums.filter((item) => {
       if (item.childs) {
         item.childs = item.childs.filter((temp) => {
-          if (fieldCheck(temp.colid).length > 0) {
+          if (fieldCheck(temp.colid).length > 0 || modifiableFieldName.length === 0) {
+            temp.readonly = true;
             if (editFeild.length === 0) {
               temp.readonly = true;
             } else if (editFeildCheck(temp.colid).length > 0) {
@@ -663,7 +681,8 @@ function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配
           }
         });
         return item;
-      } if (fieldCheck(item.child.colid).length > 0) {
+      } if (fieldCheck(item.child.colid).length > 0 || modifiableFieldName.length === 0) {
+        item.child.readonly = true;
         if (editFeild.length === 0) {
           item.child.readonly = true;
         } else if (editFeildCheck(item.child.colid).length > 0) {
