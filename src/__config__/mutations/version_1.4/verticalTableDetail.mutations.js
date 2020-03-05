@@ -214,9 +214,9 @@ export default {
           if (c.childs) {
             c.childs.map((d) => {
               if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
-                if (JflowControlFieldData[0].isShow.includes(d.colid)) {
+                if (JflowControlFieldData[0].isShow.includes(String(d.colid))) {
                   if (JflowControlFieldData[0].readonly.length > 0) {
-                    if (JflowControlFieldData[0].readonly.includes(d.colid)) {
+                    if (JflowControlFieldData[0].readonly.includes(String(d.colid))) {
                       d.readonly = false;
                       u.push(d);
                     } else {
@@ -230,7 +230,7 @@ export default {
                 }
               } else if (JflowControlFieldData[0].readonly.length > 0) {
                 // 未配置jflowisShow字段，则显示全部元数据字段，由readonly控制字段是否可编辑
-                if (JflowControlFieldData[0].readonly.includes(d.colid)) {
+                if (JflowControlFieldData[0].readonly.includes(String(d.colid))) {
                   // 未配置可见字段，只配置了可编辑字段时，所有元数据返回的字段可见，readonly内配置的可编辑
                   d.readonly = false;
                   u.push(d);
@@ -246,8 +246,8 @@ export default {
             c.childs = u;
             a.push(c);
           } else if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
-            if (JflowControlFieldData[0].isShow.includes(c.child.colid)) {
-              if (JflowControlFieldData[0].readonly.length > 0 && JflowControlFieldData[0].readonly.includes(c.child.colid)) {
+            if (JflowControlFieldData[0].isShow.includes(String(c.child.colid))) {
+              if (JflowControlFieldData[0].readonly.length > 0 && JflowControlFieldData[0].readonly.includes(String(c.child.colid))) {
                 c.child.readonly = false;
                 a.push(c);
               } else {
@@ -258,7 +258,7 @@ export default {
           } else if (JflowControlFieldData[0].readonly.length > 0) {
             // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
             // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
-            if (JflowControlFieldData[0].readonly.includes(c.child.colid)) {
+            if (JflowControlFieldData[0].readonly.includes(String(c.child.colid))) {
               c.child.readonly = false;
               a.push(c);
             } else {
@@ -283,7 +283,7 @@ export default {
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
                 buttonsJflowRes = objtabbuttons.filter((objbutton) => {
-                  if (buttonId === objbutton.webid) {
+                  if (String(buttonId) === String(objbutton.webid)) {
                     return objbutton;
                   }
                 });
@@ -311,7 +311,7 @@ export default {
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
                 buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
-                  if (buttonId === objtabbutton.webid) {
+                  if (String(buttonId) === String(objtabbutton.webid)) {
                     return objtabbutton;
                   }
                 });
