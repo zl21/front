@@ -217,7 +217,7 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
-async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
+async function jflowButtons(id, pid, flag, tableName) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
@@ -248,8 +248,8 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
           const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
           JflowControlField.push(
             {
-              tableName: pid || router.currentRoute.params.tableId,
-              itemTableName: pid || router.currentRoute.params.tableId,
+              tableName: tableName || router.currentRoute.params.tableName,
+              itemTableName: tableName || router.currentRoute.params.tableName,
               isShow: modifiField,
               readonly: edit,
               exeActionButton
@@ -278,7 +278,7 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName).then((res) => {
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
@@ -624,13 +624,15 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.response.use(async (response) => {
     // let config=AxiosGuard(axios);
     if (response.data.code === 0) { // 请求成功
-      if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
-        response.data.data = modifyFieldConfiguration(response.data.data);
-      }
+      // 控制主表字段可见以及可编辑
+      // if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
+      //   response.data.data = modifyFieldConfiguration(response.data.data);
+      // }
       if (response.config.url.endsWith('/p/cs/objectTab')) {
-        if (configurationFlag && instanceId) {
-          response.data.data.objreadonly = false;
-        }
+        // 控制子表为不可编辑
+        // if (configurationFlag && instanceId) {
+        //   response.data.data.objreadonly = false;
+        // }
         // 主表的按钮获取
         if (response.config.data.indexOf('ismaintable=y') >= 0) {
           const tabcmd = response.data.data.tabcmd;
