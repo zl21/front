@@ -51,41 +51,41 @@ export default () => ({
     //   itemTableName: ''
     // }, 
     JflowControlField: [
-      {
-        tableName: 'BCP_CUSTOMER_JFLOW',
-        itemTableName: 'BCP_CUSTOMER_JFLOW',
-        // BCP_CUSTOMER_CONTACT_JFLOW
-        isShow: [// 所有可见字段
-          // 169143, // 联系人
-          // 169132, // 可用
-          // 169096// 主表数据（竞争品牌）
-        ],
-        readonly: [// 所有可编辑字段
-          // 169143, // 联系人
-          // 169132, // 可用
-          '169096', // 主表数据（竞争品牌）
-          '169094',
+      // {
+      //   tableName: 'BCP_CUSTOMER_JFLOW',
+      //   itemTableName: 'BCP_CUSTOMER_JFLOW',
+      //   // BCP_CUSTOMER_CONTACT_JFLOW
+      //   isShow: [// 所有可见字段
+      //     // 169143, // 联系人
+      //     // 169132, // 可用
+      //     // 169096// 主表数据（竞争品牌）
+      //   ],
+      //   readonly: [// 所有可编辑字段
+      //     // 169143, // 联系人
+      //     // 169132, // 可用
+      //     '169096', // 主表数据（竞争品牌）
+      //     '169094',
 
-        ],
-        exeActionButton: [
-          // 2305
-        ]
-      },
-      {
-        tableName: 'BCP_BIZ_CHANCE_JFLOW',
-        itemTableName: 'BCP_BIZ_CHANCE_JFLOW',
-        // BCP_CUSTOMER_CONTACT_JFLOW
-        isShow: [// 所有可见字段
-          // 166416, // 联系人
-          // 169132, // 可用
-          169171// 主表商机来源
-        ],
-        readonly: [// 所有可编辑字段
-          // 166416, // 联系人
-          // 169132, // 可用
-        ],
-        exeActionButton: []
-      },
+      //   ],
+      //   exeActionButton: [
+      //     // 2305
+      //   ]
+      // },
+      // {
+      //   tableName: 'BCP_BIZ_CHANCE_JFLOW',
+      //   itemTableName: 'BCP_BIZ_CHANCE_JFLOW',
+      //   // BCP_CUSTOMER_CONTACT_JFLOW
+      //   isShow: [// 所有可见字段
+      //     // 166416, // 联系人
+      //     // 169132, // 可用
+      //     169171// 主表商机来源
+      //   ],
+      //   readonly: [// 所有可编辑字段
+      //     // 166416, // 联系人
+      //     // 169132, // 可用
+      //   ],
+      //   exeActionButton: []
+      // },
       
     ],      
  
