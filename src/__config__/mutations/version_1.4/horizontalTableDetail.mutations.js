@@ -120,7 +120,7 @@ export default {
   }, //
 
   updatePanelData(state, data) { // 更新子表面板数据
-    state.instanceId = 1;
+    // state.instanceId = 1;
     if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
