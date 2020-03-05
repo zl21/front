@@ -48,11 +48,13 @@
         if (enableJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
-            if (this.JflowControlField) {
-              // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-              if (item.tablename === this.JflowControlField.itemTableName && item.tabrelation === '1:1') {
-                flag = true;
-              } 
+            if (this.JflowControlField.length > 0) {
+              this.JflowControlField.map((jflowData) => {
+                // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+                if (item.tablename === jflowData.itemTableName && item.tabrelation === '1:1') {
+                  flag = true;
+                } 
+              });
             }
           });
           return flag;

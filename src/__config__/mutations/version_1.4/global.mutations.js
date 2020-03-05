@@ -395,6 +395,7 @@ export default {
         path,
         query: { isBack: true }
       };
+
       router.push(routeInfo);
     }
   },
