@@ -779,7 +779,7 @@ function initiateLaunch(data) { // 业务系统流程发起
           content: res.data.notice,
           mask: true
         });
-        reject(res);
+        resolve(res);
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
@@ -788,7 +788,7 @@ function initiateLaunch(data) { // 业务系统流程发起
           content: res.data.data.records[0].notice,
           mask: true
         });
-        reject(res);
+        resolve(res);
         return;
       }
       if (res.data.resultCode === 0) {
@@ -818,7 +818,7 @@ function initiateLaunch(data) { // 业务系统流程发起
             type: 'search'
           }
         });
-        reject(res);
+        resolve(res);
       } else {
         resolve();
       }
