@@ -9,6 +9,7 @@
     :closable="closable"
     :draggable="draggable"
     :mask="mask"
+    :action-id="actionId"
     :mask-closable="maskClosable"
     :transfer="transfer"
     :footer-hide="footerHide"
@@ -28,6 +29,7 @@
         ref="modalComponent"
         :id-array="idArray"
         :obj-list="objList"
+        :action-id="actionId"
         :item-id="itemId"
         @setTitle="setTitle"
         @closeActionDialog="closeActionDialog"
@@ -50,6 +52,11 @@
         type: String,
         default: () => ''
       },
+      actionId: {// 获取自定按钮ID
+        type: [Number, String],
+        default: () => ''
+      },
+      
       // showModal: {
       //   type: Boolean,
       //   default: () => false

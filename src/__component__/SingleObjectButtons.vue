@@ -28,6 +28,7 @@
       :footer-hide="dialogConfig.footerHide"
       :confirm="dialogConfig.confirm"
       :isrefrsh="isrefrsh"
+      :action-id="actionId"
       :dialog-component-name="dialogComponentName"
       :obj-list="dialogComponentName?objList:[]"
       @dialogComponentSaveSuccess="dialogComponentSaveSuccess"
@@ -75,6 +76,7 @@
       :tablename="itemName"
       :main-table="tableName"
       :main-id="itemId"
+      :action-id="actionId"
       @confirmImport="importsuccess"
       @closeDialog="closeActionDialog"
       @imporSuccess="imporSuccess"
@@ -107,6 +109,7 @@
   export default {
     data() {
       return {
+        actionId: null, // 自定义按钮ID
         temporaryStorage: false, // 是否开启暂存
         temporaryStoragePath: '',
         loading: true,
@@ -1088,6 +1091,11 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
+        DispatchEvent('objTabAction', {
+          detail: {
+            data: obj
+          }
+        });
         this.activeTabAction = obj;
         switch (obj.vuedisplay) {
         case 'slient':
@@ -1489,6 +1497,7 @@
         }
       },
       objTabActionDialog(tab) { // 动作定义弹出框
+        this.actionId = tab.webid;
         this.$refs.dialogRef.open();
         const title = `${tab.webdesc}`;
         this.isrefrsh = tab.isrefrsh;
