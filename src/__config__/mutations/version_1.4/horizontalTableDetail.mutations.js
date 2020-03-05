@@ -120,7 +120,7 @@ export default {
   }, //
 
   updatePanelData(state, data) { // 更新子表面板数据
-    // state.instanceId = 1;
+    state.instanceId = 1;
     if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
@@ -146,8 +146,13 @@ export default {
               if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
                 if (JflowControlFieldData[0].isShow.includes(d.colid)) {
                   if (JflowControlFieldData[0].readonly.length > 0) {
-                    d.readonly = false;
-                    u.push(d);
+                    if (JflowControlFieldData[0].readonly.includes(d.colid)) {
+                      d.readonly = false;
+                      u.push(d);
+                    } else {
+                      d.readonly = true;
+                      u.push(d);
+                    }
                   } else {
                     d.readonly = true;
                     u.push(d);

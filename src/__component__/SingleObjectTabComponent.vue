@@ -73,7 +73,6 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
-    <div>{{ itemReadOnlyForJflow }}</div>
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
