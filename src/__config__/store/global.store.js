@@ -82,8 +82,11 @@ export default () => ({
         exeActionButton: []
       },
       
+    ],      
+    exeActionButton: [
+      // 2305,
+      // 2306
     ]
-      
     
   },
   mutations: mutations(),

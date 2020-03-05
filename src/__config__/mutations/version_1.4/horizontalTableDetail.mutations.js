@@ -120,7 +120,7 @@ export default {
   }, //
 
   updatePanelData(state, data) { // 更新子表面板数据
-    state.instanceId = 1;
+    // state.instanceId = 1;
     if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
@@ -139,8 +139,6 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        console.log(444, JflowControlFieldData[0]);
-
         const addcolumsData = data.addcolums.reduce((a, c) => {
           const u = [];
           if (c.childs) {
@@ -148,7 +146,6 @@ export default {
               if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
                 if (JflowControlFieldData[0].isShow.includes(d.colid)) {
                   if (JflowControlFieldData[0].readonly.length > 0) {
-                    console.log(88, d.name);
                     d.readonly = false;
                     u.push(d);
                   } else {
@@ -206,16 +203,22 @@ export default {
         data.addcolums = addcolumsData;
         componentAttribute.panelData.data = data;
         // 处理jflow配置自定义按钮逻辑
-        const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
-        if (objtabbuttons.length > 0) {
-          const a = JflowControlFieldData[0].exeActionButton.filter((buttonId) => {
-            objtabbuttons.map((objtabbutton) => {
-              if (buttonId === objtabbutton.webid) {
-                return objtabbutton;
-              }
+        if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
+          const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
+  
+          let buttonsJflowRes = [];
+          if (JflowControlFieldData[0].exeActionButton.length > 0) {
+            JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
+              buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
+                if (buttonId === objtabbutton.webid) {
+                  return objtabbutton;
+                }
+              });
             });
-          });
-          console.log(1111, a);
+            if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
+              componentAttribute.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;
+            }
+          }
         }
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
