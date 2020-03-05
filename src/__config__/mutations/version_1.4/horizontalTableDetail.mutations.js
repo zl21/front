@@ -120,13 +120,13 @@ export default {
   }, //
 
   updatePanelData(state, data) { // 更新子表面板数据
-    state.instanceId = 1;
+    // state.instanceId = 1;
     if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableName } = router.currentRoute.params;
         if (item.tableName === tableName && state.tabPanels[data.tabIndex].tablename === item.itemTableName) {
-          if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
+          if (state.tabPanels[data.tabIndex].tabrelation === '1:1' || item.tableName === item.itemTableName) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
             this.state.global.objreadonlyForJflow.push(
               {
                 readonly: false,
