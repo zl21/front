@@ -120,36 +120,47 @@ export default {
   }, //
 
   updatePanelData(state, data) { // 更新子表面板数据
-    let flag = false;
-    if (enableJflow() && state.instanceId && this.state.global.JflowControlField) { // 加jflow
+    // state.instanceId = 1;
+    if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-      if (state.tabPanels[data.tabIndex].tablename === this.state.global.JflowControlField.itemTableName) {
-        if (state.tabPanels[data.tabIndex].tabrelation === '1:1') {
-          this.state.global.objreadonlyForJflow = {
-            readonly: false,
-            itemTableName: this.state.global.JflowControlField.itemTableName
-          };
-          flag = true;
+      const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
+        const { tableName } = router.currentRoute.params;
+        if (item.tableName === tableName && state.tabPanels[data.tabIndex].tablename === item.itemTableName) {
+          if (state.tabPanels[data.tabIndex].tabrelation === '1:1' || item.tableName === item.itemTableName) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
+            this.state.global.objreadonlyForJflow.push(
+              {
+                readonly: false,
+                itemTableName: item.itemTableName,
+                tableName: item.tableName
+              }
+            );
+            return true;
+          } 
         } 
-      } 
-      if (flag) { // 符合jflow控制子表字段配置条件执行以下逻辑
+      });
+      if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         const addcolumsData = data.addcolums.reduce((a, c) => {
           const u = [];
           if (c.childs) {
             c.childs.map((d) => {
-              if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-                if (this.state.global.JflowControlField.isShow.includes(d.colid)) {
-                  if (this.state.global.JflowControlField.readonly.length > 0) {
-                    d.readonly = false;
-                    u.push(d);
+              if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
+                if (JflowControlFieldData[0].isShow.includes(String(d.colid))) {
+                  if (JflowControlFieldData[0].readonly.length > 0) {
+                    if (JflowControlFieldData[0].readonly.includes(String(d.colid))) {
+                      d.readonly = false;
+                      u.push(d);
+                    } else {
+                      d.readonly = true;
+                      u.push(d);
+                    }
                   } else {
                     d.readonly = true;
                     u.push(d);
                   }
                 }
-              } else if (this.state.global.JflowControlField.readonly.length > 0) {
+              } else if (JflowControlFieldData[0].readonly.length > 0) {
                 // 未配置jflowisShow字段，则显示全部元数据字段，由readonly控制字段是否可编辑
-                if (this.state.global.JflowControlField.readonly.includes(d.colid)) {
+                if (JflowControlFieldData[0].readonly.includes(String(d.colid))) {
                   // 未配置可见字段，只配置了可编辑字段时，所有元数据返回的字段可见，readonly内配置的可编辑
                   d.readonly = false;
                   u.push(d);
@@ -164,9 +175,9 @@ export default {
             });
             c.childs = u;
             a.push(c);
-          } else if (this.state.global.JflowControlField.isShow.length > 0) { // display有数据，则只展示数据里的字段
-            if (this.state.global.JflowControlField.isShow.includes(c.child.colid)) {
-              if (this.state.global.JflowControlField.readonly.length > 0 && this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+          } else if (JflowControlFieldData[0].isShow.length > 0) { // display有数据，则只展示数据里的字段
+            if (JflowControlFieldData[0].isShow.includes(String(c.child.colid))) {
+              if (JflowControlFieldData[0].readonly.length > 0 && JflowControlFieldData[0].readonly.includes(String(c.child.colid))) {
                 c.child.readonly = false;
                 a.push(c);
               } else {
@@ -174,10 +185,10 @@ export default {
                 a.push(c);
               } 
             } 
-          } else if (this.state.global.JflowControlField.readonly.length > 0) {
+          } else if (JflowControlFieldData[0].readonly.length > 0) {
             // isShow无数据，则显示元数据接口返回所有字段，但当前表为不可编辑状态
             // jflow配置了可编辑字段时，配置的字段可编辑，其余全部为不可编辑状态
-            if (this.state.global.JflowControlField.readonly.includes(c.child.colid)) {
+            if (JflowControlFieldData[0].readonly.includes(String(c.child.colid))) {
               c.child.readonly = false;
               a.push(c);
             } else {
@@ -196,6 +207,24 @@ export default {
         componentAttribute.panelData.isShow = true;
         data.addcolums = addcolumsData;
         componentAttribute.panelData.data = data;
+        // 处理jflow配置自定义按钮逻辑
+        if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
+          const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
+  
+          let buttonsJflowRes = [];
+          if (JflowControlFieldData[0].exeActionButton.length > 0) {
+            JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
+              buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
+                if (String(buttonId) === String(objtabbutton.webid)) {
+                  return objtabbutton;
+                }
+              });
+            });
+            if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
+              componentAttribute.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;
+            }
+          }
+        }
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;

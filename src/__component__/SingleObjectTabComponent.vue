@@ -73,7 +73,6 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
-    
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -265,8 +264,15 @@
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
       }),
       itemReadOnlyForJflow() {
-        if(!enableJflow() && this.objreadonlyForJflow && this.objreadonlyForJflow.itemTableName === this.tableName) {
-          return this.objreadonlyForJflow.readonly;
+        let flag = null;
+        if(enableJflow() && this.objreadonlyForJflow.length > 0) {
+          const { tableName } = router.currentRoute.params;
+          this.objreadonlyForJflow.map((item) => {
+            if(item.tableName === tableName && item.itemTableName === this.tableName) {
+              flag = item.readonly;
+            }
+          });
+          return flag;
         }
         return this.objreadonly;
       }, 
