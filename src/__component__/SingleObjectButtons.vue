@@ -2180,7 +2180,6 @@
                         // });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
-                        this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                       }
@@ -2672,6 +2671,7 @@
         const objectType = this.objectType;
         const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
+
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -2684,6 +2684,7 @@
           isreftabs,
           sataType,
           itemNameGroup,
+          itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {

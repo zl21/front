@@ -140,8 +140,13 @@
         item.props = Object.assign({}, dataProp[item.type].props, this.items.props);
         item.event = Object.assign({}, this.items.event);
         if (item.type === 'DatePicker') {
-          if (item.props.type === 'datetimerange') {
-            item.value = [];
+          if (
+            item.props.type === 'datetimerange'
+            || item.props.type === 'daterange'
+          ) {
+            if (!item.value) {
+              item.value = [];
+            }
           } else {
             item.value = new Date();
           }

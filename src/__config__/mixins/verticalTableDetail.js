@@ -67,6 +67,8 @@ export default () => ({
       tempStorage: ({ tempStorage }) => tempStorage,
       WebConf: ({ WebConf }) => WebConf,
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
+      itemObjId: ({ itemObjId }) => itemObjId,
+
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;

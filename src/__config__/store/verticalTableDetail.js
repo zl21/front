@@ -47,8 +47,8 @@ export default () => ({
     globalLoading: false,
     testData: false, // 校验是否更改过值
     WebConf: {},
-    ExeActionDataForComponent: {}
-
+    ExeActionDataForComponent: {},
+    itemObjId: null, // 子表1:1ID
   },
   actions: actions(),
   mutations: mutations()

@@ -14,6 +14,7 @@ import WaterMark from './src/__component__/WaterMark';
 import SearchForm from './src/__component__/form/SearchForm';
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
+import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 
 
 import { menuClick } from './src/__config__/event.config';
@@ -26,8 +27,8 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.1',
-  temporaryVersion: '2020.03.04.17.23',
-  user: '知晓',                     
+  temporaryVersion: '2020.03.06.10.12',
+  user: '临时测试包-上海（不兼容IE）',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -112,5 +113,6 @@ export default {
     SearchForm,
     FilterTree,
     SelectTree,
+    DocFile
   }
 };
