@@ -167,9 +167,6 @@ export default {
             const name = n.substring(n.lastIndexOf('/') + 1, n.length);
             a[name.toUpperCase()] = c.serviceId;
           } else {
-            if (c.value.toUpperCase() === 'PS_C_COLOR') {
-              console.log(777, a[c.value.toUpperCase()] = c.serviceId, getSeesionObject('serviceIdMap'));
-            }
             a[c.value.toUpperCase()] = c.serviceId;
           }
           return a;
