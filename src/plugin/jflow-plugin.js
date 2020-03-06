@@ -743,11 +743,12 @@ function jflowRefresh() { // 刷新业务系统
 
 /* data为对象,为了动作定义类型数据处理
 {
-  webid:动作定义id,
+  webActionId:动作定义id,
   moduleId:'',
   startNodeId: '',
   customizeBody: '',
-  assignedNodes: ''
+  assignedNodes: '',
+  assignOpinion: ''
 }
 
 
@@ -755,24 +756,26 @@ function jflowRefresh() { // 刷新业务系统
 
 function initiateLaunch(data) { // 业务系统流程发起
   return new Promise((resolve, reject) => {
-    axios.post('/jflow/p/cs/process/launch',
-      {
-        // eslint-disable-next-line no-nested-ternary
-        businessCodes: router.currentRoute.params.itemId,
-        businessType: router.currentRoute.params.tableId,
-        businessTypeName: router.currentRoute.params.tableName,
-        initiator: userInfo.id,
-        userName: userInfo.name,
-        instanceId,
-        initiatorName: userInfo.name,
-        changeUser: userInfo.id,
-        webActionId: data.webid,
-        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
-        moduleId: data.moduleId,
-        startNodeId: data.startNodeId,
-        customizeBody: data.customizeBody,
-        assignedNodes: data.assignedNodes
-      }).then((res) => {
+    let obj = {
+      // eslint-disable-next-line no-nested-ternary
+      businessCodes: router.currentRoute.params.itemId,
+      businessType: router.currentRoute.params.tableId,
+      businessTypeName: router.currentRoute.params.tableName,
+      initiator: userInfo.id,
+      userName: userInfo.name,
+      instanceId,
+      initiatorName: userInfo.name,
+      changeUser: userInfo.id,
+      // webActionId: data.webid,
+      businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
+      moduleId: data.moduleId,
+      // startNodeId: data.startNodeId,
+      // customizeBody: data.customizeBody,
+      // assignedNodes: data.assignedNodes
+    };
+
+    obj = Object.assign(obj, data);
+    axios.post('/jflow/p/cs/process/launch', obj).then((res) => {
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
           title: '错误',
@@ -827,7 +830,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function jflowLaunch(event) {
-  initiateLaunch(event.detail.data);
+  initiateLaunch({ webActionId: event.detail.data.webid });
 }
 
 
