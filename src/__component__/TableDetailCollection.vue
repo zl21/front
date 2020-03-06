@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-            />
+                      >
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -1576,10 +1576,8 @@
                 const currentCheck = cellData.combobox.filter(ele => ele.limitdis === currentValue);
                 const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
                 const limitdesc = currentCheck.length > 0 ? currentCheck[0].limitdesc : null;
-
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
-
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
               }
