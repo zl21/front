@@ -143,6 +143,7 @@ export default {
           } else if (c.type === 'tree') {
             // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            state.treeTableListData.push(c);
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -166,6 +167,9 @@ export default {
             const name = n.substring(n.lastIndexOf('/') + 1, n.length);
             a[name.toUpperCase()] = c.serviceId;
           } else {
+            if (c.value.toUpperCase() === 'PS_C_COLOR') {
+              console.log(777, a[c.value.toUpperCase()] = c.serviceId, getSeesionObject('serviceIdMap'));
+            }
             a[c.value.toUpperCase()] = c.serviceId;
           }
           return a;

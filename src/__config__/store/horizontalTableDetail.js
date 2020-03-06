@@ -34,7 +34,8 @@ export default () => ({
     globalLoading: false,
     WebConf: {},
     ExeActionDataForComponent: {},
-   
+    itemObjId: null, // 子表1:1ID
+
   },
   actions: actions(),
   mutations: mutations()
