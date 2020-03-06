@@ -856,9 +856,32 @@
           this.getObjectForMainTableForm({
             table: this.tableName, objid: this.itemId, tabIndex
           });
-          this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
-          });
+       
+          if (this.itemInfo.tabrelation === '1:1') {
+            this.getItemObjForChildTableForm({// 获取1:1面板
+              table: tablename, objid: this.itemId, refcolid, tabIndex
+            });
+            
+
+            const { itemId } = this.$route.params;
+            const refTab = this.tabPanel;
+            let index = null;
+            refTab.forEach((item, i) => {
+              if (item.tablename === tablename) {
+                index = i;
+              }
+            });
+            // 获取子表表单
+            const getButtonDataPromise = new Promise((rec, rej) => {
+              this.getObjectTabForRefTable({
+                table: tablename, objid: itemId, tabIndex: index, rec, rej
+              });
+            });
+          } else {
+            this.getObjectTabForMainTable({
+              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+            });
+          }
         }
         // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听
         setTimeout(() => {

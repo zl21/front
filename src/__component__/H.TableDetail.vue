@@ -169,9 +169,14 @@
               } else if (this.tabPanel[index].tabrelation === '1:1') { // 无表格只有面板
                 const { tableName, itemId } = this.$route.params;
                 const { tablename, refcolid } = this.tabPanel[index];
-                this.getObjectTabForChildTableButtons({
-                  maintable: tableName, table: tablename, objid: itemId, tabIndex: index
+                new Promise((resolve, reject) => {
+                  this.getObjectTabForChildTableButtons({
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                  });
+                }).then(() => {
+
                 });
+               
                 this.getItemObjForChildTableForm({
                   table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
