@@ -2180,7 +2180,6 @@
                         // });
                         this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
-                        this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
                       }

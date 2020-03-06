@@ -28,7 +28,7 @@ const validateConfig = config => ({
 export default {
   version: '1.8.1',
   temporaryVersion: '2020.03.06.10.12',
-  user: '临时测试包-上海',                     
+  user: '临时测试包-上海（不兼容IE）',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {

@@ -3845,7 +3845,7 @@
           this.isRefreshClick = false;
         }
       });
-      window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
+      window.removeEventListener('changePageForSelete', this.changePageForSeleteData);
       window.removeEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
     },
     activated() {
