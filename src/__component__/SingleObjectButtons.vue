@@ -2672,6 +2672,7 @@
         const objectType = this.objectType;
         const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
+
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -2684,6 +2685,7 @@
           isreftabs,
           sataType,
           itemNameGroup,
+          itemObjId: this.itemObjId,
           temporaryStoragePath: this.temporaryStoragePath
         };
         const promise = new Promise((resolve, reject) => {

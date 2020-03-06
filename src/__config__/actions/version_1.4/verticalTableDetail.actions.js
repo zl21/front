@@ -263,7 +263,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
+      itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -488,12 +488,15 @@ export default {
               }
             };
           } else {
+            itemModify[itemName].ID = itemObjId;
+            const itemModifyRes = {}; 
+            itemModifyRes[itemName] = [itemModify[itemName]];
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...modify,
-                ...itemModify
+                ...itemModifyRes
               }
             };
           }

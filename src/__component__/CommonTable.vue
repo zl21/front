@@ -44,6 +44,7 @@
   import Dialog from './Dialog.vue';
   import network from '../__utils__/network';
   import store from '../__config__/store.config';
+  import DispatchEvent from '../__utils__/dispatchEvent';
 
   export default {
     data() {
@@ -129,28 +130,35 @@
                   render: this.collectionIndexRender(),
                   renderHeader: this.tooltipRenderHeader()
                 }, cur));
-              } else if (cur.display === 'doc') {
-                if (cur.isorder) {
-                  cur.sortable = 'custom';
+              } else if (['doc', 'image'].indexOf(cur.display) > -1) {
+                switch (cur.display) {
+                case 'doc':
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    // sortable: cur.isorder ? 'custom' : false,
+                    render: this.docRender(),
+                    renderHeader: this.tooltipRenderHeader()
+                  }, cur));
+                  break;
+                case 'image':
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    // sortable: cur.isorder ? 'custom' : false,
+                    render: this.imageRender(cur.colname),
+                    renderHeader: this.tooltipRenderHeader()
+                  }, cur));
+                  break;
+                default:
+                  break;
                 }
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  // sortable: cur.isorder ? 'custom' : false,
-                  render: this.docRender(),
-                  renderHeader: this.tooltipRenderHeader()
-                }, cur));
-              } else if (cur.display === 'image') {
-                if (cur.isorder) {
-                  cur.sortable = 'custom';
-                }
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  // sortable: cur.isorder ? 'custom' : false,
-                  render: this.imageRender(cur.colname),
-                  renderHeader: this.tooltipRenderHeader()
-                }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
                   if (cur.isorder) {
@@ -221,39 +229,54 @@
                   width: 40,
                   render: this.collectionIndexRender()
                 }, cur));
-              }
-              else if (cur.display === 'switch') { // 开关选择器
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  render: this.switchRender(cur)
-                }, cur));
-              } else if (cur.display === 'command') { // 操作列
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  render: this.commandRender(cur)
-                }, cur));
-              } else if (cur.display === 'image') {
-                if (cur.isorder) {
-                  cur.sortable = 'custom';
+              } else if (['switch', 'command', 'image', 'doc', 'operatebuts'].indexOf(cur.display) > -1) {
+                switch (cur.display) {
+                case 'switch':
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    render: this.switchRender()
+                  }, cur));
+                  break;
+                case 'command':
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    render: this.commandRender(cur)
+                  }, cur));
+                  break;
+                case 'image':
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    // sortable: cur.isorder ? 'custom' : false,
+                    render: this.imageRender(cur.colname)
+                  }, cur));
+                  break;
+                case 'doc':
+                  if (cur.isorder) {
+                    cur.sortable = 'custom';
+                  }
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    // sortable: cur.isorder ? 'custom' : false,
+                    render: this.docRender()
+                  }, cur));
+                  break;
+                case 'operatebuts':
+                  acc.push(Object.assign({
+                    title: cur.name,
+                    key: cur.colname,
+                    render: this.buttonRender()
+                  }, cur));
+                  break;
+                default:
+                  break;
                 }
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  // sortable: cur.isorder ? 'custom' : false,
-                  render: this.imageRender(cur.colname)
-                }, cur));
-              } else if (cur.display === 'doc') {
-                if (cur.isorder) {
-                  cur.sortable = 'custom';
-                }
-                acc.push(Object.assign({
-                  title: cur.name,
-                  key: cur.colname,
-                  // sortable: cur.isorder ? 'custom' : false,
-                  render: this.docRender()
-                }, cur));
               } else if (cur.isfk && cur.fkdisplay !== 'mrp' && cur.fkdisplay !== 'mop') {
                 if (this.datas.ordids && this.datas.ordids.length > 0 && this.datas.ordids.findIndex(item => item.colname === cur.colname) > -1) {
                   if (cur.isorder) {
@@ -679,6 +702,7 @@
         }
       }, // 表格排序触发
       switchRender() {
+        const $this = this;
         // 开关选择器
         return (h, info) => h('div',
                               [
@@ -706,7 +730,7 @@
                                             }
                                           }
                                         }).then(() => {
-                                          this.$Message.info(`开关状态：${status === true ? '开' : '关'}`);
+                                          $this.$Message.info(`${info.column.name}：${`${status}`.toUpperCase()}`);
                                         }, (err) => {
                                           console.log('err', err);
                                         });
@@ -717,22 +741,39 @@
                                     value: info.row[info.column.colname] === 'true',
                                     size: 'small',
                                     loading: false
-                                    // disabled: true
                                   },
-
-                                  // class: `iconfont  ${
-                                  //   params.row.status === 1 || params.row.status === 3
-                                  //     ? 'icon-jmc_error'
-                                  //     : 'icon-jmc_right'
-                                  // }`,
-                                  style: {
-                                    // background: `${
-                                    //   // params.row.status == 1 ? '#5b85e4' : '#ccc'
-                                    // }`,
-                                    // marginRight: '2px'
-                                  }
                                 })
                               ]);
+      },
+      buttonRender() {
+        // 开关选择器
+        return (h, info) => h('div',
+                              info.column.combobox.reduce((a, c) => {
+                                if (JSON.parse(info.row[info.column.colname]).indexOf(c.limitval) > -1) {
+                                  return a.concat(c);
+                                }
+                                return a;
+                              }, []).map(d => h('Button', {
+                                nativeOn: {
+                                  click(event) {
+                                    DispatchEvent('oprButtonClick', {
+                                      detail: {
+                                        event,
+                                        info
+                                      }
+                                    });
+                                  }
+                                },
+                                props: {
+                                  type: 'primary',
+                                  size: 'small'
+                                },
+                                style: {
+                                  marginRight: '2px',
+                                  padding: '3px 5px',
+                                  borderRadius: '2px'
+                                }
+                              }, d.limitdesc)));
       },
       commandRender(data) {
         const params = [
@@ -798,65 +839,79 @@
 </script>
 
 <style lang="less">
-    .burgeon-spin-fix {
-        z-index: 999;
-        .demo-spin-icon-load {
-            animation: ani-demo-spin 1s linear infinite;
-        }
-        @keyframes ani-demo-spin {
-            from {
-                transform: rotate(0deg);
-            }
-            50% {
-                transform: rotate(180deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
+  .burgeon-spin-fix {
+    z-index: 999;
+    
+    .demo-spin-icon-load {
+      animation: ani-demo-spin 1s linear infinite;
     }
-
-    .commonTable {
-        height: 100%;
-        overflow-y: hidden;
-        position: relative;
-        .table {
-            height: 100% !important;
-            thead th {
-                font-weight: 400;
-            }
-            thead tr{
-                height: 28px;
-            }
-            tbody tr{
-                height: 28px;
-            }
-            tbody tr.burgeon-table-row-hover td{
-                background-color: #ecf0f1;
-            }
-            tfoot tr {
-                height: 28px;
-                background-color: #fff;
-            }
-            .burgeon-table td {
-              background-color: rgba(255, 255, 255, 0);
-            }
-            .burgeon-table-fixed tfoot td {
-                border-bottom: 1px solid #e8eaec;
-            }
-            .doc-wrapper {
-                margin-right: 5px;
-                display: inline-block;
-                a {
-                    color: #575757;
-                }
-            }
-            .doc-wrapper:hover {
-                border-bottom: 1px solid #000;
-                a {
-                    color: #2d8cf0;
-                }
-            }
-        }
+    
+    @keyframes ani-demo-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(180deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
+  }
+  
+  .commonTable {
+    height: 100%;
+    overflow-y: hidden;
+    position: relative;
+    
+    .table {
+      height: 100% !important;
+      
+      thead th {
+        font-weight: 400;
+      }
+      
+      thead tr {
+        height: 28px;
+      }
+      
+      tbody tr {
+        height: 28px;
+      }
+      
+      tbody tr.burgeon-table-row-hover td {
+        background-color: #ecf0f1;
+      }
+      
+      tfoot tr {
+        height: 28px;
+        background-color: #fff;
+      }
+      
+      .burgeon-table td {
+        background-color: rgba(255, 255, 255, 0);
+      }
+      
+      .burgeon-table-fixed tfoot td {
+        border-bottom: 1px solid #e8eaec;
+      }
+      
+      .doc-wrapper {
+        margin-right: 5px;
+        display: inline-block;
+        
+        a {
+          color: #575757;
+        }
+      }
+      
+      .doc-wrapper:hover {
+        border-bottom: 1px solid #000;
+        
+        a {
+          color: #2d8cf0;
+        }
+      }
+    }
+  }
 </style>

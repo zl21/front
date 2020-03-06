@@ -162,7 +162,7 @@ export default {
   // 按钮
   performMainTableSaveAction({ commit }, { parame, resolve, reject }) { // 主表保存
     const {
-      tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
+      itemObjId, tableName, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup, sataType, temporaryStoragePath
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -313,11 +313,14 @@ export default {
           if (temporaryStoragePath) {
             console.log('子表不支持暂存');
           } else {
+            itemModify[itemName].ID = itemObjId;
+            const itemModifyRes = {}; 
+            itemModifyRes[itemName] = [itemModify[itemName]];
             parames = {
               table: tableName, // 主表表名
               objId, // 明细id
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
-                ...itemModify
+                ...itemModifyRes
               }
             };
           }

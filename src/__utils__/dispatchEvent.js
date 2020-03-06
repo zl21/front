@@ -1,6 +1,6 @@
 
-export const DispatchEvent = (event, config) => {
-  const ev = new CustomEvent(event, config);
+export const DispatchEvent = (eventName, config) => {
+  const ev = new CustomEvent(eventName, config);
   window.dispatchEvent(ev);
 };
 
