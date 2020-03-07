@@ -217,7 +217,14 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
-async function jflowButtons(id, pid, flag, tableName) { // jflow按钮逻辑处理
+/* 
+  id:明细id
+  pid:主表id
+  flag: 是否刷新按钮
+  tableName: 主表表名
+  active: 当前表表名
+*/
+async function jflowButtons(id, pid, flag, tableName, active) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
@@ -242,20 +249,22 @@ async function jflowButtons(id, pid, flag, tableName) { // jflow按钮逻辑处�
           }
 
           // 更新子表的数据字段以及按钮控制
-          const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
-          const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
-          const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
-          const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
-          JflowControlField.push(
-            {
-              tableName: tableName || router.currentRoute.params.tableName,
-              itemTableName: tableName || router.currentRoute.params.tableName,
-              isShow: modifiField,
-              readonly: edit,
-              exeActionButton
-            }
-          );
-          window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          if (res.data.data.businessStatus === -2 || res.data.data.instanceId) {
+            const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
+            const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
+            const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
+            const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt : [];
+            JflowControlField.push(
+              {
+                tableName: tableName || router.currentRoute.params.tableName,
+                itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+                isShow: modifiField,
+                readonly: edit,
+                exeActionButton
+              }
+            );
+            window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          } 
 
           
           modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
@@ -278,7 +287,7 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE).then((res) => {
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
@@ -743,11 +752,12 @@ function jflowRefresh() { // 刷新业务系统
 
 /* data为对象,为了动作定义类型数据处理
 {
-  webid:动作定义id,
+  webActionId:动作定义id,
   moduleId:'',
   startNodeId: '',
   customizeBody: '',
-  assignedNodes: ''
+  assignedNodes: '',
+  assignOpinion: ''
 }
 
 
@@ -755,24 +765,26 @@ function jflowRefresh() { // 刷新业务系统
 
 function initiateLaunch(data) { // 业务系统流程发起
   return new Promise((resolve, reject) => {
-    axios.post('/jflow/p/cs/process/launch',
-      {
-        // eslint-disable-next-line no-nested-ternary
-        businessCodes: router.currentRoute.params.itemId,
-        businessType: router.currentRoute.params.tableId,
-        businessTypeName: router.currentRoute.params.tableName,
-        initiator: userInfo.id,
-        userName: userInfo.name,
-        instanceId,
-        initiatorName: userInfo.name,
-        changeUser: userInfo.id,
-        webActionId: data.webid,
-        businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
-        moduleId: data.moduleId,
-        startNodeId: data.startNodeId,
-        customizeBody: data.customizeBody,
-        assignedNodes: data.assignedNodes
-      }).then((res) => {
+    let obj = {
+      // eslint-disable-next-line no-nested-ternary
+      businessCodes: router.currentRoute.params.itemId,
+      businessType: router.currentRoute.params.tableId,
+      businessTypeName: router.currentRoute.params.tableName,
+      initiator: userInfo.id,
+      userName: userInfo.name,
+      instanceId,
+      initiatorName: userInfo.name,
+      changeUser: userInfo.id,
+      // webActionId: data.webid,
+      businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
+      moduleId: data.moduleId,
+      // startNodeId: data.startNodeId,
+      // customizeBody: data.customizeBody,
+      // assignedNodes: data.assignedNodes
+    };
+
+    obj = Object.assign(obj, data);
+    axios.post('/jflow/p/cs/process/launch', obj).then((res) => {
       if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
         window.R3message({
           title: '错误',
@@ -827,7 +839,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function jflowLaunch(event) {
-  initiateLaunch(event.detail.data);
+  initiateLaunch({ webActionId: event.detail.data.webid });
 }
 
 
