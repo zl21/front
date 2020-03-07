@@ -270,12 +270,16 @@
           this.objreadonlyForJflow.map((item) => {
             if(item.tableName === tableName && item.itemTableName === this.tableName) {
               flag = item.readonly;
+            }else{
+              flag = this.objreadonly;
             }
           });
-          return flag;
+        }else{
+          flag = this.objreadonly;
         }
-        return this.objreadonly;
+        return flag;
       }, 
+
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
@@ -820,6 +824,7 @@
     .verticalFormPanel {
       margin: 10px 16px;
       flex: 1;
+      overflow: auto;
     }
     .objectTable {
     }

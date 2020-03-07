@@ -45,13 +45,15 @@
         return '';
       },
       objReadonlyForJflow() {
+        // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
         if (enableJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
             if (this.JflowControlField.length > 0) {
               this.JflowControlField.map((jflowData) => {
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tablename === jflowData.itemTableName && item.tabrelation === '1:1') {
+                if (item.tablename === jflowData.itemTableName && (item.tabrelation === '1:1' || item.tablename === this.$route.params.tableName)) {
+                  // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
                   flag = true;
                 } 
               });
@@ -61,6 +63,7 @@
         }
         return false;
       },
+
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
@@ -169,9 +172,14 @@
               } else if (this.tabPanel[index].tabrelation === '1:1') { // 无表格只有面板
                 const { tableName, itemId } = this.$route.params;
                 const { tablename, refcolid } = this.tabPanel[index];
-                this.getObjectTabForChildTableButtons({
-                  maintable: tableName, table: tablename, objid: itemId, tabIndex: index
+                new Promise((resolve, reject) => {
+                  this.getObjectTabForChildTableButtons({
+                    maintable: tableName, table: tablename, objid: itemId, tabIndex: index, resolve, reject
+                  });
+                }).then(() => {
+
                 });
+               
                 this.getItemObjForChildTableForm({
                   table: tablename, objid: itemId, refcolid, tabIndex: index
                 });
