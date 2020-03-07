@@ -253,7 +253,7 @@ async function jflowButtons(id, pid, flag, tableName, active) { // jflow按钮�
             const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
             const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
             const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
-            const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
+            const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt : [];
             JflowControlField.push(
               {
                 tableName: tableName || router.currentRoute.params.tableName,
