@@ -134,7 +134,7 @@ export default {
     // const { isreftabs } = parame;
     // const { itemNameGroup } = parame;
     const {
-      itemObjId, sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
+      tabrelation, itemObjId, sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -263,15 +263,7 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else {
-          // parames = {
-          //   table: tableName,
-          //   objid: objId,
-          //   data: itemModify,
-          //   after: itemModifyLabel,
-          //   before: itemBeforeLabel,
-          // };
-
+        } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
           Object.keys(itemModify[itemName]).forEach((item) => {
@@ -300,6 +292,14 @@ export default {
             data: itemModifyRes,
             after: itemModifyResAfter,
             before: itemModifyResBefore,
+          };
+        } else {
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: itemModify,
+            after: itemModifyLabel,
+            before: itemBeforeLabel,
           };
         }
       } else if (sataTypeName === 'addAndModify') { // 同时执行多种保存
