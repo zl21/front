@@ -2192,7 +2192,11 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        DispatchEvent('changePageForSelete');
+                        DispatchEvent('changePageForSelete', {
+                          detail: {
+                            tableName: this.tableName
+                          }
+                        });
                         // const searchdata = {
                         //   column_include_uicontroller: true,
                         //   startindex: (page.currentPageIndex - 1) * page.pageSize,
@@ -2245,7 +2249,11 @@
                         // this.clickButtonsBack();
                         // this.getQueryListForAg(searchData);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        DispatchEvent('changePageForSelete');
+                        DispatchEvent('changePageForSelete', {
+                          detail: {
+                            tableName: this.tableName
+                          }
+                        });
                         // const searchdata = {
                         //   column_include_uicontroller: true,
                         //   startindex: (page.currentPageIndex - 1) * page.pageSize,
