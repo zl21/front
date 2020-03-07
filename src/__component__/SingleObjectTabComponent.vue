@@ -824,6 +824,7 @@
     .verticalFormPanel {
       margin: 10px 16px;
       flex: 1;
+      overflow: auto;
     }
     .objectTable {
     }
