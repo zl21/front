@@ -171,7 +171,7 @@ export default {
     state.itemObjId = data.objId;
 
     // state.instanceId = 1;
-    if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
+    if (enableJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
