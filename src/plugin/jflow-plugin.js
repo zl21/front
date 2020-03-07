@@ -217,7 +217,14 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
-async function jflowButtons(id, pid, flag, tableName) { // jflow按钮逻辑处理
+/* 
+  id:明细id
+  pid:主表id
+  flag: 是否刷新按钮
+  tableName: 主表表名
+  active: 当前表表名
+*/
+async function jflowButtons(id, pid, flag, tableName, active) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
@@ -249,7 +256,7 @@ async function jflowButtons(id, pid, flag, tableName) { // jflow按钮逻辑处�
           JflowControlField.push(
             {
               tableName: tableName || router.currentRoute.params.tableName,
-              itemTableName: tableName || router.currentRoute.params.tableName,
+              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
               isShow: modifiField,
               readonly: edit,
               exeActionButton
@@ -278,7 +285,7 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE).then((res) => {
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
