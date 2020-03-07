@@ -40,11 +40,11 @@ export default () => ({
       switchValue: false// 为false时列表表单默认展开全部，为true时，展开设置行数
     },
     objreadonlyForJflow: [
-      {
-        tableName: '',
-        readonly: false,
-        itemTableName: ''
-      }, 
+      // {
+      //   tableName: '',
+      //   readonly: false,
+      //   itemTableName: ''
+      // }, 
     ],
     treeTableListData: [
 

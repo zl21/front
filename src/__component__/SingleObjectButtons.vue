@@ -2192,7 +2192,11 @@
                       if (deleteMessage) {
                         this.$Message.success(`${deleteMessage}`);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        DispatchEvent('changePageForSelete');
+                        DispatchEvent('changePageForSelete', {
+                          detail: {
+                            tableName: this.tableName
+                          }
+                        });
                         // const searchdata = {
                         //   column_include_uicontroller: true,
                         //   startindex: (page.currentPageIndex - 1) * page.pageSize,
@@ -2245,7 +2249,11 @@
                         // this.clickButtonsBack();
                         // this.getQueryListForAg(searchData);
                         const { tablename, refcolid, tabinlinemode } = this.itemInfo;
-                        DispatchEvent('changePageForSelete');
+                        DispatchEvent('changePageForSelete', {
+                          detail: {
+                            tableName: this.tableName
+                          }
+                        });
                         // const searchdata = {
                         //   column_include_uicontroller: true,
                         //   startindex: (page.currentPageIndex - 1) * page.pageSize,
@@ -2694,7 +2702,11 @@
         const objectType = this.objectType;
         const isreftabs = this.subtables();
         const itemNameGroup = this.itemNameGroup;
-
+        let tabrelation = false;
+        if (this.itemInfo.tabrelation === '1:1') {
+          tabrelation = true;
+        }
+ 
         const parame = {
           ...this.currentParameter, // 主表信息
           itemCurrentParameter, // 子表信息
@@ -2706,9 +2718,10 @@
           objectType,
           isreftabs,
           sataType,
-          itemNameGroup,
+          itemNameGroup, // 子表表名
           itemObjId: this.itemObjId,
-          temporaryStoragePath: this.temporaryStoragePath
+          temporaryStoragePath: this.temporaryStoragePath, // 暂存path
+          tabrelation// 子表1:1标记
         };
         const promise = new Promise((resolve, reject) => {
           if (this.itemId === 'New') {

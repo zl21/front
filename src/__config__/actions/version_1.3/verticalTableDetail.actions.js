@@ -493,7 +493,7 @@ export default {
               ...itemBeforeLabel
             } 
           };
-        } else {
+        } else if (tabrelation) {
           const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
           const itemModifyResBefore = {};
           Object.keys(itemModify[itemName]).forEach((item) => {
@@ -508,20 +508,28 @@ export default {
           });
           itemModify[itemName].ID = itemObjId;
           itemModifyLabel[itemName].ID = itemObjId;
-
+  
           const itemModifyRes = {}; 
           const itemModifyResAfter = {};
-
+  
           itemModifyRes[itemName] = [itemModify[itemName]];
           itemModifyResAfter[itemName] = [itemModifyLabel[itemName]];
-
-
+  
+  
           parames = {
             table: tableName,
             objid: objId,
             data: itemModifyRes,
             after: itemModifyResAfter,
             before: itemModifyResBefore,
+          };
+        } else {
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: itemModify,
+            after: itemModifyLabel,
+            before: itemBeforeLabel,
           };
         }
       } else if (sataTypeName === 'addAndModify') {

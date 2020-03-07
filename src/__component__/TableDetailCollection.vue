@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                      >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -3816,6 +3816,14 @@
           }
         }
         return null;
+      },
+      changePageForSeleteDataForButton(data) {
+        const { tableName } = this.$route.params;
+        if (!this._inactive) {
+          if (tableName === data.detail.tableName) {
+            this.changePageForSeleteData();
+          }
+        }
       }
 
     },
@@ -3828,7 +3836,7 @@
       });
       if (!this._inactive) {
         window.addEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
-        window.addEventListener('changePageForSelete', this.changePageForSeleteData);
+        window.addEventListener('changePageForSelete', this.changePageForSeleteDataForButton);
       }
       const { itemId, tableName, tableId } = this.$route.params;
       this.rouuterParams = {
@@ -3843,7 +3851,7 @@
           this.isRefreshClick = false;
         }
       });
-      window.removeEventListener('changePageForSelete', this.changePageForSeleteData);
+      window.removeEventListener('changePageForSelete', this.changePageForSeleteDataForButton);
       window.removeEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
     },
     activated() {

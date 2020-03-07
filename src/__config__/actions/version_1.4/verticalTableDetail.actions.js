@@ -263,7 +263,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
+      tabrelation, itemObjId, tableName, temporaryStoragePath, objId, path, type, itemName, itemCurrentParameter, isreftabs, itemNameGroup
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数
@@ -472,6 +472,15 @@ export default {
               parames = {
                 ...modify,
               };
+            } else if (tabrelation) {
+              itemModify[itemName].ID = itemObjId;
+              const itemModifyRes = {}; 
+              itemModifyRes[itemName] = [itemModify[itemName]];
+              modify[tableName].ID = objId;
+              parames = {
+                ...modify,
+                ...itemModifyRes
+              };
             } else {
               modify[tableName].ID = objId;
               parames = {
@@ -487,7 +496,7 @@ export default {
                 ...modify,
               }
             };
-          } else {
+          } else if (tabrelation) { // 处理子表1:1模式逻辑
             itemModify[itemName].ID = itemObjId;
             const itemModifyRes = {}; 
             itemModifyRes[itemName] = [itemModify[itemName]];
@@ -497,6 +506,15 @@ export default {
               fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
                 ...modify,
                 ...itemModifyRes
+              }
+            };
+          } else {
+            parames = {
+              table: tableName, // 主表表名
+              objId, // 明细id
+              fixedData: { // 固定结构： fixedData:{ '主表表名': { '主表字段1'： '字段1的值', .... } }
+                ...modify,
+                ...itemModify
               }
             };
           }
