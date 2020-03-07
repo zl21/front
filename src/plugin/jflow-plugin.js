@@ -249,20 +249,22 @@ async function jflowButtons(id, pid, flag, tableName, active) { // jflow按钮�
           }
 
           // 更新子表的数据字段以及按钮控制
-          const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
-          const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
-          const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
-          const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
-          JflowControlField.push(
-            {
-              tableName: tableName || router.currentRoute.params.tableName,
-              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
-              isShow: modifiField,
-              readonly: edit,
-              exeActionButton
-            }
-          );
-          window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          if (res.data.data.businessStatus === -2 || res.data.data.instanceId) {
+            const JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
+            const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
+            const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
+            const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt.map(item => item.ID) : [];
+            JflowControlField.push(
+              {
+                tableName: tableName || router.currentRoute.params.tableName,
+                itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+                isShow: modifiField,
+                readonly: edit,
+                exeActionButton
+              }
+            );
+            window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          } 
 
           
           modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
