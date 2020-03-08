@@ -226,6 +226,13 @@ export default {
             }
           }
         }
+        if (componentAttribute.buttonsData.data.tabcmd && this.state.global.jflowButton.length > 0) {
+          // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+          componentAttribute.buttonsData.data.tabcmd.prem.forEach((item) => {
+            item = false;
+          });
+          state.jflowPluginDataArray = this.state.global.jflowButton;
+        }
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;

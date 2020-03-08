@@ -27,7 +27,7 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.1',
-  temporaryVersion: '2.0.5',
+  temporaryVersion: '2.0.6',
   packageTime: '2020.03.08.09.30', 
   user: 'lining',                     
   /**
