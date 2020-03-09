@@ -66,7 +66,8 @@ export default () => ({
       WebConf: ({ WebConf }) => WebConf,
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       itemObjId: ({ itemObjId }) => itemObjId,
-
+      jflowConfigrefreshButton: ({ jflowConfigrefreshButton }) => jflowConfigrefreshButton,
+      
       
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {

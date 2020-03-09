@@ -181,7 +181,6 @@
       window.removeEventListener('childTableSaveFile', this.childTableClickSaveFile);
     },
     mounted() {
-      console.log(444, this.dataArray);
       if (!this._inactive) {
         window.addEventListener('childTableSaveFile', this.childTableClickSaveFile);
       }

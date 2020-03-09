@@ -3,6 +3,7 @@
 <template>
   <div
     class="singleObjectButton"
+    :style="{'margin-left': isItemTableVertical ? '17px' : '0px' }"
   >
     <div
       v-if="watermarkImg"
@@ -183,17 +184,18 @@
       jflowButton: {
         handler(val) {
           if (val) {
+            this.dataArray.jflowPluginDataArray = [];
             this.dataArray.jflowButton = this.jflowButton;
           }
         }
       },
-      // jflowPluginDataArray: {//原jflow
-      //   handler(val) {
-      //     if (val) {
-      //       this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      //     }
-      //   }
-      // },
+      jflowPluginDataArray: {// 原jflow
+        handler(val) {
+          if (val) {
+            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+          }
+        }
+      },
       refreshButtons: {
         handler(val) {
           this.dataArray.refresh = val;
@@ -394,7 +396,9 @@
         return [];
       },
       refreshButtons() {
-        // this.refresh = this.refreshButton;
+        if (this.jflowConfigrefreshButton) {
+          return false;
+        }
         return this.refreshButton;
       },
       tablePage() {
@@ -423,6 +427,10 @@
       }
     },
     props: {
+      isItemTableVertical: {
+        type: Boolean,
+        default: false
+      }, // 当前是否在1:1面板上下结构子表
       isMainForm: {// 当前主表是否存在表单组件
         type: [Array, Object],
         default: () => {}
@@ -3052,6 +3060,10 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      if (this.jflowButton.length > 0) {
+        this.dataArray.jflowPluginDataArray = [];
+        this.dataArray.jflowButton = this.jflowButton;
+      }
       this.hideBackButton();
       // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {

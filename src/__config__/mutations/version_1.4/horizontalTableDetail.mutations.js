@@ -230,7 +230,7 @@ export default {
           // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
           if (componentAttribute.buttonsData.data.tabcmd && componentAttribute.buttonsData.data.tabcmd.prem && componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
             componentAttribute.buttonsData.data.tabcmd.prem = componentAttribute.buttonsData.data.tabcmd.prem.map((item, index) => {
-              if (JflowControlFieldData[0].readonly.length > 0 && index === 0) { // 如果配置了可编辑字段，则显示保存按钮
+              if (JflowControlFieldData[0].readonly.length > 0 && componentAttribute.buttonsData.data.tabcmd.cmds[index] === 'actionMODIFY') { // 如果配置了可编辑字段，则显示保存按钮
                 item = true;
                 return item;
               }
@@ -239,13 +239,18 @@ export default {
             });
           }
           componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
+          state.jflowConfigrefreshButton = true;
         }
       } else {
+        state.jflowConfigrefreshButton = false;
+
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
         componentAttribute.panelData.data = data;
       }
     } else {
+      state.jflowConfigrefreshButton = false;
+
       const { componentAttribute } = state.tabPanels[data.tabIndex];
       componentAttribute.panelData.isShow = true;
       componentAttribute.panelData.data = data;
