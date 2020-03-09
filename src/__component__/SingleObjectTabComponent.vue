@@ -9,6 +9,7 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
+      :jflow-button="buttonsData.data.jflowButton"
       :disable-export="buttonsData.data.DisableEXPORT"
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"

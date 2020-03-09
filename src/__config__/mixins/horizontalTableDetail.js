@@ -119,7 +119,8 @@ export default () => ({
         'updataGlobalLoading',
         'seleteAddData',
         'emptyChangeData',
-        'updateButtonGetActionData'
+        'updateButtonGetActionData',
+        'getJflowConfigButtons'
       ]),
   },
   beforeDestroy() {

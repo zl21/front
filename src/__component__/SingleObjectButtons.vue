@@ -143,6 +143,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
             return self.buttonClick(type, item);
@@ -177,14 +178,22 @@
       ImportDialog, // 导入弹框
       WaterMark, // 水印组件
     },
+    
     watch: {
-      jflowPluginDataArray: {
+      jflowButton: {
         handler(val) {
           if (val) {
-            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+            this.dataArray.jflowButton = this.jflowButton;
           }
         }
       },
+      // jflowPluginDataArray: {//原jflow
+      //   handler(val) {
+      //     if (val) {
+      //       this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      //     }
+      //   }
+      // },
       refreshButtons: {
         handler(val) {
           this.dataArray.refresh = val;
@@ -193,6 +202,7 @@
       tabcmd: {
         handler(val) {
           this.hideBackButton();
+       
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -432,6 +442,10 @@
         type: Object,
         default: () => ({})
       },
+      jflowButton: {// jflow配置按钮
+        type: Array,
+        default: () => ([])
+      },
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -576,6 +590,7 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
+        
         if (type === 'fix') {
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
@@ -3039,7 +3054,8 @@
     },
     mounted() {
       this.hideBackButton();
-         
+      this.getJflowConfigButtons();
+      // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);

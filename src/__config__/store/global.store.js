@@ -56,10 +56,10 @@ export default () => ({
     JflowControlField: [
       // {
       //   tableName: 'BCP_CUSTOMER_JFLOW', // 当前表明
-      //   itemTableName: 'BCP_CUSTOMER_JFLOW', // 需要控制字段的表明
+      //   itemTableName: 'BCP_CUSTOMER_CONTACT_JFLOW', // 需要控制字段的表明
       //   // BCP_CUSTOMER_CONTACT_JFLOW
       //   isShow: [// 所有可见字段
-      //     // 169143, // 联系人
+      //     169143, // 联系人
       //     // 169132, // 可用
       //     // 169096// 主表数据（竞争品牌）
       //   ],
@@ -69,8 +69,14 @@ export default () => ({
       //     // '169096', // 主表数据（竞争品牌）
       //     // '169094',
       //   ],
-      //   exeActionButton: [], // 自定义类型按钮
-      //   jflowButton: [], // 标准类型按钮
+      //   exeActionButton: [2305], // 自定义类型按钮
+      //   jflowButton: [
+      //     {
+      //       button: 'summer',
+      //       name: 'summer',
+      //       url: ''
+      //     }
+      //   ], // 标准类型按钮
       // },
       // {
       //   tableName: 'BCP_BIZ_CHANCE_JFLOW',

@@ -40,6 +40,7 @@
         @click="btnclick('custom', a)"
         v-text="a.webdesc" 
       /> -->
+      <!-- jflow插件按钮-->
       <Button
         v-for="(item) in dataArray.jflowPluginDataArray"
         :key="item.button"
@@ -48,6 +49,16 @@
         @click="btnclick('extraposition', item)"
         v-text="item.name" 
       />
+      <!-- jflow配置按钮-->
+      <Button
+        v-for="(item) in dataArray. jflowButton"
+        :key="item.button"
+        :ref="item"
+        type="fcdefault"
+        @click="btnclick('extraposition', item)"
+        v-text="item.name" 
+      />
+     
       <Dropdown
         v-if="dataArray.printValue"
         id="print"
@@ -170,12 +181,14 @@
       window.removeEventListener('childTableSaveFile', this.childTableClickSaveFile);
     },
     mounted() {
+      console.log(444, this.dataArray);
       if (!this._inactive) {
         window.addEventListener('childTableSaveFile', this.childTableClickSaveFile);
       }
     },
     data() {
       return {
+      
         dialogComponentName: null,
         dialogConfig: {
           title: '提示',
