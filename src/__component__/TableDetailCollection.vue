@@ -271,10 +271,7 @@
       };
     },
     props: {
-      jflowButton: {// jflow配置按钮
-        type: Array,
-        default: () => ([])
-      },
+    
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -472,15 +469,6 @@
       }
     },
     watch: {
-      jflowButton: {
-        handler(val) {
-          if (val) {
-            console.log(444, val);
-
-            this.buttonData.concat(val);
-          }
-        }
-      },
       buttonGroups: {
         handler(val) {
           this.buttonData = val;
@@ -3851,8 +3839,6 @@
 
     },
     mounted() {
-      console.log(444, this.jflowButton);
-
       this.buttonData = this.buttonGroups;
       window.addEventListener('tabRefreshClick', () => {
         if (!this._inactive) {
