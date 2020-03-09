@@ -275,6 +275,7 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    console.log(this, 444);
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
