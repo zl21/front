@@ -251,21 +251,7 @@ export default {
       componentAttribute.panelData.data = data;
     }
   },
-  getJflowConfigButtons(state) { // 更新jflow配置按钮
-    // if (enableJflow()) {
-    //   state.tabPanels.map((item) => {
-    //     if (this.state.global.JflowControlField.length > 0) {
-    //       this.state.global.JflowControlField.map((jflowData) => {
-    //         // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-    //         if (item.tablename === jflowData.itemTableName && (item.tabrelation === '1:1' || item.tablename === router.currentRoute.params.tableName)) {
-    //           // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
-    //           console.log(111, jflowData);
-    //         } 
-    //       });
-    //     }
-    //   });
-    // }
-  },
+ 
   updateTableData(state, data) {
     const { componentAttribute } = state.tabPanels[data.tabIndex];
     componentAttribute.tableData.isShow = true;

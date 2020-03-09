@@ -590,7 +590,6 @@
         }
       },
       buttonClick(type, obj) { // 根据按钮类型不同执行的事件逻辑
-        
         if (type === 'fix') {
           this.objectTabAction(obj);// 标准按钮执行方法
         } else if (type === 'custom') {
@@ -3054,7 +3053,6 @@
     },
     mounted() {
       this.hideBackButton();
-      this.getJflowConfigButtons();
       // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);

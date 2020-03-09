@@ -120,7 +120,6 @@ export default () => ({
         'seleteAddData',
         'emptyChangeData',
         'updateButtonGetActionData',
-        'getJflowConfigButtons'
       ]),
   },
   beforeDestroy() {
