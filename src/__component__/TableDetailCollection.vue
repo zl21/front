@@ -271,6 +271,7 @@
       };
     },
     props: {
+    
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -808,7 +809,6 @@
               this.objTabActionSlientData = obj;
               this.clickSave({ type });
             } else {
-              console.log(333, obj);
               this.errorconfirmDialog(obj);
             }
           }
@@ -819,7 +819,7 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
-        switch (obj.eName || obj.vuedisplay) {
+        switch (obj.eName || obj.vuedisplay || obj.isJflow) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
           break;
@@ -841,9 +841,20 @@
         case 'navbar':
           this.objTabActionNavbar(obj);// 跳转类型
           break;
+        case 'isJflow':
+          this.clickExtraposition(obj);// jflow按钮执行方法
+          break;
+          
         default:
           break;
         }
+      },
+      clickExtraposition(obj) { // jflow方法
+        DispatchEvent('jflowPlugin', {
+          detail: {
+            obj
+          }
+        });
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
