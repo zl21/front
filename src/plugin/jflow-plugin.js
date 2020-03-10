@@ -223,13 +223,15 @@ function thirdlogin() { // 三方登录  获取accessToken
   flag: 是否刷新按钮
   tableName: 主表表名
   active: 当前表表名
+  isApprover: 消息中心参数
 */
-async function jflowButtons(id, pid, flag, tableName, active) { // jflow按钮逻辑处理
+async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
       userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-      businessType: pid || router.currentRoute.params.tableId
+      businessType: pid || router.currentRoute.params.tableId,
+      isApprover: isApprover || router.currentRoute.query.isApprover
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
@@ -287,7 +289,7 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE, to.query.isApprover).then((res) => {
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
