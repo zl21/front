@@ -128,14 +128,18 @@ export default {
         const { tableName } = router.currentRoute.params;
         if (item.tableName === tableName && state.tabPanels[data.tabIndex].tablename === item.itemTableName) {
           if (state.tabPanels[data.tabIndex].tabrelation === '1:1' || item.tableName === item.itemTableName) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
-            this.state.global.objreadonlyForJflow.push(
-              {
-                readonly: false,
-                itemTableName: item.itemTableName,
-                tableName: item.tableName,
-                jflowButton: item.jflowButton
-              }
-            );
+            const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
+            if (b.length === 0) {
+              this.state.global.objreadonlyForJflow.push(
+                {
+                  readonly: false,
+                  itemTableName: item.itemTableName,
+                  tableName: item.tableName,
+                  jflowButton: item.jflowButton
+                }
+              );
+            }
+           
             return true;
           } 
         } 
