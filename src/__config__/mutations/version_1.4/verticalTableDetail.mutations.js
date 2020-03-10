@@ -313,8 +313,6 @@ export default {
               }
             }
           }
-        
-
           // 以下为子表赋值逻辑
           // const { componentAttribute } = state.tabPanels[data.tabIndex];
           // componentAttribute.panelData.isShow = true;
@@ -322,7 +320,7 @@ export default {
         } else {
           data.addcolums = addcolumsData;
           componentAttribute.panelData.data = data;
-          componentAttribute.buttonsData.data.isItemTableVertical = true;
+          componentAttribute.buttonsData.data.isItemTableVertical = true;// 此字段用于单对象按钮组件控制样式
           if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
             const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
     
@@ -352,10 +350,31 @@ export default {
                 return item;
               });
             }
+            componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
             componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
             componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
-            state.jflowConfigrefreshButton = true;
+            // state.jflowConfigrefreshButton = true;
           }
+          // 以下逻辑为当前jflow配置的为子表时，当前单据其余表按钮展示逻辑
+          // 上下结构只有当前配置表展示按钮，其余子表不展示按钮，主表展示刷新/复制/返回
+          // 刷新按钮显示jflow返回的刷新
+     
+          state.mainFormInfo.buttonsData.data.tabcmd.prem = state.mainFormInfo.buttonsData.data.tabcmd.prem.map((item, index) => { // 筛选复制按钮
+            if (state.mainFormInfo.buttonsData.data.tabcmd.cmds[index] === 'actionCANCOPY') { // 如果配置了可编辑字段，则显示复制按钮
+              item = true;
+              return item;
+            }
+            item = false;
+            return item;
+          });
+          state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
+          state.mainFormInfo.buttonsData.data.jflowButton = [{
+            button: 'fresh',
+            name: '44444444',
+            url: ''
+          }];
+          // JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button === 'fresh');
+          console.log(1111, state.mainFormInfo.buttonsData);
         }
         
        

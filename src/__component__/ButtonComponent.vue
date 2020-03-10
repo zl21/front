@@ -58,6 +58,7 @@
         @click="btnclick('extraposition', item)"
         v-text="item.name" 
       />
+    
      
       <Dropdown
         v-if="dataArray.printValue"

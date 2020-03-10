@@ -181,19 +181,21 @@
     },
     
     watch: {
+      backButton: {// 原jflow
+        handler(val) {
+          this.dataArray.back = val;
+        }
+      },
+    
       jflowButton: {
         handler(val) {
-          if (val) {
-            this.dataArray.jflowPluginDataArray = [];
-            this.dataArray.jflowButton = this.jflowButton;
-          }
+          this.dataArray.jflowPluginDataArray = [];
+          this.dataArray.jflowButton = val;
         }
       },
       jflowPluginDataArray: {// 原jflow
         handler(val) {
-          if (val) {
-            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-          }
+          this.dataArray.jflowPluginDataArray = val;
         }
       },
       refreshButtons: {
@@ -427,6 +429,10 @@
       }
     },
     props: {
+      backButton: {
+        type: Boolean,
+        default: true
+      }, // 控制返回按钮显示
       isItemTableVertical: {
         type: Boolean,
         default: false
@@ -450,6 +456,7 @@
         type: Object,
         default: () => ({})
       },
+    
       jflowButton: {// jflow配置按钮
         type: Array,
         default: () => ([])
@@ -3060,6 +3067,7 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         this.dataArray.jflowPluginDataArray = [];
         this.dataArray.jflowButton = this.jflowButton;

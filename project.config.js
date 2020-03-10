@@ -29,9 +29,9 @@ module.exports = {
   enableJflow: true, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
   encryptionJflow: false, // 控制jflow传参是否加密
-  jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)
+  // jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)
                      
-  // jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
+  jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
   // jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用

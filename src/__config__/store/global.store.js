@@ -73,8 +73,8 @@ export default () => ({
       //   exeActionButton: ['2305'], // 自定义类型按钮,字段返回值需为字符串
       //   jflowButton: [
       //     {
-      //       button: 'jflow',
-      //       name: 'jflow按钮',
+      //       button: 'fresh',
+      //       name: '888888888',
       //       url: '',
       //       isJflow: true
       //     }

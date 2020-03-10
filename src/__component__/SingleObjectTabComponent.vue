@@ -19,6 +19,7 @@
       :isreftabs="isreftabs"
       :is-main-form="tabPanelsAll"
       :is-item-table-vertical="buttonsData.data.isItemTableVertical"
+      :back-button="buttonsData.data.backButton"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm
