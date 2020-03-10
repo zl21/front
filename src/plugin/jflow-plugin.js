@@ -256,6 +256,16 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
             const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
             const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
             const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt : [];
+            const jflowButton = res.data.data && res.data.data.buttons ? res.data.data.buttons.map((item) => {
+              item.isJflow = true;
+              return item;
+            }) : [];
+            jflowButton.push({
+              button: 'fresh',
+              name: '刷新',
+              url: '',
+              isJflow: true
+            });
             const obj = {
               tableName: tableName || router.currentRoute.params.tableName,
               itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
