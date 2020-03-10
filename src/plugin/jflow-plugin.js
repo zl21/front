@@ -612,7 +612,7 @@ function AxiosGuard(axios) { // axios拦截
       
 
       // 判断是否点击了列表配置按钮，是的话在执行前先调用check接口
-      if (window.localStorage.getItem('checkUrls')) {
+      if (window.localStorage.getItem('checkUrls') && window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE') {
         let checkUrls = [];
         JSON.parse(window.localStorage.getItem('checkUrls')).map((item) => {
           if (item.businessType === router.currentRoute.params.tableId) {
