@@ -351,7 +351,7 @@ export default {
               });
             }
             componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
-            componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
+            componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button !== 'fresh');
             componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
             // state.jflowConfigrefreshButton = true;
           }
@@ -368,13 +368,7 @@ export default {
             return item;
           });
           state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
-          state.mainFormInfo.buttonsData.data.jflowButton = [{
-            button: 'fresh',
-            name: '44444444',
-            url: ''
-          }];
-          // JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button === 'fresh');
-          console.log(1111, state.mainFormInfo.buttonsData);
+          state.mainFormInfo.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button === 'fresh');
         }
         
        

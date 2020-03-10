@@ -56,7 +56,7 @@ export default () => ({
     JflowControlField: [
       // {
       //   tableName: 'BCP_CUSTOMER_JFLOW', // 当前表明
-      //   itemTableName: 'BCP_CUSTOMER_CONTACT_JFLOW', // 需要控制字段的表明
+      //   itemTableName: 'BCP_CUSTOMER_JFLOW', // 需要控制字段的表明
       //   // BCP_CUSTOMER_CONTACT_JFLOW
       //   isShow: [// 所有可见字段,字段返回值需为字符串
       //     '169143', // 联系人
