@@ -272,7 +272,7 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
               isShow: modifiField,
               readonly: edit,
               exeActionButton,
-              // jflowButton
+              jflowButton
             };
             
             // 判重处理
