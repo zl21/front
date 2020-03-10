@@ -176,6 +176,7 @@
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');
             GetTableName('');
+            this.$store.commit('global/updateJflowControlField', []);
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
