@@ -1,6 +1,6 @@
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 
-// 撤销/结束/详情
+// 撤销/结束/作废
 function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
   param.instanceId = instanceId;
