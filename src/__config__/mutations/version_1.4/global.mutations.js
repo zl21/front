@@ -275,7 +275,8 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
-    console.log(this, 444);
+    // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
+
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
@@ -299,9 +300,10 @@ export default {
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
-
+    
+    
+    const routeMapRecord = getSeesionObject('routeMapRecord');
     if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
-      const routeMapRecord = getSeesionObject('routeMapRecord');
       Object.keys(routeMapRecord).map((item) => {
         const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
         if (dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === item) {
@@ -309,6 +311,14 @@ export default {
         }
       });
     }
+
+    // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
+    Object.keys(routeMapRecord).map((item) => {
+      const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
+      if (fromPath) {
+        deleteFromSessionObject('routeMapRecord', item);
+      }
+    });
 
     // 删除规则四：关闭页签时，清除单对象动态路由跳转类型跳转的session中存储的对应关系。
     const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');

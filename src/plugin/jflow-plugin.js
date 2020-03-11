@@ -271,7 +271,8 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
               itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
               isShow: modifiField,
               readonly: edit,
-              exeActionButton
+              exeActionButton,
+              jflowButton
             };
             
             // 判重处理
