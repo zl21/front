@@ -9,6 +9,7 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
+      :jflow-button="buttonsData.data.jflowButton"
       :disable-export="buttonsData.data.DisableEXPORT"
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
@@ -17,6 +18,8 @@
       :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
       :is-main-form="tabPanelsAll"
+      :is-item-table-vertical="buttonsData.data.isItemTableVertical"
+      :back-button="buttonsData.data.backButton"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm
@@ -73,6 +76,10 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
+    <!-- <div v-if="type==='vertical'&&itemInfo.tabrelation==='1:1'">
+      333
+    </div> -->
+
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -104,6 +111,7 @@
       :data-source="tableData.data"
       :type="type"
       :item-info="itemInfo"
+      :jflow-button="buttonsData.data.jflowButton"
       :readonly="buttonsData.data.objreadonly || !getActionModify"
       :objreadonly="objreadonly"
       :status="status"

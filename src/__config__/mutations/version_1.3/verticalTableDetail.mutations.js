@@ -168,10 +168,9 @@ export default {
     }
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    state.itemObjId = data.objId;
-
+    state.itemObjId = data.id;
     // state.instanceId = 1;
-    if (enableJflow() && state.instanceId && this.state.global.JflowControlField.length > 0) { // 加jflow
+    if (enableJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
@@ -273,12 +272,13 @@ export default {
           }
           return a;
         }, []);
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
         if (tableNameFlag) { // jflow修改字段配置为主表
           state.mainFormInfo.formData.data.addcolums = addcolumsData;// 主表赋值逻辑
           // 以下为主表jflow自定义按钮显示逻辑
           if (state.mainFormInfo.buttonsData.data.tabwebact && state.mainFormInfo.buttonsData.data.tabwebact.objbutton.length > 0) {
             const objtabbuttons = state.mainFormInfo.buttonsData.data.tabwebact.objbutton;
-
             let buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
@@ -291,19 +291,36 @@ export default {
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
                 state.mainFormInfo.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;
               }
+
+
+              // jflowButtons有返回值时，将元数据标准以及刷新按钮去除
+              if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
+                // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+                if (state.mainFormInfo.buttonsData.data.tabcmd && state.mainFormInfo.buttonsData.data.tabcmd.prem && state.mainFormInfo.buttonsData.data.tabcmd.prem.length > 0) {
+                  state.mainFormInfo.buttonsData.data.tabcmd.prem = state.mainFormInfo.buttonsData.data.tabcmd.prem.map((item, index) => {
+                    if (JflowControlFieldData[0].readonly.length > 0 && state.mainFormInfo.buttonsData.data.tabcmd.cmds[index] === 'actionMODIFY') { // 如果配置了可编辑字段，则显示保存按钮
+                      item = true;
+                      return item;
+                    }
+                    item = false;
+                    return item;
+                  });
+                }
+                state.mainFormInfo.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
+                state.jflowConfigrefreshButton = true;
+              }
             }
           }
-
+        
 
           // 以下为子表赋值逻辑
-          const { componentAttribute } = state.tabPanels[data.tabIndex];
-          componentAttribute.panelData.isShow = true;
+          // const { componentAttribute } = state.tabPanels[data.tabIndex];
+          // componentAttribute.panelData.isShow = true;
           componentAttribute.panelData.data = data;
         } else {
-          const { componentAttribute } = state.tabPanels[data.tabIndex];
-          componentAttribute.panelData.isShow = true;
           data.addcolums = addcolumsData;
           componentAttribute.panelData.data = data;
+          componentAttribute.buttonsData.data.isItemTableVertical = true;
           if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
             const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
     
@@ -317,12 +334,28 @@ export default {
                 });
               });
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
-                componentAttribute.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;
+                componentAttribute.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
               }
             }
           }
+          if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
+            // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+            if (componentAttribute.buttonsData.data.tabcmd && componentAttribute.buttonsData.data.tabcmd.prem && componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
+              componentAttribute.buttonsData.data.tabcmd.prem = componentAttribute.buttonsData.data.tabcmd.prem.map((item, index) => {
+                // if (JflowControlFieldData[0].readonly.length > 0 && componentAttribute.buttonsData.data.tabcmd.cmds[index] === 'actionMODIFY') { // 如果配置了可编辑字段，则显示保存按钮
+                //   item = true;
+                //   return item;
+                // }
+                item = false;
+                return item;
+              });
+            }
+            componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
+            componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
+            state.jflowConfigrefreshButton = true;
+          }
         }
-
+        
        
         // 处理jflow配置自定义按钮逻辑
       } else {
@@ -336,6 +369,7 @@ export default {
       componentAttribute.panelData.data = data;
     }
   },
+
   updateNewMainTableAddSaveData(state, { data, itemName }) { // 主表新增保存返回信息
     if (data.data) {
       const NewObject = Object.keys(data.data).reduce((newData, key) => {

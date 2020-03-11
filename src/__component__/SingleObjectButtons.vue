@@ -3,6 +3,7 @@
 <template>
   <div
     class="singleObjectButton"
+    :style="{'margin-left': isItemTableVertical ? '17px' : '0px' }"
   >
     <div
       v-if="watermarkImg"
@@ -143,6 +144,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
             return self.buttonClick(type, item);
@@ -177,14 +179,25 @@
       ImportDialog, // 导入弹框
       WaterMark, // 水印组件
     },
+    
     watch: {
-      jflowPluginDataArray: {
+      backButton: {// 原jflow
         handler(val) {
-          if (val) {
-            this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-          }
+          this.dataArray.back = val;
         }
       },
+    
+      jflowButton: {
+        handler(val) {
+          // this.dataArray.jflowPluginDataArray = [];
+          this.dataArray.jflowButton = val;
+        }
+      },
+      // jflowPluginDataArray: {// 原jflow
+      //   handler(val) {
+      //     this.dataArray.jflowPluginDataArray = val;
+      //   }
+      // },
       refreshButtons: {
         handler(val) {
           this.dataArray.refresh = val;
@@ -193,6 +206,7 @@
       tabcmd: {
         handler(val) {
           this.hideBackButton();
+       
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -384,7 +398,9 @@
         return [];
       },
       refreshButtons() {
-        // this.refresh = this.refreshButton;
+        if (this.jflowConfigrefreshButton) {
+          return false;
+        }
         return this.refreshButton;
       },
       tablePage() {
@@ -413,6 +429,14 @@
       }
     },
     props: {
+      backButton: {
+        type: Boolean,
+        default: true
+      }, // 控制返回按钮显示
+      isItemTableVertical: {
+        type: Boolean,
+        default: false
+      }, // 当前是否在1:1面板上下结构子表
       isMainForm: {// 当前主表是否存在表单组件
         type: [Array, Object],
         default: () => {}
@@ -431,6 +455,11 @@
       tabcmd: {// 标准类型按钮
         type: Object,
         default: () => ({})
+      },
+    
+      jflowButton: {// jflow配置按钮
+        type: Array,
+        default: () => ([])
       },
       tabwebact: {// 自定义类型按钮
         type: Object,
@@ -3038,8 +3067,13 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.dataArray.back = this.backButton;
+      if (this.jflowButton.length > 0) {
+        // this.dataArray.jflowPluginDataArray = [];
+        this.dataArray.jflowButton = this.jflowButton;
+      }
       this.hideBackButton();
-         
+      // this.dataArray.jflowButton = this.jflowButton;
       if (!this._inactive) {
         window.addEventListener('jflowClick', this.jflowClick);
         window.addEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
@@ -3096,9 +3130,9 @@
         this.buttonsReorganization(this.tabcmd);
       }
       this.waListButtons(this.tabwebact);
-      if (this.jflowPluginDataArray) {
-        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      }
+      // if (this.jflowPluginDataArray) {
+      //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      // }
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

@@ -20,7 +20,11 @@ function mutipleOperate(url, instanceId, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
       });
     } else {
-      window.vm.$Message.warning(res.data.resultMsg);
+      window.R3message({
+        title: '错误',
+        content: res.data.resultMsg,
+        mask: true
+      });
     }
   });
 }
@@ -42,7 +46,7 @@ function clickFunction(e) {
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
-  
+
   if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
     window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
       instance_id: window.jflowPlugin.objInstanceId,
@@ -66,19 +70,25 @@ function clickFunction(e) {
   const item = e.detail.obj;
   if (item.button !== '4') {
     switch (item.button) {
-      case '-1':
-      case '2': mutipleOperate(item.url, obj.instanceId, buttons, id); break;
-      case '1': window.jflowPlugin.open({
-        control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
-      });
+      case '-1': // 撤销
+      case '7': // 作废
+      case '2': // 结束流程
+        mutipleOperate(item.url, obj.instanceId, buttons, id); 
+        break;  
+      case '1': // 驳回
+        window.jflowPlugin.open({
+          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, returnOption: obj.backNodeIds, buttons, id 
+        });
         break;
-      case '0':
-      case '8':
-      case '3': window.jflowPlugin.open({// 同意和转派
-        control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
-      });
+      case '0': // 同意
+      case '8': // 确认
+      case '3': // 转派
+        window.jflowPlugin.open({// 同意和转派
+          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
+        });
         break;
-      case '5': window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
+      case '5': // 流程进度
+        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
         break;
       case '6': // 重启流程
         restartProcess();
@@ -174,7 +184,7 @@ function CreateButton(obj, buttons, id) {
         clearInterval(stateTimeout);
         const buttonsData = store.state[MODULE_COMPONENT_NAME].mainFormInfo ? JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].mainFormInfo.buttonsData)) : JSON.parse(JSON.stringify(store.state[MODULE_COMPONENT_NAME].tabPanels[0].componentAttribute.buttonsData));
         buttonsData.data.tabcmd.prem = buttonsData.data.tabcmd.prem.map(() => false);
-        if (obj.modifiableFieldName !== null && obj.modifiableFieldName.length > 0) {
+        if (obj.editFeild !== null && obj.editFeild !== '[]') { // 判断是否存在可编辑字段
           buttonsData.data.tabcmd.prem[1] = true;
         } else {
           buttonsData.data.tabcmd.prem[1] = false;

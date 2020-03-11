@@ -268,7 +268,7 @@ export default {
     reject
   }) { // 主表保存
     const {
-      itemObjId, tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
+      tabrelation, itemObjId, tableName, add, objId, type, sataType, itemName, itemCurrentParameter, isreftabs, itemNameGroup, temporaryStoragePath
     } = parame;
     let parames = {};
     if (type === 'add') { // 新增保存参数

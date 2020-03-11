@@ -16,6 +16,7 @@
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
       :is-main-form="mainFormInfo"
+      :jflow-button="buttons"
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
@@ -75,10 +76,19 @@
 
   export default {
     // name: 'VTableDetail',
+    watch: {
+      mainFormInfo: {// 原jflow
+        handler(val) {
+          this.buttons = val.buttonsData.data.jflowButton;
+        },
+        deep: true
+      },
+    },
     data() {
       return {
         currentSingleButtonComponentName: null,
         from: 'singlePage',
+        buttons: []
       };
     },
     computed: {
@@ -87,6 +97,10 @@
         JflowControlField: ({ JflowControlField }) => JflowControlField,
         
       }),
+      maginTableJflowButtons() {
+        console.log(6666, this.mainFormInfo.buttonsData.data.jflowButton);
+        return this.mainFormInfo.buttonsData.data.jflowButton;
+      },
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
           if (this.jflowWaterMark) {

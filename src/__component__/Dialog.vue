@@ -1,4 +1,3 @@
-<!--引入曼卡龙的弹框组件-->
 <template>
   <Modal
     v-model="showModal"
