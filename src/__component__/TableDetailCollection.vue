@@ -3164,11 +3164,20 @@
       },
       inputRegx(cellData) {
         // 输入框正则
-        if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-          return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
-        }
-        if (cellData.type === 'NUMBER' && cellData.webconf && cellData.webconf.ispositive) {
-          return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+        if (cellData.webconf && cellData.webconf.ispositive) {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^[\\-\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+          }
+        } else {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^(\\-|\\+)?\\d{0,10}(\\.[0-9]{0,${cellData.scale})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^(\\-|\\+)?\\d{0,10}(\\.[0-9]{0,2})?$');
+          }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
           return regExp.Capital;
