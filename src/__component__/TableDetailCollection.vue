@@ -271,7 +271,7 @@
       };
     },
     props: {
-    
+
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -794,7 +794,7 @@
       },
       objTabActionSlientForItemTable(data) {
         if (data.detail.type === 'resolve') {
-          this.objTabActionSlientConfirm(this.objTabActionSlientData); 
+          this.objTabActionSlientConfirm(this.objTabActionSlientData);
         }
       },
       dialogMessage(title, contentText, obj) {
@@ -844,7 +844,7 @@
         case 'isJflow':
           this.clickExtraposition(obj);// jflow按钮执行方法
           break;
-          
+
         default:
           break;
         }
@@ -3167,7 +3167,7 @@
         if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
           return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
         }
-        if (cellData.type === 'NUMBER') {
+        if (cellData.type === 'NUMBER' && cellData.webconf && cellData.webconf.ispositive) {
           return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
