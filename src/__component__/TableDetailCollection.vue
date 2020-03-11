@@ -3173,10 +3173,10 @@
           }
         } else {
           if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-            return new RegExp(`^(\\-|\\+)?\\d{0,10}(\\.[0-9]{0,${cellData.scale})?$`);
+            return new RegExp(`^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,${cellData.scale}})?$`);
           }
           if (cellData.type === 'NUMBER') {
-            return new RegExp('^(\\-|\\+)?\\d{0,10}(\\.[0-9]{0,2})?$');
+            return new RegExp('^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,2})?$');
           }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
