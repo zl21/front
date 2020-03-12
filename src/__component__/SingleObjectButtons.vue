@@ -890,8 +890,10 @@
             this.getItemObjForChildTableForm({// 获取1:1面板
               table: tablename, objid: this.itemId, refcolid, tabIndex
             });
-            
-
+            // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
+            this.getObjectTabForMainTable({
+              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], enableRequestItemTable: 'N'
+            });
             const { itemId } = this.$route.params;
             const refTab = this.tabPanel;
             let index = null;
@@ -3047,12 +3049,10 @@
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         const dom = document.querySelector(`#${currentTableName}-loading`);
         if (dom) {
-          console.log('手动关闭loading');
           this.$loading.hide(currentTableName);
         }
       },
       hideListenerLoading(value) { // 根据监听关闭loading
-        console.log('关闭监听loading');
         const currentTableName = this[MODULE_COMPONENT_NAME].split('.')[1];
         // const dom = document.querySelector(`#${currentTableName}-loading`);
         if (value.detail.hideCopyLoading || value.detail.hideLoadingForButton) {

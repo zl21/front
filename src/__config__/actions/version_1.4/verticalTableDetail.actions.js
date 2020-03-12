@@ -40,13 +40,14 @@ export default {
     type,
     tabIndex,
     itemTabelPageInfo,
-    moduleName
+    moduleName,
+    enableRequestItemTable// 不请求子表相关结构
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
       table,
       objid: id,
-      ismaintable: 'y'
+      ismaintable: 'y',
     })).then((res) => {
       if (res.data.code === 0) {
         const resData = res.data.data;
@@ -62,7 +63,7 @@ export default {
           commit('updateMainTabPanelsData', resData, itemTabelPageInfo);
         }
         commit('updateWebConf', resData.webconf);
-        if (resData.reftabs && resData.reftabs.length > 0) {
+        if (resData.reftabs && resData.reftabs.length > 0 && enableRequestItemTable !== 'N') {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           // && !stopItemRequest
