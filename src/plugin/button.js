@@ -46,7 +46,6 @@ let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
 function clickFunction(e) {
-  console.log(e);
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
@@ -101,6 +100,17 @@ function clickFunction(e) {
     }
   }
 }
+
+
+// 触发事件
+function initiateLaunch(event) {
+  if (window.jflowPlugin.objInstanceId) {
+    mutipleOperate(jflowobj.affirmUrl, jflowobj.instanceId, jflowbuttons, jflowid);
+  } else {
+    window.initiateLaunch({ webActionId: event.detail.data.webid });
+  }
+}
+
 // 按钮监听控制
 function buttonAddEventListener(buttons, obj, id) {
   jflowbuttons = buttons;
@@ -109,25 +119,7 @@ function buttonAddEventListener(buttons, obj, id) {
   window.addEventListener('jflowPlugin', clickFunction, this);
 
   // 监听jflow触发按钮响应
-  window.addEventListener('jflowLaunch', (event) => {
-    if (window.jflowPlugin.objInstanceId) {
-      // 获取同意按钮
-      // const button = {
-      //   button: 0,
-      //   name: '同意',
-      //   url: obj.affirmUrl
-      // };
-      // clickFunction({
-      //   detail: {
-      //     obj: button
-      //   }
-      // });
-
-      mutipleOperate(obj.affirmUrl, obj.instanceId, buttons, id);
-    } else {
-      window.initiateLaunch({ webActionId: event.detail.data.webid });
-    }
-  });
+  window.addEventListener('jflowLaunch', initiateLaunch, this);
 }
 
 
@@ -137,6 +129,7 @@ function buttonAddEventListener(buttons, obj, id) {
 function CreateButton(obj, buttons, id) {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
+  window.removeEventListener('jflowLaunch', initiateLaunch, true);
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
