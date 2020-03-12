@@ -39,7 +39,8 @@ export default {
     type,
     tabIndex,
     itemTabelPageInfo,
-    moduleName
+    moduleName,
+    enableRequestItemTable// 不请求子表相关结构
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -63,7 +64,7 @@ export default {
         }
         commit('updateWebConf', resData.webconf);
 
-        if (resData.reftabs && resData.reftabs.length > 0) {
+        if (resData.reftabs && resData.reftabs.length > 0 && enableRequestItemTable !== 'N') {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
