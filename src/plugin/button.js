@@ -43,6 +43,7 @@ let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
 function clickFunction(e) {
+  console.log(e);
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
@@ -108,16 +109,15 @@ function buttonAddEventListener(buttons, obj, id) {
   window.addEventListener('jflowLaunch', (event) => {
     if (window.jflowPlugin.objInstanceId) {
       // 获取同意按钮
-      let button = {};
-      obj.buttons.map((item) => {
-        if (item.button === '0') {
-          button = item;
-        }
-        return item;
-      });
-
+      const button = {
+        button: 0,
+        name: '同意',
+        url: obj.affirmUrl
+      };
       clickFunction({
-        detail: button
+        detail: {
+          obj: button
+        }
       });
     } else {
       window.initiateLaunch({ webActionId: event.detail.data.webid });
