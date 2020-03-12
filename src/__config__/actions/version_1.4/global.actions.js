@@ -6,8 +6,10 @@ export default {
   getHistoryAndFavorite({ commit }) {
     if (enableInitializationRequest()) {
       network.post('/p/cs/getHistoryAndFavorite').then((res) => {
-        const { history, favorite } = res.data.data;
-        commit('updateHistoryAndFavorite', { history, favorite });
+        if (res.data && res.data.data) {
+          const { history, favorite } = res.data.data;
+          commit('updateHistoryAndFavorite', { history, favorite });
+        }
       });
     }
   },

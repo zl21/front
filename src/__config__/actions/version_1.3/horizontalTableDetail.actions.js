@@ -70,6 +70,7 @@ export default {
       if (res.data.code === 0) {
         const formData = res.data.data;
         formData.tabIndex = tabIndex;
+        // formData.objId = formData.data ? formData.data.id : null;
         commit('updateCopyDataForRealdOnly', formData);// 复制按钮操作保存默认数据
         commit('updatePanelData', formData);
       }
@@ -104,6 +105,7 @@ export default {
       if (res.data.code === 0) {
         const formData = res.data.data;
         formData.tabIndex = tabIndex;
+        formData.objId = res.data ? res.data.id : null;
         commit('updatePanelData', formData);
       }
     });
@@ -132,7 +134,7 @@ export default {
     // const { isreftabs } = parame;
     // const { itemNameGroup } = parame;
     const {
-      sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
+      tabrelation, itemObjId, sataType, temporaryStoragePath, itemCurrentParameter, itemName, type, objId, tableName 
     } = parame;
     const sataTypeName = sataType ? sataType.sataType : '';
     let parames = {};
@@ -260,6 +262,36 @@ export default {
               ...value,
               ...itemBeforeLabel
             } 
+          };
+        } else if (tabrelation) {
+          const itemLabelBeforeRes = parame.itemCurrentParameter.defaultLabel;// 子表修改的label
+          const itemModifyResBefore = {};
+          Object.keys(itemModify[itemName]).forEach((item) => {
+            Object.keys(itemLabelBeforeRes[itemName]).forEach((itemBefore) => {
+              if (item === itemBefore) {
+                const obj = {};
+                obj.ID = itemObjId;
+                obj[itemBefore] = itemLabelBeforeRes[itemName][itemBefore];
+                itemModifyResBefore[itemName] = [obj];
+              }
+            });
+          });
+          itemModify[itemName].ID = itemObjId;
+          itemModifyLabel[itemName].ID = itemObjId;
+
+          const itemModifyRes = {}; 
+          const itemModifyResAfter = {};
+
+          itemModifyRes[itemName] = [itemModify[itemName]];
+          itemModifyResAfter[itemName] = [itemModifyLabel[itemName]];
+
+
+          parames = {
+            table: tableName,
+            objid: objId,
+            data: itemModifyRes,
+            after: itemModifyResAfter,
+            before: itemModifyResBefore,
           };
         } else {
           parames = {

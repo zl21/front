@@ -9,7 +9,7 @@
       @on-cancel="cancel"
     >
       <div
-        v-if="type==='0'"
+        v-if="type==='0' || type === '8'"
         class="ApprovelModel"
       >
         <!-- 同意 -->
@@ -73,6 +73,7 @@
 </template>
 <script>
   import mutipleSelectPop from './MutipleSelectPop';
+  import { BacklogData } from '../../plugin/todoList';
 
   export default {
     name: 'ApprovelModel',
@@ -393,7 +394,7 @@
         this.resultData.list = [];
       },
       ok() {
-        if (this.type === '0') {
+        if (this.type === '0' || this.type === '8') {
           this.Agree(); // 同意
         }
         if (this.type === '1') {
@@ -418,12 +419,15 @@
         param.userId = window.jflowPlugin.userInfo.id;
         param.nodeId = window.jflowPlugin.nodeId;
         param.description = this.agreecontent; // 审批意见
+        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
         this.$network.post(this.modalConfig.url, param).then((res) => {
           window.jflowPlugin.open({ control: false });
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
-
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
@@ -432,8 +436,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });
@@ -452,6 +456,11 @@
         param.instanceId = window.jflowPlugin.objInstanceId;
         param.userId = window.jflowPlugin.userInfo.id;
         param.nodeId = window.jflowPlugin.nodeId;
+        param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+        param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+        param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
+        param.pid = window.jflowPlugin.pid;
+        param.moduleId = window.jflowPlugin.moduleId;
         // if (this.returnOption === "") {
         //   this.$Message.warning("驳回节点不能为空");
         //   window.jflowPlugin.open({ control: false });
@@ -465,6 +474,7 @@
           if (res.data.resultCode === 0) {
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
@@ -473,8 +483,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });
@@ -499,6 +509,7 @@
             this.$Message.success(res.data.resultMsg);
             this.selectRow = {};
             this.modalConfig.buttons(window.jflowPlugin.itemId);
+            BacklogData(window.jflowPlugin.store);
             const children = document.getElementsByClassName('R3-button-group')[0].children;
             for (const child of children) {
               if (child.getAttribute('id') === 'refresh') {
@@ -507,8 +518,8 @@
               }
             }
           } else {
-            this.$Modal.fcWarning({
-              title: '警告',
+            this.$Modal.fcError({
+              title: '错误',
               content: res.data.resultMsg,
               mask: true
             });

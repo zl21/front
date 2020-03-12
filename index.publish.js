@@ -14,6 +14,7 @@ import WaterMark from './src/__component__/WaterMark';
 import SearchForm from './src/__component__/form/SearchForm';
 import FilterTree from './src/__component__/Tree/FilterTree';
 import SelectTree from './src/__component__/Tree/SelectTree';
+import DocFile from './src/__component__/docfile/DocFileComponent.vue';
 
 
 import { menuClick } from './src/__config__/event.config';
@@ -26,8 +27,9 @@ const validateConfig = config => ({
 
 export default {
   version: '1.8.1',
-  temporaryVersion: '2020.03.03.22.46',
-  user: '临时测试包-上海',                     
+  temporaryVersion: '2.0.6',
+  packageTime: '2020.03.09.16.12', 
+  user: 'zhixiao',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -42,6 +44,11 @@ export default {
    *   externalModules: { // 项目自定义界面组件入口
    *      keyOne: VueComponentOne,
    *      keyTwo: VueComponentTwo,
+   *      ...
+   *   }, // 如无自定义界面，此配置项可不传参。
+   *   externalTreeDatas: { // 树形结构列表配置数据信息入口
+   *      keyOne: ()=>{},
+   *      keyTwo: ()=>{},
    *      ...
    *   }, // 如无自定义界面，此配置项可不传参。
    *   externalModals: {  // 项目自定义弹框（模态框）组件
@@ -107,5 +114,6 @@ export default {
     SearchForm,
     FilterTree,
     SelectTree,
+    DocFile
   }
 };

@@ -40,14 +40,26 @@
         @click="btnclick('custom', a)"
         v-text="a.webdesc" 
       /> -->
-      <Button
+      <!-- jflow插件按钮-->
+      <!-- <Button
         v-for="(item) in dataArray.jflowPluginDataArray"
         :key="item.button"
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
         v-text="item.name" 
+      /> -->
+      <!-- jflow配置按钮-->
+      <Button
+        v-for="(item) in dataArray. jflowButton"
+        :key="item.button"
+        :ref="item"
+        type="fcdefault"
+        @click="btnclick('extraposition', item)"
+        v-text="item.name" 
       />
+    
+     
       <Dropdown
         v-if="dataArray.printValue"
         id="print"
@@ -176,6 +188,7 @@
     },
     data() {
       return {
+      
         dialogComponentName: null,
         dialogConfig: {
           title: '提示',

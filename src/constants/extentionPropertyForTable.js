@@ -245,6 +245,13 @@ export default [
     description: '表的数据由定制服务查询写入，而非标准的数据'
   },
   {
+    name: '树界面配置',
+    key: 'menudisplay',
+    type: 'radio',
+    enumerateValue: [{ text: '树界面', value: "tree" }],
+    description: '列表界面使用树界面'
+  },
+  {
     name: '前端自定义参数',
     key: 'webconf',
     type: 'input',

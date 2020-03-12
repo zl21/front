@@ -107,7 +107,8 @@
             item: {
               type: 'DatePicker',
               title: '处理时间',
-              filed: 'createTime'
+              filed: 'createTime',
+              value: [new Date(new Date(new Date().toLocaleDateString()).getTime()).minusDays(29).format('yyyy-MM-dd hh:mm'), new Date().format('yyyy-MM-dd hh:mm')]
             }
           }
         ],
@@ -116,7 +117,7 @@
           page: 1,
           pageSize: 10,
           userId: window.jflowPlugin.userInfo.id,
-          createTime: []
+          createTime: [new Date(new Date(new Date().toLocaleDateString()).getTime()).minusDays(29), new Date()]
         },
 
         // 表格数据

@@ -16,6 +16,7 @@
       :tabwebact="mainFormInfo.buttonsData.data.tabwebact"
       :item-name="getItemName"
       :is-main-form="mainFormInfo"
+      :jflow-button="buttons"
     />
     <div class="verticalTableDetailContent">
       <!-- 上下结构主表 form-->
@@ -24,8 +25,8 @@
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault"
-        :readonly="mainFormInfo.buttonsData.data.objreadonly"
+        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault||objReadonlyForJflow"
+        :readonly="mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
         :master-id="$route.params.itemId"
@@ -65,7 +66,8 @@
   // import getComponentName from '../__utils__/getModuleName';
   import tabComponent from './SingleObjectTabComponent';
   import {
-    MODULE_COMPONENT_NAME
+    MODULE_COMPONENT_NAME,
+    enableJflow 
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
@@ -74,16 +76,31 @@
 
   export default {
     // name: 'VTableDetail',
+    watch: {
+      mainFormInfo: {// 原jflow
+        handler(val) {
+          this.buttons = val.buttonsData.data.jflowButton;
+        },
+        deep: true
+      },
+    },
     data() {
       return {
         currentSingleButtonComponentName: null,
         from: 'singlePage',
+        buttons: []
       };
     },
     computed: {
       ...mapState('global', {
         isRequest: ({ isRequest }) => isRequest,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
+        
       }),
+      maginTableJflowButtons() {
+        console.log(6666, this.mainFormInfo.buttonsData.data.jflowButton);
+        return this.mainFormInfo.buttonsData.data.jflowButton;
+      },
       resetWaterMark() {
         if (this.mainFormInfo.buttonsData.data.watermarkimg) {
           if (this.jflowWaterMark) {
@@ -96,6 +113,26 @@
         }
         return '';
       },
+      objReadonlyForJflow() {
+        // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
+        if (enableJflow()) {
+          let flag = false;
+          this.tabPanel.map((item) => {
+            if (this.JflowControlField.length > 0) {
+              this.JflowControlField.map((jflowData) => {
+                // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+                if (item.tablename === jflowData.itemTableName && (item.tabrelation === '1:1' || item.tablename === this.$route.params.tableName)) {
+                  // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
+                  flag = true;
+                } 
+              });
+            }
+          });
+          return flag;
+        }
+        return false;
+      },
+
       tabPanels() {
         const arr = [];
         this.tabPanel.forEach((item) => {
@@ -105,8 +142,8 @@
           obj.componentAttribute.changeData = this.updateData[item.tablename].changeData;
           if (this.mainFormInfo.buttonsData) {
             obj.componentAttribute.isreftabs = this.mainFormInfo.buttonsData.data.isreftabs;
-            obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly;
-            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly;
+            obj.componentAttribute.objreadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.childReadonly || this.objReadonlyForJflow;
+            obj.componentAttribute.formReadonly = this.mainFormInfo.buttonsData.data.objreadonly || this.objReadonlyForJflow;
             obj.componentAttribute.status = this.mainFormInfo.buttonsData.data.status;
           }
           obj.componentAttribute.childTableNames = this.childTableNames;

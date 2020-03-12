@@ -137,9 +137,13 @@ export default {
                 a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${name}.${id}`] = c.label;
               }
             }
-          } else if (c.type === ('table' || 'tree')) {
-          // 标准列表的处理
+          } else if (c.type === 'table') {
+            // 标准列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+          } else if (c.type === 'tree') {
+            // 树形结构列表的处理
+            a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            state.treeTableListData.push(c);
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -151,7 +155,7 @@ export default {
         .reduce((a, c) => a.concat(c))
         .map(d => d.children)
         .reduce((a, c) => a.concat(c))
-        .filter(d => d.type === 'table' || d.type === 'action')
+        .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
         .reduce((a, c) => {
           let menuType = '';
           if (c.url) {
@@ -168,7 +172,6 @@ export default {
           return a;
         }, {});
     }
-
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -272,6 +275,8 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
+
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
@@ -295,9 +300,10 @@ export default {
     });
     // 删除规则三：关闭页签时，清除动态路由跳转类型跳转的session中存储的对应关系。
     const isDynamicRouting = Boolean(window.sessionStorage.getItem('dynamicRoutingIsBack'));// 动态路由跳转的单对象界面返回列表界面标记
-
+    
+    
+    const routeMapRecord = getSeesionObject('routeMapRecord');
     if (!isDynamicRouting) { // 非动态路由返回之前的关闭tab需清除routeMapRecord对应关系，动态路由返回的routeMapRecord对应关系在返回监听时刷新接口之后清除
-      const routeMapRecord = getSeesionObject('routeMapRecord');
       Object.keys(routeMapRecord).map((item) => {
         const dynamicRoutingIsBackForDeleteValue = getSeesionObject('dynamicRoutingIsBackForDelete');
         if (dynamicRoutingIsBackForDeleteValue.keepAliveModuleName === item) {
@@ -305,6 +311,14 @@ export default {
         }
       });
     }
+
+    // 删除规则五： 如果来源为插件界面，关闭当前tab时，应清除dynamicRoutingIsBack标记，以及dynamicRoutingIsBackForDelete内存储的当前表的关系
+    Object.keys(routeMapRecord).map((item) => {
+      const fromPath = routeMapRecord[item].substring(1, 7) === 'PLUGIN';
+      if (fromPath) {
+        deleteFromSessionObject('routeMapRecord', item);
+      }
+    });
 
     // 删除规则四：关闭页签时，清除单对象动态路由跳转类型跳转的session中存储的对应关系。
     const routeMapRecordForSingleObject = getSeesionObject('routeMapRecordForSingleObject');
@@ -393,6 +407,7 @@ export default {
         path,
         query: { isBack: true }
       };
+
       router.push(routeInfo);
     }
   },
@@ -521,6 +536,9 @@ export default {
   updateModifySearchFoldnum(state, data) {
     state.changeSearchFoldnum = data;
   },
+  updateJflowControlField(state, data) {
+    state.JflowControlField = data;
+  }
 
   
 };
