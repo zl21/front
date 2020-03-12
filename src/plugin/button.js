@@ -6,6 +6,9 @@ function mutipleOperate(url, instanceId, buttons, id) {
   param.instanceId = instanceId;
   param.userId = window.jflowPlugin.userInfo.id;
   param.nodeId = window.jflowPlugin.nodeId;
+  param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+  param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+  param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
   window.jflowPlugin.axios.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
@@ -109,16 +112,18 @@ function buttonAddEventListener(buttons, obj, id) {
   window.addEventListener('jflowLaunch', (event) => {
     if (window.jflowPlugin.objInstanceId) {
       // 获取同意按钮
-      const button = {
-        button: 0,
-        name: '同意',
-        url: obj.affirmUrl
-      };
-      clickFunction({
-        detail: {
-          obj: button
-        }
-      });
+      // const button = {
+      //   button: 0,
+      //   name: '同意',
+      //   url: obj.affirmUrl
+      // };
+      // clickFunction({
+      //   detail: {
+      //     obj: button
+      //   }
+      // });
+
+      mutipleOperate(obj.affirmUrl, obj.instanceId, buttons, id);
     } else {
       window.initiateLaunch({ webActionId: event.detail.data.webid });
     }
