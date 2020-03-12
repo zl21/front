@@ -103,6 +103,26 @@ function buttonAddEventListener(buttons, obj, id) {
   jflowobj = obj;
   jflowid = id;
   window.addEventListener('jflowPlugin', clickFunction, this);
+
+  // 监听jflow触发按钮响应
+  window.addEventListener('jflowLaunch', (event) => {
+    if (window.jflowPlugin.objInstanceId) {
+      // 获取同意按钮
+      let button = {};
+      obj.buttons.map((item) => {
+        if (item.button === '0') {
+          button = item;
+        }
+        return item;
+      });
+
+      clickFunction({
+        detail: button
+      });
+    } else {
+      window.initiateLaunch({ webActionId: event.detail.data.webid });
+    }
+  });
 }
 
 
