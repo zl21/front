@@ -3176,7 +3176,7 @@
             return new RegExp(`^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,${cellData.scale}})?$`);
           }
           if (cellData.type === 'NUMBER') {
-            return new RegExp('^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,2})?$');
+            return new RegExp('^(\\-|\\+)?\\d{0,20}?$');
           }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
