@@ -271,7 +271,7 @@
       };
     },
     props: {
-    
+
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -794,7 +794,7 @@
       },
       objTabActionSlientForItemTable(data) {
         if (data.detail.type === 'resolve') {
-          this.objTabActionSlientConfirm(this.objTabActionSlientData); 
+          this.objTabActionSlientConfirm(this.objTabActionSlientData);
         }
       },
       dialogMessage(title, contentText, obj) {
@@ -844,7 +844,7 @@
         case 'isJflow':
           this.clickExtraposition(obj);// jflow按钮执行方法
           break;
-          
+
         default:
           break;
         }
@@ -3164,11 +3164,20 @@
       },
       inputRegx(cellData) {
         // 输入框正则
-        if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-          return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
-        }
-        if (cellData.type === 'NUMBER') {
-          return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+        if (cellData.webconf && cellData.webconf.ispositive) {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^[\\-\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+          }
+        } else {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,${cellData.scale}})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^(\\-|\\+)?\\d{0,20}?$');
+          }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
           return regExp.Capital;
