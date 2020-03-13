@@ -188,7 +188,6 @@
               iFrameForLinkPage.style.width = '100%';
               iFrameForLinkPage.style.height = '100%';
               iFrameForLinkPage.style.zIndex = '10';
-              iFrameForLinkPage.style.background = 'red';
               iFrameForLinkPage.style.position = 'absolute';
               iFrameForLinkPage.style.top = '0';
               iFrameForLinkPage.style.left = '0';

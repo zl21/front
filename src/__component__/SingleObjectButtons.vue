@@ -911,7 +911,7 @@
           //   // 获取子表表单
           // } else {
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], vuedisplay: this.itemInfo.vuedisplay
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
           // }
         }

@@ -40,7 +40,6 @@ export default {
     tabIndex,
     itemTabelPageInfo,
     moduleName,
-    vuedisplay
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -72,6 +71,7 @@ export default {
             // if (resData.reftabs[0].webact) { // 自定义tab全定制，tab切换时不需要请求
             //   webactType = resData.reftabs[0].webact.substring(0, resData.reftabs[0].webact.lastIndexOf('/')).toUpperCase();
             // }
+            const { vuedisplay } = resData.reftabs[tabIndex];
             if (vuedisplay !== 'TabItem') {
               const getObjectTabPromise = new Promise((rec, rej) => {
                 if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
