@@ -9,6 +9,7 @@
       :item-name-group="childTableNames"
       :item-name="tableName"
       :tabcmd="buttonsData.data.tabcmd"
+      :jflow-button="buttonsData.data.jflowButton"
       :disable-export="buttonsData.data.DisableEXPORT"
       :item-table-check-func="itemTableCheckFunc"
       :tabwebact="buttonsData.data.tabwebact"
@@ -17,6 +18,8 @@
       :clear-item-table-search-value="clearItemTableSearchValue"
       :isreftabs="isreftabs"
       :is-main-form="tabPanelsAll"
+      :is-item-table-vertical="buttonsData.data.isItemTableVertical"
+      :back-button="buttonsData.data.backButton"
     />
     <!-- 子表表格新增区域form -->
     <compositeForm
@@ -73,12 +76,16 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
+    <!-- <div v-if="type==='vertical'&&itemInfo.tabrelation==='1:1'">
+      333
+    </div> -->
+
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
       :object-type="type"
-      :objreadonly="objreadonly"
-      :readonly="formReadonly"
+      :objreadonly="itemReadOnlyForJflow"
+      :readonly="itemReadOnlyForJflow"
       :default-set-value="changeData"
       :master-name="$route.params.tableName"
       :master-id="$route.params.itemId"
@@ -104,6 +111,7 @@
       :data-source="tableData.data"
       :type="type"
       :item-info="itemInfo"
+      :jflow-button="buttonsData.data.jflowButton"
       :readonly="buttonsData.data.objreadonly || !getActionModify"
       :objreadonly="objreadonly"
       :status="status"
@@ -124,7 +132,8 @@
   /* eslint-disable keyword-spacing */
 
   import Vue from 'vue';
-  import { mapMutations } from 'vuex';
+  import { mapMutations, mapState, } from 'vuex';
+
   import router from '../__config__/router.config';
   import tableDetailCollection from './TableDetailCollection';
   import singleObjectButtons from './SingleObjectButtons';
@@ -135,7 +144,9 @@
   import CustomizeModule from '../__config__/customize.config';
 
 
-  import { KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME } from '../constants/global';
+  import {
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow 
+  } from '../constants/global';
 
   const customizeModules = {};
   Object.keys(CustomizeModule).forEach((key) => {
@@ -257,6 +268,26 @@
     },
     inject: [MODULE_COMPONENT_NAME],  
     computed: { 
+      ...mapState('global', {
+        objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
+      }),
+      itemReadOnlyForJflow() {
+        let flag = null;
+        if(enableJflow() && this.objreadonlyForJflow.length > 0) {
+          const { tableName } = router.currentRoute.params;
+          this.objreadonlyForJflow.map((item) => {
+            if(item.tableName === tableName && item.itemTableName === this.tableName) {
+              flag = item.readonly;
+            }else{
+              flag = this.objreadonly;
+            }
+          });
+        }else{
+          flag = this.objreadonly;
+        }
+        return flag;
+      }, 
+
       tabPanelsAll() {
         return this.$store.state[this[MODULE_COMPONENT_NAME]].tabPanels;
       },
@@ -801,6 +832,7 @@
     .verticalFormPanel {
       margin: 10px 16px;
       flex: 1;
+      overflow: auto;
     }
     .objectTable {
     }

@@ -52,6 +52,7 @@
     mounted() {
       this.init();
       this.textHtml = this.valuedata;
+      this.editor.txt.html(this.textHtml);
     },
     computed: {
       itemData() {
@@ -59,9 +60,8 @@
       }
     },
     watch: {
-      valuedata(val) {
+      valuedata() {
         this.textHtml = this.valuedata;
-        this.editor.txt.html(this.textHtml);
       }
 
     },

@@ -21,7 +21,8 @@ let store = {};
 let userInfo = {}; // 用户信息
 let configurationFlag = false; // 是否是直接访问但对象界面  为true时按照配置了流程图的逻辑处理
 let jflowIp = ''; // jflow项目的ip
-let modifiableFieldName = []; // jflow可修改字段名
+let modifiableFieldName = []; // jflow可显示字段名
+let editFeild = []; // 可编辑字段
 let instanceId = null; // 流程id
 let closeJflowIcon = false; // 是否是tab展示
 let businessStatus = 0; // 流程状态  -2时正在发起流程
@@ -216,12 +217,21 @@ function thirdlogin() { // 三方登录  获取accessToken
   });
 }
 
-async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
+/* 
+  id:明细id
+  pid:主表id
+  flag: 是否刷新按钮
+  tableName: 主表表名
+  active: 当前表表名
+  isApprover: 消息中心参数
+*/
+async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
       userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
-      businessType: pid || router.currentRoute.params.tableId
+      businessType: pid || router.currentRoute.params.tableId,
+      isApprover: isApprover || router.currentRoute.query.isApprover
     })
       .then((res) => {
         if (res.data.resultCode === 0) {
@@ -239,7 +249,59 @@ async function jflowButtons(id, pid, flag) { // jflow按钮逻辑处理
               mask: true
             });
           }
-          modifiableFieldName = res.data.data && res.data.data.modifiableField ? res.data.data.modifiableField.split(',') : [];
+
+          // 更新子表的数据字段以及按钮控制  在流程中的时候
+          if (res.data.data.businessStatus === -2 || res.data.data.instanceId) {
+            let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
+            const modifiField = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField).map(item => item.ID) : [];
+            const edit = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild).map(item => item.ID) : [];
+            const exeActionButton = res.data.data && res.data.data.visibleBt ? res.data.data.visibleBt : [];
+            const jflowButton = res.data.data && res.data.data.buttons ? res.data.data.buttons.map((item) => {
+              item.isJflow = true;
+              return item;
+            }) : [];
+            jflowButton.push({
+              button: 'fresh',
+              name: '刷新',
+              url: '',
+              isJflow: true
+            });
+            const obj = {
+              tableName: tableName || router.currentRoute.params.tableName,
+              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+              isShow: modifiField,
+              readonly: edit,
+              exeActionButton,
+              jflowButton
+            };
+            
+            // 判重处理
+            JflowControlField = JflowControlField.filter((item) => {
+              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+                return item;
+              }
+            });
+
+            JflowControlField.push(obj);
+            window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          } else { // 不在流程中去除相对应的配置
+            let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
+            const obj = {
+              tableName: tableName || router.currentRoute.params.tableName,
+              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+            };
+            // 判断相对应的配置然后去除掉
+            JflowControlField = JflowControlField.filter((item) => {
+              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+                return item;
+              }
+            });
+            window.jflowPlugin.store.commit('global/updateJflowControlField', JflowControlField);
+          }
+
+          
+          modifiableFieldName = res.data.data && res.data.data.modifiableField ? JSON.parse(res.data.data.modifiableField) : [];
+          editFeild = res.data.data && res.data.data.editFeild ? JSON.parse(res.data.data.editFeild) : [];
           instanceId = res.data.data && res.data.data.instanceId ? res.data.data.instanceId : null;
           businessStatus = res.data.data.businessStatus;
           if (!flag) {
@@ -258,7 +320,9 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE, to.query.isApprover).then((res) => {
+          //  todo
+          // 设置global里面的可编辑字段和可见字段的控制
           next();
           setTimeout(() => {
             if (res.data.resultCode === 0) {
@@ -276,19 +340,26 @@ function RoutingGuard(router) { // 路由守卫
     }
   });
 }
-
 async function jflowsave(flag, request) {
   await new Promise((resolve, reject) => {
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
-    }
-    const response = changeDetail;
+    // console.log(request.data.ids);
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
+    const response = request.data;
+
     axios.post('/jflow/p/cs/process/launch',
       {
         // eslint-disable-next-line no-nested-ternary
-        businessCodes: (response.ids || response.objids) ? (response.ids || response.objids) : router.currentRoute.params.itemId,
+        businessCodes: (response.ids || response.objids) ? (response.ids.join(',') || response.objids) : router.currentRoute.params.itemId,
         businessType: router.currentRoute.params.tableId,
         businessTypeName: router.currentRoute.params.tableName,
         initiator: userInfo.id,
@@ -299,6 +370,14 @@ async function jflowsave(flag, request) {
         businessUrl: request.url,
         ruleField: 'V'
       }).then((res) => {
+      if (res.data.resultCode !== 0) {
+        window.R3message({
+          title: '错误',
+          content: res.data.resultCode,
+          mask: true
+        });
+        return; 
+      }
       DispatchEvent('jflowClick', {
         detail: {
           type: 'clearSubmit'
@@ -311,7 +390,7 @@ async function jflowsave(flag, request) {
           content: res.data.notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return; 
       }
       if (res.data.data.records && res.data.data.records[0].notice) {
@@ -320,7 +399,7 @@ async function jflowsave(flag, request) {
           content: res.data.data.records[0].notice,
           mask: true
         });
-        reject(response);
+        reject(res);
         return;
       }
       if (res.data.resultCode === 0) {
@@ -360,13 +439,19 @@ async function jflowsave(flag, request) {
 
 async function checkProcess(request) { // check校验
   await new Promise((resolve, reject) => {
-    console.log(request);
-    const params = new URLSearchParams(request.data);
-    const changeDetail = {};
-    for (const pair of params.entries()) {
-      changeDetail[pair[0]] = pair[1];
-    }
-    const response = changeDetail;
+    // const params = new URLSearchParams(request.data);
+    // const changeDetail = {};
+    // if (window.navigator.userAgent.indexOf('MSIE') >= 1) {
+    //   for (const pair in params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // } else {
+    //   for (const pair of params.entries()) {
+    //     changeDetail[pair[0]] = pair[1];
+    //   }
+    // }
+    
+    const response = request.data;
     let bodyObj = {};
     if (Version() === '1.4') {
       // 判断是否为动作定义
@@ -383,7 +468,7 @@ async function checkProcess(request) { // check校验
       } else {
         bodyObj = {
           businessType: router.currentRoute.params.tableId,
-          businessCheckData: response.ids.split(',')
+          businessCheckData: response.ids
         };
       }
     } 
@@ -497,6 +582,12 @@ async function checkProcess(request) { // check校验
           resolve();
         } else {
           resolve();
+          window.R3message({
+            title: '错误',
+            content: res.data.resultMsg,
+            mask: true
+          });
+          reject();
         }
       });
   });
@@ -558,7 +649,7 @@ function AxiosGuard(axios) { // axios拦截
       
 
       // 判断是否点击了列表配置按钮，是的话在执行前先调用check接口
-      if (window.localStorage.getItem('checkUrls')) {
+      if (window.localStorage.getItem('checkUrls') && window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE') {
         let checkUrls = [];
         JSON.parse(window.localStorage.getItem('checkUrls')).map((item) => {
           if (item.businessType === router.currentRoute.params.tableId) {
@@ -581,13 +672,15 @@ function AxiosGuard(axios) { // axios拦截
   axios.interceptors.response.use(async (response) => {
     // let config=AxiosGuard(axios);
     if (response.data.code === 0) { // 请求成功
-      if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
-        response.data.data = modifyFieldConfiguration(response.data.data);
-      }
+      // 控制主表字段可见以及可编辑
+      // if (response.config.url.endsWith('/p/cs/getObject') && ((configurationFlag && instanceId) || businessStatus === -2)) { // 获取单对象的字段集合时根据jflow返回值修改对应字段
+      //   response.data.data = modifyFieldConfiguration(response.data.data);
+      // }
       if (response.config.url.endsWith('/p/cs/objectTab')) {
-        if (configurationFlag && instanceId) {
-          response.data.data.objreadonly = false;
-        }
+        // 控制子表为不可编辑
+        // if (configurationFlag && instanceId) {
+        //   response.data.data.objreadonly = false;
+        // }
         // 主表的按钮获取
         if (response.config.data.indexOf('ismaintable=y') >= 0) {
           const tabcmd = response.data.data.tabcmd;
@@ -624,26 +717,48 @@ function AxiosGuard(axios) { // axios拦截
 
 function modifyFieldConfiguration(data) { // 根据jflow修改相应的字段配置
   if (instanceId || businessStatus === -2) {
-    data.addcolums.map((item) => {
+    data.addcolums = data.addcolums.filter((item) => {
       if (item.childs) {
-        item.childs.map((temp) => {
-          if (modifiableFieldName.indexOf(String(temp.colid)) >= 0 && !temp.readonly) {
-            temp.readonly = false;
-          } else {
+        item.childs = item.childs.filter((temp) => {
+          if (fieldCheck(temp.colid).length > 0 || modifiableFieldName.length === 0) {
             temp.readonly = true;
+            if (editFeild.length === 0) {
+              temp.readonly = true;
+            } else if (editFeildCheck(temp.colid).length > 0) {
+              temp.readonly = false;
+            }
+            return temp;
           }
-          return temp;
         });
-      } else if (modifiableFieldName.indexOf(String(item.child.colid)) >= 0 && !item.child.readonly) {
-        item.child.readonly = false;
-      } else {
+        return item;
+      } if (fieldCheck(item.child.colid).length > 0 || modifiableFieldName.length === 0) {
         item.child.readonly = true;
+        if (editFeild.length === 0) {
+          item.child.readonly = true;
+        } else if (editFeildCheck(item.child.colid).length > 0) {
+          item.child.readonly = false;
+        }
+        return item;
       }
-      
-      return item;
     });
   }
   return data;
+}
+
+function fieldCheck(colid) { // 可见字段判断
+  return modifiableFieldName.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
+}
+
+function editFeildCheck(colid) { // 可编辑字段判断
+  return editFeild.filter((item) => {
+    if (String(colid) === String(item.ID)) {
+      return item;
+    }
+  });
 }
 
 
@@ -666,6 +781,106 @@ function createComponent() { // 创建跟节点实例
   window.jflowPlugin.jflowIp = jflowIp;
 }
 
+function jflowRefresh() { // 刷新业务系统
+  DispatchEvent('jflowClick', {
+    detail: {
+      type: 'refresh'
+    }
+  });
+}
+
+/* data为对象,为了动作定义类型数据处理
+{
+  webActionId:动作定义id,
+  moduleId:'',
+  startNodeId: '',
+  customizeBody: '',
+  assignedNodes: '',
+  assignOpinion: ''
+}
+
+
+*/
+
+function initiateLaunch(data) { // 业务系统流程发起
+  return new Promise((resolve, reject) => {
+    let obj = {
+      // eslint-disable-next-line no-nested-ternary
+      businessCodes: router.currentRoute.params.itemId,
+      businessType: router.currentRoute.params.tableId,
+      businessTypeName: router.currentRoute.params.tableName,
+      initiator: userInfo.id,
+      userName: userInfo.name,
+      instanceId,
+      initiatorName: userInfo.name,
+      changeUser: userInfo.id,
+      // webActionId: data.webid,
+      businessTypeText: window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' ? window.jflowPlugin.store.state.global.activeTab.label : window.jflowPlugin.store.state.global.activeTab.label.substr(0, window.jflowPlugin.store.state.global.activeTab.label.length - 2),
+      moduleId: data.moduleId,
+      // startNodeId: data.startNodeId,
+      // customizeBody: data.customizeBody,
+      // assignedNodes: data.assignedNodes
+    };
+
+    obj = Object.assign(obj, data);
+    axios.post('/jflow/p/cs/process/launch', obj).then((res) => {
+      if (window.jflowPlugin.router.currentRoute.path.split('/')[2] === 'TABLE' && res.data.resultCode === 0 && res.data.notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.notice,
+          mask: true
+        });
+        resolve(res);
+        return; 
+      }
+      if (res.data.data.records && res.data.data.records[0].notice) {
+        window.R3message({
+          title: '错误',
+          content: res.data.data.records[0].notice,
+          mask: true
+        });
+        resolve(res);
+        return;
+      }
+      if (res.data.resultCode === 0) {
+        if (res.objids) {
+          window.R3message({
+            title: '提示',
+            content: '请稍等,正在审批······',
+            mask: true
+          });
+        }
+        instanceId = res.data.data.instanceId;
+
+        const type = router.currentRoute.path.split('/')[3];// 获取组件类型
+        if (type === 'H' || type === 'V') {
+          jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 流程发起成功刷新界面
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
+              }
+            });
+          });
+        }
+
+        DispatchEvent('jflowEvent', {
+          detail: {
+            type: 'search'
+          }
+        });
+        resolve(res);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function jflowLaunch(event) {
+  initiateLaunch({ webActionId: event.detail.data.webid });
+}
+
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
@@ -683,6 +898,12 @@ const install = function install(Vue, options = {}) {
     createComponent();
 
     Vue.prototype.$network = network;
+
+    // 监听jflow触发按钮响应
+    window.addEventListener('jflowLaunch', jflowLaunch, this);
+    
+    window.initiateLaunch = initiateLaunch;
+    window.jflowRefresh = jflowRefresh;
   }
 };
 

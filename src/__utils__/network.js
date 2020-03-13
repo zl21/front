@@ -25,7 +25,6 @@ const matchGateWay = (url) => {
   const { tableName, customizedModuleName } = router.currentRoute.params;
   const globalServiceId = window.sessionStorage.getItem('serviceId');
   const serviceIdMap = Object.assign({}, store.state.global.serviceIdMap, JSON.parse(window.sessionStorage.getItem('serviceIdMap')));
-
   // eslint-disable-next-line no-empty
   if (!enableGateWay()) {
     return undefined;
@@ -39,6 +38,9 @@ const matchGateWay = (url) => {
   if (tableName || tableNameForGet) {
     if (serviceIdMap[tableName || tableNameForGet] !== 'undefined') {
       const serviceIdMapApi = serviceIdMap[tableName || tableNameForGet];
+      if (tableNameForGet) {
+        tableNameForGet = '';
+      }
       return serviceIdMapApi || undefined;
     }
   } else if (customizedModuleName) {
@@ -359,6 +361,7 @@ function NetworkConstructor() {
             actionUrls.action.every((jflowUrl) => {
               if (jflowUrl === url && router.currentRoute.params.tableId === actionUrls.businessType) {
                 flag = true;
+                console.log(44444, matchedUrl, config);
                 return axios.post(matchedUrl, config);
               }
 
@@ -378,6 +381,7 @@ function NetworkConstructor() {
     pendingRequestMap[requestMd5] = {
       reqTime: now.getTime()
     };
+
     return axios.post(matchedUrl, config);
   };
 

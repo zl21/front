@@ -230,7 +230,7 @@ export default (router) => {
             label: `${store.state.global.keepAliveLabelMaps[originModuleName]}${labelSuffix[dynamicModuleTag]}`,
             keepAliveModuleName,
             tableName,
-            routeFullPath: to.path,
+            routeFullPath: to.fullPath, // 由to.path改为to.fullPath为取带query的路径
             routePrefix
           },
           index: existModuleIndex

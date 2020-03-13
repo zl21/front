@@ -3,44 +3,67 @@
 <template>
   <div
     :id="buttons.tableName"
-    class="StandardTableListRootDiv"
+    class="standarTableListContent"
   >
-    <ButtonGroup
-      :data-array="buttons.dataArray"
-      :id-array="idArray"
-      :search-datas="dataProcessing()"
-      @buttonClick="buttonClick"
-      @clearSelectIdArray="clearSelectIdArray"
+    <div
+      v-if="isTreeList"
+      class="treeSwitch"
+      :style="{ left: !treeShow ? '5px' : '245px' }"
+      @click="treeShow = !treeShow"
+    >
+      <i
+        v-if="!treeShow"
+        class="iconfont iconbj_left"
+      />
+      <i
+        v-if="treeShow"
+        class="iconfont iconbj_right"
+      />
+    </div>
+    <tree
+      v-if="isTreeList"
+      :tree-data="treeConfigData"
+      @menuTreeChange="menuTreeChange"
     />
-    <FormItemComponent
-      ref="FormItemComponent"
-      :form-items-data="formItems.data"
-      :form-item-lists="formItemsLists"
-      :default-spread="changeSearchFoldnum.switchValue"
-      :default-column="4"
-      :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
-      @formDataChange="formDataChange"
-    />
-    <AgTable
-      ref="agTableElement"
-      :style="agTableElementStyles"
-      :page-attribute="pageAttribute"
-      :datas="ag.datas"
-      :css-status="ag.status4css"
-      :legend="ag.status4css"
-      :user-config-for-ag-table="userConfigForAgTable"
-      :on-page-change="onPageChange"
-      :on-page-size-change="onPageSizeChange"
-      :on-selection-changed="onSelectionChanged"
-      :on-row-double-click="onRowDoubleClick"
-      :on-sort-changed="onSortChange"
-      :on-column-moved="onColumnMoved"
-      :on-column-pinned="onColumnPinned"
-      :on-column-visible-changed="onColumnVisibleChanged"
-      :on-cell-single-click="onCellSingleClick"
-      :is-common-table="commonTable"
-      @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-    />
+    <div class="StandardTableListRootDiv">
+      <ButtonGroup
+        :data-array="buttons.dataArray"
+        :id-array="idArray"
+        :search-datas="dataProcessing()"
+        @buttonClick="buttonClick"
+        @clearSelectIdArray="clearSelectIdArray"
+      />
+      <FormItemComponent
+        ref="FormItemComponent"
+        :form-items-data="formItems.data"
+        :form-item-lists="formItemsLists"
+        :default-spread="changeSearchFoldnum.switchValue"
+        :default-column="4"
+        :search-foldnum="changeSearchFoldnum.queryDisNumber || formItems.searchFoldnum"
+        @formDataChange="formDataChange"
+      />
+      <AgTable
+        ref="agTableElement"
+        :style="agTableElementStyles"
+        :page-attribute="pageAttribute"
+        :datas="ag.datas"
+        :css-status="ag.status4css"
+        :legend="ag.status4css"
+        :user-config-for-ag-table="userConfigForAgTable"
+        :on-page-change="onPageChange"
+        :on-page-size-change="onPageSizeChange"
+        :on-selection-changed="onSelectionChanged"
+        :on-row-double-click="onRowDoubleClick"
+        :on-sort-changed="onSortChange"
+        :on-column-moved="onColumnMoved"
+        :on-column-pinned="onColumnPinned"
+        :on-column-visible-changed="onColumnVisibleChanged"
+        :on-cell-single-click="onCellSingleClick"
+        :is-common-table="commonTable"
+        @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+      />
+    </div>
+   
     <!-- <Modal/>//动作定义弹框，已将动作定义弹框和提示弹框整合，此弹框暂时弃用
       v-if="buttons.actionDialog.show"
       v-model="actionModal"
@@ -110,6 +133,8 @@
   import ImportDialog from './ImportDialog';
   import ErrorModal from './ErrorModal';
   import modifyDialog from './ModifyModal';
+  import tree from './tree';
+
   import {
     Version,
     CUSTOMIZED_MODULE_PREFIX,
@@ -129,6 +154,7 @@
 
   export default {
     components: {
+      tree,
       ButtonGroup,
       AgTable,
       FormItemComponent,
@@ -139,6 +165,7 @@
     },
     data() {
       return {
+        treeShow: true,
         actionModal: false,
         resetType: false, // 是否是重置的功能
         dialogComponent: null,
@@ -199,6 +226,22 @@
       idArray() {
         return this.buttons.selectIdArr;
       },
+      isTreeList() {
+        const treeQuery = this.$router.currentRoute.query;
+        if (treeQuery.isTreeTable) {
+          return true;
+        }
+        return false;
+      },
+      treeConfigData() {
+        const treeQuery = this.$router.currentRoute.query;
+        if (treeQuery.isTreeTable) {
+          if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
+            return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
+          }
+        }
+        return [];
+      }
     },
     watch: {
       formLists() {
@@ -246,6 +289,15 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      menuTreeChange(val, item) {
+        // 按钮查找 查询第一页数据
+        this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.reffixedcolumns = {
+          ID: `in (${item.ID})` 
+        };
+        this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+      },
       imporSuccess(id) {
         if (Version() === '1.3') {
           if (id) {
@@ -393,7 +445,6 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-
           const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
@@ -1979,7 +2030,7 @@
                 this.$Message.warning('只能勾选单个ID');
                 return;
               }
-              linkUrl =  `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
+              linkUrl = `${tab.action.replace(':itemId', '')}?id=${this.buttons.selectIdArr.toString()}`;
             } else {
               linkUrl = tab.action;
             }
@@ -2105,15 +2156,42 @@
 </script>
 
 <style lang="less">
-.StandardTableList{
+.standarTableListContent{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   display: flex;
-  .tree{
-    width:240px;
+  flex-direction: row;
+  .treeSwitch{
+    position: absolute;
+    user-select: none;
+    width: 11px;
+    height: 83px;
+    line-height: 84px;
+    cursor: pointer;
+    top: 65%;
+    text-align: center;
+    border-top-left-radius: 46px;
+    border-bottom-left-radius: 46px;
+    border: 1px solid #d2d2d2;
+    // transform-origin: right;
+    // transform: translateY(-50px) perspective(50px) rotateY(-30deg);
+      &:hover{
+      background: #d2d2d2;
+      opacity: 0.5;
+      }
+    i{
+        margin-left: -2px;
+      }
+}
+
+ .tree{
+    width:300px;
     padding:10px;
     margin-right:15px;
     border-right:1px solid #d2d2d2;
+    
   }
-}
 .StandardTableListRootDiv {
   width: 100%;
   height: 100%;
@@ -2121,4 +2199,6 @@
   display: flex;
   flex-direction: column;
 }
+}
+
 </style>

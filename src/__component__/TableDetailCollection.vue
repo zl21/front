@@ -271,6 +271,7 @@
       };
     },
     props: {
+
       tabwebact: {// 自定义类型按钮
         type: Object,
         default: () => ({})
@@ -793,7 +794,7 @@
       },
       objTabActionSlientForItemTable(data) {
         if (data.detail.type === 'resolve') {
-          this.objTabActionSlientConfirm(this.objTabActionSlientData); 
+          this.objTabActionSlientConfirm(this.objTabActionSlientData);
         }
       },
       dialogMessage(title, contentText, obj) {
@@ -808,7 +809,6 @@
               this.objTabActionSlientData = obj;
               this.clickSave({ type });
             } else {
-              console.log(333, obj);
               this.errorconfirmDialog(obj);
             }
           }
@@ -819,7 +819,7 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
-        switch (obj.eName || obj.vuedisplay) {
+        switch (obj.eName || obj.vuedisplay || obj.isJflow) {
         case 'actionIMPORT': // 导入
           this.objectIMPORT();
           break;
@@ -841,9 +841,20 @@
         case 'navbar':
           this.objTabActionNavbar(obj);// 跳转类型
           break;
+        case 'isJflow':
+          this.clickExtraposition(obj);// jflow按钮执行方法
+          break;
+
         default:
           break;
         }
+      },
+      clickExtraposition(obj) { // jflow方法
+        DispatchEvent('jflowPlugin', {
+          detail: {
+            obj
+          }
+        });
       },
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
@@ -1576,10 +1587,8 @@
                 const currentCheck = cellData.combobox.filter(ele => ele.limitdis === currentValue);
                 const limitval = currentCheck.length > 0 ? currentCheck[0].limitval : null;
                 const limitdesc = currentCheck.length > 0 ? currentCheck[0].limitdesc : null;
-
                 const oldcurrentCheck = cellData.combobox.filter(ele => ele.limitdis === data.value);
                 const oldLimitval = oldcurrentCheck.length > 0 ? oldcurrentCheck[0].limitval : null;
-
                 this.putDataFromCell(limitval, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, params.column.type);
                 this.putLabelDataFromCell(limitdesc, oldLimitval, cellData.colname, this.dataSource.row[params.index][EXCEPT_COLUMN_NAME].val, limitval);
               }
@@ -3155,11 +3164,20 @@
       },
       inputRegx(cellData) {
         // 输入框正则
-        if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
-          return new RegExp(`^[\\-\\+]?\\d+(\\.[0-9]{0,${cellData.scale}})?$`);
-        }
-        if (cellData.type === 'NUMBER') {
-          return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+        if (cellData.webconf && cellData.webconf.ispositive) {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^[\\-\\+]?\\d+(\\.{0,${cellData.scale}})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^[\\-\\+]?\\d+(\\.[0-9]{0,2)?$');
+          }
+        } else {
+          if (cellData.type === 'NUMBER' && cellData.scale && cellData.scale > 0) {
+            return new RegExp(`^(\\-|\\+)?\\d{0,8}(\\.[0-9]{0,${cellData.scale}})?$`);
+          }
+          if (cellData.type === 'NUMBER') {
+            return new RegExp('^(\\-|\\+)?\\d{0,20}?$');
+          }
         }
         if (cellData.type === 'STRING' && cellData.isuppercase) { // 大写
           return regExp.Capital;
@@ -3818,6 +3836,14 @@
           }
         }
         return null;
+      },
+      changePageForSeleteDataForButton(data) {
+        const { tableName } = this.$route.params;
+        if (!this._inactive) {
+          if (tableName === data.detail.tableName) {
+            this.changePageForSeleteData();
+          }
+        }
       }
 
     },
@@ -3830,7 +3856,7 @@
       });
       if (!this._inactive) {
         window.addEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
-        window.addEventListener('changePageForSelete', this.changePageForSeleteData);
+        window.addEventListener('changePageForSelete', this.changePageForSeleteDataForButton);
       }
       const { itemId, tableName, tableId } = this.$route.params;
       this.rouuterParams = {
@@ -3845,7 +3871,7 @@
           this.isRefreshClick = false;
         }
       });
-      window.removeEventListener('changePageForSeleteData', this.changePageForSeleteData);
+      window.removeEventListener('changePageForSelete', this.changePageForSeleteDataForButton);
       window.removeEventListener('objTabActionSlientForItemTable', this.objTabActionSlientForItemTable);
     },
     activated() {
