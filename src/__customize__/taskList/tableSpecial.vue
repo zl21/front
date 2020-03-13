@@ -324,10 +324,9 @@
                       this.onSingleCellClick(params.row);
                     }
                     // window.open(params.row.URL);
-                    console.log(window.location.host + params.row.URL,"ul")
-                     console.log(params.row.ID,"d")
+                    const url = params.row.URL.substr(1);
                     const param = {
-                      url:params.row.URL,
+                      url,
                       id: params.row.ID,
                       lablel: null,
                       isMenu: true
