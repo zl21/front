@@ -368,7 +368,8 @@ async function jflowsave(flag, request) {
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
         businessUrl: request.url,
-        ruleField: 'V'
+        ruleField: 'V',
+        webActionId: 0
       }).then((res) => {
       if (res.data.resultCode !== 0) {
         window.R3message({
