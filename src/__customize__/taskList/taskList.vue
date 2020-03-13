@@ -690,13 +690,13 @@
       pageChange(val) {
         this.page.current = val;
         this.searchData.startindex = this.page.pageSize * (val - 1);
-        this.searchClickData();
+        this.searchClickData('1');
       }, // 页码变化
       pageSizeChange(val) {
         this.page.pageSize = val;
         this.searchData.startindex = 0;
         this.searchData.range = val;
-        this.searchClickData();
+       this.searchClickData('1');
       }, // 每页显示条数变化
       editTaskStatus(ID) {
         network.post('/p/cs/taskrecord/read', { ID }).then((res) => {

@@ -368,7 +368,8 @@ async function jflowsave(flag, request) {
         initiatorName: userInfo.name,
         changeUser: userInfo.id,
         businessUrl: request.url,
-        ruleField: 'V'
+        ruleField: 'V',
+        webActionId: 0
       }).then((res) => {
       if (res.data.resultCode !== 0) {
         window.R3message({
@@ -877,10 +878,6 @@ function initiateLaunch(data) { // 业务系统流程发起
   });
 }
 
-function jflowLaunch(event) {
-  initiateLaunch({ webActionId: event.detail.data.webid });
-}
-
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
@@ -898,9 +895,7 @@ const install = function install(Vue, options = {}) {
     createComponent();
 
     Vue.prototype.$network = network;
-
-    // 监听jflow触发按钮响应
-    window.addEventListener('jflowLaunch', jflowLaunch, this);
+    
     
     window.initiateLaunch = initiateLaunch;
     window.jflowRefresh = jflowRefresh;
