@@ -41,7 +41,6 @@ export default {
     tabIndex,
     itemTabelPageInfo,
     moduleName,
-    vuedisplay
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -74,6 +73,7 @@ export default {
             // }
             // console.log(111, webactType);
             // webactType !== 'ALL'
+            const { vuedisplay } = resData.reftabs[tabIndex];
             if (vuedisplay !== 'TabItem') {
               const getObjectTabPromise = new Promise((rec, rej) => {
                 if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {

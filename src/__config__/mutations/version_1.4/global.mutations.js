@@ -55,11 +55,14 @@ export default {
       router.push({
         path
       });
+
       if (param.isMenu) {
-        Object.keys(customize).forEach((customizeName) => {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
+        const customizeConfig = externalModules || customize;
+        Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
           if (nameToUpperCase === customizedModuleName) {
-            const labelName = customize[customizeName].labelName;
+            const labelName = customizeConfig[customizeName].labelName;
             const name = `C.${customizedModuleName}.${param.id}`;
             state.keepAliveLabelMaps[name] = `${labelName}`;
             const keepAliveLabelMapsObj = {
