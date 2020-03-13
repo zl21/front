@@ -1,11 +1,14 @@
 import { DispatchEvent } from '../__utils__/dispatchEvent';
 
-// 撤销/结束/详情
+// 撤销/结束/作废
 function mutipleOperate(url, instanceId, buttons, id) {
   const param = {};
   param.instanceId = instanceId;
   param.userId = window.jflowPlugin.userInfo.id;
   param.nodeId = window.jflowPlugin.nodeId;
+  param.businessCode = window.jflowPlugin.router.currentRoute.params.itemId;
+  param.businessType = window.jflowPlugin.router.currentRoute.params.tableId;
+  param.businessName = window.jflowPlugin.router.currentRoute.params.tableName;
   window.jflowPlugin.axios.post(url, param).then((res) => {
     if (res.data.resultCode === 0) {
       window.vm.$Message.success(res.data.resultMsg);
@@ -97,12 +100,26 @@ function clickFunction(e) {
     }
   }
 }
+
+
+// 触发事件
+function initiateLaunch(event) {
+  if (window.jflowPlugin.objInstanceId) {
+    mutipleOperate(jflowobj.affirmUrl, jflowobj.instanceId, jflowbuttons, jflowid);
+  } else {
+    window.initiateLaunch({ webActionId: event.detail.data.webid });
+  }
+}
+
 // 按钮监听控制
 function buttonAddEventListener(buttons, obj, id) {
   jflowbuttons = buttons;
   jflowobj = obj;
   jflowid = id;
   window.addEventListener('jflowPlugin', clickFunction, this);
+
+  // 监听jflow触发按钮响应
+  window.addEventListener('jflowLaunch', initiateLaunch, this);
 }
 
 
@@ -112,6 +129,7 @@ function buttonAddEventListener(buttons, obj, id) {
 function CreateButton(obj, buttons, id) {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
+  window.removeEventListener('jflowLaunch', initiateLaunch, true);
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;

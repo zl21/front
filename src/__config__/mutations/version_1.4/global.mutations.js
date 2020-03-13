@@ -55,8 +55,11 @@ export default {
       router.push({
         path
       });
+
       if (param.isMenu) {
-        Object.keys(customize).forEach((customizeName) => {
+        const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
+        const customizeConfig = externalModules[customizedModuleName] || customize[customizedModuleName];
+        Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customize[customizeName].labelName;

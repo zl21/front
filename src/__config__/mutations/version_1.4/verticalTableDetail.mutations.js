@@ -150,16 +150,16 @@ export default {
           // 以下为主表jflow自定义按钮显示逻辑
           if (state.mainFormInfo.buttonsData.data.tabwebact && state.mainFormInfo.buttonsData.data.tabwebact.objbutton.length > 0) {
             const objtabbuttons = state.mainFormInfo.buttonsData.data.tabwebact.objbutton;
-            let buttonsJflowRes = [];
+            const buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
-                buttonsJflowRes = objtabbuttons.filter((objbutton) => {
+                objtabbuttons.forEach((objbutton) => {
                   if (String(buttonId) === String(objbutton.webid)) {
-                    return objbutton;
+                    buttonsJflowRes.push(objbutton);
                   }
                 });
               });
-              if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
+              if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID
                 state.mainFormInfo.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;
               }
             }
