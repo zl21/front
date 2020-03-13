@@ -40,7 +40,7 @@ export default {
     tabIndex,
     itemTabelPageInfo,
     moduleName,
-    enableRequestItemTable// 不请求子表相关结构
+    vuedisplay
   }) {
     const id = objid === 'New' ? '-1' : objid;
     network.post('/p/cs/objectTab', urlSearchParams({
@@ -64,15 +64,15 @@ export default {
         }
         commit('updateWebConf', resData.webconf);
 
-        if (resData.reftabs && resData.reftabs.length > 0 && enableRequestItemTable !== 'N') {
+        if (resData.reftabs && resData.reftabs.length > 0) {
           const firstReftab = resData.reftabs[state.tabCurrentIndex];
           // 获取子表按钮
           if (type !== 'copy') { // 按钮执行复制方法时，不调用子表相关接口
-            let webactType = '';
-            if (resData.reftabs[0].webact) { // 自定义tab全定制，tab切换时不需要请求
-              webactType = resData.reftabs[0].webact.substring(0, resData.reftabs[0].webact.lastIndexOf('/')).toUpperCase();
-            }
-            if (webactType !== 'ALL') {
+            // let webactType = '';
+            // if (resData.reftabs[0].webact) { // 自定义tab全定制，tab切换时不需要请求
+            //   webactType = resData.reftabs[0].webact.substring(0, resData.reftabs[0].webact.lastIndexOf('/')).toUpperCase();
+            // }
+            if (vuedisplay !== 'TabItem') {
               const getObjectTabPromise = new Promise((rec, rej) => {
                 if (this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`] && this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTabForRefTable`][0] === 'function') {
                   const param = {
@@ -87,17 +87,18 @@ export default {
               });
               if (resData.reftabs[0].refcolid !== -1) {
                 // commit('updateActiveRefFormInfo', resData.reftabs[0]);
-                // 获取第一个tab的子表表单
-                if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
-                  const formParam = {
-                    table: firstReftab.tablename,
-                    inlinemode: firstReftab.tabinlinemode,
-                    tabIndex
-                  };
-                  this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0](formParam);
-                }
+                
                 // 获取第一个tab的子表列表数据
                 if (resData.reftabs[0].tabrelation === '1:m') {
+                  // 获取第一个tab的子表表单
+                  if (this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`] && this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0] === 'function') {
+                    const formParam = {
+                      table: firstReftab.tablename,
+                      inlinemode: firstReftab.tabinlinemode,
+                      tabIndex
+                    };
+                    this._actions[`${moduleName || getComponentName()}/getFormDataForRefTable`][0](formParam);
+                  }
                   getObjectTabPromise.then(() => {
                     if (this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`] && this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`].length > 0 && typeof this._actions[`${moduleName || getComponentName()}/getObjectTableItemForTableData`][0] === 'function') {
                       const tableParam = {

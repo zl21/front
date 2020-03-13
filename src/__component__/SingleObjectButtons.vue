@@ -885,34 +885,35 @@
           this.getObjectForMainTableForm({
             table: this.tableName, objid: this.itemId, tabIndex
           });
-       
-          if (this.itemInfo.tabrelation === '1:1') {
-            this.getItemObjForChildTableForm({// 获取1:1面板
-              table: tablename, objid: this.itemId, refcolid, tabIndex
-            });
-            // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
-            this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], enableRequestItemTable: 'N'
-            });
-            const { itemId } = this.$route.params;
-            const refTab = this.tabPanel;
-            let index = null;
-            refTab.forEach((item, i) => {
-              if (item.tablename === tablename) {
-                index = i;
-              }
-            });
-            // 获取子表表单
-            const getButtonDataPromise = new Promise((rec, rej) => {
-              this.getObjectTabForRefTable({
-                table: tablename, objid: itemId, tabIndex: index, rec, rej
-              });
-            });
-          } else {
-            this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
-            });
-          }
+          // if (this.itemInfo.tabrelation === '1:1') {
+          //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
+          //   // if (this.itemInfo.vuedisplay !== 'TabItem') {
+          //   //   this.getItemObjForChildTableForm({// 获取1:1面板
+          //   //     table: tablename, objid: this.itemId, refcolid, tabIndex
+          //   //   });
+          //   // }
+          //   this.getObjectTabForMainTable({// 获取主表按钮信息
+          //     table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], enableRequestItemTable: 'N'
+          //   });
+          //   // const { itemId } = this.$route.params;
+          //   // const refTab = this.tabPanel;
+          //   // let index = null;
+          //   // refTab.forEach((item, i) => {
+          //   //   if (item.tablename === tablename) {
+          //   //     index = i;
+          //   //   }
+          //   // });
+          //   // const getButtonDataPromise = new Promise((rec, rej) => {
+          //   //   this.getObjectTabForRefTable({
+          //   //     table: tablename, objid: itemId, tabIndex: index, rec, rej
+          //   //   });
+          //   // });
+          //   // 获取子表表单
+          // } else {
+          this.getObjectTabForMainTable({
+            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME], vuedisplay: this.itemInfo.vuedisplay
+          });
+          // }
         }
         // this.closeCurrentLoading();//刷新后无需手动关闭loading，触发form后会收到监听
         setTimeout(() => {
