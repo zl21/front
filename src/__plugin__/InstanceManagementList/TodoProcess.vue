@@ -991,9 +991,9 @@
       }
     },
     created() {
-      this.getselectOption();
-      this.queryLists();
-      this.getAgent();
+      // this.getselectOption();
+      // this.queryLists();
+      // this.getAgent();
     },
     mounted() {}
   };
