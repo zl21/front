@@ -323,7 +323,16 @@
                     if (typeof this.onSingleCellClick === 'function') {
                       this.onSingleCellClick(params.row);
                     }
-                    window.open(params.row.URL);
+                    // window.open(params.row.URL);
+                    console.log(window.location.host + params.row.URL,"ul")
+                     console.log(params.row.ID,"d")
+                    const param = {
+                      url:params.row.URL,
+                      id: params.row.ID,
+                      lablel: null,
+                      isMenu: true
+                    };
+                    this.directionalRouter(param);// 定向路由跳转方法
                   }
                 }
               }, params.row.URL);
@@ -331,7 +340,7 @@
             if (cur.key !== 'OBJDISTYPE') {
               arr.push(cur);
             }
-            return arr
+            return arr;
           }, []);
           return temColumn;
         }
@@ -394,7 +403,7 @@
     },
     watch: {},
     methods: {
-      ...mapMutations('global', ['tabOpen', 'tabHref']),
+      ...mapMutations('global', ['tabOpen', 'tabHref', 'directionalRouter']),
       deselectAll() {
         this.$refs.table.selectAll(false);
       }, // 取消表格全部选中
