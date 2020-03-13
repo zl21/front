@@ -799,9 +799,9 @@
         this.$Modal.fcWarning(data);
       },
       refresh() {
-        if (this.itemInfo.webact) { // 兼容半定制界面
-          const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
-          if (webactType !== 'order') {
+        if (this.itemInfo.vuedisplay === 'TabItem') { // 兼容半定制界面
+          // const webactType = this.itemInfo.webact.substring(0, this.itemInfo.webact.lastIndexOf('/'));
+          if (this.objectType === 'vertical') {
             DispatchEvent('customizeClick', {
               detail: {
                 type: 'refresh'
