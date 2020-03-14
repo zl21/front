@@ -162,6 +162,8 @@ export default {
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID
                 state.mainFormInfo.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;
               }
+            } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
+              state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
             }
           }
           // jflowButtons有返回值时，将元数据标准以及刷新按钮去除
@@ -178,7 +180,7 @@ export default {
               });
             }
             state.mainFormInfo.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
-            state.jflowConfigrefreshButton = false;
+            state.jflowConfigrefreshButton = true;
           }
 
           state.mainFormInfo.formData.data = Object.assign({}, data);
@@ -271,7 +273,9 @@ export default {
               });
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
                 componentAttribute.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
-              }
+              } 
+            } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
+              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
