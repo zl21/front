@@ -277,7 +277,7 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
             
             // 判重处理
             JflowControlField = JflowControlField.filter((item) => {
-              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+              if (item.tableName !== obj.tableName) {
                 return item;
               }
             });
@@ -292,7 +292,7 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
             };
             // 判断相对应的配置然后去除掉
             JflowControlField = JflowControlField.filter((item) => {
-              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+              if (item.tableName !== obj.tableName) {
                 return item;
               }
             });
