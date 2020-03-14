@@ -278,6 +278,12 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // 关闭tab时需清楚jflow配置的对应表
+    state.JflowControlField = state.JflowControlField.filter((item) => {
+      if (item.tableName !== tab.tableName) {
+        return item;
+      }
+    });
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;

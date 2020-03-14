@@ -144,6 +144,7 @@ export default {
           } 
         } 
       });
+      console.log(11, JflowControlFieldData[0]);
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.tabPanels.map((tab, index) => {
           if (index === data.tabIndex) {

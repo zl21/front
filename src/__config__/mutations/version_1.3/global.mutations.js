@@ -266,6 +266,14 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+    // 关闭tab时需清楚jflow配置的对应表
+    state.JflowControlField = state.JflowControlField.map((item) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        if (item.tableName !== openedMenuList.tableName) {
+          return item;
+        }
+      });
+    });
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -279,7 +287,13 @@ export default {
     });
   },
  
-  tabCloseAppoint(state, tab) {
+  tabCloseAppoint(state, tab) {   
+    // 关闭tab时需清楚jflow配置的对应表
+    state.JflowControlField = state.JflowControlField.filter((item) => {
+      if (item.tableName !== tab.tableName) {
+        return item;
+      }
+    });
     const tabRouteFullPath = tab.routeFullPath;
 
     // 删除规则一：关闭页签时，菜单跳转到单对象后新增保存跳转到编辑界面，清除session中存储的对应关系。
