@@ -146,7 +146,6 @@ export default {
           } 
         } 
       });
-      console.log(11, JflowControlFieldData[0]);
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.tabPanels.map((tab, index) => {
           if (index === data.tabIndex) {
@@ -219,8 +218,14 @@ export default {
             data.addcolums = addcolumsData;
             componentAttribute.panelData.data = data;
             // 处理jflow配置自定义按钮逻辑
-            if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
-              const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
+            let tabwebactButton = [];
+            if (data.tabIndex === 0) { // 主表
+              tabwebactButton = 'objbutton';
+            } else { // 子表
+              tabwebactButton = 'objtabbutton';
+            }
+            if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact[tabwebactButton].length > 0) {
+              const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objbutton;
               let buttonsJflowRes = [];
               if (JflowControlFieldData[0].exeActionButton.length > 0) {
                 JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
@@ -231,8 +236,10 @@ export default {
                   });
                 });
                 if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
-                  componentAttribute.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;
-                }
+                  componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = buttonsJflowRes;
+                } 
+              } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
+                tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];
               }
             }
             if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
@@ -266,7 +273,7 @@ export default {
                   });
                 }
               }
-              tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
+              if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objbutton && tab.componentAttribute.buttonsData.data.tabwebact.objbutton > 0) { tab.componentAttribute.buttonsData.data.tabwebact.objbutton = []; }// 将主表自定义按钮置为空
               tab.componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button === 'fresh');
             }
           } else { // 配置的是主表，则将子表的自定义按钮去除，以及标准按钮去除，显示返回以及刷新
@@ -280,7 +287,9 @@ export default {
                 });
               }
             }
-            tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
+            if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objbutton && tab.componentAttribute.buttonsData.data.tabwebact.objbutton.length > 0) {
+              tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
+            }
             tab.componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button === 'fresh');
           }
         });
