@@ -123,7 +123,7 @@
     methods: {
       
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
-
+ 
       tabClick(index) {
         this.updateTabCurrentIndex(index);
         let flag = false;
@@ -200,6 +200,7 @@
 
     },
     mounted() {
+      console.log(11111);
       this.getMainTable(this.tabCurrentIndex, false);
       this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
       setTimeout(() => {

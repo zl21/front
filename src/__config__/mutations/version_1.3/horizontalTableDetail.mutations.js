@@ -11,7 +11,8 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          data: state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
+          // state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
+          data
         },
         formData: {
           isShow: false,
@@ -558,14 +559,14 @@ export default {
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
-    state.jflowPluginDataArray = newButtons;
-    state.instanceId = instanceId;
-    if (instanceId) {
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = tabwebact;
-    } else {
-      state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-    }
-    state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+    // state.jflowPluginDataArray = newButtons;
+    // state.instanceId = instanceId;
+    // if (instanceId) {
+    //   state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = tabwebact;
+    // } else {
+    //   state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+    // }
+    // state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;

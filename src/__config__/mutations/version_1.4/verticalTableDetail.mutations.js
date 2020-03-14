@@ -709,15 +709,15 @@ export default {
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
-    state.jflowPluginDataArray = newButtons;
-    state.instanceId = instanceId;
-    if (instanceId) {
-      // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-      state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
-    } else {
-      state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-    }
-    state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+    // state.jflowPluginDataArray = newButtons;
+    // state.instanceId = instanceId;
+    // if (instanceId) {
+    //   // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
+    //   state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
+    // } else {
+    //   state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+    // }
+    // state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
