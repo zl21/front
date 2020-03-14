@@ -1789,6 +1789,7 @@
         const { tableId, tableName } = this.$route.params;
         // 列表界面配置动态路由
         const routeMapRecord = getSeesionObject('routeMapRecord');
+        
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);

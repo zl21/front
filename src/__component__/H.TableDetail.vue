@@ -208,7 +208,7 @@
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
-              if (query === item.tablename && item.tabledesc === oUl.children[i].innerText) { oUl.children[i].click(); }
+              if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) { oUl.children[i].click(); }
             });
           }
         }
