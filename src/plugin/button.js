@@ -131,6 +131,8 @@ function CreateButton(obj, buttons, id) {
   window.removeEventListener('jflowPlugin', clickFunction, true);
   window.removeEventListener('jflowLaunch', initiateLaunch, true);
 
+  buttonAddEventListener(buttons, obj, id);
+
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
   window.jflowPlugin.nodeId = obj.nodeId;
@@ -225,7 +227,7 @@ function CreateButton(obj, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
         });
-        buttonAddEventListener(buttons, obj, id);
+        
         // 修改水印
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         // 控制字表为只读
