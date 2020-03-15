@@ -52,7 +52,7 @@
             if (this.JflowControlField.length > 0) {
               this.JflowControlField.map((jflowData) => {
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tablename === jflowData.itemTableId && (item.tabrelation === '1:1' || item.tablename === this.$route.params.tableName)) {
+                if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
                   // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
                   flag = true;
                 } 
@@ -200,7 +200,6 @@
 
     },
     mounted() {
-      console.log(11111);
       this.getMainTable(this.tabCurrentIndex, false);
       this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
       setTimeout(() => {

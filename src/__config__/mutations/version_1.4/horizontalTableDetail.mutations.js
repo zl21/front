@@ -4,7 +4,6 @@ import { enableJflow } from '../../../constants/global';
 
 export default {
   updateTabPanelsData(state, data) {
-    console.log(222, data);
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
       label: '标签',
@@ -119,7 +118,7 @@ export default {
       componentAttribute.formData.isShow = true;
     }
     componentAttribute.formData.data = data;
-  }, //
+  }, 
 
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
@@ -128,14 +127,14 @@ export default {
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableId } = router.currentRoute.params;
-        if (item.tableId === tableId && state.tabPanels[data.tabIndex].tableid === item.itemTableId) {
-          if (state.tabPanels[data.tabIndex].tabrelation === '1:1' || item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
-            const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableId !== item.itemTableId);
+        if (item.tableId === tableId && state.tabPanels[data.tabIndex].tableid === Number(item.itemTableId)) {
+          if (state.tabPanels[data.tabIndex].tabrelation === '1:1' || item.tableId === Number(item.itemTableId)) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
+            const b = this.state.global.objreadonlyForJflow.filter(a => Number(a.itemTableId) !== Number(item.itemTableId));
             if (b.length === 0) {
               this.state.global.objreadonlyForJflow.push(
                 {
                   readonly: false,
-                  itemTableId: item.itemTableId,
+                  itemTableId: Number(item.itemTableId),
                   tableId: item.tableId,
                   jflowButton: item.jflowButton
                 }

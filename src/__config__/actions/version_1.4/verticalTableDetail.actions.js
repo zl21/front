@@ -254,6 +254,7 @@ export default {
       if (res.data.code === 0) {
         const formData = res.data.data;
         formData.tabIndex = tabIndex;
+        console.log(6666);
         commit('updatePanelData', formData);
       }
     });

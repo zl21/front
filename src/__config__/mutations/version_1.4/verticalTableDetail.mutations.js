@@ -48,22 +48,23 @@ export default {
             this.state.global.objreadonlyForJflow.push(
               {
                 readonly: false,
-                itemTableId: item.itemTableId,
+                itemTableId: Number(item.itemTableId),
                 tableId: item.tableId
               }
             );
             // }
            
             item.isJflowConfigMainTable = true;
+
             return true;
-          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tableid === item.itemTableId) { // 子表修改字段
+          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tableid === Number(item.itemTableId)) { // 子表修改字段
             if (state.tabPanels[data.tabIndex].tabrelation === '1:1') { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
               // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
               // if (b.length === 0) { // 去重
               this.state.global.objreadonlyForJflow.push(
                 {
                   readonly: false,
-                  itemTableId: item.itemTableId,
+                  itemTableId: Number(item.itemTableId),
                   tableId: item.tableId
                 }
               );
