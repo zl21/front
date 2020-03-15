@@ -72,6 +72,7 @@
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
   import compositeForm from './CompositeForm';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
   export default {
@@ -259,6 +260,11 @@
         }
       },
       tabClick(index) {
+        DispatchEvent('tabClick', {
+          detail: {
+            data: this.tabPanel[index]
+          }
+        });
         // tab点击
         this.updateTabCurrentIndex(index);
         let flag = false;

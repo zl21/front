@@ -18,6 +18,7 @@
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
   import { enableJflow } from '../constants/global';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
   export default {
@@ -125,6 +126,11 @@
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
  
       tabClick(index) {
+        DispatchEvent('tabClick', {
+          detail: {
+            data: this.tabPanel[index]
+          }
+        });
         this.updateTabCurrentIndex(index);
         let flag = false;
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
