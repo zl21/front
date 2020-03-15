@@ -317,6 +317,7 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
@@ -818,6 +819,16 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
+        if (this.JflowControlField && this.JflowControlField.length > 0) {
+          this.JflowControlField.map((item) => {
+            if (item.tableId !== this.tableId) {
+              this.updateRefreshButtonForJflow(false);
+            }
+          });  
+        } else {
+          this.updateRefreshButtonForJflow(false);
+        }
+        
         // this.emptyTestData();
         DispatchEvent('tabRefreshClick');
         // DispatchEvent('jflowPlugin', {

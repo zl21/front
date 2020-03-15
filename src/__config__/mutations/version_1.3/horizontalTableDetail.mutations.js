@@ -583,6 +583,9 @@ export default {
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
   },
+  updateRefreshButtonForJflow(state, value) { // 控制刷新按钮开关
+    state.jflowConfigrefreshButton = value;
+  },
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
   },

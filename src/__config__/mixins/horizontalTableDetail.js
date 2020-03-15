@@ -94,8 +94,8 @@ export default () => ({
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
-        'getActionDataForButtons'
-
+        'getActionDataForButtons',
+        'updateRefreshButtonForJflow'
       ]),
     ...mapMutations(getComponentName(),
       [
