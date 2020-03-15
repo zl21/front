@@ -35,9 +35,9 @@ export default {
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
-        const { tableName } = router.currentRoute.params;
-        if (item.tableName === tableName) {
-          if (item.tableName === item.itemTableName && data.isJflowConfig) { // 主表修改字段
+        const { tableId } = router.currentRoute.params;
+        if (item.tableId === tableId) {
+          if (item.tableId === item.itemTableId && data.isJflowConfig) { // 主表修改字段
             tableNameFlag = true;
             // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
             
@@ -45,23 +45,23 @@ export default {
             this.state.global.objreadonlyForJflow.push(
               {
                 readonly: false,
-                itemTableName: item.itemTableName,
-                tableName: item.tableName
+                itemTableId: item.itemTableId,
+                tableId: item.tableId
               }
             );
             // }
            
             item.isJflowConfigMainTable = true;
             return true;
-          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tablename === item.itemTableName) { // 子表修改字段
+          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tableid === item.itemTableId) { // 子表修改字段
             if (state.tabPanels[data.tabIndex].tabrelation === '1:1') { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
               // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
               // if (b.length === 0) { // 去重
               this.state.global.objreadonlyForJflow.push(
                 {
                   readonly: false,
-                  itemTableName: item.itemTableName,
-                  tableName: item.tableName
+                  itemTableId: item.itemTableId,
+                  tableId: item.tableId
                 }
               );
               // }

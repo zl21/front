@@ -98,7 +98,6 @@
         
       }),
       maginTableJflowButtons() {
-        console.log(6666, this.mainFormInfo.buttonsData.data.jflowButton);
         return this.mainFormInfo.buttonsData.data.jflowButton;
       },
       resetWaterMark() {

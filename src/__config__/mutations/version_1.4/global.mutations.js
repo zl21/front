@@ -265,6 +265,13 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+    state.JflowControlField = state.JflowControlField.map((item) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        if (item.tableName !== openedMenuList.tableName) {
+          return item;
+        }
+      });
+    });
   },
   againClickOpenedMenuLists(state, {
     label,

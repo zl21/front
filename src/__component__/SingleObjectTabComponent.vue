@@ -274,9 +274,9 @@
       itemReadOnlyForJflow() {
         let flag = null;
         if(enableJflow() && this.objreadonlyForJflow.length > 0) {
-          const { tableName } = router.currentRoute.params;
+          const { tableId } = router.currentRoute.params;
           this.objreadonlyForJflow.map((item) => {
-            if(item.tableName === tableName && item.itemTableName === this.tableName) {
+            if(item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {
               flag = item.readonly;
             }else{
               flag = this.objreadonly;
