@@ -17,7 +17,7 @@ module.exports = {
   // target: 'http://10.14.3.71', // 商飞预发环境
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
-  target: 'http://106.15.154.165:19999/', // Cube
+  target: 'http://r3.burgeon.cn:19999/',//'http://106.15.154.165:19999/', // Cube
 
   
   Version: '1.4', // 版本号
