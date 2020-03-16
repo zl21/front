@@ -324,17 +324,23 @@
                       this.onSingleCellClick(params.row);
                     }
                     // window.open(params.row.URL);
-                    const url = params.row.URL.substr(1);
-                    const param = {
-                      url,
-                      id: params.row.ID,
-                      lablel: null,
-                      isMenu: true
-                    };
-                    this.directionalRouter(param);// 定向路由跳转方法
+                    let url = '';
+                    if (params.row.URL.indexOf('http') !== -1) {
+                      url = params.row.URL;
+                      window.open(url);
+                    } else {
+                      url = params.row.URL.substr(1);
+                      const param = {
+                        url,
+                        id: params.row.ID,
+                        lablel: null,
+                        isMenu: true
+                      };
+                      this.directionalRouter(param);// 定向路由跳转方法
+                    }
                   }
                 }
-              }, params.row.URL);
+              }, '查看明细');
             }
             if (cur.key !== 'OBJDISTYPE') {
               arr.push(cur);
