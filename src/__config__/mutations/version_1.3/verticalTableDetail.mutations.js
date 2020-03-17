@@ -717,7 +717,7 @@ export default {
       state.jflowPluginDataArray = newButtons;
       state.instanceId = instanceId;
       if (instanceId) {
-        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
+        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
       } else {
         state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
       }
