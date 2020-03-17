@@ -67,7 +67,8 @@
   import tabComponent from './SingleObjectTabComponent';
   import {
     MODULE_COMPONENT_NAME,
-    enableJflow 
+    enableJflow,
+    custommizedJflow
   } from '../constants/global';
   import verticalMixins from '../__config__/mixins/verticalTableDetail';
   import singleObjectButtons from './SingleObjectButtons';
@@ -115,7 +116,7 @@
       },
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-        if (enableJflow()) {
+        if (enableJflow() && custommizedJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
             if (this.JflowControlField.length > 0) {

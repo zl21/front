@@ -96,7 +96,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    custommizedJflow, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -1123,7 +1123,7 @@
               this.dialogMessage(title, contentText, obj);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
                   k: 'data',
                   v: obj
@@ -1152,7 +1152,7 @@
           onOk: () => {
             if (JSON.parse(obj.confirm).isSave) {
               const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
                   k: 'data',
                   v: obj
@@ -1347,7 +1347,7 @@
         this.saveButtonPath = data.requestUrlPath;
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
-          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
             const saveEventAfter = {
               k: 'type',
               v: data.type
