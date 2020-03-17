@@ -2062,6 +2062,12 @@
               k: name,
               v: tab.webdesc
             };
+            const undataFromPageCustomizeButtonInfo = {
+              k: name,
+              v: this[INSTANCE_ROUTE_QUERY]
+            };
+            updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+
             updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
             router.push(
               path

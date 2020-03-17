@@ -899,6 +899,7 @@
           );
 
           promise.then(() => {
+            console.log(11, this[INSTANCE_ROUTE_QUERY]);
             this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.success) {
               let successAction = null;
@@ -925,6 +926,8 @@
               this.$Modal.fcSuccess(data);
             }
           }, () => {
+            console.log(11, this[INSTANCE_ROUTE_QUERY]);
+
             this.$loading.hide(this[INSTANCE_ROUTE_QUERY].tableName);
             if (nextOperate.failure) {
               let errorAction = null;
