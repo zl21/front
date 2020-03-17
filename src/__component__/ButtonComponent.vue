@@ -35,20 +35,15 @@
         @click="btnclick('custom', item)"
         v-text="item.webdesc" 
       />
-      <!-- <Button
-        type="fcdefault"
-        @click="btnclick('custom', a)"
-        v-text="a.webdesc" 
-      /> -->
       <!-- jflow插件按钮-->
-      <!-- <Button
+      <Button
         v-for="(item) in dataArray.jflowPluginDataArray"
         :key="item.button"
         :ref="item"
         type="fcdefault"
         @click="btnclick('extraposition', item)"
         v-text="item.name" 
-      /> -->
+      />
       <!-- jflow配置按钮-->
       <Button
         v-for="(item) in dataArray. jflowButton"

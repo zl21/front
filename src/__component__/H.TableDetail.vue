@@ -17,7 +17,7 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
-  import { enableJflow } from '../constants/global';
+  import { enableJflow, custommizedJflow } from '../constants/global';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
@@ -47,7 +47,7 @@
       },
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-        if (enableJflow()) {
+        if (enableJflow() && custommizedJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
             if (this.JflowControlField.length > 0) {
