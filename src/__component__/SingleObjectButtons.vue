@@ -165,7 +165,7 @@
         defaultForCopyData: {}, // 保存复制操作时所需要的当前页面的数据
         itemTableValidation: false, // 控制提交按钮操作时子表form必填项不进行验证
         saveButtonPath: '', // 类型为保存的按钮path
-        saveEventAfter: '2222', // 保存事件执行完成后的操作
+        saveEventAfter: '', // 保存事件执行完成后的操作
         objTabActionSlientData: {}, // 静默程序配置字段
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
         savaCopy: false,
