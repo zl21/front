@@ -1173,7 +1173,6 @@
         this.buttonEvent(obj);
       },
       buttonEvent(obj) {
-        debugger;
         DispatchEvent('objTabAction', {
           detail: {
             data: obj

@@ -190,7 +190,7 @@ export default {
           // const { componentAttribute } = state.tabPanels[data.tabIndex];
           // componentAttribute.panelData.isShow = true;
           // componentAttribute.panelData.data = data;// 子表赋值逻辑
-        } else if (!JflowControlFieldData[0].isJflowConfigMainTable) {
+        } else if (!JflowControlFieldData[0].isJflowConfigMainTable) { // jflow配置为子表
           const addcolumsData = data.addcolums.reduce((a, c) => {
             const u = [];
             if (c.childs) {
@@ -294,7 +294,7 @@ export default {
             componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
             componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button !== 'fresh');
             componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
-            // state.jflowConfigrefreshButton = true;
+            state.jflowConfigrefreshButton = true;
           }
           // 以下逻辑为当前jflow配置的为子表时，当前单据其余表按钮展示逻辑
           // 上下结构只有当前配置表展示按钮，其余子表不展示按钮，主表展示刷新/复制/返回
