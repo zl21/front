@@ -22,7 +22,7 @@
       :back-button="buttonsData.data.backButton"
     />
     <!-- 子表表格新增区域form -->
-    <compositeForm
+    <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
       :object-type="type"
@@ -145,7 +145,7 @@
 
 
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow 
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow
   } from '../constants/global';
 
   const customizeModules = {};
@@ -273,10 +273,10 @@
       }),
       itemReadOnlyForJflow() {
         let flag = null;
-        if(enableJflow() && this.objreadonlyForJflow.length > 0) {
-          const { tableName } = router.currentRoute.params;
+        if(enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
+          const { tableId } = router.currentRoute.params;
           this.objreadonlyForJflow.map((item) => {
-            if(item.tableName === tableName && item.itemTableName === this.tableName) {
+            if(item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {
               flag = item.readonly;
             }else{
               flag = this.objreadonly;

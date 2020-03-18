@@ -17,7 +17,8 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
-  import { enableJflow } from '../constants/global';
+  import { enableJflow, custommizedJflow } from '../constants/global';
+  import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
   export default {
@@ -46,13 +47,13 @@
       },
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
-        if (enableJflow()) {
+        if (enableJflow() && custommizedJflow()) {
           let flag = false;
           this.tabPanel.map((item) => {
             if (this.JflowControlField.length > 0) {
               this.JflowControlField.map((jflowData) => {
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tablename === jflowData.itemTableName && (item.tabrelation === '1:1' || item.tablename === this.$route.params.tableName)) {
+                if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
                   // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
                   flag = true;
                 } 
@@ -123,8 +124,13 @@
     methods: {
       
       ...mapMutations('global', ['isRequestUpdata', 'emptyTestData']),
-
+ 
       tabClick(index) {
+        DispatchEvent('tabClick', {
+          detail: {
+            data: this.tabPanel[index]
+          }
+        });
         this.updateTabCurrentIndex(index);
         let flag = false;
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
@@ -208,7 +214,7 @@
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
-              if (query === item.tablename && item.tabledesc === oUl.children[i].innerText) { oUl.children[i].click(); }
+              if (Number(query) === item.tableid && item.tabledesc === oUl.children[i].innerText) { oUl.children[i].click(); }
             });
           }
         }

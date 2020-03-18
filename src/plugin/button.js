@@ -107,7 +107,34 @@ function initiateLaunch(event) {
   if (window.jflowPlugin.objInstanceId) {
     mutipleOperate(jflowobj.affirmUrl, jflowobj.instanceId, jflowbuttons, jflowid);
   } else {
-    window.initiateLaunch({ webActionId: event.detail.data.webid });
+    // 判断是否存在模版，存在的时候才能发起流程
+    let triggerBt = [];
+    if (window.localStorage.getItem('businessTypes')) {
+      JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
+        if (item.businessType === window.jflowPlugin.router.currentRoute.params.tableId) {
+          triggerBt = triggerBt.concat(item.triggerBt);
+        }
+        return item;
+      });
+
+      triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
+      
+      if (triggerBt.includes(String(event.detail.data.webid))) {
+        window.initiateLaunch({ webActionId: event.detail.data.webid });
+      } else {
+        window.R3message({
+          title: '错误',
+          content: '当前按钮为工作流触发按钮，请先配置模板！',
+          mask: true
+        });
+      }
+    } else {
+      window.R3message({
+        title: '错误',
+        content: '当前按钮为工作流触发按钮，请先配置模板！',
+        mask: true
+      });
+    }
   }
 }
 
@@ -130,6 +157,8 @@ function CreateButton(obj, buttons, id) {
   // 移除事件监听
   window.removeEventListener('jflowPlugin', clickFunction, true);
   window.removeEventListener('jflowLaunch', initiateLaunch, true);
+
+  buttonAddEventListener(buttons, obj, id);
 
   window.jflowPlugin.objInstanceId = obj.instanceId;
   window.jflowPlugin.itemId = id;
@@ -225,7 +254,7 @@ function CreateButton(obj, buttons, id) {
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
         });
-        buttonAddEventListener(buttons, obj, id);
+        
         // 修改水印
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         // 控制字表为只读

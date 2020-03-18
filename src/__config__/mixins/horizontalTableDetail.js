@@ -21,11 +21,12 @@ export default () => ({
     };
   },
   created() {
+   
+  },
+  mounted() {
     this[MODULE_COMPONENT_NAME] = getComponentName();
     this[INSTANCE_ROUTE] = router.currentRoute.fullPath;
     this[INSTANCE_ROUTE_QUERY] = router.currentRoute.params;
-  },
-  mounted() {
     this.noMounted = false;
   },
   activated() {
@@ -93,8 +94,8 @@ export default () => ({
         'getObjectTrySubmit',
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
-        'getActionDataForButtons'
-
+        'getActionDataForButtons',
+        'updateRefreshButtonForJflow'
       ]),
     ...mapMutations(getComponentName(),
       [

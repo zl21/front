@@ -96,7 +96,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    custommizedJflow, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -144,6 +144,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          jflowPluginDataArray: [], // jflow老版本按钮配置
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -317,6 +318,7 @@
         LinkUrl: ({ LinkUrl }) => LinkUrl,
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
@@ -818,6 +820,16 @@
         }
       },
       upData(message) { // 页面刷新判断逻辑
+        if (this.JflowControlField && this.JflowControlField.length > 0) {
+          this.JflowControlField.map((item) => {
+            if (item.tableId !== this.tableId) {
+              this.updateRefreshButtonForJflow(false);
+            }
+          });  
+        } else {
+          this.updateRefreshButtonForJflow(false);
+        }
+        
         // this.emptyTestData();
         DispatchEvent('tabRefreshClick');
         // DispatchEvent('jflowPlugin', {
@@ -1051,11 +1063,40 @@
               // const dom = document.getElementById('actionMODIFY');
               // dom.click();
               // this.saveEventAfter = 'invalid';
-              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+
+              // 去除作废前调用保存逻辑
+              // this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+              this.invalid();
             }
           };
           this.$Modal.fcWarning(data);
         }
+      },
+      invalid() {
+        const promise = new Promise((resolve, reject) => {
+          this.getObjectTryInvalid({
+            objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
+          });
+        });
+        this.temporaryStorage = false;
+        this.dataArray.temporaryStorage = false;
+        this.saveEventAfter = '';
+        const saveEventAfterData = {
+          k: 'type',
+          v: {}
+        };
+        updateSessionObject('saveEventAfter', saveEventAfterData);
+
+        promise.then(() => {
+          const message = this.buttonsData.invalidData.message;
+          if (message) {
+            this.upData(`${message}`);
+          } else {
+            this.upData();
+          }
+        }, () => { // 状态为rejected时执行
+          this.upData();
+        });
       },
       webactionClick(obj, type) { // 动作定义执行
         if (obj.confirm) {
@@ -1112,7 +1153,15 @@
               this.dialogMessage(title, contentText, obj);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               const type = 'objTabActionSlient';
-              this.objTabActionSlientData = obj;
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+                const objTabActionSlientData = {
+                  k: 'data',
+                  v: obj
+                };
+                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+              } else {
+                this.objTabActionSlientData = obj;
+              }
               this.clickSave({ type });
             }
           } else {
@@ -1133,7 +1182,15 @@
           onOk: () => {
             if (JSON.parse(obj.confirm).isSave) {
               const type = 'objTabActionSlient';
-              this.objTabActionSlientData = obj;
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+                const objTabActionSlientData = {
+                  k: 'data',
+                  v: obj
+                };
+                updateSessionObject('objTabActionSlientData', objTabActionSlientData);
+              } else {
+                this.objTabActionSlientData = obj;
+              }
               this.clickSave({ type });
             } else {
               this.errorconfirmDialog(obj);
@@ -1303,7 +1360,13 @@
             k: name,
             v: tab.webdesc
           };
+          const undataFromPageCustomizeButtonInfo = {
+            k: name,
+            v: this[INSTANCE_ROUTE_QUERY]
+          };
           updateSessionObject('keepAliveLabelMaps', keepAliveLabelMapsObj);// keepAliveLabel因刷新后来源信息消失，存入session
+          updateSessionObject('undataFromPageCustomizeButtonInfo', undataFromPageCustomizeButtonInfo);// 将自定义按钮为跳转自定义界面类型的自定义按钮信息存入session
+
           router.push(
             path
           );
@@ -1314,9 +1377,17 @@
         this.saveButtonPath = data.requestUrlPath;
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
+          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+            const saveEventAfter = {
+              k: 'type',
+              v: data.type
+            };
+            updateSessionObject('saveEventAfter', saveEventAfter);
+          } else {
+            this.saveEventAfter = data.type;
+          }
           const myEvent = new Event('click');
           dom.dispatchEvent(myEvent);
-          this.saveEventAfter = data.type;
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
@@ -1751,15 +1822,11 @@
       copyForHorizontal() { // 横向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        console.log(5);
-
         this.$loading.show(this.tableName);
       },
       copyForVertical() { // 纵向结构接口 请求成功后复制逻辑
         this.$store.commit(`${this[MODULE_COMPONENT_NAME]}/savaCopyData`, { copyDatas: this.copyDatas, tableName: this.tableName, modifyData: this.modifyData });
         this.copyDataForSingleObject({});// 清除global中复制所保存的数据
-        console.log(6);
-
         this.$loading.show(this.tableName);
       },
       clickButtonsBack(stop) { // 按钮返回事件  
@@ -1783,6 +1850,7 @@
         const { tableId, tableName } = this.$route.params;
         // 列表界面配置动态路由
         const routeMapRecord = getSeesionObject('routeMapRecord');
+        
         const currentRoute = this.activeTab.routeFullPath;
         const keepAliveModuleName = getKeepAliveModuleName(this.$router.currentRoute);
         const tabUrl = keepAliveModuleName.substring(0, 1);
@@ -2769,6 +2837,7 @@
           this.clearEditData();// 清空store update数据
           stop = false;
           removeMessage = false;
+
           this.saveAfter(type, tableName, stop, removeMessage);
           if (this.itemInfo.webact) { // 兼容半定制界面，保存成功时通知外部
             DispatchEvent('customizeClick', {
@@ -2781,13 +2850,13 @@
             });
           }
           if (enableJflow()) { // jflow开启时，保存成功需通知
-            DispatchEvent('jflowPlugin', {
-              detail: {
-                obj: {
-                  button: 'save'
-                }
-              }
-            });
+            // DispatchEvent('jflowPlugin', {
+            //   detail: {
+            //     obj: {
+            //       button: 'save'
+            //     }
+            //   }
+            // });
           }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
@@ -2813,10 +2882,13 @@
           this.clearEditData();// 清空store update数据
         } else { // 保存失败不执行任何逻辑
           this.saveEventAfter = '';
-          return;
+          const saveEventAfterData = {
+            k: 'type',
+            v: {}
+          };
+          updateSessionObject('saveEventAfter', saveEventAfterData);
         }
         this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
-
         if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
           // this.updateChangeData({ tableName: this.tableName, value: {} });
           if (!stop) { // 如果保存失败，不执行以下操作
@@ -2908,10 +2980,13 @@
           return obj;
         }, {});
       },
+      
       saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
+        const saveEventAfter = getSeesionObject('saveEventAfter');
+        const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
         this.clearEditData();// 清空store update数据
         if (!stop) {
-          if (this.saveEventAfter === 'submit') { // 提交操作
+          if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
           
@@ -2928,34 +3003,60 @@
                              this.upData();
                            }
                            this.saveEventAfter = '';
+                           const saveEventAfterData = {
+                             k: 'type',
+                             v: {}
+                           };
+                           updateSessionObject('saveEventAfter', saveEventAfterData);
                          },
                          () => { // 状态为rejected时执行
-                           this.upData();
+                           const submitReject = window.localStorage.getItem('submitReject');
+                           if (!submitReject) {
+                             this.upData();
+                           } else {
+                             window.localStorage.removeItem('submitReject');
+                           }
                            this.saveEventAfter = '';
+                           const saveEventAfterData = {
+                             k: 'type',
+                             v: {}
+                           };
+                           updateSessionObject('saveEventAfter', saveEventAfterData);
                          });
-          } else if (this.saveEventAfter === 'invalid') {
-            const promise = new Promise((resolve, reject) => {
-              this.getObjectTryInvalid({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
-              });
-            });
-            this.temporaryStorage = false;
-            this.dataArray.temporaryStorage = false;
-            this.saveEventAfter = '';
-            promise.then(() => {
-              const message = this.buttonsData.invalidData.message;
-              if (message) {
-                this.upData(`${message}`);
-              } else {
-                this.upData();
-              }
-            }, () => { // 状态为rejected时执行
-              this.upData();
-            });
-          } else if (this.saveEventAfter === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
-            this.buttonEvent(this.objTabActionSlientData);
+          } else if (this.saveEventAfter === 'invalid' || saveEventAfter.type === 'invalid') {
+            // const promise = new Promise((resolve, reject) => {
+            //   this.getObjectTryInvalid({
+            //     objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            //   });
+            // });
+            // this.temporaryStorage = false;
+            // this.dataArray.temporaryStorage = false;
+            // this.saveEventAfter = '';
+            // const saveEventAfterData = {
+            //   k: 'type',
+            //   v: {}
+            // };
+            // updateSessionObject('saveEventAfter', saveEventAfterData);
+
+            // promise.then(() => {
+            //   const message = this.buttonsData.invalidData.message;
+            //   if (message) {
+            //     this.upData(`${message}`);
+            //   } else {
+            //     this.upData();
+            //   }
+            // }, () => { // 状态为rejected时执行
+            //   this.upData();
+            // });
+          } else if (this.saveEventAfter === 'objTabActionSlient' || saveEventAfter.type === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
+            this.buttonEvent(Object.keys(this.objTabActionSlientData).length > 0 ? this.objTabActionSlientData : objTabActionSlientData.data);
             // this.objTabActionSlientConfirm(this.objTabActionSlientData);
             this.objTabActionSlientData = {};
+            const data = {
+              k: 'data',
+              v: {}
+            };
+            updateSessionObject('objTabActionSlientData', data);
           } else { // 保存后的保存成功提示信息
             const message = this.buttonsData.message;
             if (message) {
@@ -3004,6 +3105,11 @@
 
         if (event.detail.type === 'clearSubmit') {
           this.saveEventAfter = '';
+          const saveEventAfterData = {
+            k: 'type',
+            v: {}
+          };
+          updateSessionObject('saveEventAfter', saveEventAfterData);
         }
       },
       hideBackButton() {

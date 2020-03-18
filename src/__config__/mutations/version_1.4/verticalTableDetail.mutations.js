@@ -3,7 +3,7 @@ import { cpus } from 'os';
 import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-import { enableJflow } from '../../../constants/global';
+import { enableJflow, custommizedJflow } from '../../../constants/global';
 import getComponentName from '../../../__utils__/getModuleName';
 
 
@@ -13,7 +13,7 @@ export default {
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
-    if (enableJflow() && this.state.global.JflowControlField.length > 0) {
+    if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) {
       data.isJflowConfig = true;
       this._mutations[`${getComponentName()}/updatePanelData`][0](data);
     } else {
@@ -34,13 +34,13 @@ export default {
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
     // state.instanceId = 1;
-    if (enableJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
+    if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
-        const { tableName } = router.currentRoute.params;
-        if (item.tableName === tableName) {
-          if (item.tableName === item.itemTableName && data.isJflowConfig) { // 主表修改字段
+        const { tableId } = router.currentRoute.params;
+        if (item.tableId === tableId) {
+          if (item.tableId === item.itemTableId && data.isJflowConfig) { // 主表修改字段
             tableNameFlag = true;
             // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
             
@@ -48,23 +48,24 @@ export default {
             this.state.global.objreadonlyForJflow.push(
               {
                 readonly: false,
-                itemTableName: item.itemTableName,
-                tableName: item.tableName
+                itemTableId: Number(item.itemTableId),
+                tableId: item.tableId
               }
             );
             // }
            
             item.isJflowConfigMainTable = true;
+
             return true;
-          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tablename === item.itemTableName) { // 子表修改字段
+          } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tableid === Number(item.itemTableId)) { // 子表修改字段
             if (state.tabPanels[data.tabIndex].tabrelation === '1:1') { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
               // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
               // if (b.length === 0) { // 去重
               this.state.global.objreadonlyForJflow.push(
                 {
                   readonly: false,
-                  itemTableName: item.itemTableName,
-                  tableName: item.tableName
+                  itemTableId: Number(item.itemTableId),
+                  tableId: item.tableId
                 }
               );
               // }
@@ -73,6 +74,7 @@ export default {
           }
         } 
       });
+
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
@@ -162,6 +164,8 @@ export default {
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID
                 state.mainFormInfo.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;
               }
+            } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
+              state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
             }
           }
           // jflowButtons有返回值时，将元数据标准以及刷新按钮去除
@@ -178,7 +182,7 @@ export default {
               });
             }
             state.mainFormInfo.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton;
-            state.jflowConfigrefreshButton = false;
+            state.jflowConfigrefreshButton = true;
           }
 
           state.mainFormInfo.formData.data = Object.assign({}, data);
@@ -187,7 +191,7 @@ export default {
           // const { componentAttribute } = state.tabPanels[data.tabIndex];
           // componentAttribute.panelData.isShow = true;
           // componentAttribute.panelData.data = data;// 子表赋值逻辑
-        } else if (!JflowControlFieldData[0].isJflowConfigMainTable) {
+        } else if (!JflowControlFieldData[0].isJflowConfigMainTable) { // jflow配置为子表
           const addcolumsData = data.addcolums.reduce((a, c) => {
             const u = [];
             if (c.childs) {
@@ -271,7 +275,9 @@ export default {
               });
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
                 componentAttribute.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
-              }
+              } 
+            } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
+              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
@@ -289,7 +295,7 @@ export default {
             componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
             componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button !== 'fresh');
             componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
-            // state.jflowConfigrefreshButton = true;
+            state.jflowConfigrefreshButton = true;
           }
           // 以下逻辑为当前jflow配置的为子表时，当前单据其余表按钮展示逻辑
           // 上下结构只有当前配置表展示按钮，其余子表不展示按钮，主表展示刷新/复制/返回
@@ -709,18 +715,23 @@ export default {
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
-    state.jflowPluginDataArray = newButtons;
-    state.instanceId = instanceId;
-    if (instanceId) {
-      // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-      state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
-    } else {
-      state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+    if (!custommizedJflow()) {
+      state.jflowPluginDataArray = newButtons;
+      state.instanceId = instanceId;
+      if (instanceId) {
+        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
+        // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
+      } else {
+        state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+      }
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
     }
-    state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
+  },
+  updateRefreshButtonForJflow(state, value) { // 控制刷新按钮开关
+    state.jflowConfigrefreshButton = value;
   },
   updateChildTableReadonly(state, value) { // 更新childTableReadonly字段，控制字表可读性
     state.childTableReadonly = value;
@@ -767,4 +778,6 @@ export default {
   updateButtonGetActionData(state, data) {
     state.ExeActionDataForComponent = data;
   },
+ 
+  
 };

@@ -221,11 +221,10 @@ function thirdlogin() { // 三方登录  获取accessToken
   id:明细id
   pid:主表id
   flag: 是否刷新按钮
-  tableName: 主表表名
   active: 当前表表名
   isApprover: 消息中心参数
 */
-async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // jflow按钮逻辑处理
+async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮逻辑处理
   return await new Promise((resolve) => {
     axios.post('/jflow/p/cs/task/buttons', {
       businessCode: id,
@@ -267,8 +266,8 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
               isJflow: true
             });
             const obj = {
-              tableName: tableName || router.currentRoute.params.tableName,
-              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+              tableId: pid || router.currentRoute.params.tableId,
+              itemTableId: (active || router.currentRoute.query.ACTIVE) || pid || router.currentRoute.params.tableId,
               isShow: modifiField,
               readonly: edit,
               exeActionButton,
@@ -277,7 +276,7 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
             
             // 判重处理
             JflowControlField = JflowControlField.filter((item) => {
-              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+              if (item.tableId !== obj.tableId) {
                 return item;
               }
             });
@@ -287,12 +286,12 @@ async function jflowButtons(id, pid, flag, tableName, active, isApprover) { // j
           } else { // 不在流程中去除相对应的配置
             let JflowControlField = JSON.parse(JSON.stringify(window.jflowPlugin.store.state.global.JflowControlField));
             const obj = {
-              tableName: tableName || router.currentRoute.params.tableName,
-              itemTableName: (active || router.currentRoute.query.ACTIVE) || tableName || router.currentRoute.params.tableName,
+              tableId: pid || router.currentRoute.params.tableId,
+              itemTableId: (active || router.currentRoute.query.ACTIVE) || pid || router.currentRoute.params.tableId,
             };
             // 判断相对应的配置然后去除掉
             JflowControlField = JflowControlField.filter((item) => {
-              if (item.tableName !== obj.tableName || item.itemTableName !== obj.itemTableName) {
+              if (item.tableId !== obj.tableId) {
                 return item;
               }
             });
@@ -320,7 +319,7 @@ function RoutingGuard(router) { // 路由守卫
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
       configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
-        jflowButtons(to.params.itemId, to.params.tableId, true, to.params.tableName, to.query.ACTIVE, to.query.isApprover).then((res) => {
+        jflowButtons(to.params.itemId, to.params.tableId, true, to.query.ACTIVE, to.query.isApprover).then((res) => {
           //  todo
           // 设置global里面的可编辑字段和可见字段的控制
           next();
@@ -416,6 +415,8 @@ async function jflowsave(flag, request) {
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
           jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 设置提交时不能刷新的标志
+            window.localStorage.setItem('submitReject', true);
             // 流程发起成功刷新界面
             DispatchEvent('jflowClick', {
               detail: {
@@ -423,13 +424,15 @@ async function jflowsave(flag, request) {
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         reject(response);
       } else {
         resolve();

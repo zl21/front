@@ -55,14 +55,17 @@ export default {
       router.push({
         path
       });
-
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        const customizeConfig = externalModules || customize;
+        const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+        console.log(11, externalModules, customize);
+
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
+
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customizeConfig[customizeName].labelName;
+            console.log(11, labelName);
             const name = `C.${customizedModuleName}.${param.id}`;
             state.keepAliveLabelMaps[name] = `${labelName}`;
             const keepAliveLabelMapsObj = {
@@ -265,6 +268,13 @@ export default {
     window.sessionStorage.removeItem('addRouteToEditor');
     window.sessionStorage.removeItem('routeMapRecord');
     window.sessionStorage.removeItem('routeMapRecordForSingleObject');
+    state.JflowControlField = state.JflowControlField.map((item) => {
+      state.openedMenuLists.map((openedMenuList) => {
+        if (item.tableName !== openedMenuList.tableName) {
+          return item;
+        }
+      });
+    });
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -278,6 +288,12 @@ export default {
     });
   },
   tabCloseAppoint(state, tab) {
+    // 关闭tab时需清楚jflow配置的对应表
+    state.JflowControlField = state.JflowControlField.filter((item) => {
+      if (item.tableName !== tab.tableName) {
+        return item;
+      }
+    });
     // window.sessionStorage.removeItem('dynamicRoutingIsBack');// 清除动态路由返回标记
 
     const tabRouteFullPath = tab.routeFullPath;

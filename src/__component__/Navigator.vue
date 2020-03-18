@@ -69,7 +69,8 @@
         />
       </Badge>
     </div>
-    <div
+    <ComAutoComplete />
+    <!-- <div
       :class="searchBtn ? 'tag right' :'tag tag-search right' "
     >
       <template v-if="searchBtn === false">
@@ -104,7 +105,7 @@
           class="iconfont iconbj_search"
         />
       </span>
-    </div>
+    </div> -->
     <div
       v-if="versionValue"
       class="tag right"
@@ -162,6 +163,7 @@
   import NavigatorPrimaryMenu from './NavigatorPrimaryMenu';
   import SetPanel from './SetPanel';
   import messagePanel from './messagePanel';
+  import ComAutoComplete from './ComAutoComplete';
   import Dialog from './Dialog.vue';
   import closedImg from '../assets/image/closed@2x.png';
   import openedImg from '../assets/image/open@2x.png';
@@ -181,7 +183,8 @@
       SetPanel,
       Dialog,
       NavigatorSubMenu,
-      messagePanel
+      messagePanel,
+      ComAutoComplete
     },
     
     data() {
