@@ -144,6 +144,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          jflowPluginDataArray: [], // jflow老版本按钮配置
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
