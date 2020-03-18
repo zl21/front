@@ -289,6 +289,9 @@ export default {
   },
   tabCloseAppoint(state, tab) {
     // 关闭tab时需清楚jflow配置的对应表
+    // tableName:'主表表明',
+    // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
+    
     state.JflowControlField = state.JflowControlField.filter((item) => {
       if (item.tableName !== tab.tableName) {
         return item;
