@@ -1052,27 +1052,27 @@
       },
       objectTryVoid(obj) {
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
-        if (this.verifyRequiredInformation()) { // 验证表单必填项
-          const data = {
-            title: '警告',
-            mask: true,
-            showCancel: true,
-            content: '确认执行作废?',
-            onOk: () => {
-              // this.saveButtonPath = obj.requestUrlPath;
-              // const dom = document.getElementById('actionMODIFY');
-              // dom.click();
-              // this.saveEventAfter = 'invalid';
+        // if (this.verifyRequiredInformation()) { // 验证表单必填项
+        const data = {
+          title: '警告',
+          mask: true,
+          showCancel: true,
+          content: '确认执行作废?',
+          onOk: () => {
+            // this.saveButtonPath = obj.requestUrlPath;
+            // const dom = document.getElementById('actionMODIFY');
+            // dom.click();
+            // this.saveEventAfter = 'invalid';
 
-              // 去除作废前调用保存逻辑
-              // this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
-              this.invalid();
-            }
-          };
-          this.$Modal.fcWarning(data);
-        }
+            // 去除作废前调用保存逻辑
+            // this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+            this.invalid(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+        // }
       },
-      invalid() {
+      invalid(obj) {
         const promise = new Promise((resolve, reject) => {
           this.getObjectTryInvalid({
             objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
@@ -1099,6 +1099,7 @@
         });
       },
       webactionClick(obj, type) { // 动作定义执行
+        debugger;
         if (obj.confirm) {
           // 有提示
           let selete = [];
