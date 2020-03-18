@@ -139,7 +139,7 @@
           let flag = false;
           if (this.JflowControlField.length > 0) {
             this.JflowControlField.map((jflowData) => {
-              if (this[INSTANCE_ROUTE_QUERY].tableId === Number(jflowData.tableId)) { // 当前单对象界面是否在流程中
+              if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
                 flag = true;
               }
             });
