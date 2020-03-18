@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import network from '../../../__utils__/network';
+import { functionPowerRequestURL } from '../../../constants/global';
 
 export const fetchActionsInCustomizePage = function fetchActionsInCustomizePage(params) {
   network
@@ -63,7 +64,7 @@ export const getMenuTree = function getMenuTree(params) {
 
 export const groupTreeload = function groupTreeload(params) {
   network
-    .post('/p/cs/groupTreeload')
+    .post(functionPowerRequestURL() || '/p/cs/groupTreeload')
     .then((res) => {
       if (typeof params.success === 'function') {
         params.success(res);
