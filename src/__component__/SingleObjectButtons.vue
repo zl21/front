@@ -1063,11 +1063,40 @@
               // const dom = document.getElementById('actionMODIFY');
               // dom.click();
               // this.saveEventAfter = 'invalid';
-              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+
+              // 去除作废前调用保存逻辑
+              // this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+              this.invalid();
             }
           };
           this.$Modal.fcWarning(data);
         }
+      },
+      invalid() {
+        const promise = new Promise((resolve, reject) => {
+          this.getObjectTryInvalid({
+            objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
+          });
+        });
+        this.temporaryStorage = false;
+        this.dataArray.temporaryStorage = false;
+        this.saveEventAfter = '';
+        const saveEventAfterData = {
+          k: 'type',
+          v: {}
+        };
+        updateSessionObject('saveEventAfter', saveEventAfterData);
+
+        promise.then(() => {
+          const message = this.buttonsData.invalidData.message;
+          if (message) {
+            this.upData(`${message}`);
+          } else {
+            this.upData();
+          }
+        }, () => { // 状态为rejected时执行
+          this.upData();
+        });
       },
       webactionClick(obj, type) { // 动作定义执行
         if (obj.confirm) {
@@ -2951,6 +2980,7 @@
           return obj;
         }, {});
       },
+      
       saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
         const saveEventAfter = getSeesionObject('saveEventAfter');
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
@@ -2993,6 +3023,49 @@
                            };
                            updateSessionObject('saveEventAfter', saveEventAfterData);
                          });
+          } else if (this.saveEventAfter === 'invalid' || saveEventAfter.type === 'invalid') {
+            // const promise = new Promise((resolve, reject) => {
+            //   this.getObjectTryInvalid({
+            //     objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            //   });
+            // });
+            // this.temporaryStorage = false;
+            // this.dataArray.temporaryStorage = false;
+            // this.saveEventAfter = '';
+            // const saveEventAfterData = {
+            //   k: 'type',
+            //   v: {}
+            // };
+            // updateSessionObject('saveEventAfter', saveEventAfterData);
+
+            // promise.then(() => {
+            //   const message = this.buttonsData.invalidData.message;
+            //   if (message) {
+            //     this.upData(`${message}`);
+            //   } else {
+            //     this.upData();
+            //   }
+            // }, () => { // 状态为rejected时执行
+            //   this.upData();
+            // });
+          } else if (this.saveEventAfter === 'objTabActionSlient' || saveEventAfter.type === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
+            this.buttonEvent(Object.keys(this.objTabActionSlientData).length > 0 ? this.objTabActionSlientData : objTabActionSlientData.data);
+            // this.objTabActionSlientConfirm(this.objTabActionSlientData);
+            this.objTabActionSlientData = {};
+            const data = {
+              k: 'data',
+              v: {}
+            };
+            updateSessionObject('objTabActionSlientData', data);
+          } else { // 保存后的保存成功提示信息
+            const message = this.buttonsData.message;
+            if (message) {
+              this.upData(`${message}`);
+            } else if (removeMessage) {
+              this.upData();
+            } else {
+              this.upData('保存成功');
+            }
           }
         } else {
           this.temporaryStorage = false;
