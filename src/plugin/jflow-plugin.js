@@ -415,6 +415,8 @@ async function jflowsave(flag, request) {
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
           jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 设置提交时不能刷新的标志
+            window.localStorage.setItem('submitReject', true);
             // 流程发起成功刷新界面
             DispatchEvent('jflowClick', {
               detail: {
@@ -422,13 +424,15 @@ async function jflowsave(flag, request) {
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         reject(response);
       } else {
         resolve();
