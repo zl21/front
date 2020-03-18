@@ -1099,7 +1099,6 @@
         });
       },
       webactionClick(obj, type) { // 动作定义执行
-        debugger;
         if (obj.confirm) {
           // 有提示
           let selete = [];
@@ -1394,7 +1393,6 @@
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // debugger;
         // if (tab.confirm) {
         //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
         //     const data = {
