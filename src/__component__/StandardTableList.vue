@@ -227,12 +227,11 @@
         return this.buttons.selectIdArr;
       },
       isTreeList() {
-        return true;
-        // const treeQuery = this.$router.currentRoute.query;
-        // if (treeQuery.isTreeTable) {
-        //   return true;
-        // }
-        // return false;
+        const treeQuery = this.$router.currentRoute.query;
+        if (treeQuery.isTreeTable) {
+          return true;
+        }
+        return false;
       },
       treeConfigData() {
         const treeQuery = this.$router.currentRoute.query;
