@@ -765,7 +765,7 @@
                                         event,
                                         info,
                                         allWebConf: info.column.webconf || {},
-                                        webConf: info.column.webconf ? info.column.webconf || {} : {},
+                                        webConf: info.column.webconf ? info.column.webconf[d.limitval] || {} : {},
                                         symbol: d.limitval
                                       }
                                     });
