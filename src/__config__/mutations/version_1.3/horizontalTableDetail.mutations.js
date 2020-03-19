@@ -11,8 +11,7 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          // state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
-          data
+          data: state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
         },
         formData: {
           isShow: false,

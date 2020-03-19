@@ -194,11 +194,11 @@
           this.dataArray.jflowButton = val;
         }
       },
-      // jflowPluginDataArray: {// 原jflow
-      //   handler(val) {
-      //     this.dataArray.jflowPluginDataArray = val;
-      //   }
-      // },
+      jflowPluginDataArray: {// 原jflow
+        handler(val) {
+          this.dataArray.jflowPluginDataArray = val;
+        }
+      },
       refreshButtons: {
         handler(val) {
           this.dataArray.refresh = val;
@@ -3233,13 +3233,12 @@
       }
       
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
-        console.log(33333, this.tabcmd.cmds);
         this.buttonsReorganization(this.tabcmd);
       }
       this.waListButtons(this.tabwebact);
-      // if (this.jflowPluginDataArray) {
-      //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      // }
+      if (this.jflowPluginDataArray) {
+        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      }
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;
