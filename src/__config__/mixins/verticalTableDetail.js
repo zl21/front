@@ -122,7 +122,8 @@ export default () => ({
         'seleteAddData',
         'emptyChangeData',
         'changeFormData',
-        'updateButtonGetActionData'
+        'updateButtonGetActionData',
+        'updateRefreshButtonForJflow'
 
         // 'resetFormReadOnlyAttribute'
 
