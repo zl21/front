@@ -3233,6 +3233,7 @@
       }
       
       if (this.tabcmd.cmds && this.tabcmd.cmds.length > 0) {
+        console.log(33333, this.tabcmd.cmds);
         this.buttonsReorganization(this.tabcmd);
       }
       this.waListButtons(this.tabwebact);
