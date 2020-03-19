@@ -21,7 +21,7 @@
       />
     </div>
     <tree
-      v-if="isTreeList"
+      v-if="isTreeList&&treeShow"
       :tree-data="treeConfigData"
       @menuTreeChange="menuTreeChange"
     />
@@ -2197,7 +2197,7 @@
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    top: 65%;
+    top: 35%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;
