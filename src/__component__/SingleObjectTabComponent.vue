@@ -145,7 +145,7 @@
 
 
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow 
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow
   } from '../constants/global';
 
   const customizeModules = {};
@@ -273,7 +273,7 @@
       }),
       itemReadOnlyForJflow() {
         let flag = null;
-        if(enableJflow() && this.objreadonlyForJflow.length > 0) {
+        if(enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
           const { tableId } = router.currentRoute.params;
           this.objreadonlyForJflow.map((item) => {
             if(item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {

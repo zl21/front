@@ -149,6 +149,8 @@
   import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import treeData from '../__config__/treeData.config';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -239,7 +241,10 @@
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
           }
-        }
+        } 
+        // if (treeData) {
+        //   return treeData.AD_MENU();
+        // }
         return [];
       }
     },
@@ -297,6 +302,16 @@
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        const { tableName } = this[INSTANCE_ROUTE_QUERY];
+        const data = {
+          k: tableName,
+          v: item.ID
+        };
+        updateSessionObject('TreeId', data);
+        // const data = {
+        //   [tableName]: item.ID
+        // };
+        // this.updataTreeId(data);
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -394,6 +409,12 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const treeQuery = this.$router.currentRoute.query;
+        // if (treeQuery.isTreeTable) {
+        const treeIds = getSeesionObject('TreeId');
+        const treeTableListSelectId = treeIds[tableName];
+        // }
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
           // this.tabHref({
           //   type: 'tableDetailHorizontal',
@@ -418,7 +439,8 @@
               url: tableurl,
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
-              isMenu: true
+              isMenu: true,
+              treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
             return;
@@ -445,14 +467,14 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-          const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
               url: this.ag.tableurl,
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
-              isMenu: true
+              isMenu: true,
+              treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {

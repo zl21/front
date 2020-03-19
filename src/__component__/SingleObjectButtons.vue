@@ -96,7 +96,7 @@
   import WaterMark from './WaterMark.vue';
   import ImportDialog from './ImportDialog';
   import {
-    isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
+    custommizedJflow, isItemTableNewValidation, INSTANCE_ROUTE, KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, INSTANCE_ROUTE_QUERY, LINK_MODULE_COMPONENT_PREFIX, enableJflow, getCustomizeWaterMark
   } from '../constants/global';
   import { getGateway } from '../__utils__/network';
   import { getUrl, getLabel } from '../__utils__/url';
@@ -144,6 +144,7 @@
           buttonGroupShowConfig: {// 标准按钮
             buttonGroupShow: []
           },
+          jflowPluginDataArray: [], // jflow老版本按钮配置
           jflowButton: [], // jflow配置按钮
           btnclick: (type, item) => {
             const self = this;
@@ -165,7 +166,7 @@
         defaultForCopyData: {}, // 保存复制操作时所需要的当前页面的数据
         itemTableValidation: false, // 控制提交按钮操作时子表form必填项不进行验证
         saveButtonPath: '', // 类型为保存的按钮path
-        saveEventAfter: '2222', // 保存事件执行完成后的操作
+        saveEventAfter: '', // 保存事件执行完成后的操作
         objTabActionSlientData: {}, // 静默程序配置字段
         submitImage: '', // 提交操作完成后接口会返回提交成功图标
         savaCopy: false,
@@ -1051,22 +1052,51 @@
       },
       objectTryVoid(obj) {
         // this.itemTableValidation = true;// 提交逻辑不需要验证子表必填项
-        if (this.verifyRequiredInformation()) { // 验证表单必填项
-          const data = {
-            title: '警告',
-            mask: true,
-            showCancel: true,
-            content: '确认执行作废?',
-            onOk: () => {
-              // this.saveButtonPath = obj.requestUrlPath;
-              // const dom = document.getElementById('actionMODIFY');
-              // dom.click();
-              // this.saveEventAfter = 'invalid';
-              this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
-            }
-          };
-          this.$Modal.fcWarning(data);
-        }
+        // if (this.verifyRequiredInformation()) { // 验证表单必填项
+        const data = {
+          title: '警告',
+          mask: true,
+          showCancel: true,
+          content: '确认执行作废?',
+          onOk: () => {
+            // this.saveButtonPath = obj.requestUrlPath;
+            // const dom = document.getElementById('actionMODIFY');
+            // dom.click();
+            // this.saveEventAfter = 'invalid';
+
+            // 去除作废前调用保存逻辑
+            // this.clickSave({ requestUrlPath: obj.requestUrlPath, type: 'invalid' });
+            this.invalid(obj);
+          }
+        };
+        this.$Modal.fcWarning(data);
+        // }
+      },
+      invalid(obj) {
+        const promise = new Promise((resolve, reject) => {
+          this.getObjectTryInvalid({
+            objId: this.itemId, table: this.tableName, path: obj.requestUrlPath, isreftabs: this.isreftabs, resolve, reject
+          });
+        });
+        this.temporaryStorage = false;
+        this.dataArray.temporaryStorage = false;
+        this.saveEventAfter = '';
+        const saveEventAfterData = {
+          k: 'type',
+          v: {}
+        };
+        updateSessionObject('saveEventAfter', saveEventAfterData);
+
+        promise.then(() => {
+          const message = this.buttonsData.invalidData.message;
+          if (message) {
+            this.upData(`${message}`);
+          } else {
+            this.upData();
+          }
+        }, () => { // 状态为rejected时执行
+          this.upData();
+        });
       },
       webactionClick(obj, type) { // 动作定义执行
         if (obj.confirm) {
@@ -1123,7 +1153,7 @@
               this.dialogMessage(title, contentText, obj);
             } else if (JSON.parse(obj.confirm).isSave) { // 静默执行保存
               const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
                   k: 'data',
                   v: obj
@@ -1152,7 +1182,7 @@
           onOk: () => {
             if (JSON.parse(obj.confirm).isSave) {
               const type = 'objTabActionSlient';
-              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+              if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
                   k: 'data',
                   v: obj
@@ -1347,7 +1377,7 @@
         this.saveButtonPath = data.requestUrlPath;
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
-          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow()) { 
+          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
             const saveEventAfter = {
               k: 'type',
               v: data.type
@@ -1363,7 +1393,6 @@
       objTabActionSlient(tab) { // 动作定义静默
         this.objTabActionSlientConfirm(tab);
         // 判断当前tab是否为空,特殊处理提示信息后调用静默前保存
-        // debugger;
         // if (tab.confirm) {
         //   if (!(tab.confirm.indexOf('{') >= 0)) { // 静默执行提示弹框
         //     const data = {
@@ -2820,13 +2849,13 @@
             });
           }
           if (enableJflow()) { // jflow开启时，保存成功需通知
-            DispatchEvent('jflowPlugin', {
-              detail: {
-                obj: {
-                  button: 'save'
-                }
-              }
-            });
+            // DispatchEvent('jflowPlugin', {
+            //   detail: {
+            //     obj: {
+            //       button: 'save'
+            //     }
+            //   }
+            // });
           }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
@@ -2950,6 +2979,7 @@
           return obj;
         }, {});
       },
+      
       saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
         const saveEventAfter = getSeesionObject('saveEventAfter');
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
@@ -2979,7 +3009,12 @@
                            updateSessionObject('saveEventAfter', saveEventAfterData);
                          },
                          () => { // 状态为rejected时执行
-                           this.upData();
+                           const submitReject = window.localStorage.getItem('submitReject');
+                           if (!submitReject) {
+                             this.upData();
+                           } else {
+                             window.localStorage.removeItem('submitReject');
+                           }
                            this.saveEventAfter = '';
                            const saveEventAfterData = {
                              k: 'type',
@@ -2988,30 +3023,30 @@
                            updateSessionObject('saveEventAfter', saveEventAfterData);
                          });
           } else if (this.saveEventAfter === 'invalid' || saveEventAfter.type === 'invalid') {
-            const promise = new Promise((resolve, reject) => {
-              this.getObjectTryInvalid({
-                objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
-              });
-            });
-            this.temporaryStorage = false;
-            this.dataArray.temporaryStorage = false;
-            this.saveEventAfter = '';
-            const saveEventAfterData = {
-              k: 'type',
-              v: {}
-            };
-            updateSessionObject('saveEventAfter', saveEventAfterData);
+            // const promise = new Promise((resolve, reject) => {
+            //   this.getObjectTryInvalid({
+            //     objId: this.itemId, table: this.tableName, path: this.saveButtonPath, isreftabs: this.isreftabs, resolve, reject
+            //   });
+            // });
+            // this.temporaryStorage = false;
+            // this.dataArray.temporaryStorage = false;
+            // this.saveEventAfter = '';
+            // const saveEventAfterData = {
+            //   k: 'type',
+            //   v: {}
+            // };
+            // updateSessionObject('saveEventAfter', saveEventAfterData);
 
-            promise.then(() => {
-              const message = this.buttonsData.invalidData.message;
-              if (message) {
-                this.upData(`${message}`);
-              } else {
-                this.upData();
-              }
-            }, () => { // 状态为rejected时执行
-              this.upData();
-            });
+            // promise.then(() => {
+            //   const message = this.buttonsData.invalidData.message;
+            //   if (message) {
+            //     this.upData(`${message}`);
+            //   } else {
+            //     this.upData();
+            //   }
+            // }, () => { // 状态为rejected时执行
+            //   this.upData();
+            // });
           } else if (this.saveEventAfter === 'objTabActionSlient' || saveEventAfter.type === 'objTabActionSlient') { // 静默程序配置isSave时，保存成功后才可执行静默程序
             this.buttonEvent(Object.keys(this.objTabActionSlientData).length > 0 ? this.objTabActionSlientData : objTabActionSlientData.data);
             // this.objTabActionSlientConfirm(this.objTabActionSlientData);

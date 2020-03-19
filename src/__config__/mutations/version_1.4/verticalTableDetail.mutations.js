@@ -3,7 +3,7 @@ import { cpus } from 'os';
 import { ComponentResolver } from 'ag-grid/dist/lib/components/framework/componentResolver';
 import router from '../../router.config';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
-import { enableJflow } from '../../../constants/global';
+import { enableJflow, custommizedJflow } from '../../../constants/global';
 import getComponentName from '../../../__utils__/getModuleName';
 
 
@@ -13,9 +13,12 @@ export default {
     state.mainFormInfo.tablename = tableName;
     state.mainFormInfo.tableid = tableId;
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
-    if (enableJflow() && this.state.global.JflowControlField.length > 0) {
+    if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) {
       data.isJflowConfig = true;
-      this._mutations[`${getComponentName()}/updatePanelData`][0](data);
+      setTimeout(() => {
+        this.commit(`${getComponentName()}/updatePanelData`, data);
+        // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
+      }, 500);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
     }
@@ -34,7 +37,7 @@ export default {
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
     // state.instanceId = 1;
-    if (enableJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
+    if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
@@ -74,6 +77,7 @@ export default {
           }
         } 
       });
+
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
@@ -714,15 +718,17 @@ export default {
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
-    // state.jflowPluginDataArray = newButtons;
-    // state.instanceId = instanceId;
-    // if (instanceId) {
-    //   // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
-    //   state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
-    // } else {
-    //   state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-    // }
-    // state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+    if (!custommizedJflow()) {
+      state.jflowPluginDataArray = newButtons;
+      state.instanceId = instanceId;
+      if (instanceId) {
+        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];
+        // state.mainFormInfo.buttonsData.data.tabwebact.objbutton = tabwebact;
+      } else {
+        state.mainFormInfo.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+      }
+      state.mainFormInfo.buttonsData.data.tabcmd.prem = buttonsData;
+    }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;

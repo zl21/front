@@ -6,6 +6,7 @@
   >
     <ul
       v-for="(subMenu, index) in data"
+      v-if="subMenu.children.length>0&&subMenu.children.filter(c=>!c.isHidden).length>0"
       :key="`subMenu-${index}`"
       class="menu-group"
     >

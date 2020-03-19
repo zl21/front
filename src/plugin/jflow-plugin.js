@@ -415,6 +415,8 @@ async function jflowsave(flag, request) {
         const type = router.currentRoute.path.split('/')[3];// 获取组件类型
         if (type === 'H' || type === 'V') {
           jflowButtons(router.currentRoute.params.itemId).then((res) => {
+            // 设置提交时不能刷新的标志
+            window.localStorage.setItem('submitReject', true);
             // 流程发起成功刷新界面
             DispatchEvent('jflowClick', {
               detail: {
@@ -422,13 +424,15 @@ async function jflowsave(flag, request) {
               }
             });
           });
+        } else {
+          DispatchEvent('jflowEvent', {
+            detail: {
+              type: 'search'
+            }
+          });
         }
 
-        DispatchEvent('jflowEvent', {
-          detail: {
-            type: 'search'
-          }
-        });
+        
         reject(response);
       } else {
         resolve();
@@ -880,7 +884,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
-  encryptionJflow = options.encryptionJflow;
+  // encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
     window.conversionJflow = decryptionJflow;
     axios = options.axios;
@@ -888,16 +892,21 @@ const install = function install(Vue, options = {}) {
     store = options.store;
     jflowIp = options.jflowIp;
     
-    thirdlogin();
-    RoutingGuard(options.router);
-    AxiosGuard(options.axios);
-    createComponent();
 
-    Vue.prototype.$network = network;
-    
-    
-    window.initiateLaunch = initiateLaunch;
-    window.jflowRefresh = jflowRefresh;
+    axios.post('/jflow/sys/properties', {})
+      .then((res) => {
+        encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
+        thirdlogin();
+        RoutingGuard(options.router);
+        AxiosGuard(options.axios);
+        createComponent();
+
+        Vue.prototype.$network = network;
+        
+        
+        window.initiateLaunch = initiateLaunch;
+        window.jflowRefresh = jflowRefresh;
+      });
   }
 };
 

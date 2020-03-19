@@ -107,7 +107,34 @@ function initiateLaunch(event) {
   if (window.jflowPlugin.objInstanceId) {
     mutipleOperate(jflowobj.affirmUrl, jflowobj.instanceId, jflowbuttons, jflowid);
   } else {
-    window.initiateLaunch({ webActionId: event.detail.data.webid });
+    // 判断是否存在模版，存在的时候才能发起流程
+    let triggerBt = [];
+    if (window.localStorage.getItem('businessTypes')) {
+      JSON.parse(window.localStorage.getItem('businessTypes')).map((item) => {
+        if (item.businessType === window.jflowPlugin.router.currentRoute.params.tableId) {
+          triggerBt = triggerBt.concat(item.triggerBt);
+        }
+        return item;
+      });
+
+      triggerBt = triggerBt.filter((item, index, self) => self.indexOf(item) === index);
+      
+      if (triggerBt.includes(String(event.detail.data.webid))) {
+        window.initiateLaunch({ webActionId: event.detail.data.webid });
+      } else {
+        window.R3message({
+          title: '错误',
+          content: '当前按钮为工作流触发按钮，请先配置模板！',
+          mask: true
+        });
+      }
+    } else {
+      window.R3message({
+        title: '错误',
+        content: '当前按钮为工作流触发按钮，请先配置模板！',
+        mask: true
+      });
+    }
   }
 }
 

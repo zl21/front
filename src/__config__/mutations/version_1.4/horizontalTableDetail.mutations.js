@@ -1,5 +1,5 @@
 import router from '../../router.config';
-import { enableJflow } from '../../../constants/global';
+import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 
 export default {
@@ -123,14 +123,16 @@ export default {
   updatePanelData(state, data) { // 更新子表面板数据
     state.itemObjId = data.id;
     // state.instanceId = 1;
-    if (enableJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
+    if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       const tabrelation = state.tabPanels.some(item => item.tabrelation === '1:1');
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId && (state.tabPanels[data.tabIndex].tableid || Number(state.tabPanels[data.tabIndex].id)) === Number(item.itemTableId)) {
           // state.tabPanels[data.tabIndex].tabrelation === '1:1' ||
-          if (tabrelation && item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
+
+          // tabrelation &&
+          if (item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
             const b = this.state.global.objreadonlyForJflow.filter(a => Number(a.itemTableId) !== Number(item.itemTableId));
             if (b.length === 0) {
               this.state.global.objreadonlyForJflow.push(
@@ -592,14 +594,16 @@ export default {
   jflowPlugin(state, {
     buttonsData, newButtons, instanceId, tabwebact
   }) { // jflowPlugin按钮逻辑
-    // state.jflowPluginDataArray = newButtons;
-    // state.instanceId = instanceId;
-    // if (instanceId) {
-    //   state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = tabwebact;
-    // } else {
-    //   state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
-    // }
-    // state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+    if (!custommizedJflow()) {
+      state.jflowPluginDataArray = newButtons;
+      state.instanceId = instanceId;
+      if (instanceId) {
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+      } else {
+        state.tabPanels[0].componentAttribute.buttonsData.data.tabwebact = state.defaultButtonData.tabwebact;
+      }
+      state.tabPanels[0].componentAttribute.buttonsData.data.tabcmd.prem = buttonsData;
+    }
   },
   updateRefreshButton(state, value) { // 控制刷新按钮开关
     state.refreshButton = value;
