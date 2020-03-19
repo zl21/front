@@ -42,6 +42,7 @@
 
   import { mapMutations } from 'vuex';
   import Dialog from '../../__component__/Dialog';
+  import getObjdisType from '../../__utils__/getObjdisType.js';
 
   export default {
     data() {
@@ -329,7 +330,23 @@
                       url = params.row.URL;
                       window.open(url);
                     } else {
-                      url = params.row.URL.substr(1);
+                      // if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                      // console.log('11a')
+                      //   getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                      //     console.log(res,"11")
+                      //     const distype = res === 'tabpanle' ? 'H' : 'V';
+                      //     const arr = params.row.URL.split('/');
+                      //     console.log(arr,"数组")
+                      //     arr[3] = distype;
+                      //     url = arr.Join('/');
+                      //   });
+                      // }else{
+                      //   url=params.row.URL;
+                      // }
+                      url=params.row.URL;
+                      console.log(url, 'url11');
+                      url = url.substr(1);
+                      console.log(url, 'url12');
                       const param = {
                         url,
                         id: params.row.ID,
