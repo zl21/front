@@ -11,7 +11,9 @@ import {
 } from '../../../constants/global';
 import router from '../../router.config';
 import customize from '../../customize.config';
-import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
+import {
+  getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+} from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
@@ -49,21 +51,26 @@ export default {
       }
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
-      const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      const treeQuery = router.currentRoute.query;
+      let path = '';
+      if (treeQuery.isTreeTable) {
+        // 如果当前列表为树形结构列表界面，则配置的动态路由以及tableurl（配置为跳转定制界面，则路由上定制界面ID为treeTableListSelectId）
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.treeTableListSelectId}`;
+      } else {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      }
       router.push({
         path
       });
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
-        console.log(11, externalModules, customize);
 
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
 
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customizeConfig[customizeName].labelName;
-            console.log(11, labelName);
             const name = `C.${customizedModuleName}.${param.id}`;
             state.keepAliveLabelMaps[name] = `${labelName}`;
             const keepAliveLabelMapsObj = {
@@ -278,6 +285,8 @@ export default {
         }
       });
     });
+    // 清空updataTreeId
+    removeSessionObject('TreeId');
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -292,6 +301,9 @@ export default {
   },
  
   tabCloseAppoint(state, tab) {   
+    // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
+    deleteFromSessionObject('TreeId', tab.tableName);
+
     // 关闭tab时需清楚jflow配置的对应表
     state.JflowControlField = state.JflowControlField.filter((item) => {
       if (item.tableName !== tab.tableName) {
