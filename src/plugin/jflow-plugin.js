@@ -906,6 +906,19 @@ const install = function install(Vue, options = {}) {
         
         window.initiateLaunch = initiateLaunch;
         window.jflowRefresh = jflowRefresh;
+      })
+      .catch(() => {
+        encryptionJflow = false;
+        thirdlogin();
+        RoutingGuard(options.router);
+        AxiosGuard(options.axios);
+        createComponent();
+
+        Vue.prototype.$network = network;
+        
+        
+        window.initiateLaunch = initiateLaunch;
+        window.jflowRefresh = jflowRefresh;
       });
   }
 };
