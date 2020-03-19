@@ -330,30 +330,32 @@
                       url = params.row.URL;
                       window.open(url);
                     } else {
-                      // if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
-                      // console.log('11a')
-                      //   getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
-                      //     console.log(res,"11")
-                      //     const distype = res === 'tabpanle' ? 'H' : 'V';
-                      //     const arr = params.row.URL.split('/');
-                      //     console.log(arr,"数组")
-                      //     arr[3] = distype;
-                      //     url = arr.Join('/');
-                      //   });
-                      // }else{
-                      //   url=params.row.URL;
-                      // }
-                      url=params.row.URL;
-                      console.log(url, 'url11');
-                      url = url.substr(1);
-                      console.log(url, 'url12');
-                      const param = {
-                        url,
-                        id: params.row.ID,
-                        lablel: null,
-                        isMenu: true
-                      };
-                      this.directionalRouter(param);// 定向路由跳转方法
+                      if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                        getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                          const distype = res === 'tabpanle' ? 'H' : 'V';
+                          const arr = params.row.URL.split('/');
+                          arr[3] = distype;
+                          url = arr.join('/');
+                          url = url.substr(1);
+                          const param = {
+                            url,
+                            id: params.row.ID,
+                            lablel: null,
+                            isMenu: true
+                          };
+                          this.directionalRouter(param);// 定向路由跳转方法
+                        });
+                      } else {
+                        url = params.row.URL;
+                        url = url.substr(1);
+                        const param = {
+                          url,
+                          id: params.row.ID,
+                          lablel: null,
+                          isMenu: true
+                        };
+                        this.directionalRouter(param);// 定向路由跳转方法
+                      }
                     }
                   }
                 }
