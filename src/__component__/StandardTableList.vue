@@ -241,10 +241,11 @@
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
           }
+          if (treeData) {
+            return treeData.AD_MENU();
+          }
         } 
-        // if (treeData) {
-        //   return treeData.AD_MENU();
-        // }
+      
         return [];
       }
     },
