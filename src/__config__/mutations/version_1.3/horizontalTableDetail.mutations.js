@@ -111,7 +111,8 @@ export default {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId && (state.tabPanels[data.tabIndex].tableid || Number(state.tabPanels[data.tabIndex].id)) === Number(item.itemTableId)) {
           // state.tabPanels[data.tabIndex].tabrelation === '1:1' ||
-          if (tabrelation && item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
+          // tabrelation &&
+          if (item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
             const b = this.state.global.objreadonlyForJflow.filter(a => Number(a.itemTableId) !== Number(item.itemTableId));
             if (b.length === 0) {
               this.state.global.objreadonlyForJflow.push(

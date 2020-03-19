@@ -16,7 +16,8 @@ export default {
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) {
       data.isJflowConfig = true;
       setTimeout(() => {
-        this._mutations[`${getComponentName()}/updatePanelData`][0](data);
+        this.commit(`${getComponentName()}/updatePanelData`, data);
+        // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
       }, 500);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
