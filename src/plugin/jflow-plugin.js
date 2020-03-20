@@ -893,7 +893,7 @@ const install = function install(Vue, options = {}) {
     jflowIp = options.jflowIp;
     
 
-    axios.post('/jflow/sys/properties', {})
+    axios.post('/jflow/p/sys/properties', {})
       .then((res) => {
         encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
         thirdlogin();
