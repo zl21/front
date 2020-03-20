@@ -61,6 +61,7 @@
         :on-cell-single-click="onCellSingleClick"
         :is-common-table="commonTable"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        :doTableSearch="searchClickData"
       />
     </div>
    
