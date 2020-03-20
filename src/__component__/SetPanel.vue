@@ -177,10 +177,13 @@
             removeSessionObject('saveNetwork');
             GetTableName('');
             this.$store.commit('global/updateJflowControlField', []);
+            // 清空updataTreeId
+            removeSessionObject('TreeId');
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');
+            removeSessionObject('TreeId');
           });
       }
     },

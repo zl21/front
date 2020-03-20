@@ -11,6 +11,7 @@ module.exports = {
   // target: 'http://zhixiao.burgeononline.com:32769/', // 知晓正式环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
   // target: 'http://r3.burgeon.cn:28888', // 李宁
+  // target: 'http://47.102.164.111:26666/', // 卡宾
   // target: 'http://106.15.24.156:19093', // 李宁AD
   // target: 'http://139.224.169.76:28888', // 沁园
   // target: 'http://10.14.5.196', // 商飞开发环境
@@ -29,10 +30,9 @@ module.exports = {
   enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: false, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
-  encryptionJflow: false, // 控制jflow传参是否加密
   // jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)                    
-  jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
-
+  // jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
+  jflowRequestDomain: 'http://47.102.164.111:26665/', // jflow后台地址（卡宾）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
   // jflowRequestDomain: 'http://10.14.5.198:8080', // jflow后台地址(商飞)
   enableTabLists: true, // 是否启用Tab页签切换模块的能力，默认启用

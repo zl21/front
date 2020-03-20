@@ -884,7 +884,7 @@ function initiateLaunch(data) { // 业务系统流程发起
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
-  encryptionJflow = options.encryptionJflow;
+  // encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
     window.conversionJflow = decryptionJflow;
     axios = options.axios;
@@ -892,16 +892,34 @@ const install = function install(Vue, options = {}) {
     store = options.store;
     jflowIp = options.jflowIp;
     
-    thirdlogin();
-    RoutingGuard(options.router);
-    AxiosGuard(options.axios);
-    createComponent();
 
-    Vue.prototype.$network = network;
-    
-    
-    window.initiateLaunch = initiateLaunch;
-    window.jflowRefresh = jflowRefresh;
+    axios.post('/jflow/p/sys/properties', {})
+      .then((res) => {
+        encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
+        thirdlogin();
+        RoutingGuard(options.router);
+        AxiosGuard(options.axios);
+        createComponent();
+
+        Vue.prototype.$network = network;
+        
+        
+        window.initiateLaunch = initiateLaunch;
+        window.jflowRefresh = jflowRefresh;
+      })
+      .catch(() => {
+        encryptionJflow = false;
+        thirdlogin();
+        RoutingGuard(options.router);
+        AxiosGuard(options.axios);
+        createComponent();
+
+        Vue.prototype.$network = network;
+        
+        
+        window.initiateLaunch = initiateLaunch;
+        window.jflowRefresh = jflowRefresh;
+      });
   }
 };
 

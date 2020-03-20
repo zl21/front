@@ -867,7 +867,7 @@
         if (Version() === '1.3') {
           const label = `${this.activeTab.label.replace('编辑', '')}`;
           const ids = this.tableRowSelectedIds.map(item => item.ID);
-          if (tab.action.search('/') === -1) {
+          if (tab.action && tab.action.search('/') === -1) {
             const param = {// param层动态参数
               // objid: itemId,
               table: this.tableName,

@@ -42,6 +42,7 @@
 
   import { mapMutations } from 'vuex';
   import Dialog from '../../__component__/Dialog';
+  import getObjdisType from '../../__utils__/getObjdisType.js';
 
   export default {
     data() {
@@ -329,14 +330,32 @@
                       url = params.row.URL;
                       window.open(url);
                     } else {
-                      url = params.row.URL.substr(1);
-                      const param = {
-                        url,
-                        id: params.row.ID,
-                        lablel: null,
-                        isMenu: true
-                      };
-                      this.directionalRouter(param);// 定向路由跳转方法
+                      if (params.row.URL.indexOf('/SYSTEM/TABLE_DETAIL') !== -1) { // 判断是不是标准单对象页面
+                        getObjdisType({ table: params.row.URL.split('/')[4] }).then((res) => {
+                          const distype = res === 'tabpanle' ? 'H' : 'V';
+                          const arr = params.row.URL.split('/');
+                          arr[3] = distype;
+                          url = arr.join('/');
+                          url = url.substr(1);
+                          const param = {
+                            url,
+                            id: params.row.ID,
+                            lablel: null,
+                            isMenu: true
+                          };
+                          this.directionalRouter(param);// 定向路由跳转方法
+                        });
+                      } else {
+                        url = params.row.URL;
+                        url = url.substr(1);
+                        const param = {
+                          url,
+                          id: params.row.ID,
+                          lablel: null,
+                          isMenu: true
+                        };
+                        this.directionalRouter(param);// 定向路由跳转方法
+                      }
                     }
                   }
                 }
