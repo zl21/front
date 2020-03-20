@@ -410,6 +410,12 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        // const param = {
+        //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
+        //   isMenu: true,
+        // };
+        // this.directionalRouter(param);// 定向路由跳转方法
+        // return;
         const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
         // const treeQuery = this.$router.currentRoute.query;
         // if (treeQuery.isTreeTable) {
@@ -432,7 +438,6 @@
               content: '请维护表名或OBJID'
             };
             this.$Modal.fcWarning(data);
-            return;
           } if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
@@ -444,7 +449,6 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
-            return;
           } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
@@ -457,7 +461,6 @@
               content: '请设置外键关联表的显示配置'
             };
             this.$Modal.fcWarning(data);
-            return;
           }
           this.tabHref({
             type,
@@ -471,12 +474,14 @@
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
-              url: this.ag.tableurl,
+              url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
               treeTableListSelectId
             };
+
+
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -1550,10 +1555,13 @@
                 id: 'New'
               };
               window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-              Object.keys(customize).forEach((customizeName) => {
+              const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
+              const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+
+              Object.keys(customizeConfig).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {
-                  const labelName = customize[customizeName].labelName;
+                  const labelName = customizeConfig[customizeName].labelName;
                   const name = `C.${customizedModuleName}.New`;
                   this.addKeepAliveLabelMaps({ name, label: labelName });
                   // this.addServiceIdMap({ name, label: labelName });
