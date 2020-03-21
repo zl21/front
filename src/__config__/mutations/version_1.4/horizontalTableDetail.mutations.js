@@ -149,6 +149,7 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        this.state.global.isHideTempStorage = true;
         state.tabPanels.map((tab, index) => {
           if (index === data.tabIndex) {
             const addcolumsData = data.addcolums.reduce((a, c) => {

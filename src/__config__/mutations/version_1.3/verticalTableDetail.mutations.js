@@ -75,6 +75,8 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        this.state.global.isHideTempStorage = true;
+
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
         //   // dataArray = state.mainFormInfo.formData.data.addcolums;
