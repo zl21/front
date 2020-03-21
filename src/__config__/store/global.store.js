@@ -97,7 +97,7 @@ export default () => ({
       // },
       
     ],  
-    isHideTempStorage: true, // 为true时隐藏单对象配置的暂存按钮
+    isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
     // treeIds: [
       
     // ] 
