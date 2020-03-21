@@ -19,6 +19,9 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
+  updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
+    state.isHideTempStorage = value;
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 

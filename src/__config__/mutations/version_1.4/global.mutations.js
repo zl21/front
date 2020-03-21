@@ -25,6 +25,9 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+  updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
+    state.isHideTempStorage = value;
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
