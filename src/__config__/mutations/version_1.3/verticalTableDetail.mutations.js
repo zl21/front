@@ -5,6 +5,9 @@ import { enableJflow, custommizedJflow } from '../../../constants/global';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
+  updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
+    state.isHideTempStorage = value;
+  },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
@@ -75,7 +78,8 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
-        this.state.global.isHideTempStorage = true;
+        state.isHideTempStorage = true;
+
 
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
