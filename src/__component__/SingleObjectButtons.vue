@@ -319,9 +319,6 @@
         exportTasks: ({ exportTasks }) => exportTasks,
         currentLoading: ({ currentLoading }) => currentLoading,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
-        isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
-
-        
       }),
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
