@@ -187,7 +187,13 @@
           this.dataArray.back = val;
         }
       },
-    
+      isHideTempStorage: {// jflow控制暂存按钮显示
+        handler(val) {
+          if (val) {
+            this.dataArray.temporaryStorage = false;
+          }
+        }
+      },
       jflowButton: {
         handler(val) {
           // this.dataArray.jflowPluginDataArray = [];
@@ -427,9 +433,6 @@
         return page;
       },
       tempStorage() {
-        if (this.isHideTempStorage) {
-          return {};
-        }
         return this.WebConf;
       }
     },
