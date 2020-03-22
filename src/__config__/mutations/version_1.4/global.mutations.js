@@ -11,12 +11,20 @@ import {
 } from '../../../constants/global';
 import router from '../../router.config';
 import customize from '../../customize.config';
-import { getSeesionObject, updateSessionObject, deleteFromSessionObject } from '../../../__utils__/sessionStorage';
+import {
+  getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
+} from '../../../__utils__/sessionStorage';
 import { getLabel } from '../../../__utils__/url';
 import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
+  // updataTreeId(state, data) {
+  //   console.log(555);
+  //   // data.tableId:主表ID
+  //   // data.treeId:勾选的树结构列表ID
+  //   state.treeIds.push(data);
+  // },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
@@ -51,21 +59,24 @@ export default {
       }
     } else if (actionType.toUpperCase() === 'CUSTOMIZED') {
       const customizedModuleName = param.url.substring(param.url.indexOf('/') + 1, param.url.lastIndexOf('/'));
-      const path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      const treeQuery = router.currentRoute.query;
+      let path = '';
+      if (treeQuery.isTreeTable) {
+        // 如果当前列表为树形结构列表界面，则配置的动态路由以及tableurl（配置为跳转定制界面，则路由上定制界面ID为treeTableListSelectId）
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.treeTableListSelectId ? param.treeTableListSelectId : param.id}`;
+      } else {
+        path = `${CUSTOMIZED_MODULE_PREFIX}/${customizedModuleName.toUpperCase()}/${param.id}`;
+      }
       router.push({
         path
       });
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
         const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
-        console.log(11, externalModules, customize);
-
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
-
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customizeConfig[customizeName].labelName;
-            console.log(11, labelName);
             const name = `C.${customizedModuleName}.${param.id}`;
             state.keepAliveLabelMaps[name] = `${labelName}`;
             const keepAliveLabelMapsObj = {
@@ -178,6 +189,7 @@ export default {
           return a;
         }, {});
     }
+
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -275,6 +287,8 @@ export default {
         }
       });
     });
+    // 清空updataTreeId
+    removeSessionObject('TreeId');
   },
   againClickOpenedMenuLists(state, {
     label,
@@ -291,6 +305,17 @@ export default {
     // 关闭tab时需清楚jflow配置的对应表
     // tableName:'主表表明',
     // routeFullPath:'/SYSTEM/TABLE_DETAIL/V/BCP_CUSTOMER_JFLOW/23968/5555832',
+
+    // 关闭当前tab时,如果当前列表界面时树形结构列表界面，需清楚对应的treeID
+    // const index = state.treeIds.indexOf(tab.tableName);
+    // if (index > -1) {
+    //   state.treeIds.splice(index, 1);
+    // }
+    // const data = {
+    //   k: tab.tableName,
+    //   v: item.ID
+    // };
+    deleteFromSessionObject('TreeId', tab.tableName);
     
     state.JflowControlField = state.JflowControlField.filter((item) => {
       if (item.tableName !== tab.tableName) {
@@ -393,7 +418,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -425,9 +449,17 @@ export default {
     }
     if (back) {
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      const query = {
+        isBack: true
+      };
+      state.treeTableListData.map((item) => {
+        if (item.tableName === tableName && item.tableId === tableId) {
+          query.isTreeTable = true;
+        }
+      });
       const routeInfo = {
         path,
-        query: { isBack: true }
+        query
       };
 
       router.push(routeInfo);

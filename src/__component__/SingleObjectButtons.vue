@@ -187,18 +187,24 @@
           this.dataArray.back = val;
         }
       },
-    
+      isHideTempStorage: {// jflow控制暂存按钮显示
+        handler(val) {
+          if (val) {
+            this.dataArray.temporaryStorage = false;
+          }
+        }
+      },
       jflowButton: {
         handler(val) {
           // this.dataArray.jflowPluginDataArray = [];
           this.dataArray.jflowButton = val;
         }
       },
-      // jflowPluginDataArray: {// 原jflow
-      //   handler(val) {
-      //     this.dataArray.jflowPluginDataArray = val;
-      //   }
-      // },
+      jflowPluginDataArray: {// 原jflow
+        handler(val) {
+          this.dataArray.jflowPluginDataArray = val;
+        }
+      },
       refreshButtons: {
         handler(val) {
           this.dataArray.refresh = val;
@@ -2032,7 +2038,7 @@
                       if (!this.instanceId) { // jflow开启时instanceId有值，刷新按钮不显示
                         this.updateRefreshButton(true);
                       }
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                       this.dataArray.refresh = this.refreshButtons;
@@ -2062,12 +2068,12 @@
                         buttonConfigInfo.requestUrlPath = tabcmd.paths[index];
                         if (item === 'actionMODIFY') {
                           this.saveButtonPath = tabcmd.paths[index];
-                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                          if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                             this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                           }
                         }
                       } else if (item === 'actionMODIFY') {
-                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
@@ -2099,12 +2105,12 @@
                       if (item === 'actionMODIFY') {
                         this.saveButtonPath = tabcmd.paths[index];
 
-                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                        if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                           this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                         }
                       }
                     } else if (item === 'actionMODIFY') {
-                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+                      if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                         this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
                       }
                     }
@@ -2151,7 +2157,7 @@
         tabcmd.cmds.forEach((item, index) => {
           if (item === 'actionADD') {
             if (tabcmd.prem[index]) {
-              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable) {
+              if (this.tempStorage && this.tempStorage.temp_storage && this.tempStorage.temp_storage.isenable && !this.isHideTempStorage) {
                 this.dataArray.temporaryStorage = true;// 新增配置保存按钮时，显示暂存按钮
               }
               this.dynamic.eName = 'actionMODIFY';
@@ -3236,9 +3242,9 @@
         this.buttonsReorganization(this.tabcmd);
       }
       this.waListButtons(this.tabwebact);
-      // if (this.jflowPluginDataArray) {
-      //   this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
-      // }
+      if (this.jflowPluginDataArray) {
+        this.dataArray.jflowPluginDataArray = this.jflowPluginDataArray;
+      }
     },
     created() {
       this.ChineseDictionary = ChineseDictionary;

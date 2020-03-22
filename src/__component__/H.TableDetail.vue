@@ -17,7 +17,7 @@
   import { mapState, mapMutations } from 'vuex';
   import Vue from 'vue';
   import tabComponent from './SingleObjectTabComponent';
-  import { enableJflow, custommizedJflow } from '../constants/global';
+  import { enableJflow, custommizedJflow, INSTANCE_ROUTE_QUERY } from '../constants/global';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
 
 
@@ -47,19 +47,33 @@
       },
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
+        // if (enableJflow() && custommizedJflow()) {
+        //   let flag = false;
+        //   this.tabPanel.map((item) => {
+        //     if (this.JflowControlField.length > 0) {
+        //       this.JflowControlField.map((jflowData) => {
+        //         // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+        //         if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
+        //           // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
+        //           flag = true;
+        //         } 
+        //       });
+        //     }
+        //   });
+        //   return flag;
+        // }
+        // return false;
+
         if (enableJflow() && custommizedJflow()) {
           let flag = false;
-          this.tabPanel.map((item) => {
-            if (this.JflowControlField.length > 0) {
-              this.JflowControlField.map((jflowData) => {
-                // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
-                  // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
-                  flag = true;
-                } 
-              });
-            }
-          });
+          if (this.JflowControlField.length > 0) {
+            this.JflowControlField.map((jflowData) => {
+              // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
+              if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
+                flag = true;
+              }
+            });
+          }
           return flag;
         }
         return false;

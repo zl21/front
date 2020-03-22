@@ -5,6 +5,9 @@ import { enableJflow, custommizedJflow } from '../../../constants/global';
 import getComponentName from '../../../__utils__/getModuleName';
 
 export default {
+  updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
+    state.isHideTempStorage = value;
+  },
   updateObjectForMainTableForm(state, data) { // 更新主表面板数据
     const { tableName, tableId } = router.currentRoute.params;
     state.mainFormInfo.tablename = tableName;
@@ -12,7 +15,10 @@ export default {
     state.mainFormInfo.formData.isShow = data && data.addcolums && data.addcolums.length > 0;
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) {
       data.isJflowConfig = true;
-      this._mutations[`${getComponentName()}/updatePanelData`][0](data);
+      setTimeout(() => {
+        this.commit(`${getComponentName()}/updatePanelData`, data);
+        // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
+      }, 500);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
     }
@@ -72,6 +78,9 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        state.isHideTempStorage = true;
+
+
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
         //   // dataArray = state.mainFormInfo.formData.data.addcolums;

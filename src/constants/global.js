@@ -2,7 +2,7 @@ import project from '../../project.config';
 import configForColumn from './extentionPropertyForColumn';
 import configForTable from './extentionPropertyForTable';
 
-
+export const functionPowerRequestURL = () => (window.ProjectConfig && window.ProjectConfig.functionPowerRequestURL ? window.ProjectConfig.functionPowerRequestURL : project.functionPowerRequestURL);
 export const Version = () => (window.ProjectConfig && window.ProjectConfig.Version ? window.ProjectConfig.Version : project.Version);
 export const interlocks = () => (window.ProjectConfig && typeof window.ProjectConfig.interlocks === 'boolean' ? window.ProjectConfig.interlocks : project.interlocks);
 export const enableGateWay = () => (window.ProjectConfig && typeof window.ProjectConfig.enableGateWay === 'boolean' ? window.ProjectConfig.enableGateWay : project.enableGateWay);
@@ -10,7 +10,6 @@ export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectC
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
 export const closeJflowIcon = () => (window.ProjectConfig && typeof window.ProjectConfig.closeJflowIcon === 'boolean' ? window.ProjectConfig.closeJflowIcon : project.closeJflowIcon);
-export const encryptionJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.encryptionJflow === 'boolean' ? window.ProjectConfig.encryptionJflow : project.encryptionJflow);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);

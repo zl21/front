@@ -3,6 +3,9 @@ import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 
 export default {
+  updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
+    state.isHideTempStorage = value;
+  },
   updateTabPanelsData(state, data) {
     const { tableName, tableId } = router.currentRoute.params;
     const arr = [{
@@ -12,8 +15,7 @@ export default {
       componentAttribute: {
         buttonsData: {
           isShow: true,
-          // state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
-          data
+          data: state.instanceId ? state.tabPanels[0].componentAttribute.buttonsData.data : data
         },
         formData: {
           isShow: false,
@@ -130,7 +132,9 @@ export default {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId && (state.tabPanels[data.tabIndex].tableid || Number(state.tabPanels[data.tabIndex].id)) === Number(item.itemTableId)) {
           // state.tabPanels[data.tabIndex].tabrelation === '1:1' ||
-          if (tabrelation && item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
+
+          // tabrelation &&
+          if (item.tableId === item.itemTableId) { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
             const b = this.state.global.objreadonlyForJflow.filter(a => Number(a.itemTableId) !== Number(item.itemTableId));
             if (b.length === 0) {
               this.state.global.objreadonlyForJflow.push(
@@ -148,6 +152,8 @@ export default {
         } 
       });
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
+        state.isHideTempStorage = true;
+
         state.tabPanels.map((tab, index) => {
           if (index === data.tabIndex) {
             const addcolumsData = data.addcolums.reduce((a, c) => {

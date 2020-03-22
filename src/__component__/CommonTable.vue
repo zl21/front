@@ -64,6 +64,10 @@
     name: 'CommonTable',
     components: { Dialog },
     props: {
+      doTableSearch: {
+        type: Function,
+        default: () => {},
+      },
       cssStatus: {
         type: Array,
         default: () => []
@@ -746,11 +750,16 @@
                               ]);
       },
       buttonRender() {
+        const $this = this;
         // 开关选择器
         return (h, info) => h('div',
                               info.column.combobox.reduce((a, c) => {
-                                if (JSON.parse(info.row[info.column.colname]).indexOf(c.limitval) > -1) {
-                                  return a.concat(c);
+                                try {
+                                  if (info.row[info.column.colname] && JSON.parse(info.row[info.column.colname]).indexOf(c.limitval) > -1) {
+                                    return a.concat(c);
+                                  }
+                                } catch (e) {
+                                  return a;
                                 }
                                 return a;
                               }, []).map(d => h('Button', {
@@ -759,7 +768,13 @@
                                     DispatchEvent('oprButtonClick', {
                                       detail: {
                                         event,
-                                        info
+                                        info,
+                                        allWebConf: info.column.webconf || {},
+                                        webConf: info.column.webconf ? info.column.webconf[d.limitval] || {} : {},
+                                        symbol: d.limitval,
+                                        methods: {
+                                          doTableSearch: $this.doTableSearch
+                                        },
                                       }
                                     });
                                   }

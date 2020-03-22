@@ -21,7 +21,7 @@
       />
     </div>
     <tree
-      v-if="isTreeList"
+      v-if="isTreeList&&treeShow"
       :tree-data="treeConfigData"
       @menuTreeChange="menuTreeChange"
     />
@@ -61,6 +61,7 @@
         :on-cell-single-click="onCellSingleClick"
         :is-common-table="commonTable"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
+        :doTableSearch="searchClickData"
       />
     </div>
    
@@ -149,6 +150,8 @@
   import { getSeesionObject, deleteFromSessionObject, updateSessionObject } from '../__utils__/sessionStorage';
   import { getUrl, getLabel } from '../__utils__/url';
   import { DispatchEvent } from '../__utils__/dispatchEvent';
+  import treeData from '../__config__/treeData.config';
+
 
   const fkHttpRequest = () => require(`../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
 
@@ -239,7 +242,11 @@
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
             return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
           }
-        }
+          if (treeData) {
+            return treeData.AD_MENU();
+          }
+        } 
+      
         return [];
       }
     },
@@ -297,6 +304,16 @@
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        const { tableName } = this[INSTANCE_ROUTE_QUERY];
+        const data = {
+          k: tableName,
+          v: item.ID
+        };
+        updateSessionObject('TreeId', data);
+        // const data = {
+        //   [tableName]: item.ID
+        // };
+        // this.updataTreeId(data);
       },
       imporSuccess(id) {
         if (Version() === '1.3') {
@@ -394,6 +411,18 @@
         this.getQueryList();
       },
       onRowDoubleClick(colDef, row) {
+        // const param = {
+        //   url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
+        //   isMenu: true,
+        // };
+        // this.directionalRouter(param);// 定向路由跳转方法
+        // return;
+        const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
+        // const treeQuery = this.$router.currentRoute.query;
+        // if (treeQuery.isTreeTable) {
+        const treeIds = getSeesionObject('TreeId');
+        const treeTableListSelectId = treeIds[tableName];
+        // }
         if (this.webconf.dynamicRouting) { // 配置了动态路由，双击表格走动态路由
           // this.tabHref({
           //   type: 'tableDetailHorizontal',
@@ -410,7 +439,6 @@
               content: '请维护表名或OBJID'
             };
             this.$Modal.fcWarning(data);
-            return;
           } if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
@@ -418,10 +446,10 @@
               url: tableurl,
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
-              isMenu: true
+              isMenu: true,
+              treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
-            return;
           } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
@@ -434,7 +462,6 @@
               content: '请设置外键关联表的显示配置'
             };
             this.$Modal.fcWarning(data);
-            return;
           }
           this.tabHref({
             type,
@@ -445,15 +472,17 @@
             serviceId: row.OWNERID ? row.OWNERID.serviceId : null
           });
         } else {
-          const { tableName, tableId } = this[INSTANCE_ROUTE_QUERY];
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
-              url: this.ag.tableurl,
+              url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
-              isMenu: true
+              isMenu: true,
+              treeTableListSelectId
             };
+
+
             this.directionalRouter(param);// 定向路由跳转方法
           } else if (this.ag.datas.objdistype === 'tabpanle') {
             // 单对象左右结构
@@ -1527,10 +1556,13 @@
                 id: 'New'
               };
               window.sessionStorage.setItem('customizedMessage', JSON.stringify(obj));
-              Object.keys(customize).forEach((customizeName) => {
+              const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
+              const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+
+              Object.keys(customizeConfig).forEach((customizeName) => {
                 const nameToUpperCase = customizeName.toUpperCase();
                 if (nameToUpperCase === customizedModuleName) {
-                  const labelName = customize[customizeName].labelName;
+                  const labelName = customizeConfig[customizeName].labelName;
                   const name = `C.${customizedModuleName}.New`;
                   this.addKeepAliveLabelMaps({ name, label: labelName });
                   // this.addServiceIdMap({ name, label: labelName });
@@ -2175,7 +2207,7 @@
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    top: 65%;
+    top: 35%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;
