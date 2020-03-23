@@ -160,6 +160,7 @@ export default {
           } else if (c.type === 'tree') {
             // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            state.treeTableListData.push(c);
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -430,12 +431,23 @@ export default {
       router.push({ path });
     }
     if (back) {
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-      const routeInfo = {
-        path,
-        query: { isBack: true }
-      };
-      router.push(routeInfo);
+      if (back) {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        const query = {
+          isBack: true
+        };
+        state.treeTableListData.map((item) => {
+          if (item.tableName === tableName && item.tableId === tableId) {
+            query.isTreeTable = true;
+          }
+        });
+        const routeInfo = {
+          path,
+          query
+        };
+  
+        router.push(routeInfo);
+      }
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
