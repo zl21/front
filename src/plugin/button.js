@@ -91,7 +91,7 @@ function clickFunction(e) {
         });
         break;
       case '5': // 流程进度
-        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
+        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=861,height=612');
         break;
       case '6': // 重启流程
         restartProcess();
@@ -195,6 +195,9 @@ function CreateButton(obj, buttons, id) {
         
         // 刷新按钮
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
+
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
         // 更新按钮
         let tabwebact = [];
         tabwebact = store.state[MODULE_COMPONENT_NAME].defaultButtonData.tabwebact.objbutton.filter((item) => {
@@ -250,10 +253,15 @@ function CreateButton(obj, buttons, id) {
             return item;
           }
         });
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
         });
+
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
         
         // 修改水印
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
@@ -285,11 +293,15 @@ function CreateButton(obj, buttons, id) {
           buttonsData: defaultButtonData, newButtons, instanceId: null, tabwebact
         });
 
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
         // 修改水印
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
         // 控制字表为只读
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateChildTableReadonly`, false);
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, false);
       }
     });
   }

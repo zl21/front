@@ -644,6 +644,7 @@
           if (tableSelectd.length > 0) {
             this.tableSearch = '';
             this.openControl = true;
+            this.componentData[0].pageNum = 1;
             this.getTreeData();
           } else {
             this.$Message.warning('请选择单据');
@@ -652,6 +653,7 @@
         if (type === 3) {
           this.tableSearch = '';
           this.openControl = true;
+          this.componentData[0].pageNum = 1;
           this.getTreeData();
         }
       },
