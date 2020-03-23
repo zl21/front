@@ -19,7 +19,9 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
-  
+  updateTreeTableListData(state, data) {
+    state.treeTableListData = data;
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
@@ -437,7 +439,7 @@ export default {
           isBack: true
         };
         state.treeTableListData.map((item) => {
-          if (item.tableName === tableName && item.tableId === tableId) {
+          if (item.tableName === item.value && item.id === Number(tableId)) {
             query.isTreeTable = true;
           }
         });
