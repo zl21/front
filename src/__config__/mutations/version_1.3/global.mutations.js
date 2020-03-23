@@ -439,7 +439,7 @@ export default {
           isBack: true
         };
         state.treeTableListData.map((item) => {
-          if (item.tableName === item.value && item.id === Number(tableId)) {
+          if (item.value === tableName && item.id === Number(tableId)) {
             query.isTreeTable = true;
           }
         });
