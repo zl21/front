@@ -189,6 +189,7 @@ export default {
           return a;
         }, {});
     }
+
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -417,7 +418,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-    debugger;
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -449,9 +449,17 @@ export default {
     }
     if (back) {
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      const query = {
+        isBack: true
+      };
+      state.treeTableListData.map((item) => {
+        if (item.tableName === tableName && item.tableId === tableId) {
+          query.isTreeTable = true;
+        }
+      });
       const routeInfo = {
         path,
-        query: { isBack: true }
+        query
       };
 
       router.push(routeInfo);
