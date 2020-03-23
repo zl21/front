@@ -170,7 +170,7 @@
       // 获取树数据
       getTreeData() {
         this.treeLoading = true;
-        this.$network.post('/p/c/identity/org/treeload', {}).then((res) => {
+        this.$network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
           this.treeLoading = false;
           if (res.data.resultCode === 0) {
             this.treeNewData = [];
