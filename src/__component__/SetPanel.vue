@@ -108,7 +108,7 @@
       this.setDefaultSearchFoldnum();
     },
     methods: {
-      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'emptyTabs']),
+      ...mapMutations('global', ['doCollapseHistoryAndFavorite', 'emptyTabs', 'updateTreeTableListData']),
       setDefaultSearchFoldnum() {
         if (enableInitializationRequest()) {
           network
@@ -179,11 +179,13 @@
             this.$store.commit('global/updateJflowControlField', []);
             // 清空updataTreeId
             removeSessionObject('TreeId');
+            this.updateTreeTableListData([]);
           })
           .catch(() => {
             router.push({ path: getTouristRoute() });
             removeSessionObject('saveNetwork');
             removeSessionObject('TreeId');
+            this.updateTreeTableListData([]);
           });
       }
     },
