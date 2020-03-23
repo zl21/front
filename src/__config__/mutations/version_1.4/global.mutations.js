@@ -25,6 +25,9 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+  updateTreeTableListData(state) {
+    state.treeTableListData = [];
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
@@ -453,7 +456,7 @@ export default {
         isBack: true
       };
       state.treeTableListData.map((item) => {
-        if (item.tableName === tableName && item.tableId === tableId) {
+        if (item.value === tableName && item.id === Number(tableId)) {
           query.isTreeTable = true;
         }
       });
