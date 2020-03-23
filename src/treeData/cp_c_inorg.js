@@ -1,7 +1,7 @@
 export const data = () => { 
   const a = [
     {
-      expand: true, // 是否开启
+      expand: false, // 是否开启
 
       title: 'ceshi',
       TREENO: 2,
@@ -22,6 +22,8 @@ export const data = () => {
           CP_C_ORGUP_ID: 2,
           LEFTVALUE: 4,
           lastChild: false,
+          expand: false, // 是否开启
+
           children: [
             {
               title: '销售部',
@@ -33,7 +35,9 @@ export const data = () => {
               CP_C_ORGUP_ID: 7,
               LEFTVALUE: 5,
               lastChild: true,
-              children: []
+              children: [],
+              expand: false, // 是否开启
+
             }
           ]
         },
@@ -47,7 +51,9 @@ export const data = () => {
           CP_C_ORGUP_ID: 2,
           LEFTVALUE: 8,
           lastChild: false,
-          children: []
+          children: [],
+          expand: false, // 是否开启
+
         },
         {
           title: '12',
@@ -59,9 +65,13 @@ export const data = () => {
           CP_C_ORGUP_ID: 2,
           LEFTVALUE: 2,
           lastChild: false,
-          children: []
+          children: [],
+          expand: false, // 是否开启
+
         },
         {
+          expand: false, // 是否开启
+
           title: 'llnlin',
           TREENO: 2,
           MIXNAME: '[LINLIN]llnlin',
