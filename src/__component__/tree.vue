@@ -59,6 +59,14 @@
         ]
       };
     },
+    created() {
+      document.onkeydown = (e) => {
+        const key = e.keyCode;
+        if (key === 13) {
+          this.searchClick(e, this.menuTreeQuery);
+        }
+      };
+    },
     props: {
       treeData: {
         type: Array,
