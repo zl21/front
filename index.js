@@ -127,7 +127,7 @@ const getCategory = () => {
           .reduce((a, c) => a.concat(c))
           .map(d => d.children)
           .reduce((a, c) => a.concat(c))
-          .filter(d => d.type === 'table' || d.type === 'action')
+          .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
           .reduce((a, c) => {
             let menuType = '';
             if (c.url) {

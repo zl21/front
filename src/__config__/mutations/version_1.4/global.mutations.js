@@ -417,7 +417,7 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-
+    debugger;
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;

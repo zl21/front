@@ -253,6 +253,8 @@ function CreateButton(obj, buttons, id) {
             return item;
           }
         });
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, true);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/jflowPlugin`, {
           buttonsData: buttonsData.data.tabcmd.prem, newButtons, instanceId: obj.instanceId, tabwebact
@@ -291,6 +293,8 @@ function CreateButton(obj, buttons, id) {
           buttonsData: defaultButtonData, newButtons, instanceId: null, tabwebact
         });
 
+        // 暂存按钮
+        window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updataHideTempStorage`, false);
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateRefreshButton`, true);
         // 修改水印
         window.jflowPlugin.store.commit(`${MODULE_COMPONENT_NAME}/updateWatermarkimg`, obj.waterMark);
