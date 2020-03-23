@@ -86,6 +86,7 @@ function clickFunction(e) {
       case '0': // 同意
       case '8': // 确认
       case '3': // 转派
+      case '9': // 人工干预
         window.jflowPlugin.open({// 同意和转派
           control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
         });
