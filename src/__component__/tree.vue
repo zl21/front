@@ -12,7 +12,7 @@
                            
     <Tree
       ref="menuTree"
-      :data="treeDatas"
+      :data="treeData"
       :query="menuTreeQuery"
       @on-select-change="menuTreeChange"
     />
@@ -99,8 +99,7 @@
           }
         }
         const resArr = [];
-        func(this.treeDatas, resArr);
-        console.log(111, resArr);
+        func(this.treeData, resArr);
       },
       menuTreeChange(val, item) {
         this.$emit('menuTreeChange', val, item);
