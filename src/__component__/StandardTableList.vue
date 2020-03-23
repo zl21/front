@@ -13,11 +13,11 @@
     >
       <i
         v-if="!treeShow"
-        class="iconfont iconbj_left"
+        class="iconfont iconbj_right"
       />
       <i
         v-if="treeShow"
-        class="iconfont iconbj_right"
+        class="iconfont iconbj_left"
       />
     </div>
     <tree
@@ -60,8 +60,8 @@
         :on-column-visible-changed="onColumnVisibleChanged"
         :on-cell-single-click="onCellSingleClick"
         :is-common-table="commonTable"
+        :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-        :doTableSearch="searchClickData"
       />
     </div>
    
