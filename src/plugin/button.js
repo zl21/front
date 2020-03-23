@@ -91,7 +91,7 @@ function clickFunction(e) {
         });
         break;
       case '5': // 流程进度
-        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=800,height=800');
+        window.open(`${window.jflowPlugin.jflowIp}/#/FlowChart?instanceId=${window.jflowPlugin.objInstanceId}`, '_blank', 'width=861,height=612');
         break;
       case '6': // 重启流程
         restartProcess();
