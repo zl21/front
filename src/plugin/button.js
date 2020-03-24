@@ -45,11 +45,12 @@ function restartProcess() {
 let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
-function clickFunction(e) {
+
+// 按钮响应事件
+function buttonsResponse(e) {
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
-
   if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
     window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
       instance_id: window.jflowPlugin.objInstanceId,
@@ -88,7 +89,7 @@ function clickFunction(e) {
       case '3': // 转派
       case '9': // 人工干预
         window.jflowPlugin.open({// 同意和转派
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
+          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id, item 
         });
         break;
       case '5': // 流程进度
@@ -99,6 +100,20 @@ function clickFunction(e) {
         break;
       default: break;
     }
+  }
+}
+
+// 按钮点击逻辑处理
+async function clickFunction(e) {
+  if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
+    await DispatchEvent('jflowClick', {
+      detail: {
+        type: 'save'
+      }
+    });
+    buttonsResponse(e);
+  } else {
+    buttonsResponse(e);
   }
 }
 
