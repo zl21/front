@@ -45,6 +45,7 @@ function restartProcess() {
 let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
+let beforeClickFunction = {}; // 记录需要前置保存的按钮
 
 // 按钮响应事件
 function buttonsResponse(e) {
@@ -58,7 +59,14 @@ function buttonsResponse(e) {
       business_type: window.jflowPlugin.router.currentRoute.params.tableId,
       businessTypeName: window.jflowPlugin.router.currentRoute.params.tableName,
       sync: true
-    });
+    })
+      .then(() => {
+        // 处理前置事件保存之后再处理当前事件
+        if (Object.keys(beforeClickFunction).length > 0) {
+          buttonsResponse(beforeClickFunction);
+          beforeClickFunction = {};
+        }
+      });
   }
 
   if (e.detail.obj.button === 'fresh') {
@@ -103,15 +111,17 @@ function buttonsResponse(e) {
   }
 }
 
+
 // 按钮点击逻辑处理
-async function clickFunction(e) {
+function clickFunction(e) {
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
-    await DispatchEvent('jflowClick', {
+    beforeClickFunction = e;
+    DispatchEvent('jflowClick', {
       detail: {
         type: 'save'
       }
     });
-    buttonsResponse(e);
+    // buttonsResponse(e);
   } else {
     buttonsResponse(e);
   }
