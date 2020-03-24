@@ -25,37 +25,37 @@
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
-        treeDatas: [
-          {
-            title: 'parent 1',
-            expand: false,
-            children: [
-              {
-                title: 'parent 1-1',
-                expand: false,
-                children: [
-                  {
-                    title: 'leaf 1-1-1'
-                  },
-                  {
-                    title: 'leaf 1-1-2'
-                  }
-                ]
-              },
-              {
-                title: 'parent 1-2',
-                expand: false,
-                children: [
-                  {
-                    title: 'leaf 1-2-1'
-                  },
-                  {
-                    title: 'leaf 1-2-1'
-                  }
-                ]
-              }
-            ]
-          }
+        treeData: [
+          // {
+          //   title: 'parent 1',
+          //   expand: false,
+          //   children: [
+          //     {
+          //       title: 'parent 1-1',
+          //       expand: false,
+          //       children: [
+          //         {
+          //           title: 'leaf 1-1-1'
+          //         },
+          //         {
+          //           title: 'leaf 1-1-2'
+          //         }
+          //       ]
+          //     },
+          //     {
+          //       title: 'parent 1-2',
+          //       expand: false,
+          //       children: [
+          //         {
+          //           title: 'leaf 1-2-1'
+          //         },
+          //         {
+          //           title: 'leaf 1-2-1'
+          //         }
+          //       ]
+          //     }
+          //   ]
+          // }
         ]
       };
     },
@@ -68,12 +68,22 @@
       };
     },
     props: {
-      treeData: {
-        type: Array,
-        default: () => ([])
+      treeDatas: {
+        type: Function,
+        default: () => {}
+      },
+    },
+    watch: {
+      treeDatas: {
+        handler(val) {
+          this.treeData = val;
+        }
       },
     },
     mounted() {
+      this.treeDatas().then((value) => {
+        this.treeData = value;
+      });
     },
     methods: {
       searchInputChange(e) {
