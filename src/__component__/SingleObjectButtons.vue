@@ -1395,11 +1395,17 @@
             } else {
               this.saveEventAfter = data.type;
             }
-            const myEvent = new Event('click');
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
             dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           } else {
-            const myEvent = new Event('click');
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
             dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           }
         }
       },
