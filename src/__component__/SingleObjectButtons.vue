@@ -1385,17 +1385,28 @@
         }
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
-          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-            const saveEventAfter = {
-              k: 'type',
-              v: data.type
-            };
-            updateSessionObject('saveEventAfter', saveEventAfter);
+          if (data) {
+            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              const saveEventAfter = {
+                k: 'type',
+                v: data.type
+              };
+              updateSessionObject('saveEventAfter', saveEventAfter);
+            } else {
+              this.saveEventAfter = data.type;
+            }
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           } else {
-            this.saveEventAfter = data.type;
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           }
-          const myEvent = new Event('click');
-          dom.dispatchEvent(myEvent);
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
