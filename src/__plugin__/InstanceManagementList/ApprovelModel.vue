@@ -2,17 +2,18 @@
   <div>
     <Modal
       v-model="modalConfig.control"
-      :title="type==='3'?'选择转派人':'审批意见'"
+      :title="type==='3'?'选择转派人':type==='9'?'人工干预':'审批意见'"
       :mask="true"
       :width="type==='3'?835:520"
+      :ok-text="type === '9'?'提交':'确定'"
       @on-ok="ok"
       @on-cancel="cancel"
     >
+      <!-- 同意 -->
       <div
         v-if="type==='0' || type === '8'"
         class="ApprovelModel"
       >
-        <!-- 同意 -->
         <Input
           v-model="agreecontent"
           type="textarea"
@@ -20,33 +21,25 @@
           placeholder="请输入审批意见"
         />
       </div>
-      <div
+
+      <!-- 驳回 -->
+      <!-- <div
         v-if="type==='1'"
         class="ApprovelModel"
       >
-        <!-- 驳回 -->
-        <!-- <div class="returnWrap">
-          <span class="requireStyle">*</span>
-          <Select v-model="returnOption" style="margin-bottom:10px" placeholder="请选择审批单驳回至哪个节点">
-            <Option
-              v-for="item in returnSelection"
-              :value="item.value"
-              :key="item.value"
-            >{{ item.label }}</Option>
-          </Select>
-        </div> -->
         <Input
           v-model="returnContent"
           type="textarea"
           :rows="4"
           placeholder="请输入审批意见"
         />
-      </div>
+      </div> -->
+
+      <!-- 转派 -->
       <div
         v-if="type==='3'"
         class="ApprovelModel"
       >
-        <!-- 转派 -->
         <mutipleSelectPop
           ref="dialogtest"
           :loading="loading"
@@ -68,11 +61,75 @@
           @on-deleBtn="deleBtn"
         />
       </div>
+
+      <!-- 人工干预 -->
+      <div
+        v-if="type==='1'"
+        class="ApprovelModel Intervention"
+      >
+        <div class="details">
+          <p
+            class="title"
+          >
+            <span />
+            <span>报错信息：</span>
+          </p>
+
+          <div>
+            <p>
+              流程报错:{{ intervention.errorType }}
+            </p>
+            <p>
+              错误简述:{{ intervention.errorMsg }}
+            </p>
+            <p>
+              所在节点:{{ intervention.currentNodeName }}
+            </p>
+            <p>
+              建议措施:{{ intervention.handleOpinion }}
+            </p>
+          </div>
+        </div>
+        <div class="deal">
+          <p
+            class="title"
+          >
+            <span />
+            <span>人工干预处理：</span>
+          </p>
+
+          <div>
+            <p>
+              <label>URL:</label>
+              <Input
+                v-model="intervention.handleUrl"
+                type="text"
+              />
+            </p>
+            <p>
+              <label>服务参数:</label>
+              <Input
+                v-model="intervention.handleParam"
+                type="textarea"
+                class="textarea"
+                :autosize="{ minRows: 3, maxRows: 3 }"
+              />
+            </p>
+            <p>
+              <label>备注:</label>
+              <Input
+                v-model="intervention.handleRemark"
+                type="text"
+              />
+            </p>
+          </div>
+        </div>
+      </div>
     </Modal>
   </div>
 </template>
 <script>
-  import mutipleSelectPop from './MutipleSelectPop';
+  import mutipleSelectPop from './MutipleSelectPop.vue';
   import { BacklogData } from '../../plugin/todoList';
 
   export default {
@@ -131,23 +188,13 @@
         ],
         resultData: {}, // 选中结果
         selectRow: {}, // 选中的行
-        obj: {} //
+        obj: {}, //
+
+
+        intervention: {} // 人工干预数据
       };
     },
     methods: {
-      treeTransArray(tree, key) {
-        // 数转化为数组
-        return tree
-          .reduce(function iteration(con, item) {
-            con.push(item);
-            if (item[key] && item[key].length > 0) { item[key].reduce(iteration, con); }
-            return con;
-          }, [])
-          .map((item) => {
-            item[key] = [];
-            return item;
-          });
-      },
       // 表格体数据转化
       transferTbody(data) {
         this.componentData[0].total = data.totalRowCount;
@@ -182,62 +229,97 @@
       },
       // 获取树数据
       getTreeData() {
+        this.treeLoading = true;
         this.$network.post('/jflow/p/c/identity/org/treeload', {}).then((res) => {
-          this.tree_loading = false;
+          this.treeLoading = false;
           if (res.data.resultCode === 0) {
-            this.treedata = [];
+            this.treeNewData = [];
             const newArr = [];
-            let root = {};
+            // let root = {};
             if (res.data.data.records.length > 0) {
               res.data.data.records.forEach((item) => {
                 const tem = Object.assign(item);
                 newArr.push(tem);
-                if (
-                  item.CP_C_ORGUP_ID === null
-                  || item.CP_C_ORGUP_ID === ''
-                ) {
-                  root = Object.assign({}, item);
-                }
+              // if (
+              //   item["CP_C_ORGUP_ID"] === null ||
+              //   item["CP_C_ORGUP_ID"] === ""
+              // ) {
+              //   root = Object.assign({}, item);
+              // }
               });
-              if (Object.keys(root).length < 1) {
-                newArr.push({
-                  CP_C_ORGUP_ID: null,
-                  ECODE: '00001',
-                  ENAME: '全部',
-                  ID: 'CP_C_HRORG.2',
-                  MIXNAME: '[00001]全部',
-                  ORGTYPE: 'IN',
-                  TYPE: 'CP_C_HRORG_ID'
-                });
-              }
-              this.treedata = this.arrayTransTree(newArr, 'CP_C_ORGUP_ID');
+              this.treeNewData = this.arrayTransTree(newArr, 'CP_C_ORGUP_ID');
             }
-            this.findUser({});
+            this.findUser({}); // 显示所有的用户
           }
         });
       },
       // 改造树数据的结构
       arrayTransTree(list, key) {
-        const parent = [];
+        let parent = [];
         const children = [];
         list.map((item) => {
           item.expand = false;
-          item.title = item.ENAME;
-          if (item[key] === null || item[key] === '') {
+          item.title = key === 'CP_C_ORGUP_ID' ? item.ENAME : item.NAME;
+          if (
+            !item[key]
+            || (String(item[key]).indexOf('.') !== -1 && !String(item[key]).split('.')[1])
+          ) {
             // 根节点
             parent.push(item);
           } else {
             // 有父节点的
             children.push(item);
           }
+
+          return item;
         });
+        if (parent.length < 1) {
+          // 没有根节点
+          const newParent = this.findTreeRootFirstChild(list, key); // 拿到一级节点
+          const rootArr = newParent.map(item => item[key]);
+          const rootTem = Array.from(new Set([...rootArr]));
+          if (rootTem.length === 1) {
+            if (key === 'CP_C_ORGUP_ID') {
+              parent = [
+                {
+                  CP_C_ORGUP_ID: null,
+                  ECODE: '00000',
+                  ENAME: '全部',
+                  ID: rootTem[0],
+                  MIXNAME: '[00000]全部',
+                  ORGTYPE: 'IN',
+                  TYPE: 'CP_C_HRORG_ID',
+                  title: '全部'
+                }
+              ];
+            } else {
+              parent = [
+                {
+                  PARENT_ID: null,
+                  NAME: '全部',
+                  ID: rootTem[0],
+                  MIXNAME: '[00000]全部',
+                  ORGTYPE: 'IN',
+                  TYPE: 'CP_C_HRORG_ID',
+                  title: '全部'
+                }
+              ];
+            }
+          
+            this.translator(parent, children, key);
+            return parent;
+          } 
+          this.$Message.warning('数据有问题，请检查...');
+          return 'error';
+        } 
         this.translator(parent, children, key);
+
         return parent;
       },
       translator(parents, children, key) {
         const temp = [];
         children.map((item) => {
-          // 对子节点数据进行深复制，这里只支持部分类型的数据深复制，对深复制不了解的童靴可以先去了解下深复制
+          // 对子节点数据进行深复制，这里只支持部分类型的数据深复制
           const temItem = Object.assign({}, item);
           temp.push(temItem);
         });
@@ -258,6 +340,30 @@
             }
           });
         });
+      },
+      treeTransArray(tree, key) {
+        return tree
+          .reduce(function iteration(con, item) {
+            con.push(item);
+            if (item[key] && item[key].length > 0) { item[key].reduce(iteration, con); }
+            return con;
+          }, [])
+          .map((item) => {
+            item[key] = [];
+            return item;
+          });
+      },
+      findTreeRootFirstChild(Arr, key) {
+        let idArr = [];
+        const result = [];
+        idArr = Arr.map(item => item.ID);
+        Arr.map((item) => {
+          if (!idArr.includes(item[key])) {
+            // 一级节点的特点是存在父节点 但是已父节点为ID的节点是不存在的
+            result.push(item);
+          }
+        });
+        return result;
       },
       selectTtree(val, vm) {
         this.obj = {};
@@ -534,7 +640,7 @@
     }
   };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .ApprovelModel {
   .returnWrap {
     width: 100%;
@@ -545,6 +651,63 @@
     }
     .burgeon-select .burgeon-select-single .burgeon-select-default {
       width: calc(100%-10px);
+    }
+  }
+
+  &.Intervention{
+    .title{
+      border-bottom: 1px solid #D8D8D8;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+
+      >span:first-child{
+        width:2px;
+        height:12px;
+        background:rgba(253,100,66,1);
+        vertical-align: middle;
+        display: inline-block;
+      }
+      span{
+        color: #FD6442;
+      }
+    }
+
+    .details{
+      >div{
+        padding-left: 20px;
+        p{
+          font-size:12px;
+          font-weight:400;
+          color:rgba(84,84,84,1);
+          line-height:17px;
+          margin-bottom: 4px;
+        }
+
+        >p:last-child{
+          margin-bottom: 16px;
+        }
+      }
+    }
+
+    .deal{
+      >div{
+        >p{
+          line-height: 24px;
+          display: flex;
+          margin-bottom: 8px;
+
+          >label{
+            width: 60px;
+            margin-right: 8px;
+          }
+
+          .textarea{
+            textarea{
+              resize: none;
+            }
+          }
+        }
+      }
     }
   }
 }

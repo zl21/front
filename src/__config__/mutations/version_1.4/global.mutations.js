@@ -25,6 +25,9 @@ export default {
   //   // data.treeId:勾选的树结构列表ID
   //   state.treeIds.push(data);
   // },
+  updateTreeTableListData(state) {
+    state.treeTableListData = [];
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
@@ -72,7 +75,22 @@ export default {
       });
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+        const externalModulesRes = {};// 外部配置
+        Object.keys(externalModules).forEach((key) => {
+          externalModulesRes[key.toUpperCase()] = externalModules[key];
+        });
+
+        const customizeRes = {};// 内部配置
+        Object.keys(customize).forEach((key) => {
+          customizeRes[key.toUpperCase()] = customize[key];
+        });
+        let customizeConfig = {};
+        if (externalModulesRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = externalModulesRes;
+        } else if (customizeRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = customizeRes;
+        }
+
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
           if (nameToUpperCase === customizedModuleName) {
@@ -189,6 +207,7 @@ export default {
           return a;
         }, {});
     }
+
     // 以下逻辑是为了解决菜单外路由跳转提供信息
     const tableDetailUrlMessage = getSeesionObject('tableDetailUrlMessage');
     if (JSON.stringify(tableDetailUrlMessage) !== '{}') { // 取按钮跳转外链label
@@ -417,7 +436,6 @@ export default {
     // id:明细ID,
     // label:显示名称, 
     // serviceId:网关
-
     const keepAliveModuleName = `S.${tableName}.${tableId}`;
     if (state.keepAliveLabelMaps[keepAliveModuleName] === undefined) {
       state.keepAliveLabelMaps[keepAliveModuleName] = `${label}`;
@@ -449,9 +467,17 @@ export default {
     }
     if (back) {
       path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+      const query = {
+        isBack: true
+      };
+      state.treeTableListData.map((item) => {
+        if (item.value === tableName && item.id === Number(tableId)) {
+          query.isTreeTable = true;
+        }
+      });
       const routeInfo = {
         path,
-        query: { isBack: true }
+        query
       };
 
       router.push(routeInfo);

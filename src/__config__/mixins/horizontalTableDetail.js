@@ -68,8 +68,7 @@ export default () => ({
       ExeActionDataForComponent: ({ ExeActionDataForComponent }) => ExeActionDataForComponent,
       itemObjId: ({ itemObjId }) => itemObjId,
       jflowConfigrefreshButton: ({ jflowConfigrefreshButton }) => jflowConfigrefreshButton,
-      
-      
+      isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
@@ -95,7 +94,6 @@ export default () => ({
         'getObjectTryUnSubmit',
         'getObjectTryInvalid',
         'getActionDataForButtons',
-        'updateRefreshButtonForJflow'
       ]),
     ...mapMutations(getComponentName(),
       [
@@ -122,6 +120,7 @@ export default () => ({
         'seleteAddData',
         'emptyChangeData',
         'updateButtonGetActionData',
+        'updateRefreshButtonForJflow'
       ]),
   },
   beforeDestroy() {

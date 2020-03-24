@@ -27,6 +27,7 @@
         :on-selection-changed="onSelectionChanged"
         :on-row-single-click="onRowSingleClick"
         @CustomizedDialog="customizedDialog"
+        :doTableSearch="doTableSearch"
       />
     </div>
     <div class="queryDesc">
@@ -75,6 +76,10 @@
     },
     computed: {},
     props: {
+      doTableSearch: {
+        type: Function,
+        default: () => {},
+      },
       userConfigForAgTable: {
         type: Object,
         default: () => ({

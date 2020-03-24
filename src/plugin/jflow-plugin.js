@@ -893,9 +893,22 @@ const install = function install(Vue, options = {}) {
     jflowIp = options.jflowIp;
     
 
-    axios.post('/jflow/sys/properties', {})
+    axios.post('/jflow/p/sys/properties', {})
       .then((res) => {
         encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
+        thirdlogin();
+        RoutingGuard(options.router);
+        AxiosGuard(options.axios);
+        createComponent();
+
+        Vue.prototype.$network = network;
+        
+        
+        window.initiateLaunch = initiateLaunch;
+        window.jflowRefresh = jflowRefresh;
+      })
+      .catch(() => {
+        encryptionJflow = false;
         thirdlogin();
         RoutingGuard(options.router);
         AxiosGuard(options.axios);

@@ -5,9 +5,9 @@
     <Input
       placeholder="请输入角色"
       class="input"
-      clearable
       icon="ios-search"
       @on-change="searchInputChange"
+      @on-click="searchClick"
     />
                            
     <Tree
@@ -28,11 +28,11 @@
         treeDatas: [
           {
             title: 'parent 1',
-            expand: true,
+            expand: false,
             children: [
               {
                 title: 'parent 1-1',
-                expand: true,
+                expand: false,
                 children: [
                   {
                     title: 'leaf 1-1-1'
@@ -44,7 +44,7 @@
               },
               {
                 title: 'parent 1-2',
-                expand: true,
+                expand: false,
                 children: [
                   {
                     title: 'leaf 1-2-1'
@@ -59,6 +59,14 @@
         ]
       };
     },
+    created() {
+      document.onkeydown = (e) => {
+        const key = e.keyCode;
+        if (key === 13) {
+          this.searchClick(e, this.menuTreeQuery);
+        }
+      };
+    },
     props: {
       treeData: {
         type: Array,
@@ -71,6 +79,36 @@
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
+      searchClick(e, input) {
+        function func(tdata, resData) {
+          if (Array.isArray(tdata) && tdata.length > 0) {
+            tdata.forEach((v, i) => {
+              if (v.children && v.children.length > 0) {
+                v.children.map((a) => {
+                  if (a.title.search(input.currentValue) !== -1) {
+                    v.expand = true;
+                  }
+                });
+                setTimeout(() => {
+                  v.children.map((d) => {
+                    if (d.expand) {
+                      v.expand = true;
+                    }
+                  });
+                }, 0);
+              }
+              resData.push(v);
+              const arr = [];
+              func(v.children, arr);
+              if (resData[i] && resData[i].children) {
+                resData[i].children = arr;
+              }
+            });
+          }
+        }
+        const resArr = [];
+        func(this.treeData, resArr);
+      },
       menuTreeChange(val, item) {
         this.$emit('menuTreeChange', val, item);
       }, // 左侧树点击

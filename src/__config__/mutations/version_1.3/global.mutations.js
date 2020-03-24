@@ -19,6 +19,9 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 
 export default {
+  updateTreeTableListData(state, data) {
+    state.treeTableListData = data;
+  },
   updataLoading(state, tableName) {
     if (!state.currentLoading.includes(tableName)) { // 没有则添加
       state.currentLoading.push(tableName); 
@@ -64,11 +67,24 @@ export default {
       });
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+        const externalModulesRes = {};// 外部配置
+        Object.keys(externalModules).forEach((key) => {
+          externalModulesRes[key.toUpperCase()] = externalModules[key];
+        });
+
+        const customizeRes = {};// 内部配置
+        Object.keys(customize).forEach((key) => {
+          customizeRes[key.toUpperCase()] = customize[key];
+        });
+        let customizeConfig = {};
+        if (externalModulesRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = externalModulesRes;
+        } else if (customizeRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = customizeRes;
+        }
 
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
-
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customizeConfig[customizeName].labelName;
             const name = `C.${customizedModuleName}.${param.id}`;
@@ -159,6 +175,7 @@ export default {
           } else if (c.type === 'tree') {
             // 树形结构列表的处理
             a[`${STANDARD_TABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
+            state.treeTableListData.push(c);
           } else if (c.type === 'commonTable') {
             // 标准列表的处理(普通表格)
             a[`${STANDARD_COMMONTABLE_COMPONENT_PREFIX}.${c.value}.${c.id}`] = c.label;
@@ -429,12 +446,23 @@ export default {
       router.push({ path });
     }
     if (back) {
-      path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
-      const routeInfo = {
-        path,
-        query: { isBack: true }
-      };
-      router.push(routeInfo);
+      if (back) {
+        path = `${STANDARD_TABLE_LIST_PREFIX}/${tableName}/${tableId}`;
+        const query = {
+          isBack: true
+        };
+        state.treeTableListData.map((item) => {
+          if (item.value === tableName && item.id === Number(tableId)) {
+            query.isTreeTable = true;
+          }
+        });
+        const routeInfo = {
+          path,
+          query
+        };
+  
+        router.push(routeInfo);
+      }
     }
   },
   tabOpen(state, {// 打开一个新tab添加路由
