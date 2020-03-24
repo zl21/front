@@ -2855,13 +2855,13 @@
             });
           }
           if (enableJflow()) { // jflow开启时，保存成功需通知
-            // DispatchEvent('jflowPlugin', {
-            //   detail: {
-            //     obj: {
-            //       button: 'save'
-            //     }
-            //   }
-            // });
+            DispatchEvent('jflowPlugin', {
+              detail: {
+                obj: {
+                  button: 'save'
+                }
+              }
+            });
           }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {

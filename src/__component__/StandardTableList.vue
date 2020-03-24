@@ -439,7 +439,7 @@
               content: '请维护表名或OBJID'
             };
             this.$Modal.fcWarning(data);
-          } if (row._OBJURL && row._OBJURL.val) {
+          } else if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
             const param = {
@@ -450,7 +450,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
-          } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
+          } else if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
           } else if (row._OBJTYPE && row._OBJTYPE.val === 'tabpanle') { // 左右结构
@@ -475,7 +475,7 @@
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
-              url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
+              url: this.ag.tableurl,
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
