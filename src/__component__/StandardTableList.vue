@@ -240,11 +240,13 @@
         const treeQuery = this.$router.currentRoute.query;
         if (treeQuery.isTreeTable) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
+            const { tableName } = this.$router.currentRoute.params;
+            return window.ProjectConfig.externalTreeDatas[tableName]();
           }
-          if (treeData) {
-            return treeData.AD_MENU();
-          }
+          // if (treeData) {
+          //   const { tableName } = this.$router.currentRoute.params;
+          //   return treeData[tableName]();
+          // }
         } 
       
         return [];

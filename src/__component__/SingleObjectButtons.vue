@@ -3108,6 +3108,11 @@
           this.clickButtonsRefresh();
         }
 
+        if (event.detail.type === 'save') {
+          this.clickSave();
+        }
+
+
         if (event.detail.type === 'clearSubmit') {
           this.saveEventAfter = '';
           const saveEventAfterData = {

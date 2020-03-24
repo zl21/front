@@ -34,7 +34,7 @@ export default {
   //   mask: true
   // });
   
-  CP_C_HRUSERS: () => {
+  BCP_ORDER: () => {
     // 接口报错提示框
     window.R3message({
       title: '错误',
