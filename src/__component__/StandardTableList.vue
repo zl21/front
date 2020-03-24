@@ -22,7 +22,7 @@
     </div>
     <tree
       v-if="isTreeList&&treeShow"
-      :tree-data="treeConfigData"
+      :tree-datas="treeConfigData"
       @menuTreeChange="menuTreeChange"
     />
     <div class="StandardTableListRootDiv">
@@ -243,10 +243,10 @@
             const { tableName } = this.$router.currentRoute.params;
             return window.ProjectConfig.externalTreeDatas[tableName]();
           }
-          // if (treeData) {
-          //   const { tableName } = this.$router.currentRoute.params;
-          //   return treeData[tableName]();
-          // }
+          if (treeData) {
+            const { tableName } = this.$router.currentRoute.params;
+            return treeData[tableName]();
+          }
         } 
       
         return [];
