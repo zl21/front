@@ -23,7 +23,7 @@
       </div>
 
       <!-- 驳回 -->
-      <!-- <div
+      <div
         v-if="type==='1'"
         class="ApprovelModel"
       >
@@ -33,7 +33,7 @@
           :rows="4"
           placeholder="请输入审批意见"
         />
-      </div> -->
+      </div>
 
       <!-- 转派 -->
       <div
@@ -64,7 +64,7 @@
 
       <!-- 人工干预 -->
       <div
-        v-if="type==='1'"
+        v-if="type==='9'"
         class="ApprovelModel Intervention"
       >
         <div class="details">
