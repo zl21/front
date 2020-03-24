@@ -1380,7 +1380,9 @@
       },
 
       clickSave(data) {
-        this.saveButtonPath = data.requestUrlPath;
+        if (data) {
+          this.saveButtonPath = data.requestUrlPath;
+        }
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
           if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
