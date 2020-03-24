@@ -80,8 +80,8 @@
   import ItemComponent from '../../__component__/ItemComponent';
   import commonTable from './tableSpecial';
   import { Version } from '../../constants/global';
-
-  const fkHttpRequest = () => require(`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`);
+  const url=`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`;
+  const fkHttpRequest = () => require(url);
   export default {
     components: { FormItemComponent, commonTable },
     data() {
