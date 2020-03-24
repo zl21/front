@@ -25,7 +25,7 @@
         class="compositeAllform"
         object-type="vertical"
         :is-main-table="true"
-        :objreadonly="mainFormInfo.buttonsData.data.objreadonly || mainFormInfo.formData.data.isdefault||objReadonlyForJflow"
+        :objreadonly="objReadonlyForJflow"
         :readonly="mainFormInfo.buttonsData.data.objreadonly||objReadonlyForJflow"
         :default-set-value="updateData[this.$route.params.tableName]? updateData[this.$route.params.tableName].changeData:{}"
         :master-name="$route.params.tableName"
@@ -148,7 +148,7 @@
           });
           return flag;
         }
-        return false;
+        return this.mainFormInfo.buttonsData.data.objreadonly || this.mainFormInfo.formData.data.isdefault;
 
 
         // if (enableJflow() && custommizedJflow()) {
