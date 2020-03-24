@@ -245,7 +245,10 @@
           }
           if (treeData) {
             const { tableName } = this.$router.currentRoute.params;
-            return treeData[tableName]();
+            if (treeData[tableName]) {
+              return treeData[tableName]();
+            }
+            return null;
           }
         } 
       

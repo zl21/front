@@ -75,15 +75,21 @@
     },
     watch: {
       treeDatas: {
-        handler(val) {
-          this.treeData = val;
+        handler() {
+          if (this.treeDatas !== null) {
+            this.treeDatas().then((value) => {
+              this.treeData = value;
+            });
+          }
         }
       },
     },
     mounted() {
-      this.treeDatas().then((value) => {
-        this.treeData = value;
-      });
+      if (this.treeDatas !== null) {
+        this.treeDatas().then((value) => {
+          this.treeData = value;
+        });
+      }
     },
     methods: {
       searchInputChange(e) {
