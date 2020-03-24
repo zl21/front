@@ -115,6 +115,22 @@
         }
         return '';
       },
+      itemReadOnlyForJflow() {
+        let flag = null;
+        if (enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
+          const { tableId } = this[INSTANCE_ROUTE_QUERY];
+          this.objreadonlyForJflow.map((item) => {
+            if (item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {
+              flag = item.readonly;
+            } else {
+              flag = this.objreadonly;
+            }
+          });
+        } else {
+          flag = this.objreadonly;
+        }
+        return flag;
+      }, 
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
         // if (enableJflow() && custommizedJflow()) {
