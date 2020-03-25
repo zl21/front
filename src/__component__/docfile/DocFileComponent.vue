@@ -245,6 +245,8 @@
               padding:5px 6px;
             line-height: 16px;
             vertical-align: middle; 
+            list-style-type:none
+
            }
          
    }
