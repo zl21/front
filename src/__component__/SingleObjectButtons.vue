@@ -2871,7 +2871,8 @@
             DispatchEvent('jflowPlugin', {
               detail: {
                 obj: {
-                  button: 'save'
+                  button: 'save',
+                  type: 'resolve'
                 }
               }
             });
@@ -2882,6 +2883,16 @@
             }
           });
         }, () => {
+          if (enableJflow()) { // jflow开启时，保存失败需通知
+            DispatchEvent('jflowPlugin', {
+              detail: {
+                obj: {
+                  button: 'save',
+                  type: 'reject'
+                }
+              }
+            });
+          }
           this.closeCurrentLoading();
           stop = true;
           removeMessage = true;
