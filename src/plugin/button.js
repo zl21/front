@@ -114,6 +114,7 @@ function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
+  beforeClickFunction = {};
   if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
     beforeClickFunction = e;
     DispatchEvent('jflowClick', {
