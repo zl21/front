@@ -37,7 +37,7 @@ export default () => ({
     ExeActionDataForComponent: {},
     itemObjId: null, // 子表1:1ID
     isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
-
+    clickSaveFunction: {},
 
   },
   actions: actions(),

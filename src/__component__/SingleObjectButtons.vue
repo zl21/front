@@ -1380,20 +1380,33 @@
       },
 
       clickSave(data) {
-        this.saveButtonPath = data.requestUrlPath;
+        if (data) {
+          this.saveButtonPath = data.requestUrlPath;
+        }
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
-          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-            const saveEventAfter = {
-              k: 'type',
-              v: data.type
-            };
-            updateSessionObject('saveEventAfter', saveEventAfter);
+          if (data) {
+            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              const saveEventAfter = {
+                k: 'type',
+                v: data.type
+              };
+              updateSessionObject('saveEventAfter', saveEventAfter);
+            } else {
+              this.saveEventAfter = data.type;
+            }
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           } else {
-            this.saveEventAfter = data.type;
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           }
-          const myEvent = new Event('click');
-          dom.dispatchEvent(myEvent);
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
@@ -3108,6 +3121,11 @@
           this.clickButtonsRefresh();
         }
 
+        if (event.detail.type === 'save') {
+          this.clickSave();
+        }
+
+
         if (event.detail.type === 'clearSubmit') {
           this.saveEventAfter = '';
           const saveEventAfterData = {
@@ -3179,6 +3197,9 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.updataClickSave(() => {
+        this.clickSave();
+      });
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         // this.dataArray.jflowPluginDataArray = [];

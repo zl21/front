@@ -276,7 +276,13 @@
         if(enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
           const { tableId } = router.currentRoute.params;
           this.objreadonlyForJflow.map((item) => {
-            if(item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {
+            let id = null;
+            if (this.type === 'vertical') {
+              id = this.itemInfo.tableid;
+            }else{
+              id = Number(this.itemInfo.id);
+            }
+            if(item.tableId === tableId && item.itemTableId === id) {
               flag = item.readonly;
             }else{
               flag = this.objreadonly;
