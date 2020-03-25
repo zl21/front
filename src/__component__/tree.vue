@@ -12,6 +12,7 @@
                            
     <Tree
       ref="menuTree"
+      class="treeContent"
       :data="treeData"
       :query="menuTreeQuery"
       @on-select-change="menuTreeChange"
@@ -126,13 +127,33 @@
         func(this.treeData, resArr);
       },
       menuTreeChange(val, item) {
-        this.$emit('menuTreeChange', val, item);
+        const arrayIDs = [];
+        function func(tdata, resData) {
+          if (Array.isArray(tdata) && tdata.length > 0) {
+            tdata.forEach((v, i) => {
+              resData.push(v);
+              arrayIDs.push(JSON.stringify(v.ID));
+              const arr = [];
+              func(v.children, arr);
+              if (resData[i] && resData[i].children) {
+                resData[i].children = arr;
+              }
+            });
+          }
+        }
+        const resArr = [];
+        func(val, resArr);
+        this.$emit('menuTreeChange', arrayIDs, val, item);
       }, // 左侧树点击
     }
   };
 </script>
 <style scoped>
-
+.treeContent{
+  overflow: scroll;
+    width: 100%;
+    height: 100%;
+}
 .input{
   margin-bottom:10px
 }

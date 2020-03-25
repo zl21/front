@@ -5,10 +5,16 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
+    <tree
+      v-if="isTreeList&&treeShow"
+      :tree-datas="treeConfigData"
+      @menuTreeChange="menuTreeChange"
+    />
+    <!-- :style="{ left: !treeShow ? '5px' : '245px' }" -->
+
     <div
       v-if="isTreeList"
       class="treeSwitch"
-      :style="{ left: !treeShow ? '5px' : '245px' }"
       @click="treeShow = !treeShow"
     >
       <i
@@ -20,11 +26,6 @@
         class="iconfont iconbj_left"
       />
     </div>
-    <tree
-      v-if="isTreeList&&treeShow"
-      :tree-datas="treeConfigData"
-      @menuTreeChange="menuTreeChange"
-    />
     <div class="StandardTableListRootDiv">
       <ButtonGroup
         :data-array="buttons.dataArray"
@@ -301,11 +302,11 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
-      menuTreeChange(val, item) {
+      menuTreeChange(arrayIDs, val, item) {
         // 按钮查找 查询第一页数据
         this.searchData.fixedcolumns = this.dataProcessing();
         this.searchData.reffixedcolumns = {
-          ID: `in (${item.ID})` 
+          ID: `in (${arrayIDs})`
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
@@ -2206,17 +2207,18 @@
   display: flex;
   flex-direction: row;
   .treeSwitch{
-    position: absolute;
+    // position: absolute;
     user-select: none;
     width: 11px;
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    top: 35%;
+    margin-top: 35%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;
     border: 1px solid #d2d2d2;
+    border-right: #fff 1px solid;
     // transform-origin: right;
     // transform: translateY(-50px) perspective(50px) rotateY(-30deg);
       &:hover{
@@ -2231,9 +2233,9 @@
  .tree{
     width:300px;
     padding:10px;
-    margin-right:15px;
+    // margin-right:15px;
     border-right:1px solid #d2d2d2;
-    
+   
   }
 .StandardTableListRootDiv {
   width: 100%;
