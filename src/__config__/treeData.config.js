@@ -33,7 +33,9 @@ export default {
   C_STORE: () => async () => {
     // ....
     
-    let data = [];
+    let data = [
+      
+    ];
     await 
     network.post('/jflow/p/cs/task/buttons', {
       businessCode: router.currentRoute.params.itemId,
@@ -46,7 +48,6 @@ export default {
           data = [
             {
               expand: true, // 是否开启
-      
               title: 'ceshi',
               TREENO: 2,
               MIXNAME: '[001]ceshi',
@@ -67,7 +68,6 @@ export default {
                   LEFTVALUE: 4,
                   lastChild: false,
                   expand: true, // 是否开启
-      
                   children: [
                     {
                       title: '销售部',
