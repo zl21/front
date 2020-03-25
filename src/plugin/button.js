@@ -53,6 +53,11 @@ function buttonsResponse(e) {
   const obj = jflowobj;
   const id = jflowid;
   if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
+    if (e.detail.obj.type === 'reject') {
+      beforeClickFunction = {};
+      return;
+    }
+    
     window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
       instance_id: window.jflowPlugin.objInstanceId,
       business_code: window.jflowPlugin.router.currentRoute.params.itemId,
