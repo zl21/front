@@ -881,6 +881,10 @@ function initiateLaunch(data) { // 业务系统流程发起
   });
 }
 
+function initLists() { // 小图标的展示
+
+}
+
 
 const install = function install(Vue, options = {}) {
   closeJflowIcon = options.closeJflowIcon;
@@ -906,19 +910,8 @@ const install = function install(Vue, options = {}) {
         
         window.initiateLaunch = initiateLaunch;
         window.jflowRefresh = jflowRefresh;
-      })
-      .catch(() => {
-        encryptionJflow = false;
-        thirdlogin();
-        RoutingGuard(options.router);
-        AxiosGuard(options.axios);
-        createComponent();
 
-        Vue.prototype.$network = network;
-        
-        
-        window.initiateLaunch = initiateLaunch;
-        window.jflowRefresh = jflowRefresh;
+        window.addEventListener('userReady', initLists, this);
       });
   }
 };
