@@ -123,8 +123,8 @@ export default () => ({
         'emptyChangeData',
         'changeFormData',
         'updateButtonGetActionData',
-        'updateRefreshButtonForJflow'
-
+        'updateRefreshButtonForJflow',
+        'clickSaveFunction'
         // 'resetFormReadOnlyAttribute'
 
       ]),
