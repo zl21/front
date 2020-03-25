@@ -902,7 +902,7 @@ const install = function install(Vue, options = {}) {
     store = options.store;
     jflowIp = options.jflowIp;
     
-
+    window.addEventListener('userReady', initLists, this);
     axios.post('/jflow/p/sys/properties', {})
       .then((res) => {
         encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
@@ -916,8 +916,6 @@ const install = function install(Vue, options = {}) {
         
         window.initiateLaunch = initiateLaunch;
         window.jflowRefresh = jflowRefresh;
-
-        window.addEventListener('userReady', initLists, this);
       });
   }
 };
