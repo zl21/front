@@ -22,7 +22,7 @@ export const isItemTableNewValidation = () => (window.ProjectConfig && typeof wi
 export const isCommonTable = () => (window.ProjectConfig && typeof window.ProjectConfig.isCommonTable === 'boolean' ? window.ProjectConfig.isCommonTable : project.isCommonTable);
 export const custommizedJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.custommizedJflow === 'boolean' ? window.ProjectConfig.custommizedJflow : project.custommizedJflow);
 export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
-
+export const layoutDirection = () => (window.ProjectConfig && typeof window.ProjectConfig.layoutDirection ? window.ProjectConfig.layoutDirection : project.layoutDirection);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
