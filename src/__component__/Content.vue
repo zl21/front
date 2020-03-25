@@ -2,7 +2,7 @@
   import { layoutDirection } from '../constants/global';
 
 
-  const appLayoutConfig = () => require(`../__config__/${layoutDirection() === '' ? 'layout.config.js' : `layout.${layoutDirection()}.config.js`}`);
+  const appLayoutConfig = () => require(`../__config__/${layoutDirection() !== 'Vertical' ? 'layout.config.js' : `layout.${layoutDirection()}.config.js`}`);
   const appLayout = appLayoutConfig().default;
   /**
    * 高级函数：用于采用JSX渲染Vue的Html Template
