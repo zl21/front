@@ -901,7 +901,6 @@ function initLists(e) { // 小图标的展示
       window.jflowRefresh = jflowRefresh;
       !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
     });
-  
 }
 
 
@@ -918,8 +917,7 @@ const install = function install(Vue, options = {}) {
     jflowIp = options.jflowIp;
     
     window.addEventListener('userReady', initLists, this);
-    
-    
+  }
 };
 
 
