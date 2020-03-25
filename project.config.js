@@ -45,5 +45,5 @@ module.exports = {
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
   custommizedJflow: true, // jflow定制版开关,默认为true
-  functionPowerRequestURL: ''// 功能权限获取检索项数据接口名称
+  functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
 };
