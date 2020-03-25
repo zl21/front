@@ -8,12 +8,18 @@
   import { hideMenu, launchNetworkMonitor } from './__config__/event.config';
   import { emptyRecord } from './__utils__/indexedDB';
   import network from './__utils__/network';
-  import { enableInitializationRequest } from './constants/global';
+  import { enableInitializationRequest, cbs } from './constants/global';
 
   
   export default {
     name: 'App',
     mounted() {
+      const loginTime = window.sessionStorage.getItem('loginTime');
+      if (loginTime && ((Date.now() - parseInt(loginTime)) < 3000)) {
+        if (cbs() && typeof (cbs().loginCb) === 'function') {
+          cbs().loginCb();
+        }
+      }
       hideMenu();
       launchNetworkMonitor();
       emptyRecord(Date.now() - 1000 * 60 * 60);
