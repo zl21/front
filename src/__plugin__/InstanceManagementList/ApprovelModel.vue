@@ -23,7 +23,7 @@
       </div>
 
       <!-- 驳回 -->
-      <!-- <div
+      <div
         v-if="type==='1'"
         class="ApprovelModel"
       >
@@ -33,7 +33,7 @@
           :rows="4"
           placeholder="请输入审批意见"
         />
-      </div> -->
+      </div>
 
       <!-- 转派 -->
       <div
@@ -64,7 +64,7 @@
 
       <!-- 人工干预 -->
       <div
-        v-if="type==='1'"
+        v-if="type==='9'"
         class="ApprovelModel Intervention"
       >
         <div class="details">
@@ -131,6 +131,7 @@
 <script>
   import mutipleSelectPop from './MutipleSelectPop.vue';
   import { BacklogData } from '../../plugin/todoList';
+  import { DispatchEvent } from '../../__utils__/dispatchEvent';
 
   export default {
     name: 'ApprovelModel',
@@ -473,6 +474,7 @@
         this.findUser(param);
       },
       transfer(vm) {
+        // eslint-disable-next-line no-unused-expressions
         this.resultData.total
           ? (this.resultData.total = 1)
           : this.$set(this.resultData, 'total', 1);
@@ -509,6 +511,10 @@
         if (this.type === '3') {
           this.delegate(); // 转派
         }
+
+        if (this.type === '9') {
+          this.interventionConfirm(); // 转派
+        }
       },
       cancel() {
         window.jflowPlugin.open({ control: false });
@@ -534,13 +540,11 @@
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -581,13 +585,11 @@
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -616,13 +618,11 @@
             this.selectRow = {};
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -631,11 +631,59 @@
             });
           }
         });
+      },
+
+      // 获取人工干预信息
+      getIntervention() {
+        this.$network.post('/jflow/p/cs/error/pageMsg', {
+          instanceId: window.jflowPlugin.objInstanceId,
+          nodeId: window.jflowPlugin.nodeId,
+          userId: window.jflowPlugin.userInfo.id,
+          errorCode: this.config.item.errorCode
+        })
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              this.$set('intervention', res.data.data);
+            }
+          });
+      },
+      // 人工干预提交
+      interventionConfirm() {
+        this.$network.post('/jflow/p/cs/error/invocationFail', {
+          instanceId: window.jflowPlugin.objInstanceId,
+          nodeId: window.jflowPlugin.nodeId,
+          userId: window.jflowPlugin.userInfo.id,
+          handleUrl: this.intervention.handleUrl,
+          handleParam: this.intervention.handleParam,
+          handleRemark: this.intervention.handleRemark
+        })
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              this.$Message.success(res.data.resultMsg);
+              this.modalConfig.buttons(window.jflowPlugin.itemId);
+              BacklogData(window.jflowPlugin.store);
+              DispatchEvent('jflowClick', {
+                detail: {
+                  type: 'refresh'
+                }
+              });
+            } else {
+              this.$Modal.fcError({
+                title: '错误',
+                content: res.data.resultMsg,
+                mask: true
+              });
+            }
+          });
       }
     },
     created() {
       if (this.config.type === '3') {
         this.getTreeData();
+      }
+
+      if (this.config.type === '9') {
+        this.getIntervention();
       }
     }
   };
