@@ -886,7 +886,22 @@ function initLists(e) { // 小图标的展示
   userInfo = e.detail.userInfo;
   window.jflowPlugin.userInfo = e.detail.userInfo;
 
-  !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+  axios.post('/jflow/p/sys/properties', {})
+    .then((res) => {
+      encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
+      thirdlogin();
+      RoutingGuard(options.router);
+      AxiosGuard(options.axios);
+      createComponent();
+
+      Vue.prototype.$network = network;
+      
+      
+      window.initiateLaunch = initiateLaunch;
+      window.jflowRefresh = jflowRefresh;
+      !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+    });
+  
 }
 
 
@@ -902,23 +917,9 @@ const install = function install(Vue, options = {}) {
     store = options.store;
     jflowIp = options.jflowIp;
     
+    window.addEventListener('userReady', initLists, this);
     
-    axios.post('/jflow/p/sys/properties', {})
-      .then((res) => {
-        encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
-        thirdlogin();
-        RoutingGuard(options.router);
-        AxiosGuard(options.axios);
-        createComponent();
-
-        Vue.prototype.$network = network;
-        
-        
-        window.initiateLaunch = initiateLaunch;
-        window.jflowRefresh = jflowRefresh;
-        window.addEventListener('userReady', initLists, this);
-      });
-  }
+    
 };
 
 
