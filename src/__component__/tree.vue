@@ -23,6 +23,7 @@
   export default {
     data() {
       return {
+        treeName: '',
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
@@ -79,7 +80,8 @@
         handler() {
           if (this.treeDatas !== null) {
             this.treeDatas().then((value) => {
-              this.treeData = value;
+              this.treeData = value.data;
+              this.treeName = value.name;
             });
           }
         }
@@ -88,7 +90,8 @@
     mounted() {
       if (this.treeDatas !== null) {
         this.treeDatas().then((value) => {
-          this.treeData = value;
+          this.treeData = value.data;
+          this.treeName = value.name;
         });
       }
     },
@@ -143,7 +146,7 @@
         }
         const resArr = [];
         func(val, resArr);
-        this.$emit('menuTreeChange', arrayIDs, val, item);
+        this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
       }, // 左侧树点击
     }
   };

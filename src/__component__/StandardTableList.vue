@@ -302,11 +302,11 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
-      menuTreeChange(arrayIDs, val, item) {
+      menuTreeChange(arrayIDs, treeName, val, item) {
         // 按钮查找 查询第一页数据
         this.searchData.fixedcolumns = this.dataProcessing();
         this.searchData.reffixedcolumns = {
-          ID: `in (${arrayIDs})`
+          [treeName]: `in (${arrayIDs})`
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
