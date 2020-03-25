@@ -6,7 +6,7 @@ module.exports = {
   // target: 'http://47.99.229.124:1024', // 框架研发网关关闭环境
   // target: 'http://r3-8098.dev.burgeononline.com/', // 框架研发网关开启环境
   // target: 'http://r3dev.qiaodan.com:28889', // 乔丹开发环境
-  // // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
+  // target: 'http://r3dev.qiaodan.com:26666', // 乔丹开发环境
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com', // 知晓测试环境(启用网关)
   // target: 'http://zhixiao.burgeononline.com:32769/', // 知晓正式环境(启用网关)
   // target: 'http://dev.burgeononline.com:8098', // 掌云测试环境(启用网关)
@@ -19,8 +19,6 @@ module.exports = {
   target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
-
-  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -45,5 +43,6 @@ module.exports = {
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
   custommizedJflow: true, // jflow定制版开关,默认为true
-  functionPowerRequestURL: ''// 功能权限获取检索项数据接口名称
+  functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
+  cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
 };

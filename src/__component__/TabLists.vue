@@ -60,10 +60,14 @@
       class="emptying"
       @click="emptyClick"
     >
-      <img
+      <i
+        class="iconfont iconbj_delete "
+        style="color:#ff6049"
+      />
+      <!-- <img
         src="../assets/image/delete.png"
         alt
-      >
+      > -->
     </span>
   </div>
 </template>

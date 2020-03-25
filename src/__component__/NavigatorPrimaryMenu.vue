@@ -5,7 +5,14 @@
     :class="{ active: index === primaryMenuIndex }"
     @click.stop="togglePrimaryMenu(data.children)"
   >
-    {{ data.label }}
+    <template v-if="type==='Vertical'">
+      <div class="navigator-primary-menu-div">
+        {{ data.label }}
+      </div> <Icon type="ios-arrow-forward" />
+    </template>
+    <template v-else>
+      {{ data.label }}
+    </template>
   </div>
 </template>
 <script>
@@ -36,6 +43,10 @@
         required: true,
         type: Object,
         default: () => ({})
+      },
+      type: {
+        type: String,
+        default: () => ('')
       },
       index: {
         required: true,
