@@ -1,13 +1,13 @@
-import Navigator from '../__component__/Navigator';
+import NavigatorVertical from '../__component__/NavigatorVertical';
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
 import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
 
 export default {
-  direction: 'column',
+  direction: 'row',
   items: [
     {
       height: 50,
-      component: Navigator,
+      component: NavigatorVertical,
       name: 'Navigator', // global.showModule.Navigator = false时，此选项不渲染。
     },
     {
