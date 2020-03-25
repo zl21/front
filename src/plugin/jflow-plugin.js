@@ -701,13 +701,13 @@ function AxiosGuard(axios) { // axios拦截
         }
       }
 
-      if (response.config.url.endsWith('/p/cs/hello')) { // 获取用户信息
-        window.localStorage.setItem('userInfo', JSON.stringify(response.data));
-        userInfo = response.data;
-        window.jflowPlugin.userInfo = userInfo;
+      // if (response.config.url.endsWith('/p/cs/hello')) { // 获取用户信息
+      //   window.localStorage.setItem('userInfo', JSON.stringify(response.data));
+      //   userInfo = response.data;
+      //   window.jflowPlugin.userInfo = userInfo;
 
-        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
-      }
+      //   !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+      // }
 
       // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
       //   !closeJflowIcon ? todoList(store, router) : null;
@@ -881,12 +881,18 @@ function initiateLaunch(data) { // 业务系统流程发起
   });
 }
 
-function initLists() { // 小图标的展示
+function initLists(e) { // 小图标的展示
+  window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
+  userInfo = e.detail.userInfo;
+  window.jflowPlugin.userInfo = e.detail.userInfo;
 
+  !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
 }
 
 
 const install = function install(Vue, options = {}) {
+  window.removeEventListener('userReady', initLists, true);
+  
   closeJflowIcon = options.closeJflowIcon;
   // encryptionJflow = options.encryptionJflow;
   if (options.axios && options.router && options.store && options.jflowIp) {
