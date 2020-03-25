@@ -1380,20 +1380,33 @@
       },
 
       clickSave(data) {
-        this.saveButtonPath = data.requestUrlPath;
+        if (data) {
+          this.saveButtonPath = data.requestUrlPath;
+        }
         const dom = document.getElementById('actionMODIFY');
         if (dom) {
-          if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
-            const saveEventAfter = {
-              k: 'type',
-              v: data.type
-            };
-            updateSessionObject('saveEventAfter', saveEventAfter);
+          if (data) {
+            if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
+              const saveEventAfter = {
+                k: 'type',
+                v: data.type
+              };
+              updateSessionObject('saveEventAfter', saveEventAfter);
+            } else {
+              this.saveEventAfter = data.type;
+            }
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           } else {
-            this.saveEventAfter = data.type;
+            const myEvent = document.createEvent('HTMLEvents');
+            myEvent.initEvent('click', false, true);
+            dom.dispatchEvent(myEvent);
+            // const myEvent = new Event('click');
+            // dom.dispatchEvent(myEvent);
           }
-          const myEvent = new Event('click');
-          dom.dispatchEvent(myEvent);
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
@@ -2855,13 +2868,13 @@
             });
           }
           if (enableJflow()) { // jflow开启时，保存成功需通知
-            // DispatchEvent('jflowPlugin', {
-            //   detail: {
-            //     obj: {
-            //       button: 'save'
-            //     }
-            //   }
-            // });
+            DispatchEvent('jflowPlugin', {
+              detail: {
+                obj: {
+                  button: 'save'
+                }
+              }
+            });
           }
           DispatchEvent('objTabActionSlientForItemTable', {// 用于子表监听保存成功后执行相对应逻辑
             detail: {
@@ -3107,6 +3120,11 @@
         if (event.detail.type === 'refresh') {
           this.clickButtonsRefresh();
         }
+
+        if (event.detail.type === 'save') {
+          this.clickSave();
+        }
+
 
         if (event.detail.type === 'clearSubmit') {
           this.saveEventAfter = '';

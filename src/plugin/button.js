@@ -45,11 +45,13 @@ function restartProcess() {
 let jflowbuttons = [];
 let jflowobj = {};
 let jflowid = null;
-function clickFunction(e) {
+let beforeClickFunction = {}; // 记录需要前置保存的按钮
+
+// 按钮响应事件
+function buttonsResponse(e) {
   const buttons = jflowbuttons;
   const obj = jflowobj;
   const id = jflowid;
-
   if (e.detail.obj.button === 'save' && window.jflowPlugin.objInstanceId) { // 监听保存按钮并且在存在InstanceId时调用接口
     window.jflowPlugin.axios.post('/jflow/p/cs/business/change', {
       instance_id: window.jflowPlugin.objInstanceId,
@@ -57,7 +59,14 @@ function clickFunction(e) {
       business_type: window.jflowPlugin.router.currentRoute.params.tableId,
       businessTypeName: window.jflowPlugin.router.currentRoute.params.tableName,
       sync: true
-    });
+    })
+      .then(() => {
+        // 处理前置事件保存之后再处理当前事件
+        if (Object.keys(beforeClickFunction).length > 0) {
+          buttonsResponse(beforeClickFunction);
+          beforeClickFunction = {};
+        }
+      });
   }
 
   if (e.detail.obj.button === 'fresh') {
@@ -86,8 +95,9 @@ function clickFunction(e) {
       case '0': // 同意
       case '8': // 确认
       case '3': // 转派
+      case '9': // 人工干预
         window.jflowPlugin.open({// 同意和转派
-          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id 
+          control: true, type: item.button, url: item.url, instanceId: obj.instanceId, buttons, id, item 
         });
         break;
       case '5': // 流程进度
@@ -98,6 +108,23 @@ function clickFunction(e) {
         break;
       default: break;
     }
+  }
+}
+
+
+// 按钮点击逻辑处理
+function clickFunction(e) {
+  beforeClickFunction = {};
+  if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
+    beforeClickFunction = e;
+    DispatchEvent('jflowClick', {
+      detail: {
+        type: 'save'
+      }
+    });
+    // buttonsResponse(e);
+  } else {
+    buttonsResponse(e);
   }
 }
 

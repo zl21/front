@@ -5,26 +5,27 @@
     :id="buttons.tableName"
     class="standarTableListContent"
   >
+    <tree
+      v-if="isTreeList&&treeShow"
+      :tree-datas="treeConfigData"
+      @menuTreeChange="menuTreeChange"
+    />
+    <!-- :style="{ left: !treeShow ? '5px' : '245px' }" -->
+
     <div
       v-if="isTreeList"
       class="treeSwitch"
-      :style="{ left: !treeShow ? '5px' : '245px' }"
       @click="treeShow = !treeShow"
     >
       <i
         v-if="!treeShow"
-        class="iconfont iconbj_left"
+        class="iconfont iconbj_right"
       />
       <i
         v-if="treeShow"
-        class="iconfont iconbj_right"
+        class="iconfont iconbj_left"
       />
     </div>
-    <tree
-      v-if="isTreeList&&treeShow"
-      :tree-data="treeConfigData"
-      @menuTreeChange="menuTreeChange"
-    />
     <div class="StandardTableListRootDiv">
       <ButtonGroup
         :data-array="buttons.dataArray"
@@ -60,8 +61,8 @@
         :on-column-visible-changed="onColumnVisibleChanged"
         :on-cell-single-click="onCellSingleClick"
         :is-common-table="commonTable"
+        :do-table-search="searchClickData"
         @CommonTableCustomizedDialog="commonTableCustomizedDialog"
-        :doTableSearch="searchClickData"
       />
     </div>
    
@@ -240,10 +241,15 @@
         const treeQuery = this.$router.currentRoute.query;
         if (treeQuery.isTreeTable) {
           if (window.ProjectConfig && window.ProjectConfig.externalTreeDatas) {
-            return window.ProjectConfig.externalTreeDatas[this.$router.currentRoute.tableName.name]();
+            const { tableName } = this.$router.currentRoute.params;
+            return window.ProjectConfig.externalTreeDatas[tableName]();
           }
           if (treeData) {
-            return treeData.AD_MENU();
+            const { tableName } = this.$router.currentRoute.params;
+            if (treeData[tableName]) {
+              return treeData[tableName]();
+            }
+            return null;
           }
         } 
       
@@ -296,11 +302,11 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
-      menuTreeChange(val, item) {
+      menuTreeChange(arrayIDs, val, item) {
         // 按钮查找 查询第一页数据
         this.searchData.fixedcolumns = this.dataProcessing();
         this.searchData.reffixedcolumns = {
-          ID: `in (${item.ID})` 
+          ID: `in (${arrayIDs})`
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
@@ -439,7 +445,7 @@
               content: '请维护表名或OBJID'
             };
             this.$Modal.fcWarning(data);
-          } if (row._OBJURL && row._OBJURL.val) {
+          } else if (row._OBJURL && row._OBJURL.val) {
             const tableurl = row._OBJURL.val;
             const id = row._OBJID.val;
             const param = {
@@ -450,7 +456,7 @@
               treeTableListSelectId
             };
             this.directionalRouter(param);// 定向路由跳转方法
-          } if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
+          } else if (row._OBJTYPE && row._OBJTYPE.val === 'object') {
             // 单对象上下结构
             type = 'tableDetailVertical';
           } else if (row._OBJTYPE && row._OBJTYPE.val === 'tabpanle') { // 左右结构
@@ -475,7 +481,7 @@
           const id = row.ID.val;
           if (this.ag.tableurl) {
             const param = {
-              url: 'CUSTOMIZED/FUNCTIONPERMISSION/1',
+              url: this.ag.tableurl,
               id,
               lablel: row.OWNERID ? row.OWNERID.reftabdesc : null,
               isMenu: true,
@@ -2201,17 +2207,18 @@
   display: flex;
   flex-direction: row;
   .treeSwitch{
-    position: absolute;
+    // position: absolute;
     user-select: none;
     width: 11px;
     height: 83px;
     line-height: 84px;
     cursor: pointer;
-    top: 35%;
+    margin-top: 35%;
     text-align: center;
     border-top-left-radius: 46px;
     border-bottom-left-radius: 46px;
     border: 1px solid #d2d2d2;
+    border-right: #fff 1px solid;
     // transform-origin: right;
     // transform: translateY(-50px) perspective(50px) rotateY(-30deg);
       &:hover{
@@ -2226,9 +2233,9 @@
  .tree{
     width:300px;
     padding:10px;
-    margin-right:15px;
+    // margin-right:15px;
     border-right:1px solid #d2d2d2;
-    
+   
   }
 .StandardTableListRootDiv {
   width: 100%;

@@ -28,7 +28,7 @@ module.exports = {
   ignoreGateWayPattern: [/\/jflow\/*/g, /\/api\/*/g], // 框架默认禁用的网关逻辑的正则模式匹配
   enableNetworkMonitor: true, // 是否开启网络监控功能
   enableModuleKA: true, // 默认启用keepAlive功能
-  enableJflow: false, // 默认禁用JFlow插件功能
+  enableJflow: true, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
   encryptionJflow: false, // 控制jflow传参是否加密
   // jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)
@@ -45,6 +45,6 @@ module.exports = {
   encryptedPassword: false, // 是否允许login接口password加密
   isItemTableNewValidation: true, // 是否允许子表新增有必填项时，输入值才触发子表必填项校验，不输入值则只校验主表
   isCommonTable: false, // 是否开启普通表格，默认关闭
-  custommizedJflow: false, // jflow定制版开关,默认为true
+  custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: ''// 功能权限获取检索项数据接口名称
 };

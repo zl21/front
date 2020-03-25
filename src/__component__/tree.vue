@@ -12,6 +12,7 @@
                            
     <Tree
       ref="menuTree"
+      class="treeContent"
       :data="treeData"
       :query="menuTreeQuery"
       @on-select-change="menuTreeChange"
@@ -25,37 +26,37 @@
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
         newMenuTreeObj: null, // 当前选中的菜单节点的数据
-        treeDatas: [
-          {
-            title: 'parent 1',
-            expand: false,
-            children: [
-              {
-                title: 'parent 1-1',
-                expand: false,
-                children: [
-                  {
-                    title: 'leaf 1-1-1'
-                  },
-                  {
-                    title: 'leaf 1-1-2'
-                  }
-                ]
-              },
-              {
-                title: 'parent 1-2',
-                expand: false,
-                children: [
-                  {
-                    title: 'leaf 1-2-1'
-                  },
-                  {
-                    title: 'leaf 1-2-1'
-                  }
-                ]
-              }
-            ]
-          }
+        treeData: [
+          // {
+          //   title: 'parent 1',
+          //   expand: false,
+          //   children: [
+          //     {
+          //       title: 'parent 1-1',
+          //       expand: false,
+          //       children: [
+          //         {
+          //           title: 'leaf 1-1-1'
+          //         },
+          //         {
+          //           title: 'leaf 1-1-2'
+          //         }
+          //       ]
+          //     },
+          //     {
+          //       title: 'parent 1-2',
+          //       expand: false,
+          //       children: [
+          //         {
+          //           title: 'leaf 1-2-1'
+          //         },
+          //         {
+          //           title: 'leaf 1-2-1'
+          //         }
+          //       ]
+          //     }
+          //   ]
+          // }
         ]
       };
     },
@@ -68,12 +69,28 @@
       };
     },
     props: {
-      treeData: {
-        type: Array,
-        default: () => ([])
+      treeDatas: {
+        type: Function,
+        default: () => {}
+      },
+    },
+    watch: {
+      treeDatas: {
+        handler() {
+          if (this.treeDatas !== null) {
+            this.treeDatas().then((value) => {
+              this.treeData = value;
+            });
+          }
+        }
       },
     },
     mounted() {
+      if (this.treeDatas !== null) {
+        this.treeDatas().then((value) => {
+          this.treeData = value;
+        });
+      }
     },
     methods: {
       searchInputChange(e) {
@@ -110,13 +127,33 @@
         func(this.treeData, resArr);
       },
       menuTreeChange(val, item) {
-        this.$emit('menuTreeChange', val, item);
+        const arrayIDs = [];
+        function func(tdata, resData) {
+          if (Array.isArray(tdata) && tdata.length > 0) {
+            tdata.forEach((v, i) => {
+              resData.push(v);
+              arrayIDs.push(JSON.stringify(v.ID));
+              const arr = [];
+              func(v.children, arr);
+              if (resData[i] && resData[i].children) {
+                resData[i].children = arr;
+              }
+            });
+          }
+        }
+        const resArr = [];
+        func(val, resArr);
+        this.$emit('menuTreeChange', arrayIDs, val, item);
       }, // 左侧树点击
     }
   };
 </script>
 <style scoped>
-
+.treeContent{
+  overflow: scroll;
+    width: 100%;
+    height: 100%;
+}
 .input{
   margin-bottom:10px
 }

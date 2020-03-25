@@ -2,17 +2,18 @@
   <div>
     <Modal
       v-model="modalConfig.control"
-      :title="type==='3'?'选择转派人':'审批意见'"
+      :title="type==='3'?'选择转派人':type==='9'?'人工干预':'审批意见'"
       :mask="true"
       :width="type==='3'?835:520"
+      :ok-text="type === '9'?'提交':'确定'"
       @on-ok="ok"
       @on-cancel="cancel"
     >
+      <!-- 同意 -->
       <div
         v-if="type==='0' || type === '8'"
         class="ApprovelModel"
       >
-        <!-- 同意 -->
         <Input
           v-model="agreecontent"
           type="textarea"
@@ -20,21 +21,12 @@
           placeholder="请输入审批意见"
         />
       </div>
+
+      <!-- 驳回 -->
       <div
         v-if="type==='1'"
         class="ApprovelModel"
       >
-        <!-- 驳回 -->
-        <!-- <div class="returnWrap">
-          <span class="requireStyle">*</span>
-          <Select v-model="returnOption" style="margin-bottom:10px" placeholder="请选择审批单驳回至哪个节点">
-            <Option
-              v-for="item in returnSelection"
-              :value="item.value"
-              :key="item.value"
-            >{{ item.label }}</Option>
-          </Select>
-        </div> -->
         <Input
           v-model="returnContent"
           type="textarea"
@@ -42,11 +34,12 @@
           placeholder="请输入审批意见"
         />
       </div>
+
+      <!-- 转派 -->
       <div
         v-if="type==='3'"
         class="ApprovelModel"
       >
-        <!-- 转派 -->
         <mutipleSelectPop
           ref="dialogtest"
           :loading="loading"
@@ -68,12 +61,77 @@
           @on-deleBtn="deleBtn"
         />
       </div>
+
+      <!-- 人工干预 -->
+      <div
+        v-if="type==='9'"
+        class="ApprovelModel Intervention"
+      >
+        <div class="details">
+          <p
+            class="title"
+          >
+            <span />
+            <span>报错信息：</span>
+          </p>
+
+          <div>
+            <p>
+              流程报错:{{ intervention.errorType }}
+            </p>
+            <p>
+              错误简述:{{ intervention.errorMsg }}
+            </p>
+            <p>
+              所在节点:{{ intervention.currentNodeName }}
+            </p>
+            <p>
+              建议措施:{{ intervention.handleOpinion }}
+            </p>
+          </div>
+        </div>
+        <div class="deal">
+          <p
+            class="title"
+          >
+            <span />
+            <span>人工干预处理：</span>
+          </p>
+
+          <div>
+            <p>
+              <label>URL:</label>
+              <Input
+                v-model="intervention.handleUrl"
+                type="text"
+              />
+            </p>
+            <p>
+              <label>服务参数:</label>
+              <Input
+                v-model="intervention.handleParam"
+                type="textarea"
+                class="textarea"
+                :autosize="{ minRows: 3, maxRows: 3 }"
+              />
+            </p>
+            <p>
+              <label>备注:</label>
+              <Input
+                v-model="intervention.handleRemark"
+                type="text"
+              />
+            </p>
+          </div>
+        </div>
+      </div>
     </Modal>
   </div>
 </template>
 <script>
-  import mutipleSelectPop from './MutipleSelectPop';
+  import mutipleSelectPop from './MutipleSelectPop.vue';
   import { BacklogData } from '../../plugin/todoList';
+  import { DispatchEvent } from '../../__utils__/dispatchEvent';
 
   export default {
     name: 'ApprovelModel',
@@ -131,7 +189,10 @@
         ],
         resultData: {}, // 选中结果
         selectRow: {}, // 选中的行
-        obj: {} //
+        obj: {}, //
+
+
+        intervention: {} // 人工干预数据
       };
     },
     methods: {
@@ -413,6 +474,7 @@
         this.findUser(param);
       },
       transfer(vm) {
+        // eslint-disable-next-line no-unused-expressions
         this.resultData.total
           ? (this.resultData.total = 1)
           : this.$set(this.resultData, 'total', 1);
@@ -449,6 +511,10 @@
         if (this.type === '3') {
           this.delegate(); // 转派
         }
+
+        if (this.type === '9') {
+          this.interventionConfirm(); // 转派
+        }
       },
       cancel() {
         window.jflowPlugin.open({ control: false });
@@ -474,13 +540,11 @@
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -521,13 +585,11 @@
             this.$Message.success(res.data.resultMsg);
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -556,13 +618,11 @@
             this.selectRow = {};
             this.modalConfig.buttons(window.jflowPlugin.itemId);
             BacklogData(window.jflowPlugin.store);
-            const children = document.getElementsByClassName('R3-button-group')[0].children;
-            for (const child of children) {
-              if (child.getAttribute('id') === 'refresh') {
-                const myEvent = new Event('click');
-                child.dispatchEvent(myEvent);
+            DispatchEvent('jflowClick', {
+              detail: {
+                type: 'refresh'
               }
-            }
+            });
           } else {
             this.$Modal.fcError({
               title: '错误',
@@ -571,16 +631,64 @@
             });
           }
         });
+      },
+
+      // 获取人工干预信息
+      getIntervention() {
+        this.$network.post('/jflow/p/cs/error/pageMsg', {
+          instanceId: window.jflowPlugin.objInstanceId,
+          nodeId: window.jflowPlugin.nodeId,
+          userId: window.jflowPlugin.userInfo.id,
+          errorCode: this.config.item.errorCode
+        })
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              this.$set('intervention', res.data.data);
+            }
+          });
+      },
+      // 人工干预提交
+      interventionConfirm() {
+        this.$network.post('/jflow/p/cs/error/invocationFail', {
+          instanceId: window.jflowPlugin.objInstanceId,
+          nodeId: window.jflowPlugin.nodeId,
+          userId: window.jflowPlugin.userInfo.id,
+          handleUrl: this.intervention.handleUrl,
+          handleParam: this.intervention.handleParam,
+          handleRemark: this.intervention.handleRemark
+        })
+          .then((res) => {
+            if (res.data.resultCode === 0) {
+              this.$Message.success(res.data.resultMsg);
+              this.modalConfig.buttons(window.jflowPlugin.itemId);
+              BacklogData(window.jflowPlugin.store);
+              DispatchEvent('jflowClick', {
+                detail: {
+                  type: 'refresh'
+                }
+              });
+            } else {
+              this.$Modal.fcError({
+                title: '错误',
+                content: res.data.resultMsg,
+                mask: true
+              });
+            }
+          });
       }
     },
     created() {
       if (this.config.type === '3') {
         this.getTreeData();
       }
+
+      if (this.config.type === '9') {
+        this.getIntervention();
+      }
     }
   };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .ApprovelModel {
   .returnWrap {
     width: 100%;
@@ -591,6 +699,63 @@
     }
     .burgeon-select .burgeon-select-single .burgeon-select-default {
       width: calc(100%-10px);
+    }
+  }
+
+  &.Intervention{
+    .title{
+      border-bottom: 1px solid #D8D8D8;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+
+      >span:first-child{
+        width:2px;
+        height:12px;
+        background:rgba(253,100,66,1);
+        vertical-align: middle;
+        display: inline-block;
+      }
+      span{
+        color: #FD6442;
+      }
+    }
+
+    .details{
+      >div{
+        padding-left: 20px;
+        p{
+          font-size:12px;
+          font-weight:400;
+          color:rgba(84,84,84,1);
+          line-height:17px;
+          margin-bottom: 4px;
+        }
+
+        >p:last-child{
+          margin-bottom: 16px;
+        }
+      }
+    }
+
+    .deal{
+      >div{
+        >p{
+          line-height: 24px;
+          display: flex;
+          margin-bottom: 8px;
+
+          >label{
+            width: 60px;
+            margin-right: 8px;
+          }
+
+          .textarea{
+            textarea{
+              resize: none;
+            }
+          }
+        }
+      }
     }
   }
 }

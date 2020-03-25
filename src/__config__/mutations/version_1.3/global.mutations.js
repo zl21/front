@@ -67,11 +67,24 @@ export default {
       });
       if (param.isMenu) {
         const externalModules = (window.ProjectConfig || { externalModules: undefined }).externalModules || {};
-        const customizeConfig = Object.keys(externalModules).length > 0 ? externalModules : customize;
+        const externalModulesRes = {};// 外部配置
+        Object.keys(externalModules).forEach((key) => {
+          externalModulesRes[key.toUpperCase()] = externalModules[key];
+        });
+
+        const customizeRes = {};// 内部配置
+        Object.keys(customize).forEach((key) => {
+          customizeRes[key.toUpperCase()] = customize[key];
+        });
+        let customizeConfig = {};
+        if (externalModulesRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = externalModulesRes;
+        } else if (customizeRes[customizedModuleName.toUpperCase()]) {
+          customizeConfig = customizeRes;
+        }
 
         Object.keys(customizeConfig).forEach((customizeName) => {
           const nameToUpperCase = customizeName.toUpperCase();
-
           if (nameToUpperCase === customizedModuleName) {
             const labelName = customizeConfig[customizeName].labelName;
             const name = `C.${customizedModuleName}.${param.id}`;
