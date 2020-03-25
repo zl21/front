@@ -3197,6 +3197,9 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      this.updataClickSave(() => {
+        this.clickSave();
+      });
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         // this.dataArray.jflowPluginDataArray = [];
