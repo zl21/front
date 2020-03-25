@@ -6,6 +6,7 @@ import {
   getSeesionObject, updateSessionObject, deleteFromSessionObject, removeSessionObject 
 } from './src/__utils__/sessionStorage';
 import store from './src/__config__/store.config';
+import router from './src/__config__/router.config';
 import extentionForColumn from './src/constants/extentionPropertyForColumn';
 import extentionForTable from './src/constants/extentionPropertyForTable';
 import PopDialog from './src/__component__/PopDialog';
@@ -77,6 +78,9 @@ export default {
    *   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
    *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由
    *   enableInitializationRequest: true, //是否开启初始化请求，默认为开启
+   *   cbs: {
+   *     loginCb: Function
+   *   }
    * }
    */
   launchApplication(projectConfig) {
@@ -101,6 +105,7 @@ export default {
   getModuleName,
   menuClick,
   network,
+  router,
   getObjdisType, // 获取当前单对象所配置的类型（H/V），参数：table:'主表表名'
   getSeesionObject, // 获取sessionStorage存储数据getSeesionObject('name')
   updateSessionObject, // 更新sessionStorage存储数据，参数{k:'key',v:'value'}

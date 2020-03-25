@@ -82,9 +82,11 @@
             })).then((r) => {
               if (Version() === '1.3') {
                 if (r.status === 200 && r.data.code === 1) {
+                  window.sessionStorage.setItem('loginTime', `${Date.now()}`);
                   window.location.href = window.location.origin;
                 }
               } else if (r.status === 200 && r.data.code === 0) {
+                window.sessionStorage.setItem('loginTime', `${Date.now()}`);
                 window.location.href = window.location.origin;
               }
             });
