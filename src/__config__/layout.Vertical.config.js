@@ -1,14 +1,14 @@
-import Navigator from '../__component__/Navigator';
+import NavigatorVertical from '../__component__/NavigatorVertical';
+import NaVertical from '../__component__/NaVertical';
+
 import ContentDisplayArea from '../__component__/ContentDisplayArea';
-import HistoryAndFavorite from '../__component__/HistoryAndFavorite';
 
 export default {
-  direction: 'column',
+  direction: 'row',
   items: [
     {
-      height: 50,
-      component: Navigator,
-      name: 'Navigator', // global.showModule.Navigator = false时，此选项不渲染。
+      component: NavigatorVertical,
+      name: 'NavigatorVertical', // global.showModule.Navigator = false时，此选项不渲染。
     },
     {
       weight: 1,
@@ -17,10 +17,11 @@ export default {
         overflow: 'hidden'
       },
       layout: {
-        direction: 'row',
+        direction: 'column',
         items: [
           {
-            component: HistoryAndFavorite,
+            style: { margin: '10px 10px 0 10px', backgroundColor: '#fff', overflow: 'hidden' },
+            component: NaVertical,
           },
           {
             weight: 1,

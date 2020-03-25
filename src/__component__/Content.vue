@@ -1,6 +1,9 @@
 <script>
-  import appLayout from '../__config__/layout.config';
+  import { layoutDirection } from '../constants/global';
 
+
+  const appLayoutConfig = () => require(`../__config__/${layoutDirection() === '' ? 'layout.config.js' : `layout.${layoutDirection()}.config.js`}`);
+  const appLayout = appLayoutConfig().default;
   /**
    * 高级函数：用于采用JSX渲染Vue的Html Template
    * @param h vue中render函数createElement的参数简写
