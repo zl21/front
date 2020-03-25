@@ -38,7 +38,7 @@ export default {
     };
       
     // await 
-    // network.post('11111', {
+    // network.post('api', {
     //   businessCode: router.currentRoute.params.itemId,
     //   userId: JSON.parse(window.localStorage.getItem('userInfo')).id,
     //   businessType: router.currentRoute.params.tableId,
