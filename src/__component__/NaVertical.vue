@@ -18,6 +18,24 @@
     </div> 
    
     <div>
+      <div
+        v-if="navigatorSetting.length > 0"
+        class="tag right"
+      >
+        <Badge 
+          v-for="(item,index) in navigatorSetting" 
+          :key="index"
+          style="width:40px;height:40px"
+          :offset="['6px','-8px']"
+          :count="item.count"
+          @click.native="item.callback"
+        >
+          <i 
+            class="iconfont"
+            :class="item.icon"
+          />
+        </Badge>
+      </div>
       <ComAutoComplete />
 
     
@@ -418,7 +436,7 @@
   }
 
   .NaVertical {
-    height: 100%;
+    height: 40px;
     display: flex;
     justify-content: space-between ;
     background-color: #fff;
@@ -438,7 +456,7 @@
       padding: 26px 0;
       text-align: center;
       img.trigger {
-        height: 50px;
+        height: 40px;
       }
       
       img.logo {
@@ -489,6 +507,8 @@
      width:100%;
      height:100%;
      display: inline-block;
+     vertical-align: middle;
+
    } 
     .nav-search {
       input {
@@ -500,8 +520,9 @@
         height: 28px;
         line-height: 28px;
         color: rgba(46,55,60,1);;
-        font-size: 13px;
+        font-size: 12px;
         transition: all 0.25s;
+        margin-top: -8px;
 
         &:hover{
             font-size: 12px;
@@ -512,16 +533,17 @@
       
       i {
         color: #1F272C;
-        padding-top: 2px;
+        margin-top: -5px;
+
       }
     }
     
     .tag {
-      width: 50px;
+      width: 40px;
       float: left;
       font-size: 24px;
       text-align: center;
-      line-height: 50px;
+      line-height: 40px;
       cursor: pointer;
       color: #1F272C;
       -webkit-user-select: none;
@@ -530,7 +552,10 @@
       user-select: none;
       
       i {
-        font-size: 22px;
+        font-size: 20px;
+      }
+      .iconmd-search{
+        font-size: 24px;
       }
       
       .burgeon-badge-count{
