@@ -948,6 +948,9 @@
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
           const searchData = this.searchData;
+          if (searchData.reffixedcolumns) {
+            delete searchData.reffixedcolumns;
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
@@ -2235,6 +2238,8 @@
     padding:10px;
     // margin-right:15px;
     border-right:1px solid #d2d2d2;
+    overflow-x: scroll;
+    overflow-y: hidden;
    
   }
 .StandardTableListRootDiv {
