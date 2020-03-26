@@ -5,6 +5,9 @@
   const appLayout = () => {
     const appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
     const appLayoutConfig = () => require(`../__config__/${appLayoutSrc}`);
+    if (window.ProjectConfig.appLayout) {
+      return window.ProjectConfig.appLayout;
+    }
     return appLayoutConfig().default;
   };
   
