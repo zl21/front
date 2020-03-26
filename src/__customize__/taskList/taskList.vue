@@ -80,8 +80,9 @@
   import ItemComponent from '../../__component__/ItemComponent';
   import commonTable from './tableSpecial';
   import { Version } from '../../constants/global';
-  const url=`../../__config__/actions/version_${Version()}/formHttpRequest/fkHttpRequest.js`;
-  const fkHttpRequest = () => require(url);
+
+  const version = Version();
+  const fkHttpRequest = () => require(`../../__config__/actions/version_${version}/formHttpRequest/fkHttpRequest.js`);
   export default {
     components: { FormItemComponent, commonTable },
     data() {
@@ -696,7 +697,7 @@
         this.page.pageSize = val;
         this.searchData.startindex = 0;
         this.searchData.range = val;
-       this.searchClickData('1');
+        this.searchClickData('1');
       }, // 每页显示条数变化
       editTaskStatus(ID) {
         network.post('/p/cs/taskrecord/read', { ID }).then((res) => {

@@ -302,11 +302,11 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
-      menuTreeChange(arrayIDs, val, item) {
+      menuTreeChange(arrayIDs, treeName, val, item) {
         // 按钮查找 查询第一页数据
         this.searchData.fixedcolumns = this.dataProcessing();
         this.searchData.reffixedcolumns = {
-          ID: `in (${arrayIDs})`
+          [treeName]: `in (${arrayIDs})`
         };
         this.getQueryListForAg(this.searchData);
         this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
@@ -948,6 +948,9 @@
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
           const searchData = this.searchData;
+          if (searchData.reffixedcolumns) {
+            delete searchData.reffixedcolumns;
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
@@ -2235,6 +2238,8 @@
     padding:10px;
     // margin-right:15px;
     border-right:1px solid #d2d2d2;
+    overflow-x: scroll;
+    overflow-y: hidden;
    
   }
 .StandardTableListRootDiv {

@@ -8,6 +8,9 @@ import getComponentName from '../../../__utils__/getModuleName';
 
 
 export default {
+  updataClickSave(state, func) {
+    state.clickSaveFunction = func;
+  },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
   },
@@ -38,7 +41,9 @@ export default {
     };
   },
   updatePanelData(state, data) { // 更新子表面板数据
-    state.itemObjId = data.id;
+    if (data.id) {
+      state.itemObjId = data.id;
+    }
     // state.instanceId = 1;
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息

@@ -120,7 +120,8 @@ export default () => ({
         'seleteAddData',
         'emptyChangeData',
         'updateButtonGetActionData',
-        'updateRefreshButtonForJflow'
+        'updateRefreshButtonForJflow',
+        'updataClickSave'
       ]),
   },
   beforeDestroy() {

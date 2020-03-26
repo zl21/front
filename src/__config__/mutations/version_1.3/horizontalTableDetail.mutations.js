@@ -2,6 +2,9 @@ import router from '../../router.config';
 import { enableJflow, custommizedJflow } from '../../../constants/global';
 
 export default {
+  updataClickSave(state, func) {
+    state.clickSaveFunction = func;
+  },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
     state.isHideTempStorage = value;
   },
