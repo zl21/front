@@ -47,4 +47,5 @@ module.exports = {
   custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
+  layoutDirection: false // 默认是false ,水平排版 ，true 是垂直排版
 };

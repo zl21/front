@@ -19,7 +19,6 @@ let axios = {}; // axios请求
 let router = {}; // 路由
 let store = {};
 let userInfo = {}; // 用户信息
-let configurationFlag = false; // 是否是直接访问但对象界面  为true时按照配置了流程图的逻辑处理
 let jflowIp = ''; // jflow项目的ip
 let modifiableFieldName = []; // jflow可显示字段名
 let editFeild = []; // 可编辑字段
@@ -315,9 +314,7 @@ function RoutingGuard(router) { // 路由守卫
   router.beforeEach((to, from, next) => {
     const type = to.path.split('/')[3];// 获取组件类型
     instanceId = null;
-
     if ((type === 'H' || type === 'V') && to.path.indexOf('New') < 0) {
-      configurationFlag = false;
       if (((type === 'H' || type === 'Y') && from.path === '/') || true) { // 直接访问单对象界面 或者配置了流程图
         jflowButtons(to.params.itemId, to.params.tableId, true, to.query.ACTIVE, to.query.isApprover).then((res) => {
           //  todo
@@ -329,11 +326,9 @@ function RoutingGuard(router) { // 路由守卫
             }
           }, 300);
         });
-        configurationFlag = true;
       }
     } else if (to.path.split('/')[2] === 'TABLE' && true) {
       next();
-      configurationFlag = true;
     } else {
       next();
     }
@@ -631,7 +626,7 @@ function AxiosGuard(axios) { // axios拦截
         config.headers['encrypt-type'] = 'RSA';
       }
     }
-    if (configurationFlag) { // 配置了流程图并
+    if (['V', 'H'].indexOf(window.jflowPlugin.router.currentRoute.path.split('/')[3]) >= 0) { // 配置了流程图并
       // 判断是否触发了配置的动作，满足则走jflow的流程，否则不处理
       
       let launchConfig = [];
@@ -701,13 +696,13 @@ function AxiosGuard(axios) { // axios拦截
         }
       }
 
-      // if (response.config.url.endsWith('/p/cs/hello')) { // 获取用户信息
-      //   window.localStorage.setItem('userInfo', JSON.stringify(response.data));
-      //   userInfo = response.data;
-      //   window.jflowPlugin.userInfo = userInfo;
+      if (response.config.url.endsWith('/p/cs/hello')) { // 获取用户信息
+        window.localStorage.setItem('userInfo', JSON.stringify(response.data));
+        userInfo = response.data;
+        window.jflowPlugin.userInfo = userInfo;
 
-      //   !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
-      // }
+        !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+      }
 
       // if (response.config.url.endsWith('/p/cs/getSubSystems')) { // 获取完菜单，添加待办列表菜单
       //   !closeJflowIcon ? todoList(store, router) : null;
@@ -882,25 +877,42 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function initLists(e) { // 小图标的展示
-  axios.post('/jflow/p/sys/properties', {})
-    .then((res) => {
-      encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
-      thirdlogin();
-      RoutingGuard(router);
-      AxiosGuard(axios);
-      createComponent();
+  encryptionJflow = false;
+  thirdlogin();
+  createComponent();
+  RoutingGuard(router);
+  AxiosGuard(axios);
 
-      window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
-      userInfo = e.detail.userInfo;
-      window.jflowPlugin.userInfo = e.detail.userInfo;
+  // window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
+  // userInfo = e.detail.userInfo;
+  // window.jflowPlugin.userInfo = e.detail.userInfo;
 
-      Vue.prototype.$network = network;
+  Vue.prototype.$network = network;
       
       
-      window.initiateLaunch = initiateLaunch;
-      window.jflowRefresh = jflowRefresh;
-      !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
-    });
+  window.initiateLaunch = initiateLaunch;
+  window.jflowRefresh = jflowRefresh;
+  // !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+
+  // axios.post('/jflow/p/sys/properties', {})
+  //   .then((res) => {
+  //     encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
+  //     thirdlogin();
+  //     createComponent();
+  //     RoutingGuard(router);
+  //     AxiosGuard(axios);
+
+  //     window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
+  //     userInfo = e.detail.userInfo;
+  //     window.jflowPlugin.userInfo = e.detail.userInfo;
+
+  //     Vue.prototype.$network = network;
+      
+      
+  //     window.initiateLaunch = initiateLaunch;
+  //     window.jflowRefresh = jflowRefresh;
+  //     !closeJflowIcon ? todoList(store, router) : null; // 添加待办列表菜单
+  //   });
 }
 
 
@@ -908,15 +920,15 @@ const install = function install(Vue, options = {}) {
   window.removeEventListener('userReady', initLists, true);
   
   closeJflowIcon = options.closeJflowIcon;
-  // encryptionJflow = options.encryptionJflow;
+  encryptionJflow = options.encryptionJflow ? options.encryptionJflow : false;
   if (options.axios && options.router && options.store && options.jflowIp) {
     window.conversionJflow = decryptionJflow;
     axios = options.axios;
     router = options.router;
     store = options.store;
     jflowIp = options.jflowIp;
-    
-    window.addEventListener('userReady', initLists, this);
+    initLists();
+    // window.addEventListener('userReady', initLists, this);
   }
 };
 

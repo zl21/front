@@ -1,9 +1,23 @@
 <script>
-  import { layoutDirection } from '../constants/global';
-
-
-  const appLayoutConfig = () => require(`../__config__/${layoutDirection() !== 'Vertical' ? 'layout.config.js' : `layout.${layoutDirection()}.config.js`}`);
-  const appLayout = appLayoutConfig().default;
+  import { layoutDirection, contentConfig } from '../constants/global';
+  
+ 
+  const appLayout = () => {
+    const appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
+    const appLayoutConfig = () => require(`../__config__/${appLayoutSrc}`);
+    if (window.ProjectConfig && window.ProjectConfig.appLayout) {
+      return window.ProjectConfig.appLayout;
+    }
+    const config = appLayoutConfig().default;
+    if (typeof contentConfig() === 'object') {
+      if (config.items[1].layout.items[1].component.name === 'ContentDisplayArea') {
+        config.items[1].layout.items[1].component = contentConfig();
+      }
+    }
+    
+    return appLayoutConfig().default;
+  };
+  
   /**
    * 高级函数：用于采用JSX渲染Vue的Html Template
    * @param h vue中render函数createElement的参数简写
@@ -31,11 +45,10 @@
       }
     </div>
   );
-
   export default {
     name: 'Content',
     render(h) {
-      return renderSubLayout(h)(window.ProjectConfig && window.ProjectConfig.appLayout ? window.ProjectConfig.appLayout : appLayout);
+      return renderSubLayout(h)(appLayout());
     }
   };
 </script>
