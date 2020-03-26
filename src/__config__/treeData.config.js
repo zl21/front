@@ -62,7 +62,7 @@ export default {
         clickNode: true,
         children: [
           {
-            title: 'CYX内部组织档案',
+            title: 'CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案CYX内部组织档案',
             TREENO: 2,
             MIXNAME: '[10001]CYX内部组织档案',
             ECODE: '10001',
