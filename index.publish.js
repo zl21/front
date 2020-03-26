@@ -32,7 +32,7 @@ export default {
   version: '1.8.2',
   temporaryVersion: '2.1.0',
   packageTime: '2020.03.26.18.06', 
-  user: 'AD中心',                     
+  user: 'AD中心(无网关)',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
