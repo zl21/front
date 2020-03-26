@@ -21,18 +21,20 @@
         :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       >
-      <img
-        v-if="!collapseHistoryAndFavorite"
-        class="banner"
-        alt=""
-        :src="imgSrc.bannerImg"
-      >
-      <img
-        v-if="collapseHistoryAndFavorite"
-        class="logo"
-        alt=""
-        :src="imgSrc.logoImg"
-      >
+      <div id="navBrandImg">
+        <img
+          v-if="!collapseHistoryAndFavorite"
+          class="banner"
+          alt=""
+          :src="imgSrc.bannerImg"
+        >
+        <img
+          v-if="collapseHistoryAndFavorite"
+          class="logo"
+          alt=""
+          :src="imgSrc.logoImg"
+        >
+      </div>
     </div>
     <div class="middle">
       <div style="display: flex;">
@@ -453,11 +455,17 @@
         const image = (window.ProjectConfig || {}).image || {
           enterpriseLogo: undefined,
           enterpriseBanner: undefined,
+          expandImg: undefined,
+          collapseImg: undefined,
         };
+        const expandImg = image.expandImg;
+        const collapseImg = image.collapseImg;
         const enterpriseLogo = image.enterpriseLogo;
         const enterpriseBanner = image.enterpriseBanner;
         this.imgSrc.logoImg = enterpriseLogo || this.imgSrc.logoImg;
         this.imgSrc.bannerImg = enterpriseBanner || this.imgSrc.bannerImg;
+        this.imgSrc.closedImg = collapseImg || this.imgSrc.closedImg;
+        this.imgSrc.openedImg = expandImg || this.imgSrc.openedImg;
       },
       getMessageCount() {
         if (!this.userInfo.id) {
