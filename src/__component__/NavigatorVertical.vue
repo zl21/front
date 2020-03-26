@@ -588,7 +588,7 @@
   }
   .NavigatorVertical{
      .navigator-sub-menu{
-      top:71px!important;
+      top:60px!important;
       left: 220px!important;
       border-bottom:none!important;
       box-shadow:1px 2px 6px 0px rgba(190,189,189,0.3)!important;

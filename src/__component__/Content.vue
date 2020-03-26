@@ -1,10 +1,20 @@
 <script>
-  import { layoutDirection } from '../constants/global';
+  import { layoutDirection, contentConfig } from '../constants/global';
   
  
   const appLayout = () => {
     const appLayoutSrc = layoutDirection() ? 'layout.Vertical.config.js' : 'layout.config.js';
     const appLayoutConfig = () => require(`../__config__/${appLayoutSrc}`);
+    if (window.ProjectConfig && window.ProjectConfig.appLayout) {
+      return window.ProjectConfig.appLayout;
+    }
+    const config = appLayoutConfig().default;
+    if (typeof contentConfig() === 'object') {
+      if (config.items[1].layout.items[1].component.name === 'ContentDisplayArea') {
+        config.items[1].layout.items[1].component = contentConfig();
+      }
+    }
+    
     return appLayoutConfig().default;
   };
   

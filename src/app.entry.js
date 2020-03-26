@@ -12,7 +12,7 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import DispatchEvent from './__utils__/dispatchEvent';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -184,7 +184,8 @@ export default (projectConfig = {
       axios,
       store,
       jflowIp: jflowRequestDomain(),
-      closeJflowIcon: closeJflowIcon()
+      closeJflowIcon: closeJflowIcon(),
+      encryptionJflow: encryptionJflow()
     });
   }
   if (enableGateWay()) {

@@ -10,6 +10,7 @@ export const jflowRequestDomain = () => (window.ProjectConfig && window.ProjectC
 export const enableJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.enableJflow === 'boolean' ? window.ProjectConfig.enableJflow : project.enableJflow);
 export const enableCustomInterface = () => (window.ProjectConfig && typeof window.ProjectConfig.enableCustomInterface === 'boolean' ? window.ProjectConfig.enableCustomInterface : project.enableCustomInterface);
 export const closeJflowIcon = () => (window.ProjectConfig && typeof window.ProjectConfig.closeJflowIcon === 'boolean' ? window.ProjectConfig.closeJflowIcon : project.closeJflowIcon);
+export const encryptionJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.encryptionJflow === 'boolean' ? window.ProjectConfig.encryptionJflow : project.encryptionJflow);
 export const enableKeepAlive = () => (window.ProjectConfig && typeof window.ProjectConfig.enableModuleKA === 'boolean' ? window.ProjectConfig.enableModuleKA : project.enableModuleKA);
 export const enableInitializationRequest = () => (window.ProjectConfig && typeof window.ProjectConfig.enableInitializationRequest === 'boolean' ? window.ProjectConfig.enableInitializationRequest : project.enableInitializationRequest);
 export const specifiedGlobalGateWay = () => (window.ProjectConfig && window.ProjectConfig.specifiedGlobalGateWay ? window.ProjectConfig.specifiedGlobalGateWay : project.specifiedGlobalGateWay);
@@ -23,6 +24,7 @@ export const isCommonTable = () => (window.ProjectConfig && typeof window.Projec
 export const custommizedJflow = () => (window.ProjectConfig && typeof window.ProjectConfig.custommizedJflow === 'boolean' ? window.ProjectConfig.custommizedJflow : project.custommizedJflow);
 export const cbs = () => (window.ProjectConfig && window.ProjectConfig.cbs ? window.ProjectConfig.cbs : project.cbs || {});
 export const layoutDirection = () => ((window.ProjectConfig && window.ProjectConfig.layoutDirection ? window.ProjectConfig.layoutDirection : project.layoutDirection) || false);
+export const contentConfig = () => (window.ProjectConfig && window.ProjectConfig.contentConfig ? window.ProjectConfig.contentConfig : project.contentConfig);
 
 export const STANDARD_TABLE_LIST_PREFIX = '/SYSTEM/TABLE';
 export const STANDARD_COMMONTABLE_LIST_PREFIX = '/SYSTEM/COMMONTABLE';
