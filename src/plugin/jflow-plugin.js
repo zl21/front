@@ -877,7 +877,6 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function initLists(e) { // 小图标的展示
-  encryptionJflow = false;
   thirdlogin();
   createComponent();
   RoutingGuard(router);
