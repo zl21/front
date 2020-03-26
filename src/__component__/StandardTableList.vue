@@ -303,13 +303,16 @@
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
       menuTreeChange(arrayIDs, treeName, val, item) {
+        if (arrayIDs.length > 0) {
+          this.searchData.fixedcolumns = this.dataProcessing();
+          this.searchData.reffixedcolumns = {
+            [treeName]: `in (${arrayIDs})`
+          };
+          this.getQueryListForAg(this.searchData);
+          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        }
         // 按钮查找 查询第一页数据
-        this.searchData.fixedcolumns = this.dataProcessing();
-        this.searchData.reffixedcolumns = {
-          [treeName]: `in (${arrayIDs})`
-        };
-        this.getQueryListForAg(this.searchData);
-        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+       
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
         const data = {
           k: tableName,

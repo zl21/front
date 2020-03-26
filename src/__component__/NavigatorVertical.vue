@@ -51,24 +51,7 @@
         :data="togglePrimaryMenuData || []"
       />
     </transition>
-    <div
-      v-if="navigatorSetting.length > 0"
-      class="tag right"
-    >
-      <Badge 
-        v-for="(item,index) in navigatorSetting" 
-        :key="index"
-        style="width:50px;height:50px"
-        :offset="['6px','-8px']"
-        :count="item.count"
-        @click.native="item.callback"
-      >
-        <i 
-          class="iconfont"
-          :class="item.icon"
-        />
-      </Badge>
-    </div>
+    
     <!-- <div
       :class="searchBtn ? 'tag right' :'tag tag-search right' "
     >
@@ -605,7 +588,7 @@
   }
   .NavigatorVertical{
      .navigator-sub-menu{
-      top:71px!important;
+      top:60px!important;
       left: 220px!important;
       border-bottom:none!important;
       box-shadow:1px 2px 6px 0px rgba(190,189,189,0.3)!important;

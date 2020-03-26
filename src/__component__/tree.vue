@@ -144,18 +144,22 @@
             });
           }
         }
-        const resArr = [];
-        const treeData = [];
-        treeData.push(item);
-        func(treeData, resArr);
-        if (arrayIDs && this.treeName) {
-          this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
+        if (val.length > 0) {
+          const resArr = [];
+          func(val, resArr);
+        } else {
+          this.treeData.concat([]);
         }
+       
+        this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
       }, // 左侧树点击
     }
   };
 </script>
-<style scoped>
+<style >
+.burgeon-tree-title-selected{
+  background:red !important;
+}
 .treeContent{
   overflow: scroll;
     width: 100%;

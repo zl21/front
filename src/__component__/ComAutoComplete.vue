@@ -31,7 +31,7 @@
       @click="searchBtn = false"
     >
       <i
-        class="iconfont iconbj_search"
+        class="iconfont iconmd-search"
       />
     </span>
   </div>

@@ -19,6 +19,8 @@ module.exports = {
   // target: 'http://jflow-shangfei-r3.dev.burgeononline.com/', // 商飞测试环境
   // target: 'http://r3-ishop.dev.burgeononline.com/', // ishop网关开启环境
   // target: 'http://r3.burgeon.cn:19999/', // 'http://106.15.154.165:19999/', // Cube
+  // target: 'http://web.cmsqas.lining.com/', // 李宁
+  
   Version: '1.4', // 版本号
   interlocks: true, // 是否打开三级联动装置
   enableGateWay: true, // 网关是否打开,
@@ -28,8 +30,8 @@ module.exports = {
   enableModuleKA: true, // 默认启用keepAlive功能
   enableJflow: false, // 默认禁用JFlow插件功能
   closeJflowIcon: false, // 控制是否是tab显示，既是否显示顶部的jflow图标
-  encryptionJflow: false, // 控制jflow传参是否加密
-  // jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)
+  encryptionJflow: false, // jflow加密控制
+  // jflowRequestDomain: ' http://zhixiao-jflow.pro.burgeononline.com', // jflow后台地址(知晓)                    
   jflowRequestDomain: 'http://jflow-shangfei.dev.burgeononline.com/', // jflow后台地址（商飞）
   // jflowRequestDomain: 'http://47.102.164.111:26665/', // jflow后台地址（卡宾）
   // jflowRequestDomain: 'http://106.15.24.156:32940', // jflow后台地址(李宁)
@@ -46,4 +48,5 @@ module.exports = {
   custommizedJflow: true, // jflow定制版开关,默认为true
   functionPowerRequestURL: '', // 功能权限获取检索项数据接口名称
   cbs: undefined, // 框架回调，形如 { loginCb: function() {} }
+  layoutDirection: false // 默认是false ,水平排版 ，true 是垂直排版
 };

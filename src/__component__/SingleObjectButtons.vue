@@ -1101,7 +1101,7 @@
             this.upData();
           }
         }, () => { // 状态为rejected时执行
-          this.upData();
+          // this.upData();
         });
       },
       webactionClick(obj, type) { // 动作定义执行
@@ -3039,18 +3039,18 @@
                            updateSessionObject('saveEventAfter', saveEventAfterData);
                          },
                          () => { // 状态为rejected时执行
-                           const submitReject = window.localStorage.getItem('submitReject');
-                           if (!submitReject) {
-                             this.upData();
-                           } else {
-                             window.localStorage.removeItem('submitReject');
-                           }
-                           this.saveEventAfter = '';
-                           const saveEventAfterData = {
-                             k: 'type',
-                             v: {}
-                           };
-                           updateSessionObject('saveEventAfter', saveEventAfterData);
+                           //  const submitReject = window.localStorage.getItem('submitReject');
+                           //  if (!submitReject) {
+                           //    //  this.upData();
+                           //  } else {
+                           //    window.localStorage.removeItem('submitReject');
+                           //  }
+                           //  this.saveEventAfter = '';
+                           //  const saveEventAfterData = {
+                           //    k: 'type',
+                           //    v: {}
+                           //  };
+                           //  updateSessionObject('saveEventAfter', saveEventAfterData);
                          });
           } else if (this.saveEventAfter === 'invalid' || saveEventAfter.type === 'invalid') {
             // const promise = new Promise((resolve, reject) => {
@@ -3099,7 +3099,7 @@
         } else {
           this.temporaryStorage = false;
           this.dataArray.temporaryStorage = false;
-          this.upData();
+          // this.upData();//保存失败不刷新
         }
       },
       networkEventListener(event) {

@@ -30,7 +30,7 @@ import network from '../__utils__/network';
 
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
-  AD_TABLE: () => async () => {
+  C_STORE: () => async () => {
     // ....
     const treeData = {
       data: [],
@@ -907,11 +907,4 @@ export default {
   //   content: '接口错误信息',
   //   mask: true
   // });
-  
-  // BCP_CUSTOMER_JFLOW: () => {
-    
-  //   // 接口报错提示框
-    
-  //   // return  调用接口，返回整理好的数据，可直接复制原1.3框架接口请求逻辑
-  // }
 };
