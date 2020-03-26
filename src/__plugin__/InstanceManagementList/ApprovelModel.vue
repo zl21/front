@@ -639,7 +639,8 @@
           instanceId: window.jflowPlugin.objInstanceId,
           nodeId: window.jflowPlugin.nodeId,
           userId: window.jflowPlugin.userInfo.id,
-          errorCode: this.config.item.errorCode
+          errorCode: this.config.item.errorCode,
+          errorTaskId: this.config.item.errorTaskId
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
@@ -655,7 +656,9 @@
           userId: window.jflowPlugin.userInfo.id,
           handleUrl: this.intervention.handleUrl,
           handleParam: this.intervention.handleParam,
-          handleRemark: this.intervention.handleRemark
+          handleRemark: this.intervention.handleRemark,
+          errorTaskId: this.intervention.errorTaskId,
+          exceptionId: this.intervention.exceptionId
         })
           .then((res) => {
             if (res.data.resultCode === 0) {
