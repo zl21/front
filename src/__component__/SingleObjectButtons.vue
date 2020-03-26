@@ -1406,6 +1406,13 @@
             // const myEvent = new Event('click');
             // dom.dispatchEvent(myEvent);
           }
+        } else {
+          const obj = {   
+            name: '保存',
+            eName: this.saveInfo.name,
+            requestUrlPath: this.saveInfo.path 
+          };
+          this.objectSave(obj);
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
