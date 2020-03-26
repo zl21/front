@@ -948,6 +948,9 @@
         this.resetType = true;
         const promise = new Promise((resolve, reject) => {
           const searchData = this.searchData;
+          if (searchData.reffixedcolumns) {
+            delete searchData.reffixedcolumns;
+          }
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
