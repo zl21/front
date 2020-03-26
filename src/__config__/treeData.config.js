@@ -30,11 +30,11 @@ import network from '../__utils__/network';
 
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
-  AD_COLUMN: () => async () => {
+  AD_TABLE: () => async () => {
     // ....
     const treeData = {
       data: [],
-      name: '树结构配置ID'
+      name: 'ID'
     };
       
     // await 

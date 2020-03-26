@@ -145,8 +145,12 @@
           }
         }
         const resArr = [];
-        func(val, resArr);
-        this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
+        const treeData = [];
+        treeData.push(item);
+        func(treeData, resArr);
+        if (arrayIDs && this.treeName) {
+          this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
+        }
       }, // 左侧树点击
     }
   };
