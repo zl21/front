@@ -835,11 +835,7 @@ export default {
             CP_C_ORGUP_ID: 2,
             LEFTVALUE: 4,
             lastChild: false,
-<<<<<<< HEAD
-            expand: false, // 是否开启
-=======
             expand: true, // 是否开启
->>>>>>> origin/v1.4
   
             children: [
               {
@@ -853,11 +849,7 @@ export default {
                 LEFTVALUE: 5,
                 lastChild: true,
                 children: [],
-<<<<<<< HEAD
-                expand: false, // 是否开启
-=======
                 expand: true, // 是否开启
->>>>>>> origin/v1.4
   
               }
             ]
@@ -873,11 +865,7 @@ export default {
             LEFTVALUE: 8,
             lastChild: false,
             children: [],
-<<<<<<< HEAD
-            expand: false, // 是否开启
-=======
             expand: true, // 是否开启
->>>>>>> origin/v1.4
   
           },
           {
