@@ -20,7 +20,7 @@ import network from '../__utils__/network';
 
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
-  CP_C_CUSTOMER_ATTRIBUTE: () => async () => {
+  a: () => async () => {
     // ....
     const treeData = {
       data: [],

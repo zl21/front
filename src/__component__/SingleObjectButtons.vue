@@ -213,7 +213,6 @@
       tabcmd: {
         handler(val) {
           this.hideBackButton();
-       
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
