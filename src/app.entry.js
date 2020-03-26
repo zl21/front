@@ -10,6 +10,7 @@ import store from './__config__/store.config';
 import App from './App';
 import './constants/dateApi';
 import network from './__utils__/network';
+import DispatchEvent from './__utils__/dispatchEvent';
 import {
   getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
@@ -113,6 +114,7 @@ const getCategory = () => {
           .filter(d => d.type === 'table' || d.type === 'action' || d.type === 'tree')
           .reduce((a, c) => { a[c.value.toUpperCase()] = c.serviceId; return a; }, {});
         window.sessionStorage.setItem('serviceIdMap', JSON.stringify(serviceIdMaps));
+        DispatchEvent('gatewayReady');
       }
     }).catch(() => {
       // router.push({ path: getTouristRoute() });
