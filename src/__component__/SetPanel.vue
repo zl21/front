@@ -12,7 +12,10 @@
           <i class="iconfont iconmd-key explanatory" />修改密码
         </p>
       </div>
-      <div class="panel-item">
+      <div
+        v-if="!layoutDirection"
+        class="panel-item"
+      >
         <p>
           <i class="iconfont iconmd-book explanatory" />
           是否展开收藏夹
@@ -61,7 +64,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import { getTouristRoute, enableInitializationRequest } from '../constants/global';
+  import { getTouristRoute, enableInitializationRequest, layoutDirection } from '../constants/global';
   import router from '../__config__/router.config';
   import network, { urlSearchParams, GetTableName } from '../__utils__/network';
   import moduleName from '../__utils__/getModuleName';
@@ -89,6 +92,7 @@
           show: false,
           title: ''
         },
+        layoutDirection: layoutDirection(), // 收藏夹是否展示
         switchValue: false,
         num7: 3,
         dialogComponent: null,
