@@ -20,18 +20,20 @@
         :src="imgSrc.openedImg"
         @click="doCollapseHistoryAndFavorite"
       > -->
-      <img
-        v-if="!collapseHistoryAndFavorite"
-        class="banner"
-        alt=""
-        :src="imgSrc.bannerImg"
-      >
-      <img
-        v-if="collapseHistoryAndFavorite"
-        class="logo"
-        alt=""
-        :src="imgSrc.logoImg"
-      >
+      <div id="navBrandImg">
+        <img
+          v-if="!collapseHistoryAndFavorite"
+          class="banner"
+          alt=""
+          :src="imgSrc.bannerImg"
+        >
+        <img
+          v-if="collapseHistoryAndFavorite"
+          class="logo"
+          alt=""
+          :src="imgSrc.logoImg"
+        >
+      </div>
     </div>
     <div class="middle">
       <div style="">
@@ -487,6 +489,7 @@
            padding-right: 20px;
            overflow: hidden;
            height: 14px;
+           line-height: 14px;
            white-space: nowrap;
            text-overflow:ellipsis
           }

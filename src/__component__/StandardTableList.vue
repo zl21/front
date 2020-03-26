@@ -8,7 +8,9 @@
     <tree
       v-if="isTreeList&&treeShow"
       :tree-datas="treeConfigData"
+      :is-change-tree-config-data="isChangeTreeConfigData"
       @menuTreeChange="menuTreeChange"
+      @changeTreeConfigData="changeTreeConfigData"
     />
     <!-- :style="{ left: !treeShow ? '5px' : '245px' }" -->
 
@@ -169,6 +171,7 @@
     },
     data() {
       return {
+        isChangeTreeConfigData: '',
         treeShow: true,
         actionModal: false,
         resetType: false, // 是否是重置的功能
@@ -302,15 +305,21 @@
     methods: {
       ...mapActions('global', ['updateAccessHistory', 'getExportedState', 'updataTaskMessageCount', 'getMenuLists']),
       ...mapMutations('global', ['tabHref', 'tabOpen', 'increaseLinkUrl', 'addServiceIdMap', 'addKeepAliveLabelMaps', 'directionalRouter']),
+      changeTreeConfigData(value) {
+        this.isChangeTreeConfigData = value;
+      },
       menuTreeChange(arrayIDs, treeName, val, item) {
-        if (arrayIDs.length > 0) {
-          this.searchData.fixedcolumns = this.dataProcessing();
+        this.searchData.fixedcolumns = this.dataProcessing();
+        console.log();
+        if (val.length > 0) {
           this.searchData.reffixedcolumns = {
             [treeName]: `in (${arrayIDs})`
           };
-          this.getQueryListForAg(this.searchData);
-          this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
+        } else if (this.searchData && this.searchData.reffixedcolumns) {
+          delete this.searchData.reffixedcolumns;
         }
+        this.getQueryListForAg(this.searchData);
+        this.onSelectionChangedAssignment({ rowIdArray: [], rowArray: [] });// 查询成功后清除表格选中项
         // 按钮查找 查询第一页数据
        
         const { tableName } = this[INSTANCE_ROUTE_QUERY];
@@ -954,6 +963,7 @@
           if (searchData.reffixedcolumns) {
             delete searchData.reffixedcolumns;
           }
+          this.isChangeTreeConfigData = 'Y'; 
           this.getTableQueryForForm({ searchData, resolve, reject });
         });
       },
