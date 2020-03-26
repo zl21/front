@@ -882,17 +882,17 @@ function initiateLaunch(data) { // 业务系统流程发起
 }
 
 function initLists(e) { // 小图标的展示
-  window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
-  userInfo = e.detail.userInfo;
-  window.jflowPlugin.userInfo = e.detail.userInfo;
-
   axios.post('/jflow/p/sys/properties', {})
     .then((res) => {
       encryptionJflow = res.data.data.ciphertextVO.apiEncryptable;
       thirdlogin();
-      RoutingGuard(options.router);
-      AxiosGuard(options.axios);
+      RoutingGuard(router);
+      AxiosGuard(axios);
       createComponent();
+
+      window.localStorage.setItem('userInfo', JSON.stringify(e.detail.userInfo));
+      userInfo = e.detail.userInfo;
+      window.jflowPlugin.userInfo = e.detail.userInfo;
 
       Vue.prototype.$network = network;
       
