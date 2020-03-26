@@ -69,6 +69,7 @@ export default () => ({
       itemObjId: ({ itemObjId }) => itemObjId,
       jflowConfigrefreshButton: ({ jflowConfigrefreshButton }) => jflowConfigrefreshButton,
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
+      saveInfo: ({ saveInfo }) => saveInfo,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur, idx) => {
         if (idx > 0) {
           acc.push({ tableName: cur.tablename });
