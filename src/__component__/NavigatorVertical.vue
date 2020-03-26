@@ -487,6 +487,7 @@
            padding-right: 20px;
            overflow: hidden;
            height: 14px;
+           line-height: 14px;
            white-space: nowrap;
            text-overflow:ellipsis
           }
