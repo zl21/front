@@ -30,7 +30,7 @@ import network from '../__utils__/network';
 
 // 注意：返回值中的所有ENAME字段请改为title
 export default {
-  AD_TABLE: () => async () => {
+  TEST_C_MARKET: () => async () => {
     // ....
     const treeData = {
       data: [],
