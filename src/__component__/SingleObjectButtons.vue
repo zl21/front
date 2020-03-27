@@ -436,6 +436,10 @@
       }
     },
     props: {
+      isItemTable: {
+        type: Boolean,
+        default: false
+      },
       backButton: {
         type: Boolean,
         default: true
@@ -2159,7 +2163,11 @@
             this.webactButton(tabwebact.objtabbutton);
           }
         } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          this.webactButton(tabwebact.objbutton);
+          if (this.isItemTable) {
+            this.webactButton(tabwebact.objtabbutton);
+          } else {
+            this.webactButton(tabwebact.objbutton);
+          }
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染

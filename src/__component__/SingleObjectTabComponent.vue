@@ -20,6 +20,7 @@
       :is-main-form="tabPanelsAll"
       :is-item-table-vertical="buttonsData.data.isItemTableVertical"
       :back-button="buttonsData.data.backButton"
+      :is-item-table="isItemTable"
     />
     <!-- 子表表格新增区域form -->
 
@@ -333,7 +334,12 @@
 
         return [];
       },
-    
+      isItemTable() {
+        if(this.type === 'vertical') {
+          return true;
+        }
+        return false;
+      }
       // ...mapState(moduleName(), {
       //   activeTab: ({ updateData }) => updateData,
       // }),
