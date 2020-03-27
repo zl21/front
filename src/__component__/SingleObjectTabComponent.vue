@@ -22,6 +22,8 @@
       :back-button="buttonsData.data.backButton"
     />
     <!-- 子表表格新增区域form -->
+
+
     <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -76,8 +78,6 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
-   
-
     <compositeForm
       v-if="panelData.isShow&&!componentName"
       :is-main-table="isMainTable"
@@ -275,11 +275,16 @@
           const { tableId } = router.currentRoute.params;
           this.objreadonlyForJflow.map((item) => {
             let id = null;
-            if (this.type === 'vertical') {
-              id = this.itemInfo.tableid;
-            }else{
+            if(this.itemInfo.id) {
               id = Number(this.itemInfo.id);
+            }else{
+              id = this.itemInfo.tableid;
             }
+            // if (this.type === 'vertical') {
+            //   id = this.itemInfo.tableid;
+            // }else{
+            //   id = Number(this.itemInfo.id);
+            // }
             if(item.tableId === tableId && item.itemTableId === id) {
               flag = item.readonly;
             }else{

@@ -3307,7 +3307,9 @@
     right: 60px;
     width: 104px;
     z-index: 1000;
-
+ &:hover{
+  //  z-index: 10!important;
+ }
     img {
       width: 100%;
     }
