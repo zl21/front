@@ -107,7 +107,7 @@ export default {
       data.tabcmd.cmds.some((b, i) => {
         if (b === 'actionMODIFY') {
           state.saveInfo = {
-            paths: data.tabcmd.paths[i],
+            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
             name: 'actionMODIFY',
           };
         }
