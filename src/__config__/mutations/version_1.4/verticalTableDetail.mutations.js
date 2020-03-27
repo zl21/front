@@ -24,7 +24,7 @@ export default {
       setTimeout(() => {
         this.commit(`${getComponentName()}/updatePanelData`, data);
         // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
-      }, 500);
+      }, 100);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
     }
