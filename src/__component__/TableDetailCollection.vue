@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                    >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -284,12 +284,12 @@
       readonly: {
         // 能否编辑
         type: Boolean,
-        default: true
+        default: false
       },
       objreadonly: {
         // 主表按钮的
         type: Boolean,
-        default: true
+        default: false
       },
       tableHeight: {
         // 表格高度 默认300px

@@ -70,6 +70,7 @@ export default () => ({
       itemObjId: ({ itemObjId }) => itemObjId,
       jflowConfigrefreshButton: ({ jflowConfigrefreshButton }) => jflowConfigrefreshButton,
       isHideTempStorage: ({ isHideTempStorage }) => isHideTempStorage,
+      saveInfo: ({ saveInfo }) => saveInfo,
       childTableNames: ({ tabPanels }) => tabPanels.reduce((acc, cur) => {
         acc.push({ tableName: cur.tablename });
         return acc;

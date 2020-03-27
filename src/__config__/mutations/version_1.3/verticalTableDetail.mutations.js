@@ -396,6 +396,16 @@ export default {
     state.tabPanels = arr;
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
+    if (data && data.tabcmd && data.tabcmd.cmds) {
+      data.tabcmd.cmds.some((b, i) => {
+        if (b === 'actionMODIFY') {
+          state.saveInfo = {
+            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
+            name: 'actionMODIFY',
+          };
+        }
+      });
+    }
     // state.mainFormInfo.buttonsData.isShow = true;
     state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {

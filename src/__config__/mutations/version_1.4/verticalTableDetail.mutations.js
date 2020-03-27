@@ -24,7 +24,7 @@ export default {
       setTimeout(() => {
         this.commit(`${getComponentName()}/updatePanelData`, data);
         // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
-      }, 500);
+      }, 100);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
     }
@@ -48,6 +48,7 @@ export default {
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
+      
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId) {
@@ -82,10 +83,11 @@ export default {
               // }
               return true;
             } 
+          } else {
+            console.log(111, 999);
           }
         } 
       });
-
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.isHideTempStorage = true;
 
@@ -400,6 +402,17 @@ export default {
     state.tabPanels = arr;
   },
   updateMainButtonsData(state, data) { // 更新主表按钮数据
+    if (data && data.tabcmd && data.tabcmd.cmds) {
+      data.tabcmd.cmds.some((b, i) => {
+        if (b === 'actionMODIFY') {
+          state.saveInfo = {
+            paths: data.tabcmd.paths && data.tabcmd.paths.length > 0 ? data.tabcmd.paths[i] : null,
+            name: 'actionMODIFY',
+          };
+        }
+      });
+    }
+    
     // state.mainFormInfo.buttonsData.isShow = true;
     state.defaultButtonData = JSON.parse(JSON.stringify(data));
     if (!state.instanceId) {

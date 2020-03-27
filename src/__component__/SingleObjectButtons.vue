@@ -213,7 +213,6 @@
       tabcmd: {
         handler(val) {
           this.hideBackButton();
-       
           if (Object.keys(val).length > 0) {
             this.dataArray.buttonGroupShowConfig.buttonGroupShow = [];
             if (this.objectType === 'horizontal') { // 横向布局
@@ -267,7 +266,7 @@
                   }
                 }
               }
-            } else if (this.mainFormInfo.buttonsData.data.objreadonly) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+            } else if (this.mainFormInfo.buttonsData.data.objreadonly && this.itemName !== this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
               //  || item === 'actionCANCOPY'
               val.cmds.forEach((item, index) => {
                 if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
@@ -1186,7 +1185,7 @@
           content: contentText,
           showCancel: true,
           onOk: () => {
-            if (JSON.parse(obj.confirm).isSave) {
+            if (obj.confirm && JSON.stringify(obj.confirm) && JSON.parse(JSON.stringify(obj.confirm)).isSave) {
               const type = 'objTabActionSlient';
               if (this.objectType === 'vertical' && this.itemName !== this.tableName && enableJflow() && custommizedJflow()) { 
                 const objTabActionSlientData = {
@@ -1407,6 +1406,13 @@
             // const myEvent = new Event('click');
             // dom.dispatchEvent(myEvent);
           }
+        } else {
+          const obj = {   
+            name: '保存',
+            eName: this.saveInfo.name,
+            requestUrlPath: this.saveInfo.path 
+          };
+          this.objectSave(obj);
         }
       },
       objTabActionSlient(tab) { // 动作定义静默
@@ -3013,8 +3019,8 @@
       saveEventAfterClick(stop, removeMessage) { // 保存成功后执行的事件
         const saveEventAfter = getSeesionObject('saveEventAfter');
         const objTabActionSlientData = getSeesionObject('objTabActionSlientData');
-        this.clearEditData();// 清空store update数据
         if (!stop) {
+          this.clearEditData();// 清空store update数据
           if (this.saveEventAfter === 'submit' || saveEventAfter.type === 'submit') { // 提交操作
             const promise = new Promise((resolve, reject) => {
               this.getObjectTrySubmit({
@@ -3045,12 +3051,12 @@
                            //  } else {
                            //    window.localStorage.removeItem('submitReject');
                            //  }
-                           //  this.saveEventAfter = '';
-                           //  const saveEventAfterData = {
-                           //    k: 'type',
-                           //    v: {}
-                           //  };
-                           //  updateSessionObject('saveEventAfter', saveEventAfterData);
+                           this.saveEventAfter = '';
+                           const saveEventAfterData = {
+                             k: 'type',
+                             v: {}
+                           };
+                           updateSessionObject('saveEventAfter', saveEventAfterData);
                          });
           } else if (this.saveEventAfter === 'invalid' || saveEventAfter.type === 'invalid') {
             // const promise = new Promise((resolve, reject) => {
@@ -3301,7 +3307,9 @@
     right: 60px;
     width: 104px;
     z-index: 1000;
-
+ &:hover{
+  //  z-index: 10!important;
+ }
     img {
       width: 100%;
     }

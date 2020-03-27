@@ -29,16 +29,18 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.8.1',
-  temporaryVersion: '2.0.9',
-  packageTime: '2020.03.25.15.24', 
-  user: '商飞',                     
+  version: '1.8.2',
+  temporaryVersion: '2.1.0',
+  packageTime: '2020.03.26.18.06', 
+  user: 'AD中心(无网关)',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
    *   image: {
    *     enterpriseLogo: '',  // 公司 Logo 图片
    *     enterpriseBanner: '', // 公司Banner 图片
+   *     expandImg: '',   // 展开图片
+   *     collapseImg: '', // 折叠图片
    *   }, // 此配置项必传
    *   globalComponent: {
    *     Login: '',  // 登录页
