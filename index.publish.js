@@ -39,6 +39,8 @@ export default {
    *   image: {
    *     enterpriseLogo: '',  // 公司 Logo 图片
    *     enterpriseBanner: '', // 公司Banner 图片
+   *     expandImg: '',   // 展开图片
+   *     collapseImg: '', // 折叠图片
    *   }, // 此配置项必传
    *   globalComponent: {
    *     Login: '',  // 登录页
