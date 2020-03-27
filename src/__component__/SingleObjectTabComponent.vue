@@ -23,8 +23,6 @@
       :is-item-table="isItemTable"
     />
     <!-- 子表表格新增区域form -->
-
-
     <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -144,7 +142,7 @@
 
 
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow, INSTANCE_ROUTE_QUERY
   } from '../constants/global';
 
   const customizeModules = {};
@@ -269,30 +267,47 @@
     computed: { 
       ...mapState('global', {
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
+
+        
       }),
       itemReadOnlyForJflow() {
-        let flag = null;
-        if(enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
+        let flag = false;
+        if(enableJflow() && custommizedJflow()) {
           const { tableId } = router.currentRoute.params;
-          this.objreadonlyForJflow.map((item) => {
-            let id = null;
-            if(this.itemInfo.id) {
-              id = Number(this.itemInfo.id);
-            }else{
-              id = this.itemInfo.tableid;
-            }
-            // if (this.type === 'vertical') {
-            //   id = this.itemInfo.tableid;
-            // }else{
-            //   id = Number(this.itemInfo.id);
-            // }
-            if(item.tableId === tableId && item.itemTableId === id) {
-              flag = item.readonly;
-            }else{
-              flag = this.objreadonly;
-            }
-          });
+
+          if(this.objreadonlyForJflow.length > 0) {
+            this.objreadonlyForJflow.map((item) => {
+              let id = null;
+              if(this.itemInfo.id) {
+                id = Number(this.itemInfo.id);
+              }else{
+                id = this.itemInfo.tableid;
+              }
+              // if (this.type === 'vertical') {
+              //   id = this.itemInfo.tableid;
+              // }else{
+              //   id = Number(this.itemInfo.id);
+              // }
+              if(item.tableId === tableId) {
+                if(item.itemTableId === id) {
+                  flag = item.readonly;
+                }
+              }else{
+                flag = this.objreadonly;
+              }
+            });
+          }else{
+            // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
+            this.JflowControlField.map((q) => {
+              if(tableId === q.tableId) {
+                flag = true;
+                return flag;
+              }
+            });
+          }
         }else{
+          debugger;
           flag = this.objreadonly;
         }
         return flag;

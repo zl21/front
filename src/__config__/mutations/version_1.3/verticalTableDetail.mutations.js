@@ -45,6 +45,7 @@ export default {
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
+      let isCustomizedTab = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId) {
@@ -79,12 +80,15 @@ export default {
               // }
               return true;
             } 
+          } else {
+            isCustomizedTab = true;// jflow配置为子表（子表ID不存在时）
           }
         } 
       });
+
+
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.isHideTempStorage = true;
-
 
         // let dataArray = [];
         // if (tableNameFlag && data.isJflowConfig) { // 主表
@@ -335,6 +339,24 @@ export default {
         // 处理jflow配置自定义按钮逻辑
       } else if (data.isJflowConfig) {
         state.mainFormInfo.formData.data = Object.assign({}, data);
+      } else if (isCustomizedTab) { // 所有表均为不可编辑
+        // jflow配置子表（子表id不存在时），以下逻辑为控制主表按钮显示逻辑（只显示复制/刷新/返回）
+        state.mainFormInfo.buttonsData.data.tabcmd.prem = state.mainFormInfo.buttonsData.data.tabcmd.prem.map((item, index) => { // 筛选复制按钮
+          if (state.mainFormInfo.buttonsData.data.tabcmd.cmds[index] === 'actionCANCOPY') { // 如果配置了可编辑字段，则显示复制按钮
+            item = true;
+            return item;
+          }
+          item = false;
+          return item;
+        });
+        state.mainFormInfo.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
+        // 子表表单渲染逻辑（所有子表不显示按钮）
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        componentAttribute.panelData.data = data;
+      
+        // componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
+        // componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
