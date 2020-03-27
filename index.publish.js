@@ -29,10 +29,10 @@ const validateConfig = config => ({
 });
 
 export default {
-  version: '1.8.1',
-  temporaryVersion: '2.0.9',
-  packageTime: '2020.03.25.15.24', 
-  user: '商飞',                     
+  version: '1.8.2',
+  temporaryVersion: '2.1.0',
+  packageTime: '2020.03.26.18.06', 
+  user: 'AD中心(无网关)',                     
   /**
    * @param projectConfig 项目配置
    * projectConfig: {
@@ -80,6 +80,7 @@ export default {
    *   enableHistoryAndFavorite: true, // 是否开启收藏与最近使用功能
    *   touristRoute： '/login', // 游客路由，默认为'/login'，表示未登录情况默认跳转的路由
    *   enableInitializationRequest: true, //是否开启初始化请求，默认为开启
+   *   externalTreeDatas:{},//树结构列表界面数据配置
    *   cbs: {
    *     loginCb: Function
    *   }

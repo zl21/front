@@ -3,6 +3,7 @@
     class="tree"
   >
     <Input
+      v-model="inputValue"
       placeholder="请输入角色"
       class="input"
       icon="ios-search"
@@ -23,6 +24,7 @@
   export default {
     data() {
       return {
+        inputValue: '',
         treeName: '',
         menuTreeQuery: '', // 菜单树检索的值
         oldMenuTreeObj: null, // 上一次选中的菜单节点的数据
@@ -73,7 +75,11 @@
       treeDatas: {
         type: Function,
         default: () => {}
-      },
+      },     
+      isChangeTreeConfigData: {
+        type: String,
+        default: ''
+      }, 
     },
     watch: {
       treeDatas: {
@@ -83,6 +89,32 @@
               this.treeData = value.data;
               this.treeName = value.name;
             });
+          }
+        }
+      },
+      isChangeTreeConfigData: {
+        handler(val) {
+          function func(tdata, resData) {
+            if (Array.isArray(tdata) && tdata.length > 0) {
+              tdata.forEach((v, i) => {
+                if (v.selected) {
+                  v.selected = false;
+                }
+                resData.push(v);
+                const arr = [];
+                func(v.children, arr);
+                if (resData[i] && resData[i].children) {
+                  resData[i].children = arr;
+                }
+              });
+            }
+          }
+          if (val === 'Y') {
+            this.menuTreeQuery = '';
+            this.inputValue = '';
+            const resArr = [];
+            func(this.treeData, resArr);
+            this.$emit('changeTreeConfigData', '');
           }
         }
       },
@@ -96,6 +128,7 @@
       }
     },
     methods: {
+     
       searchInputChange(e) {
         this.menuTreeQuery = e.target.value;
       }, // 检索输入框值改变
@@ -144,12 +177,9 @@
             });
           }
         }
-        if (val.length > 0) {
-          const resArr = [];
-          func(val, resArr);
-        } else {
-          this.treeData.concat([]);
-        }
+        const resArr = [];
+        func(val, resArr);
+       
        
         this.$emit('menuTreeChange', arrayIDs, this.treeName, val, item);
       }, // 左侧树点击

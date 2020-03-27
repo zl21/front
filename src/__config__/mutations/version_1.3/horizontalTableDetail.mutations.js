@@ -83,6 +83,14 @@ export default {
     state.tabPanels = arr;
   }, // 更新按钮数据
   updateDefaultButton(state, data) {
+    data.tabcmd.cmds.some((b, i) => {
+      if (b === 'actionMODIFY') {
+        state.saveInfo = {
+          paths: data.tabcmd.paths[i],
+          name: 'actionMODIFY',
+        };
+      }
+    });
     state.defaultButtonData = data;
   },
   updateButtonsData(state, data) {

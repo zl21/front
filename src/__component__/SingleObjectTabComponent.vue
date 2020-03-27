@@ -76,9 +76,7 @@
       />
     </div>
     <!-- 左右结构主表和子表的form(面板) -->
-    <!-- <div v-if="type==='vertical'&&itemInfo.tabrelation==='1:1'">
-      333
-    </div> -->
+   
 
     <compositeForm
       v-if="panelData.isShow&&!componentName"
