@@ -307,7 +307,6 @@
             });
           }
         }else{
-          debugger;
           flag = this.objreadonly;
         }
         return flag;

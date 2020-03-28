@@ -288,7 +288,7 @@ export default {
                 componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = buttonsJflowRes;
               } 
             } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
-              tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
