@@ -698,14 +698,19 @@
           const cell = {
             COLLECTION_INDEX: '合计'
           };
-          const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
-          needSubtotalList.map((ele) => {
-            const needSubtotalDatas = [];
-            this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
-            const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
-            cell[ele.colname] = `${totalNumber}`;
-            return ele;
-          });
+          // const needSubtotalList = this.columns.filter(ele => ele.issubtotal);
+          // needSubtotalList.map((ele) => {
+          //   const needSubtotalDatas = [];
+          //   this.tabledata.reduce((a, c) => needSubtotalDatas.push(c[ele.colname]), []); //
+          //   const totalNumber = needSubtotalDatas.reduce((a, c) => Number(a) + Number(c), []);
+          //   cell[ele.colname] = `${totalNumber}`;
+          //   return ele;
+          // });
+          if (this.dataSource.subtotalRow && Object.keys(this.dataSource.subtotalRow).length > 0) {
+            Object.keys(this.dataSource.subtotalRow).forEach((key) => {
+              cell[key] = this.dataSource.subtotalRow[key];
+            });
+          }
           total.push(cell);
         }
         // if (this.isHorizontal) {

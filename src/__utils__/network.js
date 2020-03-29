@@ -211,7 +211,7 @@ axios.interceptors.response.use(
         }
       } else if (status === 500 || status === 404) {
       // 如果http状态码正常，则直接返回数据
-        const emg = error.response.data.message;
+        const emg = error.response.data.message || error.response.data.msg;
         // let formatJsonEmg = null;
         // try {
         //   formatJsonEmg = JSON.stringify(JSON.parse(emg), null, 4);

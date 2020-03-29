@@ -115,22 +115,7 @@
         }
         return '';
       },
-      itemReadOnlyForJflow() {
-        let flag = null;
-        if (enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
-          const { tableId } = this[INSTANCE_ROUTE_QUERY];
-          this.objreadonlyForJflow.map((item) => {
-            if (item.tableId === tableId && item.itemTableId === this.itemInfo.tableid) {
-              flag = item.readonly;
-            } else {
-              flag = this.objreadonly;
-            }
-          });
-        } else {
-          flag = this.objreadonly;
-        }
-        return flag;
-      }, 
+     
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
         if (enableJflow() && custommizedJflow()) {
@@ -139,30 +124,15 @@
             if (this.JflowControlField.length > 0) {
               this.JflowControlField.map((jflowData) => {
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
-                if (item.tableid === Number(jflowData.itemTableId) && (item.tabrelation === '1:1' || item.tableid === this.$route.params.tableId)) {
-                  // jflow配置中需要修改字段的表为主表时item.tabrelation !== '1:1', 则可进入此判断;
+                if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId && (item.tabrelation === '1:1' || item.tableid === this[INSTANCE_ROUTE_QUERY].tableId)) {
                   flag = true;
                 } 
               });
             }
           });
-          return flag;
+          return this.mainFormInfo.buttonsData.data.objreadonly || this.mainFormInfo.formData.data.isdefault || flag;
         }
         return this.mainFormInfo.buttonsData.data.objreadonly || this.mainFormInfo.formData.data.isdefault;
-
-
-        // if (enableJflow() && custommizedJflow()) {
-        //   let flag = false;
-        //   if (this.JflowControlField.length > 0) {
-        //     this.JflowControlField.map((jflowData) => {
-        //       if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId) { // 当前单对象界面是否在流程中
-        //         flag = true;
-        //       }
-        //     });
-        //   }
-        //   return flag;
-        // }
-        // return false;
       },
 
       tabPanels() {

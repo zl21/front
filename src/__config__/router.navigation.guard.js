@@ -219,8 +219,8 @@ export default (router) => {
         // Step Two: 按照用户所点击的路由原意进行跳转。
         next({ path: existModule.routeFullPath });
       } else {
-        // [返回][新增]动作需要清除当前明细界面模块的keepAlive
-        if (isBack || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
+        // [返回][新增]动作需要清除当前明细界面模块的keepAlive（且to与form不相同）
+        if ((isBack && to.params.tableName === from.params.tableName) || (paramItemId === 'New' && fromParamItemId !== 'undefined' && paramTableId === fromParamTableId)) {
           commit('global/decreasekeepAliveLists', fromKeepAliveModuleName);
         }
         // Step One: 处理菜单Tab页签的显示逻辑。
