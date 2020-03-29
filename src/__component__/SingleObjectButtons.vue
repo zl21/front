@@ -132,7 +132,7 @@
           }
         }, // 弹框配置信息
         dataArray: {
-          refresh: false, // 显示刷新
+          refresh: true, // 显示刷新
           back: true, // 显示返回
           temporaryStorage: false, // 显示暂存
           printValue: false, // 是否显示打印
