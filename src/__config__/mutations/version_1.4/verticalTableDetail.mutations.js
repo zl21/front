@@ -286,7 +286,7 @@ export default {
     
             let buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
-              JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
+              JflowControlFieldData[0].exeActionButton.map((buttonId) => {
                 buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
                   if (String(buttonId) === String(objtabbutton.webid)) {
                     return objtabbutton;
@@ -294,10 +294,10 @@ export default {
                 });
               });
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID，则显示
-                componentAttribute.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
+                componentAttribute.buttonsData.data.tabwebact.objtabbutton = buttonsJflowRes;// 上下结构，1:1面板+单对象按钮组件，自定义类型按钮需放在objbutton可显示
               } 
             } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
-              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+              componentAttribute.buttonsData.data.tabwebact.objtabbutton = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {

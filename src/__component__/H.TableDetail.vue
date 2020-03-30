@@ -157,7 +157,6 @@
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
-        debugger;
         if (!flag) {
           if (index === 0) { // 主表
             this.getMainTable(index, true);
