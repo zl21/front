@@ -464,7 +464,6 @@
         return false;
       },
       determineSaveType(savePath) { // 回车保存
-        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
@@ -611,6 +610,7 @@
             id = itemId;
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
+          this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
 
           // 保存成功后路由跳转到编辑界面
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面
