@@ -266,14 +266,16 @@
                   }
                 }
               }
-            } else if (this.mainFormInfo.buttonsData.data.objreadonly && this.itemName !== this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
-              //  || item === 'actionCANCOPY'
-              val.cmds.forEach((item, index) => {
-                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
-                  val.prem[index] = false;
-                }
-              });
-            }
+            } 
+            // 是否为只读(当配置了只读时，以下类型按钮不显示),只针对子表
+            // this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+            //   //  || item === 'actionCANCOPY'
+            //   val.cmds.forEach((item, index) => {
+            //     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
+            //       val.prem[index] = false;
+            //     }
+            //   });
+            // }
             this.buttonsReorganization(val);
           }
         },
