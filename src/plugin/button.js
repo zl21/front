@@ -122,7 +122,9 @@ function buttonsResponse(e) {
 
 // 按钮点击逻辑处理
 function clickFunction(e) {
-  if (e.detail.obj.isSave) { // 按钮存在保存前置事件时
+  const type = window.jflowPlugin.router.currentRoute.fullPath.split('/')[3];
+  const MODULE_COMPONENT_NAME = `${type}.${window.jflowPlugin.router.currentRoute.params.tableName}.${window.jflowPlugin.router.currentRoute.params.tableId}.${window.jflowPlugin.router.currentRoute.params.itemId}`;
+  if (e.detail.obj.isSave && window.jflowPlugin.store.state[MODULE_COMPONENT_NAME].testUpdata()) { // 按钮存在保存前置事件时
     beforeClickFunction = e;
     DispatchEvent('jflowClick', {
       detail: {
