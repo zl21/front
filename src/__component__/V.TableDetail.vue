@@ -41,15 +41,17 @@
         @InitializationForm="InitializationForm"
         @VerifyMessage="verifyFormPanelMain"
       />
-      <TabPanels
-        v-if="tabPanels.length > 0"
-        ref="tabPanel"
-        class="tabPanel"
-        :tab-margin-left="20"
-        is-keep-alive
-        :type="'singleCard'"
-        :tab-panels="tabPanels"
-      />
+      <div>
+        <TabPanels
+                v-if="tabPanels.length > 0"
+                ref="tabPanel"
+                class="tabPanel"
+                :tab-margin-left="20"
+                is-keep-alive
+                :type="'singleCard'"
+                :tab-panels="tabPanels"
+        />
+      </div>
     <!-- <TableDetailCollection
       :data-source="dataSource"
       @tableSearch="getRefTableSearchList"
@@ -98,7 +100,7 @@
       ...mapState('global', {
         isRequest: ({ isRequest }) => isRequest,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
-        
+
       }),
       maginTableJflowButtons() {
         return this.mainFormInfo.buttonsData.data.jflowButton;
@@ -115,7 +117,7 @@
         }
         return '';
       },
-     
+
       objReadonlyForJflow() {
         // 判断jflow配置中包含当前表，则将当前表（子表及主表）置为不可编辑
         if (enableJflow() && custommizedJflow()) {
@@ -126,7 +128,7 @@
                 // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
                 if (this[INSTANCE_ROUTE_QUERY].tableId === jflowData.tableId && (item.tabrelation === '1:1' || item.tableid === this[INSTANCE_ROUTE_QUERY].tableId)) {
                   flag = true;
-                } 
+                }
               });
             }
           });
