@@ -275,7 +275,6 @@
         let flag = false;
         if(enableJflow() && custommizedJflow()) {
           const { tableId } = router.currentRoute.params;
-
           if(this.objreadonlyForJflow.length > 0) {
             this.objreadonlyForJflow.map((item) => {
               let id = null;
@@ -292,6 +291,8 @@
               if(item.tableId === tableId) {
                 if(item.itemTableId === id) {
                   flag = item.readonly;
+                }else{
+                  flag = this.objreadonly;
                 }
               }else{
                 flag = this.objreadonly;
