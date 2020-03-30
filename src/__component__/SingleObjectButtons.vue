@@ -3213,8 +3213,8 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
-      this.updataClickSave(this.clickSave());
-      this.testUpdataValue(this.testUpdata());
+      this.updataClickSave(this.clickSave);
+      this.testUpdataValue(this.testUpdata);
       
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
