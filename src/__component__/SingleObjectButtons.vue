@@ -3216,7 +3216,7 @@
       this.updataClickSave(() => {
         this.clickSave();
       });
-      this.testUpdata(() => {
+      this.testUpdataValue(() => {
         this.testUpdata();
       });
       

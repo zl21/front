@@ -5,7 +5,7 @@ export default {
   updataClickSave(state, func) {
     state.clickSaveFunction = func;
   },
-  testUpdata(state, func) {
+  testUpdataValue(state, func) {
     state.testUpdata = func;
   },
   updataHideTempStorage(state, value) { // 控制单对象界面暂存按钮
