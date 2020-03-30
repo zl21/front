@@ -365,7 +365,7 @@
       this.generateComponent();
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists', 'emptyTestData']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
@@ -464,6 +464,7 @@
         return false;
       },
       determineSaveType(savePath) { // 回车保存
+        this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
         const { itemId } = router.currentRoute.params;
         if (this.verifyRequiredInformation()) { // 验证表单必填项
           this.saveParameters();// 调用获取参数方法
