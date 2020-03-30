@@ -20,10 +20,9 @@
       :is-main-form="tabPanelsAll"
       :is-item-table-vertical="buttonsData.data.isItemTableVertical"
       :back-button="buttonsData.data.backButton"
+      :is-item-table="isItemTable"
     />
     <!-- 子表表格新增区域form -->
-
-
     <compositeForm  
       v-if="formData.isShow&&itemInfo.tabrelation!=='1:1'"
       v-show="status === 1 && !objreadonly"
@@ -143,7 +142,7 @@
 
 
   import {
-    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow
+    KEEP_SAVE_ITEM_TABLE_MANDATORY, Version, MODULE_COMPONENT_NAME, enableJflow, custommizedJflow, INSTANCE_ROUTE_QUERY
   } from '../constants/global';
 
   const customizeModules = {};
@@ -268,29 +267,46 @@
     computed: { 
       ...mapState('global', {
         objreadonlyForJflow: ({ objreadonlyForJflow }) => objreadonlyForJflow,
+        JflowControlField: ({ JflowControlField }) => JflowControlField,
+
+        
       }),
       itemReadOnlyForJflow() {
-        let flag = null;
-        if(enableJflow() && custommizedJflow() && this.objreadonlyForJflow.length > 0) {
+        let flag = false;
+        if(enableJflow() && custommizedJflow()) {
           const { tableId } = router.currentRoute.params;
-          this.objreadonlyForJflow.map((item) => {
-            let id = null;
-            if(this.itemInfo.id) {
-              id = Number(this.itemInfo.id);
-            }else{
-              id = this.itemInfo.tableid;
-            }
-            // if (this.type === 'vertical') {
-            //   id = this.itemInfo.tableid;
-            // }else{
-            //   id = Number(this.itemInfo.id);
-            // }
-            if(item.tableId === tableId && item.itemTableId === id) {
-              flag = item.readonly;
-            }else{
-              flag = this.objreadonly;
-            }
-          });
+          if(this.objreadonlyForJflow.length > 0) {
+            this.objreadonlyForJflow.map((item) => {
+              let id = null;
+              if(this.itemInfo.id) {
+                id = Number(this.itemInfo.id);
+              }else{
+                id = this.itemInfo.tableid;
+              }
+              // if (this.type === 'vertical') {
+              //   id = this.itemInfo.tableid;
+              // }else{
+              //   id = Number(this.itemInfo.id);
+              // }
+              if(item.tableId === tableId) {
+                if(item.itemTableId === id) {
+                  flag = item.readonly;
+                }else{
+                  flag = this.objreadonly;
+                }
+              }else{
+                flag = this.objreadonly;
+              }
+            });
+          }else{
+            // jflow配置表为不存在的子表ID时，控制所有表字段为不可编辑状态
+            this.JflowControlField.map((q) => {
+              if(tableId === q.tableId) {
+                flag = true;
+                return flag;
+              }
+            });
+          }
         }else{
           flag = this.objreadonly;
         }
@@ -333,7 +349,12 @@
 
         return [];
       },
-    
+      isItemTable() {
+        if(this.type === 'vertical') {
+          return true;
+        }
+        return false;
+      }
       // ...mapState(moduleName(), {
       //   activeTab: ({ updateData }) => updateData,
       // }),
@@ -345,7 +366,7 @@
       this.generateComponent();
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists', 'emptyTestData']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
@@ -590,6 +611,7 @@
             id = itemId;
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
+          this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
 
           // 保存成功后路由跳转到编辑界面
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面

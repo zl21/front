@@ -82,6 +82,7 @@
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
+          // this.WebConf.isCustomiizeTab = true;
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
             if (index === 0) {
@@ -125,7 +126,11 @@
             obj.component = `tapComponent.${item.tablename}`;
             obj.cilckCallback = this.tabClick;
             obj.isRequest = false;
+            // if (this.WebConf && this.WebConf.isCustomiizeTab) {
+            //   if (index !== 0) {
             arr.push(obj);
+            //   }
+            // }
           });
         }
 

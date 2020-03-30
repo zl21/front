@@ -15,6 +15,8 @@ const proxyListsForIShop = ['/ishopad-app', '/ishopplatform/p/c', '/ishopbill/p/
 const proxyListsForPalmCloud = ['/mboscloud-app'];
 const proxyListsForPalmZx = ['/zhixiao-app'];
 const proxyListForShangFei = ['/user-center', '/shangfei'];
+const proxyListForWuliu = ['/wuliu-admin'];
+
 
 const indexProHtml = path.posix.join('/', 'index.pro.html');
 const indexHtml = path.posix.join('/', 'index.html');
@@ -53,6 +55,12 @@ module.exports = env => ({
         target,
         changeOrigin: true
       },
+      {
+        context: proxyListForWuliu,
+        target,
+        changeOrigin: true
+      },
+      
       {
         context: proxyLists,
         target,

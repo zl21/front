@@ -132,7 +132,7 @@
           }
         }, // 弹框配置信息
         dataArray: {
-          refresh: false, // 显示刷新
+          refresh: true, // 显示刷新
           back: true, // 显示返回
           temporaryStorage: false, // 显示暂存
           printValue: false, // 是否显示打印
@@ -266,14 +266,16 @@
                   }
                 }
               }
-            } else if (this.mainFormInfo.buttonsData.data.objreadonly && this.itemName !== this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
-              //  || item === 'actionCANCOPY'
-              val.cmds.forEach((item, index) => {
-                if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
-                  val.prem[index] = false;
-                }
-              });
-            }
+            } 
+            // 是否为只读(当配置了只读时，以下类型按钮不显示),只针对子表
+            // this.tableName) { // 是否为只读(当配置了只读时，以下类型按钮不显示)
+            //   //  || item === 'actionCANCOPY'
+            //   val.cmds.forEach((item, index) => {
+            //     if (item === 'actionMODIFY' || item === 'actionDELETE' || item === 'actionIMPORT') {
+            //       val.prem[index] = false;
+            //     }
+            //   });
+            // }
             this.buttonsReorganization(val);
           }
         },
@@ -436,6 +438,10 @@
       }
     },
     props: {
+      isItemTable: {
+        type: Boolean,
+        default: false
+      },
       backButton: {
         type: Boolean,
         default: true
@@ -2159,7 +2165,11 @@
             this.webactButton(tabwebact.objtabbutton);
           }
         } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          this.webactButton(tabwebact.objbutton);
+          if (this.isItemTable) {
+            this.webactButton(tabwebact.objtabbutton);
+          } else {
+            this.webactButton(tabwebact.objbutton);
+          }
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
