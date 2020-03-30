@@ -27,7 +27,7 @@ export default {
       setTimeout(() => {
         this.commit(`${getComponentName()}/updatePanelData`, data);
         // this._mutations[`${getComponentName()}/updatePanelData`][0](data);
-      }, 100);
+      }, 1000);
     } else {
       state.mainFormInfo.formData.data = Object.assign({}, data);
     }
@@ -174,12 +174,14 @@ export default {
             const objtabbuttons = state.mainFormInfo.buttonsData.data.tabwebact.objbutton;
             const buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
-              JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
-                objtabbuttons.forEach((objbutton) => {
+              JflowControlFieldData[0].exeActionButton.map((buttonId) => {
+                objtabbuttons.map((objbutton) => {
                   if (String(buttonId) === String(objbutton.webid)) {
                     buttonsJflowRes.push(objbutton);
                   }
+                  return objbutton;
                 });
+                return buttonId;
               });
               if (buttonsJflowRes.length > 0) { // jflow exeActionButton配置中包含子表自定义按钮ID
                 state.mainFormInfo.buttonsData.data.tabwebact.objbutton = buttonsJflowRes;
