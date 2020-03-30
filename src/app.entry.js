@@ -12,7 +12,7 @@ import './constants/dateApi';
 import network from './__utils__/network';
 import DispatchEvent from './__utils__/dispatchEvent';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
+  getTouristRoute, enableGateWay, enableInitializationRequest, specifiedGlobalGateWay, HAS_BEEN_DESTROYED_MODULE
 } from './constants/global';
 import { removeSessionObject } from './__utils__/sessionStorage';
 import customizedModalConfig from './__config__/customizeDialog.config';
@@ -24,7 +24,6 @@ import './assets/css/ag-theme-balham.less';
 import './assets/css/loading.css';
 import './assets/css/custom-ext.less';
 
-import jflowplugin from './plugin/jflow-plugin';
 
 Vue.component('CompositeFormpop', CompositeForm);
 Vue.use(BurgeonUi);
@@ -178,16 +177,6 @@ export default (projectConfig = {
   });
 
   // 启动
-  if (enableJflow() && jflowRequestDomain()) {
-    Vue.use(jflowplugin, {
-      router,
-      axios,
-      store,
-      jflowIp: jflowRequestDomain(),
-      closeJflowIcon: closeJflowIcon(),
-      encryptionJflow: encryptionJflow()
-    });
-  }
   if (enableGateWay()) {
     getGateWayServiceId();
   } else {

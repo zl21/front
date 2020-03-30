@@ -9,7 +9,7 @@ import App from './src/App';
 import './src/constants/dateApi';
 import network from './src/__utils__/network';
 import {
-  getTouristRoute, enableGateWay, enableJflow, jflowRequestDomain, closeJflowIcon, encryptionJflow, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
+  getTouristRoute, enableGateWay, enableInitializationRequest, HAS_BEEN_DESTROYED_MODULE
 } from './src/constants/global';
 import { removeSessionObject } from './src/__utils__/sessionStorage';
 import CompositeForm from './src/__component__/CompositeForm';
@@ -24,21 +24,8 @@ import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
 
-import jflowplugin from './src/plugin/jflow-plugin';
 
 Vue.use(VueDND);
-
-
-if (enableJflow() && jflowRequestDomain()) {
-  Vue.use(jflowplugin, {
-    router,
-    axios,
-    store,
-    jflowIp: jflowRequestDomain(),
-    closeJflowIcon: closeJflowIcon(),
-    encryptionJflow: encryptionJflow()
-  });
-}
 
 
 // 注册自定义模态框组件
