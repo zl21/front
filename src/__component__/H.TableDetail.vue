@@ -224,7 +224,7 @@
       this.isRequestUpdata({ tabPanel: this.tabPanels, index: 0 });
       setTimeout(() => {
         const query = this.$route.query.ACTIVE;
-        const oUl = document.querySelector('.burgeon-tabs-panels-nav');
+        const oUl = document.querySelector('.ark-tabs-panels-nav');
         if (query && oUl) {
           for (let i = 0; i < oUl.children.length; i++) {
             this.tabPanels.forEach((item) => {
@@ -247,11 +247,11 @@
     flex: 1;
     height: 100%;
     overflow: hidden;
-    .burgeon-tabs-panels{
+    .ark-tabs-panels{
       height: 100%;
       display: flex;
       flex-direction: column;
-      .burgeon-tabs-panels-content{
+      .ark-tabs-panels-content{
         flex: 1;
         overflow: hidden;
         height: 100%;

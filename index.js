@@ -16,9 +16,6 @@ import CompositeForm from './src/__component__/CompositeForm';
 import customizedModalConfig from './src/__config__/customizeDialog.config';
 import Loading from './src/__utils__/loading';
 
-// ark ui
-import '@syman/ark-ui/dist/styles/ark-ui.css';
-import '@syman/ark-ui/dist/styles/bjIconfonts/iconfont.css';
 
 // css import
 import './node_modules/ag-grid/dist/styles/ag-grid.css';

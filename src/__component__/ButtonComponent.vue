@@ -425,10 +425,10 @@
     .hide{
       display:none;
     }
-    .burgeon-select-dropdown {
-      .burgeon-dropdown-menu {
+    .ark-select-dropdown {
+      .ark-dropdown-menu {
         min-width: 58px;
-        .burgeon-dropdown-item {
+        .ark-dropdown-item {
           padding: 5px 6px;
         }
       }
@@ -456,7 +456,7 @@
     .iconfont{
       font-size: 12px;
     }
-    .collection,.burgeon-btn-fcdefault{
+    .collection,.ark-btn-fcdefault{
       min-width: auto !important;
     }
   }

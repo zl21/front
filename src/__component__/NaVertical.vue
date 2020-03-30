@@ -424,14 +424,14 @@
 </script>
 
 <style lang="less">
-  .burgeon-drawer-content {
-    //重置BurgeonUI样式
+  .ark-drawer-content {
+    //重置arkUI样式
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
   }
   
-  .burgeon-drawer-body {
-    //重置BurgeonUI样式
+  .ark-drawer-body {
+    //重置arkUI样式
     padding: 0px !important;
   }
 
@@ -558,7 +558,7 @@
         font-size: 24px;
       }
       
-      .burgeon-badge-count{
+      .ark-badge-count{
         top: 2px;
       }
     }
@@ -566,7 +566,7 @@
     .tag-search {
       width: 192px;
       line-height: 40px;
-      .burgeon-select{
+      .ark-select{
           text-align: left;
       }
     }

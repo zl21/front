@@ -59,7 +59,7 @@
           :key="idx"
           class="child-item"
         >
-          <div class="burgeon-transfer-operation">
+          <div class="ark-transfer-operation">
             <Button
               :disabled="isParentBtnDisabled"
               type="posdefault"
@@ -653,7 +653,7 @@
         margin: 0 10px 10px 0;
         width: 240px;
         height: 240px;
-        .burgeon-transfer-operation {
+        .ark-transfer-operation {
           float: left;
           margin-top: 100px;
         }

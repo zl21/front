@@ -312,7 +312,7 @@
   /*border:1px solid #fff;*/
   box-sizing: border-box;
 }
-.itemComponent .burgeon-date-picker{
+.itemComponent .ark-date-picker{
     width: 100%;
 }
 .FormItemComponent {

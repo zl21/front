@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import BurgeonUi from 'burgeon-ui';
 import axios from 'axios';
 
 import { getGuid } from './__utils__/random';
@@ -26,7 +25,6 @@ import './assets/css/custom-ext.less';
 
 
 Vue.component('CompositeFormpop', CompositeForm);
-Vue.use(BurgeonUi);
 Vue.use(Loading);
 
 const createRouter = routes => new VueRouter({

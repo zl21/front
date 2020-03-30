@@ -1669,7 +1669,7 @@
 </script>
 
 <style lang="less">
-    .burgeon-spin-fix{
+    .ark-spin-fix{
         z-index: 999;
         .demo-spin-icon-load{
             animation: ani-demo-spin 1s linear infinite;
@@ -1723,12 +1723,12 @@
                     margin-top: 10px;
                     overflow-y: auto;
 
-                    .burgeon-tree-title {
+                    .ark-tree-title {
                         width: 100%;
                         font-size: 12px;
                         line-height: 26px;
                     }
-                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                    .ark-tree-title-selected, .ark-tree-title-selected:hover {
                         background-color: rgb(196, 226, 255);
                     }
 
@@ -1754,7 +1754,7 @@
                     padding: 10px;
                     border-right: solid 1px #d8d8d8;
                     overflow: auto;
-                    .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+                    .ark-tree-title-selected, .ark-tree-title-selected:hover {
                         background-color: rgb(196, 226, 255);
                     }
                 }
@@ -1762,7 +1762,7 @@
                     flex: 1;
                     height: 100%;
                     width: 10px;
-                    .burgeon-checkbox-inner {
+                    .ark-checkbox-inner {
                         transition: 0s !important;
                     }
                     .upper-part {

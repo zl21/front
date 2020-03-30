@@ -1708,7 +1708,7 @@
 </script>
 
 <style lang="less">
-  .burgeon-spin-fix{
+  .ark-spin-fix{
     z-index: 999;
     .demo-spin-icon-load{
       animation: ani-demo-spin 1s linear infinite;
@@ -1762,12 +1762,12 @@
           margin-top: 10px;
           overflow-y: auto;
 
-          .burgeon-tree-title {
+          .ark-tree-title {
             width: 100%;
             font-size: 12px;
             line-height: 26px;
           }
-          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+          .ark-tree-title-selected, .ark-tree-title-selected:hover {
             background-color: rgb(196, 226, 255);
           }
 
@@ -1793,7 +1793,7 @@
           padding: 10px;
           border-right: solid 1px #d8d8d8;
           overflow: auto;
-          .burgeon-tree-title-selected, .burgeon-tree-title-selected:hover {
+          .ark-tree-title-selected, .ark-tree-title-selected:hover {
             background-color: rgb(196, 226, 255);
           }
         }
@@ -1809,10 +1809,10 @@
               height: 100%;
               .table {
                 border: 0;
-                tbody tr.burgeon-table-row-hover td{
+                tbody tr.ark-table-row-hover td{
                   background-color: #ecf0f1;
                 }
-                .burgeon-table-row-highlight {
+                .ark-table-row-highlight {
                   background-color: rgb(196, 226, 255);
                 }
               }

@@ -809,7 +809,7 @@
 </script>
 
 <style lang="less">
-    .burgeon-spin-fix {
+    .ark-spin-fix {
         z-index: 999;
         .demo-spin-icon-load {
             animation: ani-demo-spin 1s linear infinite;
@@ -842,16 +842,16 @@
             tbody tr{
                 height: 28px;
             }
-            tbody tr.burgeon-table-row-hover td{
+            tbody tr.ark-table-row-hover td{
                 background-color: #ecf0f1;
             }
             tfoot tr {
                 height: 28px;
             }
-            .burgeon-table td {
+            .ark-table td {
               background-color: rgba(255, 255, 255, 0);
             }
-            .burgeon-table-fixed tfoot td {
+            .ark-table-fixed tfoot td {
                 border-bottom: 1px solid #e8eaec;
             }
             .doc-wrapper {

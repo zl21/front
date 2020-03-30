@@ -129,7 +129,7 @@
         this.fixPosition();
       },
       toggleDropdownShow() {
-        const modalDom = this.findDomByClass(this.$refs.enumerableInput, 'burgeon-modal-content-drag');
+        const modalDom = this.findDomByClass(this.$refs.enumerableInput, 'ark-modal-content-drag');
         if (modalDom && modalDom.style.transform) {
           modalDom.style.transform = 'unset';
           modalDom.style.top = `${(document.body.clientHeight - modalDom.offsetHeight) / 2}px`;
