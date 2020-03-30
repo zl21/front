@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueDND from 'awe-dnd';
 import axios from 'axios';
-import ArkUi from '@syman/ark-ui';
 import { getGuid } from './src/__utils__/random';
 import router from './src/__config__/router.config';
 import store from './src/__config__/store.config';
@@ -24,8 +23,6 @@ import './src/assets/css/ag-theme-balham.less';
 import './src/assets/theme/custom.less';
 import './src/assets/css/loading.css';
 import './src/assets/css/custom-ext.less';
-
-Vue.use(ArkUi);
 
 
 Vue.use(VueDND);
