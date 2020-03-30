@@ -670,21 +670,6 @@
         });// 因左右结构itemNameGroup包含主表，上下结构不包括
         const name = '';
         if (this.itemId === 'New') {
-          // if ((this.updateData[this.itemName] && this.updateData[this.itemName].default && this.updateData[this.itemName].default[this.itemName] && Object.keys(this.updateData[this.itemName].default[this.itemName]).length > 0) //子表有默认值
-          //   || (this.updateData[this.tableName] && this.updateData[this.tableName].default && this.updateData[this.tableName].default[this.tableName] && Object.keys(this.updateData[this.tableName].default[this.tableName]).length > 0)) {//主表有默认值
-          // 新增时，属于中主子表add都有值
-          // if ((this.updateData[this.itemName] 
-          //   && this.updateData[this.itemName].add 
-          //   && this.updateData[this.itemName].add[this.itemName] 
-          //   && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0//主表新增有值
-          // ) 
-          //   ||
-          //    (this.updateData[this.tableName] 
-          //   && this.updateData[this.tableName].add 
-          //   && this.updateData[this.tableName].add[this.tableName] 
-          //   && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0)//子表新增有值
-          // ) {
-          //   // 新增时，属于中主子表add都有默认值
           if (
             (itemNames.includes(this.itemName) && this.updateData[this.itemName] 
             && this.updateData[this.itemName].default 
@@ -725,43 +710,50 @@
                 < Object.keys(addItemDataLength).length// 子表add>default
               ) {
                 this.isValue = true;// 子表修改了值
+                return true;
                 console.log('新增时，子表add>default,修改了值');
-              } else if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
+              } if (JSON.stringify(defaultItemDataLength) !== JSON.stringify(addItemDataLength)) {
                 this.isValue = true;// 左右结构，主表或子表修改了值
+                return true;
                 console.log('新增时，主表或子表add=default,修改了默认值');
               }
             } else if (defaultMainDataLength && Object.keys(defaultMainDataLength).length > 0) {
               if (Object.keys(defaultMainDataLength).length < Object.keys(addMainDataLength).length) { // 主表add>default
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，主表add>default,修改了值');
-              } else if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
+              } if (JSON.stringify(defaultMainDataLength) !== JSON.stringify(addMainDataLength)) {
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，主表add=default,修改了默认值');
-              } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
+              } if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
                 this.isValue = true;// 主表修改了值
+                return true;
                 console.log('新增时，子表修改了值');
               }
             } else if (addItemDataLength && Object.keys(addItemDataLength).length > 0) {
               this.isValue = true;// 子表修改了值
+              return true;
               console.log('新增时，子表修改了值');
             } else if (addMainDataLength && Object.keys(addMainDataLength).length > 0) {
               this.isValue = true;// 主表修改了值
+              return true;
               console.log('新增时，主表修改了值');
             }
           } 
-          // }
-          // }
         } else if (this.objectType === 'horizontal') { // 横向布局
           if (itemNames.includes(this.itemName)) { // 子表
             if ((this.updateData[this.itemName] && this.updateData[this.itemName].modify[this.itemName] && Object.keys(this.updateData[this.itemName].modify[this.itemName]).length > 0)
               || (this.updateData[this.itemName].add[this.itemName] && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0)) { // 子表新增及修改
               this.isValue = true;// 子表修改了值
+              return true;
               console.log(' 子表修改了值');
             }
           } else if (this.updateData[this.tableName].modify[this.tableName] && Object.keys(this.updateData[this.tableName].modify[this.tableName]).length > 0
             || this.updateData[this.tableName].add[this.tableName] && Object.keys(this.updateData[this.tableName].add[this.tableName]).length > 0
           ) { 
             this.isValue = true;// 主表修改了值
+            return true;
             console.log(' 左右主表修改了值');
           }
         } else if ((this.updateData[this.tableName] 
@@ -775,17 +767,12 @@
           && Object.keys(this.updateData[this.itemName].add[this.itemName]).length > 0) 
         ) { // 子表新增及修改
           this.isValue = true;// 主表修改了值
+          return true;
           console.log('编辑时，修改时上下主或子表修改了值');
         }
+        return true;
       },
-      // testUpdataForReturn() { // 校验是否修改过值
-      //     Object.entries(this.updateData).forEach(([key, value]) =>{
-        
-
-      //    })
-
-      // },
-     
+  
       clickButtonsRefresh() { // 按钮刷新事件
         this.testUpdata();
         if (this.isValue) {
@@ -3229,6 +3216,10 @@
       this.updataClickSave(() => {
         this.clickSave();
       });
+      this.testUpdata(() => {
+        this.testUpdata();
+      });
+      
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
         // this.dataArray.jflowPluginDataArray = [];

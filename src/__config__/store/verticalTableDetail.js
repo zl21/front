@@ -52,8 +52,8 @@ export default () => ({
     itemObjId: null, // 子表1:1ID
     isHideTempStorage: false, // 为true时隐藏单对象配置的暂存按钮
     clickSaveFunction: {},
-    saveInfo: {}
-
+    saveInfo: {},
+    testUpdata: {},
   },
   actions: actions(),
   mutations: mutations()
