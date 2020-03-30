@@ -20,7 +20,7 @@ export default {
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */
-      '../__plugin__/InstanceManagementList/printTemplate.vue'
+      '../__plugin__/Print/printTemplate.vue'
     )
   },
   PRINTPREVIEW: { 
@@ -28,7 +28,7 @@ export default {
     component: () => import(
       /* webpackChunkName: 'NetworkMonitor' */
       /* webpackMode: 'eager' */
-      '../__plugin__/InstanceManagementList/printPreview.vue'
+      '../__plugin__/Print/printPreview.vue'
     )
   }
 };

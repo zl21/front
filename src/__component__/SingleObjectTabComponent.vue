@@ -275,7 +275,6 @@
         let flag = false;
         if(enableJflow() && custommizedJflow()) {
           const { tableId } = router.currentRoute.params;
-
           if(this.objreadonlyForJflow.length > 0) {
             this.objreadonlyForJflow.map((item) => {
               let id = null;
@@ -292,6 +291,8 @@
               if(item.tableId === tableId) {
                 if(item.itemTableId === id) {
                   flag = item.readonly;
+                }else{
+                  flag = this.objreadonly;
                 }
               }else{
                 flag = this.objreadonly;
@@ -365,7 +366,7 @@
       this.generateComponent();
     },
     methods: {
-      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists']),
+      ...mapMutations('global', ['tabHref', 'decreasekeepAliveLists', 'emptyTestData']),
 
       // ...mapActions(this[MODULE_COMPONENT_NAME], ['performMainTableSaveAction']),
       generateComponent() {
@@ -610,6 +611,7 @@
             id = itemId;
           }
           const message = this.$store.state[this[MODULE_COMPONENT_NAME]].buttonsData.message;
+          this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
 
           // 保存成功后路由跳转到编辑界面
           if (type === 'add') { // 横向结构新增主表保存成功后跳转到编辑页面

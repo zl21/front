@@ -3135,31 +3135,33 @@
         }
       },
       jflowClick(event) {
-        if (event.detail.type === 'submit') {
-          const promise = new Promise((resolve, reject) => {
-            const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
-            this.getObjectTrySubmit({
-              objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+        if (!this._inactive) { // 只处理当前激活的子表tab
+          if (event.detail.type === 'submit') {
+            const promise = new Promise((resolve, reject) => {
+              const submitButtonPath = (Version() === '1.4') ? this.defaultButtonData.tabcmd.paths[this.defaultButtonData.tabcmd.cmds.indexOf('actionSUBMIT')] : null;
+              this.getObjectTrySubmit({
+                objId: this.itemId, table: this.tableName, path: submitButtonPath, isreftabs: this.isreftabs, resolve, reject, moduleName: this[MODULE_COMPONENT_NAME], routeQuery: this[INSTANCE_ROUTE_QUERY], routePath: this[INSTANCE_ROUTE]
+              });
             });
-          });
-        }
+          }
 
-        if (event.detail.type === 'refresh') {
-          this.clickButtonsRefresh();
-        }
+          if (event.detail.type === 'refresh') {
+            this.clickButtonsRefresh();
+          }
 
-        if (event.detail.type === 'save') {
-          this.clickSave();
-        }
+          if (event.detail.type === 'save') {
+            this.clickSave();
+          }
 
 
-        if (event.detail.type === 'clearSubmit') {
-          this.saveEventAfter = '';
-          const saveEventAfterData = {
-            k: 'type',
-            v: {}
-          };
-          updateSessionObject('saveEventAfter', saveEventAfterData);
+          if (event.detail.type === 'clearSubmit') {
+            this.saveEventAfter = '';
+            const saveEventAfterData = {
+              k: 'type',
+              v: {}
+            };
+            updateSessionObject('saveEventAfter', saveEventAfterData);
+          }
         }
       },
       hideBackButton() {
