@@ -137,6 +137,13 @@
 
       tabPanels() {
         const arr = [];
+        if (this.tabPanel[0] && this.tabPanel[0].vuedisplay && this.tabPanel[0].vuedisplay === 'TabItem') {
+          DispatchEvent('uploadCustomTab', {
+            detail: {
+              data: this.tabPanel[0]
+            }
+          });
+        }
         this.tabPanel.forEach((item) => {
           const obj = { ...item };
           obj.componentAttribute.itemInfo = item;
@@ -155,11 +162,6 @@
           if (obj.vuedisplay === 'TabItem') { // 配置自定义tab
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
             obj.componentAttribute.componentName = obj.webact.substring(obj.webact.lastIndexOf('/') + 1, obj.webact.length);
-            DispatchEvent('uploadCustomTab', {
-              detail: {
-                data: obj
-              }
-            });
           } else if (Vue.component(`tapComponent.${item.tablename}`) === undefined) {
             Vue.component(`tapComponent.${item.tablename}`, Vue.extend(tabComponent));
           }
