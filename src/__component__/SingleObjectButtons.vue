@@ -770,7 +770,7 @@
           return true;
           console.log('编辑时，修改时上下主或子表修改了值');
         }
-        return true;
+        return false;
       },
   
       clickButtonsRefresh() { // 按钮刷新事件
@@ -3213,12 +3213,8 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
-      this.updataClickSave(() => {
-        this.clickSave();
-      });
-      this.testUpdataValue(() => {
-        this.testUpdata();
-      });
+      this.updataClickSave(this.clickSave());
+      this.testUpdataValue(this.testUpdata());
       
       this.dataArray.back = this.backButton;
       if (this.jflowButton.length > 0) {
