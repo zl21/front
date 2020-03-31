@@ -2162,7 +2162,7 @@
       webactButton(buttonData) { // 自定义按钮渲染
         if (buttonData && buttonData.length > 0) {
           buttonData.forEach((item, index) => {
-            if (item.ishide) {
+            if (item && item.ishide) {
               buttonData.splice(index);
             }
             this.dataArray.waListButtonsConfig.waListButtons.push(item);

@@ -184,7 +184,7 @@ export default {
             });
             return true;
           }
-        } else {
+        } else if (item.tableId === tableId) {
           isCustomizedTab = true;// jflow配置为子表（子表ID不存在时）
         }
       });
@@ -278,12 +278,12 @@ export default {
             } else {
               objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
             }
-            let buttonsJflowRes = [];
+            const buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.map((buttonId) => {
-                buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
+                objtabbuttons.map((objtabbutton) => {
                   if (String(buttonId) === String(objtabbutton.webid)) {
-                    return objtabbutton;
+                    buttonsJflowRes.push(objtabbutton);
                   }
                 });
               });
