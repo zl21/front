@@ -38,7 +38,16 @@
         /></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary">
+        <Input
+          v-model="formItem.path"
+          placeholder="path"
+        /></Input>
+      </FormItem>
+      <FormItem>
+        <Button
+          type="primary"
+          @click="AutomaticPathGeneration"
+        >
           生成path
         </Button>
       </FormItem>
@@ -51,28 +60,20 @@
     CUSTOMIZED_MODULE_PREFIX,
     HORIZONTAL_TABLE_DETAIL_PREFIX,
     STANDARD_TABLE_LIST_PREFIX,
-    STANDARD_COMMONTABLE_LIST_PREFIX,
     VERTICAL_TABLE_DETAIL_PREFIX,
     PLUGIN_MODULE_PREFIX,
     LINK_MODULE_PREFIX,
   } from '../constants/global';
 
   export default {
-    watch: {
-    //   'formItem.pathTypeModel': {
-    //     handler(val) {
-    //       console.log(11, val);
-    //       this.formItem.Id = val.tableId;
-    //       this.formItem.Name = val.tableName;
-    //     }
-    //   },
-    },
+
     data() {
       return {
         formItem: {
           pathTypeModel: '',
           Id: '',
           Name: '',
+          path: '',
           idValuePlaceholder: '',
           nameValuePlaceholder: '',
           pathType: 
@@ -107,17 +108,22 @@
                label: '定制tab'
              },
             ],
+        },
+        currentPathInfo: {
+            
         }
        
       };
     },
     methods: {
+      AutomaticPathGeneration() {
+        this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}`;
+      },
       pathTypeModelChange(data) {
-        const currentInfo = this.formItem.pathType.filter(item => item.value === data.value);
+        this.currentInfo = this.formItem.pathType.filter(item => item.value === data.value)[0];
         if (data.value === '/SYSTEM/TABLE/') {
-          console.log(33, currentInfo);
-          this.formItem.Id = currentInfo[0].tableId;
-          this.formItem.Name = currentInfo[0].tableName;
+          this.formItem.Id = this.currentInfo.tableId;
+          this.formItem.Name = this.currentInfo.tableName;
         }
       }
     }
