@@ -214,6 +214,8 @@ export default {
           // componentAttribute.panelData.isShow = true;
           // componentAttribute.panelData.data = data;// 子表赋值逻辑
         } else if (!JflowControlFieldData[0].isJflowConfigMainTable) { // jflow配置为子表
+          state.jflowConfigrefreshButton = true;
+
           const addcolumsData = data.addcolums.reduce((a, c) => {
             const u = [];
             if (c.childs) {
@@ -283,15 +285,17 @@ export default {
           data.addcolums = addcolumsData;
           componentAttribute.panelData.data = data;
           componentAttribute.buttonsData.data.isItemTableVertical = true;// 此字段用于单对象按钮组件控制样式
+          componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
+
           if (componentAttribute.buttonsData.data.tabwebact && componentAttribute.buttonsData.data.tabwebact.objtabbutton.length > 0) {
             const objtabbuttons = componentAttribute.buttonsData.data.tabwebact.objtabbutton;
     
-            let buttonsJflowRes = [];
+            const buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
               JflowControlFieldData[0].exeActionButton.map((buttonId) => {
-                buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
+                objtabbuttons.map((objtabbutton) => {
                   if (String(buttonId) === String(objtabbutton.webid)) {
-                    return objtabbutton;
+                    buttonsJflowRes.push(objtabbutton);
                   }
                 });
               });
@@ -314,11 +318,11 @@ export default {
                 return item;
               });
             }
-            componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
             componentAttribute.buttonsData.data.jflowButton = JflowControlFieldData[0].jflowButton.filter(jflowButton => jflowButton.button !== 'fresh');
-            componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
-            state.jflowConfigrefreshButton = true;
           }
+          componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
+          state.jflowConfigrefreshButton = true;
+
           // 以下逻辑为当前jflow配置的为子表时，当前单据其余表按钮展示逻辑
           // 上下结构只有当前配置表展示按钮，其余子表不展示按钮，主表展示刷新/复制/返回
           // 刷新按钮显示jflow返回的刷新

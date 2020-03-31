@@ -20,29 +20,23 @@
         </Select>
       </FormItem>
       <FormItem
-        v-if="formItem.pathTypeModel"
-        :label="formItem.Id"
-      >
-        <Input
-          v-model="formItem.idValue"
-          :placeholder="formItem.idValuePlaceholder"
-        /></Input>
-      </FormItem>
-      <FormItem
-        v-if="formItem.pathTypeModel"
+        v-if="formItem.pathTypeModel&&formItem.Name"
         :label="formItem.Name"
       >
         <Input
           v-model="formItem.nameValue"
           :placeholder="formItem.nameValuePlaceholder"
-        /></Input>
+        />
       </FormItem>
-      <FormItem>
+      <FormItem
+        v-if="formItem.pathTypeModel&&formItem.Id"
+        :label="formItem.Id"
+      >
         <Input
-          v-model="formItem.path"
-          placeholder="path"
-        /></Input>
+          v-model="formItem.idValue"
+        />
       </FormItem>
+    
       <FormItem
         v-if="currentInfo.type&&currentInfo.type==='TABLE_DETAIL'"
         label="请选择需要跳转的单对象界面类型:"
@@ -50,7 +44,7 @@
         <Select
           v-model="formItem.singleObjectPageValue"
           label-in-value
-          @on-change="pathTypeModelChange"
+          @on-change="singleObjectChange"
         >
           <Option
             v-for="item in formItem.singleObjectPageData"
@@ -61,6 +55,22 @@
           </Option>
         </Select>
       </FormItem>
+
+      <FormItem
+        v-if="formItem.singleObjectPageValue==='0'"
+        label="明细ID"
+      >
+        <Input
+          v-model="formItem.singleObjectPageItemId"
+        /></Input>
+      </FormItem>
+      <FormItem>
+        <Input
+          v-model="formItem.path"
+          placeholder="path"
+        /></Input>
+      </FormItem>
+    
       <FormItem>
         <Button
           type="primary"
@@ -84,10 +94,29 @@
   } from '../constants/global';
 
   export default {
-
+    watch: {
+      'formItem.pathTypeModel': {
+        handler() {
+          this.formItem.idValue = '';
+          this.formItem.nameValue = '';
+          this.formItem.path = '';
+          this.formItem.idValuePlaceholder = '';
+          this.formItem.nameValuePlaceholder = '';
+          this.formItem.singleObjectPageValue = '';
+          this.formItem.singleObjectPageItemId = '';
+        }
+      },
+      'formItem.singleObjectPageItemId': {
+        handler(val) {
+          this.currentInfo.itemId = val;
+        }
+      },
+    },
     data() {
       return {
         formItem: {
+          idValue: '',
+          nameValue: '',
           pathTypeModel: '',
           Id: '',
           Name: '',
@@ -95,6 +124,7 @@
           idValuePlaceholder: '',
           nameValuePlaceholder: '',
           singleObjectPageValue: '',
+          singleObjectPageItemId: '',
           singleObjectPageData: [
             {
               value: '0',
@@ -103,6 +133,7 @@
             {
               value: '1',
               label: '动态获取列表明细跳转单对象界面',
+              itemId: ':itemId'
             }
           ],
           pathType: 
@@ -129,19 +160,26 @@
              },
              {
                value: `${CUSTOMIZED_MODULE_PREFIX}/`,
-               label: '定制界面'
+               label: '定制界面',
+               tableName: '定制界面Name:',
+               tableId: '定制界面ID:',
              },
              {
                value: `${LINK_MODULE_PREFIX}/`,
-               label: '外链界面'
+               label: '外链界面',
+               tableName: '外链界面Name:',
+               tableId: '外链界面ID:',
              },
              {
                value: `${PLUGIN_MODULE_PREFIX}/`,
-               label: '插件界面'
+               label: '插件界面',
+               tableName: '插件界面Name:',
+
              },
              {
                value: 'ALL/',
-               label: '定制tab'
+               label: '定制tab页面Name:',
+               tableName: '定制tab页面Name:',
              },
             ],
         },
@@ -151,16 +189,35 @@
        
       };
     },
+    computed: {
+     
+    },
     methods: {
       AutomaticPathGeneration() {
-        this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}`;
+        if (this.currentInfo.itemId) {
+          this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}/${this.currentInfo.itemId}`;
+        } else if (this.formItem.idValue) {
+          this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}/${this.formItem.idValue}`;
+        } else {
+          this.formItem.path = `${this.currentInfo.value}${this.formItem.nameValue}`;
+        }
+      },
+      singleObjectChange(data) {
+        const dataRes = this.formItem.singleObjectPageData.filter(item => item.value === data.value)[0];
+        if (this.formItem.singleObjectPageValue === '1') {
+          this.currentInfo.itemId = dataRes.itemId;
+        } 
       },
       pathTypeModelChange(data) {
         this.currentInfo = this.formItem.pathType.filter(item => item.value === data.value)[0];
 
-if (data.value === this.currentInfo.value) {
-          this.formItem.Id = this.currentInfo.tableId;
-          this.formItem.Name = this.currentInfo.tableName;
+        if (data.value === this.currentInfo.value) {
+          if (this.currentInfo.tableId) {
+            this.formItem.Id = this.currentInfo.tableId;
+          }
+          if (this.currentInfo.tableName) {
+            this.formItem.Name = this.currentInfo.tableName;
+          }
         }
       }
     }

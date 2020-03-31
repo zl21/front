@@ -182,6 +182,13 @@
     },
     
     watch: {
+      isItemTable: {
+        handler(val) {
+          if (val) {
+            this.dataArray.refresh = false;
+          }
+        }
+      },
       backButton: {// 原jflow
         handler(val) {
           this.dataArray.back = val;
@@ -2151,12 +2158,12 @@
             (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
           }
-        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
-          if (this.isItemTable) {
+        } else if (this.isItemTable) {
+          if (tabwebact.objtabbutton && tabwebact.objtabbutton.length > 0) {
             this.webactButton(tabwebact.objtabbutton);
-          } else {
-            this.webactButton(tabwebact.objbutton);
           }
+        } else if (tabwebact.objbutton && tabwebact.objbutton.length > 0) {
+          this.webactButton(tabwebact.objbutton);
         }
       },
       webactButton(buttonData) { // 自定义按钮渲染
@@ -3213,6 +3220,10 @@
       window.removeEventListener(`${this[MODULE_COMPONENT_NAME]}globaVerifyMessageClosed`, this.hideListenerLoading);
     },
     mounted() {
+      if (this.isItemTable) {
+        this.dataArray.refresh = false;
+      }
+      
       this.updataClickSave(this.clickSave);
       this.testUpdataValue(this.testUpdata);
       
