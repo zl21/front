@@ -157,7 +157,7 @@
         if (this.isRequest.length > 0 && this.isRequest[index] === true) {
           flag = true;
         }
-        if (this.WebConf && this.WebConf.isCustomiizeTab) {
+        if (this.WebConf && this.WebConf.isCustomizeTab) {
           index += 1;
         }
         if (!flag) {
