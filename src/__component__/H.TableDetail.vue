@@ -82,7 +82,7 @@
       tabPanels() {
         const arr = [];
         if (this.tabPanel) {
-          this.WebConf.isCustomiizeTab = true;
+          // this.WebConf.isCustomiizeTab = true;
           this.tabPanel.forEach((item, index) => {
             const obj = { ...item };
             if (index === 0) {
