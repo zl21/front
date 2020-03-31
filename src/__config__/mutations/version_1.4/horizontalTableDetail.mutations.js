@@ -280,7 +280,7 @@ export default {
             }
             let buttonsJflowRes = [];
             if (JflowControlFieldData[0].exeActionButton.length > 0) {
-              JflowControlFieldData[0].exeActionButton.forEach((buttonId) => {
+              JflowControlFieldData[0].exeActionButton.map((buttonId) => {
                 buttonsJflowRes = objtabbuttons.filter((objtabbutton) => {
                   if (String(buttonId) === String(objtabbutton.webid)) {
                     return objtabbutton;
@@ -291,7 +291,7 @@ export default {
                 componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = buttonsJflowRes;
               } 
             } else { // jflow exeActionButton配置为空时，去除元数据返回的自定义按钮
-              componentAttribute.buttonsData.data.tabwebact.objbutton = [];
+              componentAttribute.buttonsData.data.tabwebact[tabwebactButton] = [];
             }
           }
           if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
@@ -316,7 +316,8 @@ export default {
           componentAttribute.panelData.data = data;// 渲染表单
           state.tabPanels.map((tab, index) => {
             if (tableIndex !== index) { // 除去当前配置表
-              if (data.tabIndex === 0 && index === 0) { // 处理主表
+              // data.tabIndex === 0 && 
+              if (index === 0) { // 处理主表
                 state.jflowConfigrefreshButton = true;
                 if (tab.componentAttribute.buttonsData.data.tabwebact && tab.componentAttribute.buttonsData.data.tabwebact.objbutton && tab.componentAttribute.buttonsData.data.tabwebact.objbutton.length > 0) {
                   tab.componentAttribute.buttonsData.data.tabwebact.objbutton = [];// 将主表自定义按钮置为空
@@ -325,9 +326,10 @@ export default {
                 tab.componentAttribute.buttonsData.data.jflowButton = [];// 配置的是子表时，需将主表按钮置为空，只保留复制按钮
                 if (JflowControlFieldData[0].jflowButton && JflowControlFieldData[0].jflowButton.length > 0) {
                   // 如果jflowButton配置了按钮，则将元数据返回按钮删除，显示jflow按钮
+
                   if (tab.componentAttribute.buttonsData.data.tabcmd && tab.componentAttribute.buttonsData.data.tabcmd.prem && tab.componentAttribute.buttonsData.data.tabcmd.prem.length > 0) {
                     tab.componentAttribute.buttonsData.data.tabcmd.prem = tab.componentAttribute.buttonsData.data.tabcmd.prem.map((item, i) => {
-                      if (JflowControlFieldData[0].readonly.length > 0 && tab.componentAttribute.buttonsData.data.tabcmd.cmds[i] === 'actionCANCOPY') { 
+                      if (tab.componentAttribute.buttonsData.data.tabcmd.cmds[i] === 'actionCANCOPY') { 
                         item = true;
                         return item;
                       }
