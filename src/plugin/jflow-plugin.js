@@ -265,8 +265,8 @@ async function jflowButtons(id, pid, flag, active, isApprover) { // jflow按钮�
               isJflow: true
             });
             const obj = {
-              tableId: pid || router.currentRoute.params.tableId,
-              itemTableId: (active || router.currentRoute.query.ACTIVE) || pid || router.currentRoute.params.tableId,
+              tableId: pid || window.jflowPlugin.router.currentRoute.params.tableId,
+              itemTableId: (active || window.jflowPlugin.router.currentRoute.query.ACTIVE) || pid || window.jflowPlugin.router.currentRoute.params.tableId,
               isShow: modifiField,
               readonly: edit,
               exeActionButton,
@@ -682,8 +682,8 @@ function AxiosGuard(axios) { // axios拦截
         // }
         // 主表的按钮获取
         if (response.config.data.indexOf('ismaintable=y') >= 0) {
-          const tabcmd = response.data.data.tabcmd;
-          getConfigMap(tabcmd);
+          // const tabcmd = JSON.parse(JSON.stringify(response.data.data.tabcmd));
+          // getConfigMap(tabcmd);
         }
       }
 

@@ -52,6 +52,7 @@ export default {
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
       let isCustomizedTab = false;
+      let isItemTable = false;
       const JflowControlFieldData = this.state.global.JflowControlField.filter((item) => {
         const { tableId } = router.currentRoute.params;
         if (item.tableId === tableId) {
@@ -86,12 +87,13 @@ export default {
               // }
               return true;
             } 
+          } if (data.tabIndex !== undefined) {
+            isItemTable = true;
           } else {
             isCustomizedTab = true;// jflow配置为子表（子表ID不存在时）
           }
         } 
       });
-
 
       if (JflowControlFieldData[0]) { // 符合jflow控制子表字段配置条件执行以下逻辑
         state.isHideTempStorage = true;
@@ -369,6 +371,10 @@ export default {
       
         // componentAttribute.buttonsData.data.backButton = false;// 控制子表按钮返回按钮显示
         // componentAttribute.buttonsData.isShow = true;// 1:1form组件上显示单对象按钮组件
+      } else if (isItemTable) {
+        const { componentAttribute } = state.tabPanels[data.tabIndex];
+        componentAttribute.panelData.isShow = true;
+        componentAttribute.panelData.data = data;
       } else {
         const { componentAttribute } = state.tabPanels[data.tabIndex];
         componentAttribute.panelData.isShow = true;
