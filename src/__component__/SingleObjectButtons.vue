@@ -334,6 +334,12 @@
         currentLoading: ({ currentLoading }) => currentLoading,
         JflowControlField: ({ JflowControlField }) => JflowControlField,
       }),
+      currentTabIndex() {
+        if (this.WebConf && this.WebConf.isCustomizeTab && this.objectType === 'horizontal') {
+          return this.tabCurrentIndex + 1;
+        } 
+        return this.tabCurrentIndex;
+      },
       watermarkImg() { // 匹配水印图片路径
         return this.watermarkimg;
       },
@@ -863,18 +869,18 @@
         const {
           tablename, refcolid, tabrelation, tabinlinemode
         } = this.itemInfo;
-        const tabIndex = this.tabCurrentIndex;
+       
         if (this.objectType === 'horizontal') { // 横向布局
-          if (this.tabCurrentIndex === 0) { // 主表
+          if (this.currentTabIndex === 0) { // 主表
             this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
             this.getObjectTabForMainTable({
-              table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+              table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
             });
           } else if (tabrelation === '1:m') { // 子表
-            this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+            this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
             const promise = new Promise((resolve, reject) => {
               this.getObjectTabForChildTableButtons({
-                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex, resolve, reject
+                maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex, resolve, reject
               });
             });
 
@@ -885,22 +891,23 @@
                 range: page.pageSize,
                 fixedcolumns: this.itemInfo.tableSearchData.selectedValue ? { [this.itemInfo.tableSearchData.selectedValue]: `${this.itemInfo.tableSearchData.inputValue}` } : this.itemInfo.tableDefaultFixedcolumns
               };
+       
               this.getObjectTableItemForTableData({
-                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
             });
           } else if (tabrelation === '1:1') {
             this.getObjectTabForChildTableButtons({
-              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex
+              maintable: this.tableName, table: tablename, objid: this.itemId, tabIndex: this.currentTabIndex
             });
             this.getItemObjForChildTableForm({
-              table: tablename, objid: this.itemId, refcolid, tabIndex
+              table: tablename, objid: this.itemId, refcolid, tabIndex: this.currentTabIndex
             });
           }
         } else { // 纵向布局
           this.emptyTestData();// 清空记录的当前表的tab是否点击过的记录
           this.getObjectForMainTableForm({
-            table: this.tableName, objid: this.itemId, tabIndex
+            table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex
           });
           // if (this.itemInfo.tabrelation === '1:1') {
           //   // enableRequestItemTable:因此方法是主子表同时请求，加此标记为不请求子表相关接口
@@ -928,7 +935,7 @@
           //   // 获取子表表单
           // } else {
           this.getObjectTabForMainTable({
-            table: this.tableName, objid: this.itemId, tabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
+            table: this.tableName, objid: this.itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: page, moduleName: this[MODULE_COMPONENT_NAME]
           });
           // }
         }
@@ -1000,14 +1007,16 @@
           });
         }
         const { refcolid } = this.itemInfo;
-        const tabIndex = this.tabCurrentIndex;
+     
         const searchdata = {
           column_include_uicontroller: true,
           startindex: (page.currentPageIndex - 1) * page.pageSize,
           range: page.pageSize,
         };
+      
+
         this.getObjectTableItemForTableData({
-          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex
+          table: this.itemName, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
         });
       },
 
@@ -1781,14 +1790,16 @@
                 return true;
               });
               const { tablename } = this.itemInfo;
-              const tabIndex = this.tabCurrentIndex;
+             
               const searchdata = {
                 column_include_uicontroller: true,
                 startindex: 0,
                 range: page.pageSize,
               };
+          
+
               this.getObjectTableItemForTableData({
-                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
+                table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex: this.currentTabIndex
               });
             }
             this.updateDeleteData({ tableName: this.itemName, value: {} });
@@ -1803,7 +1814,7 @@
         const id = 'New';// 修改路由,复制操作时路由为新增
         const label = `${this.activeTab.label.replace('编辑', '新增')}`;
         if (this.objectType === 'horizontal') { // 横向布局
-          if (this.tabCurrentIndex === 0) { // 主表
+          if (this.currentTabIndex === 0) { // 主表
             let formData = {};
             this.tabPanel.forEach((item) => {
               if (item.tablename === this.tableName) {
@@ -2217,7 +2228,7 @@
             return true;
           });
         }
-        const tabIndex = this.tabCurrentIndex;
+       
         if (this.subtables()) { // 存在子表
           if (this.objectType === 'horizontal') { // 横向布局
             if (this.itemName === this.tableName) { // 主表删除
@@ -2239,7 +2250,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2310,7 +2321,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2333,7 +2344,7 @@
                         // this.getObjectTableItemForTableData({
                         //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         // });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                         // this.clickButtonsBack();
                         // this.$store.dispatch(`${this[MODULE_COMPONENT_NAME]}/getQueryListForAg`, searchData);
@@ -2365,7 +2376,7 @@
                         isreftabs: this.subtables(),
                         itemNameGroup: this.itemNameGroup,
                         itemCurrentParameter: this.itemCurrentParameter,
-                        tabIndex,
+                        tabIndex: this.currentTabIndex,
                         resolve,
                         reject
                       });
@@ -2390,7 +2401,7 @@
                         // this.getObjectTableItemForTableData({
                         //   table: tablename, objid: this.itemId, refcolid, searchdata, tabIndex
                         // });
-                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex, tabinlinemode });
+                        this.getInputForitemForChildTableForm({ table: tablename, tabIndex: this.currentTabIndex, tabinlinemode });
                         this.updateDeleteData({ tableName: this.itemName, value: {} });
                       }
                     }, () => {

@@ -5,7 +5,7 @@ import { DispatchEvent } from '../../../__utils__/dispatchEvent';
 
 export default {
   getObjectTabForMainTable({ commit }, {
-    table, objid, type, tabIndex, isNotFirstRequest, moduleName
+    table, objid, type, tabIndex, isNotFirstRequest, moduleName, isFirstRequest
   }) {
     // 参数说明 table 主表表名，objid列表界面该行数据的id也就是rowid
     const id = objid === 'New' ? '-1' : objid;
@@ -35,6 +35,9 @@ export default {
             objid,
             tabIndex
           };
+          if (resData.webconf.isCustomizeTab && !isFirstRequest) {
+            param.tabIndex += 1;
+          }
           this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0](param);
         }
       }

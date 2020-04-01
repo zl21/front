@@ -66,7 +66,7 @@
               placeholder="请输入查询内容"
               @on-change="onInputChange"
               @on-search="searTabelList"
-                >
+            />
             <Button
               slot="prepend"
               @click="searTabelList"
@@ -326,6 +326,13 @@
         exportTasks: ({ exportTasks }) => exportTasks
 
       }),
+      currentTabIndex() {
+        if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+          return this.tabCurrentIndex + 1;
+        } else {
+          return this.tabCurrentIndex;
+        }
+      },
       dynamicRoutingForSinglePage() {
         if (this.itemInfo && this.itemInfo.componentAttribute && this.itemInfo.componentAttribute.buttonsData && this.itemInfo.componentAttribute.buttonsData.data && this.itemInfo.componentAttribute.buttonsData.data.webconf) {
           return this.itemInfo.componentAttribute.buttonsData.data.webconf.dynamicRouting;
@@ -369,7 +376,13 @@
         return this.type === pageType.Horizontal;
       },
       buttonGroups() { // 按钮组的数据组合
-        const { tabcmd, DisableEXPORT } = this.tabPanel[this.tabCurrentIndex].componentAttribute.buttonsData.data;
+        // let tabIndex = null;
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   tabIndex = this.tabCurrentIndex + 1;
+        // } else {
+        //   tabIndex = this.tabCurrentIndex;
+        // }
+        const { tabcmd, DisableEXPORT } = this.tabPanel[this.currentTabIndex].componentAttribute.buttonsData.data;
         if (!tabcmd) {
           return [];
         }
@@ -469,6 +482,7 @@
       }
     },
     watch: {
+     
       buttonGroups: {
         handler(val) {
           this.buttonData = val;
@@ -1002,12 +1016,18 @@
         }
       },
       refresh() {
+        // let tabIndex = null;
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   tabIndex = this.tabCurrentIndex + 1;
+        // } else {
+        //   tabIndex = this.tabCurrentIndex;
+        // }
         const { itemId, tableName } = this.$route.params;
         this.getObjectForMainTableForm({
-          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex
+          table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex
         });
         this.getObjectTabForMainTable({
-          table: this.tableName, objid: itemId, tabIndex: this.tabCurrentIndex, itemTabelPageInfo: this.pageInfo
+          table: this.tableName, objid: itemId, tabIndex: this.currentTabIndex, itemTabelPageInfo: this.pageInfo
         });
         const fixedcolumns = {};
         if (this.searchCondition) {
@@ -1016,7 +1036,7 @@
         const params = {
           table: tableName,
           objid: itemId,
-          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          refcolid: this.tabPanel[this.currentTabIndex].refcolid,
           searchdata: {
             column_include_uicontroller: true,
             startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
@@ -1183,8 +1203,14 @@
                   const deleteMessage = res.data.message;
                   this.$Message.success(`${deleteMessage}`);
                   const { refcolid } = this.itemInfo;
-                  const tabIndex = this.tabCurrentIndex;
-                  this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex });
+
+                  // let tabIndex = null;
+                  // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+                  //   tabIndex = this.tabCurrentIndex + 1;
+                  // } else {
+                  //   tabIndex = this.tabCurrentIndex;
+                  // }
+                  this.getObjectForMainTableForm({ table: tableName, objid: itemId, tabIndex: this.currentTabIndex });
                   const {
                     allPages, currentPage, currentPageSize, total
                   } = this.$refs.page;
@@ -1209,7 +1235,7 @@
                       range: this.pageInfo.pageSize,
                       fixedcolumns: {}
                     },
-                    tabIndex
+                    tabIndex: this.currentTabIndex
                   });
                 }
               }
@@ -1279,7 +1305,12 @@
       changePageForSeleteData() {
         const { itemId } = router.currentRoute.params;
         const { refcolid } = this.itemInfo;
-        const tabIndex = this.tabCurrentIndex;
+        // let tabIndex = null;
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   tabIndex = this.tabCurrentIndex + 1;
+        // } else {
+        //   tabIndex = this.tabCurrentIndex;
+        // }
         const {
           allPages, currentPage, currentPageSize, total
         } = this.$refs.page;
@@ -1304,7 +1335,7 @@
             range: this.pageInfo.pageSize,
             fixedcolumns: {}
           },
-          tabIndex
+          tabIndex: this.currentTabIndex
         });
       },
       filterColumns(data) {
@@ -3360,6 +3391,12 @@
         }
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
+        // let tabIndex = null;
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   tabIndex = this.tabCurrentIndex + 1;
+        // } else {
+        //   tabIndex = this.tabCurrentIndex;
+        // }
         const params = {
           table: this.tableName,
           objid: itemId,
@@ -3370,7 +3407,7 @@
             range: this.pageInfo.pageSize,
             fixedcolumns
           },
-          tabIndex: this.tabCurrentIndex
+          tabIndex: this.currentTabIndex
         };
         this.getObjectTableItemForTableData(params);
       },
@@ -3633,10 +3670,16 @@
         }
         const { itemId } = this.$route.params;
         // table, objid, refcolid, startindex, range, fixedcolumns
+        // let tabIndex = null;
+        // if (this.WebConf && this.WebConf.isCustomizeTab && this.type === 'horizontal') {
+        //   tabIndex = this.tabCurrentIndex + 1;
+        // } else {
+        //   tabIndex = this.tabCurrentIndex;
+        // }
         const params = {
           table: this.tableName,
           objid: itemId,
-          refcolid: this.tabPanel[this.tabCurrentIndex].refcolid,
+          refcolid: this.tabPanel[this.currentTabIndex].refcolid,
           searchdata: {
             column_include_uicontroller: true,
             startindex: (Number(this.pageInfo.currentPageIndex) - 1) * Number(this.pageInfo.pageSize),
