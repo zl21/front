@@ -47,7 +47,6 @@ export default {
     if (data.id) {
       state.itemObjId = data.id;
     }
-    // state.instanceId = 1;
     if (enableJflow() && custommizedJflow() && this.state.global.JflowControlField.length > 0) { // 加jflow
       // 子表是一对一模式下，且JflowControlField所返回的是当前子表需要修改的信息
       let tableNameFlag = false;
@@ -58,9 +57,7 @@ export default {
         if (item.tableId === tableId) {
           if (item.tableId === item.itemTableId && data.isJflowConfig) { // 主表修改字段
             tableNameFlag = true;
-            // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
             
-            // if (b.length === 0) { // 去重
             this.state.global.objreadonlyForJflow.push(
               {
                 readonly: false,
@@ -68,15 +65,12 @@ export default {
                 tableId: item.tableId
               }
             );
-            // }
            
             item.isJflowConfigMainTable = true;
 
             return true;
           } if (!data.isJflowConfig && state.tabPanels[data.tabIndex].tableid === Number(item.itemTableId)) { // 子表修改字段
             if (state.tabPanels[data.tabIndex].tabrelation === '1:1') { // 子表为1:1状态或配置中itemTableName=tableName（此时为主表修改字段）
-              // const b = this.state.global.objreadonlyForJflow.filter(a => a.itemTableName !== item.itemTableName && a.itemTableName !== item.itemTableName);
-              // if (b.length === 0) { // 去重
               this.state.global.objreadonlyForJflow.push(
                 {
                   readonly: false,
@@ -84,7 +78,6 @@ export default {
                   tableId: item.tableId
                 }
               );
-              // }
               return true;
             } 
           } if (data.tabIndex !== undefined) {
@@ -106,6 +99,7 @@ export default {
         //   dataArray = data.addcolums;
         // }
         if (data.isJflowConfig) { // jflow修改字段配置为主表
+          state.mainFormInfo.isMainTableObjreadonly = true;// 将主表置为不可编辑状态
           const addcolumsData = data.addcolums.reduce((a, c) => {
             const u = [];
             if (c.childs) {
