@@ -35,7 +35,7 @@ export default {
             objid,
             tabIndex
           };
-          if (resData.webconf.isCustomizeTab && !isFirstRequest) {
+          if (resData.webconf && resData.webconf.isCustomizeTab && !isFirstRequest) {
             param.tabIndex += 1;
           }
           this._actions[`${moduleName || getComponentName()}/getObjectForMainTableForm`][0](param);
